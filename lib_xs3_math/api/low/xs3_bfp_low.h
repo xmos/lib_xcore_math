@@ -507,10 +507,10 @@ void xs3_s32_to_s16(
  * \brief Convert an `int16_t` vector to an `int32_t` vector.
  * 
  * Each element of the output vector `a[k]` is set equal to the corresponding element of the
- * input vector `b[k]`.
+ * input vector `b[k]` left-shifted 16 bits.
  * 
  * 
- * \foperation{32, @f$a_k \leftarrow b_k \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \foperation{32, @f$a_k \leftarrow b_k \cdot 2^\{16\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \requires_word_alignment{a,b}
  * 
