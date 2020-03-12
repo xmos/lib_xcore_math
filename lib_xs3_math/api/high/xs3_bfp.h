@@ -207,8 +207,7 @@ void bfp_mul_vect_s32(
  * 
  * \param a         Output BFP vector
  * \param b         Input BFP vector
- * \param c         Mantissa of the scalar
- * \param c_exp     Exponent of the scalar
+ * \param c         Scalar value
  */
 void bfp_scalar_mul_vect_s16(
     bfp_s16_t* a, 
@@ -227,8 +226,7 @@ void bfp_scalar_mul_vect_s16(
  * 
  * \param a         Output BFP vector
  * \param b         Input BFP vector
- * \param c         Mantissa of the scalar
- * \param c_exp     Exponent of the scalar
+ * \param c         Scalar Value
  */
 void bfp_scalar_mul_vect_s32(
     bfp_s32_t* a, 

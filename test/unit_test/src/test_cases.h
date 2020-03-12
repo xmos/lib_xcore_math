@@ -8,6 +8,11 @@ int test_xs3_shl_vect();
 int test_xs3_add_vect();
 int test_xs3_sub_vect();
 
+int test_xs3_rect_vect();
+int test_xs3_abs_vect();
+
+int test_xs3_s32_to_s16();
+int test_xs3_s16_to_s32();
 
 int test_xs3_bfp_init();
 

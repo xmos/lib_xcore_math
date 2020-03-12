@@ -16,9 +16,11 @@ extern "C" {
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param[in] b         Input vector
+ * \param[in] length    Length of input vector
+ * \param[in] b_shr     Right-shift applied to elements of `b`
+ * 
+ * \return  Absolute sum
  */
 int16_t xs3_abs_sum_s16(
     const int16_t* b,
@@ -32,9 +34,11 @@ int16_t xs3_abs_sum_s16(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param[in] b         Input vector
+ * \param[in] length    Length of input vector
+ * \param[in] b_shr     Right-shift applied to elements of `b`
+ * 
+ * \return  Absolute sum
  */
 int32_t xs3_abs_sum_s32(
     const int32_t* b,
@@ -48,9 +52,11 @@ int32_t xs3_abs_sum_s32(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param[in] b         Input vector
+ * \param[in] length    Length of input vector
+ * \param[in] b_shr     Right-shift applied to elements of `b`
+ * 
+ * \return  Mean
  */
 int16_t xs3_mean_s16(
     const int16_t* b,
@@ -64,9 +70,11 @@ int16_t xs3_mean_s16(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param[in] b         Input vector
+ * \param[in] length    Length of input vector
+ * \param[in] b_shr     Right-shift applied to elements of `b`
+ * 
+ * \return  Mean
  */
 int32_t xs3_mean_s32(
     const int32_t* b,
@@ -80,9 +88,11 @@ int32_t xs3_mean_s32(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param[in] b         Input vector
+ * \param[in] length    Length of input vector
+ * \param[in] b_shr     Right-shift applied to elements of `b`
+ * 
+ * \return  Energy
  */
 int16_t xs3_energy_s16(
     const int16_t* b,
@@ -96,9 +106,11 @@ int16_t xs3_energy_s16(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param[in] b         Input vector
+ * \param[in] length    Length of input vector
+ * \param[in] b_shr     Right-shift applied to elements of `b`
+ * 
+ * \return  Energy
  */
 int32_t xs3_energy_s32(
     const int32_t* b,
@@ -112,9 +124,11 @@ int32_t xs3_energy_s32(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param[in] b         Input vector
+ * \param[in] length    Length of input vector
+ * \param[in] b_shr     Right-shift applied to elements of `b`
+ * 
+ * \return  RMS
  */
 int16_t xs3_rms_s16(
     const int16_t* b,
@@ -128,9 +142,11 @@ int16_t xs3_rms_s16(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param[in] b         Input vector
+ * \param[in] length    Length of input vector
+ * \param[in] b_shr     Right-shift applied to elements of `b`
+ * 
+ * \return  RMS
  */
 int32_t xs3_rms_s32(
     const int32_t* b,
@@ -144,10 +160,10 @@ int32_t xs3_rms_s32(
  *      result <- max( A[0], A[1], A[N-1] )
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param[in] a         Input vector
+ * \param[in] length    Length of input vector
  * 
- * \returns         Maximum value in ``a``.
+ * \return  Maximum value of `a`
  */
 int16_t xs3_max_s16(
     const int16_t a[], 
@@ -159,10 +175,10 @@ int16_t xs3_max_s16(
  *      result <- max( A[0], A[1], A[N-1] )
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param[in] a         Input vector
+ * \param[in] length    Length of input vector
  * 
- * \returns         Maximum value in ``a``.
+ * \return  Maximum value of `a`
  */
 int32_t xs3_max_s32(
     const int32_t a[],
@@ -175,10 +191,10 @@ int32_t xs3_max_s32(
  *      result <- min( A[0], A[1], A[N-1] )
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param[in] a         Input vector
+ * \param[in] length    Length of input vector
  * 
- * \returns         Minimum value in ``a``.
+ * \return  Minimum value of `a`
  */
 int16_t xs3_min_s16(
     const int16_t a[], 
@@ -190,10 +206,10 @@ int16_t xs3_min_s16(
  *      result <- min( A[0], A[1], A[N-1] )
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param[in] a         Input vector
+ * \param[in] length    Length of input vector
  * 
- * \returns         Minimum value in ``a``.
+ * \return  Minimum value of `a`
  */
 int32_t xs3_min_s32(
     const int32_t a[],
@@ -207,9 +223,9 @@ int32_t xs3_min_s32(
  *        where A[] is an integer vector of size N
  * 
  * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param length    Length of the vector `a`
  * 
- * \returns         Index of the maximum element of ``a``.
+ * \return  Index of the maximum element of `a`.
  */
 unsigned xs3_argmax_s16(
     const int16_t a[], 
@@ -222,9 +238,9 @@ unsigned xs3_argmax_s16(
  *        where A[] is an integer vector of size N
  * 
  * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param length    Length of the vector `a`
  * 
- * \returns         Index of the maximum element of ``a``.
+ * \return         Index of the maximum element of `a`
  */
 unsigned xs3_argmax_s32(
     const int32_t a[],
@@ -237,9 +253,9 @@ unsigned xs3_argmax_s32(
  *        where A[] is an integer vector of size N
  * 
  * \param a         Input vector
- * \param length    Length of the vector ``a``
- * 
- * \returns         Index of the minimum element of ``a``.
+ * \param length    Length of the vector `a`
+ *  
+ * \return  Index of the minimum element of `a`.
  */
 unsigned xs3_argmin_s16(
     const int16_t a[], 
@@ -252,9 +268,9 @@ unsigned xs3_argmin_s16(
  *        where A[] is an integer vector of size N
  * 
  * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param length    Length of the vector `a`
  * 
- * \returns         Index of the minimum element of ``a``.
+ * \return         Index of the minimum element of `a`.
  */
 unsigned xs3_argmin_s32(
     const int32_t a[],

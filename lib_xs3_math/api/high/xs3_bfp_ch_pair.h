@@ -77,7 +77,7 @@ headroom_t bfp_cls_vect_ch_pair_s32(
  * 
  * \param a     Output BFP vector
  * \param b     Input BFP vector
- * \param shift Number of bits to left shift
+ * \param exp   Exponent
  */
 void bfp_ldexp_vect_ch_pair_s16(
     bfp_ch_pair_s16_t* a,
@@ -100,7 +100,7 @@ void bfp_ldexp_vect_ch_pair_s16(
  * 
  * \param a     Output BFP vector
  * \param b     Input BFP vector
- * \param shift Number of bits to left shift
+ * \param exp   Exponent
  */
 void bfp_ldexp_vect_ch_pair_s32(
     bfp_ch_pair_s32_t* a,

@@ -105,12 +105,11 @@ void dsp_filters_interpolate(
  * 
  * The output sample value saturates to the range ( -(2^32)+1, (2^32)-1 ).
  * 
- * \param input_sample      New input sample
+ * \param input_samples      New input sample
  * \param state_data        Filter state data
  * \param filter_coeffs     Array of filter coefficients
  * \param num_taps          Number of filter taps -- length of ``filter_coeffs``
  * \param decim_factor      Decimation factor
- * \param output_samples    Output samples
  * \param q_format          Fixed-point format of coefficients
  */
 int32_t xs3_filters_decimate(
@@ -171,8 +170,8 @@ int32_t xs3_filters_biquad(
  * The output sample value saturates to the range ( -(2^32)+1, (2^32)-1 ).
  * 
  * \param input_sample      New input sample
- * \param state_data        Filter state data
  * \param filter_coeffs     Array of filter coefficients
+ * \param state_data        Filter state data
  * \param num_sections      Number of biquad filters in sequence
  * \param q_format          Fixed-point format of coefficients
  * 

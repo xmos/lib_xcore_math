@@ -415,12 +415,15 @@ void bfp_s32_to_s16(
 {
     //TODO - calculate what these should be
     const exponent_t a_exp = 0;
-    const int sat = 0;
+    const int b_shr = 0;
+
+    //TODO - calculate headroom adjustment (should be related to b_shr)
 
 
     a->length = b->length;
     a->exp = a_exp;
-    a->hr = xs3_s32_to_s16(a->data, b->data, b->length, sat);
+    a->hr = b->hr - 16 + b_shr;
+    xs3_s32_to_s16(a->data, b->data, b->length, b_shr);
 }
 
     
@@ -428,10 +431,11 @@ void bfp_s16_to_s32(
     bfp_s32_t* a,
     const bfp_s16_t* b)
 {    
-    //TODO - figure out how to actually do this.. if possible.
+    //TODO - figure out how to actually do this..
     const exponent_t a_exp = b->exp;
 
     a->length = b->length;
     a->exp = a_exp;
-    a->hr = xs3_s16_to_s32(a->data, b->data, b->length);
+    a->hr = b->hr + 16;
+    xs3_s16_to_s32(a->data, b->data, b->length);
 }

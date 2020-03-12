@@ -2,6 +2,7 @@
 #ifndef ASM_HELPER_H_
 #define ASM_HELPER_H_
 
+#include "../../api/xs3_math_conf.h"
 
 #define EPV_LOG2_S8     5
 #define EPV_LOG2_S16    4

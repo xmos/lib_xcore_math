@@ -16,9 +16,9 @@ extern "C" {
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param b     Input vector
+ * 
+ * \return  Absolute sum
  */
 float bfp_abs_sum_s16(
     const bfp_s16_t* b);
@@ -30,9 +30,9 @@ float bfp_abs_sum_s16(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param b     Input vector
+ * 
+ * \return  Absolute sum
  */
 float bfp_abs_sum_s32(
     const bfp_s32_t* b);
@@ -44,9 +44,9 @@ float bfp_abs_sum_s32(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param b     Input vector
+ * 
+ * \return  Mean
  */
 float bfp_mean_s16(
     const bfp_s16_t* b);
@@ -58,9 +58,9 @@ float bfp_mean_s16(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param b     Input vector
+ * 
+ * \return  Mean
  */
 float bfp_mean_s32(
     const bfp_s32_t* b);
@@ -72,9 +72,9 @@ float bfp_mean_s32(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param b     Input vector
+ * 
+ * \return  Energy
  */
 float bfp_energy_s16(
     const bfp_s16_t* b);
@@ -86,9 +86,9 @@ float bfp_energy_s16(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param b     Input vector
+ * 
+ * \return  Energy
  */
 float bfp_energy_s32(
     const bfp_s32_t* b);
@@ -100,9 +100,9 @@ float bfp_energy_s32(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param b     Input vector
+ * 
+ * \return  RMS 
  */
 float bfp_rms_s16(
     const bfp_s16_t* b);
@@ -114,9 +114,9 @@ float bfp_rms_s16(
  *        where A is a scalar
  *              B[] is a BFP vector of size N
  * 
- * \param a         Output. Mantissa of result
- * \param a_exp     Output. Exponent of result
- * \param b         Input BFP vector
+ * \param b     Input vector
+ * 
+ * \return  RMS
  */
 float bfp_rms_s32(
     const bfp_s32_t* b);
@@ -128,10 +128,9 @@ float bfp_rms_s32(
  *      result <- max( A[0], A[1], A[N-1] )
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param b     Input vector
  * 
- * \returns         Maximum value in ``a``.
+ * \return  Max value
  */
 float bfp_max_s16(
     const bfp_s16_t* b);
@@ -142,10 +141,9 @@ float bfp_max_s16(
  *      result <- max( A[0], A[1], A[N-1] )
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param b     Input vector
  * 
- * \returns         Maximum value in ``a``.
+ * \return  Max value
  */
 float bfp_max_s32(
     const bfp_s32_t* b);
@@ -157,10 +155,9 @@ float bfp_max_s32(
  *      result <- min( A[0], A[1], A[N-1] )
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param b     Input vector
  * 
- * \returns         Minimum value in ``a``.
+ * \return  Min value
  */
 float bfp_min_s16(
     const bfp_s16_t* b);
@@ -171,10 +168,9 @@ float bfp_min_s16(
  *      result <- min( A[0], A[1], A[N-1] )
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param b     Input vector
  * 
- * \returns         Minimum value in ``a``.
+ * \return  Min value
  */
 float bfp_min_s32(
     const bfp_s32_t* b);
@@ -186,10 +182,9 @@ float bfp_min_s32(
  *      result <- argmax[i]{ A[i] }
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param b     Input vector
  * 
- * \returns         Index of the maximum element of ``a``.
+ * \return  Index of the maximum element of `b`.
  */
 unsigned bfp_argmax_s16(
     const bfp_s16_t* b);
@@ -200,10 +195,9 @@ unsigned bfp_argmax_s16(
  *      result <- argmax[i]{ A[i] }
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param b     Input vector
  * 
- * \returns         Index of the maximum element of ``a``.
+ * \return  Index of the maximum element of `b`.
  */
 unsigned bfp_argmax_s32(
     const bfp_s32_t* b);
@@ -214,10 +208,9 @@ unsigned bfp_argmax_s32(
  *      result <- argmin[i]{ A[i] }
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param b     Input vector
  * 
- * \returns         Index of the minimum element of ``a``.
+ * \return  Index of the minimum element of `b`.
  */
 unsigned bfp_argmin_s16(
     const bfp_s16_t* b);
@@ -228,10 +221,9 @@ unsigned bfp_argmin_s16(
  *      result <- argmin[i]{ A[i] }
  *        where A[] is an integer vector of size N
  * 
- * \param a         Input vector
- * \param length    Length of the vector ``a``
+ * \param b     Input vector
  * 
- * \returns         Index of the minimum element of ``a``.
+ * \return  Index of the minimum element of `b`.
  */
 unsigned bfp_argmin_s32(
     const bfp_s32_t* b);
