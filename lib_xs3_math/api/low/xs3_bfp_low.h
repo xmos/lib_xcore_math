@@ -507,15 +507,18 @@ void xs3_s32_to_s16(
  * \brief Convert an `int16_t` vector to an `int32_t` vector.
  * 
  * Each element of the output vector `a[k]` is set equal to the corresponding element of the
- * input vector `b[k]` left-shifted 16 bits.
+ * input vector `b[k]` left-shifted 8 bits.
+ * 
+ * (The 8-bit left-shift is due to the ideosyncrasies of the XS3 VPU. It turns out to be much more
+ *   efficient to include a factor of 2^8)
  * 
  * 
- * \foperation{32, @f$a_k \leftarrow b_k \cdot 2^\{16\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \foperation{32, @f$a_k \leftarrow b_k \cdot 2^\{8\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \requires_word_alignment{a,b}
  * 
  * \note \li This function does not return headroom of the resulting vector. The output vector
- *           will have an additional 16 bits of headroom.
+ *           will have 8 more bits of headroom than the input.
  * 
  * 
  * \param[out] a        Output vector

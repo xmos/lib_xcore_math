@@ -436,6 +436,6 @@ void bfp_s16_to_s32(
 
     a->length = b->length;
     a->exp = a_exp;
-    a->hr = b->hr + 16;
+    a->hr = b->hr + 8;
     xs3_s16_to_s32(a->data, b->data, b->length);
 }

@@ -69,17 +69,17 @@ static void test_xs3_s16_to_s32_basic()
             unsigned len = lengths[i];
             PRINTF("\tlength %u..\n", len);
 
-            // for(int i = 0; i < MAX_LEN; i++){
-            //     B[i] = i < len? casse->input : 0xBBBB;
-            //     A[i] = 0xCCCCCCCC;
-            // }
+            for(int i = 0; i < MAX_LEN; i++){
+                B[i] = i < len? casse->input : 0xBBBB;
+                A[i] = 0xCCCCCCCC;
+            }
 
             xs3_s16_to_s32(A, B, len);
 
-            // for(int k = 0; k < MAX_LEN; k++){
-            //     int32_t exp = k < len? ((int32_t)casse->input) << 16 : 0xCCCCCCCC;
-            //     TEST_ASSERT_EQUAL_MSG(exp, A[k], casse->line);
-            // }
+            for(int k = 0; k < MAX_LEN; k++){
+                int32_t exp = k < len? ((int32_t)casse->input) << 8 : 0xCCCCCCCC;
+                TEST_ASSERT_EQUAL_MSG(exp, A[k], casse->line);
+            }
 
         }
     }
@@ -112,7 +112,7 @@ static void test_xs3_s16_to_s32_random()
         xs3_s16_to_s32(A, B, len);
 
         for(int k = 0; k < MAX_LEN; k++){
-            int32_t exp = k < len? ((int32_t)B[k]) << 16 : 0xCCCCCCCC;
+            int32_t exp = k < len? ((int32_t)B[k]) << 8 : 0xCCCCCCCC;
             TEST_ASSERT_EQUAL_MSG(exp, A[k], v);
         }
     }
