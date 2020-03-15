@@ -1,0 +1,188 @@
+
+#if defined(__XS3A__)
+#ifndef XS3_MATH_NO_ASM
+
+/*  
+
+headroom_t xs3_clip_vect_s16(
+    int16_t* a,
+    const int16_t* b,
+    const unsigned length,
+    const int16_t lower_bound,
+    const int16_t upper_bound,
+    const int b_shr);
+
+
+headroom_t xs3_clip_vect_s32(
+    int32_t* a,
+    const int32_t* b,
+    const unsigned length,
+    const int32_t lower_bound,
+    const int32_t upper_bound,
+    const int b_shr);
+*/
+
+
+#include "asm_helper.h"
+
+.text
+.issue_mode dual
+
+#define NSTACKWORDS     (8 + 24)
+
+
+#define FUNCTION_NAME   xs3_clip_vect
+#define FNAME_S16       CAT(FUNCTION_NAME, _s16)
+#define FNAME_S32       CAT(FUNCTION_NAME, _s32)
+
+
+#define STACK_VEC_LOWER     (NSTACKWORDS - 8)
+#define STACK_VEC_UPPER     (NSTACKWORDS - 16)
+#define STACK_VEC_TMP       (NSTACKWORDS - 24)
+
+#define STACK_UPPER     (NSTACKWORDS + 1)
+#define STACK_B_SHR     (NSTACKWORDS + 2)
+
+#define STACK_VMASK     (7)
+
+#define arg_lower   r3
+
+#define a           r0
+#define b           r1
+#define N           r2
+#define b_shr       r3
+#define _32         r4
+#define vec_mask    r5
+#define lower_mask  r6
+#define upper_mask  r7
+#define tmp         r8
+#define tail        r9
+
+
+ASM_PREAMBLE(FNAME_S16)
+FNAME_S16:
+/**/    dualentsp NSTACKWORDS
+        std r4, r5, sp[0]
+        std r6, r7, sp[1]
+        ldc r11, 0x0100
+/**/    std r8, r9, sp[2]
+    {   shl tail, N, SIZEOF_LOG2_S16            ;   vsetc r11                               }
+    {   zext tail, 5                            ;   stw r10, sp[6]                          }
+
+    {   neg lower_mask, arg_lower               ;   ldw upper_mask, sp[STACK_UPPER]         }
+/**/{   shl tmp, lower_mask, 16                 ;   ldw b_shr, sp[STACK_B_SHR]              }
+    {   or lower_mask, lower_mask, tmp          ;   shl tmp, upper_mask, 16                 }
+
+        std lower_mask, lower_mask, sp[(STACK_VEC_LOWER/2)+0]
+        std lower_mask, lower_mask, sp[(STACK_VEC_LOWER/2)+1]
+/**/    std lower_mask, lower_mask, sp[(STACK_VEC_LOWER/2)+2]
+        std lower_mask, lower_mask, sp[(STACK_VEC_LOWER/2)+3]
+    {   or upper_mask, upper_mask, tmp          ;   ldc _32, 32                             }
+
+        std upper_mask, upper_mask, sp[(STACK_VEC_UPPER/2)+0]
+/**/    std upper_mask, upper_mask, sp[(STACK_VEC_UPPER/2)+1]
+        std upper_mask, upper_mask, sp[(STACK_VEC_UPPER/2)+2]
+        std upper_mask, upper_mask, sp[(STACK_VEC_UPPER/2)+3]
+
+    {   shr N, N, EPV_LOG2_S16                  ;   bf tail, .L_loop_bot_s16                }
+
+.L_loop_top_s16:
+            vlashr b[0], b_shr
+        {   ldaw r11, sp[STACK_VEC_LOWER]           ;   vstr a[0]                               }
+        {   ldaw vec_mask, sp[STACK_VMASK]          ;   vladd r11[0]   /*negative lower bound*/ }
+        {   sub N, N, 1                             ;   vdepth1                                 }
+        {   ldaw r11, sp[STACK_VEC_UPPER]           ;   vstr vec_mask[0]                        }
+            vlashr b[0], b_shr                      
+        {   add b, b, _32                           ;   vlsub r11[0]  /*upper bound */          }
+        {   add vec_mask, vec_mask, 4               ;   vdepth1                                 }
+        {   sub vec_mask, vec_mask, 4               ;   vstr vec_mask[0]                        }
+        {   ldaw r11, sp[STACK_VEC_LOWER]           ;   ldw lower_mask, vec_mask[0]             }
+        {   mov tmp, lower_mask                     ;   ldw upper_mask, vec_mask[1]             }
+            zip tmp, lower_mask, 0
+        {   mov tmp, upper_mask                     ;   vldr r11[0]                             }
+            vstrpv a[0], lower_mask
+            zip tmp, upper_mask
+        {   ldaw r11, sp[STACK_VEC_UPPER]           ;                                           }
+        {                                           ;   vldr r11[0]                             }
+            vstrpv a[0], upper_mask
+        {   add a, a, _32                           ;   bt N, .L_loop_top_s16                   }
+.L_loop_bot_s16:
+
+
+/*
+    C logic:
+
+    void clip16(int16_t output[], int16_t input[], int16_t lower, int16_t upper, unsigned length, int input_shr)
+    {
+        if(upper >= 0 && lower <= 0){
+
+            int16_t up_thing = VPU_INT16_MAX - upper;
+            int16_t lo_thing = VPU_INT16_MIN - lower;
+
+            // 7 instructions required
+            for(int i = 0; i < length; i++){
+
+                int16_t tmp = input[i] >> input_shr;
+                tmp = SATURATING_ADD(tmp, up_thing);
+                tmp = tmp - up_thing;
+                tmp = SATURATING_ADD(tmp, lo_thing);
+                tmp = tmp - lo_thing
+
+                output[i] = tmp;
+            }
+        } else {
+
+            int16_t one, two, three;
+
+            if(upper >= 0){
+                one = VPU_INT16_MAX - upper;
+                two = VPU_INT16_MIN;
+                three = -lower;
+            } else {
+                one = VPU_INT16_MIN - lower;
+                two = VPU_INT16_MAX;
+                three = -upper;
+            }
+
+            // 9 instructions required
+            for(int i = 0; i < length; i++){
+
+                int16_t tmp = input[i] >> input_shr;
+                tmp = SATURATING_ADD(tmp, one);
+                tmp = tmp - one;
+                tmp = tmp + two;
+                tmp = SATURATING_ADD(tmp, three);
+                tmp = tmp - three;
+                tmp = tmp - two;
+
+                output[i] = tmp;
+            }
+        }
+    }
+
+
+
+*/
+
+
+
+
+
+
+.L_finish:
+    {   ldc r0, 32                              ;   vgetc r11                               }
+    {   shr r1, r11, 8                          ;                                           }
+    {   zext r11, 5                             ;   shr r0, r0, r1                          }
+    {   add r11, r11, 1                         ;   ldw r10, sp[6]                          }
+        ldd r4, r5, sp[0]
+        ldd r6, r7, sp[1]
+        ldd r8, r9, sp[2]
+    {   sub r0, r0, r11                         ;   retsp NSTACKWORDS                       } 
+
+ASM_POSTAMBLE(FNAME_S16, NSTACKWORDS)
+
+
+
+
+#endif //!defined(XS3_MATH_NO_ASM)
+#endif //defined(__XS3A__)

@@ -40,7 +40,10 @@ headroom_t xs3_abs_vect_s32(
 #define len         r2
 #define tail        r3
 
-/////////////////////////////////////////////////////////////////
+
+
+
+
 
 ASM_PREAMBLE(FNAME_S16)
 FNAME_S16:
@@ -56,7 +59,12 @@ FNAME_S16:
     {                                           ;   bu .L_apply_op                          }
 #endif //XS3_MATH_VECTOR_TAIL_SUPPORT
 ASM_POSTAMBLE(FNAME_S16, NSTACKWORDS)
-/////////////////////////////////////////////////////////////////
+
+
+
+
+
+
 ASM_PREAMBLE(FNAME_S32)
 FNAME_S32:
 #if XS3_MATH_VECTOR_TAIL_SUPPORT
@@ -70,7 +78,10 @@ FNAME_S32:
     {                                           ;   bu .L_apply_op                          }
 #endif //XS3_MATH_VECTOR_TAIL_SUPPORT
 ASM_POSTAMBLE(FNAME_S32, NSTACKWORDS)
-/////////////////////////////////////////////////////////////////
+
+
+
+
 #undef a
 #undef b
 #undef len
@@ -131,7 +142,10 @@ ASM_PREAMBLE_LCL(apply_op);
 
 ASM_POSTAMBLE_LCL(apply_op);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
 
 #endif //!defined(XS3_MATH_NO_ASM)

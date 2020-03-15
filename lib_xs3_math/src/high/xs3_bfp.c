@@ -284,7 +284,7 @@ float bfp_sum_s16(
     const exponent_t a_exp = 0;
     const int sat = 0;
 
-    int16_t a = xs3_sum_s16(b->data, b->length, sat);
+    int32_t a = xs3_sum_s16(b->data, b->length);
 
     return pack_float_s16(a, a_exp);
 }
@@ -296,7 +296,7 @@ float bfp_sum_s32(
     const exponent_t a_exp = 0;
     const int sat = 0;
 
-    int32_t a = xs3_sum_s32(b->data, b->length, sat);
+    int32_t a = xs3_sum_s32(b->data, b->length);
 
     return pack_float_s32(a, a_exp);
 }

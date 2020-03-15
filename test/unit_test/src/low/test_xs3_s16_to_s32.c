@@ -22,7 +22,7 @@ static char msg_buff[200];
     }} while(0)
 
 
-#if !defined(DEBUG_ON) || (1)
+#if !defined(DEBUG_ON) || 0
 #undef DEBUG_ON
 #define DEBUG_ON    (1)
 #endif

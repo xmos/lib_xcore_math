@@ -54,7 +54,7 @@ FUNCTION_NAME:
 .L_vlmacc_consts_B:
 .byte 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01
 
-.L_loop_top:
+.L_loop_top: //All in 8-bit mode
 /**/    {   sub len, len, 1                         ;   vclrdr                                  } 
         {   ldc _16, 16                             ;   vldc b[0]                               }
         {   add b, b, _16                           ;   vlmacc constsA[0]                       }

@@ -7,9 +7,13 @@ int test_xs3_cls_array();
 int test_xs3_shl_vect();
 int test_xs3_add_vect();
 int test_xs3_sub_vect();
+int test_xs3_mul_vect();
+int test_xs3_scalar_mul_vect();
 
 int test_xs3_rect_vect();
 int test_xs3_abs_vect();
+
+int test_xs3_sum();
 
 int test_xs3_s32_to_s16();
 int test_xs3_s16_to_s32();

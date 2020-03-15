@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 #ifdef __xcore__
-#define WORD_ALIGNED __attribute__ ((aligned (4)))
+#define WORD_ALIGNED __attribute__((aligned (4)))
 #else
 #define WORD_ALIGNED
 #endif

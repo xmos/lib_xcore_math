@@ -13,7 +13,9 @@ extern "C" {
 
 /** Set all elements of an `int16_t` array to the specified value.
  * 
- * \note \li `data` must be word-aligned.
+ * \foperation{16, @f$data_k \leftarrow value\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * 
+ * \requires_word_alignment{data}
  * 
  * \param[out] data     Array to set
  * \param[in] value     Value to set
@@ -26,7 +28,9 @@ void xs3_set_array_s16(
 
 /** Set all elements of an `int32_t` array to the specified value.
  * 
- * \note \li `data` must be word-aligned.
+ * \foperation{32, @f$data_k \leftarrow value\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * 
+ * \requires_word_alignment{data}
  * 
  * \param[out] data     Array to set
  * \param[in]  value    Value to set
@@ -39,17 +43,19 @@ void xs3_set_array_s32(
 
 /** Set all elements of a `complex_s32_t` array to the specified value.
  * 
- * \note \li `data` must be word-aligned.
+ * \foperation{Complex&nbsp;32, @f$data_k \leftarrow real + i\cdot imag\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
- * \param[out] data         Array to set
- * \param[in]  real_part    Real part of value to set
- * \param[in]  imag_part    Imaginary part of value to set
- * \param[in]  length       Number of elements in `data`
+ * \requires_word_alignment{data}
+ * 
+ * \param[out] data     Array to set
+ * \param[in]  real     Real part of value to set
+ * \param[in]  imag     Imaginary part of value to set
+ * \param[in]  length   Number of elements in `data`
  */
 void xs3_set_array_complex_s32(
     complex_s32_t data[],
-    const int32_t real_part,
-    const int32_t imag_part,
+    const int32_t real,
+    const int32_t imag,
     const unsigned length);
 
 #ifdef __XC__
