@@ -20,8 +20,10 @@ int main(int argc, char** argv)
         // retval = test_xs3_scalar_mul_vect();
         // retval = test_xs3_rect_vect();
         // retval = test_xs3_abs_vect();
+        // retval = test_xs3_clip_vect();
 
-        retval = test_xs3_sum();
+        // retval = test_xs3_sum();
+        retval = test_xs3_dot();
         
         // retval = test_xs3_s32_to_s16();
         // retval = test_xs3_s16_to_s32();

@@ -13,256 +13,226 @@
 #include "unity.h"
 
 
+static unsigned seed = 2314567;
+static char msg_buff[200];
+
+#define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
+    if((EXPECTED)!=(ACTUAL)) {                                        \
+      sprintf(msg_buff, "(test vector @ line %u)", (LINE_NUM));       \
+      TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
+    }} while(0)
+
+
 #if !defined(DEBUG_ON) || 0
 #undef DEBUG_ON
 #define DEBUG_ON    (1)
 #endif
 
 
-#define MAX_LEN     68
-#define REPS        100
-static void test_xs3_clip_vect_s16()
+static void test_xs3_clip_vect_s16_basic()
 {
     PRINTF("%s...\n", __func__);
-    unsigned seed = 12312344;
-    
-    headroom_t hr;
-    int16_t A[MAX_LEN];
-    int16_t B[MAX_LEN];
 
-    struct {
-        struct { unsigned inplace; unsigned notinplace; } placeness;
-        struct { unsigned pos; unsigned neg; } shr;
-        struct { unsigned above; unsigned below;  unsigned within; } vals;
-        struct { unsigned small; unsigned medium; unsigned large;  } len;
-        struct {
-            struct { unsigned pos; unsigned neg; } lower;
-            struct { unsigned pos; unsigned neg; } upper;
-        } bound;
-    } count;
+    typedef struct {
+        int16_t b;
+        int b_shr;
+        int16_t lower;
+        int16_t upper;
+        int16_t expected;
+        unsigned line;
+    } test_case_t;
 
-    memset(&count, 0, sizeof(count));
+    test_case_t casses[] = {
+        //       b   b_shr      lower      upper      exp        line num
+        {   0x0000,     0,     -0x7FFF,    0x7FFF,    0x0000,       __LINE__},
+        {   0x0001,     0,     -0x7FFF,    0x7FFF,    0x0001,       __LINE__},
+        {   0x000A,     0,     -0x7FFF,    0x7FFF,    0x000A,       __LINE__},
+        {   0x0F00,     0,     -0x7FFF,    0x7FFF,    0x0F00,       __LINE__},
+        {  -0x0FFF,     0,     -0x7FFF,    0x7FFF,   -0x0FFF,       __LINE__},
+        {  -0x8000,     0,     -0x7FFF,    0x7FFF,   -0x7FFF,       __LINE__},
 
-    for(int v = 0; v < REPS; v++){
-
-        PRINTF("\trepetition %d..\n", v);
-
-        const unsigned len = pseudo_rand_uint32(&seed) % MAX_LEN;
-
-        int16_t upper_bound = pseudo_rand_int16(&seed);
-        int16_t lower_bound = pseudo_rand_int16(&seed);
-
-        unsigned min_shr = -xs3_cls_array_s16(B, len);
-
-        int16_t b_shr = min_shr + pseudo_rand_uint32(&seed) % 3;
-
-        if(upper_bound < lower_bound){
-            int16_t tmp = upper_bound;
-            upper_bound = lower_bound;
-            lower_bound = tmp;
-        }
-
+        {   0x0000,     2,     -0x7FFF,    0x7FFF,    0x0000,       __LINE__},
+        {   0x0002,     1,     -0x7FFF,    0x7FFF,    0x0001,       __LINE__},
+        {   0x0005,    -1,     -0x7FFF,    0x7FFF,    0x000A,       __LINE__},
+        {   0x0F00,     4,     -0x7FFF,    0x7FFF,    0x00F0,       __LINE__},
+        {  -0x0FFF,    -1,     -0x7FFF,    0x7FFF,   -0x1FFE,       __LINE__},
         
+        {   0x0000,     0,     -0x1000,    0x1000,    0x0000,       __LINE__},
+        {   0x0100,     0,     -0x1000,    0x1000,    0x0100,       __LINE__},
+        {   0x1100,     0,     -0x1000,    0x1000,    0x1000,       __LINE__},
+        {  -0x1100,     0,     -0x1000,    0x1000,   -0x1000,       __LINE__},
+        {   0x2300,     1,     -0x1000,    0x1000,    0x1000,       __LINE__},
+        {  -0x7800,     2,     -0x1000,    0x1000,   -0x1000,       __LINE__},
 
-        for(int i = 0; i < len; i++){
-            B[i] = pseudo_rand_int16(&seed);
+        {   0x0000,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {   0x0100,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {  -0x0100,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {   0x2100,     0,      0x1000,    0x2000,    0x2000,       __LINE__},
+        {  -0x2100,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {   0x7FFF,     0,      0x1000,    0x2000,    0x2000,       __LINE__},
+        {  -0x7FFF,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {   0x7000,     0,      0x1000,    0x2000,    0x2000,       __LINE__},
+        {  -0x7000,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {   0x7000,     1,      0x1000,    0x2000,    0x2000,       __LINE__},
+        {  -0x7000,     1,      0x1000,    0x2000,    0x1000,       __LINE__},
 
-            if(B[i] >> b_shr > upper_bound)
-                count.vals.above++;
-            else if(B[i] >> b_shr < lower_bound)
-                count.vals.below++;
-            else
-                count.vals.within++;
-        }
+        {   0x0000,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {  -0x0100,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {   0x0100,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {  -0x2100,     0,     -0x2000,   -0x1000,   -0x2000,       __LINE__},
+        {   0x2100,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {  -0x7FFF,     0,     -0x2000,   -0x1000,   -0x2000,       __LINE__},
+        {   0x7FFF,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {  -0x7000,     0,     -0x2000,   -0x1000,   -0x2000,       __LINE__},
+        {   0x7000,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {  -0x7000,     1,     -0x2000,   -0x1000,   -0x2000,       __LINE__},
+        {   0x7000,     1,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+    };
 
+    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
 
-        if(lower_bound < 0)     count.bound.lower.neg++;
-        else                    count.bound.lower.pos++;
-        if(upper_bound < 0)     count.bound.upper.neg++;
-        else                    count.bound.upper.pos++;
-        if(len < 16)                count.len.small++;
-        else if(len>=16&&len<48)    count.len.medium++;
-        else                        count.len.large++;
-        if(b_shr < 0)   count.shr.pos++;
-        else            count.shr.neg++;
+    const unsigned start_case = 0;
 
-        if( pseudo_rand_uint32(&seed) % 2){
-            count.placeness.notinplace++;
-            //Not in-place
+    unsigned lengths[] = {1, 4, 16, 32, 40 };
+    for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
+        unsigned len = lengths[l];
+        PRINTF("\tlength %u\n", len);
 
-            memset(A, 0xCC, sizeof(A));
-            hr = xs3_clip_vect_s16(A, B, len, lower_bound, upper_bound, b_shr);
+        for(int v = start_case; v < N_cases; v++){
+            PRINTF("\t\ttest vector %d..\n", v);
+            
+            test_case_t* casse = &casses[v];
+            
+            headroom_t hr;
+            int16_t A[40];
+            int16_t B[40];
 
             for(int i = 0; i < len; i++){
-                int16_t bbb = B[i] >> b_shr;
-                int16_t exp = bbb <= lower_bound? lower_bound
-                            : bbb >= upper_bound? upper_bound
-                            : bbb; 
-
-                TEST_ASSERT_EQUAL(exp, A[i]);
+                A[i] = 0xCC;
+                B[i] = casse->b;
             }
-            for(int i = len; i < MAX_LEN; i++)
-                TEST_ASSERT_EQUAL((int16_t)0xCCCC, A[i]);
 
-        } else {
-            count.placeness.inplace++;
-            //In-place
+
+            hr = xs3_clip_vect_s16(A, B, len, casse->lower, casse->upper, casse->b_shr);
+
+            for(int i = 0; i < len; i++){
+                TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(A, len), hr, casse->line);
+            }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_clip_vect_s16(A, A, len, lower_bound, upper_bound, b_shr);
+            hr = xs3_clip_vect_s16(A, A, len, casse->lower, casse->upper, casse->b_shr);
 
-            for(int i = 0; i < len; i++)
-            {
-                int16_t bbb = B[i] >> b_shr;
-                int16_t exp = bbb <= lower_bound? lower_bound
-                            : bbb >= upper_bound? upper_bound
-                            : bbb; 
-                TEST_ASSERT_EQUAL(exp, A[i]);
+            for(int i = 0; i < len; i++){
+                TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(A, len), hr, casse->line);
             }
         }
-
-
     }
-
-    TEST_ASSERT_GREATER_THAN(20, count.placeness.inplace);
-    TEST_ASSERT_GREATER_THAN(20, count.placeness.notinplace);
-    TEST_ASSERT_GREATER_THAN(20, count.shr.pos);
-    TEST_ASSERT_GREATER_THAN(20, count.shr.neg);
-    TEST_ASSERT_GREATER_THAN(20, count.len.small);
-    TEST_ASSERT_GREATER_THAN(20, count.len.medium);
-    TEST_ASSERT_GREATER_THAN(20, count.len.large);
-    TEST_ASSERT_GREATER_THAN(20, count.bound.lower.neg);
-    TEST_ASSERT_GREATER_THAN(20, count.bound.lower.pos);
-    TEST_ASSERT_GREATER_THAN(20, count.bound.upper.neg);
-    TEST_ASSERT_GREATER_THAN(20, count.bound.upper.pos);
-    TEST_ASSERT_GREATER_THAN(1000, count.vals.above);
-    TEST_ASSERT_GREATER_THAN(1000, count.vals.below);
-    TEST_ASSERT_GREATER_THAN(1000, count.vals.within);
 }
 
 
 
-
-
-
-
-static void test_xs3_clip_vect_s32()
+static void test_xs3_clip_vect_s32_basic()
 {
     PRINTF("%s...\n", __func__);
-    unsigned seed = 12312344;
-    
-    headroom_t hr;
-    int32_t A[MAX_LEN];
-    int32_t B[MAX_LEN];
 
-    struct {
-        struct { unsigned inplace; unsigned notinplace; } placeness;
-        struct { unsigned pos; unsigned neg; } shr;
-        struct { unsigned above; unsigned below;  unsigned within; } vals;
-        struct { unsigned small; unsigned medium; unsigned large;  } len;
-        struct {
-            struct { unsigned pos; unsigned neg; } lower;
-            struct { unsigned pos; unsigned neg; } upper;
-        } bound;
-    } count;
+    typedef struct {
+        int32_t b;
+        int b_shr;
+        int32_t lower;
+        int32_t upper;
+        int32_t expected;
+        unsigned line;
+    } test_case_t;
 
-    memset(&count, 0, sizeof(count));
+    test_case_t casses[] = {
+        //       b   b_shr      lower      upper      exp        line num
+        {   0x0000,     0,     -0x7FFF,    0x7FFF,    0x0000,       __LINE__},
+        {   0x0001,     0,     -0x7FFF,    0x7FFF,    0x0001,       __LINE__},
+        {   0x000A,     0,     -0x7FFF,    0x7FFF,    0x000A,       __LINE__},
+        {   0x0F00,     0,     -0x7FFF,    0x7FFF,    0x0F00,       __LINE__},
+        {  -0x0FFF,     0,     -0x7FFF,    0x7FFF,   -0x0FFF,       __LINE__},
+        {  -0x8000,     0,     -0x7FFF,    0x7FFF,   -0x7FFF,       __LINE__},
 
-    for(int v = 0; v < REPS; v++){
-
-        PRINTF("\trepetition %d..\n", v);
-
-        const unsigned len = pseudo_rand_uint32(&seed) % MAX_LEN;
-
-        int32_t upper_bound = pseudo_rand_int32(&seed);
-        int32_t lower_bound = pseudo_rand_int32(&seed);
-
-        unsigned min_shr = -xs3_cls_array_s32(B, len);
-
-        int32_t b_shr = min_shr + pseudo_rand_uint32(&seed) % 3;
-
-        if(upper_bound < lower_bound){
-            int32_t tmp = upper_bound;
-            upper_bound = lower_bound;
-            lower_bound = tmp;
-        }
-
+        {   0x0000,     2,     -0x7FFF,    0x7FFF,    0x0000,       __LINE__},
+        {   0x0002,     1,     -0x7FFF,    0x7FFF,    0x0001,       __LINE__},
+        {   0x0005,    -1,     -0x7FFF,    0x7FFF,    0x000A,       __LINE__},
+        {   0x0F00,     4,     -0x7FFF,    0x7FFF,    0x00F0,       __LINE__},
+        {  -0x0FFF,    -1,     -0x7FFF,    0x7FFF,   -0x1FFE,       __LINE__},
         
+        {   0x0000,     0,     -0x1000,    0x1000,    0x0000,       __LINE__},
+        {   0x0100,     0,     -0x1000,    0x1000,    0x0100,       __LINE__},
+        {   0x1100,     0,     -0x1000,    0x1000,    0x1000,       __LINE__},
+        {  -0x1100,     0,     -0x1000,    0x1000,   -0x1000,       __LINE__},
+        {   0x2300,     1,     -0x1000,    0x1000,    0x1000,       __LINE__},
+        {  -0x7800,     2,     -0x1000,    0x1000,   -0x1000,       __LINE__},
 
-        for(int i = 0; i < len; i++){
-            B[i] = pseudo_rand_int32(&seed);
+        {   0x0000,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {   0x0100,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {  -0x0100,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {   0x2100,     0,      0x1000,    0x2000,    0x2000,       __LINE__},
+        {  -0x2100,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {   0x7FFF,     0,      0x1000,    0x2000,    0x2000,       __LINE__},
+        {  -0x7FFF,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {   0x7000,     0,      0x1000,    0x2000,    0x2000,       __LINE__},
+        {  -0x7000,     0,      0x1000,    0x2000,    0x1000,       __LINE__},
+        {   0x7000,     1,      0x1000,    0x2000,    0x2000,       __LINE__},
+        {  -0x7000,     1,      0x1000,    0x2000,    0x1000,       __LINE__},
 
-            if(B[i] >> b_shr > upper_bound)
-                count.vals.above++;
-            else if(B[i] >> b_shr < lower_bound)
-                count.vals.below++;
-            else
-                count.vals.within++;
-        }
+        {   0x0000,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {  -0x0100,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {   0x0100,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {  -0x2100,     0,     -0x2000,   -0x1000,   -0x2000,       __LINE__},
+        {   0x2100,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {  -0x7FFF,     0,     -0x2000,   -0x1000,   -0x2000,       __LINE__},
+        {   0x7FFF,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {  -0x7000,     0,     -0x2000,   -0x1000,   -0x2000,       __LINE__},
+        {   0x7000,     0,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+        {  -0x7000,     1,     -0x2000,   -0x1000,   -0x2000,       __LINE__},
+        {   0x7000,     1,     -0x2000,   -0x1000,   -0x1000,       __LINE__},
+    };
 
+    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
 
-        if(lower_bound < 0)     count.bound.lower.neg++;
-        else                    count.bound.lower.pos++;
-        if(upper_bound < 0)     count.bound.upper.neg++;
-        else                    count.bound.upper.pos++;
-        if(len < 8)                count.len.small++;
-        else if(len>=8&&len<48)    count.len.medium++;
-        else                       count.len.large++;
-        if(b_shr < 0)   count.shr.pos++;
-        else            count.shr.neg++;
+    const unsigned start_case = 0;
 
-        if( pseudo_rand_uint32(&seed) % 2){
-            count.placeness.notinplace++;
-            //Not in-place
+    unsigned lengths[] = {1, 4, 16, 32, 40 };
+    for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
+        unsigned len = lengths[l];
+        PRINTF("\tlength %u\n", len);
 
-            memset(A, 0xCC, sizeof(A));
-            hr = xs3_clip_vect_s32(A, B, len, lower_bound, upper_bound, b_shr);
+        for(int v = start_case; v < N_cases; v++){
+            PRINTF("\t\ttest vector %d..\n", v);
+            
+            test_case_t* casse = &casses[v];
+            
+            headroom_t hr;
+            int32_t A[40];
+            int32_t B[40];
 
             for(int i = 0; i < len; i++){
-                int32_t bbb = B[i] >> b_shr;
-                int32_t exp = bbb <= lower_bound? lower_bound
-                            : bbb >= upper_bound? upper_bound
-                            : bbb; 
-
-                TEST_ASSERT_EQUAL(exp, A[i]);
+                A[i] = 0xCCCCCC;
+                B[i] = casse->b;
             }
-            for(int i = len; i < MAX_LEN; i++)
-                TEST_ASSERT_EQUAL((int32_t)0xCCCCCCCC, A[i]);
 
-        } else {
-            count.placeness.inplace++;
-            //In-place
+
+            hr = xs3_clip_vect_s32(A, B, len, casse->lower, casse->upper, casse->b_shr);
+
+            for(int i = 0; i < len; i++){
+                TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(A, len), hr, casse->line);
+            }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_clip_vect_s32(A, A, len, lower_bound, upper_bound, b_shr);
+            hr = xs3_clip_vect_s32(A, A, len, casse->lower, casse->upper, casse->b_shr);
 
-            for(int i = 0; i < len; i++)
-            {
-                int32_t bbb = B[i] >> b_shr;
-                int32_t exp = bbb <= lower_bound? lower_bound
-                            : bbb >= upper_bound? upper_bound
-                            : bbb; 
-                TEST_ASSERT_EQUAL(exp, A[i]);
+            for(int i = 0; i < len; i++){
+                TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(A, len), hr, casse->line);
             }
         }
-
-
     }
-
-    TEST_ASSERT_GREATER_THAN(20, count.placeness.inplace);
-    TEST_ASSERT_GREATER_THAN(20, count.placeness.notinplace);
-    TEST_ASSERT_GREATER_THAN(20, count.shr.pos);
-    TEST_ASSERT_GREATER_THAN(20, count.shr.neg);
-    TEST_ASSERT_GREATER_THAN(20, count.len.small);
-    TEST_ASSERT_GREATER_THAN(20, count.len.medium);
-    TEST_ASSERT_GREATER_THAN(20, count.len.large);
-    TEST_ASSERT_GREATER_THAN(20, count.bound.lower.neg);
-    TEST_ASSERT_GREATER_THAN(20, count.bound.lower.pos);
-    TEST_ASSERT_GREATER_THAN(20, count.bound.upper.neg);
-    TEST_ASSERT_GREATER_THAN(20, count.bound.upper.pos);
-    TEST_ASSERT_GREATER_THAN(1000, count.vals.above);
-    TEST_ASSERT_GREATER_THAN(1000, count.vals.below);
-    TEST_ASSERT_GREATER_THAN(1000, count.vals.within);
 }
 
 
@@ -273,9 +243,9 @@ int test_xs3_clip_vect()
     
     UnityBegin(__FILE__);
 
-    RUN_TEST(test_xs3_clip_vect_s16);
+    RUN_TEST(test_xs3_clip_vect_s16_basic);
 
-    RUN_TEST(test_xs3_clip_vect_s32);
+    RUN_TEST(test_xs3_clip_vect_s32_basic);
     
     retval = UnityEnd();
     

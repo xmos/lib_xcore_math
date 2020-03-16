@@ -8,7 +8,7 @@
 
 
 WEAK_FUNC
-headroom_t xs3_add_vect_s16__(
+headroom_t xs3_add_vect_s16(
     int16_t* a,
     const int16_t* b,
     const int16_t* c,
@@ -34,7 +34,7 @@ headroom_t xs3_add_vect_s16__(
 
 
 WEAK_FUNC
-headroom_t xs3_add_vect_s32__(
+headroom_t xs3_add_vect_s32(
     int32_t* a,
     const int32_t* b,
     const int32_t* c,

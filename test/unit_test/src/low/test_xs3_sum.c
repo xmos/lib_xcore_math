@@ -22,7 +22,7 @@ static char msg_buff[200];
       TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
     }} while(0)
 
-#if DEBUG_ON || 1
+#if DEBUG_ON || 0
 #undef DEBUG_ON
 #define DEBUG_ON    (1)
 #endif
