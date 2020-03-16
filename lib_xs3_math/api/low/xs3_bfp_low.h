@@ -495,7 +495,35 @@ int32_t xs3_sum_s32(
     const unsigned length);
 
 /**
+ * \brief Compute the dot product between two `int16_t` vectors.
  * 
+ * Elements of the vector `b` are right-shifted `b_shr` bits and multiplied by the corresponding 
+ * elements of vector `c` right-shifted `c_shr` bits. The element-wise products are added together
+ * and the sum is right-shifted `sat` bits to produce the final 16-bit result.
+ * 
+ * Either `b_shr` and `c_shr` (or both) may be negative, in which case left-shifting occurs instead of right-shifting.
+ * The shifts on the elements of `b` and `c` are saturating (if negative) and truncate rather than round (if positive).
+ * Negative values for `sat` are treated as zeros. The final shift is rounding, and the result saturates to 16-bit
+ * bounds.
+ * 
+ * The accumulator into which the element-wise products are accumulated is 32 bits wide and saturates to 32-bit
+ * bounds. To avoid saturation, choose sufficiently large values for `b_shr` and `c_shr` such that saturation
+ * of the accumulator is not possible.
+ * 
+ * All shifts are arithmetic.
+ * 
+ * \foperation{16, @f$ \left(\sum_\{k=0\}^\{length-1\} \{\left(b_k \cdot 2^\{-b\_shr\}\right)\times\left(c_k\cdot 2^\{-c\_shr\}\right)\}\right) \cdot 2^\{-sat\}    @f$ }
+ * 
+ * \requires_word_alignment{b,c}
+ * 
+ * \param[in] b         First input vector
+ * \param[in] c         Second input vector
+ * \param[in] length    Number of elements in vectors `b` and `c`
+ * \param[in] b_shr     Right-shift applied to elements of `b`
+ * \param[in] c_shr     Right-shift applied to elements of `c`
+ * \param[in] sat       Right-shift applied to final sum
+ * 
+ * \return The dot product of `b` and `c`
  */
 int16_t xs3_dot_s16(
     const int16_t* b,
@@ -506,7 +534,37 @@ int16_t xs3_dot_s16(
     const int sat);
 
 /**
+ * \brief Compute the dot product between two `int32_t` vectors.
  * 
+ * Elements of the vector `b` are right-shifted `b_shr` bits and multiplied by the corresponding 
+ * elements of vector `c` right-shifted `c_shr` bits. The element-wise products are right-shifted
+ * an additional 30 bits and are added together into a 40-bit accumulator. The 40-bit sum is right-shifted
+ * `sat` bits to produce the final 32-bit result.
+ * 
+ * Either `b_shr` and `c_shr` (or both) may be negative (which may be useful if the corresponding vector has 
+ * excessive headroom), in which case left-shifting occurs instead of right-shifting. The shifts on the 
+ * elements of `b` and `c` are saturating (if negative) and truncate rather than round (if positive). Negative 
+ * values for `sat` are treated as zeros. The final shift is rounding, and the result saturates to 32-bit
+ * bounds.
+ * 
+ * The accumulator into which the element-wise products are accumulated is 40 bits wide and saturates to 40-bit
+ * bounds. To avoid saturation, choose sufficiently large values for `b_shr` and `c_shr` such that saturation
+ * of the accumulator is not possible.
+ * 
+ * All shifts are arithmetic.
+ * 
+ * \foperation{32, @f$ \left(\sum_\{k=0\}^\{length-1\} \{\left(\left(b_k \cdot 2^\{-b\_shr\}\right)\times\left(c_k\cdot 2^\{-c\_shr\}\right)\right)\cdot 2^\{-30\}\}\right) \cdot 2^\{-sat\}    @f$ }
+ * 
+ * \requires_word_alignment{b,c}
+ * 
+ * \param[in] b         First input vector
+ * \param[in] c         Second input vector
+ * \param[in] length    Number of elements in vectors `b` and `c`
+ * \param[in] b_shr     Right-shift applied to elements of `b`
+ * \param[in] c_shr     Right-shift applied to elements of `c`
+ * \param[in] sat       Right-shift applied to final sum
+ * 
+ * \return The dot product of `b` and `c`
  */
 int32_t xs3_dot_s32(
     const int32_t* b,

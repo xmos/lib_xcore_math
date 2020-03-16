@@ -21,7 +21,7 @@ static int16_t mul_s16(int16_t b, int16_t c, int b_shr, int c_shr)
     cp = ( (c_shr > 0) && (c < 0) && (-(1<<c_shr)) < c)? -1 : cp;
     assert(c >= 0 || cp < 0);
 
-    int32_t a = (bp * cp + (1<<13)) >> (14);
+    int32_t a = bp * cp;
 
     a = (a >= VPU_INT16_MAX)? VPU_INT16_MAX : (a <= VPU_INT16_MIN)? VPU_INT16_MIN : a;
 
@@ -67,7 +67,7 @@ int16_t xs3_dot_s16(
         acc += mul_s16(b[k], c[k], b_shr, c_shr);
     }
 
-    return SAT(16)(acc);
+    return ASHR(16)(acc, sat);
 }
 
 
@@ -85,5 +85,5 @@ int32_t xs3_dot_s32(
         acc += mul_s32(b[k], c[k], b_shr, c_shr);
     }
 
-    return SAT(32)(acc);
+    return ASHR(32)(acc, sat);
 }
