@@ -147,7 +147,7 @@ static void test_xs3_scalar_mul_vect_s16_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
@@ -155,7 +155,7 @@ static void test_xs3_scalar_mul_vect_s16_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
             }
         }
     }
@@ -163,7 +163,7 @@ static void test_xs3_scalar_mul_vect_s16_basic()
 
 
 #define MAX_LEN     100
-#define REPS        50
+#define REPS        IF_QUICK_TEST(10, 100)
 static void test_xs3_scalar_mul_vect_s16_random()
 {
     PRINTF("%s...\n", __func__);
@@ -198,7 +198,7 @@ static void test_xs3_scalar_mul_vect_s16_random()
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_cls_array_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
         hr = xs3_scalar_mul_vect_s16(A, A, len, alpha, b_shr);
@@ -208,7 +208,7 @@ static void test_xs3_scalar_mul_vect_s16_random()
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_cls_array_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
     }
 }
 #undef MAX_LEN
@@ -291,7 +291,7 @@ static void test_xs3_scalar_mul_vect_s32_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
@@ -299,7 +299,7 @@ static void test_xs3_scalar_mul_vect_s32_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
             }
         }
     }
@@ -310,7 +310,7 @@ static void test_xs3_scalar_mul_vect_s32_basic()
 
 
 #define MAX_LEN     100
-#define REPS        50
+#define REPS        IF_QUICK_TEST(10, 100)
 static void test_xs3_scalar_mul_vect_s32_random()
 {
     PRINTF("%s...\n", __func__);
@@ -345,7 +345,7 @@ static void test_xs3_scalar_mul_vect_s32_random()
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, alpha, (unsigned)A[i], (unsigned)B[i],  (unsigned)alpha);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_cls_array_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
         hr = xs3_scalar_mul_vect_s32(A, A, len, alpha, b_shr);
@@ -355,7 +355,7 @@ static void test_xs3_scalar_mul_vect_s32_random()
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, alpha, (unsigned)A[i], (unsigned)B[i],  (unsigned)alpha);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_cls_array_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
     }
 }
 #undef MAX_LEN

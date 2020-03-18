@@ -10,17 +10,17 @@
 
 
 
-headroom_t xs3_cls_complex_s16(
+headroom_t xs3_headroom_complex_s16(
     const complex_s16_t a)
 {
-    return CLS_C16(a);
+    return HR_C16(a);
 }
 
 
-headroom_t xs3_cls_complex_s32(
+headroom_t xs3_headroom_complex_s32(
     const complex_s32_t a)
 {
-    return CLS_C32(a);
+    return HR_C32(a);
 }
 
 

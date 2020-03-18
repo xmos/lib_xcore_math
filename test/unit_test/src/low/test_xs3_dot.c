@@ -203,8 +203,6 @@ static void test_xs3_dot_s32_basic()
 
 
 
-#define RUN(TEST) do{UnityBegin(__FILE__); RUN_TEST(TEST); retval = UnityEnd(); printf("\n\n");}while(0);
-
 
 int test_xs3_dot()
 {

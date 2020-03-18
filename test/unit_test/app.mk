@@ -58,6 +58,10 @@ BUILD_STATIC_LIBRARIES := 0
 c_FLAGS += -DUNITY_USE_COMMAND_LINE_ARGS
 LDFLAGS += -fcmdline-buffer-bytes=200
 
+ifdef QUICK_TEST
+c_FLAGS += -DQUICK_TEST=1
+endif
+
 ######
 ### [required]
 ### Default make target. Use this for a project description?

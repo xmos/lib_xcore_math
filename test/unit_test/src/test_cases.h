@@ -2,8 +2,15 @@
 #ifndef TEST_CASES_H_
 #define TEST_CASES_H_
 
-int test_xs3_set_array();
-int test_xs3_cls_array();
+/*  Basic   */
+
+int test_CLS_funcs();
+int test_HR_funcs();
+
+/*  Low-level API   */
+
+int test_xs3_set_vect();
+int test_xs3_headroom_vect();
 int test_xs3_shl_vect();
 int test_xs3_add_vect();
 int test_xs3_sub_vect();
@@ -20,7 +27,13 @@ int test_xs3_dot();
 int test_xs3_s32_to_s16();
 int test_xs3_s16_to_s32();
 
-int test_xs3_bfp_init();
+/*  High-level API  */
+
+int test_bfp_init_vect();
+int test_bfp_set_vect();
+int test_bfp_headroom_vect();
+int test_bfp_ldexp_vect();
+int test_bfp_add_vect();
 
 
 #endif //TEST_CASES_H_

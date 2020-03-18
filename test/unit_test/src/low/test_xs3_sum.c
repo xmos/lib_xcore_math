@@ -80,7 +80,7 @@ static void test_xs3_sum_s16_basic()
 
 
 #define MAX_LEN     200
-#define REPS        100
+#define REPS        IF_QUICK_TEST(10, 100)
 static void test_xs3_sum_s16_random()
 {
     PRINTF("%s...\n", __func__);
@@ -168,7 +168,7 @@ static void test_xs3_sum_s32_basic()
 
 
 #define MAX_LEN     200
-#define REPS        100
+#define REPS        IF_QUICK_TEST(10, 100)
 static void test_xs3_sum_s32_random()
 {
     PRINTF("%s...\n", __func__);

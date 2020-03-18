@@ -21,7 +21,7 @@ extern "C" {
  * \param[in] value     Value to set
  * \param[in] length    Number of elements in `data`
  */
-void xs3_set_array_s16(
+void xs3_set_vect_s16(
     int16_t data[],
     const int16_t value,
     const unsigned length);
@@ -36,7 +36,7 @@ void xs3_set_array_s16(
  * \param[in]  value    Value to set
  * \param[in]  length   Number of elements in `data`
  */
-void xs3_set_array_s32(
+void xs3_set_vect_s32(
     int32_t data[],
     const int32_t value,
     const unsigned length);
@@ -52,7 +52,7 @@ void xs3_set_array_s32(
  * \param[in]  imag     Imaginary part of value to set
  * \param[in]  length   Number of elements in `data`
  */
-void xs3_set_array_complex_s32(
+void xs3_set_vect_complex_s32(
     complex_s32_t data[],
     const int32_t real,
     const int32_t imag,

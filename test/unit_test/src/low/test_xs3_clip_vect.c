@@ -117,7 +117,7 @@ static void test_xs3_clip_vect_s16_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
@@ -125,7 +125,7 @@ static void test_xs3_clip_vect_s16_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
             }
         }
     }
@@ -221,7 +221,7 @@ static void test_xs3_clip_vect_s32_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
@@ -229,7 +229,7 @@ static void test_xs3_clip_vect_s32_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
             }
         }
     }

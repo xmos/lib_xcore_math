@@ -20,8 +20,8 @@ headroom_t xs3_mul_vect_complex_s32(
     const complex_s32_t* b,
     const int32_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -35,8 +35,8 @@ headroom_t xs3_complex_mul_vect_complex_s16(
     const int16_t* c_real,
     const int16_t* c_imag,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -47,8 +47,8 @@ headroom_t xs3_complex_mul_vect_complex_s32(
     const complex_s32_t* b,
     const complex_s32_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -66,8 +66,8 @@ headroom_t xs3_complex_conj_mul_vect_complex_s16(
     const int16_t* c_real,
     const int16_t* c_imag,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -78,8 +78,8 @@ headroom_t xs3_complex_conj_mul_vect_complex_s32(
     const complex_s32_t* b,
     const complex_s32_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -95,7 +95,7 @@ headroom_t xs3_complex_scal_mul_vect_complex_s16(
     const int16_t c_real,
     const int16_t c_imag,
     const unsigned length,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 
 /**
@@ -109,7 +109,7 @@ headroom_t xs3_complex_scal_mul_vect_complex_s32(
     const int32_t c_real,
     const int32_t c_imag,
     const unsigned length,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 
 /**
@@ -129,7 +129,7 @@ headroom_t xs3_complex_s32_to_complex_s16(
     int16_t* a_imag,
     const complex_s32_t* b,
     const unsigned length,
-    const int sat);
+    const right_shift_t sat);
 
 
 
@@ -141,7 +141,7 @@ headroom_t xs3_squared_mag_vect_complex_s16(
     const int16_t* b_real,
     const int16_t* b_imag,
     const unsigned length,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 /**
  * Returns headroom
@@ -150,7 +150,7 @@ headroom_t xs3_squared_mag_vect_complex_s32(
     int32_t* a,
     const complex_s32_t* b,
     const unsigned length,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 
 /**
@@ -161,7 +161,7 @@ headroom_t xs3_mag_vect_complex_s16(
     const int16_t* b_real,
     const int16_t* b_imag,
     const unsigned length,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 /**
  * Returns headroom
@@ -170,7 +170,7 @@ headroom_t xs3_mag_vect_complex_s32(
     int32_t* a,
     const complex_s32_t* b,
     const unsigned length,
-    const int b_shr);
+    const right_shift_t b_shr);
 
     
 /**
@@ -182,7 +182,7 @@ void xs3_sum_complex_s16(
     const int16_t* b_real,
     const int16_t* b_imag,
     const unsigned length,
-    const int sat);
+    const right_shift_t sat);
 
 
 /**
@@ -193,7 +193,7 @@ void xs3_sum_complex_s32(
     int32_t* imag,
     const complex_s32_t* b,
     const unsigned length,
-    const int sat);
+    const right_shift_t sat);
 
 
 #ifdef __XC__

@@ -3,6 +3,7 @@
 #define XS3_MATH_H_
 
 #include "xs3_math_conf.h"
+
 #include "xs3_math_types.h"
 #include "high/xs3_math_util.h"
 #include "high/xs3_bfp_init.h"

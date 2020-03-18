@@ -5,7 +5,7 @@ PLATFORM ?= xcore
 include ./etc/platform/$(strip $(PLATFORM)).mk
 include ./etc/common.mk
 
-help: app_help; @echo > NUL
+build: 
 
 #######################################################
 # Variables .mk files probably shouldn't touch
@@ -353,7 +353,8 @@ executable: $(APP_EXE_FILE)
 
 .PHONY: help all check_required_libs build clean run FORCE MSG_PLATFORM MSG_DEPENDENCIES app_help
 
-all: build; @echo > NUL
+all: docs build
+	$(info )
 
 MSG_PLATFORM:
 	$(info Building for $(PLATFORM_NAME))

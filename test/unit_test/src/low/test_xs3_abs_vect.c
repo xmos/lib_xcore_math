@@ -28,7 +28,7 @@ static char msg_buff[200];
 
 
 #define MAX_LEN     68
-#define REPS        50
+#define REPS        IF_QUICK_TEST(10, 50)
 static void test_xs3_abs_vect_s16()
 {
     PRINTF("%s...\n", __func__);
@@ -82,7 +82,7 @@ static void test_xs3_abs_vect_s16()
 
 
 #define MAX_LEN     68
-#define REPS        50
+#define REPS        IF_QUICK_TEST(10, 50)
 static void test_xs3_abs_vect_s32()
 {
     PRINTF("%s...\n", __func__);

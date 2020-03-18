@@ -82,18 +82,18 @@ static void test_xs3_shl_vect_s16_basic()
         headroom_t hr = xs3_shl_vect_s16(A, B, 1, casse->shl);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(A, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, 1), hr, casse->line);
 
         hr = xs3_shl_vect_s16(B, B, 1, casse->shl);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, B[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(B, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(B, 1), hr, casse->line);
     }
 }
 
 
 #define LEN     68
-#define REPS    100
+#define REPS        IF_QUICK_TEST(10, 100)
 static void test_xs3_shl_vect_s16_random()
 {
     PRINTF("%s...\n", __func__);
@@ -143,7 +143,7 @@ static void test_xs3_shl_vect_s16_random()
                 TEST_ASSERT_EQUAL_MESSAGE((int16_t)exp, A[i], msg_buff);
             }
 
-            TEST_ASSERT_EQUAL(xs3_cls_array_s16(A, LEN), hr);
+            TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, LEN), hr);
         }
         
     }
@@ -208,12 +208,12 @@ static void test_xs3_shl_vect_s32_basic()
         headroom_t hr = xs3_shl_vect_s32(A, B, 1, casse->shl);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(A, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, 1), hr, casse->line);
 
         hr = xs3_shl_vect_s32(B, B, 1, casse->shl);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, B[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(B, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(B, 1), hr, casse->line);
     }
 }
 
@@ -222,7 +222,7 @@ static void test_xs3_shl_vect_s32_basic()
 
 
 #define LEN     68
-#define REPS    100
+#define REPS        IF_QUICK_TEST(10, 100)
 static void test_xs3_shl_vect_s32_random()
 {
     PRINTF("%s...\n", __func__);
@@ -272,7 +272,7 @@ static void test_xs3_shl_vect_s32_random()
                 TEST_ASSERT_EQUAL_MESSAGE((int32_t)exp, A[i], msg_buff);
             }
 
-            TEST_ASSERT_EQUAL(xs3_cls_array_s32(A, LEN), hr);
+            TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, LEN), hr);
         }
     }
 }

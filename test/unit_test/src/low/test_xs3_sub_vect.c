@@ -150,7 +150,7 @@ static void test_xs3_sub_vect_s16_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
@@ -158,7 +158,7 @@ static void test_xs3_sub_vect_s16_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
             }
 
             memcpy(A, C, sizeof(A));
@@ -166,7 +166,7 @@ static void test_xs3_sub_vect_s16_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
             }
 
         }
@@ -175,7 +175,7 @@ static void test_xs3_sub_vect_s16_basic()
 
 
 #define MAX_LEN     100
-#define REPS        50
+#define REPS        IF_QUICK_TEST(10, 100)
 static void test_xs3_sub_vect_s16_random()
 {
     PRINTF("%s...\n", __func__);
@@ -185,7 +185,7 @@ static void test_xs3_sub_vect_s16_random()
     int16_t A[MAX_LEN];
     int16_t B[MAX_LEN];
     int16_t C[MAX_LEN];
-
+    
     for(int v = 0; v < REPS; v++){
 
         PRINTF("\trepetition %d..\n", v);
@@ -210,7 +210,7 @@ static void test_xs3_sub_vect_s16_random()
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_cls_array_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
         hr = xs3_sub_vect_s16(A, A, C, len, b_shr, c_shr);
@@ -220,7 +220,7 @@ static void test_xs3_sub_vect_s16_random()
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i],  (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_cls_array_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
         
         memcpy(A, C, sizeof(A[0])*len);
         hr = xs3_sub_vect_s16(A, B, A, len, b_shr, c_shr);
@@ -230,7 +230,7 @@ static void test_xs3_sub_vect_s16_random()
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i],  (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_cls_array_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
         
     }
 }
@@ -314,7 +314,7 @@ static void test_xs3_sub_vect_s32_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
@@ -322,7 +322,7 @@ static void test_xs3_sub_vect_s32_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
             }
 
             memcpy(A, C, sizeof(A));
@@ -330,7 +330,7 @@ static void test_xs3_sub_vect_s32_basic()
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_cls_array_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
             }
         }
     }
@@ -341,7 +341,7 @@ static void test_xs3_sub_vect_s32_basic()
 
 
 #define MAX_LEN     100
-#define REPS        50
+#define REPS        IF_QUICK_TEST(10, 100)
 static void test_xs3_sub_vect_s32_random()
 {
     PRINTF("%s...\n", __func__);
@@ -376,7 +376,7 @@ static void test_xs3_sub_vect_s32_random()
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i], (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_cls_array_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
         hr = xs3_sub_vect_s32(A, A, C, len, b_shr, c_shr);
@@ -386,7 +386,7 @@ static void test_xs3_sub_vect_s32_random()
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_cls_array_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
         
         memcpy(A, C, sizeof(A[0])*len);
         hr = xs3_sub_vect_s32(A, B, A, len, b_shr, c_shr);
@@ -396,7 +396,7 @@ static void test_xs3_sub_vect_s32_random()
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_cls_array_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
         
     }
 }

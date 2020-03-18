@@ -5,6 +5,8 @@
 
 #include <stdint.h>
 
+#include "xs3_math.h"
+
 #ifdef __xcore__
 #define WORD_ALIGNED __attribute__((aligned (4)))
 #else
@@ -14,6 +16,12 @@
 #ifndef DEBUG_ON
 #define DEBUG_ON    (0)
 #endif
+
+#ifndef QUICK_TEST
+#define QUICK_TEST  (1)
+#endif
+
+#define IF_QUICK_TEST(X, Y)  ((QUICK_TEST)? X : Y)
 
 #define PRINTF(...)     do{if (DEBUG_ON) {printf(__VA_ARGS__);}} while(0)
 
@@ -31,5 +39,75 @@ void print_warns(
     int start_case, 
     unsigned test_c, 
     unsigned test_asm);
+
+#if defined(__XC__) || defined(__CPLUSPLUS__)
+extern "C" {
+#endif 
+
+
+
+void test_random_bfp_s16(
+    bfp_s16_t* B, 
+    unsigned max_len, 
+    unsigned* seed,
+    bfp_s16_t* A,
+    int length);
+
+void test_random_bfp_s32(
+    bfp_s32_t* B, 
+    unsigned max_len, 
+    unsigned* seed,
+    bfp_s32_t* A,
+    int length);
+void test_random_bfp_complex_s16(
+    bfp_complex_s16_t* B, 
+    unsigned max_len, 
+    unsigned* seed,
+    bfp_complex_s16_t* A,
+    int length);
+void test_random_bfp_complex_s32(
+    bfp_complex_s32_t* B, 
+    unsigned max_len, 
+    unsigned* seed,
+    bfp_complex_s32_t* A,
+    int length);
+void test_random_bfp_ch_pair_s16(
+    bfp_ch_pair_s16_t* B, 
+    unsigned max_len, 
+    unsigned* seed,
+    bfp_ch_pair_s16_t* A,
+    int length);
+void test_random_bfp_ch_pair_s32(
+    bfp_ch_pair_s32_t* B, 
+    unsigned max_len, 
+    unsigned* seed,
+    bfp_ch_pair_s32_t* A,
+    int length);
+
+void test_double_from_s16(
+    double* d_out,
+    bfp_s16_t* d_in);
+void test_double_from_s32(
+    double* d_out,
+    bfp_s32_t* d_in);
+void test_double_from_complex_s16(
+    double* d_out_real,
+    double* d_out_imag,
+    bfp_complex_s16_t* d_in);
+void test_double_from_complex_s32(
+    double* d_out_real,
+    double* d_out_imag,
+    bfp_complex_s32_t* d_in);
+
+
+void test_s16_from_double(
+    int16_t* d_out,
+    double* d_in,
+    unsigned length,
+    exponent_t use_exp);
+
+#if defined(__XC__) || defined(__CPLUSPLUS__)
+}   // extern "C"
+#endif
 
 #endif //TST_COMMON_H_

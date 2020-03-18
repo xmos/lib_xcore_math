@@ -18,7 +18,7 @@ extern "C" {
  * 
  * \returns    Number of leading sign bits of ``a``. 
  */
-headroom_t xs3_cls_ch_pair_s16(
+headroom_t xs3_headroom_ch_pair_s16(
     const ch_pair_s16_t a);
 
 
@@ -31,7 +31,7 @@ headroom_t xs3_cls_ch_pair_s16(
  * 
  * \returns    Number of leading sign bits of ``a``. 
  */
-headroom_t xs3_cls_ch_pair_s32(
+headroom_t xs3_headroom_ch_pair_s32(
     const ch_pair_s32_t a);
 
 
@@ -45,7 +45,7 @@ headroom_t xs3_cls_ch_pair_s32(
  * 
  * \returns    Number of leading sign bits of ``a``. 
  */
-headroom_t bfp_cls_vect_ch_pair_s16(
+headroom_t bfp_headroom_vect_ch_pair_s16(
     bfp_ch_pair_s16_t* a);
 
 /** Count the leading sign bits of a 32-bit channel pair BFP vector.
@@ -57,11 +57,11 @@ headroom_t bfp_cls_vect_ch_pair_s16(
  * 
  * \returns    Number of leading sign bits of ``a``. 
  */
-headroom_t bfp_cls_vect_ch_pair_s32(
+headroom_t bfp_headroom_vect_ch_pair_s32(
     bfp_ch_pair_s32_t* a);
 
     
-/** Multiply a 16-bit BFP channel pair vector by a power of 2 by shifting mantissas.
+/** Apply a left-shift to the elements of a 16-bit channel pair BFP vector.
  * 
  * Conceptually, the operation performed is:
  *      A[i] <- B[i] * 2^(shift)
@@ -77,14 +77,14 @@ headroom_t bfp_cls_vect_ch_pair_s32(
  * 
  * \param a     Output BFP vector
  * \param b     Input BFP vector
- * \param exp   Exponent
+ * \param shl   Number of bits to left shift
  */
-void bfp_ldexp_vect_ch_pair_s16(
+void bfp_shl_vect_ch_pair_s16(
     bfp_ch_pair_s16_t* a,
     const bfp_ch_pair_s16_t* b,
-    const exponent_t exp);
+    const left_shift_t shl);
     
-/** Multiply a 32-bit BFP channel pair vector by a power of 2 by shifting mantissas.
+/** Apply a left-shift to the elements of a 32-bit channel pair BFP vector.
  * 
  * Conceptually, the operation performed is:
  *      A[i] <- B[i] * 2^(shift)
@@ -96,16 +96,16 @@ void bfp_ldexp_vect_ch_pair_s16(
  * 
  * The operation saturates to 32-bit bounds.
  * 
- * It is safe to supply the same ``ch_pair_s32_t*`` for ``a`` and ``b``.
+ * \safe_in_place{a,b}
  * 
  * \param a     Output BFP vector
  * \param b     Input BFP vector
- * \param exp   Exponent
+ * \param shl   Number of bits to left shift
  */
-void bfp_ldexp_vect_ch_pair_s32(
+void bfp_shl_vect_ch_pair_s32(
     bfp_ch_pair_s32_t* a,
     const bfp_ch_pair_s32_t* b,
-    const exponent_t exp);
+    const left_shift_t shl);
 
 #ifdef __XC__
 }   //extern "C"

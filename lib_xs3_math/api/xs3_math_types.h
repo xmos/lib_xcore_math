@@ -61,6 +61,16 @@ typedef int exponent_t;
  */
 typedef unsigned headroom_t;
 
+/**
+ * Represents a number of bits to arithmetically right-shift an integer.
+ */
+typedef int right_shift_t;
+
+/**
+ * Represents a number of bits to arithmetically left-shift an integer.
+ */
+typedef int left_shift_t;
+
 
 /**
  * Represents a block floating-point vector of 32-bit elements.

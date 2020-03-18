@@ -18,7 +18,7 @@ extern "C" {
  * 
  * \return  Headroom of the array `v`
  */
-headroom_t xs3_cls_array_s16(
+headroom_t xs3_headroom_vect_s16(
     const int16_t* v, 
     const unsigned N);
 
@@ -34,7 +34,7 @@ headroom_t xs3_cls_array_s16(
  * 
  * \return  Headroom of the array `v`
  */
-headroom_t xs3_cls_array_s32(
+headroom_t xs3_headroom_vect_s32(
     const int32_t* v,
     const unsigned N);
 
@@ -76,7 +76,7 @@ headroom_t xs3_shl_vect_s16(
     int16_t* a,
     const int16_t* b,
     const unsigned length,
-    const int shl);
+    const left_shift_t shl);
 
 /**
  * \brief Perform a signed, saturating arithmetic left shift of an `int32_t` vector.
@@ -114,7 +114,7 @@ headroom_t xs3_shl_vect_s32(
     int32_t* a,
     const int32_t* b,
     const unsigned length,
-    const int shl);
+    const left_shift_t shl);
 
     
 /**
@@ -150,8 +150,8 @@ headroom_t xs3_add_vect_s16(
     const int16_t* b, 
     const int16_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 /**
  * \brief Add together two `int32_t` vectors.
@@ -186,8 +186,8 @@ headroom_t xs3_add_vect_s32(
     const int32_t* b,
     const int32_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -224,8 +224,8 @@ headroom_t xs3_sub_vect_s16(
     const int16_t* b,
     const int16_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -262,8 +262,8 @@ headroom_t xs3_sub_vect_s32(
     const int32_t* b,
     const int32_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -296,8 +296,8 @@ headroom_t xs3_mul_vect_s16(
     const int16_t* b,
     const int16_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 /**
  * \brief Multiply one `int32_t` vector by another.
@@ -329,8 +329,8 @@ headroom_t xs3_mul_vect_s32(
     const int32_t* b,
     const int32_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 /**
  * \brief Multiply one `int16_t` vector by a 16-bit scalar.
@@ -361,7 +361,7 @@ headroom_t xs3_scalar_mul_vect_s16(
     const int16_t* b,
     const unsigned length,
     const int16_t alpha,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 /**
  * \brief Multiply one `int32_t` vector by a 32-bit scalar.
@@ -392,7 +392,7 @@ headroom_t xs3_scalar_mul_vect_s32(
     const int32_t* b,
     const unsigned length,
     const int32_t alpha,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 
 /** 
@@ -529,9 +529,9 @@ int16_t xs3_dot_s16(
     const int16_t* b,
     const int16_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr,
-    const int sat);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr,
+    const right_shift_t sat);
 
 /**
  * \brief Compute the dot product between two `int32_t` vectors.
@@ -570,9 +570,9 @@ int32_t xs3_dot_s32(
     const int32_t* b,
     const int32_t* c,
     const unsigned length,
-    const int b_shr,
-    const int c_shr,
-    const int sat);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr,
+    const right_shift_t sat);
 
 /**
  * \brief Clamp the elements of an `int16_t` vector to a specified range.
@@ -608,7 +608,7 @@ headroom_t xs3_clip_vect_s16(
     const unsigned length,
     const int16_t lower_bound,
     const int16_t upper_bound,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 /**
  * \brief Clamp the elements of an `int32_t` vector to a specified range.
@@ -644,7 +644,7 @@ headroom_t xs3_clip_vect_s32(
     const unsigned length,
     const int32_t lower_bound,
     const int32_t upper_bound,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 
 /** 
@@ -729,7 +729,7 @@ void xs3_s32_to_s16(
     int16_t* a,
     const int32_t* b,
     const unsigned length,
-    const int b_shr);
+    const right_shift_t b_shr);
 
     
 /**
