@@ -11,13 +11,13 @@ int main(int argc, char** argv)
 
     
 
-    // /* **** Basic **** */
+    /* **** Basic **** */
 
     retval = test_CLS_funcs();
     retval = test_HR_funcs();
 
 
-    // /* **** Low-level API **** */
+    /* **** Low-level API **** */
 
     retval = test_xs3_set_vect();
     retval = test_xs3_headroom_vect();
@@ -37,13 +37,21 @@ int main(int argc, char** argv)
     retval = test_xs3_s16_to_s32();
 
 
-    // /* **** High-level API **** */
+    /* **** High-level API **** */
 
     retval = test_bfp_init_vect();
     retval = test_bfp_set_vect();
     retval = test_bfp_headroom_vect();
     retval = test_bfp_ldexp_vect();
     retval = test_bfp_add_vect();
+    retval = test_bfp_sub_vect();
+    retval = test_bfp_abs_vect();
+    retval = test_bfp_rect_vect();
+
+    retval = test_bfp_sum();
+
+    retval = test_bfp_s32_to_s16();
+    retval = test_bfp_s16_to_s32();
 
     return retval;
 }

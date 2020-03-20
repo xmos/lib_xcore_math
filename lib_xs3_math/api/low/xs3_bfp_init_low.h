@@ -13,7 +13,7 @@ extern "C" {
 
 /** Set all elements of an `int16_t` array to the specified value.
  * 
- * \foperation{16, @f$data_k \leftarrow value\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$data_k \leftarrow value\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \requires_word_alignment{data}
  * 
@@ -28,7 +28,7 @@ void xs3_set_vect_s16(
 
 /** Set all elements of an `int32_t` array to the specified value.
  * 
- * \foperation{32, @f$data_k \leftarrow value\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{32, @f$data_k \leftarrow value\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \requires_word_alignment{data}
  * 
@@ -43,7 +43,7 @@ void xs3_set_vect_s32(
 
 /** Set all elements of a `complex_s32_t` array to the specified value.
  * 
- * \foperation{Complex&nbsp;32, @f$data_k \leftarrow real + i\cdot imag\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{Complex&nbsp;32, @f$data_k \leftarrow real + i\cdot imag\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \requires_word_alignment{data}
  * 

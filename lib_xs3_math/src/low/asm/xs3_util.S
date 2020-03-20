@@ -32,6 +32,43 @@ ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS);
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
 
+
+.issue_mode dual
+/*  
+float xs3_pack_float(
+    const int64_t mantissa,
+    const exponent_t exp);
+*/
+#define FUNCTION_NAME   xs3_pack_float
+#define NSTACKWORDS     (0)
+
+#define a   r0
+#define b   r1
+#define c   r2
+#define d   r3
+#define e   r11
+
+#define mant_hi     a
+#define mant_lo     b
+#define exp         c
+
+ASM_PREAMBLE_V2(FUNCTION_NAME);
+FUNCTION_NAME:
+    dualentsp NSTACKWORDS
+
+//Extract sign bit from mantissa. Add 23 to exponent
+
+    ldc d, 0
+    ecallf d
+    lss d, mant_hi, d
+    bf d, .L_xpf_lblA
+.L_xpf_lblA:
+
+    retsp NSTACKWORDS
+ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS);
+#undef NSTACKWORDS
+#undef FUNCTION_NAME
+
 .issue_mode dual
 
 

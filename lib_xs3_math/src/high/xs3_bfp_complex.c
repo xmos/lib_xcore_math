@@ -115,7 +115,7 @@ void bfp_mul_vect_complex_s32(
 
     a->length = b->length;
     a->exp = a_exp;
-    a->hr = xs3_mul_vect_complex_s32(a->data, b->data, c->data, b->length, b_shr, c_shr);
+    // a->hr = xs3_mul_vect_complex_s32(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
 

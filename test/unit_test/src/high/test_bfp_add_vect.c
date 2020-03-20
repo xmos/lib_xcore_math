@@ -11,14 +11,14 @@
 
 #include "unity.h"
 
-#if DEBUG_ON || 1
+#if DEBUG_ON || 0
 #undef DEBUG_ON
 #define DEBUG_ON    (1)
 #endif
 
 
-#define REPS        IF_QUICK_TEST(100, 100)
-#define MAX_LEN     16  //Smaller lengths mean larger variance w.r.t. individual element headroom
+#define REPS        IF_QUICK_TEST(10, 100)
+#define MAX_LEN     18  //Smaller lengths mean larger variance w.r.t. individual element headroom
 
 
 static unsigned seed = 666;
@@ -29,6 +29,95 @@ static char msg_buff[200];
       sprintf(msg_buff, "%s (test vector @ line %u)", (EXTRA), (LINE_NUM));     \
       TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);                \
     }} while(0)
+
+
+
+
+static void test_bfp_add_vect_calc_params()
+{
+    PRINTF("%s...\n", __func__);
+
+
+    typedef struct {
+
+        struct {    headroom_t hr;  exponent_t exp;     } b;
+        struct {    headroom_t hr;  exponent_t exp;     } c;
+        struct {    exponent_t exp; right_shift_t b_shr; right_shift_t c_shr;     } expected;
+
+        unsigned line;
+    } test_case_t;
+
+
+    test_case_t casses[] = {
+        //    b{   hr,  exp },      c{   hr,  exp },   expected{   exp,  b_shr, c_shr }   
+        {      {    0,    0 },       {    0,    0 },           {     1,      1,    1  },       __LINE__ },
+        {      {    1,    5 },       {    1,    5 },           {     5,      0,    0  },       __LINE__ },
+        {      {    1,    0 },       {    0,    0 },           {     1,      1,    1  },       __LINE__ },
+        {      {    0,   10 },       {    1,   10 },           {    11,      1,    1  },       __LINE__ },
+        {      {   15,   -4 },       {   15,   -4 },           {   -18,    -14,  -14  },       __LINE__ },
+        {      {    8,  -14 },       {    4,   -4 },           {    -7,      7,   -3  },       __LINE__ },
+        {      {    8,  -14 },       {    4,   -4 },           {    -7,      7,   -3  },       __LINE__ },
+
+    };
+
+    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+
+    const unsigned start_case = 0;
+
+    for(int v = start_case; v < N_cases; v++){
+        PRINTF("\ttest vector %d..\n", v);
+        
+        test_case_t* casse = &casses[v];
+
+        exponent_t a_exp;
+        right_shift_t b_shr, c_shr;
+
+        for(unsigned sat = 0; sat <= 1; sat++){
+
+            PRINTF("\t\tallow_sat = %u..\n", sat);
+
+            int exp_mods[] = {0, 44, -534};
+
+            for( int m = 0; m < sizeof(exp_mods)/sizeof(int); m++){
+
+                PRINTF("\t\t\texp_delta = %d\n", exp_mods[m]);
+        
+
+                for(int sbc = 0; sbc <= 1; sbc++){
+
+                    PRINTF("\t\t\t\tswap b&c: %d\n", sbc);
+
+                    if(sbc){
+                        bfp_add_vect_calc_params(&a_exp, &c_shr, &b_shr, 
+                                    casse->c.exp + exp_mods[m], casse->b.exp + exp_mods[m], 
+                                    casse->c.hr,  casse->b.hr, 
+                                    sat);
+                    } else {
+                        bfp_add_vect_calc_params(&a_exp, &b_shr, &c_shr, 
+                                    casse->b.exp + exp_mods[m], casse->c.exp + exp_mods[m], 
+                                    casse->b.hr,  casse->c.hr, 
+                                    sat);
+                    }
+
+                    int sat_risk = (casse->b.exp - casse->b.hr) == (casse->c.exp - casse->c.hr) && !sat;
+
+                    exponent_t expected_exp = casse->expected.exp + exp_mods[m] + sat_risk;
+
+                    TEST_ASSERT_EQUAL_MSG(expected_exp,   a_exp,  "a_exp is wrong.", casse->line);
+                    TEST_ASSERT_EQUAL_MSG(casse->expected.b_shr + sat_risk, b_shr,  "b_shr is wrong.", casse->line);
+                    TEST_ASSERT_EQUAL_MSG(casse->expected.c_shr + sat_risk, c_shr,  "c_shr is wrong.", casse->line);
+                }
+            }
+            
+        }
+
+    }
+}
+
+
+
+
+
 
 static void test_bfp_add_vect_s16_0()
 {
@@ -168,14 +257,157 @@ static void test_bfp_add_vect_s16_1()
 
 
 
+
+static void test_bfp_add_vect_s32_0()
+{
+    PRINTF("%s...\n", __func__);
+
+    int32_t dataA[MAX_LEN];
+    int32_t dataB[MAX_LEN];
+    int32_t dataC[MAX_LEN];
+    bfp_s32_t A, B, C;
+
+    bfp_init_vect_s32(&A, dataA, 0, MAX_LEN, 0);
+    bfp_init_vect_s32(&B, dataB, 0, MAX_LEN, 0);
+    bfp_init_vect_s32(&C, dataC, 0, MAX_LEN, 0);
+
+    typedef struct {
+
+        struct {    int32_t value;  exponent_t exp;     } b;
+        struct {    int32_t value;  exponent_t exp;     } c;
+        struct {    int32_t value;  exponent_t exp;     } expected;
+
+        unsigned line;
+    } test_case_t;
+
+    //
+    //  X + Y
+    //  where X.exp == Y.exp
+    //  Worst case is  X.data[k] == Y.data[k]   (which means X.hr == Y.hr)
+    //            and  X.data[k] == -(1 << (16-X.hr+1))
+    //  in which case result if -2*(1 << (15-X.hr)) = -(1 << (16-X.hr)) = -2^(16-X.hr)
+    //  -2^N has headroom  15-N, so    -2^(16-X.hr) has (worst-case) headroom  15-(16-X.hr) = (X.hr-1),
+    //  which means it can only be left-shifted X.hr-2 bits. So, the exponent of the result is going
+    //  to be  X.exp - (X.hr-2) ==   X.exp - X.hr + 2 ==  X_min_exp + 2
+    //
+    //  If X_min_exp != Y_min_exp, then we can actually decrease the output exponent by 1, because the sum
+    //  can't actually reach saturation. So it becomes X.exp - X.hr + 1
+    //
+
+
+    test_case_t casses[] = {
+        //    b{     value,  exp },      c{     value,  exp },   expected{       value,  exp }
+        {      { -0x010000,    0 },       { -0x010000,    0 },           { -0x40000000,  -13 },        __LINE__ },
+        {      {  0x00FF00,    0 },       {  0x00FF00,    0 },           {  0x3FC00000,  -13 },        __LINE__ },
+        {      {  0x000100,    0 },       {  0x000000,    0 },           {  0x20000000,  -21 },        __LINE__ },
+        {      {  0x000200,    0 },       {  0x000000,    0 },           {  0x20000000,  -20 },        __LINE__ },
+        {      {  0x000000,    0 },       {  0x111100,    0 },           {  0x22220000,  -9  },        __LINE__ },
+        {      {  0x000100,    0 },       {  0x000100,    0 },           {  0x20000000,  -20 },        __LINE__ },
+                                                                                                              
+        {      { -0x010000,    1 },       { -0x010000,    1 },           { -0x40000000,  -12 },        __LINE__ },
+        {      {  0x00FF00,    1 },       {  0x00FF00,    1 },           {  0x3FC00000,  -12 },        __LINE__ },
+        {      {  0x000100,    1 },       {  0x000000,    1 },           {  0x20000000,  -20 },        __LINE__ },
+        {      {  0x000200,    1 },       {  0x000000,    1 },           {  0x20000000,  -19 },        __LINE__ },
+        {      {  0x000000,    1 },       {  0x111100,    1 },           {  0x22220000,  -8  },        __LINE__ },
+        {      {  0x000100,    1 },       {  0x000100,    1 },           {  0x20000000,  -19 },        __LINE__ },
+                                                                                                              
+        {      {  0x000100,    1 },       {  0x000100,    0 },           {  0x30000000,  -20 },        __LINE__ },
+        {      {  0x000100,    0 },       {  0x000100,    1 },           {  0x30000000,  -20 },        __LINE__ },
+        {      {  0x000200,    0 },       {  0x000100,    0 },           {  0x30000000,  -20 },        __LINE__ },
+        {      {  0x000200,    0 },       {  0x001000,   -4 },           {  0x30000000,  -20 },        __LINE__ },
+
+    };
+
+    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+
+    const unsigned start_case = 0;
+
+    for(int v = start_case; v < N_cases; v++){
+        PRINTF("\ttest vector %d..\n", v);
+        
+        test_case_t* casse = &casses[v];
+
+        bfp_set_vect_s32(&B, casse->b.value, casse->b.exp);
+        bfp_set_vect_s32(&C, casse->c.value, casse->c.exp);
+
+        bfp_add_vect_s32(&A, &B, &C);
+
+        headroom_t exp_hr = HR_S32(casse->expected.value);
+
+        TEST_ASSERT_EQUAL_MSG(casse->expected.exp, A.exp, "A.exp is wrong.", casse->line);
+        TEST_ASSERT_EQUAL_MSG(exp_hr, A.hr, "A.hr is wrong.", casse->line);
+        TEST_ASSERT_EQUAL_MSG(B.length, A.length, "A.length is wrong.", casse->line);
+
+        for(int i = 0; i < A.length; i++){
+            TEST_ASSERT_EQUAL_MSG(casse->expected.value, A.data[i], "A.data[] is wrong.", casse->line);
+        }
+    }
+}
+
+
+
+
+
+static void test_bfp_add_vect_s32_1()
+{
+    PRINTF("%s...\t(random vectors)\n", __func__);
+
+    seed = 23452342;
+
+    int32_t dataA[MAX_LEN];
+    int32_t dataB[MAX_LEN];
+    int32_t dataC[MAX_LEN];
+    int32_t expA[MAX_LEN];
+    bfp_s32_t A, B, C;
+
+    A.data = dataA;
+    B.data = dataB;
+    C.data = dataC;
+
+    double Af[MAX_LEN];
+    double Bf[MAX_LEN];
+    double Cf[MAX_LEN];
+
+    for(int r = 0; r < REPS; r++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+
+        test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
+        test_random_bfp_s32(&C, MAX_LEN, &seed, &A, B.length);
+
+        test_double_from_s32(Bf, &B);
+        test_double_from_s32(Cf, &C);
+
+        for(int i = 0; i < B.length; i++){
+            Af[i] = Bf[i] + Cf[i];
+        }
+
+        bfp_add_vect_s32(&A, &B, &C);
+
+        test_s32_from_double(expA, Af, MAX_LEN, A.exp);
+
+        for(int i = 0; i < A.length; i++){
+            // PRINTF("! %08X\t%08X\n", (unsigned) expA[i], (unsigned) A.data[i]);
+            TEST_ASSERT_INT32_WITHIN(1, expA[i], A.data[i]);
+        }
+    }
+}
+
+
+
+
+
 int test_bfp_add_vect()
 {
     int retval = 0;
     UnityBegin(__FILE__);
 
+    RUN_TEST(test_bfp_add_vect_calc_params);
+
     RUN_TEST(test_bfp_add_vect_s16_0);
     RUN_TEST(test_bfp_add_vect_s16_1);
-    // RUN_TEST(test_bfp_add_vect_s32);
+
+    RUN_TEST(test_bfp_add_vect_s32_0);
+    RUN_TEST(test_bfp_add_vect_s32_1);
 
     retval = UnityEnd();
     return retval;

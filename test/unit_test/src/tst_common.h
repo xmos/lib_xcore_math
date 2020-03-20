@@ -14,11 +14,11 @@
 #endif
 
 #ifndef DEBUG_ON
-#define DEBUG_ON    (0)
+#define DEBUG_ON    0
 #endif
 
 #ifndef QUICK_TEST
-#define QUICK_TEST  (1)
+#define QUICK_TEST  0
 #endif
 
 #define IF_QUICK_TEST(X, Y)  ((QUICK_TEST)? X : Y)
@@ -102,6 +102,12 @@ void test_double_from_complex_s32(
 
 void test_s16_from_double(
     int16_t* d_out,
+    double* d_in,
+    unsigned length,
+    exponent_t use_exp);
+
+void test_s32_from_double(
+    int32_t* d_out,
     double* d_in,
     unsigned length,
     exponent_t use_exp);

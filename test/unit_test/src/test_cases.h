@@ -34,6 +34,13 @@ int test_bfp_set_vect();
 int test_bfp_headroom_vect();
 int test_bfp_ldexp_vect();
 int test_bfp_add_vect();
+int test_bfp_sub_vect();
+int test_bfp_abs_vect();
+int test_bfp_rect_vect();
 
+int test_bfp_sum();
+
+int test_bfp_s32_to_s16();
+int test_bfp_s16_to_s32();
 
 #endif //TEST_CASES_H_

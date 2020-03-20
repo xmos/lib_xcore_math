@@ -54,7 +54,7 @@ extern "C" {
  * 
  * \sa cls()
  */
-#define CLS_C32(X)      (XS3_MIN(CLS_S32((X).re), CLS_S32((X).im)))
+#define CLS_C32(X)      (XS3_MIN(CLS_S32(((int16_t)(X).re)), CLS_S32(((int16_t)(X).im))))
 
 
 
@@ -66,7 +66,7 @@ extern "C" {
 /**
  * \brief Get the headroom of an `int32_t`.
  */
-#define HR_S16(X)   (CLS_S16(X)-1)
+#define HR_S16(X)   (CLS_S16(((int16_t)X))-1)
 
 /**
  * \brief Get the headroom of a `complex_s32_t`.
@@ -126,6 +126,14 @@ void xs3_unpack_float(
     int32_t* mantissa,
     exponent_t* exp,
     float input);
+
+/**
+ * \brief Generate float from a mantissa and exponent.
+ * 
+ */
+float xs3_pack_float(
+    const int32_t mantissa,
+    const exponent_t exp);
 
 
 /**

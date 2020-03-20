@@ -274,26 +274,32 @@ ALIASES += safe_in_place{3}="@par Safe In-Place Computation:^^The output of this
 
 ALIASES += requires_word_alignment{1}="@par Word Alignment Required:^^Vector `\1`                          \
             must begin at a word-aligned (4-byte) address. For more about alignment requirements,          \
-            see \ref alignment."  
+            see \ref vector_alignment."  
 
 ALIASES += requires_word_alignment{2}="@par Word Alignment Required:^^Vectors `\1` and `\2`                \
             must begin at a word-aligned (4-byte) address. For more about alignment requirements,          \
-            see \ref alignment."  
+            see \ref vector_alignment."  
 
 ALIASES += requires_word_alignment{3}="@par Word Alignment Required:^^Vectors `\1`, `\2` and `\3`          \
             must begin at a word-aligned (4-byte) address. For more about alignment requirements,          \
-            see \ref alignment."                 
+            see \ref vector_alignment."                 
 
 ALIASES += tab="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 ALIASES += operation{1}="@par Operation Performed:^^<BLOCKQUOTE><CODE>\1</CODE></BLOCKQUOTE>"
 
-ALIASES += operation{2}="@par Operation Performed (\1-bit)^^\xrefitem vector_functions\1 \"\" \"\1-bit Vector Functions\" <BLOCKQUOTE style="margin-left:40px;display:inline-block"><CODE>\2</CODE></BLOCKQUOTE>"
-ALIASES += foperation{2}="@par Operation Performed (\1-bit)^^\xrefitem vector_functions\1 \"\" \"\1-bit Vector Functions\" <BLOCKQUOTE style="margin-left:40px;display:inline-block">\2</BLOCKQUOTE>"
+ALIASES += low_op{2}="@par Operation Performed (\1-bit)^^\xrefitem vector_functions\1 \"\" \"\1-bit Vector Functions\" <BLOCKQUOTE style="margin-left:40px;display:inline-block">\2</BLOCKQUOTE>"
+
+ALIASES += bfp_op{2}="@par Operation Performed (\1-bit)^^\xrefitem bfp_vector_functions\1 \"\" \"\1-bit BFP Vector Functions\" <BLOCKQUOTE style="margin-left:40px;display:inline-block">\2</BLOCKQUOTE>"
 
 ALIASES += mycode{1}="\code\1\endcode"
 
 ALIASES += saturating_op{1}="\color\{blue\}\{\1\}"
+
+# I really wish doxygen gave a way of defining file-local aliases within individual header files...
+
+ALIASES += bfp_vec{1}="@f$\bar \1@f$"
+
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"

@@ -9,7 +9,7 @@ extern "C" {
 /**
  * \brief Compute headroom of `int16_t` array `v`
  * 
- * \foperation{16, @f$ min(\ \ \ hr(v_0)\,\ hr(v_1)\,\ ...\,\ hr(v_\{N-1\})\ \ ) @f$ \n\tab where @f$hr(a)@f$ is the headroom of element @f$a@f$  }
+ * \low_op{16, @f$ min(\ \ \ hr(v_0)\,\ hr(v_1)\,\ ...\,\ hr(v_\{N-1\})\ \ ) @f$ \n\tab where @f$hr(a)@f$ is the headroom of element @f$a@f$  }
  * 
  * \requires_word_alignment{v}
  * 
@@ -25,7 +25,7 @@ headroom_t xs3_headroom_vect_s16(
 /**
  * \brief Compute headroom of an `int32_t` array.
  * 
- * \foperation{32, @f$ min(\ \ \ hr(v_0)\,\ hr(v_1)\,\ ...\,\ hr(v_\{N-1\})\ \ ) @f$ \n\tab where @f$hr(a)@f$ is the headroom of element @f$a@f$  }
+ * \low_op{32, @f$ min(\ \ \ hr(v_0)\,\ hr(v_1)\,\ ...\,\ hr(v_\{N-1\})\ \ ) @f$ \n\tab where @f$hr(a)@f$ is the headroom of element @f$a@f$  }
  * 
  * \requires_word_alignment{v}
  * 
@@ -41,7 +41,7 @@ headroom_t xs3_headroom_vect_s32(
 /**
  * \brief Perform a signed, saturating arithmetic left shift of an `int16_t` vector.
  * 
- * \foperation{16, @f$a_k \leftarrow b_k \cdot 2^\{shl\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$a_k \leftarrow b_k \cdot 2^\{shl\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \par Performance
  * The performance of this function is specified as the number of thread-cycles between function
@@ -81,7 +81,7 @@ headroom_t xs3_shl_vect_s16(
 /**
  * \brief Perform a signed, saturating arithmetic left shift of an `int32_t` vector.
  * 
- * \foperation{32, @f$a_k \leftarrow b_k \cdot 2^\{shl\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{32, @f$a_k \leftarrow b_k \cdot 2^\{shl\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \par Performance
  * The performance of this function is specified as the number of thread-cycles between function
@@ -124,7 +124,7 @@ headroom_t xs3_shl_vect_s32(
  * or `c[]` has an arithmetic right shift of `b_shr` or `c_shr` bits (respectively) applied before the addition.
  * Negative values of `b_shr` and `c_shr` will left-shift.
  * 
- * \foperation{16, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} + c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} + c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \safe_in_place{a,b,c}
  * \requires_word_alignment{a,b,c}
@@ -160,7 +160,7 @@ headroom_t xs3_add_vect_s16(
  * or `c[]` has an arithmetic right shift of `b_shr` or `c_shr` bits (respectively) applied before the addition.
  * Negative values of `b_shr` and `c_shr` will left-shift.
  * 
- * \foperation{32, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} + c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{32, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} + c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \safe_in_place{a,b,c}
  * \requires_word_alignment{a,b,c}
@@ -197,7 +197,7 @@ headroom_t xs3_add_vect_s32(
  * element of `b[]` or `c[]` has an arithmetic right shift of `b_shr` or `c_shr` bits (respectively) applied 
  * before the subtraction. Negative values of `b_shr` and `c_shr` will left-shift.
  * 
- * \foperation{16, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} - c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} - c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \safe_in_place{a,b,c}
  * \requires_word_alignment{a,b,c}
@@ -235,7 +235,7 @@ headroom_t xs3_sub_vect_s16(
  * element of `b[]` or `c[]` has an arithmetic right shift of `b_shr` or `c_shr` bits (respectively) applied 
  * before the subtraction. Negative values of `b_shr` and `c_shr` will left-shift.
  * 
- * \foperation{32, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} - c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{32, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} - c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \safe_in_place{a,b,c}
  * \requires_word_alignment{a,b,c}
@@ -277,7 +277,7 @@ headroom_t xs3_sub_vect_s32(
  * saturating operations which saturate to 16-bit bounds. The result of the final right-shift is also 
  * saturated to 16-bit bounds.
  * 
- * \foperation{16, @f$a_k \leftarrow \left(b_k \cdot 2^\{-b\_shr\} \times c_k \cdot 2^\{-c\_shr\}\right) \cdot 2^\{-14\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$a_k \leftarrow \left(b_k \cdot 2^\{-b\_shr\} \times c_k \cdot 2^\{-c\_shr\}\right) \cdot 2^\{-14\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \safe_in_place{a,b,c}
  * \requires_word_alignment{a,b,c}
@@ -310,7 +310,7 @@ headroom_t xs3_mul_vect_s16(
  * saturating operations which saturate to 32-bit bounds. The result of the final right-shift is also 
  * saturated to 32-bit bounds.
  * 
- * \foperation{16, @f$a_k \leftarrow \left(b_k \cdot 2^\{-b\_shr\} \times c_k \cdot 2^\{-c\_shr\}\right) \cdot 2^\{-30\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$a_k \leftarrow \left(b_k \cdot 2^\{-b\_shr\} \times c_k \cdot 2^\{-c\_shr\}\right) \cdot 2^\{-30\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \safe_in_place{a,b,c}
  * \requires_word_alignment{a,b,c}
@@ -343,7 +343,7 @@ headroom_t xs3_mul_vect_s32(
  * saturating operations which saturate to 16-bit bounds. The result of the final right-shift is also 
  * saturated to 16-bit bounds.
  * 
- * \foperation{16, @f$a_k \leftarrow \left(\alpha \cdot b_k \cdot 2^\{-b\_shr\}\right)\cdot 2^\{-14\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$a_k \leftarrow \left(\alpha \cdot b_k \cdot 2^\{-b\_shr\}\right)\cdot 2^\{-14\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \safe_in_place{a,b}
  * \requires_word_alignment{a,b}
@@ -374,7 +374,7 @@ headroom_t xs3_scalar_mul_vect_s16(
  * saturating operations which saturate to 16-bit bounds. The result of the final right-shift is also 
  * saturated to 32-bit bounds.
  * 
- * \foperation{16, @f$a_k \leftarrow \left(\alpha \cdot b_k \cdot 2^\{-b\_shr\}\right)\cdot 2^\{-30\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$a_k \leftarrow \left(\alpha \cdot b_k \cdot 2^\{-b\_shr\}\right)\cdot 2^\{-30\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \safe_in_place{a,b}
  * \requires_word_alignment{a,b}
@@ -401,7 +401,7 @@ headroom_t xs3_scalar_mul_vect_s32(
  * Each output element `a[k]` is set to the absolute value of the corresponding 
  * input element `b[k]` 
  * 
- * \foperation{16, @f$a_k \leftarrow \left| b_k \right|\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$a_k \leftarrow \left| b_k \right|\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \requires_word_alignment{a,b}
  * \safe_in_place{a,b}
@@ -424,7 +424,7 @@ headroom_t xs3_abs_vect_s16(
  * Each output element `a[k]` is set to the absolute value of the corresponding 
  * input element `b[k]` 
  * 
- * \foperation{32, @f$a_k \leftarrow \saturating_op\{\left| b_k \right|\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{32, @f$a_k \leftarrow \saturating_op\{\left| b_k \right|\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \requires_word_alignment{a,b}
  * \safe_in_place{a,b}
@@ -447,7 +447,7 @@ headroom_t xs3_abs_vect_s32(
  * 
  * Sums together the elements of the `int16_t` vector `b` and returns the result as an `int32_t`.
  * 
- * \foperation{16, @f$ \sum_\{k=0\}^\{length-1\} b_k     @f$ }
+ * \low_op{16, @f$ \sum_\{k=0\}^\{length-1\} b_k     @f$ }
  * 
  * \requires_word_alignment{b}
  * 
@@ -474,7 +474,7 @@ int32_t xs3_sum_s16(
  * Sums together the elements of the `int32_t` vector `b` into a 40-bit saturating accumulator. The result
  * is returned as an `int64_t`.
  * 
- * \foperation{32, @f$ \sum_\{k=0\}^\{length-1\} b_k     @f$ }
+ * \low_op{32, @f$ \sum_\{k=0\}^\{length-1\} b_k     @f$ }
  * 
  * \requires_word_alignment{b}
  * 
@@ -512,7 +512,7 @@ int32_t xs3_sum_s32(
  * 
  * All shifts are arithmetic.
  * 
- * \foperation{16, @f$ \left(\sum_\{k=0\}^\{length-1\} \{\left(b_k \cdot 2^\{-b\_shr\}\right)\times\left(c_k\cdot 2^\{-c\_shr\}\right)\}\right) \cdot 2^\{-sat\}    @f$ }
+ * \low_op{16, @f$ \left(\sum_\{k=0\}^\{length-1\} \{\left(b_k \cdot 2^\{-b\_shr\}\right)\times\left(c_k\cdot 2^\{-c\_shr\}\right)\}\right) \cdot 2^\{-sat\}    @f$ }
  * 
  * \requires_word_alignment{b,c}
  * 
@@ -553,7 +553,7 @@ int16_t xs3_dot_s16(
  * 
  * All shifts are arithmetic.
  * 
- * \foperation{32, @f$ \left(\sum_\{k=0\}^\{length-1\} \{\left(\left(b_k \cdot 2^\{-b\_shr\}\right)\times\left(c_k\cdot 2^\{-c\_shr\}\right)\right)\cdot 2^\{-30\}\}\right) \cdot 2^\{-sat\}    @f$ }
+ * \low_op{32, @f$ \left(\sum_\{k=0\}^\{length-1\} \{\left(\left(b_k \cdot 2^\{-b\_shr\}\right)\times\left(c_k\cdot 2^\{-c\_shr\}\right)\right)\cdot 2^\{-30\}\}\right) \cdot 2^\{-sat\}    @f$ }
  * 
  * \requires_word_alignment{b,c}
  * 
@@ -582,7 +582,7 @@ int32_t xs3_dot_s32(
  * element will be `lower_bound`. If the shifted value is greater than `upper_bound`,
  * the output element will be `upper_bound`. Otherwise, the shifted value is output.
  * 
- * \foperation{16, @f$a_k \leftarrow \begin\{cases\}
+ * \low_op{16, @f$a_k \leftarrow \begin\{cases\}
  *                       lower\_bound & b_k \cdot 2^\{-b\_shr\} \lt lower\_bound \\
  *                       upper\_bound & b_k \cdot 2^\{-b\_shr\} \gt upper\_bound \\
  *                       b_k \cdot 2^\{-b\_shr\} & otherwise
@@ -618,7 +618,7 @@ headroom_t xs3_clip_vect_s16(
  * element will be `lower_bound`. If the shifted value is greater than `upper_bound`,
  * the output element will be `upper_bound`. Otherwise, the shifted value is output.
  * 
- * \foperation{16, @f$a_k \leftarrow \begin\{cases\}
+ * \low_op{16, @f$a_k \leftarrow \begin\{cases\}
  *                       lower\_bound & b_k \cdot 2^\{-b\_shr\} \lt lower\_bound \\
  *                       upper\_bound & b_k \cdot 2^\{-b\_shr\} \gt upper\_bound \\
  *                       b_k \cdot 2^\{-b\_shr\} & otherwise
@@ -653,7 +653,7 @@ headroom_t xs3_clip_vect_s32(
  * Each output element `a[k]` is set to the value of the corresponding input element 
  * `b[k]` if it is positive, and `a[k]` is set to zero otherwise. 
  * 
- * \foperation{16, @f$a_k \leftarrow \begin\{cases\}b_k & b_k \gt 0 \\ 
+ * \low_op{16, @f$a_k \leftarrow \begin\{cases\}b_k & b_k \gt 0 \\ 
  *                                  0 & b_k \leq 0\end\{cases\} 
  *                                  \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
@@ -678,7 +678,7 @@ headroom_t xs3_rect_vect_s16(
  * Each output element `a[k]` is set to the value of the corresponding input element 
  * `b[k]` if it is positive, and `a[k]` is set to zero otherwise. 
  * 
- * \foperation{32, @f$a_k \leftarrow \begin\{cases\}b_k & b_k \gt 0 \\ 
+ * \low_op{32, @f$a_k \leftarrow \begin\{cases\}b_k & b_k \gt 0 \\ 
  *                                  0 & b_k \leq 0\end\{cases\} 
  *                                  \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
@@ -704,7 +704,7 @@ headroom_t xs3_rect_vect_s32(
  * Each element of `b` is right-shifted `b_shr` bits (rounded towards positive infinity), 
  * saturated to 16-bit bounds and then written to `a`. 
  * 
- * \foperation{32, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{32, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \safe_in_place{a,b}
  * \requires_word_alignment{a,b}
@@ -715,10 +715,8 @@ headroom_t xs3_rect_vect_s32(
  *       value of `b_shr` is chosen to avoid saturation, `a` should have `b_shr` more bits of 
  *       headroom than `b`.
  * 
- * \note \li To avoid saturation, `b_shr >= -b_hr` where `b_hr` is the initial headroom of
+ * \note \li To avoid saturation, `b_shr >= 16-b_hr` where `b_hr` is the initial headroom of
  *           the vector `b`.
- * 
- * 
  * 
  * \param[out] a        Output vector
  * \param[in]  b        Input vector
@@ -742,7 +740,7 @@ void xs3_s32_to_s16(
  *   efficient to include a factor of 2^8)
  * 
  * 
- * \foperation{32, @f$a_k \leftarrow b_k \cdot 2^\{8\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{32, @f$a_k \leftarrow b_k \cdot 2^\{8\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \requires_word_alignment{a,b}
  * 

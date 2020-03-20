@@ -16,8 +16,12 @@ void test_random_bfp_s16(
     bfp_s16_t* A,
     int length)
 {
-    if(length <= 0)
-        length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+    if(length <= 0){
+        if(max_len != 1)
+            length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+        else
+            length = 1;
+    }
 
     exponent_t exponent = (pseudo_rand_int32(seed) % 40) - 20;
 
@@ -40,8 +44,12 @@ void test_random_bfp_s32(
     bfp_s32_t* A,
     int length)
 {
-    if(length <= 0)
-        length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+    if(length <= 0){
+        if(max_len != 1)
+            length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+        else
+            length = 1;
+    }
 
     exponent_t exponent = (pseudo_rand_int32(seed) % 40) - 20;
 
@@ -65,8 +73,12 @@ void test_random_bfp_complex_s16(
     bfp_complex_s16_t* A,
     int length)
 {
-    if(length <= 0)
-        length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+    if(length <= 0){
+        if(max_len != 1)
+            length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+        else
+            length = 1;
+    }
 
     exponent_t exponent = (pseudo_rand_int32(seed) % 40) - 20;
 
@@ -92,8 +104,12 @@ void test_random_bfp_complex_s32(
     bfp_complex_s32_t* A,
     int length)
 {
-    if(length <= 0)
-        length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+    if(length <= 0){
+        if(max_len != 1)
+            length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+        else
+            length = 1;
+    }
 
     exponent_t exponent = (pseudo_rand_int32(seed) % 40) - 20;
 
@@ -119,8 +135,12 @@ void test_random_bfp_ch_pair_s16(
     bfp_ch_pair_s16_t* A,
     int length)
 {
-    if(length <= 0)
-        length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+    if(length <= 0){
+        if(max_len != 1)
+            length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+        else
+            length = 1;
+    }
 
     exponent_t exponent = (pseudo_rand_int32(seed) % 40) - 20;
 
@@ -146,8 +166,12 @@ void test_random_bfp_ch_pair_s32(
     bfp_ch_pair_s32_t* A,
     int length)
 {
-    if(length <= 0)
-        length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+    if(length <= 0){
+        if(max_len != 1)
+            length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
+        else
+            length = 1;
+    }
 
     exponent_t exponent = (pseudo_rand_int32(seed) % 40) - 20;
 
@@ -222,6 +246,18 @@ void test_s16_from_double(
         mant = mant * ldexp(1, exp - use_exp);
         d_out[i] = (int16_t) mant;
     }
+}
 
-    
+void test_s32_from_double(
+    int32_t* d_out,
+    double* d_in,
+    unsigned length,
+    exponent_t use_exp)
+{
+    for(int i = 0; i < length; i++){
+        int exp;
+        double mant = frexp(d_in[i], &exp);
+        mant = mant * ldexp(1, exp - use_exp);
+        d_out[i] = (int32_t) mant;
+    }
 }

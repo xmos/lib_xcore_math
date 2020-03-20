@@ -181,12 +181,13 @@ void bfp_add_vect_s32(
 }
 
 
-/**
- * Calculate the output exponent and input shifts needed to perform the addition
- * of two BFP vectors. Independent of vector type.
- * 
- * Logic is identical to bfp_add_calc_params()
- */
+/*
+    Unless I'm mistaken, the corner-case saturation cannot occur with subtraction, because
+    the maximum magnitude result requires elements from b and c to have different signs.
+
+    If  b[k] is a negative power of 2, then  c[k] = -b[k] must have less headroom, avoiding
+    the problem.
+*/
 void bfp_sub_vect_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -194,16 +195,12 @@ void bfp_sub_vect_calc_params(
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation)
+    const headroom_t c_hr)
 {
     const exponent_t b_min_exp = b_exp - b_hr;
     const exponent_t c_min_exp = c_exp - c_hr;
 
     a_exp[0] = XS3_MAX(b_min_exp, c_min_exp) + 1;
-
-    if((b_min_exp == c_min_exp) && !(allow_saturation))
-        a_exp[0] = a_exp[0] + 1;
 
     b_shr[0] = a_exp[0] - b_exp;
     c_shr[0] = a_exp[0] - c_exp;
@@ -224,8 +221,7 @@ void bfp_sub_vect_s16(
 
     right_shift_t b_shr, c_shr;
 
-    bfp_sub_vect_calc_params(&a->exp, &b_shr, &c_shr,
-            b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
+    bfp_sub_vect_calc_params(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->hr = xs3_sub_vect_s16(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
@@ -245,8 +241,7 @@ void bfp_sub_vect_s32(
 
     right_shift_t b_shr, c_shr;
 
-    bfp_sub_vect_calc_params(&a->exp, &b_shr, &c_shr,
-            b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
+    bfp_sub_vect_calc_params(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->hr = xs3_sub_vect_s32(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
@@ -378,9 +373,20 @@ void bfp_abs_vect_s16(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     assert(b->length == a->length);
+#else
+    a->length = b->length;
 #endif
 
-    a->length = b->length;
+#if !XS3_BFP_ALLOW_SATURATION
+    if(b->hr == 0){
+        //shift down by one bit first
+        xs3_shl_vect_s16(a->data, b->data, b->length, -1);
+        a->exp = b->exp+1;
+        a->hr = b->hr+1;
+        b = a;
+    }
+#endif
+
     a->exp = b->exp;
     a->hr = xs3_abs_vect_s16(a->data, b->data, b->length);
 }
@@ -392,40 +398,36 @@ void bfp_abs_vect_s32(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     assert(b->length == a->length);
+#else
+    a->length = b->length;
 #endif
 
-    a->length = b->length;
+#if !XS3_BFP_ALLOW_SATURATION
+    if(b->hr == 0){
+        //shift down by one bit first
+        xs3_shl_vect_s32(a->data, b->data, b->length, -1);
+        a->exp = b->exp+1;
+        a->hr = b->hr+1;
+        b = a;
+    }
+#endif
+
     a->exp = b->exp;
     a->hr = xs3_abs_vect_s32(a->data, b->data, b->length);
 }
 
 
 
-float bfp_sum_s16(
+int32_t bfp_sum_s16(
     const bfp_s16_t* b)
 {
-
-    //TODO: not certain how to implement the assembly for this one.
-
-    //TODO - calculate what these should be
-    const exponent_t a_exp = 0;
-    const int sat = 0;
-
-    int32_t a = xs3_sum_s16(b->data, b->length);
-
-    return pack_float_s16(a, a_exp);
+    return xs3_sum_s16(b->data, b->length);
 }
 
-float bfp_sum_s32(
+int64_t bfp_sum_s32(
     const bfp_s32_t* b)
 {
-    //TODO - calculate what these should be
-    const exponent_t a_exp = 0;
-    const int sat = 0;
-
-    int32_t a = xs3_sum_s32(b->data, b->length);
-
-    return pack_float_s32(a, a_exp);
+    return xs3_sum_s32(b->data, b->length);
 }
 
 
@@ -556,19 +558,20 @@ void bfp_s32_to_s16(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     assert(b->length == a->length);
-#endif
-
-    //TODO - calculate what these should be
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-
-    //TODO - calculate headroom adjustment (should be related to b_shr)
-
-
+#else
     a->length = b->length;
-    a->exp = a_exp;
-    a->hr = b->hr - 16 + b_shr;
+#endif
+    
+    right_shift_t b_shr = 16 - b->hr;
+
+    const unsigned mod = !XS3_BFP_ALLOW_SATURATION;
+    b_shr += mod;
+
+    a->exp = b->exp + mod;
+    a->hr = mod;
+    // printf("%d\t%d\t%d\n", b->hr, b_shr, a->hr);
     xs3_s32_to_s16(a->data, b->data, b->length, b_shr);
+    // printf("0x%08X\t0x%08X\n", b->data[0], a->data[0]);
 }
 
     
@@ -584,7 +587,7 @@ void bfp_s16_to_s32(
     const exponent_t a_exp = b->exp;
 
     a->length = b->length;
-    a->exp = a_exp;
+    a->exp = a_exp - 8;
     a->hr = b->hr + 8;
     xs3_s16_to_s32(a->data, b->data, b->length);
 }
