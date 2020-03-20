@@ -237,17 +237,11 @@ static void test_xs3_clip_vect_s32_basic()
 
 
 
-int test_xs3_clip_vect()
+void test_xs3_clip_vect()
 {
-    int retval = 0;
-    
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_xs3_clip_vect_s16_basic);
 
     RUN_TEST(test_xs3_clip_vect_s32_basic);
-    
-    retval = UnityEnd();
-    
-    return retval;
 }

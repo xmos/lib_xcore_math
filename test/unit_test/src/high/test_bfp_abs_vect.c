@@ -11,7 +11,7 @@
 
 #include "unity.h"
 
-#if DEBUG_ON || 1
+#if DEBUG_ON || 0
 #undef DEBUG_ON
 #define DEBUG_ON    (1)
 #endif
@@ -109,14 +109,10 @@ static void test_bfp_abs_vect_s32()
 
 
 
-int test_bfp_abs_vect()
+void test_bfp_abs_vect()
 {
-    int retval = 0;
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_bfp_abs_vect_s16);
     RUN_TEST(test_bfp_abs_vect_s32);
-
-    retval = UnityEnd();
-    return retval;
 }

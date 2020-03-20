@@ -183,18 +183,14 @@ static void test_xs3_headroom_vect_s32_case1()
 #undef LEN
 #undef REPS
 
-#define RUN(TEST) do{UnityBegin(__FILE__); RUN_TEST(TEST); retval = UnityEnd(); printf("\n\n");}while(0);
 
-
-int test_xs3_headroom_vect()
+void test_xs3_headroom_vect()
 {
-    int retval = 0;
-
-    RUN(test_xs3_headroom_vect_s16_case0);
-    RUN(test_xs3_headroom_vect_s16_case1);
+    SET_TEST_FILE();
     
-    RUN(test_xs3_headroom_vect_s32_case0);
-    RUN(test_xs3_headroom_vect_s32_case1);
-
-    return retval;
+    RUN_TEST(test_xs3_headroom_vect_s16_case0);
+    RUN_TEST(test_xs3_headroom_vect_s16_case1);
+    
+    RUN_TEST(test_xs3_headroom_vect_s32_case0);
+    RUN_TEST(test_xs3_headroom_vect_s32_case1);
 }

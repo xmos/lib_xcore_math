@@ -135,18 +135,10 @@ static void test_xs3_abs_vect_s32()
 #undef REPS
 
 
-int test_xs3_abs_vect()
+void test_xs3_abs_vect()
 {
-    int retval = 0;
-    
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_xs3_abs_vect_s16);
-
     RUN_TEST(test_xs3_abs_vect_s32);
-    
-    retval = UnityEnd();
-    
-
-    return retval;
 }

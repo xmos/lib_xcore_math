@@ -7,6 +7,8 @@
 
 #include "xs3_math.h"
 
+#define SET_TEST_FILE()     Unity.TestFile = __FILE__
+
 #ifdef __xcore__
 #define WORD_ALIGNED __attribute__((aligned (4)))
 #else
@@ -18,7 +20,7 @@
 #endif
 
 #ifndef QUICK_TEST
-#define QUICK_TEST  0
+#define QUICK_TEST  1
 #endif
 
 #define IF_QUICK_TEST(X, Y)  ((QUICK_TEST)? X : Y)

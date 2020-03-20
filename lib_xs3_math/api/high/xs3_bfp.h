@@ -558,10 +558,9 @@ void bfp_abs_vect_s32(
  * @brief Sum the mantissas of a 16-bit BFP vector.
  * 
  * The 16-bit mantissas of the input BFP vector @bfp_vec{B} are summed to produce a 32-bit result, @f$\alpha@f$,
- * which is returned. @f$\alpha@f$ taken with the input vector's exponent (i.e. @f${result}\cdot 2^{B_exp}) 
+ * which is returned. @f$\alpha@f$ taken with the input vector's exponent (i.e. @f${\alpha}\cdot 2^{B_{exp}} @f$) 
  * is the sum of the represented values of @bfp_vec{B}.
  * 
- * @bfp_op{16, @f$ \left(\sum_\{k=0\}^\{B_\{length\}-1\} b_k \right)\cdot 2^\{B_\{-exp\}\}  @f$ }
  * 
  * @param b         Input BFP vector @bfp_vec{B}
  * 
@@ -570,22 +569,18 @@ void bfp_abs_vect_s32(
 int32_t bfp_sum_s16(
     const bfp_s16_t* b);
 
-/** Compute the sum of the elements of a 32-bit BFP vector.
+/** 
+ * @brief Sum the mantissas of a 32-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED
- * </CODE></BLOCKQUOTE>
+ * The 32-bit mantissas of the input BFP vector @bfp_vec{B} are summed to produce a 64-bit result, @f$\alpha@f$,
+ * which is returned. @f$\alpha@f$ taken with the input vector's exponent (i.e. @f${\alpha}\cdot 2^{B_{exp}} @f$) 
+ * is the sum of the represented values of @bfp_vec{B}.
  * 
+ * @bfp_op{32, @f$ \left(\sum_\{k=0\}^\{B_\{length\}-1\} b_k \right)\cdot 2^\{B_\{-exp\}\}  @f$ }
  * 
- * Conceptually, the operation performed is:
- *      A <- ( B[0] + B[1] + ... + B[N-1] }
- *        where A is a floating-point scalar
- *              B[] is a BFP vector
- *              N is the size of the vector B[]
+ * @param b         Input BFP vector @bfp_vec{B}
  * 
- * @param b         Input BFP vector to be summed.
- * 
- * \returns         TODO
+ * @return  Sum of mantissas of @bfp_vec{B}
  */
 int64_t bfp_sum_s32(
     const bfp_s32_t* b);

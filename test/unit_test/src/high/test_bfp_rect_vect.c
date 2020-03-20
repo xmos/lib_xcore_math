@@ -91,14 +91,10 @@ static void test_bfp_rect_vect_s32()
 
 
 
-int test_bfp_rect_vect()
+void test_bfp_rect_vect()
 {
-    int retval = 0;
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_bfp_rect_vect_s16);
     RUN_TEST(test_bfp_rect_vect_s32);
-
-    retval = UnityEnd();
-    return retval;
 }

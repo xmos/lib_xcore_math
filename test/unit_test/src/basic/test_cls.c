@@ -151,20 +151,13 @@ static void test_CLS_C16()
 
 
 
-int test_CLS_funcs()
+void test_CLS_funcs()
 {
-    int retval = 0;
+    SET_TEST_FILE();
     
-    UnityBegin(__FILE__);
-
     RUN_TEST(test_cls);
     RUN_TEST(test_CLS_S32);
     RUN_TEST(test_CLS_S16);
     RUN_TEST(test_CLS_C32);
     RUN_TEST(test_CLS_C16);
-
-    retval = UnityEnd();
-    
-
-    return retval;
 }

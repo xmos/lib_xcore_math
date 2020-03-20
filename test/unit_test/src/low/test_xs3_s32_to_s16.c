@@ -93,16 +93,10 @@ static void test_xs3_s32_to_s16_basic()
 #undef MAC_LEN
 
 
-int test_xs3_s32_to_s16()
+void test_xs3_s32_to_s16()
 {
-    int retval = 0;
-    
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_xs3_s32_to_s16_basic);
 
-    retval = UnityEnd();
-    
-
-    return retval;
 }

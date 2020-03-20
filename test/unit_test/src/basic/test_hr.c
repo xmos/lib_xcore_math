@@ -110,19 +110,12 @@ static void test_HR_C16()
 
 
 
-int test_HR_funcs()
+void test_HR_funcs()
 {
-    int retval = 0;
-    
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_HR_S32);
     RUN_TEST(test_HR_S16);
     RUN_TEST(test_HR_C32);
     RUN_TEST(test_HR_C16);
-
-    retval = UnityEnd();
-    
-
-    return retval;
 }

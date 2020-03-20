@@ -204,18 +204,11 @@ static void test_xs3_dot_s32_basic()
 
 
 
-int test_xs3_dot()
+void test_xs3_dot()
 {
-    int retval = 0;
-    
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_xs3_dot_s16_basic);
 
     RUN_TEST(test_xs3_dot_s32_basic);
-
-    retval = UnityEnd();
-    
-
-    return retval;
 }

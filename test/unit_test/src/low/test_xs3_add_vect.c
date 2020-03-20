@@ -406,20 +406,13 @@ static void test_xs3_add_vect_s32_random()
 #undef REPS
 
 
-int test_xs3_add_vect()
+void test_xs3_add_vect()
 {
-    int retval = 0;
+    SET_TEST_FILE();
     
-    UnityBegin(__FILE__);
-
     RUN_TEST(test_xs3_add_vect_s16_basic);
     RUN_TEST(test_xs3_add_vect_s16_random);
 
     RUN_TEST(test_xs3_add_vect_s32_basic);
     RUN_TEST(test_xs3_add_vect_s32_random);
-
-    retval = UnityEnd();
-    
-
-    return retval;
 }

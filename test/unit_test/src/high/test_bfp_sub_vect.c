@@ -357,10 +357,9 @@ static void test_bfp_sub_vect_s32_1()
 
 
 
-int test_bfp_sub_vect()
+void test_bfp_sub_vect()
 {
-    int retval = 0;
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_bfp_sub_vect_calc_params);
     
@@ -369,7 +368,4 @@ int test_bfp_sub_vect()
 
     RUN_TEST(test_bfp_sub_vect_s32_0);
     RUN_TEST(test_bfp_sub_vect_s32_1);
-
-    retval = UnityEnd();
-    return retval;
 }

@@ -11,7 +11,7 @@
 
 #include "unity.h"
 
-#if DEBUG_ON || 1
+#if DEBUG_ON || 0
 #undef DEBUG_ON
 #define DEBUG_ON    (1)
 #endif
@@ -76,13 +76,9 @@ static void test_bfp_s32_to_s16_()
 
 
 
-int test_bfp_s32_to_s16()
+void test_bfp_s32_to_s16()
 {
-    int retval = 0;
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_bfp_s32_to_s16_);
-
-    retval = UnityEnd();
-    return retval;
 }

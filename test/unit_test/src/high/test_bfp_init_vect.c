@@ -301,10 +301,9 @@ static void test_bfp_init_vect_ch_pair_s32()
 
 
 
-int test_bfp_init_vect()
+void test_bfp_init_vect()
 {
-    int retval = 0;
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_bfp_init_vect_s16);
     RUN_TEST(test_bfp_init_vect_s32);
@@ -312,7 +311,4 @@ int test_bfp_init_vect()
     RUN_TEST(test_bfp_init_vect_complex_s32);
     RUN_TEST(test_bfp_init_vect_ch_pair_s16);
     RUN_TEST(test_bfp_init_vect_ch_pair_s32);
-
-    retval = UnityEnd();
-    return retval;
 }

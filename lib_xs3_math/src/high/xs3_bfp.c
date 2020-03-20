@@ -17,7 +17,11 @@ static int32_t ashr(int32_t a, right_shift_t shr)
 }
 
 
-
+    
+/* ******************
+ *
+ * 
+ * ******************/
 headroom_t xs3_headroom_s64(
     const int64_t a)
 {
@@ -32,10 +36,11 @@ headroom_t xs3_headroom_s64(
 
 
 
-
-
-
-
+    
+/* ******************
+ *
+ * 
+ * ******************/
 headroom_t bfp_headroom_vect_s16(
     bfp_s16_t* a)
 {
@@ -46,10 +51,11 @@ headroom_t bfp_headroom_vect_s16(
 
 
 
-
-
-
-
+    
+/* ******************
+ *
+ * 
+ * ******************/
 headroom_t bfp_headroom_vect_s32(
     bfp_s32_t* a)
 {
@@ -59,9 +65,11 @@ headroom_t bfp_headroom_vect_s32(
 }
 
 
-
-
-
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_shl_vect_s16(
     bfp_s16_t* a,
     const bfp_s16_t* b,
@@ -77,6 +85,11 @@ void bfp_shl_vect_s16(
 }
 
 
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_shl_vect_s32(
     bfp_s32_t* a,
     const bfp_s32_t* b,
@@ -116,6 +129,12 @@ void bfp_shl_vect_s32(
 
 */
 
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_add_vect_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -139,6 +158,11 @@ void bfp_add_vect_calc_params(
 }
 
 
+
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_add_vect_s16(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
@@ -160,6 +184,11 @@ void bfp_add_vect_s16(
 }
 
 
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_add_vect_s32(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
@@ -181,13 +210,11 @@ void bfp_add_vect_s32(
 }
 
 
-/*
-    Unless I'm mistaken, the corner-case saturation cannot occur with subtraction, because
-    the maximum magnitude result requires elements from b and c to have different signs.
-
-    If  b[k] is a negative power of 2, then  c[k] = -b[k] must have less headroom, avoiding
-    the problem.
-*/
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_sub_vect_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -207,6 +234,12 @@ void bfp_sub_vect_calc_params(
 }
 
 
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_sub_vect_s16(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
@@ -227,6 +260,12 @@ void bfp_sub_vect_s16(
 }
 
 
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_sub_vect_s32(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
@@ -248,16 +287,11 @@ void bfp_sub_vect_s32(
 
 
 
-
-
-
-
-/**
- * Calculate the output exponent and input shifts needed to perform the addition
- * of two BFP vectors. Independent of vector type.
+    
+/* ******************
+ *
  * 
- * Logic is identical to bfp_add_calc_params()
- */
+ * ******************/
 void bfp_mul_vect_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -271,6 +305,12 @@ void bfp_mul_vect_calc_params(
     
 }
 
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_mul_vect_s16(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
@@ -291,6 +331,12 @@ void bfp_mul_vect_s16(
     a->hr = xs3_mul_vect_s16(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_mul_vect_s32(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
@@ -313,6 +359,11 @@ void bfp_mul_vect_s32(
 
 
 
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_scalar_mul_vect_s16(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
@@ -339,6 +390,12 @@ void bfp_scalar_mul_vect_s16(
 }
 
 
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_scalar_mul_vect_s32(
     bfp_s32_t* a, 
     const bfp_s32_t* b,
@@ -367,6 +424,11 @@ void bfp_scalar_mul_vect_s32(
 
 
 
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_abs_vect_s16(
     bfp_s16_t* a,
     const bfp_s16_t* b)
@@ -391,7 +453,13 @@ void bfp_abs_vect_s16(
     a->hr = xs3_abs_vect_s16(a->data, b->data, b->length);
 }
 
+
+
     
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_abs_vect_s32(
     bfp_s32_t* a,
     const bfp_s32_t* b)
@@ -418,12 +486,24 @@ void bfp_abs_vect_s32(
 
 
 
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
 int32_t bfp_sum_s16(
     const bfp_s16_t* b)
 {
     return xs3_sum_s16(b->data, b->length);
 }
 
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
 int64_t bfp_sum_s32(
     const bfp_s32_t* b)
 {
@@ -431,8 +511,11 @@ int64_t bfp_sum_s32(
 }
 
 
-
-
+    
+/* ******************
+ *
+ * 
+ * ******************/
 float bfp_dot_s16(
     const bfp_s16_t* b, 
     const bfp_s16_t* c)
@@ -452,7 +535,11 @@ float bfp_dot_s16(
     return pack_float_s16(a, a_exp);
 }
 
-
+    
+/* ******************
+ *
+ * 
+ * ******************/
 float bfp_dot_s32(
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
@@ -474,6 +561,10 @@ float bfp_dot_s32(
 
 
 
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_clip_vect_s16(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
@@ -498,6 +589,11 @@ void bfp_clip_vect_s16(
 }
 
 
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_clip_vect_s32(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
@@ -521,8 +617,11 @@ void bfp_clip_vect_s32(
     a->hr = xs3_clip_vect_s32(a->data, b->data, b->length, lb, ub, b_shr);
 }
 
-
-
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_rect_vect_s16(
     bfp_s16_t* a,
     const bfp_s16_t* b)
@@ -537,6 +636,11 @@ void bfp_rect_vect_s16(
 }
 
 
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_rect_vect_s32(
     bfp_s32_t* a,
     const bfp_s32_t* b)
@@ -551,7 +655,11 @@ void bfp_rect_vect_s32(
 }
 
 
-
+    
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_s32_to_s16(
     bfp_s16_t* a,
     const bfp_s32_t* b)
@@ -575,6 +683,10 @@ void bfp_s32_to_s16(
 }
 
     
+/* ******************
+ *
+ * 
+ * ******************/
 void bfp_s16_to_s32(
     bfp_s32_t* a,
     const bfp_s16_t* b)

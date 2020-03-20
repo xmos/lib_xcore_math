@@ -202,23 +202,14 @@ static void test_xs3_sum_s32_random()
 #undef REPS
 
 
-#define RUN(TEST) do{UnityBegin(__FILE__); RUN_TEST(TEST); retval = UnityEnd(); printf("\n\n");}while(0);
 
-
-int test_xs3_sum()
+void test_xs3_sum()
 {
-    int retval = 0;
-    
-    UnityBegin(__FILE__);
+    SET_TEST_FILE();
 
     RUN_TEST(test_xs3_sum_s16_basic);
     RUN_TEST(test_xs3_sum_s16_random);
 
     RUN_TEST(test_xs3_sum_s32_basic);
     RUN_TEST(test_xs3_sum_s32_random);
-
-    retval = UnityEnd();
-    
-
-    return retval;
 }
