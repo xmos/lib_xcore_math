@@ -83,15 +83,14 @@ void bfp_mul_vect_complex_s16(
 
     //TODO
     const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    const int a_shr = 0;
 
 
     a->length = b->length;
     a->exp = a_exp;
     
-    const headroom_t re_hr = xs3_mul_vect_s16(a->real, b->real, c->data, b->length, b_shr, c_shr);
-    const headroom_t im_hr = xs3_mul_vect_s16(a->imag, b->imag, c->data, b->length, b_shr, c_shr);
+    const headroom_t re_hr = xs3_mul_vect_s16(a->real, b->real, c->data, b->length, a_shr);
+    const headroom_t im_hr = xs3_mul_vect_s16(a->imag, b->imag, c->data, b->length, a_shr);
     a->hr = (re_hr <= im_hr)? re_hr : im_hr;
 }
 

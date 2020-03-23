@@ -28,28 +28,21 @@ static char msg_buff[200];
 #endif
 
 
-static int16_t mul_s16(int16_t b, int16_t c, int b_shr, int c_shr)
+static int16_t mul_s16(int16_t b, int16_t c, int a_shr)
 {
-    int32_t bp = b;
-    int32_t cp = c;
+    int32_t A = ((int32_t)b)*c;
+    int32_t a = A;
 
-    bp = (b_shr >= 0)? bp >> b_shr : bp << (-b_shr);
-    cp = (c_shr >= 0)? cp >> c_shr : cp << (-c_shr);
-
-    bp = (bp >= VPU_INT16_MAX)? VPU_INT16_MAX : (bp <= VPU_INT16_MIN)? VPU_INT16_MIN : bp;
-    bp = ( (b_shr > 0) && (b < 0) && (-(1<<b_shr)) < b)? -1 : bp;
-    assert(b >= 0 || bp < 0);
-    
-    cp = (cp >= VPU_INT16_MAX)? VPU_INT16_MAX : (cp <= VPU_INT16_MIN)? VPU_INT16_MIN : cp;
-    cp = ( (c_shr > 0) && (c < 0) && (-(1<<c_shr)) < c)? -1 : cp;
-    assert(c >= 0 || cp < 0);
-
-    int32_t a = (bp * cp + (1<<13)) >> (14);
-
+    a = a + (1 << (a_shr-1));
+    a = a >> a_shr;
     a = (a >= VPU_INT16_MAX)? VPU_INT16_MAX : (a <= VPU_INT16_MIN)? VPU_INT16_MIN : a;
+
+    if(A < 0 && a == 0)
+        a = -1;
 
     return (int16_t) a;
 }
+
 
 static int32_t mul_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 {
@@ -82,44 +75,23 @@ static void test_xs3_mul_vect_s16_basic()
 
     typedef struct {
         struct {    int16_t b;  int16_t c;  } value;
-        struct {    int b;      int c;      } shr;
+        right_shift_t a_shr;
         int16_t expected;
         unsigned line;
     } test_case_t;
 
     test_case_t casses[] = {
-        // value{       b         c }   shr{  b   c }        exp        line num
-        {       {  0x0000,   0x0000 },     {  0,  0 },    0x0000,       __LINE__},
-        {       {  0x0001,   0x0000 },     {  0,  0 },    0x0000,       __LINE__},
-        {       {  0x0000,   0x0001 },     {  0,  0 },    0x0000,       __LINE__},
-        {       {  0x4000,   0x4000 },     {  0,  0 },    0x4000,       __LINE__},
-        {       { -0x4000,   0x4000 },     {  0,  0 },   -0x4000,       __LINE__},
-        {       { -0x4000,  -0x4000 },     {  0,  0 },    0x4000,       __LINE__},
-        {       {  0x4000,   0x0001 },     {  0,  0 },    0x0001,       __LINE__},
-        {       {  0x0001,   0x4000 },     {  0,  0 },    0x0001,       __LINE__},
-        {       {  0x4000,   0x0123 },     {  0,  0 },    0x0123,       __LINE__},
-        {       {  0x0123,   0x4000 },     {  0,  0 },    0x0123,       __LINE__},
-        {       {  0x0040,   0x0200 },     {  0,  0 },    0x0002,       __LINE__},
-        {       {  0x0040,   0x0100 },     {  0,  0 },    0x0001,       __LINE__},
-        {       {  0x0040,   0x0080 },     {  0,  0 },    0x0001,       __LINE__},
-        {       {  0x0040,   0x0040 },     {  0,  0 },    0x0000,       __LINE__},
-        {       {  0x7f00,   0x7f00 },     {  0,  0 },    0x7fff,       __LINE__},
-        {       {  0x7f00,  -0x7f00 },     {  0,  0 },   -0x7fff,       __LINE__},
-        {       { -0x8000,   0x4000 },     {  0,  0 },   -0x7fff,       __LINE__},
-        
-        {       {  0x4000,   0x4000 },     {  1,  0 },    0x2000,       __LINE__},
-        {       {  0x4000,   0x4000 },     {  0,  1 },    0x2000,       __LINE__},
-        {       {  0x4000,   0x4000 },     {  1,  1 },    0x1000,       __LINE__},
-        {       {  0x4000,   0x4000 },     {  3,  5 },    0x0040,       __LINE__},
-
-        {       {  0x4000,   0x0800 },     {  0, -1 },    0x1000,       __LINE__},
-        {       {  0x4000,   0x0800 },     {  0, -2 },    0x2000,       __LINE__},
-        {       {  0x4000,   0x0800 },     {  0, -3 },    0x4000,       __LINE__},
-        {       {  0x4000,   0x0800 },     {  0, -4 },    0x7fff,       __LINE__},
-        {       { -0x4000,   0x0800 },     {  0, -4 },   -0x7fff,       __LINE__},
-        {       {  0x4000,   0x0800 },     {  1, -4 },    0x4000,       __LINE__},
-
-        
+        // value{       b         c }    a_shr        exp        line num
+        {       {  0x0000,   0x0000 },     0,      0x0000,       __LINE__},
+        {       {  0x0001,   0x0000 },     0,      0x0000,       __LINE__},
+        {       {  0x0000,   0x0001 },     0,      0x0000,       __LINE__},
+        {       {  0x0001,   0x0001 },     0,      0x0001,       __LINE__},
+        {       {  0x0002,   0x0001 },     0,      0x0002,       __LINE__},
+        {       {  0x0001,   0x0002 },     0,      0x0002,       __LINE__},
+        {       {  0x0010,   0x0010 },     0,      0x0100,       __LINE__},
+        {       { -0x0001,   0x0001 },     0,     -0x0001,       __LINE__},
+        {       {  0x0100,   0x0100 },     0,      0x7FFF,       __LINE__},
+        {       {  0x0100,   0x0100 },     2,      0x4000,       __LINE__},
     };
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
@@ -132,7 +104,9 @@ static void test_xs3_mul_vect_s16_basic()
         test_case_t* casse = &casses[v];
         
         //Verify mul_s16() is correct. It's used in other test cases.
-        TEST_ASSERT_EQUAL_MSG(casse->expected, mul_s16(casse->value.b, casse->value.c, casse->shr.b, casse->shr.c), casse->line);
+        TEST_ASSERT_EQUAL_MSG(casse->expected, 
+                    mul_s16(casse->value.b, casse->value.c, casse->a_shr), 
+                    casse->line);
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
 
@@ -152,8 +126,7 @@ static void test_xs3_mul_vect_s16_basic()
                 C[i] = casse->value.c;
             }
 
-
-            hr = xs3_mul_vect_s16(A, B, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_mul_vect_s16(A, B, C, len, casse->a_shr);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
@@ -161,7 +134,7 @@ static void test_xs3_mul_vect_s16_basic()
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_mul_vect_s16(A, A, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_mul_vect_s16(A, A, C, len, casse->a_shr);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
@@ -169,7 +142,7 @@ static void test_xs3_mul_vect_s16_basic()
             }
 
             memcpy(A, C, sizeof(A));
-            hr = xs3_mul_vect_s16(A, B, A, len, casse->shr.b, casse->shr.c);
+            hr = xs3_mul_vect_s16(A, B, A, len, casse->a_shr);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
@@ -182,11 +155,11 @@ static void test_xs3_mul_vect_s16_basic()
 
 
 #define MAX_LEN     100
-#define REPS        IF_QUICK_TEST(10, 100)
+#define REPS        IF_QUICK_TEST(100, 100)
 static void test_xs3_mul_vect_s16_random()
 {
     PRINTF("%s...\n", __func__);
-    seed = 998754;
+    seed = 456354333;
 
     headroom_t hr;
     int16_t A[MAX_LEN];
@@ -205,36 +178,30 @@ static void test_xs3_mul_vect_s16_random()
             C[i] = pseudo_rand_int16(&seed) >> shr;
         }
 
-        int b_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
-        int c_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
+        int a_shr = (pseudo_rand_uint32(&seed) % 5);
         
-        const char sprintpat[] = "rep(%d)[%d of %u]: %d <-- ((%d >> %d) * (%d >> %d)) >> 14     (A[i]=0x%04X; B[i]=0x%04X; C[i]=0x%04X)";
-
-        hr = xs3_mul_vect_s16(A, B, C, len, b_shr, c_shr);
+        hr = xs3_mul_vect_s16(A, B, C, len, a_shr);
 
         for(int i = 0; i < len; i++){
-            int16_t expected = mul_s16(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)C[i]);
+            int16_t expected = mul_s16(B[i], C[i], a_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
         TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_mul_vect_s16(A, A, C, len, b_shr, c_shr);
+        hr = xs3_mul_vect_s16(A, A, C, len, a_shr);
 
         for(int i = 0; i < len; i++){
-            int16_t expected = mul_s16(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i],  (uint16_t)B[i],  (uint16_t)C[i]);
+            int16_t expected = mul_s16(B[i], C[i], a_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
         TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
         
         memcpy(A, C, sizeof(A[0])*len);
-        hr = xs3_mul_vect_s16(A, B, A, len, b_shr, c_shr);
+        hr = xs3_mul_vect_s16(A, B, A, len, a_shr);
 
         for(int i = 0; i < len; i++){
-            int16_t expected = mul_s16(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i],  (uint16_t)B[i],  (uint16_t)C[i]);
+            int16_t expected = mul_s16(B[i], C[i], a_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
         TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);

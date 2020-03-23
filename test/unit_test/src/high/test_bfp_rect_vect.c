@@ -26,7 +26,7 @@ static unsigned seed = 666;
 
 static void test_bfp_rect_vect_s16()
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
+    PRINTF("%s...\n", __func__);
 
     seed = 9676;
 
@@ -59,7 +59,7 @@ static void test_bfp_rect_vect_s16()
 
 static void test_bfp_rect_vect_s32()
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
+    PRINTF("%s...\n", __func__);
 
     seed = 34573;
 

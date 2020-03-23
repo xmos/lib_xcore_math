@@ -390,7 +390,13 @@ void bfp_sub_vect_s32(
     const bfp_s32_t* c);
 
 
-
+void bfp_mul_vect_s16_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* a_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
 
 /** Compute the element-by-element product two 16-bit BFP vectors.
  * 
@@ -415,6 +421,16 @@ void bfp_mul_vect_s16(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const bfp_s16_t* c);
+
+
+void bfp_mul_vect_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
 
 /** Compute the element-by-element product of two 32-bit BFP vectors.
  * 

@@ -5,13 +5,6 @@
 #include "asm_helper.h"
 
 /*  
-headroom_t xs3_mul_vect_s16(
-    int16_t* a,
-    const int16_t* b,
-    const int16_t* c,
-    const unsigned len,
-    const int b_shr,
-    const int c_shr);
 
 headroom_t xs3_mul_vect_s32(
     int32_t* a,
@@ -26,7 +19,6 @@ headroom_t xs3_mul_vect_s32(
 #define NSTACKWORDS     (8+8)
 
 #define FUNCTION_NAME   xs3_mul_vect
-#define FNAME_S16       CAT(FUNCTION_NAME, _s16)
 #define FNAME_S32       CAT(FUNCTION_NAME, _s32)
 
 #define STACK_B_SHR     (NSTACKWORDS+1)
@@ -93,16 +85,6 @@ ASM_PREAMBLE_LCL(apply_op);
 
 ASM_POSTAMBLE_LCL(apply_op);
 
-
-
-ASM_PREAMBLE_V2(FNAME_S16);
-FNAME_S16:
-/**/    dualentsp NSTACKWORDS
-        ldc r11, 0x100
-    {   shl r11, len, SIZEOF_LOG2_S16           ;   vsetc r11                           }
-    {   zext r11, 5                             ;   shr len, len, EPV_LOG2_S16          }
-/**/{                                           ;   bu .L_apply_op                      }
-ASM_POSTAMBLE(FNAME_S16, NSTACKWORDS);
 
 
 ASM_PREAMBLE_V2(FNAME_S32);

@@ -269,15 +269,12 @@ headroom_t xs3_sub_vect_s32(
 /**
  * \brief Multiply one `int16_t` vector by another.
  * 
- * Multiply the `int16_t` vector `b`, arithmetically right-shifted `b_shr` bits, by the `int16_t` 
- * vector `c`, arithmetically right-shifted `c_shr` bits, and place the 32-bit result, arithmetically 
- * right-shifted another `14` bits, in output vector `a`.
+ * Multiply the `int16_t` vector `b` element-wise by the `int16_t` vector `c`, right-shift the 32-bit 
+ * product by `a_shr` bits, and store the result in output vector `a`.
  * 
- * If `b_shr` or `c_shr`are negative, a left-shift will occur instead of a right-shift. Left-shifts are 
- * saturating operations which saturate to 16-bit bounds. The result of the final right-shift is also 
- * saturated to 16-bit bounds.
+ * The final result is saturated to 16-bit bounds.
  * 
- * \low_op{16, @f$a_k \leftarrow \left(b_k \cdot 2^\{-b\_shr\} \times c_k \cdot 2^\{-c\_shr\}\right) \cdot 2^\{-14\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$a_k \leftarrow \left(b_k \cdot c_k \right) \cdot 2^\{-a\_shr\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
  * 
  * \safe_in_place{a,b,c}
  * \requires_word_alignment{a,b,c}
@@ -286,8 +283,7 @@ headroom_t xs3_sub_vect_s32(
  * \param[in] b         Input vector 1
  * \param[in] c         Input vector 2
  * \param[in] length    Number of elements in `a`, `b` and `c`
- * \param[in] b_shr     Arithmetic right-shift applied to elements of `b`
- * \param[in] c_shr     Arithmetic right-shift applied to elements of `c`
+ * \param[in] a_shr     Arithmetic right-shift applied to product of `b` and `c`
  * 
  * \return  Headroom of output vector `a`
  */
@@ -296,8 +292,7 @@ headroom_t xs3_mul_vect_s16(
     const int16_t* b,
     const int16_t* c,
     const unsigned length,
-    const right_shift_t b_shr,
-    const right_shift_t c_shr);
+    const right_shift_t a_shr);
 
 /**
  * \brief Multiply one `int32_t` vector by another.

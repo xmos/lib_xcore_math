@@ -292,17 +292,30 @@ void bfp_sub_vect_s32(
  *
  * 
  * ******************/
-void bfp_mul_vect_calc_params(
+void bfp_mul_vect_s16_calc_params(
     exponent_t* a_exp,
-    right_shift_t* b_shr,
-    right_shift_t* c_shr,
+    right_shift_t* a_shr,
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation)
+    const headroom_t c_hr)
 {
-    
+    /*
+        (-0x8000 >> b_hr) * (-0x8000 >> c_hr)
+        -2^15 * 2^(-b_hr) * -2^15 * 2^(-c_hr)
+        2^30 * 2^(-b_hr-c_hr)
+        2^(30-total_hr)
+        2^14 * 2^(16-total_hr)
+        0x4000 * 2^(16-total_hr)
+
+        Don't need to worry about XS3_BFP_ALLOW_SATURATION, because
+        max negative value is -0x8000 * 0x7FFF
+    */
+    headroom_t total_hr = b_hr+c_hr;
+    *a_shr = 16-total_hr;
+    *a_shr = (*a_shr < 0)? 0 : *a_shr;
+
+    *a_exp = (b_exp+c_exp)+*a_shr;
 }
 
 
@@ -323,12 +336,59 @@ void bfp_mul_vect_s16(
     a->length = b->length;
 #endif
 
-    right_shift_t b_shr, c_shr;
+    right_shift_t a_shr;
 
-    bfp_mul_vect_calc_params(&a->exp, &b_shr, &c_shr,
-            b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
+    bfp_mul_vect_s16_calc_params(&a->exp, &a_shr,
+            b->exp, c->exp, b->hr, c->hr);
 
-    a->hr = xs3_mul_vect_s16(a->data, b->data, c->data, b->length, b_shr, c_shr);
+    a->hr = xs3_mul_vect_s16(a->data, b->data, c->data, b->length, a_shr);
+}
+
+
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
+void bfp_mul_vect_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr)
+{
+
+    /*
+        (-0x80000000 >> b_hr) * (-0x80000000 >> c_hr) >> 30
+        -2^31 * 2^-b_hr * -2^31 * 2^-c_hr * 2^-30
+        2^(62 - b_hr - c_hr - 30)
+        2^(32 - total_hr)
+        2^30 * 2^(2 - total_hr)
+        0x40000000 * 2^(2-total_hr)
+    */
+    headroom_t total_hr = b_hr + c_hr;
+
+    if(total_hr == 0){
+        *b_shr = 1;
+        *c_shr = 1;
+    } else if(total_hr == 1){
+        *b_shr = (b_hr == 0)? 1 : 0;
+        *c_shr = (c_hr == 0)? 1 : 0;
+    } else if(b_hr == 0){
+        *b_shr = 0;
+        *c_shr = 2-total_hr;
+    } else if(c_hr == 0){
+        *b_shr = 2-total_hr;
+        *c_shr = 0;
+    } else {
+        *b_shr = 1-b_hr;
+        *c_shr = 1-c_hr;
+    }
+
+    *a_exp = b_exp + c_exp + *b_shr + *c_shr + 30;
 }
 
 
@@ -345,15 +405,13 @@ void bfp_mul_vect_s32(
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     assert(b->length == c->length);
     assert(b->length == a->length);
+#else
+    a->length = b->length;
 #endif
 
-    //TODO
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    right_shift_t b_shr, c_shr;
+    bfp_mul_vect_s32_calc_params(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr); 
 
-    a->length = b->length;
-    a->exp = a_exp;
     a->hr = xs3_mul_vect_s32(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
@@ -574,18 +632,47 @@ void bfp_clip_vect_s16(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     assert(b->length == a->length);
+#else 
+    a->length = b->length;
 #endif
 
-    //TODO - calculate what these should be
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int16_t lb = lower_bound; //modified lower bound based on a_exp
-    const int16_t ub = upper_bound; //modified upper bound based on a_exp
+    assert(lower_bound <= upper_bound);
 
+    // always base a_exp on b, because either they will work in that exponent, 
+    //  or they will saturate. But because we we're choosing a_exp precisely so
+    //  that b doesn't saturate, if the bound saturates, so, too would relevant
+    //  b values.
 
-    a->length = b->length;
-    a->exp = a_exp;
-    a->hr = xs3_clip_vect_s16(a->data, b->data, b->length, lb, ub, b_shr);
+    exponent_t a_exp = b->exp - b->hr + XS3_BFP_ALLOW_SATURATION; //minimum b exponent
+    
+    right_shift_t bound_shr = a_exp - bound_exp;
+    right_shift_t b_shr = a_exp - b->exp;
+
+    int16_t lb;
+    int16_t ub;
+
+    if(bound_shr < 0){
+        int32_t ub32 = ((int32_t)upper_bound) << (-bound_shr);
+        int32_t lb32 = ((int32_t)lower_bound) << (-bound_shr);
+
+        ub = (ub32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (ub32 <= VPU_INT16_MIN)? VPU_INT16_MIN : ub32;
+        lb = (lb32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (lb32 <= VPU_INT16_MIN)? VPU_INT16_MIN : lb32;
+    } else {
+        // Should force upper_bound to round downwards to enforce the guarantee that no output
+        // can be larger than upper bound?
+        ub = upper_bound >> bound_shr;
+        // And lower bound upwards?
+        lb = (lower_bound + ((1<<bound_shr)-1)) >> bound_shr;
+    }
+
+    a->exp = a_exp;    
+    if(ub == lb){
+        //If modified upper and lower bounds are identical, then just set the elements to that.
+        a->hr = HR_S16(ub);
+        xs3_set_vect_s16(a->data, ub, b->length);
+    } else {
+        a->hr = xs3_clip_vect_s16(a->data, b->data, b->length, lb, ub, b_shr);
+    }
 }
 
 
@@ -603,18 +690,49 @@ void bfp_clip_vect_s32(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     assert(b->length == a->length);
+#else 
+    a->length = b->length;
 #endif
 
-    //TODO - calculate what these should be
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int32_t lb = lower_bound; //modified lower bound based on a_exp
-    const int32_t ub = upper_bound; //modified upper bound based on a_exp
+    assert(lower_bound <= upper_bound);
 
+    // always base a_exp on b, because either they will work in that exponent, 
+    //  or they will saturate. But because we we're choosing a_exp precisely so
+    //  that b doesn't saturate, if the bound saturates, so, too would relevant
+    //  b values.
+    // I guess the trade off is that we might lose resolution on the clipping boundaries
+    //  if they have to be down-shifted.
 
-    a->length = b->length;
-    a->exp = a_exp;
-    a->hr = xs3_clip_vect_s32(a->data, b->data, b->length, lb, ub, b_shr);
+    exponent_t a_exp = b->exp;// - b->hr + XS3_BFP_ALLOW_SATURATION; //minimum b exponent
+    
+    right_shift_t bound_shr = a_exp - bound_exp;
+    right_shift_t b_shr = a_exp - b->exp;
+
+    int32_t lb;
+    int32_t ub;
+
+    if(bound_shr < 0){
+        int64_t ub64 = ((int64_t)upper_bound) << (-bound_shr);
+        int64_t lb64 = ((int64_t)lower_bound) << (-bound_shr);
+
+        ub = (ub64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (ub64 <= VPU_INT32_MIN)? VPU_INT32_MIN : ub64;
+        lb = (lb64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (lb64 <= VPU_INT32_MIN)? VPU_INT32_MIN : lb64;
+    } else {
+        // Should force upper_bound to round downwards to enforce the guarantee that no output
+        // can be larger than upper bound?
+        ub = upper_bound >> bound_shr;
+        // And lower bound upwards?
+        lb = (lower_bound + ((1<<bound_shr)-1)) >> bound_shr;
+    }
+
+    a->exp = a_exp;    
+    if(ub == lb){
+        //If modified upper and lower bounds are identical, then just set the elements to that.
+        a->hr = HR_S32(ub);
+        xs3_set_vect_s32(a->data, ub, b->length);
+    } else {
+        a->hr = xs3_clip_vect_s32(a->data, b->data, b->length, lb, ub, b_shr);
+    }
 }
 
     
@@ -628,9 +746,10 @@ void bfp_rect_vect_s16(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     assert(b->length == a->length);
+#else 
+    a->length = b->length;
 #endif
 
-    a->length = b->length;
     a->exp = b->exp;
     a->hr = xs3_rect_vect_s16(a->data, b->data, b->length);
 }
@@ -647,9 +766,10 @@ void bfp_rect_vect_s32(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     assert(b->length == a->length);
+#else 
+    a->length = b->length;
 #endif
 
-    a->length = b->length;
     a->exp = b->exp;
     a->hr = xs3_rect_vect_s32(a->data, b->data, b->length);
 }
@@ -693,12 +813,13 @@ void bfp_s16_to_s32(
 {    
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     assert(b->length == a->length);
+#else 
+    a->length = b->length;
 #endif
 
     //TODO - figure out how to actually do this..
     const exponent_t a_exp = b->exp;
 
-    a->length = b->length;
     a->exp = a_exp - 8;
     a->hr = b->hr + 8;
     xs3_s16_to_s32(a->data, b->data, b->length);
