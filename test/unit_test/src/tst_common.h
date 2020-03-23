@@ -20,7 +20,7 @@
 #endif
 
 #ifndef QUICK_TEST
-#define QUICK_TEST  1
+#define QUICK_TEST  0
 #endif
 
 #define IF_QUICK_TEST(X, Y)  ((QUICK_TEST)? X : Y)

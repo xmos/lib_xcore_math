@@ -9,14 +9,6 @@
 #include <stdio.h>
 
 
-
-static int32_t ashr(int32_t a, right_shift_t shr)
-{
-    assert(0);
-    return 0;
-}
-
-
     
 /* ******************
  *
@@ -417,6 +409,7 @@ void bfp_mul_vect_s32(
 
 
 
+
     
 /* ******************
  *
@@ -425,26 +418,25 @@ void bfp_mul_vect_s32(
 void bfp_scalar_mul_vect_s16(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
-    const float c)
+    const int16_t alpha_mant,
+    const exponent_t alpha_exp)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     assert(b->length == a->length);
+#else
+    a->length = b->length;
 #endif
 
-    int16_t c_mant;
-    exponent_t c_exp;
-    unpack_float_s16(&c_mant, &c_exp, c);
+    right_shift_t b_shr, s_shr;
 
-    //TODO
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    headroom_t s_hr = HR_S16(alpha_mant);
 
-    c_mant = ashr(c_mant, c_shr);
+    bfp_mul_vect_s32_calc_params(&a->exp, &b_shr, &s_shr, b->exp, alpha_exp, b->hr, s_hr);
+    a->exp = a->exp - 30 + 14;
 
-    a->length = b->length;
-    a->exp = a_exp;
-    a->hr = xs3_scalar_mul_vect_s16(a->data, b->data, c_mant, b->length, b_shr);
+    int16_t alpha = alpha_mant >> s_shr;
+
+    a->hr = xs3_scalar_mul_vect_s16(a->data, b->data, b->length, alpha, b_shr);
 }
 
 
@@ -457,27 +449,24 @@ void bfp_scalar_mul_vect_s16(
 void bfp_scalar_mul_vect_s32(
     bfp_s32_t* a, 
     const bfp_s32_t* b,
-    const float c)
+    const int32_t alpha_mant,
+    const exponent_t alpha_exp)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    assert(b->length == c->length);
     assert(b->length == a->length);
+#else
+    a->length = b->length;
 #endif
 
-    int32_t c_mant;
-    exponent_t c_exp;
-    unpack_float_s32(&c_mant, &c_exp, c);
+    right_shift_t b_shr, s_shr;
 
-    //TODO
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    headroom_t s_hr = HR_S32(alpha_mant);
 
-    c_mant = ashr(c_mant, c_shr);
+    bfp_mul_vect_s32_calc_params(&a->exp, &b_shr, &s_shr, b->exp, alpha_exp, b->hr, s_hr);
 
-    a->length = b->length;
-    a->exp = a_exp;
-    a->hr = xs3_scalar_mul_vect_s32(a->data, b->data, c_mant, b->length, b_shr);
+    int32_t alpha = alpha_mant >> s_shr;
+
+    a->hr = xs3_scalar_mul_vect_s32(a->data, b->data, b->length, alpha, b_shr);
 }
 
 

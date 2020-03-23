@@ -10,23 +10,44 @@ extern "C" {
 
 /** Count the number of leading sign bits of a 16-bit complex number.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * \param a    Input value 
  * 
  * \returns    Number of leading sign bits of ``a``. 
  */
-unsigned xs3_headroom_complex_s16(
+headroom_t xs3_headroom_complex_s16(
     complex_s16_t a);
 
 /** Count the number of leading sign bits of a 32-bit complex number.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * \param a    Input value 
  * 
  * \returns    Number of leading sign bits of ``a``. 
  */
-unsigned xs3_headroom_complex_s32(
+headroom_t xs3_headroom_complex_s32(
     complex_s32_t a);
 
 /** Add two 16-bit complex numbers.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * \param a         Mantissa of first complex input, as well as the output
  * \param a_exp     Exponent of first complex input, as well as the output
@@ -40,6 +61,13 @@ void bfp_add_complex_s16(
     const exponent_t b_exp);
 
 /** Add two 32-bit complex numbers.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * \param a         Mantissa of first complex input, as well as the output
  * \param a_exp     Exponent of first complex input, as well as the output
@@ -55,6 +83,13 @@ void bfp_add_complex_s32(
 
 /** Subtract one 16-bit complex number from another.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * \param a         Mantissa of first complex input, as well as the output
  * \param a_exp     Exponent of first complex input, as well as the output
  * \param b         Mantissa of second complex input
@@ -68,6 +103,13 @@ void bfp_sub_complex_s16(
 
 /** Subtract one 32-bit complex number from another.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * \param a         Mantissa of first complex input, as well as the output
  * \param a_exp     Exponent of first complex input, as well as the output
  * \param b         Mantissa of second complex input
@@ -80,6 +122,13 @@ void bfp_sub_complex_s32(
     const exponent_t b_exp);
 
 /** Multiply a 16-bit complex number by a 16-bit real number.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * \param a         Mantissa of complex input, as well as the output
  * \param a_exp     Exponent of complex input, as well as the output
@@ -95,6 +144,13 @@ void bfp_mul_complex_s16(
 
 /** Multiply a 32-bit complex number by a 32-bit real number.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * \param a         Mantissa of complex input, as well as the output
  * \param a_exp     Exponent of complex input, as well as the output
  * \param b         Mantissa of real input
@@ -108,6 +164,13 @@ void bfp_mul_complex_s32(
     const exponent_t b_exp);
 
 /** Multiply two 16-bit complex numbers.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A <- A * B
@@ -130,6 +193,13 @@ void bfp_complex_mul_complex_s16(
 
 /** Multiply two 32-bit complex numbers.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A <- A * B
  *        where A and B are complex scalars
@@ -151,6 +221,13 @@ void bfp_complex_mul_complex_s32(
 
 /** Conjugate multiply two 16-bit complex numbers.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A <- A * conjugate(B)
  *        where A and B are complex scalars
@@ -167,6 +244,13 @@ void bfp_complex_conj_mul_complex_s16(
     const exponent_t b_exp);
 
 /** Conjugate multiply two 32-bit complex numbers.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A <- A * conjugate(B)
@@ -200,6 +284,13 @@ void bfp_cplx_conj_mul_complex_s32(
 
 /** Count the leading sign bits of a 16-bit complex BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * The number of leading sign bits of a sequence is the minimum of
  * that among its elements.
  * 
@@ -214,6 +305,13 @@ headroom_t bfp_headroom_vect_complex_s16(
 
 
 /** Count the leading sign bits of a 32-bit complex BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * The number of leading sign bits of a sequence is the minimum of
  * that among its elements.
@@ -230,6 +328,13 @@ headroom_t bfp_headroom_vect_complex_s32(
 
 
 /** Apply a left-shift to the elements of a complex 16-bit BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[i] <- B[i] * 2^(shift)
@@ -253,6 +358,13 @@ void bfp_shl_vect_complex_s16(
     const left_shift_t shl);
     
 /** Apply a left-shift to the elements of a complex 32-bit BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[i] <- B[i] * 2^(shift)
@@ -279,6 +391,13 @@ void bfp_shl_vect_complex_s32(
 
 /** Multiply a 16-bit complex BFP vector by a 16-bit real BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[i] <- B[i] * C[i]
  *        for each index i in B[]
@@ -300,6 +419,13 @@ void bfp_mul_vect_complex_s16(
     const bfp_s16_t* c);
 
 /** Multiply a 32-bit complex BFP vector by a 32-bit real BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[i] <- B[i] * C[i]
@@ -323,6 +449,13 @@ void bfp_mul_vect_complex_s32(
 
 /** Multiply a 16-bit complex BFP vector by another 16-bit complex BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[i] <- B[i] * C[i]
  *        for each index i in B[]
@@ -343,6 +476,13 @@ void bfp_complex_mul_vect_complex_s16(
     const bfp_complex_s16_t* c);
 
 /** Multiply a 32-bit complex BFP vector by another 32-bit complex BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[i] <- B[i] * C[i]
@@ -365,6 +505,13 @@ void bfp_complex_mul_vect_complex_s32(
 
 /** Conjugate multiply a 16-bit complex BFP vector by another 16-bit complex BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[i] <- B[i] * conjugate(C[i])
  *        for each index i in B[]
@@ -385,6 +532,13 @@ void bfp_complex_conj_mul_vect_complex_s16(
     const bfp_complex_s16_t* c);
 
 /** Conjugate multiply a 32-bit complex BFP vector by another 32-bit complex BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[i] <- B[i] * conjugate(C[i])
@@ -407,6 +561,13 @@ void bfp_complex_conj_mul_vect_complex_s32(
 
 /** Multiply a 16-bit complex BFP vector by a 16-bit real scalar.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[] <- B[] * C
  *        where A[] and B[] are complex vectors
@@ -427,6 +588,13 @@ void bfp_scalar_mul_vect_complex_s16(
     const float c);
 
 /** Multiply a 32-bit complex BFP vector by a 32-bit real scalar.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[] <- B[] * C
@@ -449,6 +617,13 @@ void bfp_scalar_mul_vect_complex_s32(
 
 /** Multiply a 16-bit complex BFP vector by a 16-bit complex scalar.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[] <- B[] * C
  *        where A[] and B[] are a complex vectors
@@ -469,6 +644,13 @@ void bfp_complex_scal_mul_vect_complex_s16(
     const complex_float_t c);
 
 /** Multiply a 32-bit complex BFP vector by a 32-bit complex scalar.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[] <- B[] * C
@@ -491,6 +673,13 @@ void bfp_complex_scal_mul_vect_complex_s32(
 
 /** Add one 16-bit complex BFP vector to another element-wise.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[] <- B[] + C[]
  *        where A[], B[] and C[] are complex vectors.
@@ -510,6 +699,13 @@ void bfp_add_vect_complex_s16(
     const bfp_complex_s16_t* c);
 
 /** Add one 32-bit complex BFP vector to another element-wise.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[] <- B[] + C[]
@@ -531,6 +727,13 @@ void bfp_add_vect_complex_s32(
 
 /** Subtract one 16-bit complex BFP vector from another element-wise.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[] <- B[] - C[]
  *        where A[], B[] and C[] are complex vectors.
@@ -550,6 +753,13 @@ void bfp_sub_vect_complex_s16(
     const bfp_complex_s16_t* c);
 
 /** Subtract one 32-bit complex BFP vector from another element-wise.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[] <- B[] - C[]
@@ -571,6 +781,13 @@ void bfp_sub_vect_complex_s32(
 
 /** Convert a 16-bit complex BFP vector to a 32-bit complex BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[] <- B[]
  *        where A[] is a 32-bit complex vector
@@ -588,6 +805,13 @@ void bfp_complex_s16_to_complex_s32(
     const bfp_complex_s16_t* b);
 
 /** Convert a 32-bit complex BFP vector to a 16-bit complex BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[] <- B[]
@@ -611,6 +835,13 @@ void bfp_complex_s32_to_complex_s16(
 
 /** Compute the squared magnitude of each element of a 16-bit complex BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[i] <- ( (B[i].re)^2 + (B[i].im)^2 )
  *        for each index i of B[]
@@ -630,6 +861,13 @@ void bfp_squared_mag_vect_complex_s16(
 
 /** Compute the squared magnitude of each element of a 32-bit complex BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[i] <- ( (B[i].re)^2 + (B[i].im)^2 )
  *        for each index i of B[]
@@ -646,6 +884,13 @@ void bfp_squared_mag_vect_complex_s32(
     const bfp_complex_s32_t* b);
 
 /** Compute the magnitude of each element of a 16-bit complex BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A[i] <- sqrt( (B[i].re)^2 + (B[i].im)^2 )
@@ -664,6 +909,13 @@ void bfp_mag_vect_complex_s16(
 
 /** Compute the magnitude of each element of a 32-bit complex BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A[i] <- sqrt( (B[i].re)^2 + (B[i].im)^2 )
  *        for each index i of B[]
@@ -681,6 +933,13 @@ void bfp_mag_vect_complex_s32(
 
 /** Sum the elements of a 16-bit complex BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A <- sum{ B[i] }
  *        for each index i of B[]
@@ -695,6 +954,13 @@ complex_float_t bfp_sum_complex_s16(
     const bfp_complex_s16_t* b);
 
 /** Sum the elements of a 32-bit complex BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A <- sum{ B[i] }

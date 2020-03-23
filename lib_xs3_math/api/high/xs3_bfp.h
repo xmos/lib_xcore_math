@@ -39,18 +39,18 @@ extern "C" {
 
 /** Get the headroom of a 16-bit signed integer.
  *
- * @param a    Input value 
+ * @param[in] a    Input value 
  * 
- * \returns    Number of leading sign bits of `a`. 
+ * @return    Number of leading sign bits of `a`. 
  */
 headroom_t xs3_headroom_s16(
     const int16_t a);
 
 /** Get the headroom of a 32-bit signed integer.
  * 
- * @param a    Input value 
+ * @param[in] a    Input value 
  * 
- * \returns    Number of leading sign bits of `a`. 
+ * @return    Number of leading sign bits of `a`. 
  */
 headroom_t xs3_headroom_s32(
     const int32_t a);
@@ -60,9 +60,9 @@ headroom_t xs3_headroom_s32(
  * IMPLEMENTATION_NOTE: Simplest way is just to check whether hte top word is 0 or -1,
  * then CLS whichever word that suggests needs it.
  * 
- * @param a    Input value 
+ * @param[in] a    Input value 
  * 
- * \returns    Number of leading sign bits of `a`. 
+ * @return    Number of leading sign bits of `a`. 
  */
 headroom_t xs3_headroom_s64(
     const int64_t a);
@@ -84,9 +84,9 @@ headroom_t xs3_headroom_s64(
  * The number of leading sign bits of a sequence is the minimum of
  * that among its elements.
  *
- * @param a         input BFP vector
+ * @param[in] a         input BFP vector
  * 
- * \returns    Number of leading sign bits of `a`. 
+ * @return    Number of leading sign bits of `a`. 
  */
 headroom_t bfp_headroom_vect_s16(
     bfp_s16_t* a);
@@ -97,54 +97,64 @@ headroom_t bfp_headroom_vect_s16(
  * The number of leading sign bits of a sequence is the minimum of
  * that among its elements.
  *
- * @param a         input BFP vector
+ * @param[in] a         input BFP vector
  * 
- * \returns    Number of leading sign bits of `a`. 
+ * @return    Number of leading sign bits of `a`. 
  */
 headroom_t bfp_headroom_vect_s32(
     bfp_s32_t* a);
 
 
-/** Apply a left-shift to the elements of a 16-bit BFP vector.
+/** 
+ * @brief Apply a left-shift to the elements of a 16-bit BFP vector.
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * 2^(shl)
- *        for each index i < length
- *        where A[] and B[] are integer vectors
- *              shift is an integer
+ * This operation can be used to remove headroom from a BFP vector.Each mantissa of input BFP vector 
+ * @bfp_vec{B} is left-shifted `shl` bits and stored in output BFP vector @bfp_vec{A}.
  * 
- * This operation can be used to remove headroom from a BFP vector.
+ * If the `XS3_BFP_DEBUG_CHECK_LENGTHS` configuration option is enabled (see \ref compile_time_options), this   
+ * function will assert that @bfp_vec{A} and @bfp_vec{B} have the same length. Otherwise, no assertion is made and
+ * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
+ * @bfp_vec{B} dictates the number of elements to be updated.
  * 
  * The operation saturates to 16-bit bounds.
  * 
+ * Both `bfp_s16_t` vectors must already have been initialized using `bfp_init_vect_s16()`.
+ * 
+ * @bfp_op{16, @f$ \bar A \leftarrow \bar B \cdot 2^\{shl\}  @f$ }
+ * 
  * \safe_in_place{a,b}
  * 
- * @param a     Output BFP vector
- * @param b     Input BFP vector
- * @param shl   Number of bits to left shift
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
+ * @param[in]  shl   Number of bits to left shift
  */
 void bfp_shl_vect_s16(
     bfp_s16_t* a,
     const bfp_s16_t* b,
     const left_shift_t shl);
 
-/** Apply a left-shift to the elements of a 32-bit BFP vector.
+/** 
+ * @brief Apply a left-shift to the elements of a 32-bit BFP vector.
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * 2^(shift)
- *        for each index i < length
- *        where A[] and B[] are integer vectors
- *              shift is an integer
+ * This operation can be used to remove headroom from a BFP vector.Each mantissa of input BFP vector 
+ * @bfp_vec{B} is left-shifted `shl` bits and stored in output BFP vector @bfp_vec{A}.
  * 
- * This operation can be used to remove headroom from a BFP vector.
+ * If the `XS3_BFP_DEBUG_CHECK_LENGTHS` configuration option is enabled (see \ref compile_time_options), this   
+ * function will assert that @bfp_vec{A} and @bfp_vec{B} have the same length. Otherwise, no assertion is made and
+ * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
+ * @bfp_vec{B} dictates the number of elements to be updated.
  * 
  * The operation saturates to 32-bit bounds.
  * 
+ * Both `bfp_s32_t` vectors must already have been initialized using `bfp_init_vect_s32()`.
+ * 
+ * @bfp_op{32, @f$ \bar A \leftarrow \bar B \cdot 2^\{shl\}  @f$ }
+ * 
  * \safe_in_place{a,b}
  * 
- * @param a     Output BFP vector
- * @param b     Input BFP vector
- * @param shl   Number of bits to left shift
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
+ * @param[in]  shl   Number of bits to left shift
  */
 void bfp_shl_vect_s32(
     bfp_s32_t* a,
@@ -234,9 +244,9 @@ void bfp_add_vect_calc_params(
  * 
  * \safe_in_place{a,b,c}
  * 
- * @param a     Output BFP vector @bfp_vec{A}
- * @param b     Input BFP vector @bfp_vec{B}
- * @param c     Input BFP vector @bfp_vec{C}
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
+ * @param[in]  c     Input BFP vector @bfp_vec{C}
  */
 void bfp_add_vect_s16(
     bfp_s16_t* a, 
@@ -270,9 +280,9 @@ void bfp_add_vect_s16(
  * 
  * \safe_in_place{a,b,c}
  * 
- * @param a     Output BFP vector @bfp_vec{A}
- * @param b     Input BFP vector @bfp_vec{B}
- * @param c     Input BFP vector @bfp_vec{C}
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
+ * @param[in]  c     Input BFP vector @bfp_vec{C}
  */
 void bfp_add_vect_s32(
     bfp_s32_t* a, 
@@ -348,9 +358,9 @@ void bfp_sub_vect_calc_params(
  * 
  * \safe_in_place{a,b,c}
  * 
- * @param a     Output BFP vector @bfp_vec{A}
- * @param b     Input BFP vector @bfp_vec{B}
- * @param c     Input BFP vector @bfp_vec{C}
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
+ * @param[in]  c     Input BFP vector @bfp_vec{C}
  */
 void bfp_sub_vect_s16(
     bfp_s16_t* a, 
@@ -380,9 +390,9 @@ void bfp_sub_vect_s16(
  * 
  * \safe_in_place{a,b,c}
  * 
- * @param a     Output BFP vector @bfp_vec{A}
- * @param b     Input BFP vector @bfp_vec{B}
- * @param c     Input BFP vector @bfp_vec{C}
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
+ * @param[in]  c     Input BFP vector @bfp_vec{C}
  */
 void bfp_sub_vect_s32(
     bfp_s32_t* a, 
@@ -390,6 +400,16 @@ void bfp_sub_vect_s32(
     const bfp_s32_t* c);
 
 
+/**
+ * @brief Calculate the exponent and output shift for `xs3_mul_vect_s16`.
+ * 
+ * @param[out] a_exp
+ * @param[out] a_shr
+ * @param[in]  b_exp
+ * @param[in]  c_exp
+ * @param[in]  b_hr
+ * @param[in]  c_hr
+ */
 void bfp_mul_vect_s16_calc_params(
     exponent_t* a_exp,
     right_shift_t* a_shr,
@@ -398,24 +418,30 @@ void bfp_mul_vect_s16_calc_params(
     const headroom_t b_hr,
     const headroom_t c_hr);
 
-/** Compute the element-by-element product two 16-bit BFP vectors.
+/** 
+ * @brief Multiply one 16-bit BFP vector by another.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED
- * </CODE></BLOCKQUOTE>
+ * Multiply input BFP vector @bfp_vec{B} by input BFP vector @bfp_vec{C} and store the result
+ * in output BFP vector @bfp_vec{A}.
  * 
+ * The headroom, exponent, mantissas and (possibly) length of @bfp_vec{A} will each be updated by this 
+ * function. @f$A_{exp}@f$, the exponent associated with @bfp_vec{A}, is chosen to avoid the possibility of 
+ * saturating output mantissas. 
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * C[i]
- *        for each index i in B[]
- *        where A[], B[] and C[] are BFP vectors
+ * If the `XS3_BFP_DEBUG_CHECK_LENGTHS` configuration option is enabled (see \ref compile_time_options), this   
+ * function will assert that all three BFP vectors have the same length. Otherwise, no assertion is made and
+ * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
+ * @bfp_vec{B} dictates the number of elements to be updated.
+ *  
+ * All three `bfp_s16_t` vectors must already have been initialized using `bfp_init_vect_s16()`.
  * 
- * `a->data` must already be initialized to a valid memory buffer.
- * Any of `a`, `b` and `c` may safely point at the same `bfp_s16_t`.
+ * @bfp_op{16, @f$ A_k \leftarrow B_k \cdot C_k  \qquad\text{ for } k\in 0 .. \left(B_\{length\}-1\right)@f$ }
  * 
- * @param a     Output BFP vector
- * @param b     Input BFP vector 1
- * @param c     Input BFP vector 2
+ * \safe_in_place{a,b,c}
+ * 
+ * @param a     Output BFP vector @bfp_vec{A}
+ * @param b     Input BFP vector @bfp_vec{B}
+ * @param c     Input BFP vector @bfp_vec{C}
  */
 void bfp_mul_vect_s16(
     bfp_s16_t* a, 
@@ -423,6 +449,18 @@ void bfp_mul_vect_s16(
     const bfp_s16_t* c);
 
 
+
+/**
+ * @brief Calculate the exponent and input shifts for `xs3_mul_vect_s32`.
+ * 
+ * @param[out] a_exp
+ * @param[out] b_shr
+ * @param[out] c_shr
+ * @param[in]  b_exp
+ * @param[in]  c_exp
+ * @param[in]  b_hr
+ * @param[in]  c_hr
+ */
 void bfp_mul_vect_s32_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -432,24 +470,30 @@ void bfp_mul_vect_s32_calc_params(
     const headroom_t b_hr,
     const headroom_t c_hr);
 
-/** Compute the element-by-element product of two 32-bit BFP vectors.
+/**
+ * @brief Multiply one 32-bit BFP vector by another.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED
- * </CODE></BLOCKQUOTE>
+ * Multiply input BFP vector @bfp_vec{B} by input BFP vector @bfp_vec{C} and store the result
+ * in output BFP vector @bfp_vec{A}.
  * 
+ * The headroom, exponent, mantissas and (possibly) length of @bfp_vec{A} will each be updated by this 
+ * function. @f$A_{exp}@f$, the exponent associated with @bfp_vec{A}, is chosen to avoid the possibility of 
+ * saturating output mantissas. 
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * C[i]
- *        for each index i in B[]
- *        where A[], B[] and C[] are BFP vectors
+ * If the `XS3_BFP_DEBUG_CHECK_LENGTHS` configuration option is enabled (see \ref compile_time_options), this   
+ * function will assert that all three BFP vectors have the same length. Otherwise, no assertion is made and
+ * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
+ * @bfp_vec{B} dictates the number of elements to be updated.
+ *  
+ * All three `bfp_s32_t` vectors must already have been initialized using `bfp_init_vect_s32()`.
  * 
- * `a->data` must already be initialized to a valid memory buffer.
- * Any of `a`, `b` and `c` may safely point at the same `bfp_s32_t`.
+ * @bfp_op{32, @f$ A_k \leftarrow B_k \cdot C_k  \qquad\text{ for } k\in 0 .. \left(B_\{length\}-1\right)@f$ }
  * 
- * @param a     Output BFP vector
- * @param b     Input BFP vector 1
- * @param c     Input BFP vector 2
+ * \safe_in_place{a,b,c}
+ * 
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
+ * @param[in]  c     Input BFP vector @bfp_vec{C}
  */
 void bfp_mul_vect_s32(
     bfp_s32_t* a, 
@@ -457,53 +501,69 @@ void bfp_mul_vect_s32(
     const bfp_s32_t* c);
 
 
-/** Multiply a 16-bit BFP vector by a scalar.
+/** 
+ * @brief Multiply a 16-bit BFP vector by a scalar.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED
- * </CODE></BLOCKQUOTE>
+ * Multiply input BFP vector @bfp_vec{B} by scalar @f$\alpha\cdot 2^{\alpha_{exp}}@f$ and store the result
+ * in output BFP vector @bfp_vec{A}.
  * 
+ * The headroom, exponent, mantissas and (possibly) length of @bfp_vec{A} will each be updated by this 
+ * function. @f$A_{exp}@f$, the exponent associated with @bfp_vec{A}, is chosen to avoid the possibility of 
+ * saturating output mantissas. 
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[] * C
- *        where A[] and B[] are BFP vectors
- *              C is a scalar
+ * If the `XS3_BFP_DEBUG_CHECK_LENGTHS` configuration option is enabled (see \ref compile_time_options), this   
+ * function will assert that both @bfp_vec{A} and @bfp_vec{B} have the same length. Otherwise, no assertion is made and
+ * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
+ * @bfp_vec{B} dictates the number of elements to be updated.
+ *  
+ * Both `bfp_s16_t` must already have been initialized using `bfp_init_vect_s16()`.
  * 
- * `a->data` must already be initialized to a valid memory buffer.
- * It is safe to supply the same `bfp_s16_t*` for `a` and `b`.
+ * @bfp_op{16, @f$ \bar A\leftarrow \alpha \bar B@f$ }
  * 
- * @param a         Output BFP vector
- * @param b         Input BFP vector
- * @param c         Scalar value
+ * \safe_in_place{a,b,c}
+ * 
+ * @param[out] a             Output BFP vector @bfp_vec{A}
+ * @param[in]  b             Input BFP vector @bfp_vec{B}
+ * @param[in]  alpha_mant    Input BFP vector @bfp_vec{C}
+ * @param[in]  alpha_exp     Input BFP vector @bfp_vec{C}
  */
 void bfp_scalar_mul_vect_s16(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
-    const float c);
+    const int16_t alpha_mant,
+    const exponent_t alpha_exp);
 
-/** Multiply a 32-bit BFP vector by a scalar.
+/** 
+ * @brief Multiply a 32-bit BFP vector by a scalar.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED
- * </CODE></BLOCKQUOTE>
+ * Multiply input BFP vector @bfp_vec{B} by scalar @f$\alpha\cdot 2^{\alpha_{exp}}@f$ and store the result
+ * in output BFP vector @bfp_vec{A}.
  * 
+ * The headroom, exponent, mantissas and (possibly) length of @bfp_vec{A} will each be updated by this 
+ * function. @f$A_{exp}@f$, the exponent associated with @bfp_vec{A}, is chosen to avoid the possibility of 
+ * saturating output mantissas. 
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[] * C
- *        where A[] and B[] are BFP vectors
- *              C is a scalar
+ * If the `XS3_BFP_DEBUG_CHECK_LENGTHS` configuration option is enabled (see \ref compile_time_options), this   
+ * function will assert that both @bfp_vec{A} and @bfp_vec{B} have the same length. Otherwise, no assertion is made and
+ * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
+ * @bfp_vec{B} dictates the number of elements to be updated.
+ *  
+ * Both `bfp_s32_t` must already have been initialized using `bfp_init_vect_s32()`.
  * 
- * `a->data` must already be initialized to a valid memory buffer.
- * It is safe to supply the same `bfp_s32_t*` for `a` and `b`.
+ * @bfp_op{32, @f$ \bar A\leftarrow \alpha \bar B@f$ }
  * 
- * @param a         Output BFP vector
- * @param b         Input BFP vector
- * @param c         Scalar Value
+ * \safe_in_place{a,b,c}
+ * 
+ * @param[out] a             Output BFP vector @bfp_vec{A}
+ * @param[in]  b             Input BFP vector @bfp_vec{B}
+ * @param[in]  alpha_mant    Input BFP vector @bfp_vec{C}
+ * @param[in]  alpha_exp     Input BFP vector @bfp_vec{C}
  */
 void bfp_scalar_mul_vect_s32(
     bfp_s32_t* a, 
     const bfp_s32_t* b,
-    const float c);
+    const int32_t alpha_mant,
+    const exponent_t alpha_exp);
 
 
 /** 
@@ -531,8 +591,8 @@ void bfp_scalar_mul_vect_s32(
  * 
  * \safe_in_place{a,b}
  * 
- * @param a     Output BFP vector @bfp_vec{A}
- * @param b     Input BFP vector @bfp_vec{B}
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
  */
 void bfp_abs_vect_s16(
     bfp_s16_t* a,
@@ -563,8 +623,8 @@ void bfp_abs_vect_s16(
  * 
  * \safe_in_place{a,b}
  * 
- * @param a     Output BFP vector @bfp_vec{A}
- * @param b     Input BFP vector @bfp_vec{B}
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
  */
 void bfp_abs_vect_s32(
     bfp_s32_t* a,
@@ -578,7 +638,7 @@ void bfp_abs_vect_s32(
  * is the sum of the represented values of @bfp_vec{B}.
  * 
  * 
- * @param b         Input BFP vector @bfp_vec{B}
+ * @param[in] b         Input BFP vector @bfp_vec{B}
  * 
  * @return  Sum of mantissas of @bfp_vec{B}
  */
@@ -594,7 +654,7 @@ int32_t bfp_sum_s16(
  * 
  * @bfp_op{32, @f$ \left(\sum_\{k=0\}^\{B_\{length\}-1\} b_k \right)\cdot 2^\{B_\{-exp\}\}  @f$ }
  * 
- * @param b         Input BFP vector @bfp_vec{B}
+ * @param[in] b         Input BFP vector @bfp_vec{B}
  * 
  * @return  Sum of mantissas of @bfp_vec{B}
  */
@@ -605,7 +665,9 @@ int64_t bfp_sum_s32(
 /** Compute the inner product of two 16-bit BFP vectors.
  * 
  * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
  * </CODE></BLOCKQUOTE>
  * 
  * 
@@ -615,8 +677,8 @@ int64_t bfp_sum_s32(
  *              B[] is a BFP vector
  *              N is the size of the vector B[]
  * 
- * @param b         Input BFP vector 1
- * @param c         Input BFP vector 2
+ * @param[in] b         Input BFP vector 1
+ * @param[in] c         Input BFP vector 2
  */
 float bfp_dot_s16(
     const bfp_s16_t* b, 
@@ -625,7 +687,9 @@ float bfp_dot_s16(
 /** Compute the inner product of two 32-bit BFP vectors.
  * 
  * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
  * </CODE></BLOCKQUOTE>
  * 
  * 
@@ -635,8 +699,8 @@ float bfp_dot_s16(
  *              B[] is a BFP vector
  *              N is the size of the vector B[]
  * 
- * @param b         Input BFP vector 1
- * @param c         Input BFP vector 2
+ * @param[in] b         Input BFP vector 1
+ * @param[in] c         Input BFP vector 2
  */
 float bfp_dot_s32(
     const bfp_s32_t* b, 
@@ -646,7 +710,9 @@ float bfp_dot_s32(
 /** Clip the elements of a 16-bit BFP vector to a specified range.
  * 
  * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
  * </CODE></BLOCKQUOTE>
  * 
  * 
@@ -660,11 +726,11 @@ float bfp_dot_s32(
  * `a->data` must already be initialized to a valid memory buffer.
  * It is safe to supply the same `bfp_s16_t*` for `a` and `b`.
  * 
- * @param a             Output BFP vector
- * @param b             Input BFP vector
- * @param lower_bound   Mantissa of the lower clipping bound
- * @param upper_bound   Mantissa of the upper clipping bound
- * @param bound_exp     Shared exponent of the clipping bounds
+ * @param[out] a             Output BFP vector
+ * @param[in]  b             Input BFP vector
+ * @param[in]  lower_bound   Mantissa of the lower clipping bound
+ * @param[in]  upper_bound   Mantissa of the upper clipping bound
+ * @param[in]  bound_exp     Shared exponent of the clipping bounds
  */
 void bfp_clip_vect_s16(
     bfp_s16_t* a, 
@@ -676,7 +742,9 @@ void bfp_clip_vect_s16(
 /** Clip the elements of a 32-bit BFP vector to a specified range.
  * 
  * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
  * </CODE></BLOCKQUOTE>
  * 
  * Conceptually, the operation performed is:
@@ -689,11 +757,11 @@ void bfp_clip_vect_s16(
  * `a->data` must already be initialized to a valid memory buffer.
  * It is safe to supply the same `bfp_s32_t*` for `a` and `b`.
  * 
- * @param a             Output BFP vector
- * @param b             Input BFP vector
- * @param lower_bound   Mantissa of the lower clipping bound
- * @param upper_bound   Mantissa of the upper clipping bound
- * @param bound_exp     Shared exponent of the clipping bounds
+ * @param[out] a             Output BFP vector
+ * @param[in]  b             Input BFP vector
+ * @param[in]  lower_bound   Mantissa of the lower clipping bound
+ * @param[in]  upper_bound   Mantissa of the upper clipping bound
+ * @param[in]  bound_exp     Shared exponent of the clipping bounds
  */
 void bfp_clip_vect_s32(
     bfp_s32_t* a, 
@@ -723,8 +791,8 @@ void bfp_clip_vect_s32(
  * 
  * \safe_in_place{a,b}
  * 
- * @param a     Output BFP vector @bfp_vec{A}
- * @param b     Input BFP vector @bfp_vec{B}
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
  */
 void bfp_rect_vect_s16(
     bfp_s16_t* a,
@@ -751,8 +819,8 @@ void bfp_rect_vect_s16(
  * 
  * \safe_in_place{a,b}
  * 
- * @param a     Output BFP vector @bfp_vec{A}
- * @param b     Input BFP vector @bfp_vec{B}
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
  */
 void bfp_rect_vect_s32(
     bfp_s32_t* a, 
@@ -781,8 +849,8 @@ void bfp_rect_vect_s32(
  * 
  * \safe_in_place{a,b}
  * 
- * @param a     Output BFP vector @bfp_vec{A}
- * @param b     Input BFP vector @bfp_vec{B}
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
  **/
 void bfp_s32_to_s16(
     bfp_s16_t* a,
@@ -807,8 +875,8 @@ void bfp_s32_to_s16(
  * 
  * @bfp_op{16, @f$ \bar A \overset\{32-bit\}\{\longleftarrow\} \bar B@f$ }
  * 
- * @param a     Output BFP vector @bfp_vec{A}
- * @param b     Input BFP vector @bfp_vec{B}
+ * @param[out] a     Output BFP vector @bfp_vec{A}
+ * @param[in]  b     Input BFP vector @bfp_vec{B}
  **/
 void bfp_s16_to_s32(
     bfp_s32_t* a,

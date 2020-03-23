@@ -14,6 +14,13 @@ extern "C" {
 
 /** Process a single sample of a 32-bit FIR filter.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Accepts a single input sample and returns a single output sample.
  * 
  * The ``filter_data`` array must have a size of at least ``num_taps - 1``.
@@ -44,6 +51,13 @@ int32_t xs3_filters_fir(
 /** Add a single sample to a 32-bit FIR filter's state data without processing
  * the full FIR filter.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * The ``filter_data`` array must have a size of at least ``num_taps - 1``.
  * 
  * \param input_sample  New input sample
@@ -56,6 +70,13 @@ void xs3_filters_fir_add_sample(
     const unsigned num_taps);
 
 /** Process a single sample of an interpolating 32-bit FIR filter.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Accepts a single input sample and returns ``interp_factor`` output samples.
  * 
@@ -90,6 +111,13 @@ void dsp_filters_interpolate(
 
 /** Process the next samples of a decimating 32-bit FIR filter.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Accepts ``decim_factor`` input samples and returns a single output sample.
  * 
  * The decimation ratio is given by ``decim_factor``.
@@ -122,6 +150,13 @@ int32_t xs3_filters_decimate(
 
 /** Process one new sample through a second order IIR filter (direct form I).
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Accepts a single input sample and returns a single output sample.
  * 
  * The IIR filter algorithm executes a difference equation on current and past input values x
@@ -152,6 +187,13 @@ int32_t xs3_filters_biquad(
 
 
 /** Process one new sample through a cascaded direct form I biquad filters
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Accepts a single input sample and returns a single output sample.
  *

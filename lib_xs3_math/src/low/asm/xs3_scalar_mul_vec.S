@@ -46,18 +46,17 @@ headroom_t xs3_scalar_mul_vect_s32(
 ASM_PREAMBLE_LCL(apply_op);
 .L_apply_op:
 
-/**/    std r4, r5, sp[1]
+        std r4, r5, sp[1]
         std r6, r7, sp[2]
     {   ldc _32, 32                             ;   vclrdr                                  }
     {   mkmsk r11, r11                          ;   ldw shr_b, sp[STACK_B_SHR]              }
-/**/{   mkmsk r11, 32                           ;   stw r11, sp[STACK_BYTEMASK]             }
+    {   mkmsk r11, 32                           ;   stw r11, sp[STACK_BYTEMASK]             }
         std alpha, alpha, sp[(STACK_VEC_TMP/2)+0]
         std alpha, alpha, sp[(STACK_VEC_TMP/2)+1]
         std alpha, alpha, sp[(STACK_VEC_TMP/2)+2]
-/**/    std alpha, alpha, sp[(STACK_VEC_TMP/2)+3]
+        std alpha, alpha, sp[(STACK_VEC_TMP/2)+3]
     {   ldaw alpha, sp[STACK_VEC_TMP]           ;   bf len, .L_loop_bot                     }
     {                                           ;   bu .L_loop_top                          }
-    {   nop                                     ;                                           }
 
 .align 16
 .L_loop_top:
@@ -68,15 +67,15 @@ ASM_PREAMBLE_LCL(apply_op);
 .L_loop_bot:
 
 #if XS3_MATH_VECTOR_TAIL_SUPPORT
-/**/{                                           ;   ldw bytemask, sp[STACK_BYTEMASK]        }
+    {                                           ;   ldw bytemask, sp[STACK_BYTEMASK]        }
     {                                           ;   bf bytemask, .L_finish                  }
         vlashr b[0], shr_b
     {   mov r11, alpha                          ;   vlmul alpha[0]                          }
-/**/{                                           ;   vstd r11[0]                             }
+    {                                           ;   vstd r11[0]                             }
         vstrpv r11[0], bytemask
         vstrpv a[0], bytemask
     {                                           ;   vldr r11[0]                             }
-/**/{                                           ;   vstr r11[0]                             }
+    {                                           ;   vstr r11[0]                             }
 #endif// XS3_MATH_VECTOR_TAIL_SUPPORT
 
 .L_finish:
@@ -84,7 +83,7 @@ ASM_PREAMBLE_LCL(apply_op);
     ldd r6, r7, sp[2]
 
     {   ldc r0, 32                              ;   vgetc r11                               }
-/**/{   zext r11, 5                             ;   shr r1, r11, 8                          }
+    {   zext r11, 5                             ;   shr r1, r11, 8                          }
     {   shr r0, r0, r1                          ;   add r11, r11, 1                         }
     {   sub r0, r0, r11                         ;   retsp NSTACKWORDS                       } 
 

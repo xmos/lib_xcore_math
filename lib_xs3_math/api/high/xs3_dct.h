@@ -12,6 +12,13 @@ extern "C" {
 
 /** Perform a forward DCT on a BFP vector of samples.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Data is transformed in-place.
  * 
  * ``input->length`` must be one of: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096
@@ -23,6 +30,13 @@ extern "C" {
 void bfp_dct_forward( bfp_s32_t* input);
 
 /** Perform an inverse DCT on a BFP vector of frequency domain samples.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * ``input->length`` must be one of: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096
  * 

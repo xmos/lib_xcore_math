@@ -12,6 +12,13 @@ extern "C" {
 /**
  * Returns headroom
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * astew: Is this actually doable with the VPU?? Each element of b is 8 bytes (real, imag), where
  *        each element of c is 4 bytes.
  */
@@ -26,6 +33,13 @@ headroom_t xs3_mul_vect_complex_s32(
 
 /**
  * Returns headroom
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  */
 headroom_t xs3_complex_mul_vect_complex_s16(
     int16_t* a_real,
@@ -41,6 +55,13 @@ headroom_t xs3_complex_mul_vect_complex_s16(
 
 /**
  * Returns headroom
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  */
 headroom_t xs3_complex_mul_vect_complex_s32(
     complex_s32_t* a,
@@ -53,6 +74,13 @@ headroom_t xs3_complex_mul_vect_complex_s32(
 
 /**
  * Returns headroom
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * astew: Is this actually doable with the VPU?? The VCMI and VCMR instructions don't work in 16-bit mode!
  * 
@@ -72,6 +100,13 @@ headroom_t xs3_complex_conj_mul_vect_complex_s16(
 
 /**
  * Returns headroom
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  */
 headroom_t xs3_complex_conj_mul_vect_complex_s32(
     complex_s32_t* a,
@@ -84,6 +119,13 @@ headroom_t xs3_complex_conj_mul_vect_complex_s32(
 
 /**
  * Returns headroom
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * astew: Is this actually doable with the VPU?? The VCMI and VCMR instructions don't work in 16-bit mode!
  */
@@ -101,6 +143,13 @@ headroom_t xs3_complex_scal_mul_vect_complex_s16(
 /**
  * Returns headroom
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * astew: Is this actually doable with the VPU?? The VCMI and VCMR instructions don't work in 16-bit mode!
  */
 headroom_t xs3_complex_scal_mul_vect_complex_s32(
@@ -114,6 +163,13 @@ headroom_t xs3_complex_scal_mul_vect_complex_s32(
 
 /**
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  */
 headroom_t xs3_complex_s16_to_complex_s32(
     complex_s32_t* a,
@@ -122,6 +178,13 @@ headroom_t xs3_complex_s16_to_complex_s32(
     const unsigned length);
 
 /**
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  */
 headroom_t xs3_complex_s32_to_complex_s16(
@@ -135,6 +198,13 @@ headroom_t xs3_complex_s32_to_complex_s16(
 
 /**
  * Returns headroom
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  */
 headroom_t xs3_squared_mag_vect_complex_s16(
     int16_t* a,
@@ -145,6 +215,13 @@ headroom_t xs3_squared_mag_vect_complex_s16(
 
 /**
  * Returns headroom
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  */
 headroom_t xs3_squared_mag_vect_complex_s32(
     int32_t* a,
@@ -155,6 +232,13 @@ headroom_t xs3_squared_mag_vect_complex_s32(
 
 /**
  * Returns headroom
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  */
 headroom_t xs3_mag_vect_complex_s16(
     int16_t* a,
@@ -165,6 +249,13 @@ headroom_t xs3_mag_vect_complex_s16(
 
 /**
  * Returns headroom
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  */
 headroom_t xs3_mag_vect_complex_s32(
     int32_t* a,
@@ -174,6 +265,13 @@ headroom_t xs3_mag_vect_complex_s32(
 
     
 /**
+ * 
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
  * 
  */
 void xs3_sum_complex_s16(
@@ -186,6 +284,13 @@ void xs3_sum_complex_s16(
 
 
 /**
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  */
 void xs3_sum_complex_s32(

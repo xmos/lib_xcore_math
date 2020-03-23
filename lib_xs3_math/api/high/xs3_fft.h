@@ -14,6 +14,13 @@ extern "C" {
 
 /** Perform a forward FFT on a BFP vector of samples.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * ``samples->length`` must be a power of 2.
  * 
  * The FFT is performed in-place on the input BFP vector, and the result is passed back
@@ -43,6 +50,13 @@ bfp_complex_s32_t* bfp_fft_forward( bfp_s32_t* samples, int32_t* sin_table);
 
 /** Perform an inverse FFT on a BFP vector containing a complex spectrum.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * ``spectrum->length`` must be a power of 2.
  * 
  * The IFFT is performed in-place on the input complex BFP vector, and the result is passed
@@ -69,12 +83,26 @@ bfp_s32_t* bfp_fft_inverse( bfp_complex_s32_t* spectrum, int32_t* sin_table );
 
 /** Perform a complex FFT
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  */
 void bfp_complex_fft_forward( 
     bfp_complex_s32_t* a, 
     bfp_complex_s32_t* b);
 
 /** Perform a complex IFFT
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  */
 void bfp_complex_fft_inverse(
@@ -83,6 +111,13 @@ void bfp_complex_fft_inverse(
 
 /** Perform FFTs on a pair of real signals
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  */
 void bfp_dual_fft_forward( 
     bfp_complex_s32_t* a,
@@ -90,6 +125,13 @@ void bfp_dual_fft_forward(
     bfp_ch_pair_s32_t* c);
 
 /** Perform an IFFT to yield a pair of real signals
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  */
 void bfp_dual_fft_inverse(

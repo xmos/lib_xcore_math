@@ -11,6 +11,12 @@ extern "C" {
 
 /** Calculate the absolute sum of a 16-bit BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * Conceptually, the operation performed is:
  *      A <-  ( |B[0]| + |B[1]| + ... + |B[N-1]| )
  *        where A is a scalar
@@ -28,6 +34,13 @@ int16_t xs3_abs_sum_s16(
     const int b_shr);
 
 /** Calculate the absolute sum of a 32-bit BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A <-  ( |B[0]| + |B[1]| + ... + |B[N-1]| )
@@ -47,6 +60,13 @@ int32_t xs3_abs_sum_s32(
 
 /** Calculate the mean of a 16-bit BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A <-  ( B[0] + B[1] + ... + B[N-1] ) / N
  *        where A is a scalar
@@ -64,6 +84,13 @@ int16_t xs3_mean_s16(
     const int b_shr);
 
 /** Calculate the mean of a 32-bit BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A <-  ( B[0] + B[1] + ... + B[N-1] ) / N
@@ -83,6 +110,13 @@ int32_t xs3_mean_s32(
 
 /** Calculate the energy of a 16-bit BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A <-  ( (B[0])^2 + (B[1])^2 + ... + (B[N-1])^2 )
  *        where A is a scalar
@@ -100,6 +134,13 @@ int16_t xs3_energy_s16(
     const int b_shr);
 
 /** Calculate the energy of a 32-bit BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A <-  ( (B[0])^2 + (B[1])^2 + ... + (B[N-1])^2 )
@@ -119,6 +160,13 @@ int32_t xs3_energy_s32(
 
 /** Calculate the RMS of a 16-bit BFP vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      A <-  sqrt( ((B[0])^2 + (B[1])^2 + ... + (B[N-1])^2) / N )
  *        where A is a scalar
@@ -136,6 +184,13 @@ int16_t xs3_rms_s16(
     const int b_shr);
 
 /** Calculate the RMS of a 32-bit BFP vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      A <-  sqrt( ((B[0])^2 + (B[1])^2 + ... + (B[N-1])^2) / N )
@@ -156,6 +211,13 @@ int32_t xs3_rms_s32(
 
 /** Find the maximum value in a 16-bit integer vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      result <- max( A[0], A[1], A[N-1] )
  *        where A[] is an integer vector of size N
@@ -170,6 +232,13 @@ int16_t xs3_max_s16(
     const unsigned length);
 
 /** Find the maximum value in a 32-bit integer vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      result <- max( A[0], A[1], A[N-1] )
@@ -187,6 +256,13 @@ int32_t xs3_max_s32(
 
 /** Find the minimum value in a 16-bit integer vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      result <- min( A[0], A[1], A[N-1] )
  *        where A[] is an integer vector of size N
@@ -201,6 +277,13 @@ int16_t xs3_min_s16(
     const unsigned length);
 
 /** Find the minimum value in a 32-bit integer vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      result <- min( A[0], A[1], A[N-1] )
@@ -218,6 +301,13 @@ int32_t xs3_min_s32(
 
 /** Find the index of the maximum element of a 16-bit integer vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      result <- argmax[i]{ A[i] }
  *        where A[] is an integer vector of size N
@@ -232,6 +322,13 @@ unsigned xs3_argmax_s16(
     const unsigned length);
 
 /** Find the index of the maximum element of a 32-bit integer vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      result <- argmax[i]{ A[i] }
@@ -248,6 +345,13 @@ unsigned xs3_argmax_s32(
 
 /** Find the index of the minimum element of a 16-bit integer vector.
  * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
  * Conceptually, the operation performed is:
  *      result <- argmin[i]{ A[i] }
  *        where A[] is an integer vector of size N
@@ -262,6 +366,13 @@ unsigned xs3_argmin_s16(
     const unsigned length);
 
 /** Find the index of the minimum element of a 32-bit integer vector.
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
  * 
  * Conceptually, the operation performed is:
  *      result <- argmin[i]{ A[i] }
