@@ -627,12 +627,20 @@ void bfp_clip_vect_s16(
 
     assert(lower_bound <= upper_bound);
 
-    // always base a_exp on b, because either they will work in that exponent, 
-    //  or they will saturate. But because we we're choosing a_exp precisely so
-    //  that b doesn't saturate, if the bound saturates, so, too would relevant
-    //  b values.
+    // Suppose we say a->exp = b->exp. Then, we have to shift the bounds so that
+    //  they match b->exp. So, bound_shr = b->exp - bound_exp. Two possibilities:
+    //  A) bound_shr is negative (gets larger)
+    //  B) bound_shr is non-negative (gets smaller (or stays same)
 
-    exponent_t a_exp = b->exp - b->hr + XS3_BFP_ALLOW_SATURATION; //minimum b exponent
+    // In case A, we shift the bound left. If upper_bound is positive and saturates, then of course all elements of b
+    //  were already less than the upper bound. Likewise, if lower_bound is negative and saturates, then all elements of
+    //  b were greater than the lower bound. If upper is negative and saturates or lower is positive and saturates, then
+    //  we just set all of the elements of the output to upper or lower (accordingly), since nothing could possible be
+    //  within the range specified.
+
+    // In case B, we shift the bounds right, and we lose some precision on them, but that's it.
+    
+    exponent_t a_exp = b->exp;// - b->hr + XS3_BFP_ALLOW_SATURATION; //minimum b exponent
     
     right_shift_t bound_shr = a_exp - bound_exp;
     right_shift_t b_shr = a_exp - b->exp;
@@ -647,19 +655,32 @@ void bfp_clip_vect_s16(
         ub = (ub32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (ub32 <= VPU_INT16_MIN)? VPU_INT16_MIN : ub32;
         lb = (lb32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (lb32 <= VPU_INT16_MIN)? VPU_INT16_MIN : lb32;
     } else {
-        // Should force upper_bound to round downwards to enforce the guarantee that no output
-        // can be larger than upper bound?
+        // TODO: Should force upper_bound to round downwards to enforce the guarantee that no output can be larger than 
+        // upper bound?
         ub = upper_bound >> bound_shr;
         // And lower bound upwards?
         lb = (lower_bound + ((1<<bound_shr)-1)) >> bound_shr;
     }
 
-    a->exp = a_exp;    
-    if(ub == lb){
-        //If modified upper and lower bounds are identical, then just set the elements to that.
+    if(ub == VPU_INT16_MIN){
+        /* upper bound must be smaller than any element of b, so set everything to that */
+        a->exp = bound_exp;
+        a->hr = HR_S16(upper_bound);
+        xs3_set_vect_s16(a->data, upper_bound, b->length);
+    } else if(lb == VPU_INT16_MAX){
+        /* lower bound must be larger than any element of b, so set everything to that */
+        a->exp = bound_exp;
+        a->hr = HR_S16(lower_bound);
+        xs3_set_vect_s16(a->data, lower_bound, b->length);
+    } else if(ub == lb){
+        /* upper and lower bounds are indistinguishable */
+        a->exp = a_exp;
         a->hr = HR_S16(ub);
         xs3_set_vect_s16(a->data, ub, b->length);
+
     } else {
+        /* some elements may be between bounds */
+        a->exp = a_exp;
         a->hr = xs3_clip_vect_s16(a->data, b->data, b->length, lb, ub, b_shr);
     }
 }
@@ -685,13 +706,19 @@ void bfp_clip_vect_s32(
 
     assert(lower_bound <= upper_bound);
 
-    // always base a_exp on b, because either they will work in that exponent, 
-    //  or they will saturate. But because we we're choosing a_exp precisely so
-    //  that b doesn't saturate, if the bound saturates, so, too would relevant
-    //  b values.
-    // I guess the trade off is that we might lose resolution on the clipping boundaries
-    //  if they have to be down-shifted.
+    // Suppose we say a->exp = b->exp. Then, we have to shift the bounds so that
+    //  they match b->exp. So, bound_shr = b->exp - bound_exp. Two possibilities:
+    //  A) bound_shr is negative (gets larger)
+    //  B) bound_shr is non-negative (gets smaller (or stays same)
 
+    // In case A, we shift the bound left. If upper_bound is positive and saturates, then of course all elements of b
+    //  were already less than the upper bound. Likewise, if lower_bound is negative and saturates, then all elements of
+    //  b were greater than the lower bound. If upper is negative and saturates or lower is positive and saturates, then
+    //  we just set all of the elements of the output to upper or lower (accordingly), since nothing could possible be
+    //  within the range specified.
+
+    // In case B, we shift the bounds right, and we lose some precision on them, but that's it.
+    
     exponent_t a_exp = b->exp;// - b->hr + XS3_BFP_ALLOW_SATURATION; //minimum b exponent
     
     right_shift_t bound_shr = a_exp - bound_exp;
@@ -707,19 +734,32 @@ void bfp_clip_vect_s32(
         ub = (ub64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (ub64 <= VPU_INT32_MIN)? VPU_INT32_MIN : ub64;
         lb = (lb64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (lb64 <= VPU_INT32_MIN)? VPU_INT32_MIN : lb64;
     } else {
-        // Should force upper_bound to round downwards to enforce the guarantee that no output
-        // can be larger than upper bound?
+        // TODO: Should force upper_bound to round downwards to enforce the guarantee that no output can be larger than 
+        // upper bound?
         ub = upper_bound >> bound_shr;
         // And lower bound upwards?
         lb = (lower_bound + ((1<<bound_shr)-1)) >> bound_shr;
     }
 
-    a->exp = a_exp;    
-    if(ub == lb){
-        //If modified upper and lower bounds are identical, then just set the elements to that.
+    if(ub == VPU_INT32_MIN){
+        /* upper bound must be smaller than any element of b, so set everything to that */
+        a->exp = bound_exp;
+        a->hr = HR_S32(upper_bound);
+        xs3_set_vect_s32(a->data, upper_bound, b->length);
+    } else if(lb == VPU_INT32_MAX){
+        /* lower bound must be larger than any element of b, so set everything to that */
+        a->exp = bound_exp;
+        a->hr = HR_S32(lower_bound);
+        xs3_set_vect_s32(a->data, lower_bound, b->length);
+    } else if(ub == lb){
+        /* upper and lower bounds are indistinguishable */
+        a->exp = a_exp;
         a->hr = HR_S32(ub);
         xs3_set_vect_s32(a->data, ub, b->length);
+
     } else {
+        /* some elements may be between bounds */
+        a->exp = a_exp;
         a->hr = xs3_clip_vect_s32(a->data, b->data, b->length, lb, ub, b_shr);
     }
 }

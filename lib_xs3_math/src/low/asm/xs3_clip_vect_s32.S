@@ -75,6 +75,7 @@ FNAME_S32:
     {   ldaw r11, sp[STACK_VEC(0)]              ;   sub upper, int_max, upper               }
     {                                           ;   sub lower, int_min, lower               }
 
+
     std upper, upper, r11[0]
     std upper, upper, r11[1]
     std upper, upper, r11[2]

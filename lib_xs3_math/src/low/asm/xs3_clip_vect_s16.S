@@ -11,8 +11,6 @@ headroom_t xs3_clip_vect_s16(
     const int16_t lower_bound,
     const int16_t upper_bound,
     const int b_shr);
-
-
 */
 
 
@@ -27,7 +25,6 @@ headroom_t xs3_clip_vect_s16(
 
 #define FUNCTION_NAME   xs3_clip_vect
 #define FNAME_S16       CAT(FUNCTION_NAME, _s16)
-#define FNAME_S32       CAT(FUNCTION_NAME, _s32)
 
 
 #define STACK_UPPER     (NSTACKWORDS + 1)
@@ -76,35 +73,42 @@ FNAME_S16:
     //  point of the VPU. 
 
     {   ldaw r11, sp[STACK_VEC(0)]              ;   sub upper, int_max, upper               }
-    {   shl tmp1, upper, 16                     ;   sub lower, int_min, lower               }
-    {   or tmp1, tmp1, upper                    ;   shl tmp2, lower, 16                     }
+    {   mov tmp1, upper                         ;   mov tmp2, upper                         }
+    zip tmp2, tmp1, 4
 
     std tmp1, tmp1, r11[0]
     std tmp1, tmp1, r11[1]
     std tmp1, tmp1, r11[2]
     std tmp1, tmp1, r11[3]
 
-    {   or tmp2, tmp2, lower                    ;   neg upper, upper                        }
-    {   ldaw r11, sp[STACK_VEC(1)]              ;   shl tmp1, upper, 16                     }
-    std tmp2, tmp2, r11[0]
-    std tmp2, tmp2, r11[1]
-    std tmp2, tmp2, r11[2]
-    std tmp2, tmp2, r11[3]
+    {   ldaw r11, sp[STACK_VEC(2)]              ;   neg upper, upper                        }
+    {   mov tmp1, upper                         ;   mov tmp2, upper                         }
+    zip tmp2, tmp1, 4
 
-    {   or tmp1, tmp1, upper                    ;   neg lower, lower                        }
-    {   shl tmp2, lower, 16                     ;   ldaw r11, sp[STACK_VEC(2)]              }
-    
     std tmp1, tmp1, r11[0]
     std tmp1, tmp1, r11[1]
     std tmp1, tmp1, r11[2]
     std tmp1, tmp1, r11[3]
 
-    {   or tmp2, tmp2, lower                    ;   ldaw r11, sp[STACK_VEC(3)]              }
+    {   ldaw r11, sp[STACK_VEC(1)]              ;   sub lower, int_min, lower               }
+    {   mov tmp1, lower                         ;   mov tmp2, lower                         }
+    zip tmp2, tmp1, 4
 
-    std tmp2, tmp2, r11[0]
-    std tmp2, tmp2, r11[1]
-    std tmp2, tmp2, r11[2]
-    std tmp2, tmp2, r11[3]
+    std tmp1, tmp1, r11[0]
+    std tmp1, tmp1, r11[1]
+    std tmp1, tmp1, r11[2]
+    std tmp1, tmp1, r11[3]
+
+    {   ldaw r11, sp[STACK_VEC(3)]              ;   neg lower, lower                        }
+    {   mov tmp1, lower                         ;   mov tmp2, lower                         }
+    zip tmp2, tmp1, 4
+
+    std tmp1, tmp1, r11[0]
+    std tmp1, tmp1, r11[1]
+    std tmp1, tmp1, r11[2]
+    std tmp1, tmp1, r11[3]
+
+
 
 #define vec_upper   upper
 #define vec_lower   lower
@@ -217,52 +221,60 @@ FNAME_S16:
 
 
 .L_not_nice_thing:
-    {   shl r8, vec_one, 16                     ;   shl r9, vec_two, 16                     }
-    {   or r8, r8, vec_one                      ;   or r9, r9, vec_two                      }
 
     {   ldaw r11, sp[STACK_VEC(0)]              ;                                           }
+    {   mov r8, vec_one                         ;   mov r9, vec_one                         }
+        zip r9, r8, 4
+
         std r8, r8, r11[0]
         std r8, r8, r11[1]
         std r8, r8, r11[2]
         std r8, r8, r11[3]
-    
-    {   ldaw r11, sp[STACK_VEC(1)]              ;                                           }
-        std r9, r9, r11[0]
-        std r9, r9, r11[1]
-        std r9, r9, r11[2]
-        std r9, r9, r11[3]
 
-    {   neg vec_one, vec_one                    ;   neg vec_two, vec_two                    }
-    {   shl r8, vec_one, 16                     ;   shl r9, vec_two, 16                     }
-    {   or r8, r8, vec_one                      ;   or r9, r9, vec_two                      }
+    {   ldaw r11, sp[STACK_VEC(1)]              ;                                           }
+    {   mov r8, vec_two                         ;   mov r9, vec_two                         }
+        zip r9, r8, 4
+
+        std r8, r8, r11[0]
+        std r8, r8, r11[1]
+        std r8, r8, r11[2]
+        std r8, r8, r11[3]
 
     {   ldaw r11, sp[STACK_VEC(3)]              ;                                           }
+    {   neg r8, vec_one                         ;   neg r9, vec_one                         }
+        zip r9, r8, 4
+
         std r8, r8, r11[0]
         std r8, r8, r11[1]
         std r8, r8, r11[2]
         std r8, r8, r11[3]
-        
-    {   ldaw r11, sp[STACK_VEC(2)]              ;                                           }
-        std r9, r9, r11[0]
-        std r9, r9, r11[1]
-        std r9, r9, r11[2]
-        std r9, r9, r11[3]
 
-    {   neg vec_two, vec_three                  ;                                           }
-    {   shl r8, vec_three, 16                   ;   shl r9, vec_two, 16                     }
-    {   or r8, r8, vec_three                    ;   or r9, r9, vec_two                      }
+    {   ldaw r11, sp[STACK_VEC(2)]              ;                                           }
+    {   neg r8, vec_two                         ;   neg r9, vec_two                         }
+        zip r9, r8, 4
+
+        std r8, r8, r11[0]
+        std r8, r8, r11[1]
+        std r8, r8, r11[2]
+        std r8, r8, r11[3]
 
     {   ldaw r11, sp[STACK_VEC(4)]              ;                                           }
+    {   mov r8, vec_three                       ;   mov r9, vec_three                       }
+        zip r9, r8, 4
+
         std r8, r8, r11[0]
         std r8, r8, r11[1]
         std r8, r8, r11[2]
         std r8, r8, r11[3]
-        
+
     {   ldaw r11, sp[STACK_VEC(5)]              ;                                           }
-        std r9, r9, r11[0]
-        std r9, r9, r11[1]
-        std r9, r9, r11[2]
-        std r9, r9, r11[3]
+    {   neg r8, vec_three                       ;   neg r9, vec_three                       }
+        zip r9, r8, 4
+
+        std r8, r8, r11[0]
+        std r8, r8, r11[1]
+        std r8, r8, r11[2]
+        std r8, r8, r11[3]
 
     {   ldaw vec_one, sp[STACK_VEC(0)]          ;   ldaw vec_none, sp[STACK_VEC(3)]         }
     {   ldaw vec_two, sp[STACK_VEC(1)]          ;   ldaw vec_ntwo, sp[STACK_VEC(2)]         }

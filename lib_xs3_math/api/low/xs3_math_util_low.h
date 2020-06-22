@@ -54,7 +54,7 @@ extern "C" {
  * 
  * \sa cls()
  */
-#define CLS_C32(X)      (XS3_MIN(CLS_S32(((int16_t)(X).re)), CLS_S32(((int16_t)(X).im))))
+#define CLS_C32(X)      (XS3_MIN(CLS_S32(((int32_t)(X).re)), CLS_S32(((int32_t)(X).im))))
 
 
 
