@@ -485,12 +485,12 @@ int32_t xs3_sum_s16(
  * 
  * \return  Sum of elements in `b`
  */
-int32_t xs3_sum_s32(
+int64_t xs3_sum_s32(
     const int32_t* b,
     const unsigned length);
 
 /**
- * \brief Compute the dot product between two `int16_t` vectors.
+ * @brief Compute the dot product between two `int16_t` vectors.
  * 
  * Elements of the vector `b` are right-shifted `b_shr` bits and multiplied by the corresponding 
  * elements of vector `c` right-shifted `c_shr` bits. The element-wise products are added together
@@ -507,26 +507,25 @@ int32_t xs3_sum_s32(
  * 
  * All shifts are arithmetic.
  * 
- * \low_op{16, @f$ \left(\sum_\{k=0\}^\{length-1\} \{\left(b_k \cdot 2^\{-b\_shr\}\right)\times\left(c_k\cdot 2^\{-c\_shr\}\right)\}\right) \cdot 2^\{-sat\}    @f$ }
+ * @low_op{16, @f$ \left(\sum_\{k=0\}^\{length-1\} \{\left(b_k \cdot 2^\{-b\_shr\}\right)\times\left(c_k\cdot 2^\{-c\_shr\}\right)\}\right) \cdot 2^\{-sat\}    @f$ }
  * 
- * \requires_word_alignment{b,c}
+ * @requires_word_alignment{b,c}
  * 
- * \param[in] b         First input vector
- * \param[in] c         Second input vector
- * \param[in] length    Number of elements in vectors `b` and `c`
- * \param[in] b_shr     Right-shift applied to elements of `b`
- * \param[in] c_shr     Right-shift applied to elements of `c`
- * \param[in] sat       Right-shift applied to final sum
+ * @param[in] b         First input vector
+ * @param[in] c         Second input vector
+ * @param[in] length    Number of elements in vectors `b` and `c`
+ * @param[in] b_shr     Right-shift applied to elements of `b`
+ * @param[in] c_shr     Right-shift applied to elements of `c`
+ * @param[in] sat       Right-shift applied to final sum
  * 
- * \return The dot product of `b` and `c`
+ * @return The dot product of `b` and `c`
  */
-int16_t xs3_dot_s16(
+int32_t xs3_dot_s16(
     const int16_t* b,
     const int16_t* c,
     const unsigned length,
     const right_shift_t b_shr,
-    const right_shift_t c_shr,
-    const right_shift_t sat);
+    const right_shift_t c_shr);
 
 /**
  * \brief Compute the dot product between two `int32_t` vectors.
@@ -561,13 +560,12 @@ int16_t xs3_dot_s16(
  * 
  * \return The dot product of `b` and `c`
  */
-int32_t xs3_dot_s32(
+int64_t xs3_dot_s32(
     const int32_t* b,
     const int32_t* c,
     const unsigned length,
     const right_shift_t b_shr,
-    const right_shift_t c_shr,
-    const right_shift_t sat);
+    const right_shift_t c_shr);
 
 /**
  * \brief Clamp the elements of an `int16_t` vector to a specified range.

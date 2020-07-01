@@ -680,7 +680,8 @@ int64_t bfp_sum_s32(
  * @param[in] b         Input BFP vector 1
  * @param[in] c         Input BFP vector 2
  */
-float bfp_dot_s16(
+int32_t bfp_dot_s16(
+    exponent_t* a_exp,
     const bfp_s16_t* b, 
     const bfp_s16_t* c);
 
@@ -702,7 +703,8 @@ float bfp_dot_s16(
  * @param[in] b         Input BFP vector 1
  * @param[in] c         Input BFP vector 2
  */
-float bfp_dot_s32(
+int64_t bfp_dot_s32(
+    exponent_t* a_exp,
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
 

@@ -34,6 +34,9 @@ int main(int argc, char** argv)
     test_xs3_s32_to_s16();
     test_xs3_s16_to_s32();
 
+    test_xs3_complex_mul_vect_complex();
+    test_xs3_complex_conj_mul_vect_complex();
+
 
     /* **** High-level API **** */
 
@@ -54,6 +57,9 @@ int main(int argc, char** argv)
 
     test_bfp_s32_to_s16();
     test_bfp_s16_to_s32();
+
+    test_bfp_complex_mul_vect_complex();
+    test_bfp_complex_conj_mul_vect_complex();
 
 
     return UNITY_END();

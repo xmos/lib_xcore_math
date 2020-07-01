@@ -8,7 +8,7 @@
 
 
 WEAK_FUNC
-headroom_t xs3_add_vect_s16(
+headroom_t xs3_sub_vect_s16(
     int16_t* a,
     const int16_t* b,
     const int16_t* c,
@@ -22,7 +22,7 @@ headroom_t xs3_add_vect_s16(
         int16_t B = ASHR(16)(b[k], b_shr);
         int16_t C = ASHR(16)(c[k], c_shr);
 
-        a[k] = SAT(16)(((int32_t)B) + C);
+        a[k] = SAT(16)(((int32_t)B) - C);
 
     }
 
@@ -31,7 +31,7 @@ headroom_t xs3_add_vect_s16(
 
 
 WEAK_FUNC
-headroom_t xs3_add_vect_s32(
+headroom_t xs3_sub_vect_s32(
     int32_t* a,
     const int32_t* b,
     const int32_t* c,
@@ -45,7 +45,7 @@ headroom_t xs3_add_vect_s32(
         int32_t B = ASHR(32)(b[k], b_shr);
         int32_t C = ASHR(32)(c[k], c_shr);
 
-        a[k] = SAT(32)(((int64_t)B) + C);
+        a[k] = SAT(32)(((int64_t)B) - C);
     }
 
     return xs3_headroom_vect_s32(a, length);

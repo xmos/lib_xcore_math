@@ -57,11 +57,12 @@ static void test_xs3_s32_to_s16_basic()
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
-
+    char buff[100];
     for(int v = start_case; v < N_cases; v++){
         PRINTF("\ttest vector %d..\n", v);
         
         test_case_t* casse = &casses[v];
+        sprintf(buff, "(line %u)", casse->line);
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
         int32_t WORD_ALIGNED B[MAX_LEN];
@@ -79,14 +80,14 @@ static void test_xs3_s32_to_s16_basic()
             xs3_s32_to_s16(A, B, len, casse->b_shr);
 
             for(int k = 0; k < len; k++)
-                TEST_ASSERT_EQUAL(casse->expected, A[k]);
+                TEST_ASSERT_EQUAL_MESSAGE(casse->expected, A[k], buff);
             for(int k = len; k < MAX_LEN; k++)
-                TEST_ASSERT_EQUAL((int16_t)0xCCCC, A[k]);
+                TEST_ASSERT_EQUAL_MESSAGE((int16_t)0xCCCC, A[k], buff);
 
             xs3_s32_to_s16((int16_t*)B, B, len, casse->b_shr);
 
             for(int k = 0; k < len; k++)
-                TEST_ASSERT_EQUAL(casse->expected, ((int16_t*)B)[k]);
+                TEST_ASSERT_EQUAL_MESSAGE(casse->expected, ((int16_t*)B)[k], buff);
         }
     }
 }

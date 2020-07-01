@@ -37,11 +37,6 @@ uint64_t pseudo_rand_uint64(unsigned *r);
 
 void pseudo_rand_bytes(unsigned *r, char* buffer, unsigned size);
 
-void print_warns(
-    int start_case, 
-    unsigned test_c, 
-    unsigned test_asm);
-
 #if defined(__XC__) || defined(__CPLUSPLUS__)
 extern "C" {
 #endif 
@@ -111,6 +106,21 @@ void test_s16_from_double(
 void test_s32_from_double(
     int32_t* d_out,
     double* d_in,
+    unsigned length,
+    exponent_t use_exp);
+
+void test_complex_s16_from_double(
+    int16_t* d_out_real,
+    int16_t* d_out_imag,
+    double* d_in_real,
+    double* d_in_imag,
+    unsigned length,
+    exponent_t use_exp);
+
+void test_complex_s32_from_double(
+    complex_s32_t* d_out,
+    double* d_in_real,
+    double* d_in_imag,
     unsigned length,
     exponent_t use_exp);
 

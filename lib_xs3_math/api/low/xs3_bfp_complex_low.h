@@ -37,8 +37,15 @@ headroom_t xs3_mul_vect_complex_s32(
  * <BLOCKQUOTE><CODE style="color:red;">
  *  NOT YET IMPLEMENTED / NOT TESTED.
  * 
- *  See \ref api_status.
+ *  See @ref api_status.
  * </CODE></BLOCKQUOTE>
+ * 
+ * @safe_in_place{a,b}
+ * 
+ * @note Intermediate saturation may occur unexpectedly `b_imag[k] == -0x8000` for any `k` in vector `b`. (As elements
+ *       of `b_imag[]` are multiplied by `-1`)
+ * 
+ * @note It is _not_ safe to operate in-place on vector `c`.
  * 
  */
 headroom_t xs3_complex_mul_vect_complex_s16(
@@ -49,8 +56,7 @@ headroom_t xs3_complex_mul_vect_complex_s16(
     const int16_t* c_real,
     const int16_t* c_imag,
     const unsigned length,
-    const right_shift_t b_shr,
-    const right_shift_t c_shr);
+    const right_shift_t sat);
 
 
 /**
@@ -94,8 +100,7 @@ headroom_t xs3_complex_conj_mul_vect_complex_s16(
     const int16_t* c_real,
     const int16_t* c_imag,
     const unsigned length,
-    const right_shift_t b_shr,
-    const right_shift_t c_shr);
+    const right_shift_t sat);
 
 
 /**

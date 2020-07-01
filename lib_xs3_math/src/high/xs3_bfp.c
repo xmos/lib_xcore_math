@@ -563,7 +563,60 @@ int64_t bfp_sum_s32(
  *
  * 
  * ******************/
-float bfp_dot_s16(
+void bfp_dot_s16_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const unsigned length)
+{
+    /*
+            (-0x8000 >> b_hr) * (-0x8000 >> c_hr)
+            -2^15 * 2^(-b_hr) * -2^15 * 2^(-c_hr)
+            2^30 * 2^(-b_hr-c_hr)
+            0x40000000 * 2^(-total_hr)
+
+        Then, we're adding together up to `length` of these, which means the total is potentially:
+            2^30 * 2^(-total_hr) * 2^(ceil(log2(length))
+            2^30 * 2^(ceil_log2(length) - total_hr)
+
+        So, if we get two vectors where all elements are -0x8000, and we have exactly 2^K of them:
+            2^30 * 2^(-total_hr) * 2^K
+            2^(30) * 2^(K - total_hr)
+
+        The 2^(30) avoids saturation, so we need to shift down by a total of:
+            (b_shr + c_shr) = (K - total_hr) bits.
+
+    */
+    headroom_t total_hr = b_hr+c_hr;
+    unsigned K = ceil_log2(length);
+
+    right_shift_t total_shr = K - (b_hr + c_hr);
+
+    if(total_shr <= 0){
+        *b_shr = 0;
+        *c_shr = 0;
+    } else {
+        int hr_delta = (b_hr - c_hr);
+        *c_shr = (total_shr <= hr_delta)? total_shr : hr_delta;
+        total_shr -= *c_shr;
+        *b_shr = total_shr / 2;
+        *c_shr += (total_shr - *b_shr);
+    }
+
+    *a_exp = b_exp + c_exp + *b_shr + *c_shr;
+
+}
+    
+/* ******************
+ *
+ * 
+ * ******************/
+int32_t bfp_dot_s16(
+    exponent_t* a_exp,
     const bfp_s16_t* b, 
     const bfp_s16_t* c)
 {
@@ -571,15 +624,66 @@ float bfp_dot_s16(
     assert(b->length == c->length);
 #endif
 
-    //TODO - calculate what these should be
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
-    const int sat = 0;
+    right_shift_t b_shr, c_shr;
 
-    int16_t a = xs3_dot_s16(b->data, c->data, b->length, b_shr, c_shr, sat);
+    bfp_dot_s16_calc_params(a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr, b->length);
 
-    return pack_float_s16(a, a_exp);
+    int32_t res = xs3_dot_s16(b->data, c->data, b->length, b_shr, c_shr);
+
+    return res;
+}
+
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
+void bfp_dot_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const unsigned length)
+{
+    /*
+            (-0x80000000 >> b_hr) * (-0x80000000 >> c_hr)
+            -2^31 * 2^(-b_hr) * -2^31 * 2^(-c_hr) * 2^(-30)
+            2^62 * 2^(-b_hr-c_hr) * 2^(-30)
+            2^32 * 2^(-total_hr)
+
+        Then, we're adding together up to `length` of these, which means the total is potentially:
+            2^32 * 2^(-total_hr) * 2^(ceil(log2(length))
+            2^32 * 2^(K - total_hr)
+            
+        We have 40 bits of accumulator. The maximum value we can be left with (to avoid saturation) is 2^38:
+
+            2^38 = 2^32 * 2^(K - total_hr) * 2^(- total_shr)
+            2^(total_shr) = 2^32 * 2^(K - total_hr) * 2^(-38)
+                          = 2^(32 - 38 + K - total_hr)
+            total_shr = K - total_hr - 6
+
+    */
+
+    unsigned K = ceil_log2(length);
+
+    right_shift_t total_shr = K - 6;
+
+    *b_shr = - b_hr;
+    *c_shr = - c_hr;
+
+    if(total_shr <= 0){
+        total_shr = 0;
+    } else {
+        *b_shr += (total_shr/2);
+        *c_shr += (total_shr - (total_shr/2));
+    }
+
+    *a_exp = b_exp + c_exp - b_hr - c_hr + total_shr + 30;
+
 }
 
     
@@ -587,7 +691,8 @@ float bfp_dot_s16(
  *
  * 
  * ******************/
-float bfp_dot_s32(
+int64_t bfp_dot_s32(
+    exponent_t* a_exp,
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
 {
@@ -595,15 +700,15 @@ float bfp_dot_s32(
     assert(b->length == c->length);
 #endif
 
-    //TODO - calculate what these should be
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
-    const int sat = 0;
+    right_shift_t b_shr, c_shr;
 
-    int16_t a = xs3_dot_s32(b->data, c->data, b->length, b_shr, c_shr, sat);
+    bfp_dot_s32_calc_params(a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr, b->length);
 
-    return pack_float_s32(a, a_exp);
+    // printf("shr: [%d, %d]\t\texp: %d\n", b_shr, c_shr, *a_exp);
+
+    int64_t res = xs3_dot_s32(b->data, c->data, b->length, b_shr, c_shr);
+
+    return res;
 }
 
 

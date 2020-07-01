@@ -20,30 +20,30 @@ This table is unlikely to have actually captured everything that will be needed 
 | `xs3_shl_vect_s32()`                      |  X   |  X   |   X    |     X      |
 | `xs3_add_vect_s16()`                      |  X   |  X   |   X    |     X      |
 | `xs3_add_vect_s32()`                      |  X   |  X   |   X    |     X      |
-| `xs3_sub_vect_s16()`                      |  X   |      |   X    |     X      |
-| `xs3_sub_vect_s32()`                      |  X   |      |   X    |     X      |
-| `xs3_mul_vect_s16()`                      |  X   |      |   X    |     X      |
-| `xs3_mul_vect_s32()`                      |  X   |      |   X    |     X      |
-| `xs3_scalar_mul_vect_s16()`               |  X   |      |   X    |     X      |
-| `xs3_scalar_mul_vect_s32()`               |  X   |      |   X    |     X      |
-| `xs3_abs_vect_s16()`                      |  X   |      |   X    |     X      |
-| `xs3_abs_vect_s32()`                      |  X   |      |   X    |     X      |
-| `xs3_sum_s16()`                           |  X   |      |   X    |     X      |
-| `xs3_sum_s32()`                           |  X   |      |   X    |     X      |
+| `xs3_sub_vect_s16()`                      |  X   |  X   |   X    |     X      |
+| `xs3_sub_vect_s32()`                      |  X   |  X   |   X    |     X      |
+| `xs3_mul_vect_s16()`                      |  X   |  X   |   X    |     X      |
+| `xs3_mul_vect_s32()`                      |  X   |  X   |   X    |     X      |
+| `xs3_scalar_mul_vect_s16()`               |  X   |  X   |   X    |     X      |
+| `xs3_scalar_mul_vect_s32()`               |  X   |  X   |   X    |     X      |
+| `xs3_abs_vect_s16()`                      |  X   |  X   |   X    |     X      |
+| `xs3_abs_vect_s32()`                      |  X   |  X   |   X    |     X      |
+| `xs3_sum_s16()`                           |  X   |  X   |   X    |     X      |
+| `xs3_sum_s32()`                           |  X   |  X   |   X    |     X      |
 | `xs3_dot_s16()`                           |  X   |  X   |   X    |     X      |
 | `xs3_dot_s32()`                           |  X   |  X   |   X    |     X      |
-| `xs3_clip_vect_s16()`                     |  X   |      |   X    |     X      |
-| `xs3_clip_vect_s32()`                     |  X   |      |   X    |     X      |
-| `xs3_rect_vect_s16()`                     |  X   |      |   X    |     X      |
-| `xs3_rect_vect_s32()`                     |  X   |      |   X    |     X      |
-| `xs3_s32_to_s16()`                        |  X   |      |   X    |     X      |
-| `xs3_s16_to_s32()`                        |  X   |      |   X    |     X      |
+| `xs3_clip_vect_s16()`                     |  X   |  X   |   X    |     X      |
+| `xs3_clip_vect_s32()`                     |  X   |  X   |   X    |     X      |
+| `xs3_rect_vect_s16()`                     |  X   |  X   |   X    |     X      |
+| `xs3_rect_vect_s32()`                     |  X   |  X   |   X    |     X      |
+| `xs3_s32_to_s16()`                        |  X   |  X   |   X    |     X      |
+| `xs3_s16_to_s32()`                        |  X   |  X   |   X    |     X      |
 |  @tab @tab xs3_bfp_complex_low.h                                          ||||| 
 | `xs3_mul_vect_complex_s32()`              |      |      |        |            |
-| `xs3_complex_mul_vect_complex_s16()`      |      |      |        |            |
-| `xs3_complex_mul_vect_complex_s32()`      |      |      |        |            |
-| `xs3_complex_conj_mul_vect_complex_s16()` |      |      |        |            |
-| `xs3_complex_conj_mul_vect_complex_s32()` |      |      |        |            |
+| `xs3_complex_mul_vect_complex_s16()`      |  X   |  X   |   X    |            |
+| `xs3_complex_mul_vect_complex_s32()`      |  X   |  X   |   X    |            |
+| `xs3_complex_conj_mul_vect_complex_s16()` |  X   |  X   |   X    |            |
+| `xs3_complex_conj_mul_vect_complex_s32()` |  X   |  X   |   X    |            |
 | `xs3_complex_scal_mul_vect_complex_s16()` |      |      |        |            |
 | `xs3_complex_scal_mul_vect_complex_s32()` |      |      |        |            |
 | `xs3_complex_s16_to_complex_s32()`        |      |      |        |            |
@@ -120,10 +120,10 @@ The high-level API functions are written entirely in C (perhaps C++ wrappers wil
 | `bfp_abs_vect_s32()`                      |      X      |   X    |     X      |
 | `bfp_sum_s16()`                           |      X      |   X    |     X      |
 | `bfp_sum_s32()`                           |      X      |   X    |     X      |
-| `bfp_dot_s16()`                           |             |        |            |
-| `bfp_dot_s32()`                           |             |        |            |
-| `bfp_clip_vect_s16()`                     |      X      |        |            |
-| `bfp_clip_vect_s32()`                     |      X      |        |            |
+| `bfp_dot_s16()`                           |      X      |   X    |            |
+| `bfp_dot_s32()`                           |      X      |   X    |            |
+| `bfp_clip_vect_s16()`                     |      X      |   X    |            |
+| `bfp_clip_vect_s32()`                     |      X      |   X    |            |
 | `bfp_rect_vect_s16()`                     |      X      |   X    |     X      |
 | `bfp_rect_vect_s32()`                     |      X      |   X    |     X      |
 | `bfp_s32_to_s16()`                        |      X      |   X    |     X      |
@@ -135,10 +135,10 @@ The high-level API functions are written entirely in C (perhaps C++ wrappers wil
 | `bfp_shl_vect_complex_s32()`              |             |        |            |
 | `bfp_mul_vect_complex_s16()`              |             |        |            |
 | `bfp_mul_vect_complex_s32()`              |             |        |            |
-| `bfp_complex_mul_vect_complex_s16()`      |             |        |            |
-| `bfp_complex_mul_vect_complex_s32()`      |             |        |            |
-| `bfp_complex_conj_mul_vect_complex_s16()` |             |        |            |
-| `bfp_complex_conj_mul_vect_complex_s32()` |             |        |            |
+| `bfp_complex_mul_vect_complex_s16()`      |      X      |   X    |            |
+| `bfp_complex_mul_vect_complex_s32()`      |      X      |   X    |            |
+| `bfp_complex_conj_mul_vect_complex_s16()` |      X      |   X    |            |
+| `bfp_complex_conj_mul_vect_complex_s32()` |      X      |   X    |            |
 | `bfp_scalar_mul_vect_complex_s16()`       |             |        |            |
 | `bfp_scalar_mul_vect_complex_s32()`       |             |        |            |
 | `bfp_complex_scal_mul_vect_complex_s16()` |             |        |            |

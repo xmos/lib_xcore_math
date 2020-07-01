@@ -197,7 +197,10 @@ static inline float pack_float_s32(int32_t mant, exponent_t exp)
 static inline unsigned ceil_log2(
     unsigned N)
 {
-    return 32-cls(N);
+    if(N == 0)
+        return 0;
+    
+    return 32-cls(N-1);
 }
 #ifdef __XC__
 } // extern "C" 

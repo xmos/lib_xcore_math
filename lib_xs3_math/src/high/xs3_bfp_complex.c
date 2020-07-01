@@ -118,6 +118,40 @@ void bfp_mul_vect_complex_s32(
 }
 
 
+/* ******************
+ *
+ * 
+ * ******************/
+void bfp_complex_mul_vect_complex_s16_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* sat,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr)
+{
+    /*
+        worst-case behavior:
+            im = -2^15 * -2^15 + -2^15 * -2^15
+               = 2^30 + 2^30
+               = 2^31
+        with headroom:
+               = 2^(31 - total_hr)
+
+        If sat = 17
+            im = 2^(31 - total_hr) * 2^(-17)
+               = 2^(14 - total_hr)
+        
+        So sat should be (17-total_hr)
+    */
+
+
+    headroom_t total_hr = b_hr+c_hr;
+    *sat = 17-total_hr;
+    *sat = (*sat < 0)? 0 : *sat;
+
+    *a_exp = (b_exp+c_exp)+*sat;
+}
 
 
 void bfp_complex_mul_vect_complex_s16(
@@ -130,21 +164,46 @@ void bfp_complex_mul_vect_complex_s16(
     assert(b->length == c->length);
 #endif
 
-    //TODO
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    exponent_t a_exp;
+    right_shift_t sat;
 
+    bfp_complex_mul_vect_complex_s16_calc_params(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr);
 
     a->length = b->length;
     a->exp = a_exp;
-    // a->hr = xs3_complex_mul_vect_complex_s16(a->real, a->imag, 
-    //                                          b->real, b->imag, 
-    //                                          c->real, c->imag, 
-    //                                          b->length, b_shr, c_shr);
+    a->hr = xs3_complex_mul_vect_complex_s16(a->real, a->imag, b->real, b->imag, c->real, c->imag, b->length, sat);
 }
 
 
+void bfp_complex_mul_vect_complex_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr)
+{
+
+    /*
+        The multiplication does an implicit right-shift of 30 bits.
+        (-2^31 * -2^31 + -2^31 * -2^31) * 2^(-30)
+        (2^62 + 2^62) * 2^(-30)
+        2^(63-30) = 2^33
+
+        Max positive value without saturating is 2^30, so we need to right-shift the inputs a total of 3 bits, minus
+        whatever their headroom is.
+    */
+
+    *b_shr = -b_hr;
+    *c_shr = -c_hr;
+
+    right_shift_t extra_b_shr = (b_hr <= c_hr)? 2 : 1;
+    *b_shr += extra_b_shr;
+    *c_shr += 3-extra_b_shr;
+
+    *a_exp = b_exp + c_exp + *b_shr + *c_shr + 30;
+}
 
 
 void bfp_complex_mul_vect_complex_s32(
@@ -157,11 +216,10 @@ void bfp_complex_mul_vect_complex_s32(
     assert(b->length == c->length);
 #endif
 
-    //TODO
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    exponent_t a_exp;
+    right_shift_t b_shr, c_shr;
 
+    bfp_complex_mul_vect_complex_s32_calc_params(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->length = b->length;
     a->exp = a_exp;
@@ -182,18 +240,14 @@ void bfp_complex_conj_mul_vect_complex_s16(
     assert(b->length == c->length);
 #endif
 
-    //TODO
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    exponent_t a_exp;
+    right_shift_t sat;
 
+    bfp_complex_mul_vect_complex_s16_calc_params(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr);
 
     a->length = b->length;
     a->exp = a_exp;
-    // a->hr = xs3_complex_conj_mul_vect_complex_s16(a->real, a->imag, 
-    //                                               b->real, b->imag, 
-    //                                               c->real, c->imag, 
-    //                                               b->length, b_shr, c_shr);
+    a->hr = xs3_complex_conj_mul_vect_complex_s16(a->real, a->imag, b->real, b->imag, c->real, c->imag, b->length, sat);
 }
 
 
@@ -209,11 +263,10 @@ void bfp_complex_conj_mul_vect_complex_s32(
     assert(b->length == c->length);
 #endif
 
-    //TODO
-    const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    exponent_t a_exp;
+    right_shift_t b_shr, c_shr;
 
+    bfp_complex_mul_vect_complex_s32_calc_params(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->length = b->length;
     a->exp = a_exp;

@@ -30,6 +30,7 @@
  * Note that SHR must be non-negative for this to work correctly.
  */
 #define ROUND_SHR(VAL, SHR)    (((VAL)+(1<<(SHR-1)))>>SHR)
+// #define ROUND_SHR64(VAL, SHR)    (((VAL)+(((int64_t)1)<<(SHR-1)))>>SHR)
 
 /**
  * Apply a non-rounding right-shift to VAL.

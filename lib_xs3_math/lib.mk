@@ -35,6 +35,21 @@ ifneq ($(strip $(lib_xs3_math_NO_ASM)),1)
   SOURCE_FILE_EXTS += S
 endif
 
+ifeq ($(PLATFORM),xcore)
+
+  ifeq ($(lib_xs3_math_NO_ASM),1)
+    $(info Disabling ASM compilation..)
+	NO_OPTIMIZE = 1
+  else
+    SOURCE_FILE_EXTS += S
+  endif
+endif
+
+ifeq ($(NO_OPTIMIZE),1)
+  $(info Disabling C optimizations..)
+  c_FLAGS += -O0
+endif
+
 ######
 ### [optional] List of source files to compile.
 ###            

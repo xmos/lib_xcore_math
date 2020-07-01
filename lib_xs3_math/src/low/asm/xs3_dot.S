@@ -3,25 +3,20 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-int16_t xs3_dot_s16(
+int32_t xs3_dot_s16(
     const int16_t* b,
     const int16_t* c,
     const unsigned length,
     const int b_shr,
-    const int c_shr,
-    const int sat);
+    const int c_shr);
 
 
-//TODO: There must be a more efficient way to get the final result for xs3_sum_s32(). The way it is now
-//      uses way too much code memory.
-
-int32_t xs3_dot_s32(
+int64_t xs3_dot_s32(
     const int32_t* b,
     const int32_t* c,
     const unsigned length,
     const int b_shr,
-    const int c_shr,
-    const int sat);
+    const int c_shr);
 */
 
 
@@ -39,7 +34,6 @@ int32_t xs3_dot_s32(
 #define FNAME_S32       CAT(FUNCTION_NAME, _s32)
 
 #define STACK_C_SHR     (NSTACKWORDS+1)
-#define STACK_SAT       (NSTACKWORDS+2)
 
 #define STACK_VEC_TMP   (NSTACKWORDS-8)
 #define STACK_VEC_VR    (NSTACKWORDS-16)
@@ -62,7 +56,7 @@ ASM_PREAMBLE(FNAME_S16)
 
 
 FNAME_S16:
-/**/    dualentsp NSTACKWORDS
+        dualentsp NSTACKWORDS
         ldc r11, 0x0100
         std r4, r5, sp[0]
         std r6, r7, sp[1]
@@ -104,14 +98,18 @@ FNAME_S16:
     {                                           ;   vlmacc vec_tmp[0]                       }
 
 .L_finish_s16:
+    {   ldaw r11, sp[STACK_VEC_TMP]             ;   vadddr                                  }
+    {                                           ;   vstd r11[0]                             }
+    {                                           ;   ldw r1, r11[0]                          }
+    {                                           ;   vstr r11[0]                             }
+    {                                           ;   ldw r0, r11[0]                          }
+        zip r1, r0, 4
+
         ldd r4, r5, sp[0]
         ldd r6, r7, sp[1]
         ldd r8, r9, sp[2]
-    {   ldaw r11, sp[STACK_SAT]                 ;   vadddr                                  }
-    {   ldaw r11, sp[STACK_VEC_TMP]             ;   vlsat r11[0]                            }
-    {                                           ;   vstr r11[0]                             }
-    {                                           ;   ldw r0, sp[STACK_VEC_TMP]               }
-    {                                           ;   retsp NSTACKWORDS                       }
+        retsp NSTACKWORDS
+
 ASM_POSTAMBLE(FNAME_S16, NSTACKWORDS)
 
 
@@ -122,7 +120,7 @@ ASM_PREAMBLE(FNAME_S32)
 
 FNAME_S32:
 
-/**/    dualentsp NSTACKWORDS
+        dualentsp NSTACKWORDS
         std r4, r5, sp[0]
         std r6, r7, sp[1]
         std r8, r9, sp[2]
@@ -165,14 +163,17 @@ FNAME_S32:
 
 .L_finish_s32:
 
+    {   ldaw r11, sp[STACK_VEC_TMP]             ;                                           }
+    // (vD:vR)[k] ==  ((int32_t)vD[k])*(2^32) + ((uint32_t)vR[k])
+    {                                           ;   vstd r11[0]                             }
+    {                                           ;   ldw r1, r11[0]                          }
+    {   sext r1, 8                              ;   vstr r11[0]                             }
+    {                                           ;   ldw r0, r11[0]                          }
+    
         ldd r4, r5, sp[0]
         ldd r6, r7, sp[1]
         ldd r8, r9, sp[2]
-    {   ldaw r11, sp[STACK_SAT]                 ;                                           }
-    {   ldaw r11, sp[STACK_VEC_TMP]             ;   vlsat r11[0]                            }
-    {                                           ;   vstr r11[0]                             }
-    {                                           ;   ldw r0, sp[STACK_VEC_TMP]               }
-    {                                           ;   retsp NSTACKWORDS                       }
+        retsp NSTACKWORDS
 
 ASM_POSTAMBLE(FNAME_S32, NSTACKWORDS)
 

@@ -447,6 +447,17 @@ void bfp_mul_vect_complex_s32(
     const bfp_complex_s32_t* b, 
     const bfp_s32_t* c);
 
+
+
+void bfp_complex_mul_vect_complex_s16_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* a_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
+
+
 /** Multiply a 16-bit complex BFP vector by another 16-bit complex BFP vector.
  * 
  * <BLOCKQUOTE><CODE style="color:red;">
@@ -474,6 +485,18 @@ void bfp_complex_mul_vect_complex_s16(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c);
+
+
+
+
+void bfp_complex_mul_vect_complex_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
 
 /** Multiply a 32-bit complex BFP vector by another 32-bit complex BFP vector.
  * 
