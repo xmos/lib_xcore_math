@@ -15,7 +15,7 @@ TARGET_DEVICE = XCORE-AI-EXPLORER
 ######
 ### [optional] List of libraries on which this application depends
 ###
-DEPENDENCIES := lib_xs3_math Unity
+DEPENDENCIES := lib_xs3_math Unity testing
 
 ######
 ### [currently required]
@@ -24,6 +24,7 @@ DEPENDENCIES := lib_xs3_math Unity
 ###
 lib_xs3_math_PATH := ../../lib_xs3_math
 Unity_PATH := ../../../Unity
+testing_PATH := ../shared/testing
 
 ## Uncomment to tell lib_xs3_math not to compile .S files (i.e. test C implementations)
 # lib_xs3_math_NO_ASM := 1
@@ -55,6 +56,7 @@ SOURCE_DIRS := src
 #
 BUILD_STATIC_LIBRARIES := 0
 
+c_FLAGS += -Wno-unused-function
 c_FLAGS += -DUNITY_USE_COMMAND_LINE_ARGS
 LDFLAGS += -fcmdline-buffer-bytes=200
 

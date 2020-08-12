@@ -55,17 +55,17 @@ FUNCTION_NAME:
 .byte 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01, 0x02, 0x01
 
 /*
-    This function relies on some horrifying deep magic. Try not to stare directly at it.
+    This function relies on some seriously horrifying deep magic. Try not to stare directly at it.
 
     We're converting 16-bit values to 32-bit values with the VPU in 8-bit mode. Because if we deal with a 16-bit value
-    as two separate 8-bit values, we end up getting 2 adjacent accumulators, which is 32 adjacent its in vR. It's the
-    only way to expand values to a higher depth inside the VPU.
+    as two separate 8-bit values, we end up getting 2 adjacent accumulators, which is 32 adjacent bits in vR. It's the
+    only way to expand values to a higher bit-depth inside the VPU.
 
-    Function also relies deeply on an undertanding of the endianness of the system. A 16-bit value 0x1234 is stored
-    as bytes (in order) [0x34, 0x12]. To avoid changing the value represented, we need these two bytes to also be 
-    adjacent in the output value. But, because these will end up in separate accumulators (the lower 16-bits of each
-    being in vR with the rest in vD), in order to ensure this, we need one to end up in the upper byte of the 16 bits
-    and the other to end up in the lower byte, which means our only option is to multiply by 2^8.
+    Function also relies on an understanding of the endianness of the system. A 16-bit value 0x1234 is stored as bytes 
+    (in order) [0x34, 0x12]. To avoid changing the value represented, we need these two bytes to also be adjacent in 
+    the output value. But, because these will end up in separate accumulators (the lower 16-bits of each being in vR 
+    with the rest in vD), in order to ensure this, we need one to end up in the upper byte of the 16 bits and the other 
+    to end up in the lower byte, which means our only option is to multiply by 2^8.
 
     Ultimately what we need in the first 4 bytes of vR (given the value above) is [0x00, 0x34, 0x12, 0x00] which when
     written to memory and interpreted as an int32 will be 0x00123400.
@@ -76,11 +76,11 @@ FUNCTION_NAME:
 */
 
 .L_loop_top: //All in 8-bit mode
-/**/    {   sub len, len, 1                         ;   vclrdr                                  } 
+        {   sub len, len, 1                         ;   vclrdr                                  } 
         {   ldc _16, 16                             ;   vldc b[0]                               }
-        {   add b, b, _16                           ;   vlmacc constsA[0]                       }
-        {   add r11, r11, _16                       ;   vlmacc constsA[0]                       }
-/**/    {   sub r11, r11, _16                       ;   vlmacc constsB[0]                       }
+        {   add b, b, _16                           ;   vlmacc r11[0]  /* .L_vlmacc_consts_A */ }
+        {   add r11, r11, _16                       ;   vlmacc r11[0]  /* .L_vlmacc_consts_A */ }
+        {   sub r11, r11, _16                       ;   vlmacc r11[0]  /* .L_vlmacc_consts_B */ }
         {   add a, a, _16                           ;   vstr a[0]                               }
         {   add a, a, _16                           ;   bt len, .L_loop_top                     }
 .L_loop_bot:

@@ -1,0 +1,32 @@
+// Copyright (c) 2017-2019, XMOS Ltd, All rights reserved
+
+#include "floating_fft.h"
+
+#include <math.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+
+
+unsigned flt_bitrev(
+    const unsigned index, 
+    const size_t bit_width)
+{
+    unsigned inp = index;
+    unsigned res = 0;
+
+    for(int i = 0; i < bit_width; i++, inp >>= 1){
+        res = ((res<<1) | (inp & 0x1));
+    }
+
+    return res;
+}
+
+// {double, double} dsp_poly_interpolate(double left, double peak, double right, double center_bin){
+//     double bin_offset = (left - right) / (2. * (2. * peak - left -right));
+//     double new_peak = peak - 0.25 * (left - right) * bin_offset;
+
+//     return {center_bin + bin_offset, new_peak};
+// }

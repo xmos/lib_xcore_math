@@ -39,25 +39,26 @@ This table is unlikely to have actually captured everything that will be needed 
 | `xs3_s32_to_s16()`                        |  X   |  X   |   X    |     X      |
 | `xs3_s16_to_s32()`                        |  X   |  X   |   X    |     X      |
 |  @tab @tab xs3_bfp_complex_low.h                                          ||||| 
-| `xs3_mul_vect_complex_s32()`              |      |      |        |            |
+| `xs3_mul_vect_complex_s16()`              |  X   |      |        |            |
+| `xs3_mul_vect_complex_s32()`              |  X   |      |        |            |
 | `xs3_complex_mul_vect_complex_s16()`      |  X   |  X   |   X    |            |
 | `xs3_complex_mul_vect_complex_s32()`      |  X   |  X   |   X    |            |
 | `xs3_complex_conj_mul_vect_complex_s16()` |  X   |  X   |   X    |            |
 | `xs3_complex_conj_mul_vect_complex_s32()` |  X   |  X   |   X    |            |
-| `xs3_complex_scal_mul_vect_complex_s16()` |      |      |        |            |
-| `xs3_complex_scal_mul_vect_complex_s32()` |      |      |        |            |
-| `xs3_complex_s16_to_complex_s32()`        |      |      |        |            |
-| `xs3_complex_s32_to_complex_s16()`        |      |      |        |            |
-| `xs3_squared_mag_vect_complex_s16()`      |      |      |        |            |
-| `xs3_squared_mag_vect_complex_s32()`      |      |      |        |            |
-| `xs3_mag_vect_complex_s16()`              |      |      |        |            |
-| `xs3_mag_vect_complex_s32()`              |      |      |        |            |
-| `xs3_sum_complex_s16()`                   |      |      |        |            |
-| `xs3_sum_complex_s32()`                   |      |      |        |            |
+| `xs3_complex_scal_mul_vect_complex_s16()` |  X   |      |        |            |
+| `xs3_complex_scal_mul_vect_complex_s32()` |  X   |      |        |            |
+| `xs3_complex_s16_to_complex_s32()`        |  X   |      |        |            |
+| `xs3_complex_s32_to_complex_s16()`        |  X   |      |        |            |
+| `xs3_squared_mag_vect_complex_s16()`      |  X   |      |        |            |
+| `xs3_squared_mag_vect_complex_s32()`      |  X   |      |        |            |
+| `xs3_mag_vect_complex_s16()`              |  X   |  X   |   X    |            |
+| `xs3_mag_vect_complex_s32()`              |  X   |  X   |   X    |            |
+| `xs3_sum_complex_s16()`                   |  X   |      |        |            |
+| `xs3_sum_complex_s32()`                   |  X   |      |        |            |
 |  @tab @tab xs3_filters_low.h                                              ||||| 
 | `xs3_filters_fir()`                       |      |      |        |            |
 | `xs3_filters_fir_add_sample()`            |      |      |        |            |
-| `dsp_filters_interpolate()`               |      |      |        |            |
+| `xs3_filters_interpolate()`               |      |      |        |            |
 | `xs3_filters_decimate()`                  |      |      |        |            |
 | `xs3_filters_biquad()`                    |      |      |        |            |
 | `xs3_filters_biquads()`                   |      |      |        |            |

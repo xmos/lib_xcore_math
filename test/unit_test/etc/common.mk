@@ -1,5 +1,10 @@
 
 
+# ifeq ($(OS),Windows_NT)
+# getdir_cmd 
+# else
+
+# endif
 
 ifeq ($(OS),Windows_NT)
 mkdir_cmd = @test -d $(subst /,\,$(dir $(1))) || mkdir $(subst /,\,$(dir $(1)))

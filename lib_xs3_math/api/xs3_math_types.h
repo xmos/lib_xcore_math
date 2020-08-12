@@ -33,6 +33,14 @@ typedef struct {
     float im;
 } complex_float_t;
 
+/**
+ * Represents a complex double-precision floating-point number.
+ */
+typedef struct {
+    double re;
+    double im;
+} complex_double_t;
+
 /** 
  * Represents a pair of 32-bit samples, each associated with a different channel.
  */
@@ -48,6 +56,17 @@ typedef struct {
     int16_t ch_a;
     int16_t ch_b;
 } ch_pair_s16_t;
+
+
+typedef struct {
+    float ch_a;
+    float ch_b;
+} ch_pair_float_t;
+
+typedef struct {
+    double ch_a;
+    double ch_b;
+} ch_pair_double_t;
 
 
 /**

@@ -10,8 +10,6 @@ extern "C" {
 #endif
 
 
-#define SIN_TABLE(N)    (NULL) //TODO
-
 /** Perform a forward FFT on a BFP vector of samples.
  * 
  * <BLOCKQUOTE><CODE style="color:red;">
@@ -43,8 +41,14 @@ extern "C" {
  * 
  * \returns         Complex spectrum of ``samples``
  */
-bfp_complex_s32_t* bfp_fft_forward( bfp_s32_t* samples, int32_t* sin_table);
+void bfp_real_fft_forward(
+    bfp_complex_s32_t* a,
+    const bfp_s32_t* b, 
+    complex_s32_t* scratch);
 
+void bfp_real_fft_forward2(
+    bfp_complex_s32_t* a,
+    const bfp_s32_t* b);
 
 
 
@@ -77,7 +81,10 @@ bfp_complex_s32_t* bfp_fft_forward( bfp_s32_t* samples, int32_t* sin_table);
  * \param spectrum  Vector of  
  * \param sin_table Sine table for N-point FFT
  */
-bfp_s32_t* bfp_fft_inverse( bfp_complex_s32_t* spectrum, int32_t* sin_table );
+void bfp_real_fft_inverse(
+    bfp_s32_t* a,
+    const bfp_complex_s32_t* b, 
+    complex_s32_t* scratch);
 
 
 
@@ -91,9 +98,8 @@ bfp_s32_t* bfp_fft_inverse( bfp_complex_s32_t* spectrum, int32_t* sin_table );
  * 
  * 
  */
-void bfp_complex_fft_forward( 
-    bfp_complex_s32_t* a, 
-    bfp_complex_s32_t* b);
+void bfp_complex_fft_forward(
+    bfp_complex_s32_t* samples);
 
 /** Perform a complex IFFT
  * 
@@ -106,8 +112,7 @@ void bfp_complex_fft_forward(
  * 
  */
 void bfp_complex_fft_inverse(
-    bfp_complex_s32_t* a,
-    bfp_complex_s32_t* b);
+    bfp_complex_s32_t* spectrum);
 
 /** Perform FFTs on a pair of real signals
  * 
@@ -119,10 +124,10 @@ void bfp_complex_fft_inverse(
  * 
  * 
  */
-void bfp_dual_fft_forward( 
+void bfp_dual_fft_forward(
     bfp_complex_s32_t* a,
     bfp_complex_s32_t* b,
-    bfp_ch_pair_s32_t* c);
+    bfp_ch_pair_s32_t* input);
 
 /** Perform an IFFT to yield a pair of real signals
  * 
@@ -132,12 +137,21 @@ void bfp_dual_fft_forward(
  *  See \ref api_status.
  * </CODE></BLOCKQUOTE>
  * 
+ * astew: Should I define a new type for `a` and `b` in this function? It would be the same as bfp_complex_s32_t,
+ *        but would serve as a hint to the user that the data being pointed to is actually "owned" by a different
+ *        bfp vector (e.g. input)?
  * 
+ * 
+ * If b->length != c->length, fail!
+ * Assume `a` is pointing at valid data.
+ * If `b` and `c` aren't pointing at precisely the same data as `a`, merge those spectra into `a`
+ *      and do the IFFT directly on `a`. If they are pointing at the same data as `a`, then just
+ *      merge the spectra within `a` and do IFFT.
  */
 void bfp_dual_fft_inverse(
     bfp_ch_pair_s32_t* a,
-    bfp_complex_s32_t* b,
-    bfp_complex_s32_t* c);
+    const bfp_complex_s32_t* b,
+    const bfp_complex_s32_t* c);
 
 
 #ifdef __XC__

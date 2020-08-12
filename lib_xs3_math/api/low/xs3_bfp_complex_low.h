@@ -22,6 +22,29 @@ extern "C" {
  * astew: Is this actually doable with the VPU?? Each element of b is 8 bytes (real, imag), where
  *        each element of c is 4 bytes.
  */
+headroom_t xs3_mul_vect_complex_s16(
+    int16_t* a_real,
+    int16_t* a_imag,
+    const int16_t* b_real,
+    const int16_t* b_imag,
+    const int16_t* c,
+    const unsigned length,
+    const right_shift_t sat);
+
+
+/**
+ * Returns headroom
+ * 
+ * <BLOCKQUOTE><CODE style="color:red;">
+ *  NOT YET IMPLEMENTED / NOT TESTED.
+ * 
+ *  See \ref api_status.
+ * </CODE></BLOCKQUOTE>
+ * 
+ * 
+ * astew: Is this actually doable with the VPU?? Each element of b is 8 bytes (real, imag), where
+ *        each element of c is 4 bytes.
+ */
 headroom_t xs3_mul_vect_complex_s32(
     complex_s32_t* a,
     const complex_s32_t* b,
@@ -142,7 +165,7 @@ headroom_t xs3_complex_scal_mul_vect_complex_s16(
     const int16_t c_real,
     const int16_t c_imag,
     const unsigned length,
-    const right_shift_t b_shr);
+    const right_shift_t sat);
 
 
 /**
@@ -176,7 +199,7 @@ headroom_t xs3_complex_scal_mul_vect_complex_s32(
  * 
  * 
  */
-headroom_t xs3_complex_s16_to_complex_s32(
+void xs3_complex_s16_to_complex_s32(
     complex_s32_t* a,
     const int16_t* b_real,
     const int16_t* b_imag,
@@ -192,12 +215,12 @@ headroom_t xs3_complex_s16_to_complex_s32(
  * 
  * 
  */
-headroom_t xs3_complex_s32_to_complex_s16(
+void xs3_complex_s32_to_complex_s16(
     int16_t* a_real,
     int16_t* a_imag,
     const complex_s32_t* b,
     const unsigned length,
-    const right_shift_t sat);
+    const right_shift_t b_shr);
 
 
 
@@ -250,7 +273,9 @@ headroom_t xs3_mag_vect_complex_s16(
     const int16_t* b_real,
     const int16_t* b_imag,
     const unsigned length,
-    const right_shift_t b_shr);
+    const right_shift_t b_shr,
+    const int16_t* rot_table,
+    const unsigned table_rows);
 
 /**
  * Returns headroom
@@ -266,7 +291,9 @@ headroom_t xs3_mag_vect_complex_s32(
     int32_t* a,
     const complex_s32_t* b,
     const unsigned length,
-    const right_shift_t b_shr);
+    const right_shift_t b_shr,
+    const complex_s32_t* rot_table,
+    const unsigned table_rows);
 
     
 /**
@@ -279,9 +306,7 @@ headroom_t xs3_mag_vect_complex_s32(
  * </CODE></BLOCKQUOTE>
  * 
  */
-void xs3_sum_complex_s16(
-    int16_t* real,
-    int16_t* imag,
+complex_s16_t xs3_sum_complex_s16(
     const int16_t* b_real,
     const int16_t* b_imag,
     const unsigned length,
@@ -298,11 +323,10 @@ void xs3_sum_complex_s16(
  * 
  * 
  */
-void xs3_sum_complex_s32(
-    int32_t* real,
-    int32_t* imag,
+complex_s32_t xs3_sum_complex_s32(
     const complex_s32_t* b,
     const unsigned length,
+    const right_shift_t b_shr,
     const right_shift_t sat);
 
 

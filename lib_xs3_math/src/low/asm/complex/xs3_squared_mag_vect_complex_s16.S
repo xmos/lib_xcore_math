@@ -1,0 +1,112 @@
+
+#if defined(__XS3A__)
+
+
+#include "../asm_helper.h"
+
+/*  
+
+headroom_t xs3_squared_mag_vect_complex_s16(
+    int16_t* a,
+    const int16_t* b_real,
+    const int16_t* b_imag,
+    const unsigned length,
+    const right_shift_t sat);
+
+*/
+
+#define NSTACKVECS      (2)
+#define NSTACKWORDS     (6+8*(NSTACKVECS))
+
+
+#define STACK_SAT       (NSTACKWORDS+1)
+
+#define STACK_VEC_TMP   (NSTACKWORDS-8)
+#define STACK_VEC_SAT   (NSTACKWORDS-16)
+
+#define FUNCTION_NAME xs3_squared_mag_vect_complex_s16
+    
+#define a           r0
+#define b_re        r1
+#define b_im        r2
+#define length      r3
+#define vec_tmp     r4
+#define vec_sat     r5
+#define bytemask    r6
+
+
+ASM_PREAMBLE(FUNCTION_NAME)
+
+
+FUNCTION_NAME:
+    dualentsp NSTACKWORDS
+    std r4, r5, sp[1]
+
+    {   ldaw r11, sp[STACK_VEC_SAT]             ;   ldw r4, sp[STACK_SAT]                   }
+    {   shl r5, r4, 16                          ;   zext r4, 16                             }
+    {   or r4, r4, r5                           ;   stw r6, sp[4]                           }
+        std r4, r4, r11[0]
+        std r4, r4, r11[1]
+        std r4, r4, r11[2]
+        std r4, r4, r11[3]
+
+    {   ldc r11, 32                             ;   shl bytemask, length, SIZEOF_LOG2_S16   }
+    {   shr length, length, 4                   ;   shl r11, r11, 3                         }
+    {   zext bytemask, 5                        ;   vsetc r11                               }
+    {   ldaw r11, sp[STACK_VEC_SAT]             ;   ldaw vec_tmp, sp[STACK_VEC_TMP]         }
+    {   mkmsk bytemask, bytemask                ;   entsp 0                                 }
+
+.issue_mode single
+
+        bf length, .L_loop_bot
+
+    .L_loop_top:
+
+        vclrdr
+        vldc b_re[0]
+        vlmacc b_re[0]
+        vldc b_im[0]
+        sub length, length, 1
+        vlmacc b_im[0]
+        vlsat r11[0]
+        vstr a[0]
+        bt length, .L_loop_top
+
+    .L_loop_bot:
+
+    bf bytemask, .L_done
+
+    vclrdr
+    vstd vec_tmp[0]
+    vldc b_re[0]
+    vlmacc b_re[0]
+    vldc b_im[0]
+    vlmacc b_im[0]
+    vlsat r11[0]
+    vstrpv a[0], bytemask
+    vstrpv vec_tmp[0], bytemask
+    vldd vec_tmp[0]
+    vstd vec_tmp[0]
+
+.L_done:
+        ldd r4, r5, sp[1]
+
+        dualentsp 0
+
+.issue_mode dual
+
+    {   ldc r0, 15                              ;   ldw r6, sp[4]                           }
+    {   zext r11, 5                             ;   vgetc r11                               }
+    {   sub r0, r0, r11                         ;   retsp NSTACKWORDS                       }
+
+
+ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS)
+
+#undef FUNCTION_NAME
+
+
+
+#endif //defined(__XS3A__)
+
+
+

@@ -206,5 +206,4 @@ static inline unsigned ceil_log2(
 } // extern "C" 
 #endif
 
-
 #endif //XS3_MATH_UTIL_LOW_H_

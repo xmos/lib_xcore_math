@@ -68,18 +68,16 @@ FUNCTION_NAME:
 .L_loop_bot_s32:
     {                                           ;   ldw bytemask, sp[STACK_BYTEMASK]        }
     {                                           ;   bf len, .L_done_s32                     }
+    {                                           ;   vclrdr                                  }
+    {                                           ;   vstd tmp_vec[0]                         }
         vlashr b[0], shr_b
-        vstrpv tmp_vec[0], r11
+        vstrpv tmp_vec[0], bytemask
     {                                           ;   vldc tmp_vec[0]                         }
         vlashr c[0], shr_c
-        vstrpv tmp_vec[0], r11                      
+        vstrpv tmp_vec[0], bytemask                      
     {                                           ;   vldd tmp_vec[0]                         }
-    {                                           ;   vcmi                                    }
     {                                           ;   vcmr                                    }
-        vstrpv tmp_vec[0], bytemask
-    {   mov r11, tmp_vec                        ;   vclrdr                                  }
-    {                                           ;   vldr r11[0]                             }
-    {                                           ;   vstd tmp_vec[0]                         }
+    {   mov r11, tmp_vec                        ;   vcmi                                    }
         vstrpv tmp_vec[0], bytemask
     {                                           ;   vldr r11[0]                             }
     {                                           ;   vstr tmp_vec[0]                         }

@@ -104,7 +104,7 @@ FUNCTION_NAME:
         {                                           ;   vclrdr                                  }
         {                                           ;   vlmacc c_im[0]                          }
         {                                           ;   vldc b_re[0]                            }
-        {   ldaw r11, sp[STACK_VEC_SAT]             ;   vlmacc c_re[0]                          }
+        {                                           ;   vlmacc c_re[0]                          }
         {                                           ;   vlsat vec_sat[0]                        }
         {   ldc r11, 32                             ;   vstr a_re[0]                            }
         {   add b_re, b_re, r11                     ;   vclrdr                                  }
