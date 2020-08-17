@@ -38,12 +38,14 @@ static signed sext(int a, unsigned b){
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
 #define TIME_FUNCS 1
-#define LOOPS_LOG2 8
+#define LOOPS_LOG2 4
 
 
 void test_bit_reverse()
 {
     unsigned r = 1;
+
+    printf("%s..\n", __func__);
 
     for(unsigned k = 2; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
 
@@ -87,6 +89,51 @@ void test_bit_reverse()
     }
 }
 
+
+void test_xs3_spectrum_tail_reverse()
+{
+    unsigned r = 1;
+
+    printf("%s..\n", __func__);
+
+    for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
+
+        unsigned N = (1<<k);
+        float worst_timing = 0.0f;
+
+        printf("  N = %u\n", N);
+        
+        for(unsigned t = 0; t <= (1<<LOOPS_LOG2); t++){
+
+            complex_s32_t ALIGNED a[MAX_PROC_FRAME_LENGTH];
+            complex_s32_t ALIGNED ref[MAX_PROC_FRAME_LENGTH];
+
+            for(unsigned i = 0 ; i < N; i++){
+                a[i].re = pseudo_rand_int32(&r);
+                a[i].im = pseudo_rand_int32(&r);
+                ref[(N-i) % N] = a[i];
+            }
+
+            unsigned ts1 = getTimestamp();
+            xs3_spectrum_tail_reverse(a, N);
+            unsigned ts2 = getTimestamp();
+
+            // for(int i = 0; i < N; i++){
+            //     printf("%ld\t%ld\n", a[i].re, a[i].im);
+            //     printf("%ld\t%ld\n\n", ref[i].re, ref[i].im);
+            // }
+
+            float timing = (ts2-ts1)/100.0;
+            if(timing > worst_timing) worst_timing = timing;
+
+            TEST_ASSERT_EQUAL_INT32_ARRAY((int32_t*) ref, (int32_t*) a, 2*N);
+        }
+
+#if TIME_FUNCS
+        printf("    %s (N=%u): %f us\n", __func__, N, worst_timing);
+#endif
+    }
+}
 
 
 
@@ -201,6 +248,7 @@ void test_xs3_fft_helpers()
     SET_TEST_FILE();
 
     RUN_TEST(test_bit_reverse);
+    RUN_TEST(test_xs3_spectrum_tail_reverse);
     RUN_TEST(test_xs3_split_fft_spectrum_s32);
     RUN_TEST(test_xs3_merge_fft_spectra_s32);
 }

@@ -8,29 +8,19 @@ headroom_t xs3_split_fft_spectrum_s32(
     const unsigned N);
 */
 
-#include "../asm_helper.h"
-
-.text
-.issue_mode dual
-
-#define NSTACKWORDS     (8)
 
 #define FUNCTION_NAME   xs3_split_fft_spectrum_s32
-
-
-.section    .cp.rodata, "ac", @progbits
-.align 4
-L_neg_j_vect:
-    .word 0x00000000, -0x40000000, 0x00000000, -0x40000000, 0x00000000, -0x40000000, 0x00000000, -0x40000000
-L_comp_conj_vect:
-    .word 0x40000000, -0x40000000, 0x40000000, -0x40000000, 0x40000000, -0x40000000, 0x40000000, -0x40000000
-L_zero_vect:
-    .word 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
-
-ASM_PREAMBLE(FUNCTION_NAME)
+#define NSTACKWORDS     (8)
 
 #define X       r0
 #define N       r1
+
+.text
+.issue_mode dual
+.global FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.align 16
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
 
 FUNCTION_NAME:
     {   dualentsp NSTACKWORDS                                                               }
@@ -38,16 +28,11 @@ FUNCTION_NAME:
     {   std r6, r7, sp[2]                                                                   }
     {   std r8, r9, sp[1]                                                                   }
     {   ldc r11, 0                              ;   stw r10, sp[1]                          }
-    {                                           ;   vsetc r11                               }
+    {   shr r10, N, 3                           ;   vsetc r11                               }
 
-#if (XS3_CONFIG_MIN_FFT_LEN <= 8)
-    {   shr r10, N, 3                           ;   shr r11, N, 4                           }
   #if (XS3_CONFIG_MIN_FFT_LEN <= 4)
-    {                                           ;   bf r10, .L_fft_length_4                 }
+    {                                           ;   bt r10, .L_split_the_spectrum           }
   #endif
-    {                                           ;   bf r11, .L_fft_length_8                 }
-    {                                           ;   bu .L_reverse_elements                  }
-#endif
 
 #if (CONFIG_MIN_FFT_LEN <= 4)
 .L_fft_length_4:
@@ -72,86 +57,16 @@ FUNCTION_NAME:
 
 #endif
 
-#if (XS3_CONFIG_MIN_FFT_LEN <= 8)
-.L_fft_length_8:
-    // If the FFT length is 8, we can't use the VPU to swap the 2 elements that need swapping, so just
-    // do it here and skip that loop.
-        ldd r4, r5, X[5]
-        ldd r6, r7, X[7]
-        std r4, r5, X[7]
-        std r6, r7, X[5]
-        bu .L_split_the_spectrum
-#endif
 
-
-.L_reverse_elements:
-
-/*
-    Goal is to change [A, B, C, D] to  [D, C, B, A]
-    2x VLMACCR changes it to [D, A, B, C]  which has D and B in the correct place
-        (2 because 32-bit mode and elements are complex)
-    Then we can do partial stores for A and C using different masks and offsets.
-    A's offset is + 16 bytes, C's is - 16 bytes.
-    A's mask is 0x0000FF00  and C's is 0xFF000000
-*/
-
-#define i       r2
-#define X_A     r3
-#define X_C     r4
-#define mask_A  r5
-#define mask_C  r6
-#define _32     r7
-#define zero    r8
-#define _16     r9
-#define X_hi    r10
-#define X_lo    r11
-
-        ldaw r11, cp[L_zero_vect]
-    {   ldc _32, 32                             ;   mov zero, r11                           }
-    {   mkmsk mask_A, 8                         ;   vclrdr                                  }
-    {   ldc _16, 16                             ;   shl mask_A, mask_A, 8                   }
-    {   shr i, N, 4                             ;   shl mask_C, mask_A, 16                  }
-        ldaw X_lo, X[N]
-        ldaw X_hi, X_lo[N]
-    {   add X_lo, X_lo, 8                       ;   sub X_hi, X_hi, _32                     }
-
-.L_rev_loop:
-        {   add X_A, X_hi, _16                      ;   vldc X_hi[0]                            }
-        {   sub X_C, X_hi, _16                      ;   vldr X_lo[0]                            }
-        {   sub i, i, 1                             ;   vlmaccr zero[0]                         }
-        {                                           ;   vlmaccr zero[0]                         }
-        {   sub X_hi, X_hi, _32                     ;   vstr X_hi[0]                            }
-            vstrpv X_A[0], mask_A
-            vstrpv X_C[0], mask_C
-        {   add X_A, X_lo, _16                      ;   vstc X_lo[0]                            }
-        {   sub X_C, X_lo, _16                      ;   vldr X_lo[0]                            }
-        {                                           ;   vlmaccr zero[0]                         }
-        {                                           ;   vlmaccr zero[0]                         }
-        {   add X_lo, X_lo, _32                     ;   vstr X_lo[0]                            }
-            vstrpv X_A[0], mask_A
-            vstrpv X_C[0], mask_C
-        {                                           ;   bt i, .L_rev_loop                       }
-
-#undef i
-#undef X_A
-#undef X_C
-#undef mask_A
-#undef mask_C
-#undef _32
-#undef zero
-#undef _16
-#undef X_hi
-#undef X_lo
-
-
-// #undef S_re
-// #undef S_im
-// #undef T_re
-// #undef T_im
-// #undef X_lo
-// #undef X_hi
 
 .L_split_the_spectrum:
+
+    // First, reverse the tail
+    {   mov r4, X                               ;   mov r5, N                               }
+        ldaw X, X[N]
+    {   shr N, N, 1                             ;                                           }
+        bl xs3_spectrum_tail_reverse
+    {   mov X, r4                               ;   mov N, r5                               }
 
 #define X_lo    X
 #define i       r2
@@ -184,12 +99,13 @@ FUNCTION_NAME:
 
 #define conj_vec    r5
 
+
     {   ldaw X_hi, X_lo[N]                                                                  }
     {   ldc r11, 0x0080                                                                     }
     {   shr i, i, 2                             ;   vsetc r11                               }
-        ldaw r11, cp[L_neg_j_vect]
+        ldaw r11, cp[vpu_vec_complex_neg_j]
     {                                           ;   vldc r11[0]                             }
-        ldaw r11, cp[L_comp_conj_vect]
+        ldaw r11, cp[vpu_vec_complex_conj_op]
     {                                           ;   bu .L_syzygy                            }
 
 .align 16
@@ -214,8 +130,14 @@ FUNCTION_NAME:
     {   ldd r4, r5, sp[3]                                                                   }
     {   retsp NSTACKWORDS                                                                   }
 
-ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS)
-
+.cc_bottom FUNCTION_NAME.function; 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS + xs3_spectrum_tail_reverse.nstackwords;     
+                                                .global FUNCTION_NAME.nstackwords; 
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends; 
+.L_function_end: 
+    .size FUNCTION_NAME, .L_function_end - FUNCTION_NAME
 
 
 

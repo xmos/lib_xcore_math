@@ -84,11 +84,18 @@ void xs3_merge_time_series_s32(
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
+void xs3_spectrum_tail_reverse(
+    complex_s32_t* X,
+    const unsigned N);
+
 void xs3_real_fft_final_pass_s32(
-    complex_s32_t* x,
-    const unsigned length,
-    headroom_t* X_hr,
-    exponent_t* X_exp,
+    complex_s32_t* X,
+    const unsigned N,
+    const complex_s32_t* W);
+
+void xs3_real_ifft_first_pass_s32(
+    complex_s32_t* X,
+    const unsigned N,
     const complex_s32_t* W);
 
 /**

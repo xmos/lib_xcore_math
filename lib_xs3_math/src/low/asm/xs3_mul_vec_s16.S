@@ -2,8 +2,6 @@
 #if defined(__XS3A__)
 #ifndef XS3_MATH_NO_ASM
 
-#include "asm_helper.h"
-
 /*  
 headroom_t xs3_mul_vect_s16(
     int16_t* a,
@@ -13,6 +11,8 @@ headroom_t xs3_mul_vect_s16(
     const int a_shr);
 */
 
+
+#include "asm_helper.h"
 
 #define NSTACKWORDS     (8+8)
 

@@ -41,14 +41,10 @@ extern "C" {
  * 
  * \returns         Complex spectrum of ``samples``
  */
+
 void bfp_real_fft_forward(
     bfp_complex_s32_t* a,
-    const bfp_s32_t* b, 
-    complex_s32_t* scratch);
-
-void bfp_real_fft_forward2(
-    bfp_complex_s32_t* a,
-    const bfp_s32_t* b);
+    bfp_s32_t* b);
 
 
 
@@ -83,8 +79,7 @@ void bfp_real_fft_forward2(
  */
 void bfp_real_fft_inverse(
     bfp_s32_t* a,
-    const bfp_complex_s32_t* b, 
-    complex_s32_t* scratch);
+    bfp_complex_s32_t* b);
 
 
 

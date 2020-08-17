@@ -8,13 +8,12 @@
 
 /** @brief Convenience macro to index into the decimation-in-time FFT look-up table. 
 
-	This will return the address at which the coefficients for the N'th pass of the DIT
-	FFT algorithm start. Ordinarily you do not need this. It is needed, for example, when
-	computing the final pass of a single real FFT.
+	This will return the address at which the coefficients for the final pass of the real DIT
+	FFT algorithm begin. 
 
 	@param N	The FFT length.
 */
-#define XS3_DIT_FFT_LUT(N) &xs3_dit_fft_lut[(N>>1)-4]
+#define XS3_DIT_REAL_FFT_LUT(N) &xs3_dit_fft_lut[(N)-8]
 
 
 /** @brief Maximum FFT length (log2) that can be performed using decimation-in-frequency. */

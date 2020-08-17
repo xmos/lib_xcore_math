@@ -38,11 +38,9 @@ int64_t xs3_sum_s32(
 
 ASM_PREAMBLE(FNAME_S16)
 
-.L_const_s16:
-.word 0x00010001, 0x00010001, 0x00010001, 0x00010001, 0x00010001, 0x00010001, 0x00010001, 0x00010001
 
 FNAME_S16:
-/**/    dualentsp NSTACKWORDS
+        dualentsp NSTACKWORDS
         ldc r11, 0x0100
         std r4, r5, sp[0]
 
@@ -50,7 +48,7 @@ FNAME_S16:
     {   zext tail, 5                            ;   vclrdr                                  }
     {   shr N, N, EPV_LOG2_S16                  ;   bf tail, .L_tail_dealt_with_s16         }
 
-    {   ldap r11, .L_const_s16                  ;                                           }
+        ldaw r11, cp[vpu_vec_0x0001]
     {   ldaw r4, sp[STACK_VEC_TMP]              ;   vldr r11[0]                             }
     {                                           ;   vstd r4[0]                              }
     {   mkmsk tail, tail                        ;   shl N, N, 3                             }
@@ -62,7 +60,8 @@ FNAME_S16:
     {   ldc r11, 32                             ;   vldc r11[0]                             }
 
 .L_tail_dealt_with_s16:
-    {   ldap r11, .L_const_s16                  ;   bf N, .L_loop_bot_s16                   }
+    {                                           ;   bf N, .L_loop_bot_s16                   }
+        ldaw r11, cp[vpu_vec_0x0001]
     {   ldc r11, 32                             ;   vldc r11[0]                             }
 
 .L_loop_top_s16:
@@ -87,11 +86,9 @@ ASM_POSTAMBLE(FNAME_S16, NSTACKWORDS)
 
 ASM_PREAMBLE(FNAME_S32)
 
-.L_const_s32:
-.word 0x40000000, 0x40000000, 0x40000000, 0x40000000, 0x40000000, 0x40000000, 0x40000000, 0x40000000
 FNAME_S32:
 
-/**/    dualentsp NSTACKWORDS
+        dualentsp NSTACKWORDS
         std r4, r5, sp[0]
 
     {   ldc r11, 0                              ;                                           }
@@ -99,7 +96,7 @@ FNAME_S32:
     {   zext tail, 5                            ;   vclrdr                                  }
     {   shr N, N, EPV_LOG2_S32                  ;   bf tail, .L_tail_dealt_with_s32         }
 
-    {   ldap r11, .L_const_s32                  ;                                           }
+        ldaw r11, cp[vpu_vec_ones_s32]
     {   ldaw r4, sp[STACK_VEC_TMP]              ;   vldr r11[0]                             }
     {                                           ;   vstd r4[0]                              }
     {   mkmsk tail, tail                        ;   shl N, N, 3                             }
@@ -111,7 +108,8 @@ FNAME_S32:
     {   ldc r11, 32                             ;   vldc r11[0]                             }
 
 .L_tail_dealt_with_s32:
-    {   ldap r11, .L_const_s32                  ;   bf N, .L_loop_bot_s32                   }
+    {                                           ;   bf N, .L_loop_bot_s32                   }
+        ldaw r11, cp[vpu_vec_ones_s32]
     {   ldc r11, 32                             ;   vldc r11[0]                             }
 
 .L_loop_top_s32:

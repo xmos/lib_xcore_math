@@ -8,30 +8,24 @@ headroom_t xs3_merge_fft_spectra_s32(
     const unsigned N);
 */
 
-#include "../asm_helper.h"
 
-.text
-.issue_mode dual
-
-#define NSTACKWORDS     (8)
 
 #define FUNCTION_NAME   xs3_merge_fft_spectra_s32
+#define NSTACKWORDS     (8)
 
 #define XS3_CONFIG_MIN_FFT_LEN (4)
 
 #define X       r0
 #define N       r1
 
-.section    .cp.rodata, "ac", @progbits
-.align  4
-L_neg_j_vect:
-    .word 0x00000000, -0x40000000, 0x00000000, -0x40000000, 0x00000000, -0x40000000, 0x00000000, -0x40000000
-L_comp_conj_vect:
-    .word 0x40000000, -0x40000000, 0x40000000, -0x40000000, 0x40000000, -0x40000000, 0x40000000, -0x40000000
-L_zero_vect:
-    .word 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
 
-ASM_PREAMBLE(FUNCTION_NAME)
+.text
+.issue_mode dual
+.global FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.align 16
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
+
 FUNCTION_NAME:
         dualentsp NSTACKWORDS
         std r4, r5, sp[1]
@@ -40,7 +34,7 @@ FUNCTION_NAME:
     {   ldc r11, 0                              ;   stw r10, sp[1]                          }
     {   shr r11, N, 3                           ;   vsetc r11                               }
 #if (XS3_CONFIG_MIN_FFT_LEN <= 4)
-    {                                           ;   bf r10, .L_fft_length_4                 }
+    {                                           ;   bf r11, .L_fft_length_4                 }
     {                                           ;   bu .L_pre_boggle                        }
 #endif
 
@@ -61,7 +55,8 @@ FUNCTION_NAME:
         std r11, r10, X[3]
     {                                           ;   vldd X[0]                               }
     {                                           ;   vstd X[0]                               }
-    {                                           ;   bu .L_finish                            }
+    {                                           ;   vgetc r11                               }
+    {   mov r4, r11                             ;   bu .L_finish                            }
 
 #endif
 
@@ -73,6 +68,7 @@ FUNCTION_NAME:
 #define Ny_im   r5
 
     // Pre-boggle the DC and Nyquist bins so we can do everything on the VPU
+    // Wait, is it faster to just compute the results and hold onto them...?
 
     {   shr r8, N, 1                            ;                                           }
         ldd DC_im, DC_re, X[0]
@@ -86,10 +82,6 @@ FUNCTION_NAME:
     {   add r9, Ny_re, Ny_im                    ;   sub r11, DC_im, DC_re                   }
         std r11, r9, X[r8]
 
-#undef DC_re
-#undef DC_im
-#undef Ny_re
-#undef Ny_im
 
 
 #define X_lo    r2
@@ -102,9 +94,9 @@ FUNCTION_NAME:
     {   ldaw X_hi, X[N]                                                                     }
     {   ldc r11, 0                                                                          }
     {   shr i, N, 3                             ;   vsetc r11                               }
-        ldaw r11, cp[L_neg_j_vect]
+        ldaw r11, cp[vpu_vec_complex_neg_j]
     {   mov X_lo, X                             ;   vldc r11[0]                             }
-        ldaw r11, cp[L_comp_conj_vect]
+        ldaw r11, cp[vpu_vec_complex_conj_op]
     {   ldc _32, 32                             ;   bu .L_syzygy                            }
 
 .align 16
@@ -118,91 +110,33 @@ FUNCTION_NAME:
         {   add X_hi, X_hi, _32                     ;   vstr X_hi[0]                        }
         {                                           ;   bt i, .L_syzygy                     }
 
-#undef X_lo
-#undef X_hi
-#undef i
-#undef _32
-
-
-#if (XS3_CONFIG_MIN_FFT_LEN <= 8)
-
-    // Now, if the FFT length is 8, the VPU implementation of sequence reversal won't work because there's only
-    //  two elements to be swapped. So just do that here.
-
-    {   shr r11, N, 4                           ;                                           }
-    {                                           ;   bt r11, .L_reverse_elements             }
-        ldd r4, r5, X[5]
-        ldd r6, r7, X[7]
-        std r4, r5, X[7]
-        std r6, r7, X[5]
-        bu .L_finish
-#endif
-
-.L_reverse_elements:
-
-#define i       r2
-#define X_A     r3
-#define X_C     r4
-#define mask_A  r5
-#define mask_C  r6
-#define _32     r7
-#define zero    r8
-#define _16     r9
-#define X_hi    r10
-#define X_lo    r11
-
-        ldaw r11, cp[L_zero_vect]
-    {   ldc _32, 32                             ;   mov zero, r11                           }
-    {   mkmsk mask_A, 8                         ;   vclrdr                                  }
-    {   ldc _16, 16                             ;   shl mask_A, mask_A, 8                   }
-    {   shr i, N, 4                             ;   shl mask_C, mask_A, 16                  }
-        ldaw X_lo, X[N]
-        ldaw X_hi, X_lo[N]
-    {   add X_lo, X_lo, 8                       ;   sub X_hi, X_hi, _32                     }
-
-.L_rev_loop:
-        {   add X_A, X_hi, _16                      ;   vldc X_hi[0]                            }
-        {   sub X_C, X_hi, _16                      ;   vldr X_lo[0]                            }
-        {   sub i, i, 1                             ;   vlmaccr zero[0]                         }
-        {                                           ;   vlmaccr zero[0]                         }
-        {   sub X_hi, X_hi, _32                     ;   vstr X_hi[0]                            }
-            vstrpv X_A[0], mask_A
-            vstrpv X_C[0], mask_C
-        {   add X_A, X_lo, _16                      ;   vstc X_lo[0]                            }
-        {   sub X_C, X_lo, _16                      ;   vldr X_lo[0]                            }
-        {                                           ;   vlmaccr zero[0]                         }
-        {                                           ;   vlmaccr zero[0]                         }
-        {   add X_lo, X_lo, _32                     ;   vstr X_lo[0]                            }
-            vstrpv X_A[0], mask_A
-            vstrpv X_C[0], mask_C
-        {                                           ;   bt i, .L_rev_loop                       }
-
-#undef i
-#undef X_A
-#undef X_C
-#undef mask_A
-#undef mask_C
-#undef _32
-#undef zero
-#undef _16
-#undef X_hi
-#undef X_lo
-
+    
+        ldaw X, X[N]
+    {   shr N, N, 1                             ;   vgetc r11                               }
+    {   mov r4, r11                             ;                                           }
+        bl xs3_spectrum_tail_reverse
 
 
 .L_finish:
-    {   ldc r0, 31                              ;   vgetc r11                               }
-    {   zext r11, 5                             ;                                           }
-    {   sub r0, r0, r11                         ;   ldw r10, sp[1]                          }
+
+
+    {   ldc r0, 31                              ;                                           }
+    {   zext r4, 5                              ;                                           }
+    {   sub r0, r0, r4                          ;   ldw r10, sp[1]                          }
 
         ldd r4, r5, sp[1]
         ldd r6, r7, sp[2]
         ldd r8, r9, sp[3]
         retsp NSTACKWORDS
 
-ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS)
-
-
+.cc_bottom FUNCTION_NAME.function; 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS + xs3_spectrum_tail_reverse.nstackwords;     
+                                                .global FUNCTION_NAME.nstackwords; 
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends; 
+.L_function_end: 
+    .size FUNCTION_NAME, .L_function_end - FUNCTION_NAME
 
 
 

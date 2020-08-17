@@ -9,18 +9,16 @@ void xs3_bit_reverse_indexes(
 
 */
 
-#include "../asm_helper.h"
+#define FUNCTION_NAME   xs3_bit_reverse_indexes
+#define NSTACKWORDS 4
 
 .text
 .issue_mode dual
+.global FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.align 16
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
 
-
-#define FUNCTION_NAME   xs3_bit_reverse_indexes
-
-ASM_PREAMBLE(FUNCTION_NAME)
-
-#define NSTACKWORDS 4
-    
 FUNCTION_NAME:
 	{   clz r2, r1                              ;   dualentsp NSTACKWORDS                   }
     {   std r6, r7, sp[1]                                                                   }
@@ -53,21 +51,17 @@ FUNCTION_NAME:
 	{   retsp NSTACKWORDS                                                                   }
 	
 	// RETURN_REG_HOLDER
-	.cc_bottom FUNCTION_NAME.function
-	.set	FUNCTION_NAME.nstackwords,NSTACKWORDS
-	.globl	FUNCTION_NAME.nstackwords
-	.set	FUNCTION_NAME.maxcores,1
-	.globl	FUNCTION_NAME.maxcores
-	.set	FUNCTION_NAME.maxtimers,0
-	.globl	FUNCTION_NAME.maxtimers
-	.set	FUNCTION_NAME.maxchanends,0
-	.globl	FUNCTION_NAME.maxchanends
+.cc_bottom FUNCTION_NAME.function
+.set	FUNCTION_NAME.nstackwords,NSTACKWORDS
+.globl	FUNCTION_NAME.nstackwords
+.set	FUNCTION_NAME.maxcores,1
+.globl	FUNCTION_NAME.maxcores
+.set	FUNCTION_NAME.maxtimers,0
+.globl	FUNCTION_NAME.maxtimers
+.set	FUNCTION_NAME.maxchanends,0
+.globl	FUNCTION_NAME.maxchanends
 .Ltmp0:
-	.size	FUNCTION_NAME, .Ltmp0-FUNCTION_NAME
-
-    .issue_mode  single
-    
-
+	.size	FUNCTION_NAME, .Ltmp0-FUNCTION_NAME    
 
 #endif //!defined(XS3_MATH_NO_ASM)
 #endif //defined(__XS3A__)

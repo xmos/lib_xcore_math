@@ -15,17 +15,9 @@
 
 
 
-
-
-
-
-
-
-
 void bfp_real_fft_forward(
     bfp_complex_s32_t* a,
-    const bfp_s32_t* b, 
-    complex_s32_t* scratch)
+    bfp_s32_t* b)
 {
     // b is initialized, a is not.
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
@@ -33,55 +25,14 @@ void bfp_real_fft_forward(
 #else
 #endif
 
-#if USE_DIT
     right_shift_t b_shr = 2 - b->hr;
-#else
-    right_shift_t b_shr = - b->hr;
-    assert(0);
-#endif
 
-
-    xs3_s32_to_complex_s32(scratch, b->data, b->length, b_shr);
-    a->hr  = b->hr  + b_shr;
-    a->exp = b->exp + b_shr;
-
-    a->data = (complex_s32_t*) b->data;
-    a->length = b->length/2;
-
-    xs3_bit_reverse_indexes(scratch, b->length);
-    xs3_fft_dit_s32(scratch, b->length, &a->hr, xs3_dit_fft_lut, &a->exp);
-
-    scratch[0].im = scratch[b->length/2].re;
-    memcpy(a->data, scratch, sizeof(complex_s32_t) * a->length);
-}
-
-
-
-
-
-
-
-void bfp_real_fft_forward2(
-    bfp_complex_s32_t* a,
-    const bfp_s32_t* b)
-{
-    // b is initialized, a is not.
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    //astew: TODO: check that length is a power of 2.
-#else
-#endif
-
-#if USE_DIT
-    right_shift_t b_shr = 2 - b->hr;
-#else
-    right_shift_t b_shr = - b->hr;
-    assert(0);
-#endif
 
     //Reinterpret the real sequence as complex (which puts odd-indexed elements into the imaginary part)
     // then perform a complex N/2-point FFT on that.
-    for(int k = 0; k < b->length; k++)
-        b->data[k] = ASHR(32)(b->data[k], b_shr);
+    xs3_shl_vect_s32(b->data, b->data, b->length, -b_shr);
+    // for(int k = 0; k < b->length; k++)
+    //     b->data[k] = ASHR(32)(b->data[k], b_shr);
 
     a->hr  = b->hr  + b_shr;
     a->exp = b->exp + b_shr;
@@ -91,11 +42,7 @@ void bfp_real_fft_forward2(
     xs3_bit_reverse_indexes((complex_s32_t*) b->data, b->length/2);
     xs3_fft_dit_s32(a->data, b->length/2, &a->hr, xs3_dit_fft_lut, &a->exp);
 
-    //Now b->data holds the the merged spectra of the even and odd subsequences of the original b.
-    xs3_split_fft_spectrum_s32(a->data, b->length/2);
-
-    //Now the final pass needs to be applied to get the resulting FFT
-    xs3_real_fft_final_pass_s32(a->data, b->length, &a->hr, &a->exp, XS3_DIT_FFT_LUT(b->length));
+    xs3_real_fft_final_pass_s32(a->data, b->length, XS3_DIT_REAL_FFT_LUT(b->length));
 
 }
 
@@ -105,8 +52,7 @@ void bfp_real_fft_forward2(
 
 void bfp_real_fft_inverse(
     bfp_s32_t* a,
-    const bfp_complex_s32_t* b, 
-    complex_s32_t* scratch)
+    bfp_complex_s32_t* b)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
 #else
@@ -114,37 +60,18 @@ void bfp_real_fft_inverse(
 
     const unsigned N = 2*b->length;
     
-#if USE_DIT
     right_shift_t b_shr = 2 - b->hr;
+    xs3_shl_vect_s32((int32_t*) b->data, (int32_t*) b->data, N, -b_shr);
     
-    {
-        scratch[0].re = ASHR(32)(b->data[0].re, b_shr);
-        scratch[b->length].re = ASHR(32)(b->data[0].im, b_shr);
-
-        for(int i = 1; i < b->length; i++){
-            scratch[i].re = ASHR(32)(b->data[i].re, b_shr);
-            scratch[i].im = ASHR(32)(b->data[i].im, b_shr);
-            scratch[N-i].re =  scratch[i].re;
-            scratch[N-i].im = -scratch[i].im;
-        }
-    }
-
-    a->hr  = b->hr + b_shr;
+    a->hr  = b->hr  + b_shr;
     a->exp = b->exp + b_shr;
     a->data = (int32_t*) b->data;
     a->length = N;
 
+    xs3_real_ifft_first_pass_s32(b->data, N, XS3_DIT_REAL_FFT_LUT(N));
 
-    xs3_bit_reverse_indexes(scratch, N);
-    xs3_ifft_dit_s32(scratch, a->length, &a->hr, xs3_dit_fft_lut, &a->exp);
-    
-    xs3_real_part_complex_s32(a->data, scratch, a->length, 0);
-
-#else
-    right_shift_t b_shr = -b->hr;
-    assert(0);
-#endif
-
+    xs3_bit_reverse_indexes(b->data, b->length);
+    xs3_ifft_dit_s32(b->data, b->length, &a->hr, xs3_dit_fft_lut, &a->exp);
 }
 
 

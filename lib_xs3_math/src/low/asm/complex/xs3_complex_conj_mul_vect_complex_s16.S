@@ -18,6 +18,8 @@ headroom_t xs3_complex_conj_mul_vect_complex_s16(
 
 */
 
+#define FUNCTION_NAME xs3_complex_conj_mul_vect_complex_s16
+
 #define NSTACKVECS      (2)
 #define NSTACKWORDS     (12+8*(NSTACKVECS))
 
@@ -32,7 +34,6 @@ headroom_t xs3_complex_conj_mul_vect_complex_s16(
 
 #define STACK_BYTEMASK  8
 
-#define FUNCTION_NAME xs3_complex_conj_mul_vect_complex_s16
     
 #define a_re        r0
 #define a_im        r1
@@ -48,12 +49,6 @@ headroom_t xs3_complex_conj_mul_vect_complex_s16(
 
 
 ASM_PREAMBLE(FUNCTION_NAME)
-
-
-
-.L_neg_ones:
-    .short -0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000
-
 FUNCTION_NAME:
     dualentsp NSTACKWORDS
     std r4, r5, sp[1]
@@ -73,7 +68,8 @@ FUNCTION_NAME:
     {   zext bytemask, 4                        ;   ldw c_im, sp[STACK_C_IMAG]              }
     {   shl bytemask, bytemask, SIZEOF_LOG2_S16 ;   shl r11, r11, 3                         }
     {   ldaw vec_tmp, sp[STACK_VEC_TMP]         ;   vsetc r11                               }
-    {   ldap r11, .L_neg_ones                   ;   bf len, .L_loop_bot                     }
+        ldaw r11, cp[vpu_vec_neg_0x4000]
+    {   mov r10, r11                            ;   bf len, .L_loop_bot                     }
 
     .L_loop_top:
         {   sub len, len, 1                         ;   vldr r11[0]                             }
@@ -92,7 +88,7 @@ FUNCTION_NAME:
         {   add b_re, b_re, r11                     ;   vlmacc c_re[0]                          }
         {   add c_re, c_re, r11                     ;   vlsat vec_sat[0]                        }
         {   add a_re, a_re, r11                     ;   vstr a_re[0]                            }
-        {   ldap r11, .L_neg_ones                   ;   bt len, .L_loop_top                     }
+        {   mov r11, r10                            ;   bt len, .L_loop_top                     }
     .L_loop_bot:
 
     {   mkmsk bytemask, bytemask                ;   bf bytemask, .L_done                    }   

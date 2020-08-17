@@ -42,8 +42,6 @@ headroom_t xs3_complex_s32_to_complex_s16(
 ASM_PREAMBLE(FUNCTION_NAME)
 
 
-.L_zero_odds:
-.word 0x04000000,0x00000000,0x04000000,0x00000000,0x04000000,0x00000000,0x04000000,0x00000000
 
 FUNCTION_NAME:
         dualentsp NSTACKWORDS
@@ -53,7 +51,8 @@ FUNCTION_NAME:
 
     {   ldc r11, 16                             ;   vsetc r11                               }
     {   shr len, len, 2                         ;   shl tail, len, 1                        }
-    {   sub b_shr, b_shr, r11                   ;   ldap r11, .L_zero_odds                  }
+    {   sub b_shr, b_shr, r11                   ;                                           }
+        ldaw r11, cp[vpu_vec_complex_ones]
     {   zext tail, 3                            ;   mkmsk mask, 8                           }
     {   mkmsk tail, tail                        ;   bf len, .L_loop_bot                     }
 

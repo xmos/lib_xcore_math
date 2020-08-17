@@ -51,7 +51,7 @@ static signed sext(int a, unsigned b){
 
 void test_bfp_complex_fft_forward()
 {
-
+    printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
     for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
@@ -120,7 +120,7 @@ void test_bfp_complex_fft_forward()
 
 void test_bfp_complex_fft_inverse()
 {
-
+    printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
     for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
@@ -187,7 +187,7 @@ void test_bfp_complex_fft_inverse()
 
 void test_bfp_dual_fft_forward()
 {
-
+    printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
     for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
@@ -275,7 +275,7 @@ void test_bfp_dual_fft_forward()
 
 void test_bfp_dual_fft_inverse()
 {
-
+    printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
     for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
@@ -353,10 +353,10 @@ void test_bfp_dual_fft_inverse()
 
 void test_bfp_real_fft_forward()
 {
-
+    printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
-    for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
+    for(unsigned k = 4; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
         printf("Frame size: %u\n", 1<<k);
 
         unsigned proc_frame_length = (1<<k);
@@ -368,10 +368,8 @@ void test_bfp_real_fft_forward()
         flt_make_sine_table_double(sine_table, proc_frame_length);
         
         for(unsigned t = 0; t < (1<<LOOPS_LOG2); t++){
-            
-
+        
             int32_t ALIGNED a[MAX_PROC_FRAME_LENGTH];
-            complex_s32_t ALIGNED scratch[MAX_PROC_FRAME_LENGTH];
             complex_double_t ALIGNED ref[MAX_PROC_FRAME_LENGTH];
 
             bfp_s32_t A;
@@ -396,11 +394,18 @@ void test_bfp_real_fft_forward()
             ref[0].im = ref[proc_frame_length/2].re;
 
             unsigned ts1 = getTimestamp();
-            bfp_real_fft_forward(&A_fft, &A, scratch);
+            bfp_real_fft_forward(&A_fft, &A);
             unsigned ts2 = getTimestamp();
             
             float timing = (ts2-ts1)/100.0;
+            // printf("!!\t %f us\n", timing);
             if(timing > worst_timing) worst_timing = timing;
+
+            // printf("exp = %d\n", A_fft.exp);
+            // for(int i = 0; i < proc_frame_length/2; i++){
+            //     printf("%u (real):\t{ %f, %f }\n", i, ref[i].re, ldexp(A_fft.data[i].re, A_fft.exp));
+            //     printf("%u (imag):\t{ %f, %f }\n", i, ref[i].im, ldexp(A_fft.data[i].im, A_fft.exp));
+            // }
 
             unsigned diff = abs_diff_vect_complex_s32(A_fft.data, A_fft.exp, ref, A_fft.length, &error);
             if(diff > worst_case) { worst_case = diff; /* printf("worst_case: %u\n", worst_case); */ }
@@ -423,9 +428,10 @@ void test_bfp_real_fft_forward()
 
 void test_bfp_real_fft_inverse()
 {
+    printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
-    for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
+    for(unsigned k = 4; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
         printf("Frame size: %u\n", 1<<k);
 
         unsigned proc_frame_length = (1<<k);
@@ -440,7 +446,6 @@ void test_bfp_real_fft_inverse()
         for(unsigned t = 0; t < (1<<LOOPS_LOG2); t++){
             
             complex_s32_t ALIGNED a[MAX_PROC_FRAME_LENGTH/2];
-            complex_s32_t ALIGNED scratch[MAX_PROC_FRAME_LENGTH];
             complex_double_t ALIGNED ref[MAX_PROC_FRAME_LENGTH];
             double ALIGNED ref_real[MAX_PROC_FRAME_LENGTH];
 
@@ -457,8 +462,11 @@ void test_bfp_real_fft_inverse()
                 
                 ref[i].re = conv_s32_to_double(a[i].re, initial_exponent, &error);
                 ref[i].im = conv_s32_to_double(a[i].im, initial_exponent, &error);
-                ref[N-i].re =  ref[i].re;
-                ref[N-i].im = -ref[i].im;
+
+                if(i){
+                    ref[N-i].re =  ref[i].re;
+                    ref[N-i].im = -ref[i].im;
+                }
             }
             TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error");
             ref[N/2].re = ref[0].im;
@@ -469,8 +477,9 @@ void test_bfp_real_fft_inverse()
             flt_bit_reverse_indexes_double(ref, proc_frame_length);
             flt_fft_inverse_double(ref, proc_frame_length, sine_table);
 
+
             unsigned ts1 = getTimestamp();
-            bfp_real_fft_inverse(&A, &A_fft, scratch);
+            bfp_real_fft_inverse(&A, &A_fft);
             unsigned ts2 = getTimestamp();
             
             float timing = (ts2-ts1)/100.0;

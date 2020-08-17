@@ -39,8 +39,9 @@ static signed sext(int a, unsigned b){
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
 
-#define LOOPS_LOG2 8
+#define LOOPS_LOG2 4
 
+#define TIME_FUNCS 1
 
 
 
@@ -271,10 +272,13 @@ void test_xs3_ifft_dit_s32_complete()
 void test_xs3_fft_dit_s32(){
 
     unsigned r = 1;
+    printf("%s..\n", __func__);
 
     for(unsigned k = 2; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
 
         unsigned proc_frame_length = (1<<k);
+        unsigned N = (1<<k);
+        float worst_timing = 0.0f;
         double sine_table[(MAX_PROC_FRAME_LENGTH/2) + 1];
 
         flt_make_sine_table_double(sine_table, proc_frame_length);
@@ -312,14 +316,21 @@ void test_xs3_fft_dit_s32(){
             // flt_bit_reverse_indexes_double(A, proc_frame_length);
             flt_fft_forward_double(A, proc_frame_length, sine_table);
 
-            // xs3_bit_reverse_indexes(a, proc_frame_length);
+            unsigned ts1 = getTimestamp();
             xs3_fft_dit_s32(a, proc_frame_length, &headroom, xs3_dit_fft_lut, &exponent);
-            // exponent += l;
+            unsigned ts2 = getTimestamp();
+
+            float timing = (ts2-ts1)/100.0;
+            if(timing > worst_timing) worst_timing = timing;
 
             unsigned diff = abs_diff_vect_complex_s32(a, exponent, A, proc_frame_length, &error);
             TEST_ASSERT_CONVERSION(error);
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+2, diff, "Output delta is too large");
         }
+
+#if TIME_FUNCS
+        printf("\t%s (%u-point): %f us\n", __func__, N, worst_timing);
+#endif
     }
 }
 

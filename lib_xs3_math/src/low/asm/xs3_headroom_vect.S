@@ -3,6 +3,12 @@
 #ifndef XS3_MATH_NO_ASM
 
 
+/*  
+headroom_t xs3_headroom_vect_s16(
+    const int16_t* v, 
+    const unsigned length);
+*/
+
 #include "asm_helper.h"
 
 
@@ -16,12 +22,6 @@
 
 
 
-
-/*  
-headroom_t xs3_headroom_vect_s16(
-    const int16_t* v, 
-    const unsigned length);
-*/
 
 #define FUNCTION_NAME xs3_headroom_vect_s16
 

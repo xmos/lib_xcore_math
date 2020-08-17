@@ -94,7 +94,8 @@ FUNCTION_NAME:
     {   zext bytemask, 4                        ;   ldw c_im, sp[STACK_C_IMAG]              }
     {   shl bytemask, bytemask, SIZEOF_LOG2_S16 ;   shl r11, r11, 3                         }
     {   ldaw vec_tmp, sp[STACK_VEC_TMP]         ;   vsetc r11                               }
-    {   ldap r11, .L_neg_ones                   ;   bf len, .L_loop_bot                     }
+        ldaw r11, cp[vpu_vec_neg_0x4000]
+    {   mov r10, r11                            ;   bf len, .L_loop_bot                     }
 
     .L_loop_top:
         {   sub len, len, 1                         ;   vldr r11[0]                             }
@@ -113,7 +114,7 @@ FUNCTION_NAME:
         {   add b_im, b_im, r11                     ;   vlmacc c_re[0]                          }
         {   add c_re, c_re, r11                     ;   vlsat vec_sat[0]                        }
         {   add a_im, a_im, r11                     ;   vstr a_im[0]                            }
-        {   ldap r11, .L_neg_ones                   ;   bt len, .L_loop_top                     }
+        {   mov r11, r10                            ;   bt len, .L_loop_top                     }
     .L_loop_bot:
 
     {   mkmsk bytemask, bytemask                ;   bf bytemask, .L_done                    }   

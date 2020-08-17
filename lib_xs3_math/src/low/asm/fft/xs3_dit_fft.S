@@ -18,12 +18,8 @@
         exponent_t* exp);
 */
 
-#include "../asm_helper.h"
-
-.text
 .section    .cp.rodata, "ac", @progbits
 .align  4
-
 // In the table below the LSByte indicates the shift behavior
 //  0x00 - no shift.  0x40 - left shift. 0x80 - right shift.
 
@@ -31,11 +27,13 @@
 #define ZERO_SH0    0x00000000
 #define POS1_SHR    0x00010080
 
-L_hr_lut:
+.cc_top .L_hr_lut
+.L_hr_lut:
 	.word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL //  0 -  7
 	.word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL //  8 - 15
 	.word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL // 16 - 23
     .word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, ZERO_SH0, POS1_SHR, POS1_SHR, POS1_SHR // 24 - 31
+.cc_bottom .L_hr_lut
     
 
 #define NSTACKWORDS (32)
@@ -65,8 +63,6 @@ L_hr_lut:
 .globl	xs3_fft_dit_s32
 .type	xs3_fft_dit_s32,@function
 .cc_top xs3_fft_dit_s32.function,xs3_fft_dit_s32
-
-
 
 .align 4
 xs3_fft_dit_s32:
@@ -137,7 +133,7 @@ dit_fft_impl_start:
 	{   shr n, n, 4                             ;   shr a, n, 3                             }
 
     dit_fft_round_loop:
-        {   ldaw r11, cp[L_hr_lut]                  }
+        {   ldaw r11, cp[.L_hr_lut]                 }
 
         {   mov s, r11                              ;   vgetc r11                               }
         {                                           ;   zext r11, 5                             }
@@ -272,7 +268,7 @@ dit_ifft_first_two_rounds_loop:
 	{   shr a, a, 3                             ;   shr n, n, 4                             }
 
 dit_ifft_round_loop:
-	{   ldaw r11, cp[L_hr_lut]                  }
+	{   ldaw r11, cp[.L_hr_lut]                 }
 
 	{   mov s, r11                              ;   vgetc r11                               }
 	{   zext r11, 5                             ;   sub exp_modifier, exp_modifier, 1       }
