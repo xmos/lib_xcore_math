@@ -5,8 +5,7 @@
 void test_xs3_fft_helpers();
 void test_xs3_fft_dit();
 void test_xs3_fft_dif();
-void test_xs3_real_fft_final_pass();
-void test_xs3_real_ifft_first_pass();
+void test_xs3_fft_mono_adjust();
 
 void test_bfp_fft();
 

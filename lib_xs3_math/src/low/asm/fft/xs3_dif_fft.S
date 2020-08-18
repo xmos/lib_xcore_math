@@ -3,14 +3,14 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-    void xs3_fft_dif_s32 (
+    void xs3_fft_dif_forward (
         complex_s32_t * x, 
         unsigned n, 
         headroom_t* hr, 
         const complex_s32_t* twiddle_lut, 
         exponent_t* exp);
     
-    void xs3_ifft_dif_s32 (
+    void xs3_fft_dif_inverse (
         complex_s32_t* x, 
         unsigned n, 
         headroom_t* hr, 
@@ -58,14 +58,14 @@
 
 .text
 .issue_mode  dual
-.globl	xs3_fft_dif_s32
-.type	xs3_fft_dif_s32,@function
-.cc_top xs3_fft_dif_s32.function, xs3_fft_dif_s32
+.globl	xs3_fft_dif_forward
+.type	xs3_fft_dif_forward,@function
+.cc_top xs3_fft_dif_forward.function, xs3_fft_dif_forward
 
 
 
 .align 4
-xs3_fft_dif_s32:
+xs3_fft_dif_forward:
 	{   dualentsp NSTACKWORDS                                                               }
 	{   std r4, hr_p, sp[0]                                                                 }
 	{   std r5, r6, sp[1]                                                                   }
@@ -149,17 +149,17 @@ dif_fft_done:
 	{   ldd r9, r10, sp[3]                                                                  }
 	{   retsp NSTACKWORDS                       ;                                           }
 	
-	.cc_bottom xs3_fft_dif_s32.function
-	.set	xs3_fft_dif_s32.nstackwords,NSTACKWORDS
-	.globl	xs3_fft_dif_s32.nstackwords
-	.set	xs3_fft_dif_s32.maxcores,1
-	.globl	xs3_fft_dif_s32.maxcores
-	.set	xs3_fft_dif_s32.maxtimers,0
-	.globl	xs3_fft_dif_s32.maxtimers
-	.set	xs3_fft_dif_s32.maxchanends,0
-	.globl	xs3_fft_dif_s32.maxchanends
-.L_xs3_fft_dif_s32:
-	.size	xs3_fft_dif_s32, .L_xs3_fft_dif_s32-xs3_fft_dif_s32
+	.cc_bottom xs3_fft_dif_forward.function
+	.set	xs3_fft_dif_forward.nstackwords,NSTACKWORDS
+	.globl	xs3_fft_dif_forward.nstackwords
+	.set	xs3_fft_dif_forward.maxcores,1
+	.globl	xs3_fft_dif_forward.maxcores
+	.set	xs3_fft_dif_forward.maxtimers,0
+	.globl	xs3_fft_dif_forward.maxtimers
+	.set	xs3_fft_dif_forward.maxchanends,0
+	.globl	xs3_fft_dif_forward.maxchanends
+.L_xs3_fft_dif_forward:
+	.size	xs3_fft_dif_forward, .L_xs3_fft_dif_forward-xs3_fft_dif_forward
 
 
 
@@ -172,12 +172,12 @@ dif_fft_done:
 
 	.text
     .issue_mode     dual
-	.globl	        xs3_ifft_dif_s32
-	.type	        xs3_ifft_dif_s32, @function
-	.cc_top         xs3_ifft_dif_s32.function, xs3_ifft_dif_s32
+	.globl	        xs3_fft_dif_inverse
+	.type	        xs3_fft_dif_inverse, @function
+	.cc_top         xs3_fft_dif_inverse.function, xs3_fft_dif_inverse
 
 .align 4
-xs3_ifft_dif_s32:
+xs3_fft_dif_inverse:
 	{   dualentsp NSTACKWORDS                                                               }
 	{   std r4, hr_p, sp[0]                                                                 }
 	{   std r5, r6, sp[1]                                                                   }
@@ -262,17 +262,17 @@ dif_ifft_done:
     {   ldd r9, r10, sp[3]                                                                  }
 	{                                           ;   retsp NSTACKWORDS                       }
 	
-	.cc_bottom xs3_ifft_dif_s32.function
-	.set	xs3_ifft_dif_s32.nstackwords,NSTACKWORDS
-	.globl	xs3_ifft_dif_s32.nstackwords
-	.set	xs3_ifft_dif_s32.maxcores,1
-	.globl	xs3_ifft_dif_s32.maxcores
-	.set	xs3_ifft_dif_s32.maxtimers,0
-	.globl	xs3_ifft_dif_s32.maxtimers
-	.set	xs3_ifft_dif_s32.maxchanends,0
-	.globl	xs3_ifft_dif_s32.maxchanends
-.L_xs3_ifft_dif_s32:
-	.size	xs3_ifft_dif_s32, .L_xs3_ifft_dif_s32-xs3_ifft_dif_s32
+	.cc_bottom xs3_fft_dif_inverse.function
+	.set	xs3_fft_dif_inverse.nstackwords,NSTACKWORDS
+	.globl	xs3_fft_dif_inverse.nstackwords
+	.set	xs3_fft_dif_inverse.maxcores,1
+	.globl	xs3_fft_dif_inverse.maxcores
+	.set	xs3_fft_dif_inverse.maxtimers,0
+	.globl	xs3_fft_dif_inverse.maxtimers
+	.set	xs3_fft_dif_inverse.maxchanends,0
+	.globl	xs3_fft_dif_inverse.maxchanends
+.L_xs3_fft_dif_inverse:
+	.size	xs3_fft_dif_inverse, .L_xs3_fft_dif_inverse-xs3_fft_dif_inverse
 
 
 

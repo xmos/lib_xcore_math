@@ -63,3 +63,63 @@ Due to the nature of block floating-point arithmetic, underflow of data is gener
 With the XS3 VPU, the result of an underflowing value depends on whether the value was negative or not. Non-negative values underflow to `0`, whereas negative values underflow to `-1`. Users should take steps to ensure that the logic of their particular use case is not sensitive to either case.
 
 Precisely where underflow may occur depends on the operation being performed. Refer to the operation descriptions in the low-level API (e.g. `xs3_bfp_low.h`) for details on where underflows may occur. Typically they can occur whereever a multiplication by `2` to a negative power may happen.
+
+---------
+### Note 4: Spectrum Packing ###              {#spectrum_packing}
+
+In its general form, the @math{N}-point Discrete Fourier Transform is an operation applied to a complex @math{N}-point 
+signal @math{x[n]} to produce a complex spectrum @math{X[f]}. Any spectrum @math{X[f]} which is the result of a 
+@math{N}-point DFT has the property that @math{X[f+N] = X[f]}. Thus, the complete representation of the @math{N}-point 
+DFT of @math{X[n]} requires @math{N} complex elements.
+
+#### Complex DFT and IDFT ####
+
+In this library, when performing a complex DFT (e.g. using bfp_fft_forward_complex()), the spectral representation that
+results in a straight-forward mapping:
+
+`X[f]` @math{\longleftarrow X[f]} for @math{0 \le f \lt N}
+
+where `X` is an @math{N}-element array of `complex_s32_t`, where the real part of @math{X[f]} is in `X[f].re` and the imaginary part in `X[f].im`.
+
+Likewise, when performing an @math{N}-point complex inverse DFT, that is also the representation that is expected.
+
+#### Real DFT and IDFT ####
+
+Oftentimes we instead wish to compute the DFT of real signals. In addition to the periodicity property 
+(@math{X[f+N] = X[f]}), the DFT of a real signal also has a complex conjugate symmetry such that @math{X[-f] = X^*[f]},
+where @math{X^*[f]} is the complex conjugate of @math{X[f]}. This symmetry makes it redundant (and thus undesirable) to
+store such symmetric pairs of elements. This would allow us to get away with only explicitly storing @math{X[f} for 
+@math{0 \le f \le N/2} in @math{(N/2)+1} complex elements.
+
+Unfortunately, using such a representation has the undesirable property that the DFT of an @math{N}-point real signal
+cannot be computed in-place, as the representation requires more memory than we started with.
+
+However, if we take the periodicity and complex conjugate symmetry properties together:
+
+\f[
+    X[0] = X^*[0] \rightarrow Imag\{X[0]\} = 0 \\
+
+    X[-(N/2) + N] = X[N/2] \\
+
+    X[-N/2] = X^*[N/2] \rightarrow X[N/2] = X^*[N/2] \rightarrow Imag \{ X[N/2] \} = 0
+\f]
+
+Because both @math{X[0]} and @math{X[N/2]} are guaranteed to be real, we can recover the benefit of in-place computation
+in our representation by packing the real part of @math{X[N/2]} into the imaginary part of @math{X[0]}.
+
+Therefore, the functions in this library that produce the spectra of real signals (such as bfp_fft_forward_mono() and 
+bfp_fft_forward_stereo()) will pack the spectra in a slightly less straight-forward manner (as compared with the complex DFTs):
+
+
+`X[f]` @math{\longleftarrow X[f]} for @math{1 \le f \lt N/2}
+
+`X[0]` @math{\longleftarrow X[0] + j X[N/2]}
+
+where `X` is an @math{N/2}-element array of `complex_s32_t`.
+
+Likewise, this is the encoding expected when computing the @math{N}-point inverse DFT, such as by bfp_fft_inverse_mono()
+or bfp_fft_inverse_stereo().
+
+@note One additional note, when performing a stereo DFT or inverse DFT, so as to preserve the in-place computation of 
+the result, the spectra of the two signals will be encoded into adjacent blocks of memory, with the second spectrum
+(i.e. associated with 'channel b') occupying the higher memory address.

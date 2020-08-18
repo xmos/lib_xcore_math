@@ -42,7 +42,7 @@ void pseudo_rand_bytes(unsigned *r, char* buffer, unsigned size);
 extern "C" {
 #endif 
 
-void xs3_bit_reverse_indexes_double(
+void xs3_fft_index_bit_reversal_double(
     complex_double_t* a,
     const unsigned length);
 

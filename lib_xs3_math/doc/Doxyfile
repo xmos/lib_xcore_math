@@ -284,6 +284,9 @@ ALIASES += requires_word_alignment{3}="@par Word Alignment Required:^^Vectors `\
             must begin at a word-aligned (4-byte) address. For more about alignment requirements,          \
             see \ref vector_alignment."                 
 
+# Just makes short MATHJAX sequences prettier
+ALIASES += math{1}="@f$\1@f$"
+
 ALIASES += tab="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 ALIASES += operation{1}="@par Operation Performed:^^<BLOCKQUOTE><CODE>\1</CODE></BLOCKQUOTE>"

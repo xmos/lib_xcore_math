@@ -13,7 +13,7 @@ static unsigned bitrev(unsigned index, size_t bit_width)
 
 
 WEAK_FUNC
-void xs3_bit_reverse_indexes(
+void xs3_fft_index_bit_reversal(
     complex_s32_t* a,
     const unsigned length)
 {
@@ -32,7 +32,7 @@ void xs3_bit_reverse_indexes(
 
 
 WEAK_FUNC
-void xs3_bit_reverse_indexes_shr(
+void xs3_fft_index_bit_reversal_shr(
     complex_s32_t* a,
     const unsigned length,
     const right_shift_t shr)
@@ -103,7 +103,7 @@ void xs3_imag_part_complex_s32(
 
 
 WEAK_FUNC
-headroom_t xs3_split_fft_spectrum_s32(
+headroom_t xs3_fft_spectra_split(
     complex_s32_t* X,
     const unsigned N)
 {
@@ -172,7 +172,7 @@ headroom_t xs3_split_fft_spectrum_s32(
 }
 
 WEAK_FUNC
-headroom_t xs3_merge_fft_spectra_s32(
+headroom_t xs3_fft_spectra_merge(
     complex_s32_t* X,
     const unsigned N)
 {

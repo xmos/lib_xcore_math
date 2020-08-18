@@ -330,6 +330,26 @@ complex_s32_t xs3_sum_complex_s32(
     const right_shift_t sat);
 
 
+
+
+/**
+ * @brief Reverses the order of the tail of a complex 32-bit vector.
+ * 
+ * Reverses the tail of the complex 32-bit vector @vect{X}. In other words, the first element @math{X[0]} remains where 
+ * it is, and the remaining @math{N-1} elements are rearranged to have their order reversed.
+ * 
+ * @note This function is used when performing a mono FFT.
+ * @par
+ * @note Saturation logic may be applied to the real or imaginary parts of elements (@ref saturation).
+ * 
+ * @param[in]   x   The vector to have its tail reversed.
+ * @param[in]   N   The length of `x`.
+ */
+void xs3_tail_reverse_complex_s32(
+    complex_s32_t x[],
+    const unsigned N);
+    
+
 #ifdef __XC__
 }   //extern "C"
 #endif

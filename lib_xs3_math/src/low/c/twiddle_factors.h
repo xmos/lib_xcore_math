@@ -22,7 +22,7 @@
 /** @brief Convenience macro to index into the decimation-in-frequency FFT look-up table. 
 
 	Use this to retrieve the correct address for the DIF FFT look-up table when performing
-	an FFT (or IFFT) using the DIF algorithm. (@see xs3_fft_dif_s32).
+	an FFT (or IFFT) using the DIF algorithm. (@see xs3_fft_dif_forward).
 
 	@param N_LOG2	log2(N) where N is the FFT length.
 */

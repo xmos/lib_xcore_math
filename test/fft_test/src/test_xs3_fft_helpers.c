@@ -71,7 +71,7 @@ void test_bit_reverse()
             flt_bit_reverse_indexes_double(A, N);
 
             unsigned ts1 = getTimestamp();
-            xs3_bit_reverse_indexes(a, N);
+            xs3_fft_index_bit_reversal(a, N);
             unsigned ts2 = getTimestamp();
 
             float timing = (ts2-ts1)/100.0;
@@ -90,7 +90,7 @@ void test_bit_reverse()
 }
 
 
-void test_xs3_spectrum_tail_reverse()
+void test_xs3_tail_reverse_complex_s32()
 {
     unsigned r = 1;
 
@@ -101,7 +101,7 @@ void test_xs3_spectrum_tail_reverse()
         unsigned N = (1<<k);
         float worst_timing = 0.0f;
 
-        printf("  N = %u\n", N);
+        // printf("  N = %u\n", N);
         
         for(unsigned t = 0; t <= (1<<LOOPS_LOG2); t++){
 
@@ -115,7 +115,7 @@ void test_xs3_spectrum_tail_reverse()
             }
 
             unsigned ts1 = getTimestamp();
-            xs3_spectrum_tail_reverse(a, N);
+            xs3_tail_reverse_complex_s32(a, N);
             unsigned ts2 = getTimestamp();
 
             // for(int i = 0; i < N; i++){
@@ -137,7 +137,7 @@ void test_xs3_spectrum_tail_reverse()
 
 
 
-void test_xs3_split_fft_spectrum_s32(){
+void test_xs3_fft_spectra_split(){
 
     unsigned r = 1;
 
@@ -166,7 +166,7 @@ void test_xs3_split_fft_spectrum_s32(){
             flt_fft_split_spectrum_double(A, N);
 
             unsigned ts1 = getTimestamp();
-            headroom_t got_hr = xs3_split_fft_spectrum_s32(a, N);
+            headroom_t got_hr = xs3_fft_spectra_split(a, N);
             unsigned ts2 = getTimestamp();
 
             float timing = (ts2-ts1)/100.0;
@@ -192,7 +192,7 @@ void test_xs3_split_fft_spectrum_s32(){
 
 
 
-void test_xs3_merge_fft_spectra_s32(){
+void test_xs3_fft_spectra_merge(){
 
     unsigned r = 1;
 
@@ -220,7 +220,7 @@ void test_xs3_merge_fft_spectra_s32(){
             flt_fft_merge_spectra_double(A, N);
 
             unsigned ts1 = getTimestamp();
-            headroom_t got_hr = xs3_merge_fft_spectra_s32(a, N);
+            headroom_t got_hr = xs3_fft_spectra_merge(a, N);
             unsigned ts2 = getTimestamp();
 
             float timing = (ts2-ts1)/100.0;
@@ -248,7 +248,7 @@ void test_xs3_fft_helpers()
     SET_TEST_FILE();
 
     RUN_TEST(test_bit_reverse);
-    RUN_TEST(test_xs3_spectrum_tail_reverse);
-    RUN_TEST(test_xs3_split_fft_spectrum_s32);
-    RUN_TEST(test_xs3_merge_fft_spectra_s32);
+    RUN_TEST(test_xs3_tail_reverse_complex_s32);
+    RUN_TEST(test_xs3_fft_spectra_split);
+    RUN_TEST(test_xs3_fft_spectra_merge);
 }

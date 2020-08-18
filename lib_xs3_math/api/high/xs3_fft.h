@@ -42,7 +42,7 @@ extern "C" {
  * \returns         Complex spectrum of ``samples``
  */
 
-void bfp_real_fft_forward(
+void bfp_fft_forward_mono(
     bfp_complex_s32_t* a,
     bfp_s32_t* b);
 
@@ -77,7 +77,7 @@ void bfp_real_fft_forward(
  * \param spectrum  Vector of  
  * \param sin_table Sine table for N-point FFT
  */
-void bfp_real_fft_inverse(
+void bfp_fft_inverse_mono(
     bfp_s32_t* a,
     bfp_complex_s32_t* b);
 
@@ -93,7 +93,7 @@ void bfp_real_fft_inverse(
  * 
  * 
  */
-void bfp_complex_fft_forward(
+void bfp_fft_forward_complex(
     bfp_complex_s32_t* samples);
 
 /** Perform a complex IFFT
@@ -106,7 +106,7 @@ void bfp_complex_fft_forward(
  * 
  * 
  */
-void bfp_complex_fft_inverse(
+void bfp_fft_inverse_complex(
     bfp_complex_s32_t* spectrum);
 
 /** Perform FFTs on a pair of real signals
@@ -119,7 +119,7 @@ void bfp_complex_fft_inverse(
  * 
  * 
  */
-void bfp_dual_fft_forward(
+void bfp_fft_forward_stereo(
     bfp_complex_s32_t* a,
     bfp_complex_s32_t* b,
     bfp_ch_pair_s32_t* input);
@@ -143,7 +143,7 @@ void bfp_dual_fft_forward(
  *      and do the IFFT directly on `a`. If they are pointing at the same data as `a`, then just
  *      merge the spectra within `a` and do IFFT.
  */
-void bfp_dual_fft_inverse(
+void  bfp_fft_inverse_stereo(
     bfp_ch_pair_s32_t* a,
     const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c);

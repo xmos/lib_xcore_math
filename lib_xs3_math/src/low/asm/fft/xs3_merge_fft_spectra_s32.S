@@ -3,14 +3,14 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-headroom_t xs3_merge_fft_spectra_s32(
+headroom_t xs3_fft_spectra_merge(
     complex_s32_t* X,
     const unsigned N);
 */
 
 
 
-#define FUNCTION_NAME   xs3_merge_fft_spectra_s32
+#define FUNCTION_NAME   xs3_fft_spectra_merge
 #define NSTACKWORDS     (8)
 
 #define XS3_CONFIG_MIN_FFT_LEN (4)
@@ -114,7 +114,7 @@ FUNCTION_NAME:
         ldaw X, X[N]
     {   shr N, N, 1                             ;   vgetc r11                               }
     {   mov r4, r11                             ;                                           }
-        bl xs3_spectrum_tail_reverse
+        bl xs3_tail_reverse_complex_s32
 
 
 .L_finish:
@@ -130,7 +130,7 @@ FUNCTION_NAME:
         retsp NSTACKWORDS
 
 .cc_bottom FUNCTION_NAME.function; 
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS + xs3_spectrum_tail_reverse.nstackwords;     
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS + xs3_tail_reverse_complex_s32.nstackwords;     
                                                 .global FUNCTION_NAME.nstackwords; 
 .set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
 .set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 

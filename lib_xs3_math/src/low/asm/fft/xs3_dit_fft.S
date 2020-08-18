@@ -3,14 +3,14 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-    void xs3_fft_dit_s32 (
+    void xs3_fft_dit_forward (
         complex_s32_t * x, 
         unsigned n, 
         headroom_t* hr, 
         const complex_s32_t* twiddle_lut, 
         exponent_t* exp);
     
-    void xs3_ifft_dit_s32 (
+    void xs3_fft_dit_inverse (
         complex_s32_t* x, 
         unsigned n, 
         headroom_t* hr, 
@@ -60,12 +60,12 @@
 
 .text
 .issue_mode  dual
-.globl	xs3_fft_dit_s32
-.type	xs3_fft_dit_s32,@function
-.cc_top xs3_fft_dit_s32.function,xs3_fft_dit_s32
+.globl	xs3_fft_dit_forward
+.type	xs3_fft_dit_forward,@function
+.cc_top xs3_fft_dit_forward.function,xs3_fft_dit_forward
 
 .align 4
-xs3_fft_dit_s32:
+xs3_fft_dit_forward:
 
     dualentsp NSTACKWORDS
     std r4, hr_p, sp[0]
@@ -183,18 +183,18 @@ dit_fft_done:
     ldd r9, r10, sp[3]
     retsp NSTACKWORDS
 	
-	.cc_bottom  xs3_fft_dit_s32.function
-	.set	    xs3_fft_dit_s32.nstackwords,NSTACKWORDS
-	.globl	    xs3_fft_dit_s32.nstackwords
-	.set	    xs3_fft_dit_s32.maxcores,1
-	.globl	    xs3_fft_dit_s32.maxcores
-	.set	    xs3_fft_dit_s32.maxtimers,0
-	.globl	    xs3_fft_dit_s32.maxtimers
-	.set	    xs3_fft_dit_s32.maxchanends,0
-	.globl	    xs3_fft_dit_s32.maxchanends
+	.cc_bottom  xs3_fft_dit_forward.function
+	.set	    xs3_fft_dit_forward.nstackwords,NSTACKWORDS
+	.globl	    xs3_fft_dit_forward.nstackwords
+	.set	    xs3_fft_dit_forward.maxcores,1
+	.globl	    xs3_fft_dit_forward.maxcores
+	.set	    xs3_fft_dit_forward.maxtimers,0
+	.globl	    xs3_fft_dit_forward.maxtimers
+	.set	    xs3_fft_dit_forward.maxchanends,0
+	.globl	    xs3_fft_dit_forward.maxchanends
 
 .Ltmp0:
-	.size	xs3_fft_dit_s32, .Ltmp0-xs3_fft_dit_s32
+	.size	xs3_fft_dit_forward, .Ltmp0-xs3_fft_dit_forward
 
 
 
@@ -211,12 +211,12 @@ dit_fft_done:
 
 	.text
     .issue_mode     dual
-	.globl	        xs3_ifft_dit_s32
-	.type	        xs3_ifft_dit_s32, @function
-	.cc_top         xs3_ifft_dit_s32.function, xs3_ifft_dit_s32
+	.globl	        xs3_fft_dit_inverse
+	.type	        xs3_fft_dit_inverse, @function
+	.cc_top         xs3_fft_dit_inverse.function, xs3_fft_dit_inverse
 
 .align 4
-xs3_ifft_dit_s32:
+xs3_fft_dit_inverse:
 	dualentsp NSTACKWORDS
 	std r4, hr_p, sp[0]
 	std r5, r6, sp[1]
@@ -316,17 +316,17 @@ dit_ifft_done:
     ldd r9, r10, sp[3]
     retsp NSTACKWORDS   
 	
-	.cc_bottom  xs3_ifft_dit_s32.function
-	.set	    xs3_ifft_dit_s32.nstackwords,NSTACKWORDS
-	.globl	    xs3_ifft_dit_s32.nstackwords
-	.set	    xs3_ifft_dit_s32.maxcores,1
-	.globl	    xs3_ifft_dit_s32.maxcores
-	.set	    xs3_ifft_dit_s32.maxtimers,0
-	.globl	    xs3_ifft_dit_s32.maxtimers
-	.set	    xs3_ifft_dit_s32.maxchanends,0
-	.globl	    xs3_ifft_dit_s32.maxchanends
+	.cc_bottom  xs3_fft_dit_inverse.function
+	.set	    xs3_fft_dit_inverse.nstackwords,NSTACKWORDS
+	.globl	    xs3_fft_dit_inverse.nstackwords
+	.set	    xs3_fft_dit_inverse.maxcores,1
+	.globl	    xs3_fft_dit_inverse.maxcores
+	.set	    xs3_fft_dit_inverse.maxtimers,0
+	.globl	    xs3_fft_dit_inverse.maxtimers
+	.set	    xs3_fft_dit_inverse.maxchanends,0
+	.globl	    xs3_fft_dit_inverse.maxchanends
 .Ltmp1:
-	.size	xs3_ifft_dit_s32, .Ltmp1-xs3_ifft_dit_s32
+	.size	xs3_fft_dit_inverse, .Ltmp1-xs3_fft_dit_inverse
 
 
 

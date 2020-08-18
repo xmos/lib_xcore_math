@@ -44,18 +44,18 @@ static signed sext(int a, unsigned b){
 #define WIGGLE 20
 
 #define TIME_FUNCS 1
-#define PRINT_ERRORS 1
+#define PRINT_ERRORS 0
 
 
 
 
-void test_bfp_complex_fft_forward()
+void test_bfp_fft_forward_complex()
 {
     printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
     for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
-        printf("Frame size: %u\n", 1<<k);
+        // printf("Frame size: %u\n", 1<<k);
 
         unsigned proc_frame_length = (1<<k);
         unsigned worst_case = 0;
@@ -92,7 +92,7 @@ void test_bfp_complex_fft_forward()
             flt_fft_forward_double(ref, proc_frame_length, sine_table);
 
             unsigned ts1 = getTimestamp();
-            bfp_complex_fft_forward(&A);
+            bfp_fft_forward_complex(&A);
             unsigned ts2 = getTimestamp();
 
             float timing = (ts2-ts1)/100.0;
@@ -109,7 +109,7 @@ void test_bfp_complex_fft_forward()
 #endif
 
 #if TIME_FUNCS
-        printf("\tbfp_complex_fft_forward (%u-point): %f us\n", proc_frame_length, worst_timing);
+        printf("\tbfp_fft_forward_complex (%u-point): %f us\n", proc_frame_length, worst_timing);
 #endif
     }
 
@@ -118,13 +118,13 @@ void test_bfp_complex_fft_forward()
 
 
 
-void test_bfp_complex_fft_inverse()
+void test_bfp_fft_inverse_complex()
 {
     printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
     for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
-        printf("Frame size: %u\n", 1<<k);
+        // printf("Frame size: %u\n", 1<<k);
 
         unsigned proc_frame_length = (1<<k);
         unsigned worst_case = 0;
@@ -161,7 +161,7 @@ void test_bfp_complex_fft_inverse()
             flt_fft_inverse_double(ref, proc_frame_length, sine_table);
 
             unsigned ts1 = getTimestamp();
-            bfp_complex_fft_inverse(&A);
+            bfp_fft_inverse_complex(&A);
             unsigned ts2 = getTimestamp();
             
             float timing = (ts2-ts1)/100.0;
@@ -178,20 +178,20 @@ void test_bfp_complex_fft_inverse()
 #endif
 
 #if TIME_FUNCS
-        printf("\tbfp_complex_fft_inverse (%u-point): %f us\n", proc_frame_length, worst_timing);
+        printf("\tbfp_fft_inverse_complex (%u-point): %f us\n", proc_frame_length, worst_timing);
 #endif
     }
 }
 
 
 
-void test_bfp_dual_fft_forward()
+void test_bfp_fft_forward_stereo()
 {
     printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
     for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
-        printf("Frame size: %u\n", 1<<k);
+        // printf("Frame size: %u\n", 1<<k);
 
         unsigned proc_frame_length = (1<<k);
         unsigned worst_case = 0;
@@ -233,7 +233,7 @@ void test_bfp_dual_fft_forward()
             bfp_complex_s32_t z1, z2;
 
             unsigned ts1 = getTimestamp();
-            bfp_dual_fft_forward(&z1, &z2, &A);
+            bfp_fft_forward_stereo(&z1, &z2, &A);
             unsigned ts2 = getTimestamp();
             
             float timing = (ts2-ts1)/100.0;
@@ -265,7 +265,7 @@ void test_bfp_dual_fft_forward()
 #endif
 
 #if TIME_FUNCS
-        printf("\tbfp_dual_fft_forward (%u-point): %f us\n", proc_frame_length, worst_timing);
+        printf("\tbfp_fft_forward_stereo (%u-point): %f us\n", proc_frame_length, worst_timing);
 #endif
     }
 }
@@ -273,13 +273,13 @@ void test_bfp_dual_fft_forward()
 
 
 
-void test_bfp_dual_fft_inverse()
+void test_bfp_fft_inverse_stereo()
 {
     printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
     for(unsigned k = 3; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
-        printf("Frame size: %u\n", 1<<k);
+        // printf("Frame size: %u\n", 1<<k);
 
         unsigned proc_frame_length = (1<<k);
         unsigned worst_case = 0;
@@ -322,7 +322,7 @@ void test_bfp_dual_fft_inverse()
             flt_fft_inverse_double(ref, proc_frame_length, sine_table);
 
             unsigned ts1 = getTimestamp();
-            bfp_dual_fft_inverse(&AB, &A_fft, &B_fft);
+             bfp_fft_inverse_stereo(&AB, &A_fft, &B_fft);
             unsigned ts2 = getTimestamp();
             
             float timing = (ts2-ts1)/100.0;
@@ -339,7 +339,7 @@ void test_bfp_dual_fft_inverse()
 #endif
 
 #if TIME_FUNCS
-        printf("\tbfp_dual_fft_inverse (%u-point): %f us\n", proc_frame_length, worst_timing);
+        printf("\t bfp_fft_inverse_stereo (%u-point): %f us\n", proc_frame_length, worst_timing);
 #endif
     }
 }
@@ -351,13 +351,13 @@ void test_bfp_dual_fft_inverse()
 
 
 
-void test_bfp_real_fft_forward()
+void test_bfp_fft_forward_mono()
 {
     printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
     for(unsigned k = 4; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
-        printf("Frame size: %u\n", 1<<k);
+        // printf("Frame size: %u\n", 1<<k);
 
         unsigned proc_frame_length = (1<<k);
         unsigned worst_case = 0;
@@ -394,7 +394,7 @@ void test_bfp_real_fft_forward()
             ref[0].im = ref[proc_frame_length/2].re;
 
             unsigned ts1 = getTimestamp();
-            bfp_real_fft_forward(&A_fft, &A);
+            bfp_fft_forward_mono(&A_fft, &A);
             unsigned ts2 = getTimestamp();
             
             float timing = (ts2-ts1)/100.0;
@@ -418,7 +418,7 @@ void test_bfp_real_fft_forward()
 #endif
 
 #if TIME_FUNCS
-        printf("\tbfp_real_fft_forward (%u-point): %f us\n", proc_frame_length, worst_timing);
+        printf("\tbfp_fft_forward_mono (%u-point): %f us\n", proc_frame_length, worst_timing);
 #endif
     }
 }
@@ -426,13 +426,13 @@ void test_bfp_real_fft_forward()
 
 
 
-void test_bfp_real_fft_inverse()
+void test_bfp_fft_inverse_mono()
 {
     printf("\n\n%s..\n", __func__);
     unsigned r = 1;
 
     for(unsigned k = 4; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
-        printf("Frame size: %u\n", 1<<k);
+        // printf("Frame size: %u\n", 1<<k);
 
         unsigned proc_frame_length = (1<<k);
         unsigned N = proc_frame_length;
@@ -479,7 +479,7 @@ void test_bfp_real_fft_inverse()
 
 
             unsigned ts1 = getTimestamp();
-            bfp_real_fft_inverse(&A, &A_fft);
+            bfp_fft_inverse_mono(&A, &A_fft);
             unsigned ts2 = getTimestamp();
             
             float timing = (ts2-ts1)/100.0;
@@ -499,7 +499,7 @@ void test_bfp_real_fft_inverse()
 #endif
 
 #if TIME_FUNCS
-        printf("\tbfp_real_fft_inverse (%u-point): %f us\n", proc_frame_length, worst_timing);
+        printf("\tbfp_fft_inverse_mono (%u-point): %f us\n", proc_frame_length, worst_timing);
 #endif
     }
 }
@@ -508,13 +508,13 @@ void test_bfp_fft()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_bfp_complex_fft_forward);
-    RUN_TEST(test_bfp_complex_fft_inverse);
+    RUN_TEST(test_bfp_fft_forward_complex);
+    RUN_TEST(test_bfp_fft_inverse_complex);
     
-    RUN_TEST(test_bfp_dual_fft_forward);
-    RUN_TEST(test_bfp_dual_fft_inverse);
+    RUN_TEST(test_bfp_fft_forward_stereo);
+    RUN_TEST(test_bfp_fft_inverse_stereo);
     
-    RUN_TEST(test_bfp_real_fft_forward);
-    RUN_TEST(test_bfp_real_fft_inverse);
+    RUN_TEST(test_bfp_fft_forward_mono);
+    RUN_TEST(test_bfp_fft_inverse_mono);
 
 }

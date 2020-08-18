@@ -3,13 +3,13 @@
 
 /*  
 
-void xs3_bit_reverse_indexes(
+void xs3_fft_index_bit_reversal(
     complex_s32_t* a,
     const unsigned length);
 
 */
 
-#define FUNCTION_NAME   xs3_bit_reverse_indexes
+#define FUNCTION_NAME   xs3_fft_index_bit_reversal
 #define NSTACKWORDS 4
 
 .text

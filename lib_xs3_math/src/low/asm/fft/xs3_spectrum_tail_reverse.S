@@ -3,7 +3,7 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-    void xs3_spectrum_tail_reverse(
+    void xs3_tail_reverse_complex_s32(
         complex_s32_t* X,
         const unsigned N);
 */
@@ -12,7 +12,7 @@
 
 #define NSTACKWORDS     (8 + 0)
 
-#define FUNCTION_NAME   xs3_spectrum_tail_reverse
+#define FUNCTION_NAME   xs3_tail_reverse_complex_s32
 
 #define X       r0
 #define N       r1

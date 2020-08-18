@@ -757,8 +757,6 @@ void xs3_s16_to_s32(
 //     const unsigned length);
 
 
-
-
 #ifdef __XC__
 }   //extern "C"
 #endif

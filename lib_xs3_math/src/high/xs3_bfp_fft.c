@@ -15,7 +15,7 @@
 
 
 
-void bfp_real_fft_forward(
+void bfp_fft_forward_mono(
     bfp_complex_s32_t* a,
     bfp_s32_t* b)
 {
@@ -39,10 +39,10 @@ void bfp_real_fft_forward(
     a->data = (complex_s32_t*) b->data;
     a->length = b->length/2;
 
-    xs3_bit_reverse_indexes((complex_s32_t*) b->data, b->length/2);
-    xs3_fft_dit_s32(a->data, b->length/2, &a->hr, xs3_dit_fft_lut, &a->exp);
+    xs3_fft_index_bit_reversal((complex_s32_t*) b->data, b->length/2);
+    xs3_fft_dit_forward(a->data, b->length/2, &a->hr, xs3_dit_fft_lut, &a->exp);
 
-    xs3_real_fft_final_pass_s32(a->data, b->length, XS3_DIT_REAL_FFT_LUT(b->length));
+    xs3_fft_mono_adjust(a->data, b->length, XS3_DIT_REAL_FFT_LUT(b->length), 0);
 
 }
 
@@ -50,7 +50,7 @@ void bfp_real_fft_forward(
 
 
 
-void bfp_real_fft_inverse(
+void bfp_fft_inverse_mono(
     bfp_s32_t* a,
     bfp_complex_s32_t* b)
 {
@@ -68,10 +68,10 @@ void bfp_real_fft_inverse(
     a->data = (int32_t*) b->data;
     a->length = N;
 
-    xs3_real_ifft_first_pass_s32(b->data, N, XS3_DIT_REAL_FFT_LUT(N));
+    xs3_fft_mono_adjust(b->data, N, XS3_DIT_REAL_FFT_LUT(N), 1);
 
-    xs3_bit_reverse_indexes(b->data, b->length);
-    xs3_ifft_dit_s32(b->data, b->length, &a->hr, xs3_dit_fft_lut, &a->exp);
+    xs3_fft_index_bit_reversal(b->data, b->length);
+    xs3_fft_dit_inverse(b->data, b->length, &a->hr, xs3_dit_fft_lut, &a->exp);
 }
 
 
@@ -85,7 +85,7 @@ void bfp_real_fft_inverse(
 
 
 
-void bfp_complex_fft_forward(
+void bfp_fft_forward_complex(
     bfp_complex_s32_t* samples)
 {
     //The FFT implementation unfortunately requires 2 bits of headroom to avoid saturation.
@@ -95,15 +95,15 @@ void bfp_complex_fft_forward(
         samples->exp -= shl;
     }
 
-    xs3_bit_reverse_indexes(samples->data, samples->length);
-    xs3_fft_dit_s32(samples->data, samples->length, &samples->hr, xs3_dit_fft_lut, &samples->exp);
+    xs3_fft_index_bit_reversal(samples->data, samples->length);
+    xs3_fft_dit_forward(samples->data, samples->length, &samples->hr, xs3_dit_fft_lut, &samples->exp);
 }
 
 
 
 
 
-void bfp_complex_fft_inverse(
+void bfp_fft_inverse_complex(
     bfp_complex_s32_t* spectrum)
 {
     //The FFT implementation unfortunately requires 2 bits of headroom to avoid saturation.
@@ -113,8 +113,8 @@ void bfp_complex_fft_inverse(
         spectrum->exp -= shl;
     }   
 
-    xs3_bit_reverse_indexes(spectrum->data, spectrum->length);
-    xs3_ifft_dit_s32(spectrum->data, spectrum->length, &spectrum->hr, xs3_dit_fft_lut, &spectrum->exp);
+    xs3_fft_index_bit_reversal(spectrum->data, spectrum->length);
+    xs3_fft_dit_inverse(spectrum->data, spectrum->length, &spectrum->hr, xs3_dit_fft_lut, &spectrum->exp);
 }
 
 
@@ -130,7 +130,7 @@ void bfp_complex_fft_inverse(
 
 
 
-void bfp_dual_fft_forward(
+void bfp_fft_forward_stereo(
     bfp_complex_s32_t* a,
     bfp_complex_s32_t* b,
     bfp_ch_pair_s32_t* input)
@@ -142,12 +142,12 @@ void bfp_dual_fft_forward(
     
     if(input_shr)
         input->hr = xs3_shl_vect_s32((int32_t*) input->data,(int32_t*)  input->data, 2*input->length, -input_shr);
-    xs3_bit_reverse_indexes((complex_s32_t*) input->data, input->length);
-    xs3_fft_dit_s32((complex_s32_t*) input->data, input->length, &input->hr, xs3_dit_fft_lut, &input->exp); 
+    xs3_fft_index_bit_reversal((complex_s32_t*) input->data, input->length);
+    xs3_fft_dit_forward((complex_s32_t*) input->data, input->length, &input->hr, xs3_dit_fft_lut, &input->exp); 
 
     a->data = (complex_s32_t*) &input->data[0];
     b->data = (complex_s32_t*) &input->data[input->length/2];
-    a->hr = xs3_split_fft_spectrum_s32(a->data, input->length);
+    a->hr = xs3_fft_spectra_split(a->data, input->length);
 
     //a and b might actually have different headroom, but the function can only compute them together. In any case, it
     // will be the lesser of the two
@@ -162,7 +162,7 @@ void bfp_dual_fft_forward(
 
 
 
-void bfp_dual_fft_inverse(
+void  bfp_fft_inverse_stereo(
     bfp_ch_pair_s32_t* a,
     const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c)
@@ -189,8 +189,8 @@ void bfp_dual_fft_inverse(
     if(c_shr)
         xs3_shl_vect_s32((int32_t*)&(a->data[a->length/2]), (int32_t*) c->data, 2*c->length, -c_shr);
 
-    xs3_merge_fft_spectra_s32((complex_s32_t*) a->data, a->length);
-    xs3_bit_reverse_indexes((complex_s32_t*) a->data, a->length);
-    xs3_ifft_dit_s32((complex_s32_t*) a->data, a->length, &a->hr, xs3_dit_fft_lut, &a->exp);
+    xs3_fft_spectra_merge((complex_s32_t*) a->data, a->length);
+    xs3_fft_index_bit_reversal((complex_s32_t*) a->data, a->length);
+    xs3_fft_dit_inverse((complex_s32_t*) a->data, a->length, &a->hr, xs3_dit_fft_lut, &a->exp);
     
 }
