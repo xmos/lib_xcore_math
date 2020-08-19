@@ -1,4 +1,4 @@
-#include "twiddle_factors.h"
+#include "xs3_fft_lut.h"
 
 const complex_s32_t xs3_dit_fft_lut[1020] = 
 	{

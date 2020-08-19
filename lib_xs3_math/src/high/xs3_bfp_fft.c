@@ -1,7 +1,7 @@
 
 
 #include "xs3_math.h"
-#include "../src/low/c/twiddle_factors.h"
+#include "../src/low/c/xs3_fft_lut.h"
 #include "../low/c/vpu_helper.h"
 
 #include <assert.h>
@@ -15,63 +15,60 @@
 
 
 
-void bfp_fft_forward_mono(
-    bfp_complex_s32_t* a,
-    bfp_s32_t* b)
+bfp_complex_s32_t* bfp_fft_forward_mono(
+    bfp_s32_t* x)
 {
-    // b is initialized, a is not.
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     //astew: TODO: check that length is a power of 2.
 #else
 #endif
+    bfp_complex_s32_t* X = (bfp_complex_s32_t*) x;
 
-    right_shift_t b_shr = 2 - b->hr;
+    const unsigned FFT_N = x->length;
 
+    right_shift_t x_shr = 2 - x->hr;
 
-    //Reinterpret the real sequence as complex (which puts odd-indexed elements into the imaginary part)
-    // then perform a complex N/2-point FFT on that.
-    xs3_shl_vect_s32(b->data, b->data, b->length, -b_shr);
-    // for(int k = 0; k < b->length; k++)
-    //     b->data[k] = ASHR(32)(b->data[k], b_shr);
+    xs3_shl_vect_s32(x->data, x->data, x->length, -x_shr);
 
-    a->hr  = b->hr  + b_shr;
-    a->exp = b->exp + b_shr;
-    a->data = (complex_s32_t*) b->data;
-    a->length = b->length/2;
+    x->hr  = x->hr  + x_shr;
+    x->exp = x->exp + x_shr;
+    x->length = FFT_N/2;
 
-    xs3_fft_index_bit_reversal((complex_s32_t*) b->data, b->length/2);
-    xs3_fft_dit_forward(a->data, b->length/2, &a->hr, xs3_dit_fft_lut, &a->exp);
+    xs3_fft_index_bit_reversal(X->data, X->length);
+    xs3_fft_dit_forward(X->data, X->length, &X->hr, xs3_dit_fft_lut, &X->exp);
 
-    xs3_fft_mono_adjust(a->data, b->length, XS3_DIT_REAL_FFT_LUT(b->length), 0);
+    xs3_fft_mono_adjust(X->data, X->length, XS3_DIT_REAL_FFT_LUT(X->length), 0);
 
+    return X;
 }
 
 
 
 
 
-void bfp_fft_inverse_mono(
-    bfp_s32_t* a,
-    bfp_complex_s32_t* b)
+bfp_s32_t* bfp_fft_inverse_mono(
+    bfp_complex_s32_t* X)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
 #else
 #endif
 
-    const unsigned N = 2*b->length;
+    const unsigned FFT_N = 2*X->length;
+    bfp_s32_t* x = (bfp_s32_t*)X;
     
-    right_shift_t b_shr = 2 - b->hr;
-    xs3_shl_vect_s32((int32_t*) b->data, (int32_t*) b->data, N, -b_shr);
+    right_shift_t X_shr = 2 - X->hr;
+    xs3_shl_vect_s32((int32_t*) X->data, (int32_t*) X->data, FFT_N, -X_shr);
     
-    a->hr  = b->hr  + b_shr;
-    a->exp = b->exp + b_shr;
-    a->data = (int32_t*) b->data;
-    a->length = N;
+    X->hr  = X->hr  + X_shr;
+    X->exp = X->exp + X_shr;
+    X->length = FFT_N;
 
-    xs3_fft_mono_adjust(b->data, N, XS3_DIT_REAL_FFT_LUT(N), 1);
+    xs3_fft_mono_adjust(x->data, FFT_N, XS3_DIT_REAL_FFT_LUT(FFT_N), 1);
 
-    xs3_fft_index_bit_reversal(b->data, b->length);
-    xs3_fft_dit_inverse(b->data, b->length, &a->hr, xs3_dit_fft_lut, &a->exp);
+    xs3_fft_index_bit_reversal(X->data, FFT_N/2);
+    xs3_fft_dit_inverse(X->data, FFT_N/2, &x->hr, xs3_dit_fft_lut, &x->exp);
+
+    return x;
 }
 
 
@@ -163,34 +160,42 @@ void bfp_fft_forward_stereo(
 
 
 void  bfp_fft_inverse_stereo(
-    bfp_ch_pair_s32_t* a,
-    const bfp_complex_s32_t* b,
-    const bfp_complex_s32_t* c)
+    bfp_ch_pair_s32_t* x,
+    const bfp_complex_s32_t* a,
+    const bfp_complex_s32_t* b)
 {
     //TODO: if b and c don't point to the same data as a, flag error or copy b and c to a first.
+#if DEBUG
+    assert(a->length == b->length);
+    assert(b->data == &a->data[a->length]);
+#endif
+
+    const unsigned FFT_N = 2*a->length;
 
     //b and c need to be given the same exponent for this to make sense.
+    right_shift_t a_shr = 2 - a->hr;
     right_shift_t b_shr = 2 - b->hr;
-    right_shift_t c_shr = 2 - c->hr;
 
+    exponent_t a_exp = a->exp + a_shr;
     exponent_t b_exp = b->exp + b_shr;
-    exponent_t c_exp = c->exp + c_shr;
 
-    if( b_exp <= c_exp ){
-        b_shr += (c_exp - b_exp);
-        a->exp = b->exp + b_shr;
+    if( a_exp <= b_exp ){
+        a_shr += (b_exp - a_exp);
+        x->exp = a->exp + a_shr;
     } else {
-        c_shr += (b_exp - c_exp);
-        a->exp = c->exp + c_shr;
+        b_shr += (a_exp - b_exp);
+        x->exp = b->exp + b_shr;
     }
 
-    if(b_shr)
-        xs3_shl_vect_s32((int32_t*)a->data, (int32_t*) b->data, 2*b->length, -b_shr);
-    if(c_shr)
-        xs3_shl_vect_s32((int32_t*)&(a->data[a->length/2]), (int32_t*) c->data, 2*c->length, -c_shr);
+    if(a_shr) xs3_shl_vect_s32((int32_t*)a->data, (int32_t*) a->data, FFT_N, -a_shr);
+    if(b_shr) xs3_shl_vect_s32((int32_t*)b->data, (int32_t*) b->data, FFT_N, -b_shr);
 
-    xs3_fft_spectra_merge((complex_s32_t*) a->data, a->length);
-    xs3_fft_index_bit_reversal((complex_s32_t*) a->data, a->length);
-    xs3_fft_dit_inverse((complex_s32_t*) a->data, a->length, &a->hr, xs3_dit_fft_lut, &a->exp);
+    x->data = a->data;
+    x->length = a->length;
+    x->hr = MIN(a->hr + a_shr, b->hr + b_shr);
+
+    xs3_fft_spectra_merge((complex_s32_t*) x->data, FFT_N);
+    xs3_fft_index_bit_reversal((complex_s32_t*) x->data, FFT_N);
+    xs3_fft_dit_inverse((complex_s32_t*) x->data, FFT_N, &x->hr, xs3_dit_fft_lut, &x->exp);
     
 }

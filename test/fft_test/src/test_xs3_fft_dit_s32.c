@@ -7,7 +7,7 @@
 #include "testing.h"
 #include "floating_fft.h"
 #include "tst_common.h"
-#include "../src/low/c/twiddle_factors.h"
+#include "../src/low/c/xs3_fft_lut.h"
 #include "fft.h"
 #include "unity.h"
 

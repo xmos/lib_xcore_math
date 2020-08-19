@@ -190,12 +190,12 @@ The high-level API functions are written entirely in C (perhaps C++ wrappers wil
 | `bfp_argmin_s16()`                        |             |        |            |
 | `bfp_argmin_s32()`                        |             |        |            |
 | @tab @tab                       xs3_fft.h                                  |||| 
-| `bfp_fft_forward()`                       |             |        |            |
-| `bfp_fft_inverse()`                       |             |        |            |
 | `bfp_fft_forward_complex()`               |             |        |            |
 | `bfp_fft_inverse_complex()`               |             |        |            |
-| `bfp_fft_forward_stereo()`                  |             |        |            |
-| ` bfp_fft_inverse_stereo()`                  |             |        |            |
+| `bfp_fft_forward_mono()`                  |             |        |            |
+| `bfp_fft_inverse_mono()`                  |             |        |            |
+| `bfp_fft_forward_stereo()`                |             |        |            |
+| `bfp_fft_inverse_stereo()`                |             |        |            |
 | @tab @tab                       xs3_dct.h                                  |||| 
 | `bfp_dct_forward()`                       |             |        |            |
 | `bfp_dct_inverse()`                       |             |        |            |

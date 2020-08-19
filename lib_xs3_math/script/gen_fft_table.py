@@ -10,8 +10,8 @@ def main():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--out_file", default="twiddle_factors", 
-                        help="Filename to be used (with '.h' and '.c') for the generated files. (default: 'twiddle_factors')")
+    parser.add_argument("--out_file", default="xs3_fft_lut", 
+                        help="Filename to be used (with '.h' and '.c') for the generated files. (default: 'xs3_fft_lut')")
     parser.add_argument("--max_fft_log2", type=int, default=5,
                         help="Log2 of the maximum FFT size supported. (default: 5)")
     parser.add_argument("-v", "--verbose", action="store_true", default=False,
@@ -51,18 +51,17 @@ def main():
                 header_file.write("\n/** @brief Maximum FFT length (log2) that can be performed using decimation-in-time. */\n")
                 header_file.write(f"#define XS3_MAX_DIT_FFT_LOG2 {args.max_fft_log2}\n")
                 header_file.write("\n/** @brief Convenience macro to index into the decimation-in-time FFT look-up table. \n\n")
-                header_file.write("\tThis will return the address at which the coefficients for the N'th pass of the DIT\n")
-                header_file.write("\tFFT algorithm start. Ordinarily you do not need this. It is needed, for example, when\n")
-                header_file.write("\tcomputing the final pass of a single real FFT.\n\n")
+                header_file.write("\tThis will return the address at which the coefficients for the final pass of the real DIT\n")
+                header_file.write("\tFFT algorithm begin. \n\n")
                 # header_file.write("\t\n")
                 header_file.write("\t@param N\tThe FFT length.\n*/\n")
-                header_file.write("#define XS3_DIT_FFT_LUT(N) &xs3_dit_fft_lut[(N>>1)-4]\n\n")
+                header_file.write("#define XS3_DIT_REAL_FFT_LUT(N) &xs3_dit_fft_lut[(N)-8]\n\n")
             if(args.dif):
                 header_file.write("\n/** @brief Maximum FFT length (log2) that can be performed using decimation-in-frequency. */\n")
                 header_file.write(f"#define XS3_MAX_DIF_FFT_LOG2 {args.max_fft_log2}\n")
                 header_file.write("\n/** @brief Convenience macro to index into the decimation-in-frequency FFT look-up table. \n\n")
                 header_file.write("\tUse this to retrieve the correct address for the DIF FFT look-up table when performing\n")
-                header_file.write("\tan FFT (or IFFT) using the DIF algorithm. (@see xs3_fft_dif_s32).\n\n")
+                header_file.write("\tan FFT (or IFFT) using the DIF algorithm. (@see xs3_fft_dif_forward).\n\n")
                 header_file.write("\t@param N_LOG2\tlog2(N) where N is the FFT length.\n*/\n")
                 header_file.write("#define XS3_DIF_FFT_LUT(N_LOG2) &xs3_dif_fft_lut[(1<<(XS3_MAX_DIF_FFT_LOG2)) - (1<<(N_LOG2))]\n\n")
 
@@ -126,19 +125,13 @@ def generate_DIT_FFT(N, header_file, source_file, args, M=8*4):
             twiddle_offset = (k/M)*(a/M)*4
             twiddle_stride = 2**(N-3) / (b/M)
 
-            if args.verbose:
-                print(f"load twiddle\t{t}[ ", end='')
+            tw = np.arange(4)
+            q = twiddle_offset + (twiddle_stride*tw)
+            twiddle_factors[t,:] = np.exp(-2.0j*np.pi*q / (2**N) )
 
-            for tw in range(4):
-                q = twiddle_offset + (twiddle_stride*tw)
-                twiddle_factors[t, tw] = np.exp(-2.0j*np.pi*q / (2**N) )
-                # twiddle_factors[t, tw] = 1.0 + 0.0j
-            
-                if args.verbose:
-                    print(f"{q}\t", end='')
-            
             if args.verbose:
-                print(']')
+                tmp = "\t".join([str(asd) for asd in q])
+                print(f"load twiddle\t{t}[ {tmp}]")
 
             t += 1
 

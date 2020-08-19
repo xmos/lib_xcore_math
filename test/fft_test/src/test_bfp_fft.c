@@ -7,7 +7,7 @@
 #include "testing.h"
 #include "floating_fft.h"
 #include "tst_common.h"
-#include "../src/low/c/twiddle_factors.h"
+#include "../src/low/c/xs3_fft_lut.h"
 #include "fft.h"
 #include "unity.h"
 
@@ -373,7 +373,7 @@ void test_bfp_fft_forward_mono()
             complex_double_t ALIGNED ref[MAX_PROC_FRAME_LENGTH];
 
             bfp_s32_t A;
-            bfp_complex_s32_t A_fft;
+            bfp_complex_s32_t* A_fft;
 
             conv_error_e error = 0;
             const exponent_t initial_exponent = sext(pseudo_rand_int32(&r), 5);
@@ -394,20 +394,14 @@ void test_bfp_fft_forward_mono()
             ref[0].im = ref[proc_frame_length/2].re;
 
             unsigned ts1 = getTimestamp();
-            bfp_fft_forward_mono(&A_fft, &A);
+            A_fft = bfp_fft_forward_mono(&A);
             unsigned ts2 = getTimestamp();
             
             float timing = (ts2-ts1)/100.0;
-            // printf("!!\t %f us\n", timing);
             if(timing > worst_timing) worst_timing = timing;
 
-            // printf("exp = %d\n", A_fft.exp);
-            // for(int i = 0; i < proc_frame_length/2; i++){
-            //     printf("%u (real):\t{ %f, %f }\n", i, ref[i].re, ldexp(A_fft.data[i].re, A_fft.exp));
-            //     printf("%u (imag):\t{ %f, %f }\n", i, ref[i].im, ldexp(A_fft.data[i].im, A_fft.exp));
-            // }
 
-            unsigned diff = abs_diff_vect_complex_s32(A_fft.data, A_fft.exp, ref, A_fft.length, &error);
+            unsigned diff = abs_diff_vect_complex_s32(A_fft->data, A_fft->exp, ref, A_fft->length, &error);
             if(diff > worst_case) { worst_case = diff; /* printf("worst_case: %u\n", worst_case); */ }
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
             TEST_ASSERT_CONVERSION(error);
@@ -450,7 +444,7 @@ void test_bfp_fft_inverse_mono()
             double ALIGNED ref_real[MAX_PROC_FRAME_LENGTH];
 
             bfp_complex_s32_t A_fft;
-            bfp_s32_t A;
+            bfp_s32_t* A;
 
             conv_error_e error = 0;
             const exponent_t initial_exponent = sext(pseudo_rand_int32(&r), 5);
@@ -479,7 +473,7 @@ void test_bfp_fft_inverse_mono()
 
 
             unsigned ts1 = getTimestamp();
-            bfp_fft_inverse_mono(&A, &A_fft);
+            A = bfp_fft_inverse_mono(&A_fft);
             unsigned ts2 = getTimestamp();
             
             float timing = (ts2-ts1)/100.0;
@@ -488,7 +482,7 @@ void test_bfp_fft_inverse_mono()
             for(int i = 0; i < N; i++)
                 ref_real[i] = ref[i].re;
 
-            unsigned diff = abs_diff_vect_s32(A.data, A.exp, ref_real, N, &error);
+            unsigned diff = abs_diff_vect_s32(A->data, A->exp, ref_real, N, &error);
             if(diff > worst_case) { worst_case = diff; /* printf("worst_case: %u\n", worst_case); */ }
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
             TEST_ASSERT_CONVERSION(error);
