@@ -51,16 +51,33 @@ ifeq ($(NO_OPTIMIZE),1)
   c_FLAGS += -O0
 endif
 
-######
-### [optional] List of source files to compile.
-###            
-# SOURCE_FILES :=  $(wildcard src/*.c src/*.xc)
+#####
+### Deal with auto-generated FFT look-up tables
+GEN_SRC_DIR_PART = lib_xs3_math/.generated
+GEN_SRC_DIR = $(OBJ_DIR)/$(GEN_SRC_DIR_PART)
+INCLUDES += $(GEN_SRC_DIR)
 
-######
-### [optional] list of static libraries that
-### should be linked into the executable
-###
-# LIBRARIES := foo.a
+MAX_FFT_SIZE_LOG2 ?= 10
+GEN_FFT_TABLE_FLAGS ?= --dit --dif
+
+GEN_FFT_TABLE_SCRIPT = $(lib_xs3_math_PATH)/script/gen_fft_table.py
+FFT_TABLE_C_FILE = $(GEN_SRC_DIR)/xs3_fft_lut.c
+FFT_TABLE_H_FILE = $(GEN_SRC_DIR)/xs3_fft_lut.h
+
+SOURCE_FILES += $(FFT_TABLE_C_FILE)
+vpath $(GEN_SRC_DIR_PART)/% $(GEN_SRC_DIR)/../..
+
+PRECOMP_TARGETS += $(FFT_TABLE_C_FILE) $(FFT_TABLE_H_FILE)
+
+$(GEN_SRC_DIR_PART)/xs3_fft_lut.c: $(FFT_TABLE_C_FILE)
+$(FFT_TABLE_H_FILE): $(FFT_TABLE_C_FILE) $(GEN_FFT_TABLE_SCRIPT)
+$(FFT_TABLE_C_FILE): $(GEN_FFT_TABLE_SCRIPT)
+	$(info Generating FFT look-up tables..)
+	$(call mkdir_cmd, $(dir $@))
+	python $(GEN_FFT_TABLE_SCRIPT) --out_file xs3_fft_lut --out_dir $(GEN_SRC_DIR) --max_fft_log2 $(MAX_FFT_SIZE_LOG2) $(GEN_FFT_TABLE_FLAGS)
+
+#####
+### Other
 
 
 DOC_DIR := $(LIB_PATH)/doc

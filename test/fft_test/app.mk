@@ -30,9 +30,6 @@ floating_fft_PATH := ../shared/floating_fft
 ## Uncomment to tell lib_xs3_math not to compile .S files (i.e. test C implementations)
 # lib_xs3_math_NO_ASM := 1
 
-GEN_SRC_DIR = src/.gen
-
-INCLUDES += $(GEN_SRC_DIR)
 
 ###### 
 ### [optional] Directories, relative to the application project, to look for source files.
@@ -84,12 +81,6 @@ endif
 ###
 MAX_FFT_SIZE_LOG2 := 10
 GEN_FFT_TABLE_FLAGS := --dit --dif
-GEN_FFT_TABLE_SCRIPT = $(lib_xs3_math_PATH)/script/gen_fft_table.py
-FFT_TABLE_C_FILE = $(GEN_SRC_DIR)/xs3_fft_lut.c
-FFT_TABLE_H_FILE = $(GEN_SRC_DIR)/xs3_fft_lut.h
-
-SOURCE_FILES += $(FFT_TABLE_C_FILE)
-
 
 ######
 ### [required]
@@ -104,7 +95,6 @@ app_help:
 	$(info |        all:    Build application                           )
 	$(info |      clean:    Remove build files and folders from project )
 	$(info |        run:    Run the unit tests in xsim                  )
-	$(info | fft_tables:    Generate required FFT tables                )
 	$(info *************************************************************)
 
 
@@ -112,21 +102,9 @@ app_help:
 ### Application-specific targets
 #####################################
 
-$(FFT_TABLE_H_FILE): $(FFT_TABLE_C_FILE) $(GEN_FFT_TABLE_SCRIPT)
-$(FFT_TABLE_C_FILE): $(GEN_FFT_TABLE_SCRIPT)
-	$(info Generating FFT look-up tables..)
-	$(call mkdir_cmd, $(dir $@))
-	python $(GEN_FFT_TABLE_SCRIPT) --out_file xs3_fft_lut --out_dir $(GEN_SRC_DIR) --max_fft_log2 $(MAX_FFT_SIZE_LOG2) $(GEN_FFT_TABLE_FLAGS)
-
-.PHONY: fft_tables
-fft_tables: $(FFT_TABLE_C_FILE) $(FFT_TABLE_H_FILE)
-
-build : fft_tables
 
 run: build
 	xsim $(APP_EXE_FILE)
 
-clean: clean_app
-clean_app:
-	$(info Removing auto-generated files..)
-	rm -rf $(GEN_SRC_DIR)
+whatev:
+	touch test.file

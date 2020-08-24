@@ -196,9 +196,6 @@ $(eval $(foreach comp,$(APP_COMPONENTS), \
                 $(comp)_SOURCE_FILES += $(strip $(abspath $(foreach src_dir,$($(comp)_SOURCE_DIRS),\
                                       $(call rwildcard,$($(comp)_PATH)/$(src_dir),$($(comp)_SOURCE_FILE_EXTS:%=*.%)))))$(newline)))
 
-# $(Unity_SOURCE_FILES): % : some_target
-# $(error $(foreach comp, Unity, $($(comp)_SOURCE_FILES): % : APP_precomp$(newline)))
-
 #######################################################
 # COMPONENT OBJECT FILES
 #######################################################
@@ -211,13 +208,13 @@ $(eval $(foreach comp,$(APP_COMPONENTS), \
 # 					) $(newline)))
 
 $(eval $(foreach comp,$(APP_COMPONENTS), $(comp)_OBJECT_FILES := $(strip \
-				         $(patsubst $(abspath $($(comp)_PATH))/%,$(OBJ_DIR)/$(comp)/%,$($(comp)_SOURCE_FILES:%=%.o))\
+				         $(patsubst $(abspath $(OBJ_DIR))/%,$(OBJ_DIR)/%,$(patsubst $(abspath $($(comp)_PATH))/%,$(OBJ_DIR)/$(comp)/%,$($(comp)_SOURCE_FILES:%=%.o)))\
 					) $(newline)))
 
 DEPENDENCY_OBJECT_FILES := $(foreach dep,$(DEPENDENCIES),$($(dep)_OBJECT_FILES))
 COMPONENT_OBJECT_FILES := $(APP_OBJECT_FILES) $(DEPENDENCY_OBJECT_FILES)
 
-ALL_BUILD_FILES += $(COMPONENT_OBJECT_FILES)
+ALL_BUILD_FILES += $(COMPONENT_OBJECT_FILES) 
 
 #######################################################
 # OBJECT FILE TARGETS
@@ -226,7 +223,7 @@ ALL_BUILD_FILES += $(COMPONENT_OBJECT_FILES)
 #
 # Every app object file has its source file as a prerequisite
 #
-$(APP_OBJECT_FILES): $(OBJ_DIR)/APP/%.o: %
+$(APP_OBJECT_FILES): $(OBJ_DIR)/APP/%.o: % 
 
 #
 # Use vpath to pattern out where to find source files for each dependency. e.g.
@@ -244,6 +241,11 @@ $(eval  $(foreach dep,$(DEPENDENCIES),                       \
 #
 # Every dependency object file has its source file as a prerequisite.
 $(DEPENDENCY_OBJECT_FILES): $(OBJ_DIR)/%.o: %
+
+# PRECOMP_TARGETS must be generated before any object files are built.
+ifdef PRECOMP_TARGETS
+  $(COMPONENT_OBJECT_FILES): $(OBJ_DIR)/%.o: $(PRECOMP_TARGETS)
+endif
 
 
 #########
@@ -282,56 +284,17 @@ $(COMPONENT_OBJECT_FILES): OBJ_INCLUDES = $(strip $(foreach grp,$(call includes_
 # make target for all component object files.
 #
 $(COMPONENT_OBJECT_FILES):
-#	$(call mkdir_cmd,$@)
 	$(info [$(OBJ_COMPONENT)] Compiling $<)
 	@$(OBJ_COMPILER)                              \
 	     $(OBJ_FLAGS)                             \
 		 $(addprefix -I,$(OBJ_INCLUDES))          \
-		 -o $@ -c $<
+		 -o $@ -c $(abspath $<)
 
 ###
 # If the -MMD flag is used when compiling, the .d files will contain additional header 
 # file prerequisites for each object file. Otherwise it won't know to recompile if only
 # header files have changed, for example.
 -include $(COMPONENT_OBJECT_FILES:%.o=%.d)
-
-#######################################################
-# LIBRARY ARCHIVE FILES
-#######################################################
-
-ifeq ($(BUILD_STATIC_LIBRARIES),1)
-
-#
-# List of generated archive files. Needed for executable.
-#
-DEPENDENCY_ARCHIVES = $(DEPENDENCIES:%=$(LIB_BUILD_DIR)/%.a)
-
-ALL_BUILD_FILES += $(DEPENDENCY_ARCHIVES)
-
-#
-# Helper variables usable from within the archive file recipe
-#
-$(LIB_BUILD_DIR)/%.a: LIB_NAME = $(patsubst $(LIB_BUILD_DIR)/%.a,%,$@)
-$(LIB_BUILD_DIR)/%.a: LIB_OBJECT_FILES = $($(LIB_NAME)_OBJECT_FILES)
-
-#
-# Make each dependency's object files prerequisites for its static library
-#
-# $(info $(foreach dep,$(DEPENDENCIES),$(BUILD_DIR)/$(dep).a: $($(dep)_OBJECT_FILES) $(newline)))
-$(eval $(foreach dep,$(DEPENDENCIES),                    \
-    $(LIB_BUILD_DIR)/$(dep).a: $($(dep)_OBJECT_FILES)    \
-$(newline)))
-
-#
-# Recipe for building the archive files.
-#   They get placed in $(LIB_BUILD_DIR)
-#
-$(DEPENDENCY_ARCHIVES): $(LIB_BUILD_DIR)/%.a :
-	$(info Generating archive $(LIB_NAME).a)
-	@$(AR) $(AR_FLAGS) $@ $(LIB_OBJECT_FILES)
-
-endif # BUILD_STATIC_LIBRARIES
-
 
 #######################################################
 # MORE HOUSEKEEPING
@@ -353,19 +316,9 @@ $(BUILD_DIR)/%.marker:
 #######################################################
 # APPLICATION TARGET
 #######################################################
-executable: external_libs
-executable: app_objects
 
 REQUIRED_LIBARIES := $(EXTERNAL_LIBRARIES)
-REQUIRED_OBJECT_FILES := $(APP_OBJECT_FILES)
-
-ifeq ($(BUILD_STATIC_LIBRARIES),1)
-  executable: archives
-  REQUIRED_LIBRARIES += $(DEPENDENCY_ARCHIVES)
-else
-  executable: lib_objects
-  REQUIRED_OBJECT_FILES += $(DEPENDENCY_OBJECT_FILES)
-endif
+REQUIRED_OBJECT_FILES := $(ALL_BUILD_FILES)
 
 $(APP_EXE_FILE): $(REQUIRED_OBJECT_FILES) $(REQUIRED_LIBRARIES)
 	$(call mkdir_cmd,$@)
