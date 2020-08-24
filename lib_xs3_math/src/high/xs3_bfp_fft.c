@@ -1,16 +1,10 @@
 
 
 #include "xs3_math.h"
-#include "../low/c/vpu_helper.h"
 
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-
-//Use decimation-in-time if true, decimation-in-frequency otherwise
-#define USE_DIT 1
-
-
 
 
 

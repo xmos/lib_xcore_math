@@ -9,7 +9,7 @@ LIB_PATH := $(abspath $(lib_xs3_math_PATH))
 
 INCLUDES += $(LIB_PATH)/api
 
-lib_xs3_math_INCLUDES := $(LIB_PATH)/src/asm
+lib_xs3_math_INCLUDES := 
 
 # SOURCE_FILES = $(wildcard $(LIB_PATH)/$(SRC_DIR)/c/*.c)
 
@@ -21,7 +21,7 @@ lib_xs3_math_INCLUDES := $(LIB_PATH)/src/asm
 ###### 
 ### [optional] Directories, relative to the dependency folder, to look for source files.
 ###            defaults to nothing.
-SOURCE_DIRS := src
+SOURCE_DIRS := src/low src/high
 
 ###### 
 ### [optional] Source file extentions. Defaults to: c cc xc cpp S
@@ -32,6 +32,8 @@ SOURCE_FILE_EXTS := c
 # If the application has defined lib_xs3_math_NO_ASM to 1, do not include assembly functions as source.
 ifneq ($(strip $(lib_xs3_math_NO_ASM)),1)
   SOURCE_FILE_EXTS += S
+  SOURCE_DIRS += src/arch/$(PLATFORM)
+  lib_xs3_math_INCLUDES += $(LIB_PATH)/src/arch/$(PLATFORM)
 endif
 
 ifeq ($(PLATFORM),xcore)

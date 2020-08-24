@@ -1,7 +1,7 @@
 
 #include "xs3_math.h"
 #include "../vpu_helper.h"
-#include "../../../low/asm/vpu_const_vects.h"
+#include "../vpu_const_vects.h"
 
 static unsigned bitrev(unsigned index, size_t bit_width)
 {
