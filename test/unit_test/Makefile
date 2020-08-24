@@ -2,8 +2,10 @@
 
 PLATFORM ?= xcore
 
-include ./etc/platform/$(strip $(PLATFORM)).mk
-include ./etc/common.mk
+PLATFORM_MF = ./etc/platform/$(strip $(PLATFORM)).mk
+COMMON_MF = ./etc/common.mk
+include $(PLATFORM_MF)
+include $(COMMON_MF)
 
 build: 
 
@@ -188,7 +190,8 @@ ALL_BUILD_FILES :=
 #  [component]_SOURCE_FILE_EXTS, and [component]_PATH variables
 # Also convert to absolute paths
 # 
-# $(info $(foreach comp,$(APP_COMPONENTS),$(comp)_SOURCE_FILES += $(strip $(foreach src_dir,$($(comp)_SOURCE_DIRS),$(call rwildcard,$($(comp)_PATH)/$(src_dir),$($(comp)_SOURCE_FILE_EXTS:%=*.%))))$(newline)))
+$(eval $(foreach comp,$(APP_COMPONENTS), \
+                $(comp)_SOURCE_FILES = $(strip $(abspath $($(comp)_SOURCE_FILES)))$(newline)))
 $(eval $(foreach comp,$(APP_COMPONENTS), \
                 $(comp)_SOURCE_FILES += $(strip $(abspath $(foreach src_dir,$($(comp)_SOURCE_DIRS),\
                                       $(call rwildcard,$($(comp)_PATH)/$(src_dir),$($(comp)_SOURCE_FILE_EXTS:%=*.%)))))$(newline)))

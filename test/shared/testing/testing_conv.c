@@ -321,3 +321,75 @@ ch_pair_s32_t conv_ch_pair_double_to_ch_pair_s32(
 
     return r;
 }
+
+
+/*
+    Vector conversions
+*/
+
+
+
+void conv_vect_s16_to_double(
+    double output[], 
+    const int16_t input[], 
+    const unsigned length, 
+    const exponent_t input_exp, 
+    conv_error_e *error)
+{
+    for(int i = 0; i < length; i++){
+        output[i] = conv_s16_to_double(input[i], input_exp, error);
+    }
+}
+
+void conv_vect_s32_to_double(
+    double output[], 
+    const int32_t input[], 
+    const unsigned length, 
+    const exponent_t input_exp, 
+    conv_error_e *error)
+{
+    for(int i = 0; i < length; i++){
+        output[i] = conv_s32_to_double(input[i], input_exp, error);
+    }
+}
+
+
+void conv_vect_complex_s16_to_complex_double(
+    complex_double_t output[], 
+    const complex_s16_t input[], 
+    const unsigned length, 
+    const exponent_t input_exp, 
+    conv_error_e *error)
+{
+    for(int i = 0; i < length; i++){
+        output[i].re = conv_s16_to_double(input[i].re, input_exp, error);
+        output[i].im = conv_s16_to_double(input[i].im, input_exp, error);
+    }
+}
+
+void conv_vect_complex_s32_to_complex_double(
+    complex_double_t output[], 
+    const complex_s32_t input[], 
+    const unsigned length, 
+    const exponent_t input_exp, 
+    conv_error_e *error)
+{
+    for(int i = 0; i < length; i++){
+        output[i].re = conv_s32_to_double(input[i].re, input_exp, error);
+        output[i].im = conv_s32_to_double(input[i].im, input_exp, error);
+    }
+}
+
+void conv_vect_complex_s32_to_complex_double_v2(
+    double out_real[], 
+    double out_imag[], 
+    const complex_s32_t input[], 
+    const unsigned length, 
+    const exponent_t input_exp, 
+    conv_error_e *error)
+{
+    for(int i = 0; i < length; i++){
+        out_real[i] = conv_s32_to_double(input[i].re, input_exp, error);
+        out_imag[i] = conv_s32_to_double(input[i].im, input_exp, error);
+    }
+}

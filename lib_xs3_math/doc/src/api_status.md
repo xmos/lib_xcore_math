@@ -57,9 +57,9 @@ This table is unlikely to have actually captured everything that will be needed 
 | `xs3_sum_complex_s32()`                   |  X   |      |        |            |
 | `xs3_tail_reverse_complex_s32`            |  X   |      |        |     X      |
 |  @tab @tab xs3_fft.h                                                      ||||| 
-| `xs3_fft_index_bit_reversal()`            |  X   |      |   X    |     X      |
-| `xs3_fft_spectra_split()`                 |  X   |      |        |     X      |
-| `xs3_fft_spectra_merge()`                 |  X   |      |        |     X      |
+| `xs3_fft_index_bit_reversal()`            |  X   |  X   |   X    |     X      |
+| `xs3_fft_spectra_split()`                 |  X   |  X   |        |     X      |
+| `xs3_fft_spectra_merge()`                 |  X   |  X   |        |     X      |
 | `xs3_fft_mono_adjust()`                   |  X   |      |        |     X      |
 | `xs3_fft_dit_forward()`                   |  X   |      |        |     X      |
 | `xs3_fft_dit_inverse()`                   |  X   |      |        |     X      |
@@ -190,12 +190,12 @@ The high-level API functions are written entirely in C (perhaps C++ wrappers wil
 | `bfp_argmin_s16()`                        |             |        |            |
 | `bfp_argmin_s32()`                        |             |        |            |
 | @tab @tab                       xs3_fft.h                                  |||| 
-| `bfp_fft_forward_complex()`               |             |        |            |
-| `bfp_fft_inverse_complex()`               |             |        |            |
-| `bfp_fft_forward_mono()`                  |             |        |            |
-| `bfp_fft_inverse_mono()`                  |             |        |            |
-| `bfp_fft_forward_stereo()`                |             |        |            |
-| `bfp_fft_inverse_stereo()`                |             |        |            |
+| `bfp_fft_forward_complex()`               |     X       |   X    |     X      |
+| `bfp_fft_inverse_complex()`               |     X       |   X    |     X      |
+| `bfp_fft_forward_mono()`                  |     X       |   X    |     X      |
+| `bfp_fft_inverse_mono()`                  |     X       |   X    |     X      |
+| `bfp_fft_forward_stereo()`                |     X       |   X    |     X      |
+| `bfp_fft_inverse_stereo()`                |     X       |   X    |     X      |
 | @tab @tab                       xs3_dct.h                                  |||| 
 | `bfp_dct_forward()`                       |             |        |            |
 | `bfp_dct_inverse()`                       |             |        |            |

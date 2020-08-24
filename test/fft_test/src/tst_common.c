@@ -9,6 +9,50 @@
 #include "xs3_math.h"
 
 
+void rand_vect_s16(
+    int16_t output[],
+    const unsigned length,
+    const unsigned headroom,
+    unsigned* seed)
+{
+    for(int i = 0; i < length; i++)
+        output[i] = pseudo_rand_int16(seed) >> headroom;
+}
+
+void rand_vect_s32(
+    int32_t output[],
+    const unsigned length,
+    const unsigned headroom,
+    unsigned* seed)
+{
+    for(int i = 0; i < length; i++)
+        output[i] = pseudo_rand_int32(seed) >> headroom;
+}
+
+void rand_vect_complex_s16(
+    complex_s16_t output[],
+    const unsigned length,
+    const unsigned headroom,
+    unsigned* seed)
+{
+    for(int i = 0; i < length; i++){
+        output[i].re = pseudo_rand_int16(seed) >> headroom;
+        output[i].im = pseudo_rand_int16(seed) >> headroom;
+    }
+}
+
+void rand_vect_complex_s32(
+    complex_s32_t output[],
+    const unsigned length,
+    const unsigned headroom,
+    unsigned* seed)
+{
+    for(int i = 0; i < length; i++){
+        output[i].re = pseudo_rand_int32(seed) >> headroom;
+        output[i].im = pseudo_rand_int32(seed) >> headroom;
+    }
+}
+
 void test_random_bfp_s16(
     bfp_s16_t* B, 
     unsigned max_len, 

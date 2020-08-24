@@ -1,16 +1,16 @@
-
-
-#ifndef TST_COMMON_H_
-#define TST_COMMON_H_
+#pragma once
 
 #include <stdint.h>
+#include <stdio.h>
 
 #include "xs3_math.h"
+#include "test_random.h"
 
 #define SET_TEST_FILE()     Unity.TestFile = __FILE__
 
 #ifdef __xcore__
 #define WORD_ALIGNED __attribute__((aligned (4)))
+#define DWORD_ALIGNED __attribute__((aligned (8)))
 #else
 #define WORD_ALIGNED
 #endif
@@ -23,67 +23,57 @@
 #define QUICK_TEST  0
 #endif
 
-#define IF_QUICK_TEST(X, Y)  ((QUICK_TEST)? X : Y)
+#ifndef PRINT_FUNC_NAMES
+#define PRINT_FUNC_NAMES 1
+#endif
 
-#define PRINTF(...)     do{if (DEBUG_ON) {printf(__VA_ARGS__);}} while(0)
+#ifndef PRINT_ERRORS
+#define PRINT_ERRORS 0
+#endif
 
-int16_t  pseudo_rand_int16(unsigned *r);
-uint16_t pseudo_rand_uint16(unsigned *r);
-int32_t  pseudo_rand_int32(unsigned *r);
-uint32_t pseudo_rand_uint32(unsigned *r);
-int64_t  pseudo_rand_int64(unsigned *r);
-uint64_t pseudo_rand_uint64(unsigned *r);
+#ifndef TIME_FUNCS
+#define TIME_FUNCS 0
+#endif
 
+#ifndef WRITE_PERFORMANCE_INFO
+#define WRITE_PERFORMANCE_INFO 1
+#endif
 
-void pseudo_rand_bytes(unsigned *r, char* buffer, unsigned size);
+#ifndef PERFORMANCE_INFO_FILENAME
+#define PERFORMANCE_INFO_FILENAME  "perf_info.csv"
+#endif
+
+#define TEST_ASSERT_CONVERSION(V) do{ \
+    char qwe[100];  if((V)){ sprintf(qwe, "Conversion failure (0x%X)", (V)); \
+        TEST_ASSERT_FALSE_MESSAGE(V, qwe); }} while(0)
 
 
 #if defined(__XC__) || defined(__CPLUSPLUS__)
 extern "C" {
 #endif 
 
+#ifndef __XC__
+static signed sext(int a, unsigned b){
+#ifdef __XS3A__
+    asm("sext %0, %1": "=r"(a): "r"(b));
+#else
+    unsigned mask = ~((1<<b)-1);
+
+    unsigned p = a >= 0;
+    a = p? (a & ~mask) : (a | mask);
+#endif
+    return a;
+}
+#endif //__XC__
+
+
+
+extern FILE* perf_file;
+
 void xs3_fft_index_bit_reversal_double(
     complex_double_t* a,
     const unsigned length);
 
-
-void test_random_bfp_s16(
-    bfp_s16_t* B, 
-    unsigned max_len, 
-    unsigned* seed,
-    bfp_s16_t* A,
-    int length);
-
-void test_random_bfp_s32(
-    bfp_s32_t* B, 
-    unsigned max_len, 
-    unsigned* seed,
-    bfp_s32_t* A,
-    int length);
-void test_random_bfp_complex_s16(
-    bfp_complex_s16_t* B, 
-    unsigned max_len, 
-    unsigned* seed,
-    bfp_complex_s16_t* A,
-    int length);
-void test_random_bfp_complex_s32(
-    bfp_complex_s32_t* B, 
-    unsigned max_len, 
-    unsigned* seed,
-    bfp_complex_s32_t* A,
-    int length);
-void test_random_bfp_ch_pair_s16(
-    bfp_ch_pair_s16_t* B, 
-    unsigned max_len, 
-    unsigned* seed,
-    bfp_ch_pair_s16_t* A,
-    int length);
-void test_random_bfp_ch_pair_s32(
-    bfp_ch_pair_s32_t* B, 
-    unsigned max_len, 
-    unsigned* seed,
-    bfp_ch_pair_s32_t* A,
-    int length);
 
 void test_double_from_s16(
     double* d_out,
@@ -131,5 +121,3 @@ void test_complex_s32_from_double(
 #if defined(__XC__) || defined(__CPLUSPLUS__)
 }   // extern "C"
 #endif
-
-#endif //TST_COMMON_H_

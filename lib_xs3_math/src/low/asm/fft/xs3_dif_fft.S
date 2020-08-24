@@ -19,25 +19,6 @@
 */
 
 
-// In the table below the LSByte indicates the shift behavior
-//  0x00 - no shift.  0x40 - left shift. 0x80 - right shift.
-#define NEG1_SHL    0xffff0040
-#define ZERO_SH0    0x00000000
-#define POS1_SHR    0x00010080
-
-.text
-.section    .cp.rodata.fft, "ac", @progbits
-.align  4
-
-.cc_top .L_hr_lut
-.L_hr_lut:
-	.word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL //  0 -  7 
-    .word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL //  8 - 15
-	.word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL // 16 - 23
-	.word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, ZERO_SH0, POS1_SHR, POS1_SHR, POS1_SHR // 24 - 31
-.cc_bottom .L_hr_lut
-
-
 #define NSTACKWORDS (32)
 
 #define STACK_EXP       (NSTACKWORDS+1)
@@ -54,7 +35,7 @@
 #define b               r8
 #define exp_modifier    r9
 #define s               r10
-// #define t               r11
+
 
 .text
 .issue_mode  dual
@@ -75,7 +56,7 @@ xs3_fft_dif_forward:
 dif_fft_impl_start:
 	{   ldc s, 31                               ;   ldw r11, hr_p[0]                        }
 	{   sub s, s, r11                           ;   shr j, n, 2                             }
-	{   ldaw r11, cp[.L_hr_lut]                                                             }
+	{   ldaw r11, cp[fft_hr_lut]                                                            }
 	{   ldc _32, 32                             ;   ldw r11, r11[s]                         }
 	{   mov exp_modifier, r11                   ;   vsetc r11                               }
 
@@ -85,7 +66,7 @@ dif_fft_impl_start:
 	{   mul b, n, _32                                                                       } //astew: same as `shl b, n, 5`? Unnecessary instruction?
 	{   shr b, b, 3                             ;   mov a, _32                              } //astew: `shl b, n, 2`
 	{   shr n, n, 4                             ;                                           } 
-	{   ldaw r11, cp[.L_hr_lut]                                                             }
+	{   ldaw r11, cp[fft_hr_lut]                                                            }
 	{   mov s, r11                              ;   sub k, b, _32                           }
 
 dif_fft_round_loop:
@@ -187,7 +168,7 @@ xs3_fft_dif_inverse:
 dif_ifft_impl_start:
 	{   ldc s, 31                               ;   ldw r11, hr_p[0]                        }
 	{   sub s, s, r11                           ;   shr j, n, 2                             }
-	{   ldaw r11, cp[.L_hr_lut]                                                             }
+	{   ldaw r11, cp[fft_hr_lut]                                                            }
 	{   ldc _32, 32                             ;   ldw r11, r11[s]                         }
 	{   mov exp_modifier, r11                   ;   vsetc r11                               }
 
@@ -197,7 +178,7 @@ dif_ifft_impl_start:
 	{   mul b, n, _32                                                                       } 
 	{   shr b, b, 3                             ;   mov a, _32                              }
 	{   sub k, b, _32                           ;   shr n, n, 4                             }
-	{   ldaw r11, cp[.L_hr_lut]                                                             }
+	{   ldaw r11, cp[fft_hr_lut]                                                            }
 	{   mov s, r11                              ;   ldw exp_minus_one, r11[0]               }
 
 dif_ifft_round_loop:

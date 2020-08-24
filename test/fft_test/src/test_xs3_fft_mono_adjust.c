@@ -7,56 +7,31 @@
 #include "testing.h"
 #include "floating_fft.h"
 #include "tst_common.h"
-#include "../src/low/c/xs3_fft_lut.h"
 #include "fft.h"
 #include "unity.h"
 
-#ifdef __XC__
-#define UNSAFE unsafe
-#define ALIGNED [[aligned(8)]]
-#else
-#define UNSAFE
-#define ALIGNED __attribute__ ((aligned (8)))
-#endif //__XC_
-
-
-static signed sext(int a, unsigned b){
-#ifdef __XS3A__
-    asm("sext %0, %1": "=r"(a): "r"(b));
-#else
-    unsigned mask = ~((1<<b)-1);
-
-    unsigned p = a >= 0;
-    a = p? (a & ~mask) : (a | mask);
-#endif
-    return a;
-}
-
-#define TEST_ASSERT_CONVERSION(V) do{ \
-    char qwe[100];  if((V)){ sprintf(qwe, "Conversion failure (0x%X)", (V)); TEST_ASSERT_FALSE_MESSAGE(V, qwe); }} while(0)
 
 #define MAX_PROC_FRAME_LENGTH_LOG2 (XS3_MAX_DIT_FFT_LOG2)
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
 
-#define LOOPS_LOG2 4
+#define LOOPS_LOG2 ((QUICK_TEST)? 4: 8)
 
-#define TIME_FUNCS 1
-#define PRINT_ERRORS 0
+#define TESTING_FUNC_NAME "xs3_fft_mono_adjust"
 
-
+#define MIN_N_LOG2  (4)
 
 void test_xs3_fft_mono_adjust_forward()
 {
+#if PRINT_FUNC_NAMES
+    printf("%s..\n", __func__);
+#endif
 
     unsigned r = 436554;
 
-    printf("%s..\n", __func__);
-
-    for(unsigned k = 4; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
-        // printf("Frame size: %u\n", 1<<k);
+    for(unsigned k = MIN_N_LOG2; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
         const unsigned N = (1<<k);
-        unsigned worst_case = 0;
+        unsigned worst_error = 0;
         float worst_timing = 0.0f;
 
         double sine_tableA[(MAX_PROC_FRAME_LENGTH/2) + 1];
@@ -66,27 +41,24 @@ void test_xs3_fft_mono_adjust_forward()
         flt_make_sine_table_double(sine_tableB, N);
         
         for(unsigned t = 0; t < (1 << LOOPS_LOG2); t++){
-            
-            // printf("Iter: %u  (0x%08X)\n", t, r);
             const unsigned seed = r;
             unsigned diff = 0;
 
-            int32_t ALIGNED a[MAX_PROC_FRAME_LENGTH];
-            complex_double_t ALIGNED ref1[MAX_PROC_FRAME_LENGTH];
-            complex_double_t ALIGNED ref2[MAX_PROC_FRAME_LENGTH];
+            int32_t DWORD_ALIGNED a[MAX_PROC_FRAME_LENGTH];
+            complex_double_t DWORD_ALIGNED ref1[MAX_PROC_FRAME_LENGTH];
+            complex_double_t DWORD_ALIGNED ref2[MAX_PROC_FRAME_LENGTH];
 
             conv_error_e error = 0;
             exponent_t exponent = 0;
             headroom_t headroom;
 
-            // printf("a = np.array([ ");
+            //astew: why does this require 3 bits of headroom..???
+            rand_vect_s32(a, N, 3, &r);
+
             for(unsigned i = 0; i < N; i++){
-                a[i] = pseudo_rand_int32(&r) >> 4;
                 ref2[i].re = conv_s32_to_double(a[i], exponent, &error);
                 ref2[i].im = 0;
-                // printf("%ld, ", a[i]);
             }
-            // printf("])\n");
 
             for(int i = 0; i < N/2; i++){
                 ref1[i].re = conv_s32_to_double(a[2*i+0], exponent, &error);
@@ -113,9 +85,6 @@ void test_xs3_fft_mono_adjust_forward()
             for(int i = 0; i < N/2; i++){
                 complex_s32_t aa = ((complex_s32_t*)a)[i];
                 complex_double_t rr = ((complex_double_t*)ref1)[i];
-
-                // printf("%u (   a):\t %0.01f\t%0.01f\n", i, ldexp(aa.re, exponent), ldexp(aa.im, exponent));
-                // printf("%u (ref1):\t %0.01f\t%0.01f\n\n", i, rr.re, rr.im);
             }
 
             diff = abs_diff_vect_complex_s32((complex_s32_t*)a, exponent, (complex_double_t*) ref1, N/2, &error);
@@ -132,18 +101,21 @@ void test_xs3_fft_mono_adjust_forward()
             diff = abs_diff_vect_complex_s32((complex_s32_t*) a, exponent, ref2, N/2, &error);
             TEST_ASSERT_CONVERSION(error);
 
-            if(diff > worst_case) { worst_case = diff; }
+            if(diff > worst_error) { worst_error = diff; }
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+2, diff, "Output delta is too large");
         }
         
 #if PRINT_ERRORS
-        printf("\tWorst case error (%u-point): %d\n", N, worst_case);
+        printf("    %s worst error (%u-point): %u\n", __func__, N, worst_error);
 #endif
 
 #if TIME_FUNCS
-        printf("\txs3_fft_mono_adjust (%u-point): %f us\n", N, worst_timing);
+        printf("    %s (%u-point): %f us\n", __func__, N, worst_timing);
 #endif
 
+#if WRITE_PERFORMANCE_INFO
+        fprintf(perf_file, "%s, %u, %u, %0.02f, (forward)\n", TESTING_FUNC_NAME, N, worst_error, worst_timing);
+#endif
     }
 }
 
@@ -151,15 +123,16 @@ void test_xs3_fft_mono_adjust_forward()
 
 void test_xs3_fft_mono_adjust_inverse()
 {
-
-    unsigned r = 436554;
-
+#if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
+#endif
 
-    for(unsigned k = 4; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
-        // printf("Frame size: %u\n", 1<<k);
+    unsigned r = 656556;
+    conv_error_e error = 0;
+
+    for(unsigned k = MIN_N_LOG2; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
         const unsigned N = (1<<k);
-        unsigned worst_case = 0;
+        unsigned worst_error = 0;
         float worst_timing = 0.0f;
 
         double sine_tableA[(MAX_PROC_FRAME_LENGTH/2) + 1];
@@ -168,23 +141,17 @@ void test_xs3_fft_mono_adjust_inverse()
         
         for(unsigned t = 0; t < (1 << LOOPS_LOG2); t++){
             
-            // printf("Iter: %u  (0x%08X)\n", t, r);
             const unsigned seed = r;
             unsigned diff = 0;
 
-            complex_s32_t ALIGNED a[MAX_PROC_FRAME_LENGTH/2];
-            complex_double_t ALIGNED ref[MAX_PROC_FRAME_LENGTH/2];
+            complex_s32_t DWORD_ALIGNED a[MAX_PROC_FRAME_LENGTH/2];
+            complex_double_t DWORD_ALIGNED ref[MAX_PROC_FRAME_LENGTH/2];
 
-            conv_error_e error = 0;
             exponent_t exponent = 0;
-            headroom_t headroom;
 
-            for(unsigned i = 0; i < N/2; i++){
-                a[i].re = pseudo_rand_int32(&r) >> 1;
-                a[i].im = pseudo_rand_int32(&r) >> 1;
-                ref[i].re = conv_s32_to_double(a[i].re, exponent, &error);
-                ref[i].im = conv_s32_to_double(a[i].im, exponent, &error);
-            }
+            rand_vect_complex_s32(a, N/2, 1, &r);
+            conv_vect_complex_s32_to_complex_double(ref, a, N/2, exponent, &error);
+            TEST_ASSERT_CONVERSION(error);
 
             diff = abs_diff_vect_complex_s32(a, exponent, (complex_double_t*) ref, N/2, &error);
             TEST_ASSERT_CONVERSION(error);
@@ -199,27 +166,25 @@ void test_xs3_fft_mono_adjust_inverse()
 
             float timing = (ts2-ts1)/100.0;
             if(timing > worst_timing) worst_timing = timing;
-
-            // for(int i = 0; i < N/2; i++){
-            //     printf("\t{ %0.04f, %0.04f }\n", (double)a[i].re, (double)a[i].im);
-            //     printf("\t{ %0.04f, %0.04f }\n\n", ref[i].re, ref[i].im);
-            // }
             
             diff = abs_diff_vect_complex_s32(a, exponent, ref, N/2, &error);
             TEST_ASSERT_CONVERSION(error);
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+2, diff, "Output delta is too large.");
 
-            if(diff > worst_case) { worst_case = diff; }
+            if(diff > worst_error) { worst_error = diff; }
         }
         
 #if PRINT_ERRORS
-        printf("\tWorst case error (%u-point): %d\n", N, worst_case);
+        printf("    %s worst error (%u-point): %u\n", __func__, N, worst_error);
 #endif
 
 #if TIME_FUNCS
-        printf("\txs3_fft_mono_adjust (%u-point): %f us\n", N, worst_timing);
+        printf("    %s (%u-point): %f us\n", __func__, N, worst_timing);
 #endif
 
+#if WRITE_PERFORMANCE_INFO
+        fprintf(perf_file, "%s, %u, %u, %0.02f, (inverse)\n", TESTING_FUNC_NAME, N, worst_error, worst_timing);
+#endif
     }
 }
 

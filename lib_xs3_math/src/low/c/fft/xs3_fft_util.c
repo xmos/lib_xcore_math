@@ -1,6 +1,7 @@
 
 #include "xs3_math.h"
-#include "vpu_helper.h"
+#include "../vpu_helper.h"
+#include "../../../low/asm/vpu_const_vects.h"
 
 static unsigned bitrev(unsigned index, size_t bit_width)
 {
@@ -9,6 +10,16 @@ static unsigned bitrev(unsigned index, size_t bit_width)
         res = ((res<<1) | (index & 0x1));
     }
     return res;
+}
+
+//load 4 complex 32-bit values into a buffer
+static void load_vec(
+    complex_s32_t dst[], 
+    const complex_s32_t src[])
+{
+    for(int i = 0; i < 4; i++){
+        dst[i] = src[i];
+    }
 }
 
 
@@ -27,77 +38,6 @@ void xs3_fft_index_bit_reversal(
         
         a[i] = a[rev];
         a[rev] = tmp;
-    }
-}
-
-
-WEAK_FUNC
-void xs3_fft_index_bit_reversal_shr(
-    complex_s32_t* a,
-    const unsigned length,
-    const right_shift_t shr)
-{
-    size_t logn = ceil_log2(length);
-    for(int i = 0; i < length; i++){
-        
-        unsigned rev = bitrev(i, logn);
-        if(rev < i) continue;
-
-        complex_s32_t tmp1 = { ASHR(32)(a[i  ].re, shr), ASHR(32)(a[i  ].im, shr) };
-        complex_s32_t tmp2 = { ASHR(32)(a[rev].re, shr), ASHR(32)(a[rev].im, shr) };
-        
-        a[i]   = tmp2;
-        a[rev] = tmp1;
-    }
-}
-
-
-WEAK_FUNC
-void xs3_merge_time_series_s32(
-    complex_s32_t* a,
-    const int32_t* b,
-    const int32_t* c,
-    const unsigned length,
-    const right_shift_t b_shr,
-    const right_shift_t c_shr)
-{
-    for(int i = 0; i < length; i++){
-        a[i].re = ASHR(32)(b[i], b_shr);
-        a[i].im = (c == NULL)? 0 : ASHR(32)(c[i], c_shr);
-    }
-}
-
-
-
-WEAK_FUNC
-void xs3_s32_to_complex_s32(
-    complex_s32_t* a,
-    const int32_t* b,
-    const unsigned length,
-    const right_shift_t b_shr)
-{
-    xs3_merge_time_series_s32(a, b, NULL, length, b_shr, 0);
-}
-
-void xs3_real_part_complex_s32(
-    int32_t* a,
-    const complex_s32_t* b,
-    const unsigned length,
-    const right_shift_t b_shr)
-{
-    for(int i = 0; i < length; i++){
-        a[i] = ASHR(32)(b[i].re, b_shr);
-    }
-}
-
-void xs3_imag_part_complex_s32(
-    int32_t* a,
-    const complex_s32_t* b,
-    const unsigned length,
-    const right_shift_t b_shr)
-{
-    for(int i = 0; i < length; i++){
-        a[i] = ASHR(32)(b[i].im, b_shr);
     }
 }
 
@@ -219,4 +159,105 @@ headroom_t xs3_fft_spectra_merge(
     }
 
     return xs3_headroom_vect_s32((int32_t*)X, 2*N);
+}
+
+WEAK_FUNC
+void xs3_fft_mono_adjust(
+    complex_s32_t x[],
+    const unsigned FFT_N,
+    const complex_s32_t* W,
+    const unsigned inverse)
+{
+    // Assembly only supports FFT_N >= 16
+    assert(FFT_N >= 16);
+
+    const int VEC_ELMS = 4; //complex elements per vector
+    
+    // REMEMBER: The length of x[] is only FFT_N/2!
+    complex_s32_t X0 = x[0];
+    complex_s32_t XQ = x[FFT_N/4];
+
+    xs3_tail_reverse_complex_s32(&x[FFT_N/4], FFT_N/4);
+
+    complex_s32_t* p_X_lo = &x[0];
+    complex_s32_t* p_X_hi = &x[FFT_N/4];
+
+    if(inverse){
+        complex_s32_t* tmp = p_X_hi;
+        p_X_hi = p_X_lo;
+        p_X_lo = tmp;
+    }
+
+    for(int k = 0; k < (FFT_N/4); k+=4){
+
+        complex_s32_t X_lo[VEC_ELMS], X_hi[VEC_ELMS], tmp[VEC_ELMS], A[VEC_ELMS], B[VEC_ELMS];
+
+        load_vec(X_lo, p_X_lo);
+        load_vec(X_hi, p_X_hi);
+
+        // tmp = W
+        load_vec(tmp, W);
+
+        // tmp = j*W
+        xs3_complex_mul_vect_complex_s32(tmp, tmp, vpu_vec_complex_pos_j, VEC_ELMS, 0, 0);
+
+
+        // A = 0.5*(1 - j*W)
+        // B = 0.5*(1 + j*W)
+
+        // (Shifting each right by 1 gives the *0.5)
+        
+        // for(int i = 0; i < 4; i++){
+        //     A[i].re = ASHR(32)(((int64_t) 0x40000000) - tmp[i].re, 1);
+        //     A[i].im = ASHR(32)(((int64_t) 0x00000000) - tmp[i].im, 1);
+        //     B[i].re = ASHR(32)(((int64_t) 0x40000000) + tmp[i].re, 1);
+        //     B[i].im = ASHR(32)(((int64_t) 0x00000000) + tmp[i].im, 1);
+        // }
+        xs3_sub_vect_complex_s32(A, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1); 
+        xs3_add_vect_complex_s32(B, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1);
+
+
+        // new_X_lo = A*X_lo + B*conjugate(X_hi)
+        xs3_complex_mul_vect_complex_s32(p_X_lo, A, X_lo, VEC_ELMS, 0, 0);
+        xs3_complex_conj_mul_vect_complex_s32(tmp, B, X_hi, VEC_ELMS, 0, 0);
+        xs3_add_vect_complex_s32(p_X_lo, p_X_lo, tmp, VEC_ELMS, 0, 0);
+
+        // new_X_hi = conjugate(A)*X_hi + conjugate(B)*conjugate(X_lo)
+        xs3_complex_conj_mul_vect_complex_s32(p_X_hi, X_hi, A, VEC_ELMS, 0, 0);
+        xs3_mul_vect_s32((int32_t*)B,(int32_t*)B,(int32_t*)vpu_vec_complex_conj_op, 2*VEC_ELMS, 0, 0);
+        xs3_complex_conj_mul_vect_complex_s32(tmp, B, X_lo, VEC_ELMS, 0, 0);
+        xs3_add_vect_complex_s32(p_X_hi, p_X_hi, tmp, VEC_ELMS, 0, 0);
+
+        W = &W[-VEC_ELMS];
+        p_X_lo = &p_X_lo[VEC_ELMS];
+        p_X_hi = &p_X_hi[VEC_ELMS];
+    }
+
+    if(inverse){
+        X0.re = ASHR(32)(X0.re, 1);
+        X0.im = ASHR(32)(X0.im, 1);
+    }
+
+    //Fix DC and Nyquist
+    x[0].re = X0.re + X0.im;
+    x[0].im = X0.re - X0.im;
+    x[FFT_N/4].re =  XQ.re;
+    x[FFT_N/4].im = -XQ.im;
+    
+    xs3_tail_reverse_complex_s32(&x[FFT_N/4], FFT_N/4);
+}
+
+
+WEAK_FUNC
+void xs3_tail_reverse_complex_s32(
+    complex_s32_t x[],
+    const unsigned N)
+{
+    for(int i = 1; i < N/2; i++){
+        int k = N-i;
+
+        complex_s32_t tmp = x[i];
+        x[i] = x[k];
+        x[k] = tmp;
+    }
 }

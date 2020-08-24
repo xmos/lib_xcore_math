@@ -65,6 +65,7 @@ FUNCTION_NAME:
     bl xs3_tail_reverse_complex_s32
     ldw X, sp[STACK_X]
     ldw N, sp[STACK_N]
+    ldw W, sp[STACK_W]
 
 
 .align 16

@@ -261,7 +261,7 @@ void bfp_add_vect_s16(
  * in BFP vector @bfp_vec{A}. 
  * 
  * The headroom, exponent, mantissas and (possibly) length of @bfp_vec{A} will each be updated by this 
- * function. @f$A_{exp}@f$, the exponent associated with @bfp_vec{A}, is chosen to avoid the possibility of 
+ * function. @math{A_{exp}}, the exponent associated with @bfp_vec{A}, is chosen to avoid the possibility of 
  * saturating output mantissas (with a possible corner case exception; more below). Underflow, when it occurs, 
  * happens to the operands _prior_ to the addition (see \ref arithmetic_underflow). 
  * 
@@ -652,7 +652,7 @@ int32_t bfp_sum_s16(
  * which is returned. @f$\alpha@f$ taken with the input vector's exponent (i.e. @f${\alpha}\cdot 2^{B_{exp}} @f$) 
  * is the sum of the represented values of @bfp_vec{B}.
  * 
- * @bfp_op{32, @f$ \left(\sum_\{k=0\}^\{B_\{length\}-1\} b_k \right)\cdot 2^\{B_\{-exp\}\}  @f$ }
+ * @bfp_op{32, @f$ \left(\sum_\{k=0\}^\{B_\{length\}-1\} b_k \right)\cdot 2^\{-B_\{exp\}\}  @f$ }
  * 
  * @param[in] b         Input BFP vector @bfp_vec{B}
  * 
@@ -662,46 +662,40 @@ int64_t bfp_sum_s32(
     const bfp_s32_t* b);
 
 
-/** Compute the inner product of two 16-bit BFP vectors.
+/** 
+ * @brief Compute the inner product of two 16-bit BFP vectors.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Adds together the element-wise products of input BFP vectors @bfp_vec{B} and @bfp_vec{C} for a resulting 32-bit
+ * mantissa and an exponent. The mantissa is returned; the exponent is output through `a_exp`.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * @bfp_op{16, @f$ A\cdot 2^\{A_\{exp\}\}\longleftarrow \sum_\{k=0\}^\{B_\{length\}-1\} \left( B_k\cdot C_k\cdot B_{exp}\cdot C_{exp} \right) @f$}
  * 
  * 
- * Conceptually, the operation performed is:
- *      A <- ( (B[0]*C[0]) + (B[1]*C[1]) + ... + (B[N-1]*C[N-1]) }
- *        where A is a floating-point scalar
- *              B[] is a BFP vector
- *              N is the size of the vector B[]
+ * @param[out] a_exp    Output exponent
+ * @param[in]  b        Input BFP vector @bfp_vec{B}
+ * @param[in]  c        Input BFP vector @bfp_vec{C}
  * 
- * @param[in] b         Input BFP vector 1
- * @param[in] c         Input BFP vector 2
+ * @return The 32-bit mantissa of the inner product.
  */
 int32_t bfp_dot_s16(
     exponent_t* a_exp,
     const bfp_s16_t* b, 
     const bfp_s16_t* c);
 
-/** Compute the inner product of two 32-bit BFP vectors.
+/** 
+ * @brief Compute the inner product of two 32-bit BFP vectors.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Adds together the element-wise products of input BFP vectors @bfp_vec{B} and @bfp_vec{C} for a resulting 40-bit
+ * mantissa and an exponent. The mantissa is returned; the exponent is output through `a_exp`.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * @bfp_op{32, @f$ A\cdot 2^\{A_\{exp\}\}\longleftarrow \sum_\{k=0\}^\{B_\{length\}-1\} \left( B_k\cdot C_k\cdot B_{exp}\cdot C_{exp} \right) @f$}
  * 
  * 
- * Conceptually, the operation performed is:
- *      A <- ( (B[0]*C[0]) + (B[1]*C[1]) + ... + (B[N-1]*C[N-1]) }
- *        where A is a floating-point scalar
- *              B[] is a BFP vector
- *              N is the size of the vector B[]
+ * @param[out] a_exp    Output exponent
+ * @param[in]  b        Input BFP vector @bfp_vec{B}
+ * @param[in]  c        Input BFP vector @bfp_vec{C}
  * 
- * @param[in] b         Input BFP vector 1
- * @param[in] c         Input BFP vector 2
+ * @return The 40-bit mantissa of the inner product.
  */
 int64_t bfp_dot_s32(
     exponent_t* a_exp,

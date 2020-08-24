@@ -348,7 +348,51 @@ complex_s32_t xs3_sum_complex_s32(
 void xs3_tail_reverse_complex_s32(
     complex_s32_t x[],
     const unsigned N);
+
+
+
+/**
+ * @brief Get headroom of complex 32-bit vector.
+ * 
+ */
+static headroom_t xs3_headroom_vect_complex_s32(
+    const complex_s32_t a[], 
+    const unsigned length)
+{
+    return xs3_headroom_vect_s32((int32_t*)a, 2*length);
+}
+
+/**
+ * @brief Adds one complex 32-bit vector to another.
+ * 
+ */
+static headroom_t xs3_add_vect_complex_s32(
+    complex_s32_t a[], 
+    const complex_s32_t b[],
+    const complex_s32_t c[],
+    const unsigned length, 
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
+{
+    return xs3_add_vect_s32((int32_t*)a, (int32_t*)b, (int32_t*)c, 2*length, b_shr, c_shr);
+}
     
+    
+/**
+ * @brief Subtracts one complex 32-bit vector from another.
+ * 
+ */
+static headroom_t xs3_sub_vect_complex_s32(
+    complex_s32_t a[], 
+    const complex_s32_t b[],
+    const complex_s32_t c[],
+    const unsigned length, 
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
+{
+    return xs3_sub_vect_s32((int32_t*)a, (int32_t*)b, (int32_t*)c, 2*length, b_shr, c_shr);
+}
+
 
 #ifdef __XC__
 }   //extern "C"

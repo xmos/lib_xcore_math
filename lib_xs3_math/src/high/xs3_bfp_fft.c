@@ -1,7 +1,6 @@
 
 
 #include "xs3_math.h"
-#include "../src/low/c/xs3_fft_lut.h"
 #include "../low/c/vpu_helper.h"
 
 #include <assert.h>
@@ -37,7 +36,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
     xs3_fft_index_bit_reversal(X->data, X->length);
     xs3_fft_dit_forward(X->data, X->length, &X->hr, xs3_dit_fft_lut, &X->exp);
 
-    xs3_fft_mono_adjust(X->data, X->length, XS3_DIT_REAL_FFT_LUT(X->length), 0);
+    xs3_fft_mono_adjust(X->data, FFT_N, XS3_DIT_REAL_FFT_LUT(FFT_N), 0);
 
     return X;
 }
@@ -63,7 +62,7 @@ bfp_s32_t* bfp_fft_inverse_mono(
     X->exp = X->exp + X_shr;
     X->length = FFT_N;
 
-    xs3_fft_mono_adjust(x->data, FFT_N, XS3_DIT_REAL_FFT_LUT(FFT_N), 1);
+    xs3_fft_mono_adjust(X->data, FFT_N, XS3_DIT_REAL_FFT_LUT(FFT_N), 1);
 
     xs3_fft_index_bit_reversal(X->data, FFT_N/2);
     xs3_fft_dit_inverse(X->data, FFT_N/2, &x->hr, xs3_dit_fft_lut, &x->exp);
@@ -190,7 +189,7 @@ void  bfp_fft_inverse_stereo(
     if(a_shr) xs3_shl_vect_s32((int32_t*)a->data, (int32_t*) a->data, FFT_N, -a_shr);
     if(b_shr) xs3_shl_vect_s32((int32_t*)b->data, (int32_t*) b->data, FFT_N, -b_shr);
 
-    x->data = a->data;
+    x->data = (ch_pair_s32_t*) a->data;
     x->length = a->length;
     x->hr = MIN(a->hr + a_shr, b->hr + b_shr);
 

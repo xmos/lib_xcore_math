@@ -2,6 +2,8 @@
 #ifndef XS3_FFT_LOW_H_
 #define XS3_FFT_LOW_H_
 
+#include "xs3_fft_lut.h"
+
 #ifdef __XC__
 extern "C" {
 #endif

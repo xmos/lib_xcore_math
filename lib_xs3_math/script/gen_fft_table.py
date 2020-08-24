@@ -1,5 +1,6 @@
 import numpy as np
 import argparse
+import os
 
 
 
@@ -12,6 +13,8 @@ def main():
 
     parser.add_argument("--out_file", default="xs3_fft_lut", 
                         help="Filename to be used (with '.h' and '.c') for the generated files. (default: 'xs3_fft_lut')")
+    parser.add_argument("--out_dir", default="./",
+                        help="Directory to output generated files to.")
     parser.add_argument("--max_fft_log2", type=int, default=5,
                         help="Log2 of the maximum FFT size supported. (default: 5)")
     parser.add_argument("-v", "--verbose", action="store_true", default=False,
@@ -35,8 +38,8 @@ def main():
         print(f"Header filename: {header_filename}")
         print(f"Source filename: {source_filename}")
 
-    with open(source_filename, "w+") as source_file:
-        with open(header_filename, "w+") as header_file:
+    with open(os.path.join(args.out_dir, source_filename), "w+") as source_file:
+        with open(os.path.join(args.out_dir, header_filename), "w+") as header_file:
 
             header_file.write("// Copyright (c) 2020, XMOS Ltd, All rights reserved\n")
             header_file.write("#pragma once\n")
@@ -62,8 +65,8 @@ def main():
                 header_file.write("\n/** @brief Convenience macro to index into the decimation-in-frequency FFT look-up table. \n\n")
                 header_file.write("\tUse this to retrieve the correct address for the DIF FFT look-up table when performing\n")
                 header_file.write("\tan FFT (or IFFT) using the DIF algorithm. (@see xs3_fft_dif_forward).\n\n")
-                header_file.write("\t@param N_LOG2\tlog2(N) where N is the FFT length.\n*/\n")
-                header_file.write("#define XS3_DIF_FFT_LUT(N_LOG2) &xs3_dif_fft_lut[(1<<(XS3_MAX_DIF_FFT_LOG2)) - (1<<(N_LOG2))]\n\n")
+                header_file.write("\t@param N\tThe FFT length.\n*/\n")
+                header_file.write("#define XS3_DIF_FFT_LUT(N) &xs3_dif_fft_lut[(1<<(XS3_MAX_DIF_FFT_LOG2)) - (N)]\n\n")
 
 
             if args.dit:

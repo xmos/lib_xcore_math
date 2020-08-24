@@ -18,24 +18,6 @@
         exponent_t* exp);
 */
 
-.section    .cp.rodata, "ac", @progbits
-.align  4
-// In the table below the LSByte indicates the shift behavior
-//  0x00 - no shift.  0x40 - left shift. 0x80 - right shift.
-
-#define NEG1_SHL    0xffff0040
-#define ZERO_SH0    0x00000000
-#define POS1_SHR    0x00010080
-
-.cc_top .L_hr_lut
-.L_hr_lut:
-	.word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL //  0 -  7
-	.word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL //  8 - 15
-	.word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL // 16 - 23
-    .word NEG1_SHL, NEG1_SHL, NEG1_SHL, NEG1_SHL, ZERO_SH0, POS1_SHR, POS1_SHR, POS1_SHR // 24 - 31
-.cc_bottom .L_hr_lut
-    
-
 #define NSTACKWORDS (32)
 
 #define STACK_EXP       (NSTACKWORDS+1)
@@ -107,9 +89,9 @@ dit_fft_impl_4_bits_hr:
 
 dit_fft_impl_start:
     // Iterate the dit_fft_first_two_rounds_loop loop  n/4 times (via j) because vD holds 4 complex elements
-	{   shr j, n, 2                             ;   vsetc r11                               }
+    {   shr j, n, 2                             ;   vsetc r11                               }
     // have r11 point at the beginning of the data vector
-	{   mov r11, x_p                            ;   ldc _32, 32                             }
+    {   mov r11, x_p                            ;   ldc _32, 32                             }
 
 
     dit_fft_first_two_rounds_loop:
@@ -123,17 +105,17 @@ dit_fft_impl_start:
         {   shr s, n, 2                             ;   bt j, dit_fft_first_two_rounds_loop     }
 
     // s = (n/4)-1;  if n == 4, skip the main loop.
-	{   sub s, s, 1                             ;                                           }
-	{                                           ;   bf s, dit_fft_done                      }
+    {   sub s, s, 1                             ;                                           }
+    {                                           ;   bf s, dit_fft_done                      }
 
     // b = 32       ; b will shift left in each iteration of the `dit_fft_round_loop` loop
     // a = n / 8    ; a will shift right in each iteration of the `dit_fft_round_loop` loop
     // n = n / 16   ; after this we'll do log2(n)+1 executions of `dit_fft_round_loop`
-	{   mov b, _32                              ;                                           } // <-- astew: seems unnecessary. Can probably drop an indstruction here.
-	{   shr n, n, 4                             ;   shr a, n, 3                             }
+    {   mov b, _32                              ;                                           } // <-- astew: seems unnecessary. Can probably drop an indstruction here.
+    {   shr n, n, 4                             ;   shr a, n, 3                             }
 
     dit_fft_round_loop:
-        {   ldaw r11, cp[.L_hr_lut]                 }
+        {   ldaw r11, cp[fft_hr_lut]               }
 
         {   mov s, r11                              ;   vgetc r11                               }
         {                                           ;   zext r11, 5                             }
@@ -161,40 +143,40 @@ dit_fft_impl_start:
 
         {   shl b, b, 1                             ;   shr a, a, 1                             }
         {   shr n, n, 1                             ;   bt n, dit_fft_round_loop                }
-	
+    
 dit_fft_done:
-	
-	//update the hr
-	{   vgetc r11                               ;   ldc s, 31                               }
-	{   zext r11, 5                             }
-	    sub s, s, r11
-	    ldd r4, hr_p, sp[0]
-	    stw s, hr_p[0]
+    
+    //update the hr
+    {   vgetc r11                               ;   ldc s, 31                               }
+    {   zext r11, 5                             }
+        sub s, s, r11
+        ldd r4, hr_p, sp[0]
+        stw s, hr_p[0]
 
-	//update the exponent
-	{                                           ;   ldw r11, sp[STACK_EXP]                  }
-	{                                           ;   ldw s, r11[0]                           }
-	{   add s, s, exp_modifier                  ;                                           }
-	{                                           ;   stw s, r11[0]                           }
+    //update the exponent
+    {                                           ;   ldw r11, sp[STACK_EXP]                  }
+    {                                           ;   ldw s, r11[0]                           }
+    {   add s, s, exp_modifier                  ;                                           }
+    {                                           ;   stw s, r11[0]                           }
 
-	//restore the regs
+    //restore the regs
     ldd r5, r6, sp[1]
     ldd r7, r8, sp[2]
     ldd r9, r10, sp[3]
     retsp NSTACKWORDS
-	
-	.cc_bottom  xs3_fft_dit_forward.function
-	.set	    xs3_fft_dit_forward.nstackwords,NSTACKWORDS
-	.globl	    xs3_fft_dit_forward.nstackwords
-	.set	    xs3_fft_dit_forward.maxcores,1
-	.globl	    xs3_fft_dit_forward.maxcores
-	.set	    xs3_fft_dit_forward.maxtimers,0
-	.globl	    xs3_fft_dit_forward.maxtimers
-	.set	    xs3_fft_dit_forward.maxchanends,0
-	.globl	    xs3_fft_dit_forward.maxchanends
+    
+    .cc_bottom  xs3_fft_dit_forward.function
+    .set	    xs3_fft_dit_forward.nstackwords,NSTACKWORDS
+    .globl	    xs3_fft_dit_forward.nstackwords
+    .set	    xs3_fft_dit_forward.maxcores,1
+    .globl	    xs3_fft_dit_forward.maxcores
+    .set	    xs3_fft_dit_forward.maxtimers,0
+    .globl	    xs3_fft_dit_forward.maxtimers
+    .set	    xs3_fft_dit_forward.maxchanends,0
+    .globl	    xs3_fft_dit_forward.maxchanends
 
 .Ltmp0:
-	.size	xs3_fft_dit_forward, .Ltmp0-xs3_fft_dit_forward
+    .size	xs3_fft_dit_forward, .Ltmp0-xs3_fft_dit_forward
 
 
 
@@ -209,44 +191,44 @@ dit_fft_done:
 
 
 
-	.text
+    .text
     .issue_mode     dual
-	.globl	        xs3_fft_dit_inverse
-	.type	        xs3_fft_dit_inverse, @function
-	.cc_top         xs3_fft_dit_inverse.function, xs3_fft_dit_inverse
+    .globl	        xs3_fft_dit_inverse
+    .type	        xs3_fft_dit_inverse, @function
+    .cc_top         xs3_fft_dit_inverse.function, xs3_fft_dit_inverse
 
 .align 4
 xs3_fft_dit_inverse:
-	dualentsp NSTACKWORDS
-	std r4, hr_p, sp[0]
-	std r5, r6, sp[1]
-	std r7, r8, sp[2]
-	std r9, r10, sp[3]
+    dualentsp NSTACKWORDS
+    std r4, hr_p, sp[0]
+    std r5, r6, sp[1]
+    std r7, r8, sp[2]
+    std r9, r10, sp[3]
 
-	{   ldc exp_modifier, 0                     ;   ldw r11, hr_p[0]                        }
-	{   sub r11, r11, 1                         ;   bf r11, dit_ifft_impl_0_bits_hr         }
-	{   sub r11, r11, 1                         ;   bf r11, dit_ifft_impl_1_bits_hr         }
-	{   sub r11, r11, 1                         ;   bf r11, dit_ifft_impl_2_bits_hr         }
-	{   sub r11, r11, 1                         ;   bf r11, dit_ifft_impl_3_bits_hr         }
-	{                                           ;   bu dit_ifft_impl_4_bits_hr              }
+    {   ldc exp_modifier, 0                     ;   ldw r11, hr_p[0]                        }
+    {   sub r11, r11, 1                         ;   bf r11, dit_ifft_impl_0_bits_hr         }
+    {   sub r11, r11, 1                         ;   bf r11, dit_ifft_impl_1_bits_hr         }
+    {   sub r11, r11, 1                         ;   bf r11, dit_ifft_impl_2_bits_hr         }
+    {   sub r11, r11, 1                         ;   bf r11, dit_ifft_impl_3_bits_hr         }
+    {                                           ;   bu dit_ifft_impl_4_bits_hr              }
 
-	dit_ifft_impl_0_bits_hr:
+    dit_ifft_impl_0_bits_hr:
         {   ldc r11, 0x80                           } //VEC_SHR
         {   add exp_modifier, exp_modifier, 1       ;   bu dit_ifft_impl_start                  }
 
-	dit_ifft_impl_1_bits_hr:
+    dit_ifft_impl_1_bits_hr:
         {   ldc r11, 0x80                           } //VEC_SHR
         {   add exp_modifier, exp_modifier, 1       ;   bu dit_ifft_impl_start                  }
 
-	dit_ifft_impl_2_bits_hr:
+    dit_ifft_impl_2_bits_hr:
         {   ldc r11, 0x80                           } //VEC_SHR
         {   add exp_modifier, exp_modifier, 1       ;   bu dit_ifft_impl_start                  }
 
-	dit_ifft_impl_3_bits_hr:
+    dit_ifft_impl_3_bits_hr:
         {   ldc r11, 0x00                           } //VEC_SH0
         {   add exp_modifier, exp_modifier, 0       ;   bu dit_ifft_impl_start                  }
 
-	dit_ifft_impl_4_bits_hr:
+    dit_ifft_impl_4_bits_hr:
         {   ldc r11, 0x40                           } //VEC_SHL
         {   sub exp_modifier, exp_modifier, 1       ;   bu dit_ifft_impl_start                  }
 
@@ -256,77 +238,77 @@ dit_ifft_impl_start:
 
 
 dit_ifft_first_two_rounds_loop:
-	{                                           ;   vldd r11[0]                             }
-	{   sub j, j, 1                             ;   vfttb                                   }
-	{   add r11, r11, _32                       ;   vstd r11[0]                             }
-	{   shr s, n, 2                             ;   bt j, dit_ifft_first_two_rounds_loop    }
+    {                                           ;   vldd r11[0]                             }
+    {   sub j, j, 1                             ;   vfttb                                   }
+    {   add r11, r11, _32                       ;   vstd r11[0]                             }
+    {   shr s, n, 2                             ;   bt j, dit_ifft_first_two_rounds_loop    }
 
-	{   sub s, s, 1                             ;                                           }
+    {   sub s, s, 1                             ;                                           }
     {   sub exp_modifier, exp_modifier, 2       ;   bf s, dit_ifft_done                     }
 
-	{   mov a, n                                ;   mov b, _32                              }
-	{   shr a, a, 3                             ;   shr n, n, 4                             }
+    {   mov a, n                                ;   mov b, _32                              }
+    {   shr a, a, 3                             ;   shr n, n, 4                             }
 
 dit_ifft_round_loop:
-	{   ldaw r11, cp[.L_hr_lut]                 }
+    {   ldaw r11, cp[fft_hr_lut]                }
 
-	{   mov s, r11                              ;   vgetc r11                               }
-	{   zext r11, 5                             ;   sub exp_modifier, exp_modifier, 1       }
-	{   sub k, b, _32                           ;   ldw r11, s[r11]                         }
-	    ashr s, r11, 16
-	{   add exp_modifier, exp_modifier, s       ;   vsetc r11                               }
+    {   mov s, r11                              ;   vgetc r11                               }
+    {   zext r11, 5                             ;   sub exp_modifier, exp_modifier, 1       }
+    {   sub k, b, _32                           ;   ldw r11, s[r11]                         }
+        ashr s, r11, 16
+    {   add exp_modifier, exp_modifier, s       ;   vsetc r11                               }
 
-	dit_ifft_outer_loop:
-		{   add s, x_p, k                           ;   mov j, a                                }
-	 	{   add twiddle_lut_p, twiddle_lut_p, _32   ;   vldc twiddle_lut_p[0]                   }
-		{   add r11, s, b                           ;                                           } ////this might be able to go
+    dit_ifft_outer_loop:
+        {   add s, x_p, k                           ;   mov j, a                                }
+         {   add twiddle_lut_p, twiddle_lut_p, _32   ;   vldc twiddle_lut_p[0]                   }
+        {   add r11, s, b                           ;                                           } ////this might be able to go
 
-		dit_ifft_inner_loop:
-			{                                           ;   vldd r11[0]                             }
-			{                                           ;   vcmcr                                   }
-			{                                           ;   vcmci                                   }
-			{   sub j, j, 1                             ;   vladsb s[0]                             }
-			{   add s, s, b                             ;   vstr s [0]                              }
-			{   add s, s, b                             ;   vstd r11[0]                             }
-			{   add r11, s, b                           ;   bt j, dit_ifft_inner_loop               }
+        dit_ifft_inner_loop:
+            {                                           ;   vldd r11[0]                             }
+            {                                           ;   vcmcr                                   }
+            {                                           ;   vcmci                                   }
+            {   sub j, j, 1                             ;   vladsb s[0]                             }
+            {   add s, s, b                             ;   vstr s [0]                              }
+            {   add s, s, b                             ;   vstd r11[0]                             }
+            {   add r11, s, b                           ;   bt j, dit_ifft_inner_loop               }
 
-		{   sub k, k, _32                           ;   bt k, dit_ifft_outer_loop               }
+        {   sub k, k, _32                           ;   bt k, dit_ifft_outer_loop               }
 
-	{   shr a, a, 1                             ;   shl b, b, 1                             }
-	{   shr n, n, 1                             ;   bt n, dit_ifft_round_loop               }
-	
+    {   shr a, a, 1                             ;   shl b, b, 1                             }
+    {   shr n, n, 1                             ;   bt n, dit_ifft_round_loop               }
+    
 dit_ifft_done:
-	
-	//update the hr
-	{   ldc s, 31                               ;   vgetc r11                               }
-	{   zext r11, 5                             }
+    
+    //update the hr
+    {   ldc s, 31                               ;   vgetc r11                               }
+    {   zext r11, 5                             }
         sub s, s, r11
         ldd r4, hr_p, sp[0]
         stw s, hr_p[0]
 
-	//update the exponent
-	{                                           ;   ldw r11, sp[STACK_EXP]                  }
-	{                                           ;   ldw s, r11[0]                           }
-	{   add s, s, exp_modifier                  ;                                           }
-	{                                           ;   stw s, r11[0]                           }
+    //update the exponent
+    {                                           ;   ldw r11, sp[STACK_EXP]                  }
+    {                                           ;   ldw s, r11[0]                           }
+    {   add s, s, exp_modifier                  ;                                           }
+    {                                           ;   stw s, r11[0]                           }
 
-	//restore the regs
+    //restore the regs
     ldd r5, r6, sp[1]
     ldd r7, r8, sp[2]
     ldd r9, r10, sp[3]
     retsp NSTACKWORDS   
-	
-	.cc_bottom  xs3_fft_dit_inverse.function
-	.set	    xs3_fft_dit_inverse.nstackwords,NSTACKWORDS
-	.globl	    xs3_fft_dit_inverse.nstackwords
-	.set	    xs3_fft_dit_inverse.maxcores,1
-	.globl	    xs3_fft_dit_inverse.maxcores
-	.set	    xs3_fft_dit_inverse.maxtimers,0
-	.globl	    xs3_fft_dit_inverse.maxtimers
-	.set	    xs3_fft_dit_inverse.maxchanends,0
-	.globl	    xs3_fft_dit_inverse.maxchanends
+    
+    .cc_bottom  xs3_fft_dit_inverse.function
+    .set	    xs3_fft_dit_inverse.nstackwords,NSTACKWORDS
+    .globl	    xs3_fft_dit_inverse.nstackwords
+    .set	    xs3_fft_dit_inverse.maxcores,1
+    .globl	    xs3_fft_dit_inverse.maxcores
+    .set	    xs3_fft_dit_inverse.maxtimers,0
+    .globl	    xs3_fft_dit_inverse.maxtimers
+    .set	    xs3_fft_dit_inverse.maxchanends,0
+    .globl	    xs3_fft_dit_inverse.maxchanends
 .Ltmp1:
-	.size	xs3_fft_dit_inverse, .Ltmp1-xs3_fft_dit_inverse
+    .size	xs3_fft_dit_inverse, .Ltmp1-xs3_fft_dit_inverse
 
 
 

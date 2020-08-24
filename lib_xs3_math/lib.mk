@@ -7,7 +7,6 @@
 lib_xs3_math_PATH ?= ./
 LIB_PATH := $(abspath $(lib_xs3_math_PATH))
 
-
 INCLUDES += $(LIB_PATH)/api
 
 lib_xs3_math_INCLUDES := $(LIB_PATH)/src/asm
@@ -64,6 +63,10 @@ endif
 
 DOC_DIR := $(LIB_PATH)/doc
 DOC_BUILD_DIR := $(DOC_DIR)/.build
+
+$(eval  $(foreach bfile,$(ALL_BUILD_FILES),       \
+            $(bfile): | $(dir $(bfile)).marker $(newline)))
+
 
 docs:
 	$(info Building documentation..)
