@@ -6,7 +6,7 @@
 #include <assert.h>
 
 #include "xs3_math.h"
-#include "low/../../src/low/c/vpu_helper.h"
+#include "../src/low/vpu_helper.h"
 
 #include "../tst_common.h"
 
