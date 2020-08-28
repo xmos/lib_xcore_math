@@ -30,8 +30,13 @@ void test_xs3_s16_to_s32();
 void test_xs3_complex_scal_mul_vect_complex();
 void test_xs3_complex_mul_vect_complex();
 void test_xs3_complex_conj_mul_vect_complex();
+void test_xs3_mul_vect_complex();
 void test_xs3_squared_mag_vect_complex();
 void test_xs3_mag_vect_complex();
+void test_xs3_sum_complex();
+
+void test_xs3_complex_s32_to_complex_s16();
+void test_xs3_complex_s16_to_complex_s32();
 
 /*  High-level API  */
 

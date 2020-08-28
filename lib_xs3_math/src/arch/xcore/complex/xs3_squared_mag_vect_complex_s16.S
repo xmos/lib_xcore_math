@@ -33,6 +33,7 @@ headroom_t xs3_squared_mag_vect_complex_s16(
 #define vec_tmp     r4
 #define vec_sat     r5
 #define bytemask    r6
+#define _32         r7
 
 
 ASM_PREAMBLE(FUNCTION_NAME)
@@ -41,62 +42,53 @@ ASM_PREAMBLE(FUNCTION_NAME)
 FUNCTION_NAME:
     dualentsp NSTACKWORDS
     std r4, r5, sp[1]
+    std r6, r7, sp[2]
 
     {   ldaw r11, sp[STACK_VEC_SAT]             ;   ldw r4, sp[STACK_SAT]                   }
     {   shl r5, r4, 16                          ;   zext r4, 16                             }
-    {   or r4, r4, r5                           ;   stw r6, sp[4]                           }
+    {   or r4, r4, r5                           ;   ldc _32, 32                             }
         std r4, r4, r11[0]
         std r4, r4, r11[1]
         std r4, r4, r11[2]
         std r4, r4, r11[3]
 
-    {   ldc r11, 32                             ;   shl bytemask, length, SIZEOF_LOG2_S16   }
-    {   shr length, length, 4                   ;   shl r11, r11, 3                         }
+    {                                           ;   shl bytemask, length, SIZEOF_LOG2_S16   }
+    {   shr length, length, 4                   ;   shl r11, _32, 3                         }
     {   zext bytemask, 5                        ;   vsetc r11                               }
     {   ldaw r11, sp[STACK_VEC_SAT]             ;   ldaw vec_tmp, sp[STACK_VEC_TMP]         }
-    {   mkmsk bytemask, bytemask                ;   entsp 0                                 }
-
-.issue_mode single
-
-        bf length, .L_loop_bot
+    {   mkmsk bytemask, bytemask                ;   bf length, .L_loop_bot                  }
 
     .L_loop_top:
 
-        vclrdr
-        vldc b_re[0]
-        vlmacc b_re[0]
-        vldc b_im[0]
-        sub length, length, 1
-        vlmacc b_im[0]
-        vlsat r11[0]
-        vstr a[0]
-        bt length, .L_loop_top
+        {   sub length, length, 1                   ;   vclrdr                                  }
+        {                                           ;   vldc b_re[0]                            }
+        {   add b_re, b_re, _32                     ;   vlmacc b_re[0]                          }
+        {                                           ;   vldc b_im[0]                            }
+        {   add b_im, b_im, _32                     ;   vlmacc b_im[0]                          }
+        {                                           ;   vlsat r11[0]                            }
+        {   add a, a, _32                           ;   vstr a[0]                               }
+        {                                           ;   bt length, .L_loop_top                  }
 
-    .L_loop_bot:
+    .L_loop_bot: //astew: worth jumping over to single issue mode for this?
 
-    bf bytemask, .L_done
-
-    vclrdr
-    vstd vec_tmp[0]
-    vldc b_re[0]
-    vlmacc b_re[0]
-    vldc b_im[0]
-    vlmacc b_im[0]
-    vlsat r11[0]
-    vstrpv a[0], bytemask
-    vstrpv vec_tmp[0], bytemask
-    vldd vec_tmp[0]
-    vstd vec_tmp[0]
+    {                                           ;   bf bytemask, .L_done                    }
+    {                                           ;   vclrdr                                  }
+    {                                           ;   vstd vec_tmp[0]                         }
+    {                                           ;   vldc b_re[0]                            }
+    {                                           ;   vlmacc b_re[0]                          }
+    {                                           ;   vldc b_im[0]                            }
+    {                                           ;   vlmacc b_im[0]                          }
+    {                                           ;   vlsat r11[0]                            }
+    {                                           ;   vstrpv a[0], bytemask                   }
+    {                                           ;   vstrpv vec_tmp[0], bytemask             }
+    {                                           ;   vldd vec_tmp[0]                         }
+    {                                           ;   vstd vec_tmp[0]                         }
 
 .L_done:
-        ldd r4, r5, sp[1]
-
-        dualentsp 0
-
-.issue_mode dual
-
-    {   ldc r0, 15                              ;   ldw r6, sp[4]                           }
-    {   zext r11, 5                             ;   vgetc r11                               }
+    ldd r4, r5, sp[1]
+    ldd r6, r7, sp[2]
+    {   ldc r0, 15                              ;   vgetc r11                               }
+    {   zext r11, 5                             ;                                           }
     {   sub r0, r0, r11                         ;   retsp NSTACKWORDS                       }
 
 

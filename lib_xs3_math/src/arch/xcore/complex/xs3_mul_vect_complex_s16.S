@@ -60,11 +60,13 @@ FUNCTION_NAME:
         std r4, r4, r11[2]
         std r4, r4, r11[3]
 
+    {                                           ;   ldw len, sp[STACK_LENGTH]               }
     {   ldc r11, 32                             ;   ldw bytemask, sp[STACK_LENGTH]          }
     {   shr len, bytemask, 4                    ;   ldw c, sp[STACK_C]                      }
     {   zext bytemask, 4                        ;                                           }
     {   shl bytemask, bytemask, SIZEOF_LOG2_S16 ;   shl r11, r11, 3                         }
     {   ldaw vec_tmp, sp[STACK_VEC_TMP]         ;   vsetc r11                               }
+    {   ldaw vec_sat, sp[STACK_VEC_SAT]         ;                                           }
     {   ldc r11, 32                             ;   bf len, .L_loop_bot                     }
 
 #define _32     r11
@@ -105,7 +107,7 @@ FUNCTION_NAME:
     vstrpv vec_tmp[0], bytemask
     vldd vec_tmp[0]
     vstd vec_tmp[0]
-
+    nop
     dualentsp 0
 
 .issue_mode dual

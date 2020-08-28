@@ -12,10 +12,8 @@ void xs3_complex_s16_to_complex_s32(
 
 #include "../asm_helper.h"
 
-.text
-
-#define NSTACKVECS      2
-#define NSTACKWORDS     (8 + (8*NSTACKVECS))
+#define NSTACKVECS      0
+#define NSTACKWORDS     (4 + (8*NSTACKVECS))
 
 #define FUNCTION_NAME   xs3_complex_s16_to_complex_s32
 
@@ -29,25 +27,36 @@ void xs3_complex_s16_to_complex_s32(
 #define tmp_real        r4
 #define tmp_imag        r5
 
-ASM_PREAMBLE(FUNCTION_NAME)
+.text; 
+.globl FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.align 16
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
 
 .issue_mode single
 
 FUNCTION_NAME:
-        entsp NSTACKWORDS
-        std r4, r5, sp[0]
+    entsp NSTACKWORDS
+    std r4, r5, sp[1]
 
+    // Can this be done faster? Or with the VPU at all?
     .L_loop_top:  
         sub length, length, 1
         ld16s tmp_real, b_real[length]
         ld16s tmp_imag, b_imag[length]
-        std tmp_real, tmp_imag, a[length]
+        std tmp_imag, tmp_real, a[length]
         bt length, .L_loop_top
 
-    ldd r4, r5, sp[0]
+    ldd r4, r5, sp[1]
     retsp NSTACKWORDS       
 
-ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS)
+    .cc_bottom FUNCTION_NAME.function; 
+    .set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords; 
+    .set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
+    .set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 
+    .set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends; 
+CAT(.L_end_, FUNCTION_NAME): 
+    .size FUNCTION_NAME, CAT(.L_end_, FUNCTION_NAME) - FUNCTION_NAME
 
 #endif //!defined(XS3_MATH_NO_ASM)
 #endif //defined(__XS3A__)

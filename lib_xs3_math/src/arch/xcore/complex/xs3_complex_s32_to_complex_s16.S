@@ -27,7 +27,7 @@ headroom_t xs3_complex_s32_to_complex_s16(
 
 #define STACK_VEC_TMP  (NSTACKWORDS-16)
 
-#define STACK_A_REAL    (
+#define STACK_B_SHR     (NSTACKWORDS+1)
 
 #define a_real      r0
 #define a_imag      r1
@@ -45,15 +45,15 @@ ASM_PREAMBLE(FUNCTION_NAME)
 
 FUNCTION_NAME:
         dualentsp NSTACKWORDS
-        std r4, r5, sp[0]
-        std r6, r7, sp[1]
+        std r4, r5, sp[1]
+        std r6, r7, sp[2]
     {   ldc r11, 0                              ;   ldc _28, 28                             }
-
+    sub b,b,4
     {   ldc r11, 16                             ;   vsetc r11                               }
     {   shr len, len, 2                         ;   shl tail, len, 1                        }
-    {   sub b_shr, b_shr, r11                   ;                                           }
-        ldaw r11, cp[vpu_vec_complex_ones]
-    {   zext tail, 3                            ;   mkmsk mask, 8                           }
+    {   mkmsk mask, 8                           ;   ldw b_shr, sp[STACK_B_SHR]              }
+    {   sub b_shr, b_shr, r11                   ;   zext tail, 3                            }
+        ldaw r11, cp[vpu_vec_complex_pos_j]
     {   mkmsk tail, tail                        ;   bf len, .L_loop_bot                     }
 
     .L_loop_top:
@@ -82,6 +82,7 @@ FUNCTION_NAME:
     vdepth16
     vdepth16
     vstrpv a_real[0], tail
+    add b, b, 4
     vlashr b[0], b_shr         
     vlmul r11[0]
     vdepth16
@@ -90,8 +91,8 @@ FUNCTION_NAME:
 
 
 .L_finish:
-        ldd r4, r5, sp[0]
-        ldd r6, r7, sp[1]
+        ldd r4, r5, sp[1]
+        ldd r6, r7, sp[2]
         retsp NSTACKWORDS
 
 ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS)

@@ -11,8 +11,10 @@
 
 #ifdef __xcore__
 #define WORD_ALIGNED __attribute__((aligned (4)))
+#define DWORD_ALIGNED __attribute__((aligned (8)))
 #else
 #define WORD_ALIGNED
+#define DWORD_ALIGNED
 #endif
 
 #ifndef DEBUG_ON

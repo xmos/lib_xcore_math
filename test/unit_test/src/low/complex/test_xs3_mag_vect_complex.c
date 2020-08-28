@@ -9,7 +9,7 @@
 
 #include "../src/low/vpu_helper.h"
 
-#include "../tst_common.h"
+#include "../../tst_common.h"
 
 #include "unity.h"
 
@@ -29,7 +29,7 @@ static char msg_buff[300];
     }} while(0)
 
 
-#if DEBUG_ON || 1
+#if DEBUG_ON || 0
 #undef DEBUG_ON
 #define DEBUG_ON    (1)
 #endif

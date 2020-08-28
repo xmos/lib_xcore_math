@@ -1,0 +1,399 @@
+
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
+
+#include "xs3_math.h"
+
+#include "../src/low/vpu_helper.h"
+
+#include "../../tst_common.h"
+
+#include "unity.h"
+
+
+static unsigned seed = 2314567;
+static char msg_buff[200];
+
+#define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
+    if((EXPECTED)!=(ACTUAL)) {                                        \
+      sprintf(msg_buff, "(test vector @ line %u)", (LINE_NUM));       \
+      TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
+    }} while(0)
+
+
+#if DEBUG_ON || 0
+#undef DEBUG_ON
+#define DEBUG_ON    (1)
+#endif
+
+
+static complex_s16_t mul_complex_s16(
+    int16_t b_re, int16_t b_im, 
+    int16_t c, right_shift_t sat)
+{
+    complex_s32_t p = {
+        ((int32_t)b_re) * c,
+        ((int32_t)b_im) * c,
+    };
+
+    complex_s16_t res = {
+        SAT(16)(ROUND_SHR(p.re, sat)),
+        SAT(16)(ROUND_SHR(p.im, sat)),
+    };
+
+    return res;
+}
+
+
+static complex_s32_t mul_complex_s32(
+    complex_s32_t b, 
+    int32_t c, 
+    right_shift_t b_shr, 
+    right_shift_t c_shr)
+{
+    int64_t bp_re = b.re;
+    int64_t bp_im = b.im;
+    int64_t cp = c;
+
+    bp_re = SAT(32)(ASHR(32)(bp_re, b_shr));
+    bp_im = SAT(32)(ASHR(32)(bp_im, b_shr));
+
+    cp = SAT(32)(ASHR(32)(cp, c_shr));
+
+    complex_s32_t res = {
+        SAT(32)(ROUND_SHR(bp_re * cp, 30)),
+        SAT(32)(ROUND_SHR(bp_im * cp, 30)),
+    };
+
+    return res;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+static void test_xs3_mul_vect_complex_s16_basic()
+{
+    PRINTF("%s...\n", __func__);
+
+    typedef struct {
+        struct {    complex_s16_t b;  
+                    int16_t c;  } value;
+        right_shift_t sat;
+        complex_s16_t expected;
+        unsigned line;
+    } test_case_t;
+
+    test_case_t casses[] = {
+        // value{ b{     re,      im},       c},   sat,  exp{     re,      im},    line num
+        {       {  { 0x0000,  0x0000},  0x0000},     0,     { 0x0000,  0x0000},    __LINE__},
+        {       {  { 0x0001,  0x0001},  0x0000},     0,     { 0x0000,  0x0000},    __LINE__},
+        {       {  { 0x0000,  0x0000},  0x0001},     0,     { 0x0000,  0x0000},    __LINE__},
+        {       {  { 0x0001,  0x0000},  0x0001},     0,     { 0x0001,  0x0000},    __LINE__},
+        {       {  { 0x0001,  0x0001},  0x0001},     0,     { 0x0001,  0x0001},    __LINE__},
+        {       {  { 0x0001,  0x0001}, -0x0002},     0,     {-0x0002, -0x0002},    __LINE__},
+        {       {  { 0x0010,  0x0020},  0x0030},     0,     { 0x0300,  0x0600},    __LINE__},
+        {       {  { 0x0100, -0x0100},  0x0100},     0,     { 0x7FFF, -0x7FFF},    __LINE__},
+        {       {  { 0x0100, -0x0100},  0x0100},     4,     { 0x1000, -0x1000},    __LINE__},
+    };
+
+    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+
+    const unsigned start_case = 0;
+
+    for(int v = start_case; v < N_cases; v++){
+        PRINTF("\ttest vector %d..\n", v);
+        
+        test_case_t* casse = &casses[v];
+
+        //Verify mul_complex_s16() is correct. It's used in other test cases.   
+        complex_s16_t tmp = mul_complex_s16(casse->value.b.re, casse->value.b.im, 
+                                            casse->value.c, casse->sat);
+                                            
+        TEST_ASSERT_EQUAL_MSG(casse->expected.re, tmp.re, casse->line);
+        TEST_ASSERT_EQUAL_MSG(casse->expected.im, tmp.im, casse->line);
+
+        unsigned lengths[] = {1, 4, 16, 32, 40 };
+        
+        for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
+            unsigned len = lengths[l];
+
+            headroom_t hr;
+            struct { 
+                int16_t real[40]; 
+                int16_t imag[40]; 
+            } A, B;
+
+            int16_t C[40];
+
+            xs3_set_vect_s16(A.real, 0xCC, len);
+            xs3_set_vect_s16(A.imag, 0xCC, len);
+            xs3_set_vect_s16(B.real, casse->value.b.re, len);
+            xs3_set_vect_s16(B.imag, casse->value.b.im, len);
+            xs3_set_vect_s16(C, casse->value.c, len);
+
+            hr = xs3_mul_vect_complex_s16(A.real, A.imag, 
+                                          B.real, B.imag, 
+                                          C, len, casse->sat);
+
+            for(int i = 0; i < len; i++){
+                TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[i], casse->line);
+                TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[i], casse->line);
+            }
+
+            headroom_t exp_hr = xs3_headroom_vect_complex_s16(A.real, A.imag, len);
+            TEST_ASSERT_EQUAL_MSG(exp_hr, hr, casse->line);
+
+            memcpy(&A, &B, sizeof(A));
+            hr = xs3_mul_vect_complex_s16(A.real, A.imag,
+                                          A.real, A.imag,
+                                          C, len, casse->sat);
+
+            for(int i = 0; i < len; i++){
+                TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[i], casse->line);
+                TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[i], casse->line);
+            }
+
+            exp_hr = xs3_headroom_vect_complex_s16(A.real, A.imag, len);
+            TEST_ASSERT_EQUAL_MSG(exp_hr, hr, casse->line);
+        }
+    }
+}
+
+
+
+
+#define MAX_LEN     100
+#define REPS        IF_QUICK_TEST(20, 100)
+static void test_xs3_mul_vect_complex_s16_random()
+{
+    PRINTF("%s...\n", __func__);
+    seed = 0xAD04D98D;
+
+    headroom_t hr;
+    
+    struct { 
+        int16_t real[MAX_LEN]; 
+        int16_t imag[MAX_LEN]; 
+    } A, B;
+
+    int16_t C[MAX_LEN];
+
+    for(int v = 0; v < REPS; v++){
+
+        PRINTF("\trepetition % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
+        
+        for(int i = 0; i < len; i++){
+            unsigned shr = pseudo_rand_uint32(&seed) % 8;
+            B.real[i] = pseudo_rand_int16(&seed) >> shr;
+            B.imag[i] = pseudo_rand_int16(&seed) >> shr;
+            C[i] = pseudo_rand_int16(&seed) >> shr;
+        }
+
+        int sat = (pseudo_rand_uint32(&seed) % 10);
+        
+        hr = xs3_mul_vect_complex_s16(A.real, A.imag, 
+                                      B.real, B.imag, 
+                                      C, len, sat);
+
+        headroom_t hrre, hrim;
+
+        for(int i = 0; i < len; i++){
+            complex_s16_t expected = mul_complex_s16(B.real[i], B.imag[i], C[i], sat);
+            
+            TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
+            TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
+        }
+
+        TEST_ASSERT_EQUAL_MSG( xs3_headroom_vect_complex_s16(A.real,A.imag,len),  hr, v);
+        
+        memcpy(&A, &B, sizeof(A));
+        hr = xs3_mul_vect_complex_s16(A.real, A.imag, 
+                                      A.real, A.imag, 
+                                      C, len, sat);
+
+        for(int i = 0; i < len; i++){
+            complex_s16_t expected = mul_complex_s16(B.real[i], B.imag[i], C[i], sat);
+            TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
+            TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
+        }
+
+        TEST_ASSERT_EQUAL_MSG( xs3_headroom_vect_complex_s16(A.real,A.imag,len),  hr, v);
+    }
+}
+#undef MAX_LEN
+#undef REPS
+
+
+
+
+
+
+
+
+
+
+static void test_xs3_mul_vect_complex_s32_basic()
+{
+    PRINTF("%s...\n", __func__);
+
+    typedef struct {
+        struct {    complex_s32_t b;  
+                    int32_t c;  } value;
+        struct {    right_shift_t b; 
+                    right_shift_t c; } shr;
+        complex_s32_t expected;
+        unsigned line;
+    } test_case_t;
+
+    test_case_t casses[] = {
+        // value{ b{         re,          im},           c}, shr{  b,  c},  exp{         re,          im},    line num
+        {       {  { 0x00000000,  0x00000000},  0x00000000},    {  0,  0},     { 0x00000000,  0x00000000},    __LINE__},
+        {       {  { 0x00000001,  0x00000001},  0x00000000},    {  0,  0},     { 0x00000000,  0x00000000},    __LINE__},
+        {       {  { 0x00000000,  0x00000000},  0x00000001},    {  0,  0},     { 0x00000000,  0x00000000},    __LINE__},
+        {       {  { 0x00000100,  0x00000000},  0x40000000},    {  0,  0},     { 0x00000100,  0x00000000},    __LINE__},
+        {       {  { 0x00000100,  0x00000100},  0x40000000},    {  0,  0},     { 0x00000100,  0x00000100},    __LINE__},
+        {       {  { 0x00000100,  0x00000100},  0x20000000},    {  0,  0},     { 0x00000080,  0x00000080},    __LINE__},
+        {       {  { 0x00000001,  0x00000001}, -0x80000000},    {  0,  0},     {-0x00000002, -0x00000002},    __LINE__},
+        {       {  { 0x00000001,  0x00000001}, -0x80000000},    {  0,  1},     {-0x00000001, -0x00000001},    __LINE__},
+        {       {  { 0x00000001,  0x00000001}, -0x80000000},    { -1,  0},     {-0x00000004, -0x00000004},    __LINE__},
+        {       {  { 0x05000000,  0x0A000000},  0x40000000},    {  8,  0},     { 0x00050000,  0x000A0000},    __LINE__},
+        {       {  { 0x05000000,  0x0A000000},  0x40000000},    {  0,  8},     { 0x00050000,  0x000A0000},    __LINE__},
+        {       {  { 0x05000000,  0x0A000000},  0x40000000},    {  4, 12},     { 0x00000500,  0x00000A00},    __LINE__},
+    };
+
+    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+
+    const unsigned start_case = 3;
+
+    for(int v = start_case; v < N_cases; v++){
+        PRINTF("\ttest vector %d..\n", v);
+        
+        test_case_t* casse = &casses[v];
+
+        //Verify mul_complex_s32() is correct. It's used in other test cases.
+        complex_s32_t tmp = mul_complex_s32(casse->value.b, casse->value.c, casse->shr.b, casse->shr.c);
+                                            
+        TEST_ASSERT_EQUAL_MSG(casse->expected.re, tmp.re, casse->line);
+        TEST_ASSERT_EQUAL_MSG(casse->expected.im, tmp.im, casse->line);
+
+        unsigned lengths[] = {1, 4, 16, 32, 40 };
+        
+        for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
+            unsigned len = lengths[l];
+
+            headroom_t hr;
+
+            complex_s32_t A[40];
+            complex_s32_t B[40];
+            int32_t C[40];
+
+            xs3_set_vect_complex_s32(A, 0xCC, 0xCC, len);
+            xs3_set_vect_complex_s32(B, casse->value.b.re, casse->value.b.im, len);
+            xs3_set_vect_s32(C, casse->value.c, len);
+
+            hr = xs3_mul_vect_complex_s32(A, B, C, len, casse->shr.b, casse->shr.c);
+
+            for(int i = 0; i < len; i++){
+                TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[i].re, casse->line);
+                TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[i].im, casse->line);
+            }
+
+            headroom_t exp_hr = xs3_headroom_vect_complex_s32(A, len);
+            TEST_ASSERT_EQUAL_MSG(exp_hr, hr, casse->line);
+
+            memcpy(&A, &B, sizeof(A));
+            hr = xs3_mul_vect_complex_s32(A, A, C, len, casse->shr.b, casse->shr.c);
+
+            for(int i = 0; i < len; i++){
+                TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[i].re, casse->line);
+                TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[i].im, casse->line);
+            }
+
+            exp_hr = xs3_headroom_vect_complex_s32(A, len);
+            TEST_ASSERT_EQUAL_MSG(exp_hr, hr, casse->line);
+        }
+    }
+}
+
+
+
+
+
+
+#define MAX_LEN     100
+#define REPS        IF_QUICK_TEST(20, 100)
+static void test_xs3_mul_vect_complex_s32_random()
+{
+    PRINTF("%s...\n", __func__);
+    seed = 0xAD04D98D;
+
+    headroom_t hr;
+    
+    complex_s32_t A[MAX_LEN];
+    complex_s32_t B[MAX_LEN];
+    int32_t C[MAX_LEN];
+
+    for(int v = 0; v < REPS; v++){
+
+        PRINTF("\trepetition % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
+        
+        for(int i = 0; i < len; i++){
+            unsigned shr = pseudo_rand_uint32(&seed) % 8;
+            B[i].re = pseudo_rand_int32(&seed) >> shr;
+            B[i].im = pseudo_rand_int32(&seed) >> shr;
+            C[i] = pseudo_rand_int32(&seed) >> shr;
+        }
+
+        int b_shr = (pseudo_rand_uint32(&seed) % 10);
+        int c_shr = (pseudo_rand_uint32(&seed) % 10);
+        
+        hr = xs3_mul_vect_complex_s32(A, B, C, len, b_shr, c_shr);
+
+        for(int i = 0; i < len; i++){
+            complex_s32_t expected = mul_complex_s32(B[i], C[i], b_shr, c_shr);
+            TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
+            TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
+        }
+        TEST_ASSERT_EQUAL_MSG(  xs3_headroom_vect_complex_s32(A, len),  hr, v);
+        
+        memcpy(&A, &B, sizeof(A));
+        hr = xs3_mul_vect_complex_s32(A, A, C, len, b_shr, c_shr);
+
+        for(int i = 0; i < len; i++){
+            complex_s32_t expected = mul_complex_s32(B[i], C[i], b_shr, c_shr);
+            TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
+            TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
+        }
+        TEST_ASSERT_EQUAL_MSG(  xs3_headroom_vect_complex_s32(A, len),  hr, v);
+    }
+}
+#undef MAX_LEN
+#undef REPS
+
+
+
+void test_xs3_mul_vect_complex()
+{
+    SET_TEST_FILE();
+
+    RUN_TEST(test_xs3_mul_vect_complex_s16_basic);
+    RUN_TEST(test_xs3_mul_vect_complex_s16_random);
+
+    RUN_TEST(test_xs3_mul_vect_complex_s32_basic);
+    RUN_TEST(test_xs3_mul_vect_complex_s32_random);
+}

@@ -19,6 +19,7 @@ extern const complex_s32_t vpu_vec_complex_neg_j[4];
 extern const complex_s32_t vpu_vec_complex_neg_ones[4];
 
 extern const int32_t vpu_vec_ones_s32[8];
+extern const int32_t vpu_vec_neg_ones_s32[8];
 
 extern const int16_t vpu_vec_0x0001[16];
 extern const int16_t vpu_vec_0x4000[16];

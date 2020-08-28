@@ -25,7 +25,7 @@ FUNCTION_NAME:
     {   std r4, r5, sp[0]                                                                   }
     {   add r2, r2, 1                           ;   shr r1, r1, 1                           }
     {   shl r1, r1, 1                           ;   bu .L_loop                              }
-
+    
 .align 16
 .L_loop:   
     {   bitrev r3, r1                           ;   shl r11, r1, r2                         }

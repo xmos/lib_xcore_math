@@ -17,7 +17,8 @@ headroom_t xs3_mul_vect_complex_s32(
 
 #define FUNCTION_NAME xs3_mul_vect_complex_s32
 
-#define NSTACKWORDS     (10+8)
+#define NSTACKVECS      (2)
+#define NSTACKWORDS     (10+8*NSTACKVECS)
 
 #define STACK_B_SHR     (NSTACKWORDS+1)
 #define STACK_C_SHR     (NSTACKWORDS+2)
@@ -63,10 +64,10 @@ FUNCTION_NAME:
     
             vlashr c[0], c_shr 
             vstrpv vec_tmp[0], r11
-            ldd tmpA, tmpB, sp[(STACK_VEC_TMP/2) + 0]
-            std tmpA, tmpA, sp[(STACK_VEC_C1/2) + 0]
-            std tmpB, tmpB, sp[(STACK_VEC_C1/2) + 1]
-            ldd tmpA, tmpB, sp[(STACK_VEC_TMP/2) + 1]
+            ldd tmpB, tmpA, sp[(STACK_VEC_TMP/2) + 0]
+            std tmpA, tmpA, sp[(STACK_VEC_C1/2)  + 0]
+            std tmpB, tmpB, sp[(STACK_VEC_C1/2)  + 1]
+            ldd tmpB, tmpA, sp[(STACK_VEC_TMP/2) + 1]
         {   add c, c, 8                             ;   sub length, length, 1                   }
             std tmpA, tmpA, sp[(STACK_VEC_C1/2) + 2]
             std tmpB, tmpB, sp[(STACK_VEC_C1/2) + 3]
@@ -84,12 +85,12 @@ FUNCTION_NAME:
     {                                           ;   vstd vec_tmp[0]                         }
         vlashr c[0], c_shr
         vstrpv vec_tmp[0], length
-        ldd tmpA, tmpB, sp[(STACK_VEC_TMP/2) + 0]
-        std tmpA, tmpA, sp[(STACK_VEC_C1/2) + 0]
-        std tmpB, tmpB, sp[(STACK_VEC_C1/2) + 1]
-        ldd tmpA, tmpB, sp[(STACK_VEC_TMP/2) + 1]
-        std tmpA, tmpA, sp[(STACK_VEC_C1/2) + 2]
-        std tmpB, tmpB, sp[(STACK_VEC_C1/2) + 3]
+        ldd tmpB, tmpA, sp[(STACK_VEC_TMP / 2) + 0]
+        std tmpA, tmpA, sp[(STACK_VEC_C1  / 2) + 0]
+        std tmpB, tmpB, sp[(STACK_VEC_C1  / 2) + 1]
+        ldd tmpB, tmpA, sp[(STACK_VEC_TMP / 2) + 1]
+        std tmpA, tmpA, sp[(STACK_VEC_C1  / 2) + 2]
+        std tmpB, tmpB, sp[(STACK_VEC_C1  / 2) + 3]
         vlashr b[0], b_shr
     {                                           ;   vlmul r11[0]                            }
         vstrpv a[0], length

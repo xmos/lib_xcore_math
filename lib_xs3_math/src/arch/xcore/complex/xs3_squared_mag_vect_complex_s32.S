@@ -14,25 +14,22 @@ headroom_t xs3_squared_mag_vect_complex_s32(
 */
 
 
-#define NSTACKWORDS     (10+8)
+#define NSTACKWORDS     (8+8)
 
 #define a               r0 
 #define b               r1 
 #define length          r2
 #define b_shr           r3
 #define vec_count       r4
-#define _32             r5
-#define _28             r6
-#define vec_tmp         r7
-#define tmpA            r8
-#define tmpB            r9
-#define tmpC            r10
+#define _16             r5
+#define vec_tmp         r6
+#define tail_mask       r7
+#define vec_ones        r8
+#define tmpA            r9
+#define tmpB            r10
 
 
 #define STACK_VEC_TMP   (NSTACKWORDS-8)
-
-#define STACK_A         8
-#define STACK_LENGTH    9
 
 #define FUNCTION_NAME xs3_squared_mag_vect_complex_s32
     
@@ -45,60 +42,49 @@ FUNCTION_NAME:
     std r8, r9, sp[3]
     {                                           ;   stw r10, sp[1]                          }
 
-#define tail_mask       length
-
-    {                                           ;   stw a, sp[STACK_A]                      }
-    {                                           ;   stw length, sp[STACK_LENGTH]            }
-
-    {   ldc _32, 32                             ;   shr vec_count, length, 2                }
+    {   ldc _16, 16                             ;   shr vec_count, length, 2                }
     {   ldc r11, 0                              ;   shl tail_mask, length, 3                }
     {   zext tail_mask, 5                       ;   vsetc r11                               }
 
-
-    {   ldaw vec_tmp, sp[STACK_VEC_TMP]         ;   ldc _28, 28                             }
+        ldaw r11, cp[vpu_vec_complex_ones]                                                  
+    {   ldaw vec_tmp, sp[STACK_VEC_TMP]         ;   mov vec_ones, r11                       }
     {   mkmsk r11, 32                           ;   bf vec_count, .L_loop_bot               }
 
     .L_loop_top:
             vlashr b[0], b_shr
             vstrpv vec_tmp[0], r11
-        {   add b, b, _32                           ;   vldc vec_tmp[0]                         }
-        {   sub vec_count, vec_count, 1             ;   vldd vec_tmp[0]                         }
-        {   mkmsk tmpA, 4                           ;   vcmcr                                   } 
-            vstrpv a[0], tmpA
-        {   sub a, a, 4                             ;   shl tmpA, tmpA, 8                       }
-            vstrpv a[0], tmpA
-        {   sub a, a, 4                             ;   shl tmpA, tmpA, 8                       }
-            vstrpv a[0], tmpA
-        {   sub a, a, 4                             ;   shl tmpA, tmpA, 8                       }
-            vstrpv a[0], tmpA
-        {   add a, a, _28                           ;   bt vec_count, .L_loop_top               }
-
-        {                                           ;   ldw length, sp[STACK_LENGTH]            }
-        {   shr vec_count, length, 3                ;   ldw r11, sp[STACK_A]                    }
-
-        .L_hr_loop_top:
-
-            {   sub vec_count, vec_count, 1             ;   vldr r11[0]                             }
-            {   add r11, r11, _32                       ;   vstr r11[0]                             }
-            {                                           ;   bt vec_count, .L_hr_loop_top            }        
+        {   add b, b, _16                           ;   vldc vec_tmp[0]                         }
+        {   add b, b, _16                           ;   vldd vec_tmp[0]                         }
+        {   sub vec_count, vec_count, 1             ;   vcmcr                                   }
+        { /* zero out imag part so that we don't */ ;   vlmul vec_ones[0]                       }
+        { /* clobber the headroom counter        */ ;   vstr vec_tmp[0]                         }
+        {                                           ;   ldw tmpA, vec_tmp[0]                    }
+        {                                           ;   ldw tmpB, vec_tmp[2]                    }
+            std tmpB, tmpA, a[0]
+        {                                           ;   ldw tmpA, vec_tmp[4]                    }
+        {                                           ;   ldw tmpB, vec_tmp[6]                    }
+            std tmpB, tmpA, a[1]
+        {   add a, a, _16                           ;   bt vec_count, .L_loop_top               }
 
     .L_loop_bot:
-
-    {                                           ;   bf tail_mask, .L_done                   }
-    {                                           ;   vclrdr                                  }
-    {                                           ;   vstd vec_tmp[0]                         }
+    {   zext length, 2                          ;   bf tail_mask, .L_done                   }
+    {   shl length, length,1                    ;   vclrdr                                  }
+    {   mkmsk tail_mask, tail_mask              ;   vstd vec_tmp[0]                         }
         vlashr b[0], b_shr
         vstrpv vec_tmp[0], tail_mask
-    {                                           ;   vldd vec_tmp[0]                         }
-    {                                           ;   vldc vec_tmp[0]                         }
+    {   ldc tmpA, 6                             ;   vldd vec_tmp[0]                         }
+    {   sub length, tmpA, length                ;   vldc vec_tmp[0]                         }
     {                                           ;   vcmcr                                   }
-        vstrpv a[0], tail_mask
-        vstrpv vec_tmp[0], tail_mask
-    {                                           ;   vldd vec_tmp[0]                         }
-    {                                           ;   vstd vec_tmp[0]                         }
-
+    {                                           ;   vlmul vec_ones[0]                       }
+    {                                           ;   vstr vec_tmp[0]                         }
+    {                                           ;   bru length                              }
+    {                                           ;   ldw r11, vec_tmp[4]                     }
+    {                                           ;   stw r11, a[2]                           }
+    {                                           ;   ldw r11, vec_tmp[2]                     }
+    {                                           ;   stw r11, a[1]                           }
+    {                                           ;   ldw r11, vec_tmp[0]                     }
+    {                                           ;   stw r11, a[0]                           }
 .L_done:
-
         ldd r4, r5, sp[1]
         ldd r6, r7, sp[2]
         ldd r8, r9, sp[3]

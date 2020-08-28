@@ -6,11 +6,11 @@
 /*  
 
 
-complex_s32_t xs3_sum_complex_s32(
+void xs3_sum_complex_s32(
+    const complex_s64_t* res,
     const complex_s32_t* b,
     const unsigned length,
-    const right_shift_t b_shr,
-    const right_shift_t sat);
+    const right_shift_t b_shr);
 
 
 */
@@ -19,15 +19,16 @@ complex_s32_t xs3_sum_complex_s32(
 #define NSTACKWORDS     (6+(8*NSTACKVECS))
 
 #define b           r0
-#define length      r1
-#define b_shr       r2
-#define sat         r3
-#define _32         r4
-#define tmp         r5
-#define tail_bytes  r6
+#define b_shr       r1
+#define length      r2
+#define _32         r3
+#define tmp         r4
+#define tail_bytes  r5
 
 #define STACK_VEC_ZEROS     (NSTACKWORDS- 8)
 #define STACK_VEC_TMP       (NSTACKWORDS-16)
+
+#define STACK_RES   (1)
 
 #define FUNCTION_NAME xs3_sum_complex_s32
     
@@ -39,22 +40,24 @@ FUNCTION_NAME:
         std r4, r5, sp[1]
         std r6, r7, sp[2]
 
-        ldc tmp, 0x40
-    {   shl tmp, tmp, 24                        ;   shl tail_bytes, length, 3               }
-    {   shr tmp, tmp, b_shr                     ;   zext tail_bytes, 5                      }
+    {   mov b, r1                               ;   stw r0, sp[STACK_RES]                   }
+
+
+    {   mov b_shr, r3                           ;   shl tail_bytes, length, 3               }
+    {                                           ;   zext tail_bytes, 5                      }
 
     {   ldaw r11, sp[STACK_VEC_ZEROS]           ;   vclrdr                                  }
-    {   ldaw r11, sp[STACK_VEC_TMP]             ;   vstd r11[0]                             }
-
-        std tmp, tmp, r11[0]
-        std tmp, tmp, r11[1]
-        std tmp, tmp, r11[2]
-        std tmp, tmp, r11[3]
-
-    {   ldc r11, 0                              ;   vldc r11[0]                             }
+    {   ldc r11, 0                              ;   vstd r11[0]                             }
+    {   lss tmp, b_shr, r11                     ;   vsetc r11                               }
+    {   ldaw tmp, sp[STACK_VEC_TMP]             ;   ecallt tmp /*Cannot be negative shift*/ }
+        ldaw r11, cp[vpu_vec_ones_s32]
+        vlashr r11[0], b_shr
+    {   ldc r11, 0                              ;   vstr tmp[0]                             }
+    {   shr length, length, 2                   ;   vldc tmp[0]                             }
     {   ldc _32, 32                             ;   vsetc r11                               }
+    {                                           ;   vclrdr                                  }
 
-    {   shr length, length, 2                   ;   bf length, .L_loop_bot                  }
+    {                                           ;   bf length, .L_loop_bot                  }
 
     .L_loop_top:
 
@@ -63,28 +66,51 @@ FUNCTION_NAME:
 
     .L_loop_bot:
 
-    {   ldaw r11, sp[STACK_VEC_ZEROS]           ;                                           }
-    {   sub r11, r11, tail_bytes                ;   shl tmp, sat, 16                        }
-    {   zext sat, 16                            ;   vldc r11[0]                             }
-    {   or sat, sat, tmp                        ;   vlmacc b[0]                             }
+    {   ldaw r11, sp[STACK_VEC_ZEROS]           ;   bf tail_bytes, .L_get_res               }
+    {   sub r11, r11, tail_bytes                ;                                           }
+    {                                           ;   vldc r11[0]                             }
+    {   ldaw r11, sp[STACK_VEC_ZEROS]           ;   vlmacc b[0]                             }
+        
 
-        std sat, sat, r11[0]
-        std sat, sat, r11[1]
-        std sat, sat, r11[2]
-        std sat, sat, r11[3]
+/*  We've got 8 40-bit accumulators. Lower 32 bits are in vR, upper 8 in vD.
+    vD does appear to sign-extend the values up to 64 bits.
 
-    {   ldaw r11, sp[STACK_VEC_TMP]             ;   vlsat r11[0]                            }
+    (vD:vR)[k] ==  ((int32_t)vD[k])*(2^32) + ((uint32_t)vR[k]) */
 
-    {                                           ;   vstr r11[0]                             }
-    {                                           ;   ldw tmp, sp[STACK_VEC_TMP+0]            }
-    {   add tmp, tmp, r11                       ;   ldw r11, sp[STACK_VEC_TMP+2]            }
-    {   add tmp, tmp, r11                       ;   ldw r11, sp[STACK_VEC_TMP+4]            }
-    {   add tmp, tmp, r11                       ;   ldw r11, sp[STACK_VEC_TMP+6]            }
-    {   add r0, tmp, r11                        ;   ldw tmp, sp[STACK_VEC_TMP+1]            }
-    {   add tmp, tmp, r11                       ;   ldw r11, sp[STACK_VEC_TMP+3]            }
-    {   add tmp, tmp, r11                       ;   ldw r11, sp[STACK_VEC_TMP+5]            }
-    {   add tmp, tmp, r11                       ;   ldw r11, sp[STACK_VEC_TMP+7]            }
-    {   add r1, tmp, r11                        ;                                           }
+#define real_hi     r0
+#define real_lo     r1
+#define imag_hi     r2
+#define imag_lo     r3
+#define num         r5
+#define tmp_re      r6
+#define tmp_im      r7
+
+.L_get_res:
+    {   ldc real_hi, 0                          ;   ldc imag_hi, 0                          }
+    {   ldc num, 1                              ;   vstr tmp[0]                             }
+        ldd imag_lo, real_lo, tmp[0]
+        ldd tmp_im, tmp_re, tmp[1]
+        maccu real_hi, real_lo, num, tmp_re
+        maccu imag_hi, imag_lo, num, tmp_im
+        ldd tmp_im, tmp_re, tmp[2]
+        maccu real_hi, real_lo, num, tmp_re
+        maccu imag_hi, imag_lo, num, tmp_im
+        ldd tmp_im, tmp_re, tmp[3]
+        maccu real_hi, real_lo, num, tmp_re
+        maccu imag_hi, imag_lo, num, tmp_im
+    {                                           ;   vfttf                                   }
+    {   ldc num, 2                              ;   vstd r11[0]                             }
+        ldd tmp_im, tmp_re, r11[0]
+    {   add real_hi, real_hi, tmp_re            ;   add imag_hi, imag_hi, tmp_im            }
+    {   shr tmp_re, real_lo, 1                  ;   zext real_lo, 1                         }
+    {   shr tmp_im, imag_lo, 1                  ;   zext imag_lo, 1                         }
+        maccs real_hi, real_lo, num, tmp_re
+        maccs imag_hi, imag_lo, num, tmp_im
+    {                                           ;   ldw tmp, sp[STACK_RES]                  }
+        std real_hi, real_lo, tmp[0]
+        std imag_hi, imag_lo, tmp[1]
+
+    
 
 .L_done:
         ldd r4, r5, sp[1]

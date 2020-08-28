@@ -9,6 +9,15 @@
 extern "C" {
 #endif
 
+
+/** 
+ * Represents a complex number with a 64-bit real part and 64-bit imaginary part.
+ */
+typedef struct {
+    int64_t re;
+    int64_t im;
+} complex_s64_t;
+
 /** 
  * Represents a complex number with a 32-bit real part and 32-bit imaginary part.
  */

@@ -6,6 +6,10 @@
 #include "../vpu_helper.h"
 
 
+/////////////////////////////////////////////
+/////  Rotation Tables (for Magnitude)  /////
+/////////////////////////////////////////////
+
 const unsigned rot_table32_rows = 30;
 
 const complex_s32_t rot_table32[30][4] = {
@@ -74,12 +78,15 @@ const int16_t rot_table16[14][2][16] = {
 };
 
 
+/////////////////////////////////////
+/////       Magnitude           /////
+/////////////////////////////////////
 
 WEAK_FUNC
 headroom_t xs3_mag_vect_complex_s16(
-    int16_t* a,
-    const int16_t* b_real,
-    const int16_t* b_imag,
+    int16_t a[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
     const unsigned length,
     const right_shift_t b_shr,
     const int16_t* rot_table,
@@ -101,8 +108,6 @@ headroom_t xs3_mag_vect_complex_s16(
                 rot_table[32 * iter],
                 rot_table[32 * iter + 16 ],
             };
-
-            // printf("%d:\t%ld + i*%ld\n", iter, rot.re, rot.im);
 
             int32_t q1 = B.re * rot.re;
             int32_t q2 =-B.im * rot.im;
@@ -127,8 +132,8 @@ headroom_t xs3_mag_vect_complex_s16(
 
 WEAK_FUNC
 headroom_t xs3_mag_vect_complex_s32(
-    int32_t* a,
-    const complex_s32_t* b,
+    int32_t a[],
+    const complex_s32_t b[],
     const unsigned length,
     const right_shift_t b_shr,
     const complex_s32_t* rot_table,
@@ -172,4 +177,53 @@ headroom_t xs3_mag_vect_complex_s32(
     }
 
     return xs3_headroom_vect_s32( (int32_t*) a, length);
+}
+
+
+/////////////////////////////////////
+/////  Squared Magnitude        /////
+/////////////////////////////////////
+
+WEAK_FUNC
+headroom_t xs3_squared_mag_vect_complex_s16(
+    int16_t a[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const unsigned length,
+    const right_shift_t sat)
+{
+    for(int k = 0; k < length; k++){
+        
+        complex_s32_t B = { b_real[k], b_imag[k] };
+
+        int32_t acc = B.re*B.re + B.im*B.im;
+        a[k] = SAT(16)(ROUND_SHR(acc, sat));
+    }
+
+    return xs3_headroom_vect_s16(a, length);
+}
+
+
+WEAK_FUNC
+headroom_t xs3_squared_mag_vect_complex_s32(
+    int32_t a[],
+    const complex_s32_t b[],
+    const unsigned length,
+    const right_shift_t b_shr)
+{
+
+    for(int k = 0; k < length; k++){
+        
+        complex_s32_t B = {
+            ASHR(32)(b[k].re, b_shr), 
+            ASHR(32)(b[k].im, b_shr),
+        };
+
+        B.re = SAT(32)(ROUND_SHR(((int64_t)B.re)*B.re, 30));
+        B.im = SAT(32)(ROUND_SHR(((int64_t)B.im)*B.im, 30));
+
+        a[k] = B.re + B.im;
+    }
+
+    return xs3_headroom_vect_s32(a, length);
 }

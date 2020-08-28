@@ -30,7 +30,7 @@ complex_s16_t xs3_sum_complex_s16(
 #define STACK_LENGTH        6
 #define STACK_SAT           7
 
-#define FUNCTION_NAME xs3_sum_complex_s16
+#define FUNCTION_NAME xs3_sum_complex_s16_OLLD //why did I think I needed to write this in assembly?
     
 ASM_PREAMBLE(FUNCTION_NAME)
 
