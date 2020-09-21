@@ -1,5 +1,5 @@
 lib_xs3_math
-=======================
+============
 
 Library Info
 ############
@@ -14,22 +14,22 @@ This library is a work in progress and is likely to change significantly in the 
 Repository Structure
 --------------------
 
-* `/lib_xs3_math/` - The actual ``lib_xs3_math`` library directory.
+* `</lib_xs3_math/>`_ - The actual ``lib_xs3_math`` library directory.
 
-  * `api/` - Headers containing the public API for ``lib_xs3_math``.
-  * `doc/` - Library documentation source (for non-embedded documentation) and build directory.
-  * `script/` - Scripts used for source generation.
-  * `src/` - Library source code.
+  * `api/ </lib_xs3_math/api/>`_ - Headers containing the public API for ``lib_xs3_math``.
+  * `doc/ </lib_xs3_math/doc/>`_ - Library documentation source (for non-embedded documentation) and build directory.
+  * `script/ </lib_xs3_math/script/>`_ - Scripts used for source generation.
+  * `src/ </lib_xs3_math/src/>`_ - Library source code.
 
-    * `arch/` - Architecture specific (Assembly) source files.
-    * `high/` - Source files for high-level API.
-    * `low/` - Source files for low-level API.
+    * `arch/ </lib_xs3_math/src/arch/>`_ - Architecture specific (Assembly) source files.
+    * `high/ </lib_xs3_math/src/high/>`_ - Source files for high-level API.
+    * `low/ </lib_xs3_math/src/low/>`_- Source files for low-level API.
 
-* `/test/` - Unit test projects for ``lib_xs3_math``.
+* `/test/ </lib_xs3_math/test/>`_ - Unit test projects for ``lib_xs3_math``.
 
-  * `fft_test` - FFT unit tests project.
-  * `shared` - Some files shared by both unit test projects.
-  * `unit_test` - Vectorized arithmetic unit test project.
+  * `fft_test/ </lib_xs3_math/test/fft_test/>`_ - FFT unit tests project.
+  * `shared/ </lib_xs3_math/test/shared/>`_ - Some files shared by both unit test projects.
+  * `unit_test/ </lib_xs3_math/test/unit_test/>`_ - Vectorized arithmetic unit test project.
 
 
 Requirements
@@ -76,52 +76,66 @@ No specific build system is required to include ``lib_xs3_math`` in your own pro
 
 When including this library in your own project,
 
-* `lib_xs3_math/api` should be added as an include directory.
-* All ``.c`` and ``.S`` files in `lib_xs3_math/src` should be compiled.
+* `</lib_xs3_math/api/>`_ should be added as an include directory.
+* All ``.c`` and ``.S`` files in `/lib_xs3_math/src </lib_xs3_math>`_ should be compiled.
 
-Some build-time configuration of the library is possible by using certain global defines. See `nn_config.h` and its associated documentation for more information.
+Some build-time configuration of the library is possible by using certain global defines. See `xs3_math_conf.h </lib_xs3_math/api/xs3_math_conf.h>`_ and its associated documentation for more information.
 
 When using Make, some library source files are auto-generated at build time, in particular, ``xs3_fft_lut.c`` and its companion header ``xs3_fft_lut.h``. Python 3 is required to accomplish this.
 
-If not using Make, you can generate those files manually and include them in your own application, making sure that the ``xs3_fft_lut.h`` header file is in the include path for the ``lib_xs3_math`` source.
+If not using Make, you can generate those files manually with `this Python script </lib_xs3_math/script/gen_fft_table.py>`_ and include them in your own application, making sure that the ``xs3_fft_lut.h`` header file is in the include path for the ``lib_xs3_math`` source.
 
-From user code, ``lib_xs3_math`` API functions can be accessed by including ``xs3_math.h``.
+From user code, ``lib_xs3_math`` API functions can be accessed by including `xs3_math.h </lib_xs3_math/api/xs3_math.h>`_.
 
 Unit Tests
-..........
+----------
 
 This project uses GNU Make to build the unit test applications. Both unit test projects currently target the xCORE.ai explorer board.
 
 Arithmetic Unit Tests
 *********************
 
-This application runs unit tests for the various 16- and 32-bit vectorized arithmetic functions. This application is located at `/test/unit_test/`.
+This application runs unit tests for the various 16- and 32-bit vectorized arithmetic functions. This application is located at `</test/unit_test/>`_.
 
- cd test/unit_test
+::
+
+    cd test/unit_test
 
 To build the application, use ``make``:
 
- make all
+::
+
+    make all
 
 To run the unit tests on the explorer board (after ensuring that the hardware is connected and drivers properly installed):
 
- xrun --io bin/xcore/unit_test.xe
+::
+
+    xrun --io bin/xcore/unit_test.xe
 
 To run the unit tests in the software simulator:
 
- xsim bin/xcore/unit_test.xe
+::
+
+    xsim bin/xcore/unit_test.xe
 
 Note that running the unit tests in the simulator may be *very* slow. To run more quickly (by reducing the number of iterations of certain pseudorandom tests), the ``QUICK_TEST=1`` option can be used:
 
- make all QUICK_TEST=1
+::
+
+    make all QUICK_TEST=1
 
 Assembly implementations of low-level functions will be preferred for xCORE where they exist. All low-level API functions written in xCORE Assembly have pure C counterparts which (*should*) give identical results. When debugging a problem, it may sometimes be useful to use the C implementations instead. To avoid compiling the ``.S`` Assembly files in ``lib_xs3_math``, the ``NO_ASM=1`` option can be used:
 
- make all NO_ASM=1
+::
 
-The unit tests can also be compiled to run on the host system by using the ``PLATFORM=x86`` option
+    make all NO_ASM=1
 
- make all PLATFORM=x86
+The unit tests can also be compiled to run on the host system by using the ``PLATFORM=x86`` option:
+
+::
+
+    make all PLATFORM=x86
 
 which will leave a binary in ``bin/x86/``.
 
@@ -129,33 +143,47 @@ which will leave a binary in ``bin/x86/``.
 FFT Unit Tests
 **************
 
-This application runs all unit tests associated with the behavior of the library's FFT. This application is located at `/test/fft_test/`.
+This application runs all unit tests associated with the behavior of the library's FFT. This application is located at `</test/fft_test/>`_.
 
- cd test/fft_test
+::
+
+    cd test/fft_test
 
 To build the application, use ``make``:
 
- make all
+::
+
+    make all
 
 To run the FFT unit tests on the explorer board (after ensuring that the hardware is connected and drivers properly installed):
 
- xrun --io bin/xcore/fft_test.xe
+::
+
+    xrun --io bin/xcore/fft_test.xe
 
 To run the FFT unit tests in the software simulator:
 
- xsim bin/xcore/fft_test.xe
+::
+
+    xsim bin/xcore/fft_test.xe
 
 Note that running the FFT unit tests in the simulator may be *very* slow. To run more quickly (by reducing the number of iterations of certain pseudorandom tests), the ``QUICK_TEST=1`` option can be used:
 
- make all QUICK_TEST=1
+::
+
+    make all QUICK_TEST=1
 
 Assembly implementations of low-level functions will be preferred for xCORE where they exist. All low-level API functions written in xCORE Assembly have pure C counterparts which (*should*) give identical results. When debugging a problem, it may sometimes be useful to use the C implementations instead. To avoid compiling the ``.S`` Assembly files in ``lib_xs3_math``, the ``NO_ASM=1`` option can be used:
 
- make all NO_ASM=1
+::
 
-The FFT unit tests can also be compiled to run on the host system by using the ``PLATFORM=x86`` option
+    make all NO_ASM=1
 
- make all PLATFORM=x86
+The FFT unit tests can also be compiled to run on the host system by using the ``PLATFORM=x86`` option:
+
+::
+
+    make all PLATFORM=x86
 
 which will leave a binary in ``bin/x86/``.
 
@@ -164,13 +192,17 @@ which will leave a binary in ``bin/x86/``.
 Building Documentation
 ----------------------
 
- make docs
-
 This project currently uses Doxygen for library and API documentation. As such, a Doxygen install will be required to 
 build the documentation. The documentation has been written against Doxygen version 1.8; your mileage may vary with
 other versions.
 
-With Doxygen on your path, the documentation can be built either by invoking the ``docs`` Make target from either unit test application's directory, or by simply calling ``doxygen`` from within the `/lib_xs3_math/doc/` directory.
+With Doxygen on your path, the documentation can be built either by invoking the ``docs`` Make target from either unit test application's directory.
 
-The documentation will be generated within the `/lib_xs3_math/doc/.build/` directory. To open the HTML version of the documentation, open `/lib_xs3_math/doc/.build/html/index.html` in a browser.
+::
+
+    make docs
+
+Alternatively, by calling ``doxygen`` from within the `</lib_xs3_math/doc/` directory.
+
+The documentation will be generated within the ``/lib_xs3_math/doc/.build/`` directory. To view the HTML version of the documentation, open ``/lib_xs3_math/doc/.build/html/index.html`` in a browser.
 
