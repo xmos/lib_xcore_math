@@ -97,7 +97,7 @@ $(eval  $(foreach bfile,$(ALL_BUILD_FILES),       \
 
 docs:
 	$(info Building documentation..)
-	cd $(DOC_DIR) && doxygen
+	cd $(DOC_DIR) && doxygen && echo Documentation generated. Open $(DOC_BUILD_DIR)/html/index.html to view documentation.
 
 clean_doc:
 	$(info Cleaning documentation...)
