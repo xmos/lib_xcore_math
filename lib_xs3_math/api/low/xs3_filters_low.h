@@ -99,7 +99,7 @@ void xs3_filters_fir_add_sample(
  * \param output_samples    Output samples
  * \param q_format          Fixed-point format of coefficients
  */
-void dsp_filters_interpolate(
+void xs3_filters_interpolate(
     const int32_t input_sample,
     int32_t state_data[],
     const int32_t filter_coeffs[],
