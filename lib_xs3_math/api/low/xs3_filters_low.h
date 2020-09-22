@@ -8,8 +8,8 @@
 extern "C" {
 #endif
 
-#define DSP_NUM_STATES_PER_BIQUAD   (5)
-#define DSP_NUM_COEFFS_PER_BIQUAD   (5)
+#define XS3_MATH_NUM_STATES_PER_BIQUAD   (5)
+#define XS3_MATH_NUM_COEFFS_PER_BIQUAD   (5)
 
 
 /** Process a single sample of a 32-bit FIR filter.
