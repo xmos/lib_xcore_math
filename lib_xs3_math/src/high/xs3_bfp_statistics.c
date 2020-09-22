@@ -95,7 +95,7 @@ float bfp_energy_s32(
     const bfp_s32_t* b)
 {
     //TODO
-    // const int b_shr = 0;
+    const int b_shr = 0;
     // const exponent_t a_exp = 0;
 
     assert(0);

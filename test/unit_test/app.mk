@@ -60,8 +60,8 @@ SOURCE_DIRS := src
 #
 BUILD_STATIC_LIBRARIES := 0
 
-c_FLAGS += -Wno-unused-function
-xc_FLAGS += -Wno-unused-function
+# c_FLAGS += -Wno-unused-function
+# xc_FLAGS += -Wno-unused-function
 c_FLAGS += -DUNITY_USE_COMMAND_LINE_ARGS
 LDFLAGS += -fcmdline-buffer-bytes=200
 

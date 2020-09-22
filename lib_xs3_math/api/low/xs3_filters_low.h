@@ -181,8 +181,8 @@ int32_t xs3_filters_decimate(
  */
 int32_t xs3_filters_biquad(
     const int32_t input_sample,
-    int32_t state_data[DSP_NUM_STATES_PER_BIQUAD],
-    const int32_t filter_coeffs[DSP_NUM_COEFFS_PER_BIQUAD],
+    int32_t state_data[XS3_MATH_NUM_STATES_PER_BIQUAD],
+    const int32_t filter_coeffs[XS3_MATH_NUM_COEFFS_PER_BIQUAD],
     const unsigned q_format);
 
 

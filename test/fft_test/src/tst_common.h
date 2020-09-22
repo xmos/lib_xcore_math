@@ -53,7 +53,7 @@ extern "C" {
 #endif 
 
 #ifndef __XC__
-static signed sext(int a, unsigned b){
+static inline signed sext(int a, unsigned b){
 #ifdef __XS3A__
     asm("sext %0, %1": "=r"(a): "r"(b));
 #else

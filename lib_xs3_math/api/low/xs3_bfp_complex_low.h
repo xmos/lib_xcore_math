@@ -746,7 +746,7 @@ void xs3_tail_reverse_complex_s32(
  * @brief Get headroom of complex 16-bit vector.
  * 
  */
-static headroom_t xs3_headroom_vect_complex_s16(
+static inline headroom_t xs3_headroom_vect_complex_s16(
     const int16_t a_real[],
     const int16_t a_imag[],
     const unsigned length)
@@ -762,7 +762,7 @@ static headroom_t xs3_headroom_vect_complex_s16(
  * @brief Get headroom of complex 32-bit vector.
  * 
  */
-static headroom_t xs3_headroom_vect_complex_s32(
+static inline headroom_t xs3_headroom_vect_complex_s32(
     const complex_s32_t a[], 
     const unsigned length)
 {
@@ -773,7 +773,7 @@ static headroom_t xs3_headroom_vect_complex_s32(
  * @brief Adds one complex 32-bit vector to another.
  * 
  */
-static headroom_t xs3_add_vect_complex_s32(
+static inline headroom_t xs3_add_vect_complex_s32(
     complex_s32_t a[], 
     const complex_s32_t b[],
     const complex_s32_t c[],
@@ -789,7 +789,7 @@ static headroom_t xs3_add_vect_complex_s32(
  * @brief Subtracts one complex 32-bit vector from another.
  * 
  */
-static headroom_t xs3_sub_vect_complex_s32(
+static inline headroom_t xs3_sub_vect_complex_s32(
     complex_s32_t a[], 
     const complex_s32_t b[],
     const complex_s32_t c[],
