@@ -64,6 +64,34 @@ The low-level API is implemented primarily in xCORE XS3 Assembly, although C imp
 
 * Auto-generated source files
 
+Example
+*******
+
+::
+
+    #include "xs3_math.h"
+    
+    void foo(const bfp_s32_t* a, const bfp_s32_t* b){
+        // BFP vector to store result (although bfp_add_vect_s32() can operate in-place))
+        bfp_s32_t sum;
+
+        // Initialize new BFP vector
+        bfp_init_vect_s32(&sum, 
+            (int32_t*) malloc(a->length * sizeof(int32_t)), // allocate space for data; assume malloc succeeds()
+            0,          // exponent of vector; doesn't matter because it will be over-written
+            a->length,  // length of vector (in elements)
+            0);         // Do not calculate headroom; doesn't matter because it will be over-written
+
+        // Add together the vectors a and b element-wise. Place result in sum.
+        bfp_add_vect_s32(&sum, &a, &b);
+
+        for(int i=0; i<a->length; i++)
+            printf("%d:\t%f + %f = %f\n", i, ldexp(a->data[i], a->exp), 
+                ldexp(b->data[i], b->exp), ldexp(sum->data[i], sum->exp));
+
+        free(sum->data);
+    }
+
 
 Building
 ########
@@ -72,18 +100,14 @@ Building
 Including lib_xs3_math in External Applications
 -----------------------------------------------
 
-No specific build system is required to include ``lib_xs3_math`` in your own project. 
+To include ``lib_xs3_math`` in your application
 
-When including this library in your own project,
-
-* `</lib_xs3_math/api/>`_ should be added as an include directory.
-* All ``.c`` and ``.S`` files in `/lib_xs3_math/src </lib_xs3_math>`_ should be compiled.
+* add `</lib_xs3_math/api/>`_ as an include directory.
+* add the ``.c`` and ``.S`` files in `/lib_xs3_math/src </lib_xs3_math>`_ to your source.
 
 Some build-time configuration of the library is possible by using certain global defines. See `xs3_math_conf.h </lib_xs3_math/api/xs3_math_conf.h>`_ and its associated documentation for more information.
 
-When using Make, some library source files are auto-generated at build time, in particular, ``xs3_fft_lut.c`` and its companion header ``xs3_fft_lut.h``. Python 3 is required to accomplish this.
-
-If not using Make, you can generate those files manually with `this Python script </lib_xs3_math/script/gen_fft_table.py>`_ and include them in your own application, making sure that the ``xs3_fft_lut.h`` header file is in the include path for the ``lib_xs3_math`` source.
+The Make script used in the unit test apps auto-generates a couple source files (``xs3_fft_lut.c`` and ``xs3_fft_lut.h`` -- supports various max FFT sizes without wasting memory) in the build directory. If your project has no need to auto-generate those files (because you know your maximum FFT length), use `this Python script </lib_xs3_math/script/gen_fft_table.py>`_ to generate them once and include them in your own project. Note that ``xs3_fft_lut.h`` needs to be in the include path for the ``lib_xs3_math`` source.
 
 From user code, ``lib_xs3_math`` API functions can be accessed by including `xs3_math.h </lib_xs3_math/api/xs3_math.h>`_.
 
