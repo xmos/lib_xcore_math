@@ -23,7 +23,7 @@ DEPENDENCIES := lib_xs3_math Unity testing
 ### for them at the moment.
 ###
 lib_xs3_math_PATH := ../../lib_xs3_math
-Unity_PATH := ../../../Unity
+Unity_PATH := ../../third_party/Unity
 testing_PATH := ../shared/testing
 
 ## Uncomment to tell lib_xs3_math not to compile .S files (i.e. test C implementations)

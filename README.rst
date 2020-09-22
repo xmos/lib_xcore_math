@@ -70,7 +70,7 @@ Example
 ::
 
     #include "xs3_math.h"
-    
+
     void foo(const bfp_s32_t* a, const bfp_s32_t* b){
         // BFP vector to store result (although bfp_add_vect_s32() can operate in-place))
         bfp_s32_t sum;
@@ -93,8 +93,15 @@ Example
     }
 
 
-Building
-########
+Getting and Building
+####################
+
+Clone the Repository
+--------------------
+
+To clone this repository and its submodules (Unity repo required for unit tests) use the following: ::
+
+    git clone --recurse-submodules git@github.com:xmos/lib_xs3_math 
 
 
 Including lib_xs3_math in External Applications
