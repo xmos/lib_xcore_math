@@ -287,12 +287,14 @@ headroom_t xs3_sub_vect_s32(
  * 
  * \return  Headroom of output vector `a`
  */
+//! [xs3_mul_vect_s16]
 headroom_t xs3_mul_vect_s16(
     int16_t* a,
     const int16_t* b,
     const int16_t* c,
     const unsigned length,
     const right_shift_t a_shr);
+//! [xs3_mul_vect_s16]
 
 /**
  * \brief Multiply one `int32_t` vector by another.
@@ -319,6 +321,7 @@ headroom_t xs3_mul_vect_s16(
  * 
  * \return  Headroom of output vector `a`
  */
+//! [xs3_mul_vect_s32]
 headroom_t xs3_mul_vect_s32(
     int32_t* a,
     const int32_t* b,
@@ -326,6 +329,7 @@ headroom_t xs3_mul_vect_s32(
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
+//! [xs3_mul_vect_s32]
 
 /**
  * \brief Multiply one `int16_t` vector by a 16-bit scalar.
