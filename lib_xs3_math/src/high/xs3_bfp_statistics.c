@@ -13,8 +13,8 @@ float bfp_abs_sum_s16(
     const bfp_s16_t* b)
 {
     //TODO
-    const int b_shr = 0;
-    const exponent_t a_exp = 0;
+    // const int b_shr = 0;
+    // const exponent_t a_exp = 0;
 
     assert(0);
     return 0;
@@ -30,8 +30,8 @@ float bfp_abs_sum_s32(
     const bfp_s32_t* b)
 {
     //TODO
-    const int b_shr = 0;
-    const exponent_t a_exp = 0;
+    // const int b_shr = 0;
+    // const exponent_t a_exp = 0;
 
     assert(0);
     return 0;
@@ -47,8 +47,8 @@ float bfp_mean_s16(
     const bfp_s16_t* b)
 {
     //TODO
-    const int b_shr = 0;
-    const exponent_t a_exp = 0;
+    // const int b_shr = 0;
+    // const exponent_t a_exp = 0;
 
     assert(0);
     return 0;
@@ -64,8 +64,8 @@ float bfp_mean_s32(
     const bfp_s32_t* b)
 {
     //TODO
-    const int b_shr = 0;
-    const exponent_t a_exp = 0;
+    // const int b_shr = 0;
+    // const exponent_t a_exp = 0;
 
     assert(0);
     return 0;
@@ -80,8 +80,8 @@ float bfp_energy_s16(
     const bfp_s16_t* b)
 {
     //TODO
-    const int b_shr = 0;
-    const exponent_t a_exp = 0;
+    // const int b_shr = 0;
+    // const exponent_t a_exp = 0;
 
     assert(0);
     return 0;
@@ -96,7 +96,7 @@ float bfp_energy_s32(
 {
     //TODO
     const int b_shr = 0;
-    const exponent_t a_exp = 0;
+    // const exponent_t a_exp = 0;
 
     assert(0);
     return 0;
@@ -110,8 +110,8 @@ float bfp_rms_s16(
     const bfp_s16_t* b)
 {
     //TODO
-    const int b_shr = 0;
-    const exponent_t a_exp = 0;
+    // const int b_shr = 0;
+    // const exponent_t a_exp = 0;
 
     assert(0);
     return 0;
@@ -125,8 +125,8 @@ float bfp_rms_s32(
     const bfp_s32_t* b)
 {
     //TODO
-    const int b_shr = 0;
-    const exponent_t a_exp = 0;
+    // const int b_shr = 0;
+    // const exponent_t a_exp = 0;
 
     assert(0);
     return 0;

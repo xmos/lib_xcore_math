@@ -591,7 +591,7 @@ void bfp_dot_s16_calc_params(
             (b_shr + c_shr) = (K - total_hr) bits.
 
     */
-    headroom_t total_hr = b_hr+c_hr;
+    // headroom_t total_hr = b_hr+c_hr;
     unsigned K = ceil_log2(length);
 
     right_shift_t total_shr = K - (b_hr + c_hr);

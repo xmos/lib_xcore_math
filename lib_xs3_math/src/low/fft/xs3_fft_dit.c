@@ -114,7 +114,6 @@ void xs3_fft_dit_forward (
 
             for(int k = b-4; k >= 0; k -= 4){
 
-                int j = a;
                 int s = k;
 
                 load_vec(vC, W);
@@ -187,7 +186,6 @@ void xs3_fft_dit_inverse (
 
             for(int k = b-4; k >= 0; k -= 4){
 
-                int j = a;
                 int s = k;
 
                 load_vec(vC, W);

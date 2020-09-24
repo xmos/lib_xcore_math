@@ -1,8 +1,17 @@
 
 
 # The following variables should already be defined:
-#    $(BUILD_DIR)    - The absolute path of the build directory -- where object files should be placed
+#    $(OBJ_DIR)      - The absolute path within the build directory where object files should be placed for this build.
 #    $(PLATFORM)     - Either "x86" or "xcore" (no quotes) depending on whether it's being built for x86 or xcore
+#    $(lib_xs3_math_PATH) - Path containing this lib.mk file, relative to application directory
+
+# The following variables modify the build behavior:
+#    $(lib_xs3_math_NO_ASM)	- If this is NOT defined with the value 1 then .S files will be included as source files.
+#    $(NO_OPTIMIZE)	- -O0 is added to c file build flags.
+
+# Note: This .mk file assumes it is being included by the Makefile in /test/shared/Makefile
+#	Many of the values defined here will only make sense in that context.
+#
 
 lib_xs3_math_PATH ?= ./
 LIB_PATH := $(abspath $(lib_xs3_math_PATH))
@@ -88,7 +97,7 @@ $(eval  $(foreach bfile,$(ALL_BUILD_FILES),       \
 
 docs:
 	$(info Building documentation..)
-	cd $(DOC_DIR) && doxygen
+	cd $(DOC_DIR) && doxygen && echo Documentation generated. Open $(DOC_BUILD_DIR)/html/index.html to view documentation.
 
 clean_doc:
 	$(info Cleaning documentation...)

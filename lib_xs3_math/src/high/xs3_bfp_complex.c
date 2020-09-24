@@ -13,10 +13,7 @@
 headroom_t bfp_headroom_vect_complex_s16(
     bfp_complex_s16_t* a)
 {
-    const headroom_t re_hr = xs3_headroom_vect_s16(a->real, a->length);
-    const headroom_t im_hr = xs3_headroom_vect_s16(a->imag, a->length);
-
-    a->hr = (re_hr <= im_hr)? re_hr : im_hr;
+    a->hr = xs3_headroom_vect_complex_s16(a->real, a->imag, a->length);
 
     return a->hr;
 }
@@ -108,8 +105,8 @@ void bfp_mul_vect_complex_s32(
 
     //TODO
     const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    // const int b_shr = 0;
+    // const int c_shr = 0;
 
 
     a->length = b->length;
@@ -324,7 +321,7 @@ void bfp_scalar_mul_vect_complex_s32(
     //TODO
     const exponent_t a_exp = 0;
     const int b_shr = 0;
-    const int c_shr = 0;
+    // const int c_shr = 0;
 
     // c_mant = ashr(c_mant, c_shr);
 
@@ -356,8 +353,8 @@ void bfp_complex_scal_mul_vect_complex_s16(
 
     //TODO
     const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    // const int b_shr = 0;
+    // const int c_shr = 0;
 
     // c_re_mant = ashr(c_re_mant, c_shr);
     // c_im_mant = ashr(c_im_mant, c_shr);
@@ -393,8 +390,8 @@ void bfp_complex_scal_mul_vect_complex_s32(
 
     //TODO
     const exponent_t a_exp = 0;
-    const int b_shr = 0;
-    const int c_shr = 0;
+    // const int b_shr = 0;
+    // const int c_shr = 0;
 
     // c_re_mant = ashr(c_re_mant, c_shr);
     // c_im_mant = ashr(c_im_mant, c_shr);
@@ -543,7 +540,7 @@ void bfp_complex_s32_to_complex_s16(
 
     //TODO - calculate what these should be
     const exponent_t a_exp = 0;
-    const int sat = 0;
+    // const int sat = 0;
 
 
     a->length = b->length;
@@ -563,7 +560,7 @@ void bfp_squared_mag_vect_complex_s16(
 
     //TODO - calculate what these should be
     const exponent_t a_exp = 0;
-    const int b_shr = 0;
+    // const int b_shr = 0;
 
     a->length = b->length;
     a->exp = a_exp;
@@ -580,7 +577,7 @@ void bfp_squared_mag_vect_complex_s32(
 
     //TODO - calculate what these should be
     const exponent_t a_exp = 0;
-    const int b_shr = 0;
+    // const int b_shr = 0;
 
     a->length = b->length;
     a->exp = a_exp;
@@ -597,7 +594,7 @@ void bfp_mag_vect_complex_s16(
 
     //TODO - calculate what these should be
     const exponent_t a_exp = 0;
-    const int b_shr = 0;
+    // const int b_shr = 0;
 
     a->length = b->length;
     a->exp = a_exp;
@@ -617,7 +614,7 @@ void bfp_mag_vect_complex_s32(
 
     //TODO - calculate what these should be
     const exponent_t a_exp = 0;
-    const int b_shr = 0;
+    // const int b_shr = 0;
 
     a->length = b->length;
     a->exp = a_exp;
@@ -634,7 +631,7 @@ complex_float_t bfp_sum_complex_s16(
 
     //TODO - calculate what these should be
     const exponent_t a_exp = 0;
-    const int sat = 0;
+    // const int sat = 0;
 
     int16_t a_real = 0;
     int16_t a_imag = 0;
@@ -659,7 +656,7 @@ complex_float_t bfp_sum_complex_s32(
 {
     //TODO - calculate what these should be
     const exponent_t a_exp = 0;
-    const int sat = 0;
+    // const int sat = 0;
 
     int32_t a_real = 0;
     int32_t a_imag = 0;

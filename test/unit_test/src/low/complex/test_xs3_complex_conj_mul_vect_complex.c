@@ -453,8 +453,8 @@ void test_xs3_complex_conj_mul_vect_complex()
 {
     SET_TEST_FILE();
 
-    // RUN_TEST(test_xs3_complex_conj_mul_vect_complex_s16_basic);
-    // RUN_TEST(test_xs3_complex_conj_mul_vect_complex_s16_random);
+    RUN_TEST(test_xs3_complex_conj_mul_vect_complex_s16_basic);
+    RUN_TEST(test_xs3_complex_conj_mul_vect_complex_s16_random);
 
     RUN_TEST(test_xs3_complex_conj_mul_vect_complex_s32_basic);
     RUN_TEST(test_xs3_complex_conj_mul_vect_complex_s32_random);
