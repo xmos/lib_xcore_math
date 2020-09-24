@@ -112,6 +112,7 @@ typedef int left_shift_t;
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
  */
+//! [bfp_s32_t]
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     int32_t* data;
@@ -122,6 +123,7 @@ typedef struct {
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
 } bfp_s32_t;
+//! [bfp_s32_t]
 
 /**
  * Represents a block floating-point vector of 16-bit elements.
@@ -135,6 +137,7 @@ typedef struct {
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
  */
+//! [bfp_s16_t]
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     int16_t* data;
@@ -145,32 +148,7 @@ typedef struct {
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
 } bfp_s16_t;
-
-
-// /**
-//  * Represents a block floating-point vector of 8-bit elements.
-//  * 
-//  * Initialized with the ``bfp_init_vect_s8()`` function.
-//  * 
-//  * The logical quantity represented by each element of this vector is:
-//  *      ``data[i] * 2^(exp)``
-//  *      where the multiplication and exponentiation are using real (non-modular) arithmetic.
-//  * 
-//  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
-//  * minimize precision loss as elements become small.
-//  */
-// typedef struct {
-//     int8_t* data;
-//     /** Exponent associated with the vector. */
-//     int exp;
-//     /** Current headroom in the ``data[]`` */
-//     unsigned hr;
-//     /** Current size of ``data[]``, expressed in elements */
-//     unsigned length;
-// } bfp_s8_t;
-
-
-
+//! [bfp_s16_t]
 
 /**
  * Represents a block floating-point vector of complex 32-bit elements.
@@ -185,6 +163,7 @@ typedef struct {
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
  */
+//! [bfp_complex_s32_t]
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     complex_s32_t* data;
@@ -195,6 +174,7 @@ typedef struct {
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
 } bfp_complex_s32_t;
+//! [bfp_complex_s32_t]
 
 /**
  * Represents a block floating-point vector of complex 16-bit elements.
@@ -209,6 +189,7 @@ typedef struct {
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
  */
+//! [bfp_complex_s16_t]
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     int16_t* real;
@@ -221,6 +202,7 @@ typedef struct {
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
 } bfp_complex_s16_t;
+//! [bfp_complex_s16_t]
 
 /**
  * Represents a block floating-point vector of 32-bit channel pairs.
@@ -239,6 +221,7 @@ typedef struct {
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
  */
+//! [bfp_ch_pair_s32_t]
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     ch_pair_s32_t* data;
@@ -249,6 +232,7 @@ typedef struct {
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
 } bfp_ch_pair_s32_t;
+//! [bfp_ch_pair_s32_t]
 
 /**
  * Represents a block floating-point vector of 16-bit channel pairs.
@@ -267,6 +251,7 @@ typedef struct {
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
  */
+//! [bfp_ch_pair_s16_t]
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     ch_pair_s16_t* data;
@@ -277,6 +262,7 @@ typedef struct {
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
 } bfp_ch_pair_s16_t;
+//! [bfp_ch_pair_s16_t]
 
 
 #ifdef __XC__

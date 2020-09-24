@@ -23,7 +23,7 @@ DEPENDENCIES := lib_xs3_math Unity testing floating_fft
 ### for them at the moment.
 ###
 lib_xs3_math_PATH := ../../lib_xs3_math
-Unity_PATH := ../../../Unity
+Unity_PATH := ../../third_party/Unity
 testing_PATH := ../shared/testing
 floating_fft_PATH := ../shared/floating_fft
 
