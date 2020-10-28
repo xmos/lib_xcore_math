@@ -28,10 +28,9 @@ extern "C" {
  * 
  * \return  Absolute sum
  */
-int16_t xs3_abs_sum_s16(
+int32_t xs3_abs_sum_s16(
     const int16_t* b,
-    const unsigned length,
-    const int b_shr);
+    const unsigned length);
 
 /** Calculate the absolute sum of a 32-bit BFP vector.
  * 
@@ -53,10 +52,9 @@ int16_t xs3_abs_sum_s16(
  * 
  * \return  Absolute sum
  */
-int32_t xs3_abs_sum_s32(
+int64_t xs3_abs_sum_s32(
     const int32_t* b,
-    const unsigned length,
-    const int b_shr);
+    const unsigned length);
 
 /** Calculate the mean of a 16-bit BFP vector.
  * 

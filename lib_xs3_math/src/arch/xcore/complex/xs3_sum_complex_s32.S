@@ -50,7 +50,7 @@ FUNCTION_NAME:
     {   ldc r11, 0                              ;   vstd r11[0]                             }
     {   lss tmp, b_shr, r11                     ;   vsetc r11                               }
     {   ldaw tmp, sp[STACK_VEC_TMP]             ;   ecallt tmp /*Cannot be negative shift*/ }
-        ldaw r11, cp[vpu_vec_ones_s32]
+        ldaw r11, cp[vpu_vec_0x40000000]
         vlashr r11[0], b_shr
     {   ldc r11, 0                              ;   vstr tmp[0]                             }
     {   shr length, length, 2                   ;   vldc tmp[0]                             }
@@ -84,6 +84,9 @@ FUNCTION_NAME:
 #define num         r5
 #define tmp_re      r6
 #define tmp_im      r7
+
+// astew [2020-10-16]: There's probably a faster way to do this. See the VPU-based solution I found for xs3_sum_s32 for
+//                     non-complex values
 
 .L_get_res:
     {   ldc real_hi, 0                          ;   ldc imag_hi, 0                          }

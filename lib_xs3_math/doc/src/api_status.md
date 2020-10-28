@@ -66,25 +66,25 @@ This table is unlikely to have actually captured everything that will be needed 
 | `xs3_fft_dif_forward()`                   |  X   |  X   |   X    |     X      |
 | `xs3_fft_dif_inverse()`                   |  X   |  X   |   X    |     X      |
 |  @tab @tab xs3_filters_low.h                                              ||||| 
-| `xs3_filters_fir()`                       |      |      |        |            |
-| `xs3_filters_fir_add_sample()`            |      |      |        |            |
-| `xs3_filters_interpolate()`               |      |      |        |            |
-| `xs3_filters_decimate()`                  |      |      |        |            |
-| `xs3_filters_biquad()`                    |      |      |        |            |
-| `xs3_filters_biquads()`                   |      |      |        |            |
+| `xs3_filter_fir_s32()`                    |  X   |  X   |   X    |            | 
+| `xs3_filter_fir_s16()`                    |  X   |  X   |   X    |            |
+| `xs3_filter_biquad_s32()`                 |  X   |  X   |   X    |            |
+| `xs3_filter_biquads_s32()`                |  X   |  X   |   X    |            |
+| `xs3_filters_interpolate()`               |      |      |        |            | (questionable)
+| `xs3_filters_decimate()`                  |      |      |        |            | (questionable)
 |  @tab @tab xs3_statistics_low.h                                           ||||| 
-| `xs3_abs_sum_s16()`                       |      |      |        |            |
-| `xs3_abs_sum_s32()`                       |      |      |        |            |
+| `xs3_abs_sum_s16()`                       |  X   |  X   |   X    |            |
+| `xs3_abs_sum_s32()`                       |  X   |  X   |   X    |            |
 | `xs3_mean_s16()`                          |      |      |        |            |
 | `xs3_mean_s32()`                          |      |      |        |            |
 | `xs3_energy_s16()`                        |      |      |        |            |
 | `xs3_energy_s32()`                        |      |      |        |            |
 | `xs3_rms_s16()`                           |      |      |        |            |
 | `xs3_rms_s32()`                           |      |      |        |            |
-| `xs3_max_s16()`                           |      |      |        |            |
-| `xs3_max_s32()`                           |      |      |        |            |
-| `xs3_min_s16()`                           |      |      |        |            |
-| `xs3_min_s32()`                           |      |      |        |            |
+| `xs3_max_s16()`                           |  X   |  X   |   X    |            |
+| `xs3_max_s32()`                           |  X   |  X   |   X    |            |
+| `xs3_min_s16()`                           |  X   |  X   |   X    |            |
+| `xs3_min_s32()`                           |  X   |  X   |   X    |            |
 | `xs3_argmax_s16()`                        |      |      |        |            |
 | `xs3_argmax_s32()`                        |      |      |        |            |
 | `xs3_argmin_s16()`                        |      |      |        |            |
@@ -93,7 +93,7 @@ This table is unlikely to have actually captured everything that will be needed 
 
 ### High-Level API Functions ###
 
-The high-level API functions are written entirely in C (perhaps C++ wrappers will eventually be made available), to implement block floating-point arithmetic which manage headroom and exponents for the uer. They use the low-level API to accomplish their work.
+The high-level API functions are written entirely in C (perhaps C++ wrappers will eventually be made available), to implement block floating-point arithmetic which manage headroom and exponents for the user. They use the low-level API to accomplish their work.
 
 | Function                                  | Implemented | Tested | Documented |
 | :---------------------------------------- | :---------: | :----: | :--------: |

@@ -12,62 +12,130 @@ extern "C" {
 #define XS3_MATH_NUM_COEFFS_PER_BIQUAD   (5)
 
 
-/** Process a single sample of a 32-bit FIR filter.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Accepts a single input sample and returns a single output sample.
- * 
- * The ``filter_data`` array must have a size of at least ``num_taps - 1``.
- * Coefficients are stored in forward order (e.g. ``b0, b1, b2, ...``).
- * 
- * The filter coefficients must be given in a fixed-point format given by ``q_format``. This means 
- * that the logical coefficient values are given by  ``filter_coeffs[i] * 2^(-q_format)``.
- * 
- * The output sample value will have the same implied exponent as the input sample.
- * 
- * The output sample value saturates to the range ( -(2^32)+1, (2^32)-1 ).
- * 
- * \param input_sample      New input sample
- * \param state_data        Filter state data
- * \param filter_coeffs     Array of filter coefficients
- * \param num_taps          Number of filter taps -- length of ``filter_coeffs``
- * \param q_format          Fixed-point format of coefficients
- * 
- * \returns                 The filter output, with the same (implied) exponent as the input.
- */
-int32_t xs3_filters_fir(
-    const int32_t input_sample, 
-    int32_t state_data[], 
-    const int32_t filter_coeffs[], 
-    const unsigned num_taps,
-    const unsigned q_format);
+typedef struct {
+    unsigned num_taps;
+    unsigned head;
+    right_shift_t shift;
+    int32_t* coef;
+    int32_t* state;
+} xs3_fir_filter_s32_t;
 
-/** Add a single sample to a 32-bit FIR filter's state data without processing
- * the full FIR filter.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * The ``filter_data`` array must have a size of at least ``num_taps - 1``.
- * 
- * \param input_sample  New input sample
- * \param state_data    Filter state data
- * \param num_taps      Number of filter taps.
- */
-void xs3_filters_fir_add_sample(
-    const int32_t input_sample, 
-    int32_t state_data[], 
-    const unsigned num_taps);
+
+
+
+void xs3_filter_fir_s32_init(
+    xs3_fir_filter_s32_t* filter,
+    int32_t* sample_buffer,
+    const unsigned tap_count,
+    const int32_t* coefficients,
+    const right_shift_t shift);
+
+void xs3_filter_fir_s32_add_sample(
+    xs3_fir_filter_s32_t* filter,
+    const int32_t new_sample);
+    
+int32_t xs3_filter_fir_s32(
+    xs3_fir_filter_s32_t* filter,
+    const int32_t new_sample);
+
+
+    
+typedef struct {
+    unsigned num_taps;
+    right_shift_t shift;
+    int16_t* coef;
+    int16_t* state;
+} xs3_fir_filter_s16_t;
+
+void xs3_filter_fir_s16_init(
+    xs3_fir_filter_s16_t* filter,
+    int16_t* sample_buffer,
+    const unsigned tap_count,
+    const int16_t* coefficients,
+    const right_shift_t shift);
+
+void xs3_filter_fir_s16_add_sample(
+    xs3_fir_filter_s16_t* filter,
+    const int16_t new_sample);
+    
+int16_t xs3_filter_fir_s16(
+    xs3_fir_filter_s16_t* filter,
+    const int16_t new_sample);
+
+
+
+typedef struct {
+    unsigned biquad_count;
+    int32_t state[2][9]; // state[j][k] is the value x_k[j], i.e.  x[n-j] of the kth biquad. x[j][8] are outputs of 8th biquad
+    int32_t coef[5][8];  // coefficients. coef[j][k] is for the kth biquad. j maps to b0,b1,b2,-a1,-a2.
+} xs3_biquad_filter_s32_t;
+    
+int32_t xs3_filter_biquad_s32(
+    xs3_biquad_filter_s32_t* filter,
+    const int32_t new_sample);
+
+int32_t xs3_filter_biquads_s32(
+    xs3_biquad_filter_s32_t biquads[],
+    const unsigned block_count,
+    const int32_t new_sample);
+
+
+// /** Process a single sample of a 32-bit FIR filter.
+//  * 
+//  * <BLOCKQUOTE><CODE style="color:red;">
+//  *  NOT YET IMPLEMENTED / NOT TESTED.
+//  * 
+//  *  See \ref api_status.
+//  * </CODE></BLOCKQUOTE>
+//  * 
+//  * 
+//  * Accepts a single input sample and returns a single output sample.
+//  * 
+//  * The ``filter_data`` array must have a size of at least ``num_taps - 1``.
+//  * Coefficients are stored in forward order (e.g. ``b0, b1, b2, ...``).
+//  * 
+//  * The filter coefficients must be given in a fixed-point format given by ``q_format``. This means 
+//  * that the logical coefficient values are given by  ``filter_coeffs[i] * 2^(-q_format)``.
+//  * 
+//  * The output sample value will have the same implied exponent as the input sample.
+//  * 
+//  * The output sample value saturates to the range ( -(2^32)+1, (2^32)-1 ).
+//  * 
+//  * \param input_sample      New input sample
+//  * \param state_data        Filter state data
+//  * \param filter_coeffs     Array of filter coefficients
+//  * \param num_taps          Number of filter taps -- length of ``filter_coeffs``
+//  * \param q_format          Fixed-point format of coefficients
+//  * 
+//  * \returns                 The filter output, with the same (implied) exponent as the input.
+//  */
+// int32_t xs3_filters_fir(
+//     const int32_t input_sample, 
+//     int32_t state_data[], 
+//     const int32_t filter_coeffs[], 
+//     const unsigned num_taps,
+//     const unsigned q_format);
+
+// /** Add a single sample to a 32-bit FIR filter's state data without processing
+//  * the full FIR filter.
+//  * 
+//  * <BLOCKQUOTE><CODE style="color:red;">
+//  *  NOT YET IMPLEMENTED / NOT TESTED.
+//  * 
+//  *  See \ref api_status.
+//  * </CODE></BLOCKQUOTE>
+//  * 
+//  * 
+//  * The ``filter_data`` array must have a size of at least ``num_taps - 1``.
+//  * 
+//  * \param input_sample  New input sample
+//  * \param state_data    Filter state data
+//  * \param num_taps      Number of filter taps.
+//  */
+// void xs3_filters_fir_add_sample(
+//     const int32_t input_sample, 
+//     int32_t state_data[], 
+//     const unsigned num_taps);
 
 /** Process a single sample of an interpolating 32-bit FIR filter.
  * 
@@ -148,83 +216,83 @@ int32_t xs3_filters_decimate(
     const unsigned decim_factor,
     const unsigned q_format);
 
-/** Process one new sample through a second order IIR filter (direct form I).
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Accepts a single input sample and returns a single output sample.
- * 
- * The IIR filter algorithm executes a difference equation on current and past input values x
- *  and past output values y:
- *  ``y[n] = x[n]*b0 + x[n-1]*b1 + x[n-2]*b2 + y[n-1]*-a1 + y[n-2]*-a2``
- * 
- * The filter coefficients are stored in forward order (e.g. ``b0,b1,b2,-a1,-a2``).
- * 
- * The filter coefficients must be given in a fixed-point format given by ``q_format``. This means 
- * that the logical coefficient values are given by  ``filter_coeffs[i] * 2^(-q_format)``.
- * 
- * The output sample value will have the same implied exponent as the input samples.
- * 
- * The output sample value saturates to the range ( -(2^32)+1, (2^32)-1 ).
- *
- * \param input_sample      New input sample
- * \param state_data        Filter state data
- * \param filter_coeffs     Array of filter coefficients
- * \param q_format          Fixed-point format of coefficients
- * 
- * \returns                 Output filtered sample
- */
-int32_t xs3_filters_biquad(
-    const int32_t input_sample,
-    int32_t state_data[XS3_MATH_NUM_STATES_PER_BIQUAD],
-    const int32_t filter_coeffs[XS3_MATH_NUM_COEFFS_PER_BIQUAD],
-    const unsigned q_format);
+// /** Process one new sample through a second order IIR filter (direct form I).
+//  * 
+//  * <BLOCKQUOTE><CODE style="color:red;">
+//  *  NOT YET IMPLEMENTED / NOT TESTED.
+//  * 
+//  *  See \ref api_status.
+//  * </CODE></BLOCKQUOTE>
+//  * 
+//  * 
+//  * Accepts a single input sample and returns a single output sample.
+//  * 
+//  * The IIR filter algorithm executes a difference equation on current and past input values x
+//  *  and past output values y:
+//  *  ``y[n] = x[n]*b0 + x[n-1]*b1 + x[n-2]*b2 + y[n-1]*-a1 + y[n-2]*-a2``
+//  * 
+//  * The filter coefficients are stored in forward order (e.g. ``b0,b1,b2,-a1,-a2``).
+//  * 
+//  * The filter coefficients must be given in a fixed-point format given by ``q_format``. This means 
+//  * that the logical coefficient values are given by  ``filter_coeffs[i] * 2^(-q_format)``.
+//  * 
+//  * The output sample value will have the same implied exponent as the input samples.
+//  * 
+//  * The output sample value saturates to the range ( -(2^32)+1, (2^32)-1 ).
+//  *
+//  * \param input_sample      New input sample
+//  * \param state_data        Filter state data
+//  * \param filter_coeffs     Array of filter coefficients
+//  * \param q_format          Fixed-point format of coefficients
+//  * 
+//  * \returns                 Output filtered sample
+//  */
+// int32_t xs3_filters_biquad(
+//     const int32_t input_sample,
+//     int32_t state_data[XS3_MATH_NUM_STATES_PER_BIQUAD],
+//     const int32_t filter_coeffs[XS3_MATH_NUM_COEFFS_PER_BIQUAD],
+//     const unsigned q_format);
 
 
-/** Process one new sample through a cascaded direct form I biquad filters
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Accepts a single input sample and returns a single output sample.
- *
- *  The IIR filter algorithm executes a difference equation on current and past input values x
- *  and past output values y:
- *  ``y[n] = x[n]*b0 + x[n-1]*b1 + x[n-2]*b2 + y[n-1]*-a1 + y[n-2]*-a2``
- *
- *  The filter coefficients are stored in forward order
- *  (e.g. ``section1:b0,b1,b2,-a1,-a2,sectionN:b0,b1,b2,-a1,-a2``).
- * 
- * The filter coefficients must be given in a fixed-point format given by ``q_format``. This means 
- * that the logical coefficient values are given by  ``filter_coeffs[i] * 2^(-q_format)``.
- * 
- * The output sample value will have the same implied exponent as the input samples.
- * 
- * The output sample value saturates to the range ( -(2^32)+1, (2^32)-1 ).
- * 
- * \param input_sample      New input sample
- * \param filter_coeffs     Array of filter coefficients
- * \param state_data        Filter state data
- * \param num_sections      Number of biquad filters in sequence
- * \param q_format          Fixed-point format of coefficients
- * 
- * \returns                 Output filtered sample
- */
-int32_t xs3_filters_biquads(
-    int32_t input_sample,
-    const int32_t filter_coeffs[],
-    int32_t state_data[],
-    const unsigned num_sections,
-    const unsigned q_format);
+// /** Process one new sample through a cascaded direct form I biquad filters
+//  * 
+//  * <BLOCKQUOTE><CODE style="color:red;">
+//  *  NOT YET IMPLEMENTED / NOT TESTED.
+//  * 
+//  *  See \ref api_status.
+//  * </CODE></BLOCKQUOTE>
+//  * 
+//  * 
+//  * Accepts a single input sample and returns a single output sample.
+//  *
+//  *  The IIR filter algorithm executes a difference equation on current and past input values x
+//  *  and past output values y:
+//  *  ``y[n] = x[n]*b0 + x[n-1]*b1 + x[n-2]*b2 + y[n-1]*-a1 + y[n-2]*-a2``
+//  *
+//  *  The filter coefficients are stored in forward order
+//  *  (e.g. ``section1:b0,b1,b2,-a1,-a2,sectionN:b0,b1,b2,-a1,-a2``).
+//  * 
+//  * The filter coefficients must be given in a fixed-point format given by ``q_format``. This means 
+//  * that the logical coefficient values are given by  ``filter_coeffs[i] * 2^(-q_format)``.
+//  * 
+//  * The output sample value will have the same implied exponent as the input samples.
+//  * 
+//  * The output sample value saturates to the range ( -(2^32)+1, (2^32)-1 ).
+//  * 
+//  * \param input_sample      New input sample
+//  * \param filter_coeffs     Array of filter coefficients
+//  * \param state_data        Filter state data
+//  * \param num_sections      Number of biquad filters in sequence
+//  * \param q_format          Fixed-point format of coefficients
+//  * 
+//  * \returns                 Output filtered sample
+//  */
+// int32_t xs3_filters_biquads(
+//     int32_t input_sample,
+//     const int32_t filter_coeffs[],
+//     int32_t state_data[],
+//     const unsigned num_sections,
+//     const unsigned q_format);
 
 
 
