@@ -137,3 +137,37 @@ int64_t xs3_abs_sum_s32(
     }
     return acc;
 }
+
+
+WEAK_FUNC
+int32_t xs3_energy_s16(
+    const int16_t b[],
+    const unsigned length,
+    const right_shift_t b_shr)
+{
+    int64_t acc = 0;
+    for(int k = 0; k < length; k++){
+        int32_t t = b[k];
+        t = (b_shr>=0)? (t>>b_shr) : (t<<-b_shr);
+        acc += t*t;
+        acc = MAX(-0x7FFFFFFF, MIN(0x7FFFFFFF, acc));
+    }
+    return (int32_t)acc;
+}
+
+WEAK_FUNC
+int64_t xs3_energy_s32(
+    const int32_t b[],
+    const unsigned length,
+    const right_shift_t b_shr)
+{
+    int64_t acc = 0;
+    for(int k = 0; k < length; k++){
+        int64_t t = b[k];
+        t = (b_shr>=0)? (t>>b_shr) : (t<<-b_shr);
+        t = ((t*t)+(1<<29)) >> 30;
+        acc += t;
+        acc = MAX(-0x7FFFFFFFFFLL, MIN(0x7FFFFFFFFFLL, acc));
+    }
+    return acc;
+}

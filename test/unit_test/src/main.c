@@ -10,13 +10,13 @@ int main(int argc, char** argv)
 {
     UNITY_BEGIN();
 
-    // /* **** Basic **** */
+    /* **** Basic **** */
 
     CALL(test_CLS_funcs);
     CALL(test_HR_funcs);
 
 
-    // /* **** Low-level API **** */
+    /* **** Low-level API **** */
 
     CALL(test_xs3_set_vect);
     CALL(test_xs3_headroom_vect);
@@ -56,8 +56,9 @@ int main(int argc, char** argv)
     CALL(test_xs3_min);
     CALL(test_xs3_argmax);
     CALL(test_xs3_argmin);
+    CALL(test_xs3_energy);
 
-    // /* **** High-level API **** */
+    /* **** High-level API **** */
 
     CALL(test_bfp_init_vect);
     CALL(test_bfp_set_vect);

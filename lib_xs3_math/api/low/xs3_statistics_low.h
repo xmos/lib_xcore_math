@@ -56,56 +56,6 @@ int64_t xs3_abs_sum_s32(
     const int32_t* b,
     const unsigned length);
 
-/** Calculate the mean of a 16-bit BFP vector.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      A <-  ( B[0] + B[1] + ... + B[N-1] ) / N
- *        where A is a scalar
- *              B[] is a BFP vector of size N
- * 
- * \param[in] b         Input vector
- * \param[in] length    Length of input vector
- * \param[in] b_shr     Right-shift applied to elements of `b`
- * 
- * \return  Mean
- */
-int16_t xs3_mean_s16(
-    const int16_t* b,
-    const unsigned length,
-    const int b_shr);
-
-/** Calculate the mean of a 32-bit BFP vector.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      A <-  ( B[0] + B[1] + ... + B[N-1] ) / N
- *        where A is a scalar
- *              B[] is a BFP vector of size N
- * 
- * \param[in] b         Input vector
- * \param[in] length    Length of input vector
- * \param[in] b_shr     Right-shift applied to elements of `b`
- * 
- * \return  Mean
- */
-int32_t xs3_mean_s32(
-    const int32_t* b,
-    const unsigned length,
-    const int b_shr);
-
 /** Calculate the energy of a 16-bit BFP vector.
  * 
  * <BLOCKQUOTE><CODE style="color:red;">
@@ -126,10 +76,10 @@ int32_t xs3_mean_s32(
  * 
  * \return  Energy
  */
-int16_t xs3_energy_s16(
-    const int16_t* b,
+int32_t xs3_energy_s16(
+    const int16_t b[],
     const unsigned length,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 /** Calculate the energy of a 32-bit BFP vector.
  * 
@@ -151,60 +101,10 @@ int16_t xs3_energy_s16(
  * 
  * \return  Energy
  */
-int32_t xs3_energy_s32(
-    const int32_t* b,
+int64_t xs3_energy_s32(
+    const int32_t b[],
     const unsigned length,
-    const int b_shr);
-
-/** Calculate the RMS of a 16-bit BFP vector.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      A <-  sqrt( ((B[0])^2 + (B[1])^2 + ... + (B[N-1])^2) / N )
- *        where A is a scalar
- *              B[] is a BFP vector of size N
- * 
- * \param[in] b         Input vector
- * \param[in] length    Length of input vector
- * \param[in] b_shr     Right-shift applied to elements of `b`
- * 
- * \return  RMS
- */
-int16_t xs3_rms_s16(
-    const int16_t* b,
-    const unsigned length,
-    const int b_shr);
-
-/** Calculate the RMS of a 32-bit BFP vector.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      A <-  sqrt( ((B[0])^2 + (B[1])^2 + ... + (B[N-1])^2) / N )
- *        where A is a scalar
- *              B[] is a BFP vector of size N
- * 
- * \param[in] b         Input vector
- * \param[in] length    Length of input vector
- * \param[in] b_shr     Right-shift applied to elements of `b`
- * 
- * \return  RMS
- */
-int32_t xs3_rms_s32(
-    const int32_t* b,
-    const unsigned length,
-    const int b_shr);
+    const right_shift_t b_shr);
 
 
 /** Find the maximum value in a 16-bit integer vector.
