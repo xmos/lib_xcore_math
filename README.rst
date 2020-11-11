@@ -14,22 +14,22 @@ This library is a work in progress and is likely to change significantly in the 
 Repository Structure
 --------------------
 
-* `</lib_xs3_math/>`_ - The actual ``lib_xs3_math`` library directory.
+* `<https://github.com/xmos/lib_xs3_math/lib_xs3_math/>`_ - The actual ``lib_xs3_math`` library directory.
 
-  * `api/ </lib_xs3_math/api/>`_ - Headers containing the public API for ``lib_xs3_math``.
-  * `doc/ </lib_xs3_math/doc/>`_ - Library documentation source (for non-embedded documentation) and build directory.
-  * `script/ </lib_xs3_math/script/>`_ - Scripts used for source generation.
-  * `src/ </lib_xs3_math/src/>`_ - Library source code.
+  * `api/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/api/>`_ - Headers containing the public API for ``lib_xs3_math``.
+  * `doc/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/doc/>`_ - Library documentation source (for non-embedded documentation) and build directory.
+  * `script/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/script/>`_ - Scripts used for source generation.
+  * `src/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/src/>`_ - Library source code.
 
-    * `arch/ </lib_xs3_math/src/arch/>`_ - Architecture specific (Assembly) source files.
-    * `high/ </lib_xs3_math/src/high/>`_ - Source files for high-level API.
-    * `low/ </lib_xs3_math/src/low/>`_- Source files for low-level API.
+    * `arch/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/src/arch/>`_ - Architecture specific (Assembly) source files.
+    * `high/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/src/high/>`_ - Source files for high-level API.
+    * `low/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/src/low/>`_- Source files for low-level API.
 
-* `/test/ </lib_xs3_math/test/>`_ - Unit test projects for ``lib_xs3_math``.
+* `/test/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/test/>`_ - Unit test projects for ``lib_xs3_math``.
 
-  * `fft_test/ </lib_xs3_math/test/fft_test/>`_ - FFT unit tests project.
-  * `shared/ </lib_xs3_math/test/shared/>`_ - Some files shared by both unit test projects.
-  * `unit_test/ </lib_xs3_math/test/unit_test/>`_ - Vectorized arithmetic unit test project.
+  * `fft_test/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/test/fft_test/>`_ - FFT unit tests project.
+  * `shared/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/test/shared/>`_ - Some files shared by both unit test projects.
+  * `unit_test/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/test/unit_test/>`_ - Vectorized arithmetic unit test project.
 
 
 Requirements
@@ -109,14 +109,14 @@ Including lib_xs3_math in External Applications
 
 To include ``lib_xs3_math`` in your application
 
-* add `</lib_xs3_math/api/>`_ as an include directory.
-* add the ``.c`` and ``.S`` files in `/lib_xs3_math/src </lib_xs3_math>`_ to your source.
+* add `/lib_xs3_math/api/ <https://github.com/xmos/lib_xs3_math/lib_xs3_math/api/>`_ as an include directory.
+* add the ``.c`` and ``.S`` files in `/lib_xs3_math/src <https://github.com/xmos/lib_xs3_math/lib_xs3_math>`_ to your source.
 
-Some build-time configuration of the library is possible by using certain global defines. See `xs3_math_conf.h </lib_xs3_math/api/xs3_math_conf.h>`_ and its associated documentation for more information.
+Some build-time configuration of the library is possible by using certain global defines. See `xs3_math_conf.h <https://github.com/xmos/lib_xs3_math/lib_xs3_math/api/xs3_math_conf.h>`_ and its associated documentation for more information.
 
 The Make script used in the unit test apps auto-generates a couple source files (``xs3_fft_lut.c`` and ``xs3_fft_lut.h`` -- supports various max FFT sizes without wasting memory) in the build directory. If your project has no need to auto-generate those files (because you know your maximum FFT length), use `this Python script </lib_xs3_math/script/gen_fft_table.py>`_ to generate them once and include them in your own project. Note that ``xs3_fft_lut.h`` needs to be in the include path for the ``lib_xs3_math`` source.
 
-From user code, ``lib_xs3_math`` API functions can be accessed by including `xs3_math.h </lib_xs3_math/api/xs3_math.h>`_.
+From user code, ``lib_xs3_math`` API functions can be accessed by including `xs3_math.h <https://github.com/xmos/lib_xs3_math/lib_xs3_math/api/xs3_math.h>`_.
 
 Unit Tests
 ----------
@@ -235,5 +235,5 @@ With Doxygen on your path, the documentation can be built either by invoking the
 
 Alternatively, by calling ``doxygen`` from within the `</lib_xs3_math/doc/` directory.
 
-The documentation will be generated within the ``/lib_xs3_math/doc/.build/`` directory. To view the HTML version of the documentation, open ``/lib_xs3_math/doc/.build/html/index.html`` in a browser.
+The documentation will be generated within the ``/lib_xs3_math/doc/build/`` directory. To view the HTML version of the documentation, open ``/lib_xs3_math/doc/build/html/index.html`` in a browser.
 
