@@ -114,7 +114,7 @@ To include ``lib_xs3_math`` in your application
 
 Some build-time configuration of the library is possible by using certain global defines. See `xs3_math_conf.h <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/xs3_math_conf.h>`_ and its associated documentation for more information.
 
-The Make script used in the unit test apps auto-generates a couple source files (``xs3_fft_lut.c`` and ``xs3_fft_lut.h`` -- supports various max FFT sizes without wasting memory) in the build directory. If your project has no need to auto-generate those files (because you know your maximum FFT length), use `this Python script </lib_xs3_math/script/gen_fft_table.py>`_ to generate them once and include them in your own project. Note that ``xs3_fft_lut.h`` needs to be in the include path for the ``lib_xs3_math`` source.
+The Make script used in the unit test apps auto-generates a couple source files (``xs3_fft_lut.c`` and ``xs3_fft_lut.h`` -- supports various max FFT sizes without wasting memory) in the build directory. If your project has no need to auto-generate those files (because you know your maximum FFT length), use `this Python script <https://github.com/xmos/lib_xs3_math/blob/develop/lib_xs3_math/script/gen_fft_table.py>`_ to generate them once and include them in your own project. Note that ``xs3_fft_lut.h`` needs to be in the include path for the ``lib_xs3_math`` source.
 
 From user code, ``lib_xs3_math`` API functions can be accessed by including `xs3_math.h <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/xs3_math.h>`_.
 
