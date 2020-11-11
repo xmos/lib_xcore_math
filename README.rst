@@ -25,11 +25,11 @@ Repository Structure
     * `high/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/high/>`_ - Source files for high-level API.
     * `low/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/low/>`_- Source files for low-level API.
 
-* `/test/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/test/>`_ - Unit test projects for ``lib_xs3_math``.
+* `/test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/>`_ - Unit test projects for ``lib_xs3_math``.
 
-  * `fft_test/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/test/fft_test/>`_ - FFT unit tests project.
-  * `shared/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/test/shared/>`_ - Some files shared by both unit test projects.
-  * `unit_test/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/test/unit_test/>`_ - Vectorized arithmetic unit test project.
+  * `fft_test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/fft_test/>`_ - FFT unit tests project.
+  * `shared/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/shared/>`_ - Some files shared by both unit test projects.
+  * `unit_test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/unit_test/>`_ - Vectorized arithmetic unit test project.
 
 
 Requirements
@@ -126,7 +126,7 @@ This project uses GNU Make to build the unit test applications. Both unit test p
 Arithmetic Unit Tests
 *********************
 
-This application runs unit tests for the various 16- and 32-bit vectorized arithmetic functions. This application is located at `</test/unit_test/>`_.
+This application runs unit tests for the various 16- and 32-bit vectorized arithmetic functions. This application is located at `/test/unit_test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/unit_test>`_.
 
 ::
 
@@ -174,7 +174,7 @@ which will leave a binary in ``bin/x86/``.
 FFT Unit Tests
 **************
 
-This application runs all unit tests associated with the behavior of the library's FFT. This application is located at `</test/fft_test/>`_.
+This application runs all unit tests associated with the behavior of the library's FFT. This application is located at `/test/fft_test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/>`_.
 
 ::
 
