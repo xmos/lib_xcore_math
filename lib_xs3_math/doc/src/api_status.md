@@ -2,7 +2,7 @@
 API Function Status                 {#api_status}
 ===================
 
-This table is unlikely to have actually captured everything that will be needed for an initial release (for example, it is currently unclear to me what low-level FFT functions are necessary). As new required API functions are identified they should be added to this table. Additionally, other functions (particularly utility functions) may have been written that haven't been included here.
+This table captures the current development status of the API. As new API functions are identified, they will be added to this table. Additionally, other functions (particularly utility functions) may have been written that haven't been included here.
 
 ### Low-Level Functions ###
 
