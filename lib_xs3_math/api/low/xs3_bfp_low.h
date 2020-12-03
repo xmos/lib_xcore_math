@@ -6,6 +6,41 @@
 extern "C" {
 #endif
 
+
+
+/** Set all elements of an `int16_t` array to the specified value.
+ * 
+ * \low_op{16, @f$data_k \leftarrow value\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * 
+ * \requires_word_alignment{data}
+ * 
+ * \param[out] data     Array to set
+ * \param[in] value     Value to set
+ * \param[in] length    Number of elements in `data`
+ */
+void xs3_set_vect_s16(
+    int16_t data[],
+    const int16_t value,
+    const unsigned length);
+
+/** Set all elements of an `int32_t` array to the specified value.
+ * 
+ * \low_op{32, @f$data_k \leftarrow value\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * 
+ * \requires_word_alignment{data}
+ * 
+ * \param[out] data     Array to set
+ * \param[in]  value    Value to set
+ * \param[in]  length   Number of elements in `data`
+ */
+void xs3_set_vect_s32(
+    int32_t data[],
+    const int32_t value,
+    const unsigned length);
+
+
+
+
 /**
  * \brief Compute headroom of `int16_t` array `v`
  * 
@@ -19,7 +54,7 @@ extern "C" {
  * \return  Headroom of the array `v`
  */
 headroom_t xs3_headroom_vect_s16(
-    const int16_t* v, 
+    const int16_t v[], 
     const unsigned N);
 
 /**
@@ -35,7 +70,7 @@ headroom_t xs3_headroom_vect_s16(
  * \return  Headroom of the array `v`
  */
 headroom_t xs3_headroom_vect_s32(
-    const int32_t* v,
+    const int32_t v[],
     const unsigned N);
 
 /**
@@ -73,10 +108,29 @@ headroom_t xs3_headroom_vect_s32(
  * \return         The headroom of the output vector `a`
  */
 headroom_t xs3_shl_vect_s16(
-    int16_t* a,
-    const int16_t* b,
+    int16_t a[],
+    const int16_t b[],
     const unsigned length,
     const left_shift_t shl);
+
+    
+#ifdef __XC__
+
+  // For some reason I can't get the static inline functions to compile when included
+  // from a .xc file. There's probably some fix I don't know about. This is temporary.
+  // @todo Make these work from XC.
+
+#else    
+static inline headroom_t xs3_shr_vect_s16(
+    int16_t a[],
+    const int16_t b[],
+    const unsigned length,
+    const right_shift_t shr)
+{
+    return xs3_shl_vect_s16(a, b, length, -shr);
+}
+
+#endif //__XC__
 
 /**
  * \brief Perform a signed, saturating arithmetic left shift of an `int32_t` vector.
@@ -111,11 +165,90 @@ headroom_t xs3_shl_vect_s16(
  * \return         The headroom of the output vector `a`
  */
 headroom_t xs3_shl_vect_s32(
-    int32_t* a,
-    const int32_t* b,
+    int32_t a[],
+    const int32_t b[],
     const unsigned length,
     const left_shift_t shl);
 
+    
+    
+#ifdef __XC__
+
+  // For some reason I can't get the static inline functions to compile when included
+  // from a .xc file. There's probably some fix I don't know about. This is temporary.
+  // @todo Make these work from XC.
+
+#else    
+
+static inline headroom_t xs3_shr_vect_s32(
+    int32_t a[],
+    const int32_t b[],
+    const unsigned length,
+    const right_shift_t shr)
+{
+    return xs3_shl_vect_s32(a, b, length, -shr);
+}
+
+#endif //__XC__
+
+
+
+/**
+ * @brief Calculate the output exponent and input shifts needed to perform a
+ * BFP vector addition.
+ * 
+ * This function is used to calcular the output exponent and operand shift parameter values 
+ * required to compute the element-wise sum @f$\bar A = \bar B - \bar C@f$ of BFP vectors 
+ * @f$\bar B@f$ and @f$\bar C@f$
+ * 
+ * Logic is identical for `bfp_s16_t`, `bfp_s32_t`, `bfp_complex_s16_t`, `bfp_complex_s32_t`.
+ * 
+ * The `allow_saturation` parameter is used to specify whether to check for the possibility of 
+ * corner-case saturation. For an explanation of corner-case saturation, see \ref saturation.
+ * Corner-case saturation is avoided if `allow_saturation` is zero.
+ * 
+ * For BFP vector addition, corner-case saturation may occur when BFP vectors `B` and `C` have
+ * similar magnitudes (in the sense of their @f$L\infty@f$-norm). Specifically, for input BFP 
+ * vectors @f$B@f$ and @f$C@f$, the corner case will be detected and avoided when 
+ * @f$\left(B_{exp}-B_{hr}\right) = \left(C_{exp}-C_{hr}\right)@f$.
+ * 
+ * The outputs of this function `b_shr` and `c_shr` can be used with `xs3_add_vect_s16()` and 
+ * `xs3_add_vect_s32()` as the shift values for that function's corresponding parameters. The output 
+ * `a_exp` is the exponent associated with the result computed by those functions.
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result, the `b_shr` and `c_shr` 
+ * produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
+ * \endcode
+ * Note that using smaller values than necessary for `b_shr` and `c_shr` can result in saturation, 
+ * and using larger values may result in unnecessary underflows.
+ * 
+ * @param[out] a_exp    Exponent @f$A_{exp}@f$ of the result vector @f$\bar A@f$
+ * @param[out] b_shr    Right-shift to be applied to vector @f$\bar B@f$
+ * @param[out] c_shr    Right-shift to be applied to vector @f$\bar C@f$
+ * @param[in]  b_exp    Exponent @f$B_{exp}@f$ associated with @f$\bar B@f$
+ * @param[in]  c_exp    Exponent @f$C_{exp}@f$ associated with @f$\bar C@f$
+ * @param[in]  b_hr     Headroom @f$B_{hr}@f$ associated with @f$\bar B@f$
+ * @param[in]  c_hr     Headroom @f$B_{hr}@f$ associated with @f$\bar B@f$
+ * @param[in]  allow_saturation  Whether to avoid corner-case saturation.
+ * 
+ * \sa xs3_add_vect_s16
+ * \sa xs3_add_vect_s32
+ * \sa xs3_sub_vect_s16
+ * \sa xs3_sub_vect_s32
+ */
+void xs3_add_sub_vect_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const unsigned allow_saturation);
     
 /**
  * \brief Add together two `int16_t` vectors.
@@ -146,9 +279,9 @@ headroom_t xs3_shl_vect_s32(
  * \see bfp_add_vect_s16()
  */
 headroom_t xs3_add_vect_s16(
-    int16_t* a,
-    const int16_t* b, 
-    const int16_t* c,
+    int16_t a[],
+    const int16_t b[], 
+    const int16_t c[],
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
@@ -182,9 +315,9 @@ headroom_t xs3_add_vect_s16(
  * \see bfp_add_vect_s32()
  */
 headroom_t xs3_add_vect_s32(
-    int32_t* a,
-    const int32_t* b,
-    const int32_t* c,
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c[],
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
@@ -220,9 +353,9 @@ headroom_t xs3_add_vect_s32(
  * \see bfp_sub_vect_s16()
  */
 headroom_t xs3_sub_vect_s16(
-    int16_t* a,
-    const int16_t* b,
-    const int16_t* c,
+    int16_t a[],
+    const int16_t b[],
+    const int16_t c[],
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
@@ -258,12 +391,32 @@ headroom_t xs3_sub_vect_s16(
  * \see bfp_sub_vect_s16()
  */
 headroom_t xs3_sub_vect_s32(
-    int32_t* a,
-    const int32_t* b,
-    const int32_t* c,
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c[],
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
+
+
+
+/**
+ * @brief Calculate the exponent and output shift for `xs3_mul_vect_s16`.
+ * 
+ * @param[out] a_exp
+ * @param[out] a_shr
+ * @param[in]  b_exp
+ * @param[in]  c_exp
+ * @param[in]  b_hr
+ * @param[in]  c_hr
+ */
+void xs3_mul_vect_s16_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* a_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
 
 
 /**
@@ -289,12 +442,34 @@ headroom_t xs3_sub_vect_s32(
  */
 //! [xs3_mul_vect_s16]
 headroom_t xs3_mul_vect_s16(
-    int16_t* a,
-    const int16_t* b,
-    const int16_t* c,
+    int16_t a[],
+    const int16_t b[],
+    const int16_t c[],
     const unsigned length,
     const right_shift_t a_shr);
 //! [xs3_mul_vect_s16]
+
+
+
+/**
+ * @brief Calculate the exponent and input shifts for `xs3_mul_vect_s32`.
+ * 
+ * @param[out] a_exp
+ * @param[out] b_shr
+ * @param[out] c_shr
+ * @param[in]  b_exp
+ * @param[in]  c_exp
+ * @param[in]  b_hr
+ * @param[in]  c_hr
+ */
+void xs3_mul_vect_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
 
 /**
  * \brief Multiply one `int32_t` vector by another.
@@ -323,13 +498,25 @@ headroom_t xs3_mul_vect_s16(
  */
 //! [xs3_mul_vect_s32]
 headroom_t xs3_mul_vect_s32(
-    int32_t* a,
-    const int32_t* b,
-    const int32_t* c,
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c[],
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 //! [xs3_mul_vect_s32]
+
+
+
+void xs3_scalar_mul_vect_s16_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* sat,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const unsigned allow_saturation);
+
 
 /**
  * \brief Multiply one `int16_t` vector by a 16-bit scalar.
@@ -356,8 +543,8 @@ headroom_t xs3_mul_vect_s32(
  * \return  Headroom of output vector `a`
  */
 headroom_t xs3_scalar_mul_vect_s16(
-    int16_t* a,
-    const int16_t* b,
+    int16_t a[],
+    const int16_t b[],
     const unsigned length,
     const int16_t alpha,
     const right_shift_t b_shr);
@@ -387,8 +574,8 @@ headroom_t xs3_scalar_mul_vect_s16(
  * \return  Headroom of output vector `a`
  */
 headroom_t xs3_scalar_mul_vect_s32(
-    int32_t* a,
-    const int32_t* b,
+    int32_t a[],
+    const int32_t b[],
     const unsigned length,
     const int32_t alpha,
     const right_shift_t b_shr);
@@ -412,8 +599,8 @@ headroom_t xs3_scalar_mul_vect_s32(
  * \return  Headroom of the output vector `a`
  */
 headroom_t xs3_abs_vect_s16(
-    int16_t* a,
-    const int16_t* b,
+    int16_t a[],
+    const int16_t b[],
     const unsigned length);
 
 
@@ -436,8 +623,8 @@ headroom_t xs3_abs_vect_s16(
  * 
  */
 headroom_t xs3_abs_vect_s32(
-    int32_t* a,
-    const int32_t* b,
+    int32_t a[],
+    const int32_t b[],
     const unsigned length);
 
 
@@ -453,7 +640,7 @@ headroom_t xs3_abs_vect_s32(
  * \warning If `length > 65536` it is possible for saturation to occur on the 32-bit accumulator. Saturating
  *          additions are *not* associative, and so no guarantees are made with respect to the correctness of
  *          the result unless it is known *a priori* that no partial sums of elements from `b` (taken in any 
- *          order) will saturate. If more more than `65536` elements are to be summed, it is recommended that
+ *          order) will saturate. If more than `65536` elements are to be summed, it is recommended that
  *          the user instead make multiple calls to `xs3_sum_s16()`, adding together partial sums of 
  *          subsequences of `b` in user code.
  * 
@@ -463,7 +650,7 @@ headroom_t xs3_abs_vect_s32(
  * \return  Sum of elements in `b`
  */
 int32_t xs3_sum_s16(
-    const int16_t* b,
+    const int16_t b[],
     const unsigned length);
 
 
@@ -480,7 +667,7 @@ int32_t xs3_sum_s16(
  * \warning If `length > 256` it is possible for saturation to occur on the 40-bit accumulator. Saturating
  *          additions are *not* associative, and so no guarantees are made with respect to the correctness of
  *          the result unless it is known *a priori* that no partial sums of elements from `b` (taken in any 
- *          order) will saturate. If more more than `256` elements are to be summed, it is recommended that
+ *          order) will saturate. If more than `256` elements are to be summed, it is recommended that
  *          the user instead make multiple calls to `xs3_sum_s32()`, adding together partial sums of 
  *          subsequences of `b` in user code.
  * 
@@ -490,8 +677,9 @@ int32_t xs3_sum_s16(
  * \return  Sum of elements in `b`
  */
 int64_t xs3_sum_s32(
-    const int32_t* b,
+    const int32_t b[],
     const unsigned length);
+
 
 /**
  * @brief Compute the dot product between two `int16_t` vectors.
@@ -524,12 +712,24 @@ int64_t xs3_sum_s32(
  * 
  * @return The dot product of `b` and `c`
  */
-int32_t xs3_dot_s16(
-    const int16_t* b,
-    const int16_t* c,
+int64_t xs3_dot_s16(
+    const int16_t b[],
+    const int16_t c[],
     const unsigned length,
-    const right_shift_t b_shr,
-    const right_shift_t c_shr);
+    const headroom_t bc_hr);
+
+
+void xs3_dot_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const unsigned length,
+    const unsigned allow_saturation);
+
 
 /**
  * \brief Compute the dot product between two `int32_t` vectors.
@@ -565,8 +765,8 @@ int32_t xs3_dot_s16(
  * \return The dot product of `b` and `c`
  */
 int64_t xs3_dot_s32(
-    const int32_t* b,
-    const int32_t* c,
+    const int32_t b[],
+    const int32_t c[],
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
@@ -600,8 +800,8 @@ int64_t xs3_dot_s32(
  * 
  */
 headroom_t xs3_clip_vect_s16(
-    int16_t* a,
-    const int16_t* b,
+    int16_t a[],
+    const int16_t b[],
     const unsigned length,
     const int16_t lower_bound,
     const int16_t upper_bound,
@@ -636,8 +836,8 @@ headroom_t xs3_clip_vect_s16(
  * 
  */
 headroom_t xs3_clip_vect_s32(
-    int32_t* a,
-    const int32_t* b,
+    int32_t a[],
+    const int32_t b[],
     const unsigned length,
     const int32_t lower_bound,
     const int32_t upper_bound,
@@ -664,8 +864,8 @@ headroom_t xs3_clip_vect_s32(
  * \return  Headroom of the output vector `a`
  */
 headroom_t xs3_rect_vect_s16(
-    int16_t* a,
-    const int16_t* b,
+    int16_t a[],
+    const int16_t b[],
     const unsigned length);
 
 
@@ -689,9 +889,66 @@ headroom_t xs3_rect_vect_s16(
  * \return  Headroom of the output vector `a`
  */
 headroom_t xs3_rect_vect_s32(
-    int32_t* a,
-    const int32_t* b,
+    int32_t a[],
+    const int32_t b[],
     const unsigned length);
+
+
+#define XS3_VECT_SQRT_S16_MAX_DEPTH     (15)
+#define XS3_VECT_SQRT_S32_MAX_DEPTH     (31)
+
+void xs3_sqrt_vect_s16_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const exponent_t b_exp,
+    const right_shift_t b_hr);
+
+void xs3_sqrt_vect_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const exponent_t b_exp,
+    const right_shift_t b_hr);
+
+headroom_t xs3_sqrt_vect_s16(
+    int16_t a[],
+    const int16_t b[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const unsigned depth);
+
+headroom_t xs3_sqrt_vect_s32(
+    int32_t a[],
+    const int32_t b[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const unsigned depth);
+
+
+void xs3_inverse_vect_s16_calc_params(
+    exponent_t* a_exp,
+    unsigned* scale,
+    const int16_t b[],
+    const exponent_t b_exp,
+    const unsigned length);
+
+void xs3_inverse_vect_s32_calc_params(
+    exponent_t* a_exp,
+    unsigned* scale,
+    const int32_t b[],
+    const exponent_t b_exp,
+    const unsigned length);
+
+headroom_t xs3_inverse_vect_s32(
+    int32_t a[],
+    const int32_t b[],
+    const unsigned length,
+    const unsigned scale);
+
+void xs3_inverse_vect_s16(
+    int16_t a[],
+    const int16_t b[],
+    const unsigned length,
+    const unsigned scale);
 
 
 
@@ -721,8 +978,8 @@ headroom_t xs3_rect_vect_s32(
  * \param[in]  b_shr    Right-shift to apply to elements of `b`
  */
 void xs3_s32_to_s16(
-    int16_t* a,
-    const int32_t* b,
+    int16_t a[],
+    const int32_t b[],
     const unsigned length,
     const right_shift_t b_shr);
 
@@ -750,14 +1007,14 @@ void xs3_s32_to_s16(
  * \param[in]  length   Number of elements in vectors `a` and `b`
  */
 void xs3_s16_to_s32(
-    int32_t* a,
-    const int16_t* b,
+    int32_t a[],
+    const int16_t b[],
     const unsigned length);
 
 
 // headroom_t xs3_sqrt_vect_s16(
-//     int16_t* a,
-//     const int16_t* b,
+//     int16_t a[],
+//     const int16_t b[],
 //     const unsigned length);
 
 

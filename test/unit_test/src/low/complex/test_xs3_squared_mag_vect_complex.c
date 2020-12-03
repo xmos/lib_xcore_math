@@ -14,6 +14,8 @@
 #include "unity.h"
 
 
+static unsigned seed = 666;
+
 static char msg_buff[300];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
@@ -76,6 +78,134 @@ static int32_t squared_mag_complex_s32(
 
 
 
+
+#define REPS        1000
+static void test_xs3_squared_mag_vect_complex_s16_calc_params()
+{
+    PRINTF("%s...\n", __func__);
+
+    seed = 0x142B711E;
+
+    for(int r = 0; r < REPS; r++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        
+        exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
+        headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 15);
+
+        int16_t WORD_ALIGNED B_re = INT16_MIN >> b_hr;
+        int16_t WORD_ALIGNED B_im = B_re;
+        int16_t WORD_ALIGNED A_mag;
+
+        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat ++){
+            
+            exponent_t a_exp;
+            right_shift_t sat;
+
+            // PRINTF("\n\t    allow_sat = %u\n", allow_sat);
+            // PRINTF("\t    b_exp = %d\n", b_exp);
+            // PRINTF("\t    b_hr = %d\n", b_hr);
+
+            xs3_squared_mag_vect_complex_s16_calc_params(&a_exp, &sat, b_exp, b_hr, allow_sat);
+
+            // PRINTF("\t    B_re = %d    (0x%04X)\n", B_re, (uint16_t) B_re);
+            // PRINTF("\t    B_im = %d    (0x%04X)\n", B_im, (uint16_t) B_im);
+
+            xs3_squared_mag_vect_complex_s16(&A_mag, &B_re, &B_im, 1, sat);
+
+            // PRINTF("\t    A_mag = %d   (0x%04X)\n", A_mag, (uint16_t) A_mag);
+            // PRINTF("\t    a_exp = %d\n", a_exp);
+            // PRINTF("\t    sat  = %d\n", sat);
+
+            uint32_t acc = ((int32_t)B_re) * B_re + ((int32_t)B_im) * B_im;
+            
+            // PRINTF("\t    acc  = %lu    (0x%08X)\n", acc, (unsigned) acc);
+
+            double q = ldexp(B_re, b_exp) * ldexp(B_re, b_exp) + ldexp(B_im, b_exp) * ldexp(B_im, b_exp);
+            double p = ldexp(A_mag, a_exp);
+
+            // The only time p != q is if A_mag saturated from 0x8000 to 0x7FFF
+            TEST_ASSERT_TRUE( (A_mag == 0x7FFF && allow_sat) || (p == q) );
+
+            if( acc < 0x8000 ){
+                // Because sat cannot be negative, if the accumulator value would be less than 0x8000, the result is 
+                // just the direct squared magnitude.
+                
+                TEST_ASSERT_EQUAL_HEX16(acc, A_mag);
+                TEST_ASSERT_EQUAL(2*b_exp, a_exp);
+            } else {
+                // Depends on whether saturation is allowed
+                TEST_ASSERT_EQUAL( allow_sat? 0x7FFF : 0x4000, A_mag );
+            }
+
+        }
+        
+    }
+}
+#undef REPS
+
+
+
+
+#define REPS        1000
+static void test_xs3_squared_mag_vect_complex_s32_calc_params()
+{
+    PRINTF("%s...\n", __func__);
+
+    seed = 0x142B711E;
+
+    for(int r = 0; r < REPS; r++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        
+        exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
+        headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 31);
+
+        complex_s32_t B = { INT32_MIN >> b_hr, INT32_MIN >> b_hr };
+
+        int32_t A;
+
+        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat ++){
+            
+            exponent_t a_exp;
+            right_shift_t b_shr;
+
+            // PRINTF("\n\t    allow_sat = %u\n", allow_sat);
+            // PRINTF("\t    b_exp = %d\n", b_exp);
+            // PRINTF("\t    b_hr = %d\n", b_hr);
+
+            xs3_squared_mag_vect_complex_s32_calc_params(&a_exp, &b_shr, b_exp, b_hr, allow_sat);
+
+            // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B.re, (uint32_t) B.re);
+            // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B.im, (uint32_t) B.im);
+
+            xs3_squared_mag_vect_complex_s32(&A, &B, 1, b_shr);
+
+            // PRINTF("\t    A = %ld   (0x%08lX)\n", A, (uint32_t) A);
+            // PRINTF("\t    a_exp = %d\n", a_exp);
+            // PRINTF("\t    b_shr  = %d\n", b_shr);
+
+            double q = ldexp(B.re, b_exp) * ldexp(B.re, b_exp) + ldexp(B.im, b_exp) * ldexp(B.im, b_exp);
+            double p = ldexp(A, a_exp);
+
+            // The only time p != q is if A saturated from 0x80000000 to 0x7FFFFFFF
+            TEST_ASSERT_TRUE( (A == 0x7FFFFFFF && allow_sat) || (p == q) );
+
+            if( allow_sat ){
+
+                TEST_ASSERT_EQUAL_INT32(0x7FFFFFFF, A);
+
+                //Increasing b_shr by 1 should divide the pre-saturation result by 4
+                xs3_squared_mag_vect_complex_s32(&A, &B, 1, b_shr+1);
+
+                TEST_ASSERT_EQUAL_INT32(0x20000000, A);
+            } else {
+                //when saturation is not allowed, b_shr is incremented, but incrementing it by 1
+                // shrinks the result by a factor of 4
+                TEST_ASSERT_EQUAL_INT32(0x20000000, A);
+            }
+        }
+    }
+}
+#undef REPS
 
 
 
@@ -164,7 +294,7 @@ static void test_xs3_squared_mag_vect_complex_s16_basic()
 
 
 #define MAX_LEN     100
-#define REPS        IF_QUICK_TEST(100, 1000)
+#define REPS        1000
 #define THRESHOLD   10
 static void test_xs3_squared_mag_vect_complex_s16_random()
 {
@@ -306,7 +436,7 @@ static void test_xs3_squared_mag_vect_complex_s32_basic()
 
 
 #define MAX_LEN     100
-#define REPS        IF_QUICK_TEST(100, 1000)
+#define REPS        1000
 #define THRESHOLD   7
 static void test_xs3_squared_mag_vect_complex_s32_random()
 {
@@ -362,6 +492,8 @@ static void test_xs3_squared_mag_vect_complex_s32_random()
 void test_xs3_squared_mag_vect_complex()
 {
     SET_TEST_FILE();
+    RUN_TEST(test_xs3_squared_mag_vect_complex_s16_calc_params);
+    RUN_TEST(test_xs3_squared_mag_vect_complex_s32_calc_params);
 
     RUN_TEST(test_xs3_squared_mag_vect_complex_s16_basic);
     RUN_TEST(test_xs3_squared_mag_vect_complex_s16_random);

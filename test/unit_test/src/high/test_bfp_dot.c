@@ -18,8 +18,8 @@
 #endif
 
 
-#define REPS        IF_QUICK_TEST(10, 100)
-#define MAX_LEN     256 
+#define REPS        IF_QUICK_TEST(100, 1000)
+#define MAX_LEN     1024
 
 static char msg_buff[200];
 
@@ -30,34 +30,11 @@ static char msg_buff[200];
     }} while(0)
 
 
-
-
-void bfp_dot_s16_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    right_shift_t* c_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned length);
-    
-void bfp_dot_s32_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    right_shift_t* c_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned length);
-
-
 static void test_bfp_dot_s16()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
-    unsigned seed = 6745;
+    unsigned seed = 0x7C385C55;
 
     int16_t dataB[MAX_LEN];
     int16_t dataC[MAX_LEN];
@@ -69,33 +46,50 @@ static void test_bfp_dot_s16()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        test_random_bfp_s16(&B, MAX_LEN, &seed, NULL, 0);
-        test_random_bfp_s16(&C, MAX_LEN, &seed, NULL, B.length);
+        bfp_init_vect_s16(&B, dataB, pseudo_rand_int(&seed, -100, 100),
+                            pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
-        int64_t total = 0;
+        bfp_init_vect_s16(&C, dataC, pseudo_rand_int(&seed, -100, 100), B.length, 0);
 
-        exponent_t a_exp;
-        right_shift_t b_shr, c_shr;
+        B.hr = pseudo_rand_uint(&seed, 1, 12);
+        C.hr = pseudo_rand_uint(&seed, 1, 12);
 
-        bfp_dot_s16_calc_params(&a_exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr, B.length);
-        
-        // printf("! %d \n", B.length);
+        double expected = 0;
 
-        for(int k = 0; k < B.length; k++){
-            int64_t b = (b_shr >= 0)? (B.data[k] >> b_shr) : (B.data[k] << -b_shr);
-            int64_t c = (c_shr >= 0)? (C.data[k] >> c_shr) : (C.data[k] << -c_shr);
+        for(int i = 0; i < B.length; i++){
+            B.data[i] = pseudo_rand_uint(&seed, 0, INT16_MAX) >> B.hr;
+            C.data[i] = pseudo_rand_uint(&seed, 0, INT16_MAX) >> C.hr;
 
-            // printf("@ %lld \t %d >> %d \n", b,  B.data[k], b_shr);
-            // printf("# %lld \t %d >> %d \n\n", c,  C.data[k], c_shr);
-
-            total += b * c;
+            expected += ldexp(B.data[i], B.exp) * ldexp(C.data[i], C.exp);
         }
 
-        int64_t result = bfp_dot_s16(&a_exp, &B, &C);
+        bfp_headroom_vect_s16(&B);
+        bfp_headroom_vect_s16(&C);
+
+        // printf("B.length = %u\n", B.length);
+        // printf("B.exp = %d\n", B.exp);
+        // printf("C.exp = %d\n", C.exp);
+
+        // printf("B.hr = %u\n", B.hr);
+        // printf("C.hr = %u\n", C.hr);
         
-        TEST_ASSERT_EQUAL(total, result);
+        exponent_t a_exp;
+        int64_t result = bfp_dot_s16(&a_exp, &B, &C);
+
+        double diff = expected-ldexp(result, a_exp);
+        double error = fabs(diff/expected);
+
+        // printf("@ %e    %e     %e     %e \n", expected, ldexp(result, a_exp), diff, error);
+
+        double max_error = ldexp(1, ceil_log2(B.length) - 8 - (B.hr+C.hr));
+
+        TEST_ASSERT( error < max_error );
     }
 }
+
+
+
+
 
 static void test_bfp_dot_s32_A()
 {
@@ -200,26 +194,32 @@ static void test_bfp_dot_s32_B()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        test_random_bfp_s32(&B, MAX_LEN, &seed, NULL, 0);
-        test_random_bfp_s32(&C, MAX_LEN, &seed, NULL, B.length);
+        bfp_init_vect_s32(&B, dataB, pseudo_rand_int(&seed, -100, 100),
+                            pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
-        int64_t total = 0;
+        bfp_init_vect_s32(&C, dataC, pseudo_rand_int(&seed, -100, 100), B.length, 0);
 
-        exponent_t a_exp;
-        right_shift_t b_shr, c_shr;
+        B.hr = pseudo_rand_uint(&seed, 0, 28);
+        C.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        bfp_dot_s32_calc_params(&a_exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr, B.length);
-        
-        for(int k = 0; k < B.length; k++){
-            int64_t b = ASHR(32)(B.data[k], b_shr);
-            int64_t c = ASHR(32)(C.data[k], c_shr);
+        double expected = 0;
 
-            total += ((b * c) + (1<<29)) >> 30;
+        for(int i = 0; i < B.length; i++){
+            B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
+            C.data[i] = pseudo_rand_int32(&seed) >> C.hr;
+
+            expected += ldexp(B.data[i], B.exp) * ldexp(C.data[i], C.exp);
         }
 
-        int64_t result = bfp_dot_s32(&a_exp, &B, &C);
+        bfp_headroom_vect_s32(&B);
+        bfp_headroom_vect_s32(&C);
         
-        TEST_ASSERT_EQUAL(total, result);
+        exponent_t a_exp;
+        int64_t result = bfp_dot_s32(&a_exp, &B, &C);
+
+        double diff = expected-ldexp(result, a_exp);
+        double error = fabs(diff/expected);
+        TEST_ASSERT( error < ldexp(1,-20) );
     }
 }
 

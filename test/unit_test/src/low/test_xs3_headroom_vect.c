@@ -9,188 +9,229 @@
 #include "xs3_math.h"
 
 #include "../tst_common.h"
+#include "../src/low/vpu_helper.h"
 
 #include "unity.h"
 
 static unsigned seed = 2314567;
-static char msg_buff[200];
 
-
-#define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
-    if((EXPECTED)!=(ACTUAL)) {                                        \
-      sprintf(msg_buff, "(test vector @ line %u)", (LINE_NUM));       \
-      TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
-    }} while(0)
-
-#ifndef DEBUG_ON
+#if DEBUG_ON || 0
+#undef DEBUG_ON
 #define DEBUG_ON    (1)
 #endif
 
-static void test_xs3_headroom_vect_s16_case0()
+#define MAX_LEN     1024
+#define REPS        IF_QUICK_TEST(100,1000)
+
+
+static void test_xs3_headroom_vect_s16()
 {
-    typedef struct {
-        int16_t value;
-        headroom_t exp_hr;
-        unsigned line;
-    } test_case_t;
+    seed = 0x5F0BE930;
 
-    test_case_t casses[] = {
-        //    value          exp_hr          line #
-        {        1,              14,         __LINE__},
-        {        0,              15,         __LINE__},
-        {       -1,              15,         __LINE__},
-        {        2,              13,         __LINE__},
-        {        3,              13,         __LINE__},
-        {       -2,              14,         __LINE__},
-        {       -3,              13,         __LINE__},
-        {   0x7FFF,               0,         __LINE__},
-        {  -0x8000,               0,         __LINE__},
-        {  -0x7FFF,               0,         __LINE__},
-        {   0x00FF,               7,         __LINE__},
-    };
-
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
-
-    const unsigned start_case = 0;
-
-    for(int v = 0; v < N_cases; v++){
-        
-        test_case_t* casse = &casses[v];
-
-        int16_t A[1] = { casse->value };
-
-        headroom_t hr = xs3_headroom_vect_s16(A, 1);
-
-        TEST_ASSERT_EQUAL_MSG(casse->exp_hr, hr, casse->line);
-
-    }
-}
-
-
-#define LEN     64
-#define REPS        IF_QUICK_TEST(10, 100)
-static void test_xs3_headroom_vect_s16_case1()
-{
-    seed = 362546234;
+    int16_t WORD_ALIGNED A[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        unsigned length = pseudo_rand_uint(&seed, 100, MAX_LEN+1);
+
+        const headroom_t shr = pseudo_rand_uint(&seed, 0, 15);
         
-        //without shr, the headroom would always be zero.
-        unsigned shr = pseudo_rand_uint32(&seed) % 8;
-        int16_t A[LEN];
-        for(int i = 0; i < LEN; i++){
+        for(int i = 0; i < length; i++){
             A[i] = pseudo_rand_int16(&seed) >> shr;
         }
 
-        headroom_t hr = xs3_headroom_vect_s16(A, LEN);
-        
-        unsigned large_enough = 0;
-        for(int i = 0; i < LEN; i++){
-            int16_t a1 = A[i];
-            int16_t a2 = (a1 << hr) >> hr;
+        headroom_t hr = xs3_headroom_vect_s16(A, length);
 
-            TEST_ASSERT_EQUAL(a1, a2);
+        headroom_t min_hr = INT32_MAX;
 
-            int16_t a3 = ((a1 << (hr+1)));
-            a3 = a3 >> (hr+1);
-            if(a3 != a1)
-                large_enough = 1;
+        for(int i = 0; i < length; i++){
+            min_hr = MIN( min_hr, HR_S16(A[i]) );
         }
 
-        TEST_ASSERT(large_enough);
-
-    }
-}
-#undef LEN
-#undef REPS
-
-
-static void test_xs3_headroom_vect_s32_case0()
-{
-    typedef struct {
-        int32_t value;
-        headroom_t exp_hr;
-        unsigned line;
-    } test_case_t;
-
-    test_case_t casses[] = {
-        //        value          exp_hr          line #
-        {            1,              30,         __LINE__},
-        {            0,              31,         __LINE__},
-        {           -1,              31,         __LINE__},
-        {            2,              29,         __LINE__},
-        {            3,              29,         __LINE__},
-        {           -2,              30,         __LINE__},
-        {           -3,              29,         __LINE__},
-        {   0x7FFFFFFF,               0,         __LINE__},
-        {  -0x80000000,               0,         __LINE__},
-        {  -0x7FFFFFFF,               0,         __LINE__},
-        {   0x00FFFFFF,               7,         __LINE__},
-    };
-
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
-
-    const unsigned start_case = 0;
-
-    for(int v = 0; v < N_cases; v++){
-        
-        test_case_t* casse = &casses[v];
-
-        int32_t A[1] = { casse->value };
-
-        headroom_t hr = xs3_headroom_vect_s32(A, 1);
-
-        TEST_ASSERT_EQUAL_MSG(casse->exp_hr, hr, casse->line);
-
+        TEST_ASSERT_EQUAL( min_hr, hr );
     }
 }
 
 
-#define LEN     64
-#define REPS        IF_QUICK_TEST(10, 100)
-static void test_xs3_headroom_vect_s32_case1()
+
+
+static void test_xs3_headroom_vect_s32()
 {
-    seed = 362546234;
+    seed = 567457;
+
+    int32_t A[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        const unsigned length = pseudo_rand_uint(&seed, 100, MAX_LEN+1);
+
+        const headroom_t shr = pseudo_rand_uint(&seed, 0, 31);
         
-        //without shr, the headroom would always be zero.
-        unsigned shr = pseudo_rand_uint32(&seed) % 8;
-        int32_t A[LEN];
-        for(int i = 0; i < LEN; i++){
+        for(int i = 0; i < length; i++){
             A[i] = pseudo_rand_int32(&seed) >> shr;
         }
 
-        headroom_t hr = xs3_headroom_vect_s32(A, LEN);
+        headroom_t hr = xs3_headroom_vect_s32(A, length);
+
+        headroom_t min_hr = INT32_MAX;
         
-        unsigned large_enough = 0;
-        for(int i = 0; i < LEN; i++){
-            int32_t a1 = A[i];
-            int32_t a2 = (a1 << hr) >> hr;
-
-            TEST_ASSERT_EQUAL(a1, a2);
-
-            int32_t a3 = ((a1 << (hr+1)));
-            a3 = a3 >> (hr+1);
-            if(a3 != a1)
-                large_enough = 1;
+        for(int i = 0; i < length; i++){
+            min_hr = MIN( min_hr, HR_S32(A[i]) );
         }
 
-        TEST_ASSERT(large_enough);
-
+        TEST_ASSERT_EQUAL( min_hr, hr );
     }
 }
-#undef LEN
-#undef REPS
+
+
+static void test_xs3_headroom_vect_ch_pair_s16()
+{
+    seed = 362546234;
+
+    ch_pair_s16_t WORD_ALIGNED A[MAX_LEN];
+
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        const unsigned length = pseudo_rand_uint(&seed, 100, MAX_LEN+1);
+
+        const headroom_t shr = pseudo_rand_uint(&seed, 0, 15);
+        
+        for(int i = 0; i < length; i++){
+            A[i].ch_a = pseudo_rand_int16(&seed) >> shr;
+            A[i].ch_b = pseudo_rand_int16(&seed) >> shr;
+        }
+
+        headroom_t hr = xs3_headroom_vect_ch_pair_s16(A, length);
+
+        headroom_t min_hr = INT32_MAX;
+        
+        for(int i = 0; i < length; i++){
+            min_hr = MIN( min_hr, HR_S16(A[i].ch_a) );
+            min_hr = MIN( min_hr, HR_S16(A[i].ch_b) );
+        }
+
+        TEST_ASSERT_EQUAL( min_hr, hr );
+    }
+}
+
+
+
+
+static void test_xs3_headroom_vect_ch_pair_s32()
+{
+    seed = 567457;
+
+    ch_pair_s32_t A[MAX_LEN];
+
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        const unsigned length = pseudo_rand_uint(&seed, 100, MAX_LEN+1);
+
+        const headroom_t shr = pseudo_rand_uint(&seed, 0, 31);
+        
+        for(int i = 0; i < length; i++){
+            A[i].ch_a = pseudo_rand_int32(&seed) >> shr;
+            A[i].ch_b = pseudo_rand_int32(&seed) >> shr;
+        }
+
+        headroom_t hr = xs3_headroom_vect_ch_pair_s32(A, length);
+
+        headroom_t min_hr = INT32_MAX;
+        
+        for(int i = 0; i < length; i++){
+            min_hr = MIN( min_hr, HR_S32(A[i].ch_a) );
+            min_hr = MIN( min_hr, HR_S32(A[i].ch_b) );
+        }
+
+        TEST_ASSERT_EQUAL( min_hr, hr );
+    }
+}
+
+
+
+static void test_xs3_headroom_vect_complex_s16()
+{
+    seed = 3;
+
+    int16_t WORD_ALIGNED A_real[MAX_LEN];
+    int16_t WORD_ALIGNED A_imag[MAX_LEN];
+
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        const unsigned length = pseudo_rand_uint(&seed, 100, MAX_LEN+1);
+
+        const headroom_t shr = pseudo_rand_uint(&seed, 0, 15);
+        
+        for(int i = 0; i < length; i++){
+            A_real[i] = pseudo_rand_int16(&seed) >> shr;
+            A_imag[i] = pseudo_rand_int16(&seed) >> shr;
+        }
+
+        headroom_t hr = xs3_headroom_vect_complex_s16(A_real, A_imag, length);
+
+        headroom_t min_hr = INT32_MAX;
+        
+        for(int i = 0; i < length; i++){
+            min_hr = MIN( min_hr, HR_S16(A_real[i]) );
+            min_hr = MIN( min_hr, HR_S16(A_imag[i]) );
+        }
+
+        TEST_ASSERT_EQUAL( min_hr, hr );
+    }
+}
+
+
+
+
+static void test_xs3_headroom_vect_complex_s32()
+{
+    seed = 786;
+
+    complex_s32_t A[MAX_LEN];
+
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        const unsigned length = pseudo_rand_uint(&seed, 100, MAX_LEN+1);
+
+        const headroom_t shr = pseudo_rand_uint(&seed, 0, 31);
+        
+        for(int i = 0; i < length; i++){
+            A[i].re = pseudo_rand_int32(&seed) >> shr;
+            A[i].im = pseudo_rand_int32(&seed) >> shr;
+        }
+
+        headroom_t hr = xs3_headroom_vect_complex_s32(A, length);
+
+        headroom_t min_hr = INT32_MAX;
+        
+        for(int i = 0; i < length; i++){
+            min_hr = MIN( min_hr, HR_S32(A[i].re) );
+            min_hr = MIN( min_hr, HR_S32(A[i].im) );
+        }
+
+        TEST_ASSERT_EQUAL( min_hr, hr );
+    }
+}
+
+
 
 
 void test_xs3_headroom_vect()
 {
     SET_TEST_FILE();
-    
-    RUN_TEST(test_xs3_headroom_vect_s16_case0);
-    RUN_TEST(test_xs3_headroom_vect_s16_case1);
-    
-    RUN_TEST(test_xs3_headroom_vect_s32_case0);
-    RUN_TEST(test_xs3_headroom_vect_s32_case1);
+
+    RUN_TEST(test_xs3_headroom_vect_s16);
+    RUN_TEST(test_xs3_headroom_vect_s32);
+
+    RUN_TEST(test_xs3_headroom_vect_ch_pair_s16);
+    RUN_TEST(test_xs3_headroom_vect_ch_pair_s32);
+
+    RUN_TEST(test_xs3_headroom_vect_complex_s16);
+    RUN_TEST(test_xs3_headroom_vect_complex_s32);
 }

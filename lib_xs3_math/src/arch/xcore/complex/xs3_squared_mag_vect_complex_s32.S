@@ -6,7 +6,7 @@
 /*  
 
 headroom_t xs3_squared_mag_vect_complex_s32(
-    int32_t* a,
+    int32_t a[],
     const complex_s32_t* b,
     const unsigned length,
     const right_shift_t b_shr);

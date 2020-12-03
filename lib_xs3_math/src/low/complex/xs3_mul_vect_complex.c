@@ -276,3 +276,6 @@ headroom_t xs3_complex_scal_mul_vect_complex_s32(
 
     return xs3_headroom_vect_complex_s32(a, length);
 }
+
+
+

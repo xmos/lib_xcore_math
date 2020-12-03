@@ -17,8 +17,8 @@
 #endif
 
 
-#define REPS    IF_QUICK_TEST(10, 50)
-#define MAX_LEN IF_QUICK_TEST(100, 300)
+#define REPS        IF_QUICK_TEST(100, 1000)
+#define MAX_LEN     1024
 
 
 
@@ -99,6 +99,8 @@ static void test_bfp_headroom_vect_s32()
         TEST_ASSERT_EQUAL(exp_hr, got_hr);
     }
 }
+
+
 
 
 
@@ -196,6 +198,7 @@ static void test_bfp_headroom_vect_complex_s32()
 
 
 
+
 static void test_bfp_headroom_vect_ch_pair_s16()
 {
     PRINTF("%s...\n", __func__);
@@ -281,14 +284,18 @@ static void test_bfp_headroom_vect_ch_pair_s32()
 
 
 
+
+
 void test_bfp_headroom_vect()
 {
     SET_TEST_FILE();
 
     RUN_TEST(test_bfp_headroom_vect_s16);
     RUN_TEST(test_bfp_headroom_vect_s32);
+    
     RUN_TEST(test_bfp_headroom_vect_complex_s16);
     RUN_TEST(test_bfp_headroom_vect_complex_s32);
+    
     RUN_TEST(test_bfp_headroom_vect_ch_pair_s16);
     RUN_TEST(test_bfp_headroom_vect_ch_pair_s32);
 }

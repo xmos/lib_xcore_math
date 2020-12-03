@@ -11,7 +11,7 @@ headroom_t xs3_mul_vect_complex_s16(
     int16_t* a_imag,
     const int16_t* b_real,
     const int16_t* b_imag,
-    const int16_t* c,
+    const int16_t c[],
     const unsigned length,
     const right_shift_t sat);
 

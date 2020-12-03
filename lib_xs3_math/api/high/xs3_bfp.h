@@ -162,61 +162,6 @@ void bfp_shl_vect_s32(
     const left_shift_t shl);
 
 
-/**
- * @brief Calculate the output exponent and input shifts needed to perform a
- * BFP vector addition.
- * 
- * This function is used to calcular the output exponent and operand shift parameter values 
- * required to compute the element-wise sum @f$\bar A = \bar B - \bar C@f$ of BFP vectors 
- * @f$\bar B@f$ and @f$\bar C@f$
- * 
- * Logic is identical for `bfp_s16_t`, `bfp_s32_t`, `bfp_complex_s16_t`, `bfp_complex_s32_t`.
- * 
- * The `allow_saturation` parameter is used to specify whether to check for the possibility of 
- * corner-case saturation. For an explanation of corner-case saturation, see \ref saturation.
- * Corner-case saturation is avoided if `allow_saturation` is zero.
- * 
- * For BFP vector addition, corner-case saturation may occur when BFP vectors `B` and `C` have
- * similar magnitudes (in the sense of their @f$L\infty@f$-norm). Specifically, for input BFP 
- * vectors @f$B@f$ and @f$C@f$, the corner case will be detected and avoided when 
- * @f$\left(B_{exp}-B_{hr}\right) = \left(C_{exp}-C_{hr}\right)@f$.
- * 
- * The outputs of this function `b_shr` and `c_shr` can be used with `xs3_add_vect_s16()` and 
- * `xs3_add_vect_s32()` as the shift values for that function's corresponding parameters. The output 
- * `a_exp` is the exponent associated with the result computed by those functions.
- * 
- * If a specific output exponent `desired_exp` is needed for the result, the `b_shr` and `c_shr` 
- * produced by this function can be adjusted according to the following:
- * \code{.c}
- *      exponent_t desired_exp = ...; // Value known a priori
- *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
- *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
- * \endcode
- * Note that using smaller values than necessary for `b_shr` and `c_shr` can result in saturation, 
- * and using larger values may result in unnecessary underflows.
- * 
- * @param[out] a_exp    Exponent @f$A_{exp}@f$ of the result vector @f$\bar A@f$
- * @param[out] b_shr    Right-shift to be applied to vector @f$\bar B@f$
- * @param[out] c_shr    Right-shift to be applied to vector @f$\bar C@f$
- * @param[in]  b_exp    Exponent @f$B_{exp}@f$ associated with @f$\bar B@f$
- * @param[in]  c_exp    Exponent @f$C_{exp}@f$ associated with @f$\bar C@f$
- * @param[in]  b_hr     Headroom @f$B_{hr}@f$ associated with @f$\bar B@f$
- * @param[in]  c_hr     Headroom @f$B_{hr}@f$ associated with @f$\bar B@f$
- * @param[in]  allow_saturation  Whether to avoid corner-case saturation.
- * 
- * \sa xs3_add_vect_s16
- * \sa xs3_add_vect_s32
- */
-void bfp_add_vect_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    right_shift_t* c_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation);
-
 
 /** 
  * @brief Add two 16-bit BFP vectors together.
@@ -290,50 +235,6 @@ void bfp_add_vect_s32(
     const bfp_s32_t* c);
 
 
-/**
- * @brief Calculate the output exponent and input shifts needed to perform a
- * BFP vector subtraction.
- * 
- * This function is used to calcular the output exponent and operand shift parameter values 
- * required to compute the element-wise difference @f$\bar A = \bar B - \bar C@f$ of BFP 
- * vectors @f$\bar B@f$ and @f$\bar C@f$
- * 
- * Logic is identical for `bfp_s16_t`, `bfp_s32_t`, `bfp_complex_s16_t`, `bfp_complex_s32_t`.
- * 
- * The outputs of this function `b_shr` and `c_shr` can be used with `xs3_sub_vect_s16()` and 
- * `xs3_sub_vect_s32()` as the shift values for that function's corresponding parameters. The output 
- * `a_exp` is the exponent associated with the result computed by those functions.
- * 
- * If a specific output exponent `desired_exp` is needed for the result, the `b_shr` and `c_shr` 
- * produced by this function can be adjusted according to the following:
- * \code{.c}
- *      exponent_t desired_exp = ...; // Value known a priori
- *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
- *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
- * \endcode
- * Note that using smaller values than necessary for `b_shr` and `c_shr` can result in saturation, 
- * and using larger values may result in unnecessary underflows.
- * 
- * @param[out] a_exp    Exponent @f$A_{exp}@f$ of the result vector @f$\bar A@f$
- * @param[out] b_shr    Right-shift to be applied to vector @f$\bar B@f$
- * @param[out] c_shr    Right-shift to be applied to vector @f$\bar C@f$
- * @param[in]  b_exp    Exponent @f$B_{exp}@f$ associated with @f$\bar B@f$
- * @param[in]  c_exp    Exponent @f$C_{exp}@f$ associated with @f$\bar C@f$
- * @param[in]  b_hr     Headroom @f$B_{hr}@f$ associated with @f$\bar B@f$
- * @param[in]  c_hr     Headroom @f$B_{hr}@f$ associated with @f$\bar B@f$
- * 
- * \sa xs3_sub_vect_s16
- * \sa xs3_sub_vect_s32
- */
-void bfp_sub_vect_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    right_shift_t* c_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr);
-
 
 /** 
  * @brief Subtract one 16-bit BFP vector from another.
@@ -400,24 +301,6 @@ void bfp_sub_vect_s32(
     const bfp_s32_t* c);
 
 
-/**
- * @brief Calculate the exponent and output shift for `xs3_mul_vect_s16`.
- * 
- * @param[out] a_exp
- * @param[out] a_shr
- * @param[in]  b_exp
- * @param[in]  c_exp
- * @param[in]  b_hr
- * @param[in]  c_hr
- */
-void bfp_mul_vect_s16_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* a_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr);
-
 /** 
  * @brief Multiply one 16-bit BFP vector by another.
  * 
@@ -449,26 +332,6 @@ void bfp_mul_vect_s16(
     const bfp_s16_t* c);
 
 
-
-/**
- * @brief Calculate the exponent and input shifts for `xs3_mul_vect_s32`.
- * 
- * @param[out] a_exp
- * @param[out] b_shr
- * @param[out] c_shr
- * @param[in]  b_exp
- * @param[in]  c_exp
- * @param[in]  b_hr
- * @param[in]  c_hr
- */
-void bfp_mul_vect_s32_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    right_shift_t* c_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr);
 
 /**
  * @brief Multiply one 32-bit BFP vector by another.
@@ -677,7 +540,7 @@ int64_t bfp_sum_s32(
  * 
  * @return The 32-bit mantissa of the inner product.
  */
-int32_t bfp_dot_s16(
+int64_t bfp_dot_s16(
     exponent_t* a_exp,
     const bfp_s16_t* b, 
     const bfp_s16_t* c);
@@ -877,6 +740,27 @@ void bfp_s32_to_s16(
 void bfp_s16_to_s32(
     bfp_s32_t* a,
     const bfp_s16_t* b);
+
+
+
+void bfp_sqrt_vect_s16(
+    bfp_s16_t* a,
+    const bfp_s16_t* b);
+
+
+void bfp_sqrt_vect_s32(
+    bfp_s32_t* a,
+    const bfp_s32_t* b);
+
+
+void bfp_inverse_vect_s16(
+    bfp_s16_t* a,
+    const bfp_s16_t* b);
+
+
+void bfp_inverse_vect_s32(
+    bfp_s32_t* a,
+    const bfp_s32_t* b);
 
 
 #ifdef __XC__

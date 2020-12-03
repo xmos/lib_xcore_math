@@ -8,19 +8,19 @@
 
 
 
-WEAK_FUNC
-complex_s32_t xs3_sum_complex_s16(
-    const int16_t b_real[],
-    const int16_t b_imag[],
-    const unsigned length)
-{
-    complex_s32_t res = {
-        xs3_sum_s16(b_real, length),
-        xs3_sum_s16(b_imag, length) 
-    };
+// WEAK_FUNC
+// complex_s32_t xs3_sum_complex_s16(
+//     const int16_t b_real[],
+//     const int16_t b_imag[],
+//     const unsigned length)
+// {
+//     complex_s32_t res = {
+//         xs3_sum_s16(b_real, length),
+//         xs3_sum_s16(b_imag, length) 
+//     };
 
-    return res;
-}
+//     return res;
+// }
 
 
 WEAK_FUNC

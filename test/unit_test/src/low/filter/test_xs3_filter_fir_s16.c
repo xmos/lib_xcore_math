@@ -196,8 +196,8 @@ void test_xs3_filter_fir_s16()
 {
     SET_TEST_FILE();
 
-    // RUN_TEST(test_xs3_filter_fir_s16_case0);
-    // RUN_TEST(test_xs3_filter_fir_s16_case1);
+    RUN_TEST(test_xs3_filter_fir_s16_case0);
+    RUN_TEST(test_xs3_filter_fir_s16_case1);
     RUN_TEST(test_xs3_filter_fir_s16_case2);
 
 }

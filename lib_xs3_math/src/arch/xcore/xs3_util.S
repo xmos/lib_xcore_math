@@ -16,7 +16,7 @@ void xs3_unpack_float(
 #define FUNCTION_NAME   xs3_unpack_float
 #define NSTACKWORDS     (0)
 
-ASM_PREAMBLE_V2(FUNCTION_NAME);
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
 FUNCTION_NAME:
     dualentsp NSTACKWORDS
     fsexp r3, r11, r2
@@ -28,12 +28,22 @@ FUNCTION_NAME:
 {                               ;   stw r2, r0[0]               }
 {                               ;   stw r11, r1[0]              }
     retsp NSTACKWORDS
-ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS);
+.L_func_end_unpack:
+.cc_bottom FUNCTION_NAME.function
+
+.global FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
+.size FUNCTION_NAME,.L_func_end_unpack - FUNCTION_NAME
+
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
 
 
-.issue_mode dual
+
 /*  
 float xs3_pack_float(
     const int64_t mantissa,
@@ -52,7 +62,7 @@ float xs3_pack_float(
 #define mant_lo     b
 #define exp         c
 
-ASM_PREAMBLE_V2(FUNCTION_NAME);
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
 FUNCTION_NAME:
     dualentsp NSTACKWORDS
 
@@ -63,13 +73,21 @@ FUNCTION_NAME:
     lss d, mant_hi, d
     bf d, .L_xpf_lblA
 .L_xpf_lblA:
-
     retsp NSTACKWORDS
-ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS);
+.L_func_end_pack:
+.cc_bottom FUNCTION_NAME.function
+
+.global FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
+.size FUNCTION_NAME,.L_func_end_pack - FUNCTION_NAME
+
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
 
-.issue_mode dual
 
 
 

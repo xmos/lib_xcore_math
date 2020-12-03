@@ -389,6 +389,7 @@ void bfp_shl_vect_complex_s32(
 
 
 
+
 /** Multiply a 16-bit complex BFP vector by a 16-bit real BFP vector.
  * 
  * <BLOCKQUOTE><CODE style="color:red;">
@@ -449,15 +450,6 @@ void bfp_mul_vect_complex_s32(
 
 
 
-void bfp_complex_mul_vect_complex_s16_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* a_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr);
-
-
 /** Multiply a 16-bit complex BFP vector by another 16-bit complex BFP vector.
  * 
  * <BLOCKQUOTE><CODE style="color:red;">
@@ -489,14 +481,6 @@ void bfp_complex_mul_vect_complex_s16(
 
 
 
-void bfp_complex_mul_vect_complex_s32_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    right_shift_t* c_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr);
 
 /** Multiply a 32-bit complex BFP vector by another 32-bit complex BFP vector.
  * 
@@ -608,7 +592,8 @@ void bfp_complex_conj_mul_vect_complex_s32(
 void bfp_scalar_mul_vect_complex_s16(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
-    const float c);
+    const int16_t alpha_mant,
+    const exponent_t alpha_exp);
 
 /** Multiply a 32-bit complex BFP vector by a 32-bit real scalar.
  * 
@@ -636,7 +621,8 @@ void bfp_scalar_mul_vect_complex_s16(
 void bfp_scalar_mul_vect_complex_s32(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
-    const float c);
+    const int32_t alpha_mant,
+    const exponent_t alpha_exp);
 
 /** Multiply a 16-bit complex BFP vector by a 16-bit complex scalar.
  * 
@@ -664,7 +650,8 @@ void bfp_scalar_mul_vect_complex_s32(
 void bfp_complex_scal_mul_vect_complex_s16(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
-    const complex_float_t c);
+    const complex_s16_t alpha_mant,
+    const exponent_t alpha_exp);
 
 /** Multiply a 32-bit complex BFP vector by a 32-bit complex scalar.
  * 
@@ -692,7 +679,8 @@ void bfp_complex_scal_mul_vect_complex_s16(
 void bfp_complex_scal_mul_vect_complex_s32(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
-    const complex_float_t c);
+    const complex_s32_t alpha_mant,
+    const exponent_t alpha_exp);
 
 /** Add one 16-bit complex BFP vector to another element-wise.
  * 
@@ -973,7 +961,7 @@ void bfp_mag_vect_complex_s32(
  * 
  * \returns     Complex sum of vector elements.
  */
-complex_float_t bfp_sum_complex_s16(
+complex_s32_t bfp_sum_complex_s16(
     const bfp_complex_s16_t* b);
 
 /** Sum the elements of a 32-bit complex BFP vector.
@@ -995,7 +983,8 @@ complex_float_t bfp_sum_complex_s16(
  * 
  * \returns     Complex sum of vector elements
  */
-complex_float_t bfp_sum_complex_s32( 
+complex_s64_t bfp_sum_complex_s32( 
+    exponent_t* a_exp,
     const bfp_complex_s32_t* b);
 
 

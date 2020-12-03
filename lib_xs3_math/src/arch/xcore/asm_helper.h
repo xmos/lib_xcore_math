@@ -40,21 +40,6 @@
     .size FNAME, CAT(.L_size_end_, FNAME) - FNAME
 
 
-#define ASM_PREAMBLE_V2(FNAME)          \
-    .global FNAME;                      \
-    .type FNAME,@function;              \
-    .align 16;                          \
-    .cc_top FNAME.function,FNAME
 
-
-#define ASM_PREAMBLE_LCL(FNAME)                         \
-    .type CAT(.L_,FNAME),@function;                     \
-    .align 16;                                          \
-    .cc_top CAT(.L_,FNAME).function,CAT(.L_,FNAME)
-
-#define ASM_POSTAMBLE_LCL(FNAME)                                \
-    CAT(.L_end_,FNAME):                                         \
-    .cc_bottom CAT(.L_,FNAME).function;                         \
-    .size CAT(.L_,FNAME), CAT(.L_end_,FNAME) - CAT(.L_,FNAME)
     
 #endif // ASM_HELPER_H_

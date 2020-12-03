@@ -5,8 +5,8 @@
 /*  
 
 headroom_t xs3_clip_vect_s32(
-    int32_t* a,
-    const int32_t* b,
+    int32_t a[],
+    const int32_t b[],
     const unsigned length,
     const int32_t lower_bound,
     const int32_t upper_bound,
@@ -23,8 +23,7 @@ headroom_t xs3_clip_vect_s32(
 #define NSTACKVECS      (6)
 #define NSTACKWORDS     (8 + 8*(NSTACKVECS))
 
-#define FUNCTION_NAME   xs3_clip_vect
-#define FNAME_S32       CAT(FUNCTION_NAME, _s32)
+#define FUNCTION_NAME   xs3_clip_vect_s32
 
 
 #define STACK_UPPER     (NSTACKWORDS + 1)
@@ -44,8 +43,11 @@ headroom_t xs3_clip_vect_s32(
 #define int_max     r9
 #define int_min     r10
 
-ASM_PREAMBLE(FNAME_S32)
-FNAME_S32:
+
+.globl FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
+FUNCTION_NAME:
         dualentsp NSTACKWORDS
         std r4, r5, sp[0]
         std r6, r7, sp[1]
@@ -296,8 +298,14 @@ FNAME_S32:
         ldd r8, r9, sp[2]
     {   sub r0, r0, r11                         ;   retsp NSTACKWORDS                       } 
 
-ASM_POSTAMBLE(FNAME_S32, NSTACKWORDS)
+.L_func_end:
 
+.cc_bottom FUNCTION_NAME.function; 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords; 
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends; 
+.size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 
 

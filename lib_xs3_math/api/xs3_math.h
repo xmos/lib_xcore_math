@@ -17,8 +17,8 @@
 #include "high/xs3_filters.h"
 
 #include "low/xs3_bfp_low.h"
-#include "low/xs3_bfp_init_low.h"
 #include "low/xs3_bfp_complex_low.h"
+#include "low/xs3_bfp_ch_pair_low.h"
 #include "low/xs3_fft_low.h"
 #include "low/xs3_filters_low.h"
 #include "low/xs3_math_util_low.h"

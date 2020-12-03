@@ -4,9 +4,9 @@
 
 /*  
 headroom_t xs3_mul_vect_s16(
-    int16_t* a,
-    const int16_t* b,
-    const int16_t* c,
+    int16_t a[],
+    const int16_t b[],
+    const int16_t c[],
     const unsigned len,
     const int a_shr);
 */
@@ -33,11 +33,10 @@ headroom_t xs3_mul_vect_s16(
 .text
 .issue_mode dual
 
-
-ASM_PREAMBLE_V2(FUNCTION_NAME);
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
 
 FUNCTION_NAME:
-/**/    dualentsp NSTACKWORDS
+        dualentsp NSTACKWORDS
         ldc r11, 0x100
         std r4, r5, sp[1]
         std r6, r7, sp[2]
@@ -57,7 +56,7 @@ FUNCTION_NAME:
 
 .align 16
 .L_loop_top:
-/**/    {   sub len, len, 1                         ;   vclrdr                                  }
+        {   sub len, len, 1                         ;   vclrdr                                  }
         {   add b, b, _32                           ;   vldc b[0]                               }
         {   add c, c, _32                           ;   vlmacc c[0]                             }
         {                                           ;   vlsat a_shr[0]                          }
@@ -83,9 +82,17 @@ FUNCTION_NAME:
     {   zext r11, 5                             ;                                       }
     {   sub r0, r0, r11                         ;   retsp NSTACKWORDS                   } 
 
-ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS);
+.L_func_end:
+.cc_bottom FUNCTION_NAME.function
 
 
+.global FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS; .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;              .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;             .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;           .global FUNCTION_NAME.maxchanends
+.size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 
 #endif //!defined(XS3_MATH_NO_ASM)

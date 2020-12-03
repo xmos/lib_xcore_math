@@ -5,8 +5,8 @@
 /*  
 
 headroom_t xs3_clip_vect_s16(
-    int16_t* a,
-    const int16_t* b,
+    int16_t a[],
+    const int16_t b[],
     const unsigned length,
     const int16_t lower_bound,
     const int16_t upper_bound,
@@ -19,12 +19,10 @@ headroom_t xs3_clip_vect_s16(
 .text
 .issue_mode dual
 
-
 #define NSTACKVECS      (6)
 #define NSTACKWORDS     (8 + 8*(NSTACKVECS))
 
-#define FUNCTION_NAME   xs3_clip_vect
-#define FNAME_S16       CAT(FUNCTION_NAME, _s16)
+#define FUNCTION_NAME   xs3_clip_vect_s16
 
 
 #define STACK_UPPER     (NSTACKWORDS + 1)
@@ -44,8 +42,11 @@ headroom_t xs3_clip_vect_s16(
 #define int_max     r9
 #define int_min     r10
 
-ASM_PREAMBLE(FNAME_S16)
-FNAME_S16:
+.globl FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
+FUNCTION_NAME:
+
         dualentsp NSTACKWORDS
         std r4, r5, sp[0]
         std r6, r7, sp[1]
@@ -75,40 +76,31 @@ FNAME_S16:
     {   ldaw r11, sp[STACK_VEC(0)]              ;   sub upper, int_max, upper               }
     {   mov tmp1, upper                         ;   mov tmp2, upper                         }
     zip tmp2, tmp1, 4
-
-    std tmp1, tmp1, r11[0]
-    std tmp1, tmp1, r11[1]
-    std tmp1, tmp1, r11[2]
-    std tmp1, tmp1, r11[3]
+    {                                           ;   bl .L_std_func1                         }
 
     {   ldaw r11, sp[STACK_VEC(2)]              ;   neg upper, upper                        }
     {   mov tmp1, upper                         ;   mov tmp2, upper                         }
     zip tmp2, tmp1, 4
-
-    std tmp1, tmp1, r11[0]
-    std tmp1, tmp1, r11[1]
-    std tmp1, tmp1, r11[2]
-    std tmp1, tmp1, r11[3]
+    {                                           ;   bl .L_std_func1                         }
 
     {   ldaw r11, sp[STACK_VEC(1)]              ;   sub lower, int_min, lower               }
     {   mov tmp1, lower                         ;   mov tmp2, lower                         }
     zip tmp2, tmp1, 4
-
-    std tmp1, tmp1, r11[0]
-    std tmp1, tmp1, r11[1]
-    std tmp1, tmp1, r11[2]
-    std tmp1, tmp1, r11[3]
+    {                                           ;   bl .L_std_func1                         }
 
     {   ldaw r11, sp[STACK_VEC(3)]              ;   neg lower, lower                        }
     {   mov tmp1, lower                         ;   mov tmp2, lower                         }
     zip tmp2, tmp1, 4
+    {                                           ;   bl .L_std_func1                         }
 
-    std tmp1, tmp1, r11[0]
-    std tmp1, tmp1, r11[1]
-    std tmp1, tmp1, r11[2]
-    std tmp1, tmp1, r11[3]
-
-
+    {                                           ;   bu .L_std_func_end1                     }
+.L_std_func1:
+        std tmp1, tmp1, r11[0]
+        std tmp1, tmp1, r11[1]
+        std tmp1, tmp1, r11[2]
+        std tmp1, tmp1, r11[3]
+        retsp 0
+.L_std_func_end1:
 
 #define vec_upper   upper
 #define vec_lower   lower
@@ -225,56 +217,41 @@ FNAME_S16:
     {   ldaw r11, sp[STACK_VEC(0)]              ;                                           }
     {   mov r8, vec_one                         ;   mov r9, vec_one                         }
         zip r9, r8, 4
-
-        std r8, r8, r11[0]
-        std r8, r8, r11[1]
-        std r8, r8, r11[2]
-        std r8, r8, r11[3]
+    {                                           ;   bl .L_std_func                          }
 
     {   ldaw r11, sp[STACK_VEC(1)]              ;                                           }
     {   mov r8, vec_two                         ;   mov r9, vec_two                         }
         zip r9, r8, 4
-
-        std r8, r8, r11[0]
-        std r8, r8, r11[1]
-        std r8, r8, r11[2]
-        std r8, r8, r11[3]
+    {                                           ;   bl .L_std_func                          }
 
     {   ldaw r11, sp[STACK_VEC(3)]              ;                                           }
     {   neg r8, vec_one                         ;   neg r9, vec_one                         }
         zip r9, r8, 4
-
-        std r8, r8, r11[0]
-        std r8, r8, r11[1]
-        std r8, r8, r11[2]
-        std r8, r8, r11[3]
+    {                                           ;   bl .L_std_func                          }
 
     {   ldaw r11, sp[STACK_VEC(2)]              ;                                           }
     {   neg r8, vec_two                         ;   neg r9, vec_two                         }
         zip r9, r8, 4
-
-        std r8, r8, r11[0]
-        std r8, r8, r11[1]
-        std r8, r8, r11[2]
-        std r8, r8, r11[3]
+    {                                           ;   bl .L_std_func                          }
 
     {   ldaw r11, sp[STACK_VEC(4)]              ;                                           }
     {   mov r8, vec_three                       ;   mov r9, vec_three                       }
         zip r9, r8, 4
-
-        std r8, r8, r11[0]
-        std r8, r8, r11[1]
-        std r8, r8, r11[2]
-        std r8, r8, r11[3]
+    {                                           ;   bl .L_std_func                          }
 
     {   ldaw r11, sp[STACK_VEC(5)]              ;                                           }
     {   neg r8, vec_three                       ;   neg r9, vec_three                       }
-        zip r9, r8, 4
+        zip r9, r8, 4   
+    {                                           ;   bl .L_std_func                          }
 
+    {                                           ;   bu .L_std_func_end                      }
+.L_std_func:
         std r8, r8, r11[0]
         std r8, r8, r11[1]
         std r8, r8, r11[2]
         std r8, r8, r11[3]
+        retsp 0
+.L_std_func_end:
 
     {   ldaw vec_one, sp[STACK_VEC(0)]          ;   ldaw vec_none, sp[STACK_VEC(3)]         }
     {   ldaw vec_two, sp[STACK_VEC(1)]          ;   ldaw vec_ntwo, sp[STACK_VEC(2)]         }
@@ -318,7 +295,14 @@ FNAME_S16:
         ldd r8, r9, sp[2]
     {   sub r0, r0, r11                         ;   retsp NSTACKWORDS                       } 
 
-ASM_POSTAMBLE(FNAME_S16, NSTACKWORDS)
+.L_func_end:
+
+.cc_bottom FUNCTION_NAME.function; 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords; 
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends; 
+.size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 
 

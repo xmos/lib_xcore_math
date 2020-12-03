@@ -97,10 +97,106 @@ static complex_s32_t mul_complex_s32(complex_s32_t b, complex_s32_t c, int b_shr
 
 
 
+#define REPS        IF_QUICK_TEST(100, 1000)
+void test_xs3_complex_mul_vect_complex_s16_calc_params()
+{
+    PRINTF("%s...\n", __func__);
+
+    seed = 0x7871AFB8;
+
+    for(int r = 0; r < REPS; r++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        
+        exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
+        headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 14);
+
+        exponent_t c_exp = pseudo_rand_int(&seed, -30, 30);
+        headroom_t c_hr  = pseudo_rand_uint(&seed, 0, 14);
+
+        exponent_t a_exp;
+        right_shift_t a_shr;
+
+        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat++){
+
+            xs3_complex_mul_vect_complex_s16_calc_params(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
+
+            TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(0, a_shr, "[Computed sat value is negative.]");
+
+            complex_s64_t B = { -0x8000 >> b_hr, -0x8000 >> b_hr };
+            complex_s64_t C = { -0x8000 >> c_hr, -0x8000 >> c_hr };
+
+            int64_t P_im = B.re * C.im + B.im * C.re;
+            
+            TEST_ASSERT_EQUAL_MESSAGE(b_exp+c_exp+a_shr, a_exp, "[Computed a_exp is wrong]");
+
+            if(P_im <= ((int64_t)0x4000)){
+                TEST_ASSERT_EQUAL_MESSAGE(0, a_shr, "[Computed sat is wrong]");
+            } else if(P_im == ((int32_t)0x8000)){
+                TEST_ASSERT_EQUAL_MESSAGE(1-allow_sat, a_shr, "[Computed sat is wrong]");
+            } else {
+                TEST_ASSERT( ldexp(P_im, -a_shr) == (allow_sat? 0x8000 : 0x4000) );
+            }
+        }
+    }
+}
+#undef REPS
 
 
 
 
+
+
+
+#define REPS        IF_QUICK_TEST(100, 1000)
+static void test_xs3_complex_mul_vect_complex_s32_calc_params()
+{
+    PRINTF("%s...\n", __func__);
+
+    seed = 656576;
+
+    for(int r = 0; r < REPS; r++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        
+        exponent_t b_exp = ((int32_t)(pseudo_rand_uint32(&seed) % 60)) - 30;
+        headroom_t b_hr  = pseudo_rand_uint32(&seed) % 31;
+        exponent_t c_exp = ((int32_t)(pseudo_rand_uint32(&seed) % 60)) - 30;
+        headroom_t c_hr  = pseudo_rand_uint32(&seed) % 31;
+
+        exponent_t a_exp;
+        right_shift_t b_shr, c_shr;
+
+        // a_exp and a_shr should be calculated for exactly this case
+        complex_s32_t WORD_ALIGNED B = {((int32_t)-0x80000000) >> b_hr, ((int32_t)-0x80000000) >> b_hr};
+        complex_s32_t WORD_ALIGNED C = {((int32_t)-0x80000000) >> c_hr, ((int32_t)-0x80000000) >> c_hr};
+        complex_s32_t WORD_ALIGNED A;
+
+        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat++){
+
+            xs3_complex_mul_vect_complex_s32_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
+
+            xs3_complex_mul_vect_complex_s32(&A, &B, &C, 1, b_shr, c_shr);
+
+
+            if( allow_sat ){
+                TEST_ASSERT_EQUAL( INT32_MAX, A.im );
+                xs3_complex_mul_vect_complex_s32(&A, &B, &C, 1, b_shr+1, c_shr);
+                TEST_ASSERT_EQUAL( 0x40000000, A.im );
+            } else {
+
+                TEST_ASSERT_EQUAL( 0x40000000, A.im );
+
+                double q = ldexp(B.re, b_exp) * ldexp(C.im, c_exp) 
+                         + ldexp(B.im, b_exp) * ldexp(C.re, c_exp);
+                double p = ldexp(A.im, a_exp);
+
+                TEST_ASSERT( q == p );
+                
+
+            }
+        }
+    }
+}
+#undef REPS
 
 
 
@@ -201,6 +297,8 @@ static void test_xs3_complex_mul_vect_complex_s16_basic()
         }
     }
 }
+
+
 
 
 
@@ -479,6 +577,8 @@ static void test_xs3_complex_mul_vect_complex_s32_random()
 void test_xs3_complex_mul_vect_complex()
 {
     SET_TEST_FILE();
+    RUN_TEST(test_xs3_complex_mul_vect_complex_s16_calc_params);
+    RUN_TEST(test_xs3_complex_mul_vect_complex_s32_calc_params);
 
     RUN_TEST(test_xs3_complex_mul_vect_complex_s16_basic);
     RUN_TEST(test_xs3_complex_mul_vect_complex_s16_random);

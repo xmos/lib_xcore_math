@@ -28,106 +28,122 @@ static char msg_buff[200];
 #endif
 
 
-static void test_xs3_dot_s16_basic()
+
+
+#define REPS        1000
+#define MAX_LEN     1024
+
+
+
+static void test_xs3_dot_s32_calc_params()
 {
     PRINTF("%s...\n", __func__);
+    seed = 0xEF70DEF9;
 
-    typedef struct {
-        struct{ int16_t b;  int16_t c;  } input;
-        struct{ int b;      int c;      } shr;
-        unsigned len;
+    int32_t B[MAX_LEN], C[MAX_LEN];
 
-        int32_t expected;
+    for(int r = 0; r < REPS; r++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        unsigned line;
-    } test_case_t;
+        const unsigned B_length = pseudo_rand_uint(&seed, 1, MAX_LEN);
 
-    test_case_t casses[] = {
-        //  input{       b,       c },    shr{    b,      c },      len,    expected,       line
-        {        {  0x0000,  0x0000 },       {    0,      0 },        1,      0x00000000,     __LINE__ },
-        {        {  0x0000,  0x0000 },       {    0,      0 },        2,      0x00000000,     __LINE__ },
-        {        {  0x0000,  0x0000 },       {    0,      0 },       16,      0x00000000,     __LINE__ },
-        {        {  0x0000,  0x0000 },       {    0,      0 },       32,      0x00000000,     __LINE__ },
-        {        {  0x0000,  0x0000 },       {    0,      0 },       40,      0x00000000,     __LINE__ },
-        {        {  0x0001,  0x0000 },       {    0,      0 },        1,      0x00000000,     __LINE__ },
-        {        {  0x0000,  0x0010 },       {    0,      0 },        2,      0x00000000,     __LINE__ },
-        {        {  0x2200,  0x0000 },       {    0,      0 },       16,      0x00000000,     __LINE__ },
-        {        {  0x0001,  0x0001 },       {    0,      0 },        1,      0x00000001,     __LINE__ },
-        {        {  0x0001,  0x0001 },       {    0,      0 },        2,      0x00000002,     __LINE__ },
-        {        {  0x0001,  0x0001 },       {    0,      0 },        8,      0x00000008,     __LINE__ },
-        {        {  0x0001,  0x0001 },       {    0,      0 },       16,      0x00000010,     __LINE__ },
-        {        {  0x0001,  0x0001 },       {    0,      0 },       32,      0x00000020,     __LINE__ },
-        {        {  0x0001,  0x0001 },       {    0,      0 },       40,      0x00000028,     __LINE__ },
-        {        {  0x0010,  0x0010 },       {    0,      0 },        1,      0x00000100,     __LINE__ },
-        {        {  0x0010,  0x0010 },       {    0,      0 },       25,      0x00001900,     __LINE__ },
-        {        {  0x0010,  0x0010 },       {    0,      0 },       25,      0x00001900,     __LINE__ },
-        {        {  0x0010,  0x0010 },       {    4,      4 },       25,      0x00000019,     __LINE__ },
-        {        {  0x0010,  0x0010 },       {    2,      2 },       25,      0x00000190,     __LINE__ },
-        {        {  0x0010,  0x0010 },       {   -1,      0 },       25,      0x00003200,     __LINE__ },
-        {        {  0x0010,  0x0010 },       {   -1,     -1 },       25,      0x00006400,     __LINE__ },
+        const exponent_t B_exp = pseudo_rand_int(&seed, -100, 100);
+        const exponent_t C_exp = pseudo_rand_int(&seed, -100, 100);
 
-    };
+        const headroom_t B_hr = pseudo_rand_uint(&seed, 0, 30);
+        const headroom_t C_hr = pseudo_rand_uint(&seed, 0, 30);
 
-    const unsigned start_case = 0;
-
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
-
-    for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
-        test_case_t* casse = &casses[v];
-        
-        unsigned len = casse->len;
-
-        int16_t WORD_ALIGNED B[40];
-        int16_t WORD_ALIGNED C[40];
-        int32_t result;
-
-
-        for(int i = 0; i < len; i++){
-            B[i] = casse->input.b;
-            C[i] = casse->input.c;
+        for(int i = 0; i < B_length; i++){
+            B[i] = INT32_MIN >> B_hr;
+            C[i] = INT32_MIN >> C_hr;
         }
 
-        result = xs3_dot_s16(B, C, len, casse->shr.b, casse->shr.c);
+        double expected = B_length * (ldexp(B[0], B_exp) * ldexp(C[0], C_exp));
 
-        TEST_ASSERT_EQUAL_MSG(casse->expected, result, casse->line);
+        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat++){
+            exponent_t A_exp;
+            right_shift_t b_shr, c_shr;
+
+            xs3_dot_s32_calc_params(&A_exp, &b_shr, &c_shr, B_exp, C_exp, B_hr, C_hr, B_length, allow_sat);
+
+            int64_t result = xs3_dot_s32(B, C, B_length, b_shr, c_shr);
+
+            // PRINTF("\t    allow_sat = %u\n", allow_sat);
+            // PRINTF("\t        B_length  = %u\n", B_length);
+            // PRINTF("\t        B_exp = %d\n", B_exp);
+            // PRINTF("\t        C_exp = %d\n", C_exp);
+            // PRINTF("\t        B_hr = %d     (-2^%d)\n", B_hr, 31-B_hr);
+            // PRINTF("\t        C_hr = %d     (-2^%d)\n", C_hr, 31-C_hr);
+            // PRINTF("\t        b_shr = %d\n", b_shr);
+            // PRINTF("\t        c_shr = %d\n", c_shr);
+            // PRINTF("\t            B[0] = %ld   (0x%08lX)\n", B[0], (uint32_t)B[0]);
+            // PRINTF("\t            C[0] = %ld   (0x%08lX)\n", C[0], (uint32_t)C[0]);
+            // PRINTF("\t        A_exp = %d\n", A_exp);
+            // PRINTF("\t            result = %lld    (0x%08llX)     (%e)\n", result, (uint64_t) result, ldexp(result, A_exp));
+            // PRINTF("\t            expected = %e\n", expected);
+
+
+            double got = ldexp(result, A_exp);
+
+            TEST_ASSERT( fabs((expected-got)/expected) < ldexp(1, -25) );
+        }
     }
 }
+#undef MAX_LEN
+#undef REPS
 
 
-// #define MAX_LEN     200
-// #define REPS        100
-// static void test_xs3_dot_s16_random()
-// {
-//     PRINTF("%s...\n", __func__);
-//     seed = 343446;
 
-//     int32_t result;
-//     int16_t B[MAX_LEN];
 
-//     for(int v = 0; v < REPS; v++){
+#define MAX_LEN     4096
+#define REPS        1000
+static void test_xs3_dot_s16()
+{
+    PRINTF("%s...\n", __func__);
+    seed = 0x92B7BD9A;
 
-//         PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+    int16_t WORD_ALIGNED B[MAX_LEN];
+    int16_t WORD_ALIGNED C[MAX_LEN];
+    
 
-//         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
+    for(int v = 0; v < REPS; v++){
+
+        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+
+        const unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+
+        const exponent_t B_exp = pseudo_rand_int(&seed, -30, 30);
+        const exponent_t C_exp = pseudo_rand_int(&seed, -30, 30);
+
+        headroom_t B_hr = pseudo_rand_uint(&seed, 0, 15);
+        headroom_t C_hr = pseudo_rand_uint(&seed, 0, 15);
+
+        int64_t expected = 0;
         
-//         for(int i = 0; i < len; i++){
-//             B[i] = pseudo_rand_int16(&seed);
-//         }
+        for(int i = 0; i < len; i++){
+            B[i] = pseudo_rand_int16(&seed) >> B_hr;
+            C[i] = pseudo_rand_int16(&seed) >> C_hr;
 
-//         result = xs3_sum_s16(B, len);
+            expected += ((int32_t)B[i]) * C[i];
+        }
 
-//         int32_t exp = 0;
-//         for(int i = 0; i < len; i++){
-//             exp += B[i];
-//         }
+        B_hr = xs3_headroom_vect_s16(B, len);
+        C_hr = xs3_headroom_vect_s16(C, len);
 
-//         TEST_ASSERT_EQUAL(exp, result);
+        int64_t result = xs3_dot_s16(B, C, len, B_hr + C_hr);
+
+        // printf("============\n");
+        // printf("Length: %u\n", len);
+        // printf("Expected: %lld     (%012llX)\n", expected, (uint64_t) expected);
+        // printf("Got:      %lld     (%012llX)\n", result,   (uint64_t) result);
+        // printf("============\n");
+
+        TEST_ASSERT_EQUAL(expected, result);
         
-//     }
-// }
-// #undef MAX_LEN
-// #undef REPS
+    }
+}
+#undef MAX_LEN
+#undef REPS
 
 
 
@@ -202,8 +218,8 @@ static void test_xs3_dot_s32_basic()
 void test_xs3_dot()
 {
     SET_TEST_FILE();
+    RUN_TEST(test_xs3_dot_s32_calc_params);
 
-    RUN_TEST(test_xs3_dot_s16_basic);
-
+    RUN_TEST(test_xs3_dot_s16);
     RUN_TEST(test_xs3_dot_s32_basic);
 }

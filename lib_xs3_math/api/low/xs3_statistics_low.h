@@ -29,7 +29,7 @@ extern "C" {
  * \return  Absolute sum
  */
 int32_t xs3_abs_sum_s16(
-    const int16_t* b,
+    const int16_t b[],
     const unsigned length);
 
 /** Calculate the absolute sum of a 32-bit BFP vector.
@@ -53,8 +53,18 @@ int32_t xs3_abs_sum_s16(
  * \return  Absolute sum
  */
 int64_t xs3_abs_sum_s32(
-    const int32_t* b,
+    const int32_t b[],
     const unsigned length);
+
+
+
+
+void xs3_energy_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const unsigned length,
+    const exponent_t b_exp,
+    const headroom_t b_hr);
 
 /** Calculate the energy of a 16-bit BFP vector.
  * 
@@ -80,6 +90,11 @@ int32_t xs3_energy_s16(
     const int16_t b[],
     const unsigned length,
     const right_shift_t b_shr);
+    
+
+right_shift_t xs3_energy_s32_calc_shift(
+    const unsigned length,
+    const headroom_t b_hr);
 
 /** Calculate the energy of a 32-bit BFP vector.
  * 

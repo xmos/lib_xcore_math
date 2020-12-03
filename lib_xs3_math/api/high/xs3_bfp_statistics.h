@@ -27,7 +27,7 @@ extern "C" {
  * 
  * \return  Absolute sum
  */
-float bfp_abs_sum_s16(
+int32_t bfp_abs_sum_s16(
     const bfp_s16_t* b);
 
 /** Calculate the absolute sum of a 32-bit BFP vector.
@@ -48,7 +48,7 @@ float bfp_abs_sum_s16(
  * 
  * \return  Absolute sum
  */
-float bfp_abs_sum_s32(
+int64_t bfp_abs_sum_s32(
     const bfp_s32_t* b);
 
 /** Calculate the mean of a 16-bit BFP vector.
@@ -69,7 +69,8 @@ float bfp_abs_sum_s32(
  * 
  * \return  Mean
  */
-float bfp_mean_s16(
+int16_t bfp_mean_s16(
+    exponent_t* a_exp,
     const bfp_s16_t* b);
 
 /** Calculate the mean of a 32-bit BFP vector.
@@ -90,9 +91,10 @@ float bfp_mean_s16(
  * 
  * \return  Mean
  */
-float bfp_mean_s32(
+int32_t bfp_mean_s32(
+    exponent_t* a_exp,
     const bfp_s32_t* b);
-
+    
 /** Calculate the power of a 16-bit BFP vector.
  * 
  * <BLOCKQUOTE><CODE style="color:red;">
@@ -111,8 +113,10 @@ float bfp_mean_s32(
  * 
  * \return  Energy
  */
-float bfp_energy_s16(
+int64_t bfp_energy_s16(
+    exponent_t* a_exp,
     const bfp_s16_t* b);
+
 
 /** Calculate the power of a 32-bit BFP vector.
  * 
@@ -132,7 +136,8 @@ float bfp_energy_s16(
  * 
  * \return  Energy
  */
-float bfp_energy_s32(
+int64_t bfp_energy_s32(
+    exponent_t* a_exp,
     const bfp_s32_t* b);
 
 /** Calculate the RMS of a 16-bit BFP vector.
@@ -153,7 +158,8 @@ float bfp_energy_s32(
  * 
  * \return  RMS 
  */
-float bfp_rms_s16(
+int32_t bfp_rms_s16(
+    exponent_t* a_exp,
     const bfp_s16_t* b);
 
 /** Calculate the RMS of a 32-bit BFP vector.
@@ -174,7 +180,8 @@ float bfp_rms_s16(
  * 
  * \return  RMS
  */
-float bfp_rms_s32(
+int32_t bfp_rms_s32(
+    exponent_t* a_exp,
     const bfp_s32_t* b);
 
 
@@ -195,7 +202,7 @@ float bfp_rms_s32(
  * 
  * \return  Max value
  */
-float bfp_max_s16(
+int16_t bfp_max_s16(
     const bfp_s16_t* b);
 
 /** Find the maximum value in a 32-bit integer vector.
@@ -215,7 +222,7 @@ float bfp_max_s16(
  * 
  * \return  Max value
  */
-float bfp_max_s32(
+int32_t bfp_max_s32(
     const bfp_s32_t* b);
 
 
@@ -236,7 +243,7 @@ float bfp_max_s32(
  * 
  * \return  Min value
  */
-float bfp_min_s16(
+int16_t bfp_min_s16(
     const bfp_s16_t* b);
 
 /** Find the minimum value in a 32-bit integer vector.
@@ -256,7 +263,7 @@ float bfp_min_s16(
  * 
  * \return  Min value
  */
-float bfp_min_s32(
+int32_t bfp_min_s32(
     const bfp_s32_t* b);
 
 

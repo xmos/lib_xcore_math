@@ -74,8 +74,65 @@ static complex_s32_t mul_complex_s32(
 
 
 
+#define REPS   IF_QUICK_TEST(100, 1000)
+void test_xs3_mul_vect_complex_s16_calc_params()
+{
+    PRINTF("%s...\n", __func__);
+    seed = 786786;
 
+    
+    for(int r = 0; r < REPS; r++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
+        const exponent_t B_exp = pseudo_rand_int(&seed, -100, 100);
+        const exponent_t C_exp = pseudo_rand_int(&seed, -100, 100);
+
+        const headroom_t B_hr = pseudo_rand_uint(&seed, 0, 16);
+        const headroom_t C_hr = pseudo_rand_uint(&seed, 0, 16);
+
+        exponent_t A_exp;
+        right_shift_t sat;
+
+        // Allow saturation
+        xs3_mul_vect_complex_s16_calc_params(&A_exp, &sat, B_exp, C_exp, B_hr, C_hr, 1);
+
+        int32_t B = -0x8000 >> B_hr;
+        int32_t C = -0x8000 >> C_hr;
+        int32_t P = B*C;
+
+        if(P <= 0x8000){
+
+            TEST_ASSERT_EQUAL(0, sat);
+            TEST_ASSERT_EQUAL(B_exp+C_exp, A_exp);
+
+        } else {
+
+            TEST_ASSERT_GREATER_THAN(0, sat);
+            
+            double Pf = ldexp(B, B_exp) * ldexp(C, C_exp);
+            double Rf = ldexp(P, -sat);
+
+            TEST_ASSERT( Rf == 0x8000 );
+        }
+
+        // Disallow saturation
+        xs3_mul_vect_complex_s16_calc_params(&A_exp, &sat, B_exp, C_exp, B_hr, C_hr, 0);
+
+        if(P <= 0x4000){
+            TEST_ASSERT_EQUAL(0, sat);
+            TEST_ASSERT_EQUAL(B_exp+C_exp, A_exp);
+        } else {
+            TEST_ASSERT_GREATER_THAN(0, sat);
+            
+            double Pf = ldexp(B, B_exp) * ldexp(C, C_exp);
+            double Rf = ldexp(P, -sat);
+
+            TEST_ASSERT( Rf == 0x4000 );
+        }
+
+    }
+}
+#undef REPS
 
 
 
@@ -390,6 +447,7 @@ static void test_xs3_mul_vect_complex_s32_random()
 void test_xs3_mul_vect_complex()
 {
     SET_TEST_FILE();
+    RUN_TEST(test_xs3_mul_vect_complex_s16_calc_params);
 
     RUN_TEST(test_xs3_mul_vect_complex_s16_basic);
     RUN_TEST(test_xs3_mul_vect_complex_s16_random);

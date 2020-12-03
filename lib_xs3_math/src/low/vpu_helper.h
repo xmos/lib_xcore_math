@@ -53,7 +53,7 @@
 /**
  * Accumulate a value into a headroom mask.
  */
-#define HRMASK_ADD(MASK, V)      (MASK|(((V) < 0)? (V) : (-V)))
+#define HRMASK_ADD(MASK, V)      (MASK|(((V) >= 0)? (V) : (-V)))
 
 
 

@@ -7,7 +7,7 @@
 /*  
 
 headroom_t xs3_squared_mag_vect_complex_s16(
-    int16_t* a,
+    int16_t a[],
     const int16_t* b_real,
     const int16_t* b_imag,
     const unsigned length,

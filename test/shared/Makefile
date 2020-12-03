@@ -325,6 +325,8 @@ $(abspath $(BUILD_DIR))/%.marker:
 REQUIRED_LIBARIES := $(EXTERNAL_LIBRARIES)
 REQUIRED_OBJECT_FILES := $(COMPONENT_OBJECT_FILES)
 
+XSCOPE_CONFIG := config.xscope
+
 $(APP_EXE_FILE): $(REQUIRED_OBJECT_FILES) $(REQUIRED_LIBRARIES)
 	$(call mkdir_cmd,$@)
 	$(info Linking binary $@)
@@ -332,6 +334,7 @@ $(APP_EXE_FILE): $(REQUIRED_OBJECT_FILES) $(REQUIRED_LIBRARIES)
 		$(APP_FLAGS)                        \
 		$(PLATFORM_FLAGS)                   \
 		$(REQUIRED_OBJECT_FILES)            \
+		$(XSCOPE_CONFIG)					\
 		-o $(APP_EXE_FILE)                  \
 		$(REQUIRED_LIBRARIES)
 

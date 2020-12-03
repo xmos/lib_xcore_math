@@ -29,7 +29,81 @@ static char msg_buff[200];
 #endif
 
 
-static void test_xs3_sum_complex_s16_basic()
+
+#define MAX_LEN     1024
+#define REPS        IF_QUICK_TEST(100, 1000)
+void test_xs3_sum_complex_s32_calc_params()
+{
+    PRINTF("%s...\n", __func__);
+
+    seed = 34677;
+    
+    complex_s32_t B[MAX_LEN];
+
+    unsigned some_shr = 0;
+
+    for(int r = 0; r < REPS; r++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        
+        exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
+        headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 20);
+        unsigned b_length = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
+
+        for(int i = 0; i < MAX_LEN; i++){
+            B[i].re = 0x40000000 >> b_hr;
+            B[i].im = INT32_MIN >> b_hr;
+        }
+
+
+        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat++){
+            
+            complex_s64_t A;
+            exponent_t a_exp;
+            right_shift_t b_shr;
+
+            // PRINTF("\n\t    allow_sat = %u\n", allow_sat);
+            // PRINTF("\t    b_length = %u\n", b_length);
+            // PRINTF("\t    b_exp = %d\n", b_exp);
+            // PRINTF("\t    b_hr = %d\n", b_hr);
+
+            xs3_sum_complex_s32_calc_params(&a_exp, &b_shr, b_exp, b_hr, b_length, allow_sat);
+
+            TEST_ASSERT_EQUAL(b_exp + b_shr, a_exp);
+
+            TEST_ASSERT_GREATER_OR_EQUAL(0, b_shr);
+
+            if(b_shr) some_shr = 1;
+
+            // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B[0].re, (uint32_t) B[0].re);
+            // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B[0].im, (uint32_t) B[0].im);
+
+            xs3_sum_complex_s32(&A, B, b_length, b_shr);
+
+            // PRINTF("\t    A.re = %lld   (0x%08llX)\n", A.re, (uint64_t) A.re);
+            // PRINTF("\t    A.im = %lld   (0x%08llX)\n", A.im, (uint64_t) A.im);
+            // PRINTF("\t    a_exp = %d\n", a_exp);
+            // PRINTF("\t    b_shr  = %d\n", b_shr);
+
+            complex_s64_t expected = {
+                (b_length * ((int64_t)B[0].re)) >> b_shr,
+                (b_length * ((int64_t)B[0].im)) >> b_shr };
+
+            
+            TEST_ASSERT( expected.re == A.re );
+            TEST_ASSERT( expected.im == A.im );
+
+        }
+    }
+
+    TEST_ASSERT_TRUE(some_shr);
+
+}
+#undef REPS
+#undef MAX_LEN
+
+
+
+void test_xs3_sum_complex_s16_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -90,7 +164,7 @@ static void test_xs3_sum_complex_s16_basic()
 
 #define MAX_LEN     200
 #define REPS        IF_QUICK_TEST(10, 100)
-static void test_xs3_sum_complex_s16_random()
+void test_xs3_sum_complex_s16_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 12355;
@@ -128,7 +202,7 @@ static void test_xs3_sum_complex_s16_random()
 
 
 
-static void test_xs3_sum_complex_s32_basic()
+void test_xs3_sum_complex_s32_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -187,7 +261,7 @@ static void test_xs3_sum_complex_s32_basic()
 
 #define MAX_LEN     1000
 #define REPS        IF_QUICK_TEST(10, 100)
-static void test_xs3_sum_complex_s32_random()
+void test_xs3_sum_complex_s32_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 346332123;
@@ -267,6 +341,8 @@ static void test_xs3_sum_complex_s32_random()
 void test_xs3_sum_complex()
 {
     SET_TEST_FILE();
+
+    RUN_TEST(test_xs3_sum_complex_s32_calc_params);
 
     RUN_TEST(test_xs3_sum_complex_s16_basic);
     RUN_TEST(test_xs3_sum_complex_s16_random);

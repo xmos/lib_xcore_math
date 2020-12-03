@@ -15,6 +15,10 @@
 
 
 static char msg_buff[300];
+static unsigned seed = 4563456;
+
+const extern unsigned rot_table32_rows;
+const extern complex_s32_t rot_table32[30][4];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
     if((EXPECTED)!=(ACTUAL)) {                                        \
@@ -82,6 +86,56 @@ static int32_t mag_complex_s32(complex_s32_t b, right_shift_t b_shr)
 
 
 
+
+
+
+#define REPS        1000
+static void test_xs3_mag_vect_complex_calc_params()
+{
+    PRINTF("%s...\n", __func__);
+
+    seed = 0x142B711E;
+
+    for(int r = 0; r < REPS; r++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        
+        exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
+        headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 31);
+
+        complex_s32_t B = { 0, INT32_MIN >> b_hr };
+        int32_t A_mag;
+
+        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat ++){
+            
+            exponent_t a_exp;
+            right_shift_t b_shr;
+
+            // PRINTF("\n\t    allow_sat = %u\n", allow_sat);
+            // PRINTF("\t    b_exp = %d\n", b_exp);
+            // PRINTF("\t    b_hr = %d\n", b_hr);
+
+            xs3_mag_vect_complex_calc_params(&a_exp, &b_shr, b_exp, b_hr, allow_sat);
+
+            // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B.re, (uint32_t) B.re);
+            // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B.im, (uint32_t) B.im);
+
+            xs3_mag_vect_complex_s32(&A_mag, &B, 1, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
+
+            // PRINTF("\t    A_mag = %ld   (0x%08lX)\n", A_mag, (uint32_t) A_mag);
+            // PRINTF("\t    a_exp = %d\n", a_exp);
+            // PRINTF("\t    b_shr  = %d\n", b_shr);
+
+            if(allow_sat){
+                TEST_ASSERT_INT32_WITHIN(1, INT32_MAX, A_mag);
+            } else {
+                TEST_ASSERT_INT32_WITHIN(1, 0x40000000, A_mag);
+            }
+            
+            TEST_ASSERT_TRUE(  ( fabs( ldexp(A_mag, a_exp) + ldexp( B.im, b_exp) ) / B.im ) <= 0.00001  );
+        }
+    }
+}
+#undef REPS
 
 
 
@@ -192,7 +246,7 @@ static void test_xs3_mag_vect_complex_s16_basic()
 
 
 #define MAX_LEN     100
-#define REPS        IF_QUICK_TEST(100, 1000)
+#define REPS        1000
 #define THRESHOLD   10
 static void test_xs3_mag_vect_complex_s16_random()
 {
@@ -351,7 +405,7 @@ static void test_xs3_mag_vect_complex_s32_basic()
 
 
 #define MAX_LEN     100
-#define REPS        IF_QUICK_TEST(100, 1000)
+#define REPS        1000
 #define THRESHOLD   7
 static void test_xs3_mag_vect_complex_s32_random()
 {
@@ -415,6 +469,8 @@ static void test_xs3_mag_vect_complex_s32_random()
 void test_xs3_mag_vect_complex()
 {
     SET_TEST_FILE();
+
+    RUN_TEST(test_xs3_mag_vect_complex_calc_params);
 
     RUN_TEST(test_xs3_mag_vect_complex_s16_basic);
     RUN_TEST(test_xs3_mag_vect_complex_s16_random);

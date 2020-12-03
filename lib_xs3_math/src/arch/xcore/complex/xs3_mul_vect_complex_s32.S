@@ -8,7 +8,7 @@
 headroom_t xs3_mul_vect_complex_s32(
     complex_s32_t* a,
     const complex_s32_t* b,
-    const int32_t* c,
+    const int32_t c[],
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);

@@ -13,105 +13,220 @@
 
 
 static unsigned seed = 2314567;
-static char msg_buff[200];
 
-#define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
-    if((EXPECTED)!=(ACTUAL)) {                                        \
-      sprintf(msg_buff, "(test vector @ line %u)", (LINE_NUM));       \
-      TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
-    }} while(0)
-
-
-#ifndef DEBUG_ON
+#if DEBUG_ON || 0
+#undef DEBUG_ON
 #define DEBUG_ON    (1)
 #endif
 
+#define MAX_LEN     1024
+#define REPS        IF_QUICK_TEST(100,1000)
 
-#define MAX_LEN 50
+
+
+
 static void test_xs3_set_vect_s16()
 {
     PRINTF("%s...\n", __func__);
 
-    unsigned lengths[] = {1, 4, 16, 32, 40 };
-    int16_t WORD_ALIGNED buff[MAX_LEN];
+    seed = 0x5F0BE930;
 
-    for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
+    int16_t WORD_ALIGNED A[MAX_LEN];
 
-        unsigned len = lengths[i];
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
 
-        for(int k = 0; k < MAX_LEN; k++)
-            buff[k] = 0xbeef;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        
+        memset(A, 0xCC, sizeof(A));
 
-        xs3_set_vect_s16(buff, 0x7E57, len);
+        const int16_t new_val = pseudo_rand_int16(&seed);
+        
+        xs3_set_vect_s16(A, new_val, length);
 
-        for(int k = 0; k < len; k++)
-            TEST_ASSERT_EQUAL((int16_t) 0x7E57, buff[k]);
-        for(int k = len; k < MAX_LEN; k++)
-            TEST_ASSERT_EQUAL((int16_t) 0xbeef, buff[k]);
+        for(int i = 0; i < length; i++)
+            TEST_ASSERT_EQUAL_INT16(new_val, A[i]);
+        for(int i = length; i < MAX_LEN; i++)
+            TEST_ASSERT_EQUAL_INT16(0xCCCC, A[i]);
+        
     }
 }
-#undef MAX_LEN
 
 
-#define MAX_LEN 50
 static void test_xs3_set_vect_s32()
 {
     PRINTF("%s...\n", __func__);
 
-    unsigned lengths[] = {1, 4, 16, 32, 40 };
-    int32_t buff[MAX_LEN];
+    seed = 45674;
 
-    for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
+    int32_t WORD_ALIGNED A[MAX_LEN];
 
-        unsigned len = lengths[i];
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
 
-        for(int k = 0; k < MAX_LEN; k++)
-            buff[k] = 0xbeef1355;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        
+        memset(A, 0xCC, sizeof(A));
 
-        xs3_set_vect_s32(buff, 0x7E571d1d, len);
+        const int32_t new_val = pseudo_rand_int32(&seed);
+        
+        xs3_set_vect_s32(A, new_val, length);
 
-        for(int k = 0; k < len; k++)
-            TEST_ASSERT_EQUAL((int32_t) 0x7E571d1d, buff[k]);
-        for(int k = len; k < MAX_LEN; k++)
-            TEST_ASSERT_EQUAL((int32_t) 0xbeef1355, buff[k]);
+        for(int i = 0; i < length; i++)
+            TEST_ASSERT_EQUAL_INT32(new_val, A[i]);
+        for(int i = length; i < MAX_LEN; i++)
+            TEST_ASSERT_EQUAL_INT32(0xCCCCCCCC, A[i]);
+        
     }
 }
-#undef MAX_LEN
 
 
 
 
-#define MAX_LEN 50
+
+static void test_xs3_set_vect_complex_s16()
+{
+    PRINTF("%s...\n", __func__);
+
+    seed = 6567888;
+
+    int16_t WORD_ALIGNED A_real[MAX_LEN];
+    int16_t WORD_ALIGNED A_imag[MAX_LEN];
+
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        
+        memset(A_real, 0xCC, sizeof(A_real));
+        memset(A_imag, 0xCC, sizeof(A_imag));
+
+        const int16_t new_real = pseudo_rand_int16(&seed);
+        const int16_t new_imag = pseudo_rand_int16(&seed);
+        
+        xs3_set_vect_complex_s16(A_real, A_imag, new_real, new_imag, length);
+
+        for(int i = 0; i < length; i++){
+            TEST_ASSERT_EQUAL_INT16(new_real, A_real[i]);
+            TEST_ASSERT_EQUAL_INT16(new_imag, A_imag[i]);
+        }
+        for(int i = length; i < MAX_LEN; i++){
+            TEST_ASSERT_EQUAL_INT16(0xCCCC, A_real[i]);
+            TEST_ASSERT_EQUAL_INT16(0xCCCC, A_imag[i]);
+        }
+        
+    }
+}
+
+
+
+
+
 static void test_xs3_set_vect_complex_s32()
 {
     PRINTF("%s...\n", __func__);
 
-    unsigned lengths[] = {1, 4, 16, 32, 39 };
-    complex_s32_t buff[MAX_LEN];
+    seed = 73734;
 
-    for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
+    complex_s32_t WORD_ALIGNED A[MAX_LEN];
 
-        unsigned len = lengths[i];
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
 
-        for(int k = 0; k < MAX_LEN; k++){
-            buff[k].re = 0x12312312;
-            buff[k].im = 0x34534534;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        
+        memset(A, 0xCC, sizeof(A));
+
+        const int32_t new_real = pseudo_rand_int32(&seed);
+        const int32_t new_imag = pseudo_rand_int32(&seed);
+        
+        xs3_set_vect_complex_s32(A, new_real, new_imag, length);
+
+        for(int i = 0; i < length; i++){
+            TEST_ASSERT_EQUAL_INT32(new_real, A[i].re);
+            TEST_ASSERT_EQUAL_INT32(new_imag, A[i].im);
         }
-
-        xs3_set_vect_complex_s32(buff, 0xABCABCAB, 0xDEFDEFDE, len);
-
-        for(int k = 0; k < len; k++){
-            TEST_ASSERT_EQUAL((int32_t) 0xABCABCAB, buff[k].re);
-            TEST_ASSERT_EQUAL((int32_t) 0xDEFDEFDE, buff[k].im);
+        for(int i = length; i < MAX_LEN; i++){
+            TEST_ASSERT_EQUAL_INT32(0xCCCCCCCC, A[i].re);
+            TEST_ASSERT_EQUAL_INT32(0xCCCCCCCC, A[i].im);
         }
-        for(int k = len; k < MAX_LEN; k++){
-            TEST_ASSERT_EQUAL((int32_t) 0x12312312, buff[k].re);
-            TEST_ASSERT_EQUAL((int32_t) 0x34534534, buff[k].im);
-        }
+        
     }
 }
-#undef MAX_LEN
 
+
+
+
+
+
+static void test_xs3_set_vect_ch_pair_s16()
+{
+    PRINTF("%s...\n", __func__);
+
+    seed = 8808;
+
+    ch_pair_s16_t WORD_ALIGNED A[MAX_LEN];
+
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        
+        memset(A, 0xCC, sizeof(A));
+
+        const int16_t new_ch_a = pseudo_rand_int16(&seed);
+        const int16_t new_ch_b = pseudo_rand_int16(&seed);
+        
+        xs3_set_vect_ch_pair_s16(A, new_ch_a, new_ch_b, length);
+
+        for(int i = 0; i < length; i++){
+            TEST_ASSERT_EQUAL_INT16(new_ch_a, A[i].ch_a);
+            TEST_ASSERT_EQUAL_INT16(new_ch_b, A[i].ch_b);
+        }
+        for(int i = length; i < MAX_LEN; i++){
+            TEST_ASSERT_EQUAL_INT16(0xCCCC, A[i].ch_a);
+            TEST_ASSERT_EQUAL_INT16(0xCCCC, A[i].ch_b);
+        }
+        
+    }
+}
+
+
+
+
+
+
+static void test_xs3_set_vect_ch_pair_s32()
+{
+    PRINTF("%s...\n", __func__);
+
+    seed = 456678;
+
+    ch_pair_s32_t WORD_ALIGNED A[MAX_LEN];
+
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        
+        memset(A, 0xCC, sizeof(A));
+
+        const int32_t new_ch_a = pseudo_rand_int32(&seed);
+        const int32_t new_ch_b = pseudo_rand_int32(&seed);
+        
+        xs3_set_vect_ch_pair_s32(A, new_ch_a, new_ch_b, length);
+
+        for(int i = 0; i < length; i++){
+            TEST_ASSERT_EQUAL_INT32(new_ch_a, A[i].ch_a);
+            TEST_ASSERT_EQUAL_INT32(new_ch_b, A[i].ch_b);
+        }
+        for(int i = length; i < MAX_LEN; i++){
+            TEST_ASSERT_EQUAL_INT32(0xCCCCCCCC, A[i].ch_a);
+            TEST_ASSERT_EQUAL_INT32(0xCCCCCCCC, A[i].ch_b);
+        }
+        
+    }
+}
 
 
 void test_xs3_set_vect()
@@ -120,5 +235,8 @@ void test_xs3_set_vect()
 
     RUN_TEST(test_xs3_set_vect_s16);
     RUN_TEST(test_xs3_set_vect_s32);
+    RUN_TEST(test_xs3_set_vect_complex_s16);
     RUN_TEST(test_xs3_set_vect_complex_s32);
+    RUN_TEST(test_xs3_set_vect_ch_pair_s16);
+    RUN_TEST(test_xs3_set_vect_ch_pair_s32);
 }

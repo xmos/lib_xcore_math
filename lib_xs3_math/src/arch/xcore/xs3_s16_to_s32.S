@@ -4,8 +4,8 @@
 
 /*  
 headroom_t xs3_s16_to_s32(
-    int16_t* a,
-    const int32_t* b,
+    int16_t a[],
+    const int32_t b[],
     const unsigned length);
 */
 
@@ -30,16 +30,16 @@ headroom_t xs3_s16_to_s32(
 #define constsA         r11
 #define constsB         r11
 
-ASM_PREAMBLE(FUNCTION_NAME)
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
 
 FUNCTION_NAME:
-/**/    dualentsp NSTACKWORDS
+        dualentsp NSTACKWORDS
         ldc r11, 0x0200
     {   ldap r11, .L_vlmacc_consts_A            ;   vsetc r11                               }
 
 #if XS3_MATH_VECTOR_TAIL_SUPPORT
         std r4, r5, sp[0]
-/**/{   shl tail, len, SIZEOF_LOG2_S32          ;                                           }
+    {   shl tail, len, SIZEOF_LOG2_S32          ;                                           }
     {   shr len, len, EPV_LOG2_S32              ;   zext tail, 5                            }
     {   mkmsk tail, tail                        ;   bf len, .L_loop_bot                     }
     {                                           ;   bu .L_loop_top                          }
@@ -87,11 +87,11 @@ FUNCTION_NAME:
 
 #if XS3_MATH_VECTOR_TAIL_SUPPORT
     {   ldc _16, 16                             ;   bf tail, .L_finish                      }
-/**/{                                           ;   vclrdr                                  }
+    {                                           ;   vclrdr                                  }
     {                                           ;   vldc b[0]                               }
     {                                           ;   vlmacc r11[0]                           }
     {   add r11, r11, _16                       ;   vlmacc r11[0]                           }
-/**/{                                           ;   vlmacc r11[0]                           }
+    {                                           ;   vlmacc r11[0]                           }
     vstrpv a[0], tail
 #endif // XS3_MATH_VECTOR_TAIL_SUPPORT
 
@@ -99,7 +99,17 @@ FUNCTION_NAME:
         ldd r4, r5, sp[0]
         retsp NSTACKWORDS       
 
-ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS)
+.L_func_end:
+.cc_bottom FUNCTION_NAME.function
+
+
+.global FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS; .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;              .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;             .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;           .global FUNCTION_NAME.maxchanends
+.size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 #endif //!defined(XS3_MATH_NO_ASM)
 #endif //defined(__XS3A__)

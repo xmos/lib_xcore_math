@@ -4,7 +4,7 @@
 
 /*  
 int32_t xs3_abs_sum_s16(
-    const int16_t* b,
+    const int16_t b[],
     const unsigned length);
 */
 

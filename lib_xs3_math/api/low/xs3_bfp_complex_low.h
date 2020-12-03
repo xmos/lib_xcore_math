@@ -9,6 +9,206 @@ extern "C" {
 #endif
 
 
+
+
+
+void xs3_set_vect_complex_s16(
+    int16_t real[],
+    int16_t imag[],
+    const int16_t real_value,
+    const int16_t imag_value,
+    const unsigned length);
+
+
+
+/** Set all elements of a `complex_s32_t` array to the specified value.
+ * 
+ * \low_op{Complex&nbsp;32, @f$data_k \leftarrow real + i\cdot imag\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * 
+ * \requires_word_alignment{data}
+ * 
+ * \param[out] data     Array to set
+ * \param[in]  real     Real part of value to set
+ * \param[in]  imag     Imaginary part of value to set
+ * \param[in]  length   Number of elements in `data`
+ */
+void xs3_set_vect_complex_s32(
+    complex_s32_t data[],
+    const int32_t real,
+    const int32_t imag,
+    const unsigned length);
+    
+
+#ifdef __XC__
+
+  // For some reason I can't get the static inline functions to compile when included
+  // from a .xc file. There's probably some fix I don't know about. This is temporary.
+  // @todo Make these work from XC.
+
+#else    
+
+/**
+ * @brief Get headroom of complex 16-bit vector.
+ * 
+ */
+static inline headroom_t xs3_headroom_vect_complex_s16(
+    const int16_t a_real[],
+    const int16_t a_imag[],
+    const unsigned length)
+{
+    headroom_t hr_re = xs3_headroom_vect_s16(a_real, length);
+    headroom_t hr_im = xs3_headroom_vect_s16(a_imag, length);
+    return MIN(hr_re, hr_im);
+}
+
+
+
+/**
+ * @brief Get headroom of complex 32-bit vector.
+ * 
+ */
+static inline headroom_t xs3_headroom_vect_complex_s32(
+    const complex_s32_t a[], 
+    const unsigned length)
+{
+    return xs3_headroom_vect_s32((int32_t*)a, 2*length);
+}
+
+
+
+static inline headroom_t xs3_shr_vect_complex_s16(
+    int16_t a_real[],
+    int16_t a_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const unsigned length,
+    const right_shift_t shr)
+{
+    headroom_t hr_re = xs3_shr_vect_s16(a_real, b_real, length, shr);
+    headroom_t hr_im = xs3_shr_vect_s16(a_imag, b_imag, length, shr);
+
+    return MIN(hr_re, hr_im);
+}
+
+static inline headroom_t xs3_shr_vect_complex_s32(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const unsigned length,
+    const right_shift_t shr)
+{
+    return xs3_shr_vect_s32((int32_t*) a, (int32_t*) b, 2*length, shr);
+}
+
+static inline headroom_t xs3_shl_vect_complex_s16(
+    int16_t a_real[],
+    int16_t a_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const unsigned length,
+    const left_shift_t shl)
+{
+    return xs3_shr_vect_complex_s16(a_real, a_imag, b_real, b_imag, length, -shl);
+}
+
+static inline headroom_t xs3_shl_vect_complex_s32(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const unsigned length,
+    const left_shift_t shl)
+{
+    return xs3_shr_vect_complex_s32(a, b, length, -shl);
+}
+
+
+
+/**
+ * @todo
+ */
+static inline headroom_t xs3_add_vect_complex_s16(
+    int16_t a_real[],
+    int16_t a_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const int16_t c_real[],
+    const int16_t c_imag[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
+{
+    const headroom_t re_hr = xs3_add_vect_s16(a_real, b_real, c_real, length, b_shr, c_shr);
+    const headroom_t im_hr = xs3_add_vect_s16(a_imag, b_imag, c_imag, length, b_shr, c_shr);
+    return MIN(re_hr, im_hr);
+}
+
+/**
+ * @todo
+ */
+static inline headroom_t xs3_add_vect_complex_s32(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const complex_s32_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
+{
+    return xs3_add_vect_s32( (int32_t*) a, (int32_t*) b, (int32_t*) c, 2*length, b_shr, c_shr);
+}
+
+
+/**
+ * @todo
+ */
+static inline headroom_t xs3_sub_vect_complex_s16(
+    int16_t a_real[],
+    int16_t a_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const int16_t c_real[],
+    const int16_t c_imag[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
+{
+    const headroom_t re_hr = xs3_sub_vect_s16(a_real, b_real, c_real, length, b_shr, c_shr);
+    const headroom_t im_hr = xs3_sub_vect_s16(a_imag, b_imag, c_imag, length, b_shr, c_shr);
+    return MIN(re_hr, im_hr);
+}
+
+
+/**
+ * @brief Subtracts one complex 32-bit vector from another.
+ * 
+ */
+static inline headroom_t xs3_sub_vect_complex_s32(
+    complex_s32_t a[], 
+    const complex_s32_t b[],
+    const complex_s32_t c[],
+    const unsigned length, 
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
+{
+    return xs3_sub_vect_s32((int32_t*)a, (int32_t*)b, (int32_t*)c, 2*length, b_shr, c_shr);
+}
+
+
+
+#endif //__XC__
+
+
+/**
+ * 
+ * TODO: useful documentation info in the function's body. Copy some of that.
+ * 
+ */
+void xs3_mul_vect_complex_s16_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* sat,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const unsigned allow_saturation);
+
 /**
  * @brief Multiply a complex 16-bit vector by a real 16-bit vector.
  * 
@@ -70,6 +270,17 @@ headroom_t xs3_mul_vect_complex_s16(
     const right_shift_t sat);
 
 
+
+void xs3_mul_vect_complex_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const unsigned allow_saturation);
+
 /**
  * @brief Multiply a complex 32-bit vector by a real 32-bit vector.
  * 
@@ -126,6 +337,15 @@ headroom_t xs3_mul_vect_complex_s32(
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
+
+void xs3_complex_mul_vect_complex_s16_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* a_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const unsigned allow_saturation);
 
 
 /**
@@ -191,6 +411,16 @@ headroom_t xs3_complex_mul_vect_complex_s16(
     const unsigned length,
     const right_shift_t sat);
 
+
+void xs3_complex_mul_vect_complex_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const unsigned allow_saturation);
 
 /**
  * @brief Compute the complex product of two complex 32-bit vectors.
@@ -313,6 +543,54 @@ headroom_t xs3_complex_conj_mul_vect_complex_s16(
     const int16_t c_imag[],
     const unsigned length,
     const right_shift_t sat);
+
+#ifdef __XC__
+
+  // For some reason I can't get the static inline functions to compile when included
+  // from a .xc file. There's probably some fix I don't know about. This is temporary.
+  // @todo Make these work from XC.
+
+#else    
+
+/**
+ * @todo No need for separate low-level 16-bit real scalar multiplication of complex vector. Although, I suppose we 
+ *       could speed it up a little if we had a dedicated assembly function for this... currently the inner loop of
+ *       xs3_scalar_mul_vect_s16() is 4 instructions (with no FNOPs). But we have separate arrays for real and imag in
+ *       16-bit vectors, so we go through it twice per complex element. If it was a dedicated function, we could do both
+ *       the real and imag parts in a single iteration, saving one branch instruction... but, if it ends up adding an
+ *       FNOP, then it hasn't really sped it up. There would only be 7 dual-issue instructions in the loop though... at
+ *       least after the first pass it seems like it should be able to hold all of them in the instruction buffer 
+ *       (which theoretically fits 8?)
+ */
+static inline headroom_t xs3_scalar_mul_vect_complex_s16(
+    int16_t a_real[],
+    int16_t a_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const int16_t c,
+    const unsigned length,
+    const right_shift_t sat)
+{
+    const headroom_t re_hr = xs3_scalar_mul_vect_s16(a_real, b_real, length, c, sat);
+    const headroom_t im_hr = xs3_scalar_mul_vect_s16(a_imag, b_imag, length, c, sat);
+    return MIN(re_hr, im_hr);
+}
+
+/**
+ * @todo
+ */
+static inline headroom_t xs3_scalar_mul_vect_complex_s32(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const int32_t c,
+    const unsigned length,
+    const right_shift_t b_shr)
+{
+    return xs3_scalar_mul_vect_s32( (int32_t*) a, (int32_t*) b, 2*length, c, b_shr );
+}
+
+#endif //__XC__
+
 
 
 /**
@@ -440,6 +718,20 @@ headroom_t xs3_complex_scal_mul_vect_complex_s16(
 
 
 /**
+ * 
+ * 
+ */
+void xs3_complex_scal_mul_vect_complex_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* alpha_shr,
+    const exponent_t b_exp,
+    const exponent_t alpha_exp,
+    const headroom_t b_hr,
+    const headroom_t alpha_hr,
+    const unsigned allow_saturation);
+
+/**
  * @brief Compute complex product of a complex 32-bit vector with a complex 32-bit scalar.
  * 
  * Multiply the vector @vector{b} with the scalar @math{c}, placing the final result in the 
@@ -496,7 +788,6 @@ headroom_t xs3_complex_scal_mul_vect_complex_s32(
     const int32_t c_imag,
     const unsigned length,
     const right_shift_t b_shr);
-
 
 /**
  * @brief Convert a complex 16-bit vector into a complex 32-bit vector.
@@ -562,6 +853,16 @@ void xs3_complex_s32_to_complex_s16(
     const right_shift_t b_shr);
 
 
+/**
+ * @todo
+ */
+void xs3_squared_mag_vect_complex_s16_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* sat,
+    const exponent_t b_exp,
+    const headroom_t b_hr,
+    const unsigned allow_saturation);
+
 
 /**
  * @brief Compute the squared magnitudes of elements of a complex 16-bit vector.
@@ -593,6 +894,16 @@ headroom_t xs3_squared_mag_vect_complex_s16(
     const int16_t b_imag[],
     const unsigned length,
     const right_shift_t sat);
+
+/**
+ * @todo
+ */
+void xs3_squared_mag_vect_complex_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const exponent_t b_exp,
+    const headroom_t b_hr,
+    const unsigned allow_saturation);
 
 /**
  * @brief Computes the squared magnitudes of elements of a complex 32-bit vector.
@@ -634,6 +945,15 @@ headroom_t xs3_squared_mag_vect_complex_s32(
     const unsigned length,
     const right_shift_t b_shr);
 
+/**
+ * @todo 
+ */
+void xs3_mag_vect_complex_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const exponent_t b_exp,
+    const headroom_t b_hr,
+    const unsigned allow_saturation);
 
 /**
  * Returns headroom
@@ -672,6 +992,14 @@ headroom_t xs3_mag_vect_complex_s32(
     const complex_s32_t* rot_table,
     const unsigned table_rows);
 
+#ifdef __XC__
+
+  // For some reason I can't get the static inline functions to compile when included
+  // from a .xc file. There's probably some fix I don't know about. This is temporary.
+  // @todo Make these work from XC.
+
+#else    
+
     
 /**
  * @brief Compute the sum of elements of a complex 16-bit vector.
@@ -688,10 +1016,28 @@ headroom_t xs3_mag_vect_complex_s32(
  * 
  * @return The complex 32-bit sum.
  */
-complex_s32_t xs3_sum_complex_s16(
+static inline complex_s32_t xs3_sum_complex_s16(
     const int16_t b_real[],
     const int16_t b_imag[],
-    const unsigned length);
+    const unsigned length)
+{
+    complex_s32_t s;
+    s.re = xs3_sum_s16(b_real, length);
+    s.im = xs3_sum_s16(b_imag, length);
+    return s;
+}
+
+#endif //__XC__
+
+
+
+void xs3_sum_complex_s32_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const exponent_t b_exp,
+    const headroom_t b_hr,
+    const unsigned length,
+    const unsigned allow_saturation);
 
 
 /**
@@ -742,63 +1088,6 @@ void xs3_tail_reverse_complex_s32(
 
 
 
-/**
- * @brief Get headroom of complex 16-bit vector.
- * 
- */
-static inline headroom_t xs3_headroom_vect_complex_s16(
-    const int16_t a_real[],
-    const int16_t a_imag[],
-    const unsigned length)
-{
-    headroom_t hr_re = xs3_headroom_vect_s16(a_real, length);
-    headroom_t hr_im = xs3_headroom_vect_s16(a_imag, length);
-    return MIN(hr_re, hr_im);
-}
-
-
-
-/**
- * @brief Get headroom of complex 32-bit vector.
- * 
- */
-static inline headroom_t xs3_headroom_vect_complex_s32(
-    const complex_s32_t a[], 
-    const unsigned length)
-{
-    return xs3_headroom_vect_s32((int32_t*)a, 2*length);
-}
-
-/**
- * @brief Adds one complex 32-bit vector to another.
- * 
- */
-static inline headroom_t xs3_add_vect_complex_s32(
-    complex_s32_t a[], 
-    const complex_s32_t b[],
-    const complex_s32_t c[],
-    const unsigned length, 
-    const right_shift_t b_shr,
-    const right_shift_t c_shr)
-{
-    return xs3_add_vect_s32((int32_t*)a, (int32_t*)b, (int32_t*)c, 2*length, b_shr, c_shr);
-}
-    
-    
-/**
- * @brief Subtracts one complex 32-bit vector from another.
- * 
- */
-static inline headroom_t xs3_sub_vect_complex_s32(
-    complex_s32_t a[], 
-    const complex_s32_t b[],
-    const complex_s32_t c[],
-    const unsigned length, 
-    const right_shift_t b_shr,
-    const right_shift_t c_shr)
-{
-    return xs3_sub_vect_s32((int32_t*)a, (int32_t*)b, (int32_t*)c, 2*length, b_shr, c_shr);
-}
 
 
 #ifdef __XC__

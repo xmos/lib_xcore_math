@@ -35,6 +35,20 @@ extern "C" {
 #define CLS_S32(X)      (cls(X))
 
 /**
+ * @todo
+ * 
+ * Might be a more efficient way to do this.
+ */
+#define CLS_S64(X)    ( (cls((int32_t)(((int64_t)(X))>>32)) == 32)?                                             \
+                        (cls((int32_t)(((int64_t)(X))>>16)) == 32)?    32 + cls((int32_t)(X))                   \
+                                                                  :    16 + cls((int32_t)(((int64_t)(X))>>16))  \
+                                                                  :    cls((int32_t)(((int64_t)(X))>>32))   )
+
+
+
+
+
+/**
  * \brief Count leading sign bits of a `complex_s16_t`.
  * 
  * The number of  leading sign bits for a complex integer is defined as 
@@ -57,6 +71,7 @@ extern "C" {
 #define CLS_C32(X)      (XS3_MIN(CLS_S32(((int32_t)(X).re)), CLS_S32(((int32_t)(X).im))))
 
 
+#define HR_S64(X)   (CLS_S64(X)-1)
 
 /**
  * \brief Get the headroom of an `int32_t`.
@@ -115,7 +130,42 @@ static inline unsigned cls(
 #endif //__XS3A__
 }
 
+int32_t xs3_scalar_s64_to_s32(
+    exponent_t* a_exp,
+    const int64_t b,
+    const exponent_t b_exp);
 
+int16_t xs3_scalar_s32_to_s16(
+    exponent_t* a_exp,
+    const int32_t b,
+    const exponent_t b_exp);
+    
+int32_t xs3_scalar_s16_to_s32(
+    exponent_t* a_exp,
+    const int16_t b,
+    const exponent_t b_exp,
+    const unsigned remove_hr);
+
+
+#define XS3_SQRT_S32_MAX_DEPTH     (31)
+
+int32_t xs3_sqrt_s32(
+    exponent_t* a_exp,
+    const int32_t B,
+    const exponent_t b_exp,
+    const unsigned depth);
+
+
+int32_t xs3_inverse_s32(
+    exponent_t* a_exp,
+    const int32_t b);
+    
+int32_t xs3_mul_s32(
+    exponent_t* a_exp,
+    const int32_t b,
+    const int32_t c,
+    const exponent_t b_exp,
+    const exponent_t c_exp);
 
 /**
  * \brief Decompose float into its mantissa and exponent.

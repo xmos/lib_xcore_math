@@ -2,19 +2,6 @@
 #if defined(__XS3A__)
 #ifndef XS3_MATH_NO_ASM
 
-/*  
-headroom_t xs3_abs_vect_s16(
-    int16_t* a,
-    const int16_t* b,
-    const unsigned length);
-
-headroom_t xs3_abs_vect_s32(
-    int32_t* a,
-    const int32_t* b,
-    const unsigned length);
-*/
-
-
 #include "asm_helper.h"
 
 .text
@@ -26,14 +13,11 @@ headroom_t xs3_abs_vect_s32(
   #define NSTACKWORDS     (0)
 #endif
 
-
-#define FUNCTION_NAME   xs3_abs_vect
-#define FNAME_S16       CAT(FUNCTION_NAME, _s16)
-#define FNAME_S32       CAT(FUNCTION_NAME, _s32)
-
 #if XS3_MATH_VECTOR_TAIL_SUPPORT
   #define STACK_TMP_VEC       (NSTACKWORDS-8)
 #endif
+
+
 
 #define a           r0
 #define b           r1
@@ -42,42 +26,53 @@ headroom_t xs3_abs_vect_s32(
 
 
 
+/*  
+headroom_t xs3_abs_vect_s16(
+    int16_t a[],
+    const int16_t b[],
+    const unsigned length);
+*/
+.cc_top xs3_abs_vect_s16.function,xs3_abs_vect_s16
 
-
-
-ASM_PREAMBLE(FNAME_S16)
-FNAME_S16:
-/**/    dualentsp NSTACKWORDS
+xs3_abs_vect_s16:
+        dualentsp NSTACKWORDS
         ldc r11, 0x0100
-
 #if XS3_MATH_VECTOR_TAIL_SUPPORT
     {   shl tail, len, SIZEOF_LOG2_S16          ;   shr len, len, EPV_LOG2_S16              }
     {   zext tail, 5                            ;   vsetc r11                               }
-/**/{                                           ;   bu .L_apply_op                          }
+    {                                           ;   bu .L_apply_op                          }
 #else //XS3_MATH_VECTOR_TAIL_SUPPORT
     {   shr len, len, EPV_LOG2_S16              ;   vsetc r11                               }
     {                                           ;   bu .L_apply_op                          }
 #endif //XS3_MATH_VECTOR_TAIL_SUPPORT
-ASM_POSTAMBLE(FNAME_S16, NSTACKWORDS)
+
+.L_func_end_s16:
+.cc_bottom xs3_abs_vect_s16.function
 
 
 
+/*
+headroom_t xs3_abs_vect_s32(
+    int32_t a[],
+    const int32_t b[],
+    const unsigned length);
+*/
+.cc_top xs3_abs_vect_s32.function,xs3_abs_vect_s32
 
-
-
-ASM_PREAMBLE(FNAME_S32)
-FNAME_S32:
+xs3_abs_vect_s32:
 #if XS3_MATH_VECTOR_TAIL_SUPPORT
-/**/    dualentsp NSTACKWORDS
+        dualentsp NSTACKWORDS
     {   ldc r11, 0                              ;   shl tail, len, SIZEOF_LOG2_S32          }
     {   shr len, len, EPV_LOG2_S32              ;   vsetc r11                               }
     {   zext tail, 5                            ;   bu .L_apply_op                          }
 #else //XS3_MATH_VECTOR_TAIL_SUPPORT
-/**/{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
+    {   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
     {   shr len, len, EPV_LOG2_S32              ;   vsetc r11                               }
     {                                           ;   bu .L_apply_op                          }
 #endif //XS3_MATH_VECTOR_TAIL_SUPPORT
-ASM_POSTAMBLE(FNAME_S32, NSTACKWORDS)
+
+.L_func_end_s32:
+.cc_bottom xs3_abs_vect_s32.function
 
 
 
@@ -100,21 +95,23 @@ ASM_POSTAMBLE(FNAME_S32, NSTACKWORDS)
 #define loop_count  r2
 #define tail        r3
 
-ASM_PREAMBLE_LCL(apply_op);
+.type .L_apply_op,@function
+.cc_top .L_apply_op.function,.L_apply_op
+
 .L_apply_op:
 
 #if XS3_MATH_VECTOR_TAIL_SUPPORT
-/**/{   mkmsk tail, tail                        ;                                           }
+    {   mkmsk tail, tail                        ;                                           }
 #endif //XS3_MATH_VECTOR_TAIL_SUPPORT
     {   mov r11, b                              ;   bf loop_count, .L_loop_bot              }
     {   ldc r1, 32                              ;   bu .L_loop_top                          }
 .align 16
 .L_loop_top:
-/**/    {   sub loop_count, loop_count, 1           ;   vldr r11[0]                             }
+        {   sub loop_count, loop_count, 1           ;   vldr r11[0]                             }
         {                                           ;   vsign                                   }
         {                                           ;   vlmul r11[0]                            }
         {   add a, a, r1                            ;   vstr a[0]                               }
-/**/    {   add r11, r11, r1                        ;   bt loop_count, .L_loop_top              }
+        {   add r11, r11, r1                        ;   bt loop_count, .L_loop_top              }
 .L_loop_bot:
 
 #if XS3_MATH_VECTOR_TAIL_SUPPORT
@@ -122,11 +119,11 @@ ASM_PREAMBLE_LCL(apply_op);
     {                                           ;   bf tail, .L_finish                      }
     {                                           ;   vclrdr                                  }
     {                                           ;   vldr r11[0]                             }
-/**/{                                           ;   vsign                                   }
+    {                                           ;   vsign                                   }
     {   ldaw r11, sp[STACK_TMP_VEC]             ;   vlmul r11[0]                            }
     {                                           ;   vstd r11[0]                             }
     {                                           ;   vpos                                    }
-/**/    vstrpv r11[0], tail
+        vstrpv r11[0], tail
     {                                           ;   vldr r11[0]                             }
     {                                           ;   vstr r11[0]                             }
         vstrpv a[0], tail
@@ -140,11 +137,29 @@ ASM_PREAMBLE_LCL(apply_op);
     {   add r11, r11, 1                         ;                                           }
     {   sub r0, r0, r11                         ;   retsp NSTACKWORDS                       } 
 
-ASM_POSTAMBLE_LCL(apply_op);
+.L_end_apply_op: 
+.cc_bottom .L_apply_op.function
+.size .L_apply_op, .L_end_apply_op - .L_apply_op
 
 
 
 
+
+.global xs3_abs_vect_s16
+.type xs3_abs_vect_s16,@function
+.set xs3_abs_vect_s16.nstackwords,NSTACKWORDS;  .global xs3_abs_vect_s16.nstackwords
+.set xs3_abs_vect_s16.maxcores,1;               .global xs3_abs_vect_s16.maxcores
+.set xs3_abs_vect_s16.maxtimers,0;              .global xs3_abs_vect_s16.maxtimers
+.set xs3_abs_vect_s16.maxchanends,0;            .global xs3_abs_vect_s16.maxchanends
+.size xs3_abs_vect_s16, .L_func_end_s16 - xs3_abs_vect_s16
+
+.global xs3_abs_vect_s32
+.type xs3_abs_vect_s32,@function
+.set xs3_abs_vect_s32.nstackwords,NSTACKWORDS;  .global xs3_abs_vect_s32.nstackwords
+.set xs3_abs_vect_s32.maxcores,1;               .global xs3_abs_vect_s32.maxcores
+.set xs3_abs_vect_s32.maxtimers,0;              .global xs3_abs_vect_s32.maxtimers
+.set xs3_abs_vect_s32.maxchanends,0;            .global xs3_abs_vect_s32.maxchanends
+.size xs3_abs_vect_s32, .L_func_end_s32 - xs3_abs_vect_s32
 
 
 

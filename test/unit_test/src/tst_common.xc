@@ -9,6 +9,16 @@
 #define CRC_POLY (0xEB31D82E)
 
 
+int8_t  pseudo_rand_int8(unsigned *r){
+    crc32(*r, -1, CRC_POLY);
+    return (int8_t)*r;
+}
+
+uint8_t pseudo_rand_uint8(unsigned *r){
+    crc32(*r, -1, CRC_POLY);
+    return (uint8_t)*r;
+}
+
 int16_t  pseudo_rand_int16(unsigned *r){
     crc32(*r, -1, CRC_POLY);
     return (int16_t)*r;
@@ -44,6 +54,30 @@ uint64_t pseudo_rand_uint64(unsigned *r){
     int64_t b = (int64_t)*r;
     return (uint64_t)(a + (b<<32));
 }
+
+
+int32_t pseudo_rand_int(
+    unsigned *r, 
+    int32_t min, 
+    int32_t max)
+{
+    uint32_t delta = max - min;
+    uint32_t d = pseudo_rand_uint32(r) % delta;
+    return min + d;
+}
+
+uint32_t pseudo_rand_uint(
+    unsigned *r, 
+    uint32_t min, 
+    uint32_t max)
+{
+    uint32_t delta = max - min;
+    uint32_t d = pseudo_rand_uint32(r) % delta;
+    return min + d;
+}
+
+
+
 
 void pseudo_rand_bytes(unsigned *r, char* buffer, unsigned size){
 

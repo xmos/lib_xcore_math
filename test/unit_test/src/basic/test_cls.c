@@ -151,6 +151,42 @@ static void test_CLS_C16()
 
 
 
+static void test_CLS_S64()
+{
+    PRINTF("%s...\n", __func__);
+    seed = 4334;
+
+    TEST_ASSERT_EQUAL_UINT32(64, CLS_S64( 0x0000000000000000LL));
+    TEST_ASSERT_EQUAL_UINT32(64, CLS_S64(-0x0000000000000001LL));
+    TEST_ASSERT_EQUAL_UINT32( 1, CLS_S64( 0x7FFFFFFFFFFFFFFFLL));
+    TEST_ASSERT_EQUAL_UINT32( 1, CLS_S64(-0x8000000000000000LL));
+    TEST_ASSERT_EQUAL_UINT32(32, CLS_S64( 0x00000000FFFFFFFFLL));
+    TEST_ASSERT_EQUAL_UINT32(32, CLS_S64( 0xFFFFFFFF00000000LL));
+    TEST_ASSERT_EQUAL_UINT32(31, CLS_S64( 0x0000000100000000LL));
+
+
+    int64_t numbers[N];
+    unsigned actual[N];
+    unsigned expected[N];
+
+    for(int i = 0; i < N; i++){
+
+        numbers[i] = pseudo_rand_int64(&seed) >> pseudo_rand_uint(&seed, 0, 56);
+
+        int32_t high = numbers[i] >> 32;
+        int32_t mid = numbers[i] >> 16;
+        int32_t low = numbers[i];
+
+        expected[i] = (cls(high) == 32)? (cls(mid) == 32)? 32+cls(low) : 16+cls(mid) : cls(high);
+
+        actual[i] = CLS_S64(numbers[i]);
+
+    }
+
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(expected, actual, N);
+}
+
+
 void test_CLS_funcs()
 {
     SET_TEST_FILE();
@@ -160,4 +196,5 @@ void test_CLS_funcs()
     RUN_TEST(test_CLS_S16);
     RUN_TEST(test_CLS_C32);
     RUN_TEST(test_CLS_C16);
+    RUN_TEST(test_CLS_S64);
 }
