@@ -26,7 +26,7 @@ static unsigned seed = 54346;
 
 
 
-static void test_bfp_shl_vect_s16()
+static void test_bfp_vect_s16_shl()
 {
     PRINTF("%s...\n", __func__);
 
@@ -49,7 +49,7 @@ static void test_bfp_shl_vect_s16()
 
         unsigned leave_hr = 1;
 
-        bfp_shl_vect_s16(&A, &B, B.hr-leave_hr);
+        bfp_vect_s16_shl(&A, &B, B.hr-leave_hr);
 
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
@@ -66,7 +66,7 @@ static void test_bfp_shl_vect_s16()
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));
 
-        bfp_shl_vect_s16(&B, &A,  shl);
+        bfp_vect_s16_shl(&B, &A,  shl);
         
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
@@ -82,7 +82,7 @@ static void test_bfp_shl_vect_s16()
 
 
 
-static void test_bfp_shl_vect_s32()
+static void test_bfp_vect_s32_shl()
 {
     PRINTF("%s...\n", __func__);
 
@@ -105,7 +105,7 @@ static void test_bfp_shl_vect_s32()
 
         unsigned leave_hr = 1;
 
-        bfp_shl_vect_s32(&A, &B, B.hr-leave_hr);
+        bfp_vect_s32_shl(&A, &B, B.hr-leave_hr);
 
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
@@ -122,7 +122,7 @@ static void test_bfp_shl_vect_s32()
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));
 
-        bfp_shl_vect_s32(&B, &A, shl);
+        bfp_vect_s32_shl(&B, &A, shl);
         
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
@@ -142,7 +142,7 @@ static void test_bfp_shl_vect_s32()
 
 
 
-static void test_bfp_shl_vect_ch_pair_s16()
+static void test_bfp_vect_ch_pair_s16_shl()
 {
     PRINTF("%s...\n", __func__);
 
@@ -165,7 +165,7 @@ static void test_bfp_shl_vect_ch_pair_s16()
 
         unsigned leave_hr = 1;
 
-        bfp_shl_vect_ch_pair_s16(&A, &B, B.hr-leave_hr);
+        bfp_vect_ch_pair_s16_shl(&A, &B, B.hr-leave_hr);
 
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
@@ -184,7 +184,7 @@ static void test_bfp_shl_vect_ch_pair_s16()
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));
 
-        bfp_shl_vect_ch_pair_s16(&B, &A, shl);
+        bfp_vect_ch_pair_s16_shl(&B, &A, shl);
         
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
@@ -204,7 +204,7 @@ static void test_bfp_shl_vect_ch_pair_s16()
 
 
 
-static void test_bfp_shl_vect_ch_pair_s32()
+static void test_bfp_vect_ch_pair_s32_shl()
 {
     PRINTF("%s...\n", __func__);
 
@@ -227,7 +227,7 @@ static void test_bfp_shl_vect_ch_pair_s32()
 
         unsigned leave_hr = 1;
 
-        bfp_shl_vect_ch_pair_s32(&A, &B, B.hr-leave_hr);
+        bfp_vect_ch_pair_s32_shl(&A, &B, B.hr-leave_hr);
 
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
@@ -246,7 +246,7 @@ static void test_bfp_shl_vect_ch_pair_s32()
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));
 
-        bfp_shl_vect_ch_pair_s32(&B, &A, shl);
+        bfp_vect_ch_pair_s32_shl(&B, &A, shl);
         
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
@@ -269,7 +269,7 @@ static void test_bfp_shl_vect_ch_pair_s32()
 
 
 
-void test_bfp_shl_vect_complex_s16()
+void test_bfp_vect_complex_s16_shl()
 {
     PRINTF("%s...\n", __func__);
 
@@ -295,12 +295,12 @@ void test_bfp_shl_vect_complex_s16()
             B_data.imag[i] = pseudo_rand_int16(&seed) >> (min_hr + pseudo_rand_uint(&seed, 0, 5));
         }
 
-        bfp_init_vect_complex_s16(&B, B_data.real, B_data.imag, B.exp, B.length, 1);
-        bfp_init_vect_complex_s16(&A, A_data.real, A_data.imag,     0, B.length, 1);
+        bfp_vect_complex_s16_init(&B, B_data.real, B_data.imag, B.exp, B.length, 1);
+        bfp_vect_complex_s16_init(&A, A_data.real, A_data.imag,     0, B.length, 1);
 
         left_shift_t shl = pseudo_rand_uint(&seed, 1, min_hr);
 
-        bfp_shl_vect_complex_s16(&A, &B, shl);
+        bfp_vect_complex_s16_shl(&A, &B, shl);
 
         TEST_ASSERT_EQUAL(B.exp, A.exp);
         TEST_ASSERT_EQUAL(B.hr - shl, A.hr);
@@ -315,7 +315,7 @@ void test_bfp_shl_vect_complex_s16()
 
 
 
-void test_bfp_shl_vect_complex_s32()
+void test_bfp_vect_complex_s32_shl()
 {
     PRINTF("%s...\n", __func__);
 
@@ -337,14 +337,14 @@ void test_bfp_shl_vect_complex_s32()
             B_data[i].im = pseudo_rand_int32(&seed) >> (min_hr + pseudo_rand_uint(&seed, 0, 10));
         }
 
-        bfp_init_vect_complex_s32(&B, B_data, B.exp, B.length, 1);
-        bfp_init_vect_complex_s32(&A, A_data,     0, B.length, 1);
+        bfp_vect_complex_s32_init(&B, B_data, B.exp, B.length, 1);
+        bfp_vect_complex_s32_init(&A, A_data,     0, B.length, 1);
 
         memset(A.data, 0xCC, sizeof(A_data));
 
         left_shift_t shl = pseudo_rand_uint(&seed, 1, min_hr);
 
-        bfp_shl_vect_complex_s32(&A, &B, shl);
+        bfp_vect_complex_s32_shl(&A, &B, shl);
 
         TEST_ASSERT_EQUAL(B.exp, A.exp);
         TEST_ASSERT_EQUAL(B.hr - shl, A.hr);
@@ -360,7 +360,7 @@ void test_bfp_shl_vect_complex_s32()
 
 
 
-static void test_bfp_shl_vect_complex_s16_2()
+static void test_bfp_vect_complex_s16_shl_2()
 {
     PRINTF("%s...\n", __func__);
 
@@ -391,7 +391,7 @@ static void test_bfp_shl_vect_complex_s16_2()
 
         unsigned leave_hr = 1;
 
-        bfp_shl_vect_complex_s16(&A, &B, B.hr-leave_hr);
+        bfp_vect_complex_s16_shl(&A, &B, B.hr-leave_hr);
 
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
@@ -411,7 +411,7 @@ static void test_bfp_shl_vect_complex_s16_2()
         memcpy(realB_copy, realA, sizeof(realA));
         memcpy(imagB_copy, imagA, sizeof(imagA));
 
-        bfp_shl_vect_complex_s16(&B, &A, shl);
+        bfp_vect_complex_s16_shl(&B, &A, shl);
         
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
@@ -431,7 +431,7 @@ static void test_bfp_shl_vect_complex_s16_2()
 
 
 
-static void test_bfp_shl_vect_complex_s32_2()
+static void test_bfp_vect_complex_s32_shl_2()
 {
     PRINTF("%s...\n", __func__);
 
@@ -454,7 +454,7 @@ static void test_bfp_shl_vect_complex_s32_2()
 
         unsigned leave_hr = 1;
 
-        bfp_shl_vect_complex_s32(&A, &B, B.hr-leave_hr);
+        bfp_vect_complex_s32_shl(&A, &B, B.hr-leave_hr);
 
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
@@ -473,7 +473,7 @@ static void test_bfp_shl_vect_complex_s32_2()
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));
 
-        bfp_shl_vect_complex_s32(&B, &A, shl);
+        bfp_vect_complex_s32_shl(&B, &A, shl);
         
         TEST_ASSERT_EQUAL(B_copy.length, B.length);
         TEST_ASSERT_EQUAL(B_copy.length, A.length);
@@ -494,15 +494,15 @@ void test_bfp_shl_vect()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_bfp_shl_vect_s16);
-    RUN_TEST(test_bfp_shl_vect_s32);
+    RUN_TEST(test_bfp_vect_s16_shl);
+    RUN_TEST(test_bfp_vect_s32_shl);
     
-    RUN_TEST(test_bfp_shl_vect_ch_pair_s16);
-    RUN_TEST(test_bfp_shl_vect_ch_pair_s32);
+    RUN_TEST(test_bfp_vect_ch_pair_s16_shl);
+    RUN_TEST(test_bfp_vect_ch_pair_s32_shl);
 
-    RUN_TEST(test_bfp_shl_vect_complex_s16);
-    RUN_TEST(test_bfp_shl_vect_complex_s32);
+    RUN_TEST(test_bfp_vect_complex_s16_shl);
+    RUN_TEST(test_bfp_vect_complex_s32_shl);
     
-    RUN_TEST(test_bfp_shl_vect_complex_s16_2);
-    RUN_TEST(test_bfp_shl_vect_complex_s32_2);
+    RUN_TEST(test_bfp_vect_complex_s16_shl_2);
+    RUN_TEST(test_bfp_vect_complex_s32_shl_2);
 }

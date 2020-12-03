@@ -108,7 +108,7 @@ headroom_t xs3_fft_spectra_split(
         // Note:  j*conj(z) = -conj(j*z)
     }
 
-    return xs3_headroom_vect_s32((int32_t*)X, 2*N);
+    return xs3_vect_s32_headroom((int32_t*)X, 2*N);
 }
 
 WEAK_FUNC
@@ -158,7 +158,7 @@ headroom_t xs3_fft_spectra_merge(
         X[N-f] = tmp;
     }
 
-    return xs3_headroom_vect_s32((int32_t*)X, 2*N);
+    return xs3_vect_s32_headroom((int32_t*)X, 2*N);
 }
 
 WEAK_FUNC
@@ -199,7 +199,7 @@ void xs3_fft_mono_adjust(
         load_vec(tmp, W);
 
         // tmp = j*W
-        xs3_complex_mul_vect_complex_s32(tmp, tmp, vpu_vec_complex_pos_j, VEC_ELMS, 0, 0);
+        xs3_vect_complex_s32_complex_mul(tmp, tmp, vpu_vec_complex_pos_j, VEC_ELMS, 0, 0);
 
 
         // A = 0.5*(1 - j*W)
@@ -213,20 +213,20 @@ void xs3_fft_mono_adjust(
         //     B[i].re = ASHR(32)(((int64_t) 0x40000000) + tmp[i].re, 1);
         //     B[i].im = ASHR(32)(((int64_t) 0x00000000) + tmp[i].im, 1);
         // }
-        xs3_sub_vect_complex_s32(A, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1); 
-        xs3_add_vect_complex_s32(B, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1);
+        xs3_vect_complex_s32_sub(A, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1); 
+        xs3_vect_complex_s32_add(B, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1);
 
 
         // new_X_lo = A*X_lo + B*conjugate(X_hi)
-        xs3_complex_mul_vect_complex_s32(p_X_lo, A, X_lo, VEC_ELMS, 0, 0);
-        xs3_complex_conj_mul_vect_complex_s32(tmp, B, X_hi, VEC_ELMS, 0, 0);
-        xs3_add_vect_complex_s32(p_X_lo, p_X_lo, tmp, VEC_ELMS, 0, 0);
+        xs3_vect_complex_s32_complex_mul(p_X_lo, A, X_lo, VEC_ELMS, 0, 0);
+        xs3_vect_complex_s32_complex_conj_mul(tmp, B, X_hi, VEC_ELMS, 0, 0);
+        xs3_vect_complex_s32_add(p_X_lo, p_X_lo, tmp, VEC_ELMS, 0, 0);
 
         // new_X_hi = conjugate(A)*X_hi + conjugate(B)*conjugate(X_lo)
-        xs3_complex_conj_mul_vect_complex_s32(p_X_hi, X_hi, A, VEC_ELMS, 0, 0);
-        xs3_mul_vect_s32((int32_t*)B,(int32_t*)B,(int32_t*)vpu_vec_complex_conj_op, 2*VEC_ELMS, 0, 0);
-        xs3_complex_conj_mul_vect_complex_s32(tmp, B, X_lo, VEC_ELMS, 0, 0);
-        xs3_add_vect_complex_s32(p_X_hi, p_X_hi, tmp, VEC_ELMS, 0, 0);
+        xs3_vect_complex_s32_complex_conj_mul(p_X_hi, X_hi, A, VEC_ELMS, 0, 0);
+        xs3_vect_s32_mul((int32_t*)B,(int32_t*)B,(int32_t*)vpu_vec_complex_conj_op, 2*VEC_ELMS, 0, 0);
+        xs3_vect_complex_s32_complex_conj_mul(tmp, B, X_lo, VEC_ELMS, 0, 0);
+        xs3_vect_complex_s32_add(p_X_hi, p_X_hi, tmp, VEC_ELMS, 0, 0);
 
         W = &W[-VEC_ELMS];
         p_X_lo = &p_X_lo[VEC_ELMS];

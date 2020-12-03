@@ -42,7 +42,7 @@ extern "C" {
  *      // Initialize time domain data with samples.
  *      int32_t buffer[N] = { ... };
  *      bfp_s32_t samples;
- *      bfp_init_vect_s32(&samples, buffer, 0, N, 1);
+ *      bfp_vect_s32_init(&samples, buffer, 0, N, 1);
  *      // Perform the forward DFT
  *      {
  *          bfp_complex_s32_t* spectrum = bfp_fft_forward_mono(&samples);
@@ -102,7 +102,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
  *      // Initialize time domain data with samples.
  *      int32_t buffer[N] = { ... };
  *      bfp_s32_t samples;
- *      bfp_init_vect_s32(&samples, buffer, 0, N, 1);
+ *      bfp_vect_s32_init(&samples, buffer, 0, N, 1);
  *      // Perform the forward DFT
  *      {
  *          bfp_complex_s32_t* spectrum = bfp_fft_forward_mono(&samples);
@@ -158,7 +158,7 @@ bfp_s32_t* bfp_fft_inverse_mono(
  *      // Initialize complex time domain data with samples.
  *      complex_s32_t buffer[N] = { ... };
  *      bfp_complex_s32_t vector;
- *      bfp_init_vect_complex_s32(&vector, buffer, 0, N, 1);
+ *      bfp_vect_complex_s32_init(&vector, buffer, 0, N, 1);
  *      // Perform the forward DFT
  *      bfp_fft_forward_mono(&vector);
  *      // Operate on frequency domain data
@@ -201,7 +201,7 @@ void bfp_fft_forward_complex(
  *      // Initialize complex time domain data with samples.
  *      complex_s32_t buffer[N] = { ... };
  *      bfp_complex_s32_t vector;
- *      bfp_init_vect_complex_s32(&vector, buffer, 0, N, 1);
+ *      bfp_vect_complex_s32_init(&vector, buffer, 0, N, 1);
  *      // Perform the forward DFT
  *      bfp_fft_forward_mono(&vector);
  *      // Operate on frequency domain data
@@ -250,7 +250,7 @@ void bfp_fft_inverse_complex(
  *      // Initialize time domain data with samples.
  *      ch_pair_s32_t buffer[N] = { {...}, ... };
  *      bfp_ch_pair_s32_t stereo_samples;
- *      bfp_init_vect_ch_pair_s32(&stereo_samples, buffer, 0, N, 1);
+ *      bfp_vect_ch_pair_s32_init(&stereo_samples, buffer, 0, N, 1);
  *      {
  *          bfp_complex_s32_t chanA, chanB;
  *          // Perform the forward DFT
@@ -306,7 +306,7 @@ void bfp_fft_forward_stereo(
  *      // Initialize time domain data with samples.
  *      ch_pair_s32_t buffer[N] = { {...}, ... };
  *      bfp_ch_pair_s32_t stereo_samples;
- *      bfp_init_vect_ch_pair_s32(&stereo_samples, buffer, 0, N, 1);
+ *      bfp_vect_ch_pair_s32_init(&stereo_samples, buffer, 0, N, 1);
  *      {
  *          bfp_complex_s32_t chanA, chanB;
  *          // Perform the forward DFT

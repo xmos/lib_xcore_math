@@ -3,7 +3,7 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-headroom_t xs3_s16_to_s32(
+headroom_t xs3_vect_s16_to_s32(
     int16_t a[],
     const int32_t b[],
     const unsigned length);
@@ -20,7 +20,7 @@ headroom_t xs3_s16_to_s32(
   #define NSTACKWORDS     (0)
 #endif
 
-#define FUNCTION_NAME   xs3_s16_to_s32
+#define FUNCTION_NAME   xs3_vect_s16_to_s32
 
 #define a               r0
 #define b               r1

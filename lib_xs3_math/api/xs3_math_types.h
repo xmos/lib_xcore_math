@@ -103,7 +103,7 @@ typedef int left_shift_t;
 /**
  * Represents a block floating-point vector of 32-bit elements.
  * 
- * Initialized with the ``bfp_init_vect_s32()`` function.
+ * Initialized with the ``bfp_vect_s32_init()`` function.
  * 
  * The logical quantity represented by each element of this vector is:
  *      ``data[i]*2^(exp)``
@@ -128,7 +128,7 @@ typedef struct {
 /**
  * Represents a block floating-point vector of 16-bit elements.
  * 
- * Initialized with the ``bfp_init_vect_s16()`` function.
+ * Initialized with the ``bfp_vect_s16_init()`` function.
  * 
  * The logical quantity represented by each element of this vector is:
  *      ``data[i] * 2^(exp)``
@@ -153,7 +153,7 @@ typedef struct {
 /**
  * Represents a block floating-point vector of complex 32-bit elements.
  * 
- * Initialized with the ``bfp_init_vect_complex_s32()`` function.
+ * Initialized with the ``bfp_vect_complex_s32_init()`` function.
  * 
  * The logical quantity represented by each element of this vector is:
  *      ``data[k].re * 2^(exp) + i * data[k].im * 2^(exp)``
@@ -179,7 +179,7 @@ typedef struct {
 /**
  * Represents a block floating-point vector of complex 16-bit elements.
  * 
- * Initialized with the ``bfp_init_vect_complex_s16()`` function.
+ * Initialized with the ``bfp_vect_complex_s16_init()`` function.
  * 
  * The logical quantity represented by each element of this vector is:
  *      ``data[k].re * 2^(exp) + i * data[k].im * 2^(exp)``
@@ -207,7 +207,7 @@ typedef struct {
 /**
  * Represents a block floating-point vector of 32-bit channel pairs.
  * 
- * Initialized with the ``bfp_init_vect_ch_pair_s32()`` function.
+ * Initialized with the ``bfp_vect_ch_pair_s32_init()`` function.
  * 
  * The ``data[].ch_a`` elements collectively represent a sequence of samples associated with one 
  * channel, while the ``data[].ch_b`` elements collectively represent a sequence of samples associated
@@ -237,7 +237,7 @@ typedef struct {
 /**
  * Represents a block floating-point vector of 16-bit channel pairs.
  * 
- * Initialized with the ``bfp_init_vect_ch_pair_s16()`` function.
+ * Initialized with the ``bfp_vect_ch_pair_s16_init()`` function.
  * 
  * The ``data[].ch_a`` elements collectively represent a sequence of samples associated with one 
  * channel, while the ``data[].ch_b`` elements collectively represent a sequence of samples associated

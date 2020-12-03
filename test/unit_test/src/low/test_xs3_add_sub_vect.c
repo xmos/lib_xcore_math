@@ -208,7 +208,7 @@ static void test_xs3_add_sub_vect_calc_params()
 
 
 
-static void test_xs3_add_vect_s16_basic()
+static void test_xs3_vect_s16_add_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -281,27 +281,27 @@ static void test_xs3_add_vect_s16_basic()
             }
 
 
-            hr = xs3_add_vect_s16(A, B, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s16_add(A, B, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_add_vect_s16(A, A, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s16_add(A, A, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, C, sizeof(A));
-            hr = xs3_add_vect_s16(A, B, A, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s16_add(A, B, A, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
 
         }
@@ -310,7 +310,7 @@ static void test_xs3_add_vect_s16_basic()
 
 
 
-static void test_xs3_add_vect_s16_random()
+static void test_xs3_vect_s16_add_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 362346234;
@@ -337,34 +337,34 @@ static void test_xs3_add_vect_s16_random()
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %d <-- ((%d >> %d) + (%d >> %d))     (A[i]=0x%04X; B[i]=0x%04X; C[i]=0x%04X)";
 
-        hr = xs3_add_vect_s16(A, B, C, len, b_shr, c_shr);
+        hr = xs3_vect_s16_add(A, B, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int16_t expected = add_s16(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_add_vect_s16(A, A, C, len, b_shr, c_shr);
+        hr = xs3_vect_s16_add(A, A, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int16_t expected = add_s16(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i],  (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
         memcpy(A, C, sizeof(A[0])*len);
-        hr = xs3_add_vect_s16(A, B, A, len, b_shr, c_shr);
+        hr = xs3_vect_s16_add(A, B, A, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int16_t expected = add_s16(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i],  (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
     }
 }
@@ -372,7 +372,7 @@ static void test_xs3_add_vect_s16_random()
 
 
 
-static void test_xs3_add_vect_s32_basic()
+static void test_xs3_vect_s32_add_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -444,27 +444,27 @@ static void test_xs3_add_vect_s32_basic()
                 C[i] = casse->value.c;
             }
 
-            hr = xs3_add_vect_s32(A, B, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s32_add(A, B, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_add_vect_s32(A, A, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s32_add(A, A, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, C, sizeof(A));
-            hr = xs3_add_vect_s32(A, B, A, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s32_add(A, B, A, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
         }
     }
@@ -473,7 +473,7 @@ static void test_xs3_add_vect_s32_basic()
 
 
 
-static void test_xs3_add_vect_s32_random()
+static void test_xs3_vect_s32_add_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 36136234;
@@ -500,34 +500,34 @@ static void test_xs3_add_vect_s32_random()
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) + (%ld >> %d))     (A[i]=0x%08X; B[i]=0x%08X; C[i]=0x%08X)";
 
-        hr = xs3_add_vect_s32(A, B, C, len, b_shr, c_shr);
+        hr = xs3_vect_s32_add(A, B, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = add_s32(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i], (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_add_vect_s32(A, A, C, len, b_shr, c_shr);
+        hr = xs3_vect_s32_add(A, A, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = add_s32(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
         memcpy(A, C, sizeof(A[0])*len);
-        hr = xs3_add_vect_s32(A, B, A, len, b_shr, c_shr);
+        hr = xs3_vect_s32_add(A, B, A, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = add_s32(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
     }
 }
@@ -536,7 +536,7 @@ static void test_xs3_add_vect_s32_random()
 
 
 
-static void test_xs3_sub_vect_s16_basic()
+static void test_xs3_vect_s16_sub_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -607,27 +607,27 @@ static void test_xs3_sub_vect_s16_basic()
             }
 
 
-            hr = xs3_sub_vect_s16(A, B, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s16_sub(A, B, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_sub_vect_s16(A, A, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s16_sub(A, A, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, C, sizeof(A));
-            hr = xs3_sub_vect_s16(A, B, A, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s16_sub(A, B, A, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
 
         }
@@ -637,7 +637,7 @@ static void test_xs3_sub_vect_s16_basic()
 
 
 
-static void test_xs3_sub_vect_s16_random()
+static void test_xs3_vect_s16_sub_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 362346234;
@@ -664,34 +664,34 @@ static void test_xs3_sub_vect_s16_random()
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %d <-- ((%d >> %d) + (%d >> %d))     (A[i]=0x%04X; B[i]=0x%04X; C[i]=0x%04X)";
 
-        hr = xs3_sub_vect_s16(A, B, C, len, b_shr, c_shr);
+        hr = xs3_vect_s16_sub(A, B, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int16_t expected = sub_s16(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_sub_vect_s16(A, A, C, len, b_shr, c_shr);
+        hr = xs3_vect_s16_sub(A, A, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int16_t expected = sub_s16(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i],  (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
         memcpy(A, C, sizeof(A[0])*len);
-        hr = xs3_sub_vect_s16(A, B, A, len, b_shr, c_shr);
+        hr = xs3_vect_s16_sub(A, B, A, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int16_t expected = sub_s16(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i],  (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
     }
 }
@@ -700,7 +700,7 @@ static void test_xs3_sub_vect_s16_random()
 
 
 
-static void test_xs3_sub_vect_s32_basic()
+static void test_xs3_vect_s32_sub_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -772,27 +772,27 @@ static void test_xs3_sub_vect_s32_basic()
                 C[i] = casse->value.c;
             }
 
-            hr = xs3_sub_vect_s32(A, B, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s32_sub(A, B, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_sub_vect_s32(A, A, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s32_sub(A, A, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, C, sizeof(A));
-            hr = xs3_sub_vect_s32(A, B, A, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s32_sub(A, B, A, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
         }
     }
@@ -803,7 +803,7 @@ static void test_xs3_sub_vect_s32_basic()
 
 
 
-static void test_xs3_sub_vect_s32_random()
+static void test_xs3_vect_s32_sub_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 36136234;
@@ -830,34 +830,34 @@ static void test_xs3_sub_vect_s32_random()
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) + (%ld >> %d))     (A[i]=0x%08X; B[i]=0x%08X; C[i]=0x%08X)";
 
-        hr = xs3_sub_vect_s32(A, B, C, len, b_shr, c_shr);
+        hr = xs3_vect_s32_sub(A, B, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = sub_s32(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i], (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_sub_vect_s32(A, A, C, len, b_shr, c_shr);
+        hr = xs3_vect_s32_sub(A, A, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = sub_s32(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
         memcpy(A, C, sizeof(A[0])*len);
-        hr = xs3_sub_vect_s32(A, B, A, len, b_shr, c_shr);
+        hr = xs3_vect_s32_sub(A, B, A, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = sub_s32(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
     }
 }
@@ -871,15 +871,15 @@ void test_xs3_add_sub_vect()
     SET_TEST_FILE();
     RUN_TEST(test_xs3_add_sub_vect_calc_params);
     
-    RUN_TEST(test_xs3_add_vect_s16_basic);
-    RUN_TEST(test_xs3_add_vect_s16_random);
+    RUN_TEST(test_xs3_vect_s16_add_basic);
+    RUN_TEST(test_xs3_vect_s16_add_random);
 
-    RUN_TEST(test_xs3_add_vect_s32_basic);
-    RUN_TEST(test_xs3_add_vect_s32_random);
+    RUN_TEST(test_xs3_vect_s32_add_basic);
+    RUN_TEST(test_xs3_vect_s32_add_random);
     
-    RUN_TEST(test_xs3_sub_vect_s16_basic);
-    RUN_TEST(test_xs3_sub_vect_s16_random);
+    RUN_TEST(test_xs3_vect_s16_sub_basic);
+    RUN_TEST(test_xs3_vect_s16_sub_random);
 
-    RUN_TEST(test_xs3_sub_vect_s32_basic);
-    RUN_TEST(test_xs3_sub_vect_s32_random);
+    RUN_TEST(test_xs3_vect_s32_sub_basic);
+    RUN_TEST(test_xs3_vect_s32_sub_random);
 }

@@ -37,7 +37,7 @@ static char msg_buff[200];
 
 
 
-static void test_bfp_add_vect_s16_0()
+static void test_bfp_vect_s16_add_0()
 {
     PRINTF("%s...\n", __func__);
 
@@ -46,9 +46,9 @@ static void test_bfp_add_vect_s16_0()
     int16_t dataC[MAX_LEN];
     bfp_s16_t A, B, C;
 
-    bfp_init_vect_s16(&A, dataA, 0, MAX_LEN, 0);
-    bfp_init_vect_s16(&B, dataB, 0, MAX_LEN, 0);
-    bfp_init_vect_s16(&C, dataC, 0, MAX_LEN, 0);
+    bfp_vect_s16_init(&A, dataA, 0, MAX_LEN, 0);
+    bfp_vect_s16_init(&B, dataB, 0, MAX_LEN, 0);
+    bfp_vect_s16_init(&C, dataC, 0, MAX_LEN, 0);
 
     typedef struct {
 
@@ -106,10 +106,10 @@ static void test_bfp_add_vect_s16_0()
         
         test_case_t* casse = &casses[v];
 
-        bfp_set_vect_s16(&B, casse->b.value, casse->b.exp);
-        bfp_set_vect_s16(&C, casse->c.value, casse->c.exp);
+        bfp_vect_s16_set(&B, casse->b.value, casse->b.exp);
+        bfp_vect_s16_set(&C, casse->c.value, casse->c.exp);
 
-        bfp_add_vect_s16(&A, &B, &C);
+        bfp_vect_s16_add(&A, &B, &C);
 
         headroom_t exp_hr = HR_S16(casse->expected.value);
 
@@ -126,7 +126,7 @@ static void test_bfp_add_vect_s16_0()
 
 
 
-static void test_bfp_add_vect_s16_1()
+static void test_bfp_vect_s16_add_1()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -159,7 +159,7 @@ static void test_bfp_add_vect_s16_1()
             Af[i] = Bf[i] + Cf[i];
         }
 
-        bfp_add_vect_s16(&A, &B, &C);
+        bfp_vect_s16_add(&A, &B, &C);
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -176,7 +176,7 @@ static void test_bfp_add_vect_s16_1()
 
 
 
-static void test_bfp_add_vect_s32_0()
+static void test_bfp_vect_s32_add_0()
 {
     PRINTF("%s...\n", __func__);
 
@@ -185,9 +185,9 @@ static void test_bfp_add_vect_s32_0()
     int32_t dataC[MAX_LEN];
     bfp_s32_t A, B, C;
 
-    bfp_init_vect_s32(&A, dataA, 0, MAX_LEN, 0);
-    bfp_init_vect_s32(&B, dataB, 0, MAX_LEN, 0);
-    bfp_init_vect_s32(&C, dataC, 0, MAX_LEN, 0);
+    bfp_vect_s32_init(&A, dataA, 0, MAX_LEN, 0);
+    bfp_vect_s32_init(&B, dataB, 0, MAX_LEN, 0);
+    bfp_vect_s32_init(&C, dataC, 0, MAX_LEN, 0);
 
     typedef struct {
 
@@ -245,10 +245,10 @@ static void test_bfp_add_vect_s32_0()
         
         test_case_t* casse = &casses[v];
 
-        bfp_set_vect_s32(&B, casse->b.value, casse->b.exp);
-        bfp_set_vect_s32(&C, casse->c.value, casse->c.exp);
+        bfp_vect_s32_set(&B, casse->b.value, casse->b.exp);
+        bfp_vect_s32_set(&C, casse->c.value, casse->c.exp);
 
-        bfp_add_vect_s32(&A, &B, &C);
+        bfp_vect_s32_add(&A, &B, &C);
 
         headroom_t exp_hr = HR_S32(casse->expected.value);
 
@@ -266,7 +266,7 @@ static void test_bfp_add_vect_s32_0()
 
 
 
-static void test_bfp_add_vect_s32_1()
+static void test_bfp_vect_s32_add_1()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -299,7 +299,7 @@ static void test_bfp_add_vect_s32_1()
             Af[i] = Bf[i] + Cf[i];
         }
 
-        bfp_add_vect_s32(&A, &B, &C);
+        bfp_vect_s32_add(&A, &B, &C);
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -312,7 +312,7 @@ static void test_bfp_add_vect_s32_1()
 
 
 
-static void test_bfp_sub_vect_s16_0()
+static void test_bfp_vect_s16_sub_0()
 {
     PRINTF("%s...\n", __func__);
 
@@ -321,9 +321,9 @@ static void test_bfp_sub_vect_s16_0()
     int16_t dataC[MAX_LEN];
     bfp_s16_t A, B, C;
 
-    bfp_init_vect_s16(&A, dataA, 0, MAX_LEN, 0);
-    bfp_init_vect_s16(&B, dataB, 0, MAX_LEN, 0);
-    bfp_init_vect_s16(&C, dataC, 0, MAX_LEN, 0);
+    bfp_vect_s16_init(&A, dataA, 0, MAX_LEN, 0);
+    bfp_vect_s16_init(&B, dataB, 0, MAX_LEN, 0);
+    bfp_vect_s16_init(&C, dataC, 0, MAX_LEN, 0);
 
     typedef struct {
 
@@ -378,10 +378,10 @@ static void test_bfp_sub_vect_s16_0()
         
         test_case_t* casse = &casses[v];
 
-        bfp_set_vect_s16(&B, casse->b.value, casse->b.exp);
-        bfp_set_vect_s16(&C, casse->c.value, casse->c.exp);
+        bfp_vect_s16_set(&B, casse->b.value, casse->b.exp);
+        bfp_vect_s16_set(&C, casse->c.value, casse->c.exp);
 
-        bfp_sub_vect_s16(&A, &B, &C);
+        bfp_vect_s16_sub(&A, &B, &C);
 
         headroom_t exp_hr = HR_S16(casse->expected.value);
 
@@ -398,7 +398,7 @@ static void test_bfp_sub_vect_s16_0()
 
 
 
-static void test_bfp_sub_vect_s16_1()
+static void test_bfp_vect_s16_sub_1()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -431,7 +431,7 @@ static void test_bfp_sub_vect_s16_1()
             Af[i] = Bf[i] - Cf[i];
         }
 
-        bfp_sub_vect_s16(&A, &B, &C);
+        bfp_vect_s16_sub(&A, &B, &C);
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -444,7 +444,7 @@ static void test_bfp_sub_vect_s16_1()
 
 
 
-static void test_bfp_sub_vect_s32_0()
+static void test_bfp_vect_s32_sub_0()
 {
     PRINTF("%s...\n", __func__);
 
@@ -453,9 +453,9 @@ static void test_bfp_sub_vect_s32_0()
     int32_t dataC[MAX_LEN];
     bfp_s32_t A, B, C;
 
-    bfp_init_vect_s32(&A, dataA, 0, MAX_LEN, 0);
-    bfp_init_vect_s32(&B, dataB, 0, MAX_LEN, 0);
-    bfp_init_vect_s32(&C, dataC, 0, MAX_LEN, 0);
+    bfp_vect_s32_init(&A, dataA, 0, MAX_LEN, 0);
+    bfp_vect_s32_init(&B, dataB, 0, MAX_LEN, 0);
+    bfp_vect_s32_init(&C, dataC, 0, MAX_LEN, 0);
 
     typedef struct {
 
@@ -512,10 +512,10 @@ static void test_bfp_sub_vect_s32_0()
         
         test_case_t* casse = &casses[v];
 
-        bfp_set_vect_s32(&B, casse->b.value, casse->b.exp);
-        bfp_set_vect_s32(&C, casse->c.value, casse->c.exp);
+        bfp_vect_s32_set(&B, casse->b.value, casse->b.exp);
+        bfp_vect_s32_set(&C, casse->c.value, casse->c.exp);
 
-        bfp_sub_vect_s32(&A, &B, &C);
+        bfp_vect_s32_sub(&A, &B, &C);
 
         headroom_t exp_hr = HR_S32(casse->expected.value);
 
@@ -532,7 +532,7 @@ static void test_bfp_sub_vect_s32_0()
 
 
 
-static void test_bfp_sub_vect_s32_1()
+static void test_bfp_vect_s32_sub_1()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -565,7 +565,7 @@ static void test_bfp_sub_vect_s32_1()
             Af[i] = Bf[i] - Cf[i];
         }
 
-        bfp_sub_vect_s32(&A, &B, &C);
+        bfp_vect_s32_sub(&A, &B, &C);
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -584,16 +584,16 @@ void test_bfp_add_sub_vect()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_bfp_add_vect_s16_0);
-    RUN_TEST(test_bfp_add_vect_s16_1);
+    RUN_TEST(test_bfp_vect_s16_add_0);
+    RUN_TEST(test_bfp_vect_s16_add_1);
 
-    RUN_TEST(test_bfp_add_vect_s32_0);
-    RUN_TEST(test_bfp_add_vect_s32_1);
+    RUN_TEST(test_bfp_vect_s32_add_0);
+    RUN_TEST(test_bfp_vect_s32_add_1);
     
     
-    RUN_TEST(test_bfp_sub_vect_s16_0);
-    RUN_TEST(test_bfp_sub_vect_s16_1);
+    RUN_TEST(test_bfp_vect_s16_sub_0);
+    RUN_TEST(test_bfp_vect_s16_sub_1);
 
-    RUN_TEST(test_bfp_sub_vect_s32_0);
-    RUN_TEST(test_bfp_sub_vect_s32_1);
+    RUN_TEST(test_bfp_vect_s32_sub_0);
+    RUN_TEST(test_bfp_vect_s32_sub_1);
 }

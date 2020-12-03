@@ -6,7 +6,7 @@
 
 /*  
 
-headroom_t xs3_complex_mul_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_complex_mul(
     int16_t* a_real,
     int16_t* a_imag,
     const int16_t* b_real,
@@ -32,7 +32,7 @@ headroom_t xs3_complex_mul_vect_complex_s16(
 
 #define STACK_BYTEMASK  8
 
-#define FUNCTION_NAME xs3_complex_mul_vect_complex_s16
+#define FUNCTION_NAME xs3_vect_complex_s16_complex_mul
     
 #define a_re        r0
 #define a_im        r1

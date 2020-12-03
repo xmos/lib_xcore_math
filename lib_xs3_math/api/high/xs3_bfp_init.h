@@ -33,7 +33,7 @@ extern "C" {
  * \param length    Number of elements in the BFP vector
  * \param calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
-void bfp_init_vect_s16(
+void bfp_vect_s16_init(
     bfp_s16_t* a, 
     int16_t* data, 
     const exponent_t exp, 
@@ -62,7 +62,7 @@ void bfp_init_vect_s16(
  * \param length    Number of elements in the BFP vector
  * \param calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
-void bfp_init_vect_s32(
+void bfp_vect_s32_init(
     bfp_s32_t* a, 
     int32_t* data, 
     const exponent_t exp, 
@@ -94,7 +94,7 @@ void bfp_init_vect_s32(
  * \param length    Number of elements in BFP vector
  * \param calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
-void bfp_init_vect_complex_s16(
+void bfp_vect_complex_s16_init(
     bfp_complex_s16_t* a, 
     int16_t* real_data,
     int16_t* imag_data, 
@@ -126,7 +126,7 @@ void bfp_init_vect_complex_s16(
  * \param length    Number of elements in BFP vector
  * \param calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
-void bfp_init_vect_complex_s32(
+void bfp_vect_complex_s32_init(
     bfp_complex_s32_t* a, 
     complex_s32_t* data, 
     const exponent_t exp, 
@@ -158,7 +158,7 @@ void bfp_init_vect_complex_s32(
  * \param length    Number of elements in BFP vector
  * \param calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
-void bfp_init_vect_ch_pair_s16(
+void bfp_vect_ch_pair_s16_init(
     bfp_ch_pair_s16_t* a, 
     ch_pair_s16_t* data, 
     const exponent_t exp, 
@@ -191,7 +191,7 @@ void bfp_init_vect_ch_pair_s16(
  * \param length    Number of elements in BFP vector
  * \param calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
-void bfp_init_vect_ch_pair_s32(
+void bfp_vect_ch_pair_s32_init(
     bfp_ch_pair_s32_t* a, 
     ch_pair_s32_t* data, 
     const exponent_t exp, 
@@ -210,7 +210,7 @@ void bfp_init_vect_ch_pair_s32(
  * \param alpha     New value each element's mantissa is set to
  * \param exp       New exponent for the BFP vector
  */
-void bfp_set_vect_s16(
+void bfp_vect_s16_set(
     bfp_s16_t* a,
     const int16_t alpha,
     const exponent_t exp);
@@ -226,7 +226,7 @@ void bfp_set_vect_s16(
  * \param alpha     New value each element's mantissa is set to
  * \param exp       New exponent for the BFP vector
  */
-void bfp_set_vect_s32(
+void bfp_vect_s32_set(
     bfp_s32_t* a,
     const int32_t alpha,
     const exponent_t exp);
@@ -244,7 +244,7 @@ void bfp_set_vect_s32(
  * \param z         New value each element's mantissa is set to
  * \param exp       New exponent for the BFP vector
  */
-void bfp_set_vect_complex_s16(
+void bfp_vect_complex_s16_set(
     bfp_complex_s16_t* a,
     const complex_s16_t z,
     const exponent_t exp);
@@ -262,7 +262,7 @@ void bfp_set_vect_complex_s16(
  * \param z     New value each element's mantissa is set to
  * \param exp       New exponent for the BFP vector
  */
-void bfp_set_vect_complex_s32(
+void bfp_vect_complex_s32_set(
     bfp_complex_s32_t* a,
     const complex_s32_t z,
     const exponent_t exp);
@@ -280,7 +280,7 @@ void bfp_set_vect_complex_s32(
  * \param z         New value each element's mantissa is set to
  * \param exp       New exponent for the BFP vector
  */
-void bfp_set_vect_ch_pair_s16(
+void bfp_vect_ch_pair_s16_set(
     bfp_ch_pair_s16_t* a,
     const ch_pair_s16_t z,
     const exponent_t exp);
@@ -298,7 +298,7 @@ void bfp_set_vect_ch_pair_s16(
  * \param z         New value each element's mantissa is set to
  * \param exp       New exponent for the BFP vector
  */
-void bfp_set_vect_ch_pair_s32(
+void bfp_vect_ch_pair_s32_set(
     bfp_ch_pair_s32_t* a,
     const ch_pair_s32_t z,
     const exponent_t exp);

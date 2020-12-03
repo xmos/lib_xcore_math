@@ -7,7 +7,7 @@
 
 
 
-// right_shift_t xs3_energy_s16_calc_shift(
+// right_shift_t xs3_vect_s16_energy_calc_shift(
 //     const unsigned length,
 //     const headroom_t b_hr)
 // {
@@ -53,7 +53,7 @@
 
 
 
-void xs3_energy_s32_calc_params(
+void xs3_vect_s32_energy_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const unsigned length,

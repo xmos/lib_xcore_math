@@ -24,7 +24,7 @@
 static unsigned seed = 666;
 
 
-static void test_bfp_mean_s16()
+static void test_bfp_vect_s16_mean()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -53,9 +53,9 @@ static void test_bfp_mean_s16()
 
         exponent_t a_exp;
 
-        bfp_headroom_vect_s16(&B);
+        bfp_vect_s16_headroom(&B);
 
-        int16_t result = bfp_mean_s16(&a_exp, &B);
+        int16_t result = bfp_vect_s16_mean(&a_exp, &B);
 
         double meanf = ldexp(sum, B.exp) / B.length;
         
@@ -65,7 +65,7 @@ static void test_bfp_mean_s16()
     }
 }
 
-static void test_bfp_mean_s32()
+static void test_bfp_vect_s32_mean()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -91,11 +91,11 @@ static void test_bfp_mean_s32()
             sum += B.data[i];
         }
 
-        bfp_headroom_vect_s32(&B);
+        bfp_vect_s32_headroom(&B);
 
         exponent_t a_exp;
 
-        int32_t result = bfp_mean_s32(&a_exp, &B);
+        int32_t result = bfp_vect_s32_mean(&a_exp, &B);
         double meanf = ldexp(sum, B.exp) / B.length;
         double diff = meanf - ldexp(result, a_exp);
 
@@ -109,6 +109,6 @@ static void test_bfp_mean_s32()
 void test_bfp_mean()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_bfp_mean_s16);
-    RUN_TEST(test_bfp_mean_s32);
+    RUN_TEST(test_bfp_vect_s16_mean);
+    RUN_TEST(test_bfp_vect_s32_mean);
 }

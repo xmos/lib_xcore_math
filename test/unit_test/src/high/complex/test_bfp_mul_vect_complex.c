@@ -36,7 +36,7 @@ static char msg_buff[200];
 
 
 
-void test_bfp_mul_vect_complex_s16()
+void test_bfp_vect_complex_s16_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -97,9 +97,9 @@ void test_bfp_mul_vect_complex_s16()
             Af.imag[i] = Bf.imag[i] * Cf[i];
         }
 
-        bfp_mul_vect_complex_s16(&A, &B, &C);
+        bfp_vect_complex_s16_mul(&A, &B, &C);
 
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_complex_s16(A.real, A.imag, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr);
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
@@ -119,7 +119,7 @@ void test_bfp_mul_vect_complex_s16()
 
 
 
-void test_bfp_mul_vect_complex_s32()
+void test_bfp_vect_complex_s32_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -172,9 +172,9 @@ void test_bfp_mul_vect_complex_s32()
             Af.imag[i] = Bf.imag[i] * Cf[i];
         }
 
-        bfp_mul_vect_complex_s32(&A, &B, &C);
+        bfp_vect_complex_s32_mul(&A, &B, &C);
 
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_complex_s32(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr);
 
         test_complex_s32_from_double(expected, Af.real, Af.imag, MAX_LEN, A.exp);
 
@@ -197,6 +197,6 @@ void test_bfp_mul_vect_complex_s32()
 void test_bfp_mul_vect_complex()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_bfp_mul_vect_complex_s16);
-    RUN_TEST(test_bfp_mul_vect_complex_s32);
+    RUN_TEST(test_bfp_vect_complex_s16_mul);
+    RUN_TEST(test_bfp_vect_complex_s32_mul);
 }

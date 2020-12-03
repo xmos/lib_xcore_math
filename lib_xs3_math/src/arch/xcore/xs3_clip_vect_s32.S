@@ -4,7 +4,7 @@
 
 /*  
 
-headroom_t xs3_clip_vect_s32(
+headroom_t xs3_vect_s32_clip(
     int32_t a[],
     const int32_t b[],
     const unsigned length,
@@ -23,7 +23,7 @@ headroom_t xs3_clip_vect_s32(
 #define NSTACKVECS      (6)
 #define NSTACKWORDS     (8 + 8*(NSTACKVECS))
 
-#define FUNCTION_NAME   xs3_clip_vect_s32
+#define FUNCTION_NAME   xs3_vect_s32_clip
 
 
 #define STACK_UPPER     (NSTACKWORDS + 1)

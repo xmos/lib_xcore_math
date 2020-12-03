@@ -8,277 +8,6 @@
 extern "C" {
 #endif
 
-/** Count the number of leading sign bits of a 16-bit complex number.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * \param a    Input value 
- * 
- * \returns    Number of leading sign bits of ``a``. 
- */
-headroom_t xs3_headroom_complex_s16(
-    complex_s16_t a);
-
-/** Count the number of leading sign bits of a 32-bit complex number.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * \param a    Input value 
- * 
- * \returns    Number of leading sign bits of ``a``. 
- */
-headroom_t xs3_headroom_complex_s32(
-    complex_s32_t a);
-
-/** Add two 16-bit complex numbers.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * \param a         Mantissa of first complex input, as well as the output
- * \param a_exp     Exponent of first complex input, as well as the output
- * \param b         Mantissa of second complex input
- * \param b_exp     Exponent of second complex input
- */
-void bfp_add_complex_s16(
-    complex_s16_t* a, 
-    exponent_t* a_exp, 
-    const complex_s16_t b, 
-    const exponent_t b_exp);
-
-/** Add two 32-bit complex numbers.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * \param a         Mantissa of first complex input, as well as the output
- * \param a_exp     Exponent of first complex input, as well as the output
- * \param b         Mantissa of second complex input
- * \param b_exp     Exponent of second complex input
- */
-void bfp_add_complex_s32(
-    complex_s32_t* a, 
-    exponent_t* a_exp, 
-    const complex_s32_t b, 
-    const exponent_t b_exp);
-
-
-/** Subtract one 16-bit complex number from another.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * \param a         Mantissa of first complex input, as well as the output
- * \param a_exp     Exponent of first complex input, as well as the output
- * \param b         Mantissa of second complex input
- * \param b_exp     Exponent of second complex input
- */
-void bfp_sub_complex_s16(
-    complex_s16_t* a, 
-    exponent_t* a_exp, 
-    const complex_s16_t b, 
-    const exponent_t b_exp);
-
-/** Subtract one 32-bit complex number from another.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * \param a         Mantissa of first complex input, as well as the output
- * \param a_exp     Exponent of first complex input, as well as the output
- * \param b         Mantissa of second complex input
- * \param b_exp     Exponent of second complex input
- */
-void bfp_sub_complex_s32(
-    complex_s32_t* a, 
-    exponent_t* a_exp, 
-    const complex_s32_t b, 
-    const exponent_t b_exp);
-
-/** Multiply a 16-bit complex number by a 16-bit real number.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * \param a         Mantissa of complex input, as well as the output
- * \param a_exp     Exponent of complex input, as well as the output
- * \param b         Mantissa of real input
- * \param b_exp     Exponent of real input
- * 
- */
-void bfp_mul_complex_s16(
-    complex_s16_t* a, 
-    exponent_t* a_exp, 
-    const int16_t b, 
-    const exponent_t b_exp);
-
-/** Multiply a 32-bit complex number by a 32-bit real number.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * \param a         Mantissa of complex input, as well as the output
- * \param a_exp     Exponent of complex input, as well as the output
- * \param b         Mantissa of real input
- * \param b_exp     Exponent of real input
- * 
- */
-void bfp_mul_complex_s32(
-    complex_s32_t* a, 
-    exponent_t* a_exp, 
-    const int32_t b, 
-    const exponent_t b_exp);
-
-/** Multiply two 16-bit complex numbers.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      A <- A * B
- *        where A and B are complex scalars
- * 
- * The multiplication is complex multiplication, yielding:
- *      ``a.re * 2^(a_exp) = (a.re*b.re - a.im*b.im) * 2^(a_exp+b_exp)``
- *      ``a.im * 2^(a_exp) = (a.re*b.im + a.im*b.re) * 2^(a_exp+b_exp)``
- * 
- * \param a         Mantissa of first complex input, as well as the output
- * \param a_exp     Exponent of first complex input, as well as the output
- * \param b         Mantissa of second complex input
- * \param b_exp     Exponent of second complex input
- */
-void bfp_complex_mul_complex_s16(
-    complex_s16_t* a, 
-    exponent_t* a_exp, 
-    const complex_s16_t b, 
-    const exponent_t b_exp);
-
-/** Multiply two 32-bit complex numbers.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      A <- A * B
- *        where A and B are complex scalars
- * 
- * The multiplication is complex multiplication, yielding:
- *      ``a.re * 2^(a_exp) = (a.re*b.re - a.im*b.im) * 2^(a_exp+b_exp)``
- *      ``a.im * 2^(a_exp) = (a.re*b.im + a.im*b.re) * 2^(a_exp+b_exp)``
- * 
- * \param a         Mantissa of first complex input, as well as the output
- * \param a_exp     Exponent of first complex input, as well as the output
- * \param b         Mantissa of second complex input
- * \param b_exp     Exponent of second complex input
- */
-void bfp_complex_mul_complex_s32(
-    complex_s32_t* a, 
-    exponent_t* a_exp, 
-    const complex_s32_t b, 
-    const exponent_t b_exp);
-
-/** Conjugate multiply two 16-bit complex numbers.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      A <- A * conjugate(B)
- *        where A and B are complex scalars
- * 
- * \param a         Mantissa of first complex input, as well as the output
- * \param a_exp     Exponent of first complex input, as well as the output
- * \param b         Mantissa of second complex input
- * \param b_exp     Exponent of second complex input
- */
-void bfp_complex_conj_mul_complex_s16(
-    complex_s16_t* a, 
-    exponent_t* a_exp, 
-    const complex_s16_t b, 
-    const exponent_t b_exp);
-
-/** Conjugate multiply two 32-bit complex numbers.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      A <- A * conjugate(B)
- *        where A and B are complex scalars
- * 
- * \param a         Mantissa of first complex input, as well as the output
- * \param a_exp     Exponent of first complex input, as well as the output
- * \param b         Mantissa of second complex input
- * \param b_exp     Exponent of second complex input
- */
-void bfp_cplx_conj_mul_complex_s32(
-    complex_s32_t* a, 
-    exponent_t* a_exp, 
-    const complex_s32_t b, 
-    const exponent_t b_exp);
-
-
-
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-
-
 
 
 
@@ -300,7 +29,7 @@ void bfp_cplx_conj_mul_complex_s32(
  * 
  * \returns    Number of leading sign bits of ``a``. 
  */
-headroom_t bfp_headroom_vect_complex_s16(
+headroom_t bfp_vect_complex_s16_headroom(
     bfp_complex_s16_t* a);
 
 
@@ -322,7 +51,7 @@ headroom_t bfp_headroom_vect_complex_s16(
  * 
  * \returns    Number of leading sign bits of ``a``. 
  */
-headroom_t bfp_headroom_vect_complex_s32(
+headroom_t bfp_vect_complex_s32_headroom(
     bfp_complex_s32_t* a);
 
 
@@ -352,7 +81,7 @@ headroom_t bfp_headroom_vect_complex_s32(
  * \param b     Input BFP vector
  * \param shl   Number of bits to left shift
  */
-void bfp_shl_vect_complex_s16(
+void bfp_vect_complex_s16_shl(
     bfp_complex_s16_t* a,
     const bfp_complex_s16_t* b,
     const left_shift_t shl);
@@ -382,7 +111,7 @@ void bfp_shl_vect_complex_s16(
  * \param b     Input BFP vector
  * \param shl   Number of bits to left shift
  */
-void bfp_shl_vect_complex_s32(
+void bfp_vect_complex_s32_shl(
     bfp_complex_s32_t* a,
     const bfp_complex_s32_t* b,
     const left_shift_t shl);
@@ -414,7 +143,7 @@ void bfp_shl_vect_complex_s32(
  * \param b     Input complex BFP vector
  * \param c     Input real BFP vector
  */
-void bfp_mul_vect_complex_s16(
+void bfp_vect_complex_s16_mul(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const bfp_s16_t* c);
@@ -443,7 +172,7 @@ void bfp_mul_vect_complex_s16(
  * \param b     Input complex BFP vector
  * \param c     Input real BFP vector
  */
-void bfp_mul_vect_complex_s32(
+void bfp_vect_complex_s32_mul(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
     const bfp_s32_t* c);
@@ -473,7 +202,7 @@ void bfp_mul_vect_complex_s32(
  * \param b     Input complex BFP vector 1
  * \param c     Input complex BFP vector 2
  */
-void bfp_complex_mul_vect_complex_s16(
+void bfp_vect_complex_s16_complex_mul(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c);
@@ -505,7 +234,7 @@ void bfp_complex_mul_vect_complex_s16(
  * \param b     Input complex BFP vector 1
  * \param c     Input complex BFP vector 2
  */
-void bfp_complex_mul_vect_complex_s32(
+void bfp_vect_complex_s32_complex_mul(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
     const bfp_complex_s32_t* c);
@@ -533,7 +262,7 @@ void bfp_complex_mul_vect_complex_s32(
  * \param b     Input complex BFP vector 1
  * \param c     Input complex BFP vector 2
  */
-void bfp_complex_conj_mul_vect_complex_s16(
+void bfp_vect_complex_s16_complex_conj_mul(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c);
@@ -561,7 +290,7 @@ void bfp_complex_conj_mul_vect_complex_s16(
  * \param b     Input complex BFP vector 1
  * \param c     Input complex BFP vector 2
  */
-void bfp_complex_conj_mul_vect_complex_s32(
+void bfp_vect_complex_s32_complex_conj_mul(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
     const bfp_complex_s32_t* c);
@@ -589,7 +318,7 @@ void bfp_complex_conj_mul_vect_complex_s32(
  * \param b         Input complex BFP vector
  * \param c         Real scalar input
  */
-void bfp_scalar_mul_vect_complex_s16(
+void bfp_vect_complex_s16_scalar_mul(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const int16_t alpha_mant,
@@ -618,7 +347,7 @@ void bfp_scalar_mul_vect_complex_s16(
  * \param b         Input complex BFP vector
  * \param c         Real scalar input
  */
-void bfp_scalar_mul_vect_complex_s32(
+void bfp_vect_complex_s32_scalar_mul(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
     const int32_t alpha_mant,
@@ -647,7 +376,7 @@ void bfp_scalar_mul_vect_complex_s32(
  * \param b         Input complex BFP vector
  * \param c         Complex scalar input
  */
-void bfp_complex_scal_mul_vect_complex_s16(
+void bfp_vect_complex_s16_complex_scal_mul(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const complex_s16_t alpha_mant,
@@ -676,7 +405,7 @@ void bfp_complex_scal_mul_vect_complex_s16(
  * \param b         Input complex BFP vector
  * \param c         Complex scalar input
  */
-void bfp_complex_scal_mul_vect_complex_s32(
+void bfp_vect_complex_s32_complex_scal_mul(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
     const complex_s32_t alpha_mant,
@@ -704,7 +433,7 @@ void bfp_complex_scal_mul_vect_complex_s32(
  * \param b         Input complex BFP vector 1
  * \param c         Input complex BFP vector 2
  */
-void bfp_add_vect_complex_s16(
+void bfp_vect_complex_s16_add(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c);
@@ -731,7 +460,7 @@ void bfp_add_vect_complex_s16(
  * \param b         Input complex BFP vector 1
  * \param c         Input complex BFP vector 2
  */
-void bfp_add_vect_complex_s32(
+void bfp_vect_complex_s32_add(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
     const bfp_complex_s32_t* c);
@@ -758,7 +487,7 @@ void bfp_add_vect_complex_s32(
  * \param b         Input operand 1
  * \param c         Input operand 2
  */
-void bfp_sub_vect_complex_s16(
+void bfp_vect_complex_s16_sub(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c);
@@ -785,7 +514,7 @@ void bfp_sub_vect_complex_s16(
  * \param b         Input operand 1
  * \param c         Input operand 2
  */
-void bfp_sub_vect_complex_s32(
+void bfp_vect_complex_s32_sub(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c);
@@ -811,7 +540,7 @@ void bfp_sub_vect_complex_s32(
  * \param a         Output 32-bit complex BFP vector
  * \param b         Input 16-bit complex BFP vector
  */
-void bfp_complex_s16_to_complex_s32(
+void bfp_vect_complex_s16_to_complex_s32(
     bfp_complex_s32_t* a, 
     const bfp_complex_s16_t* b);
 
@@ -838,7 +567,7 @@ void bfp_complex_s16_to_complex_s32(
  * \param a         Output 16-bit complex BFP vector
  * \param b         Input 32-bit complex BFP vector
  */
-void bfp_complex_s32_to_complex_s16(
+void bfp_vect_complex_s32_to_complex_s16(
     bfp_complex_s16_t* a, 
     const bfp_complex_s32_t* b);
 
@@ -864,7 +593,7 @@ void bfp_complex_s32_to_complex_s16(
  * \param a     Output real BFP vector
  * \param b     Input complex BFP vector
  */
-void bfp_squared_mag_vect_complex_s16(
+void bfp_vect_complex_s16_squared_mag(
     bfp_s16_t* a, 
     const bfp_complex_s16_t* b);
 
@@ -890,7 +619,7 @@ void bfp_squared_mag_vect_complex_s16(
  * \param a     Output real BFP vector
  * \param b     Input complex BFP vector
  */
-void bfp_squared_mag_vect_complex_s32(
+void bfp_vect_complex_s32_squared_mag(
     bfp_s32_t* a, 
     const bfp_complex_s32_t* b);
 
@@ -914,7 +643,7 @@ void bfp_squared_mag_vect_complex_s32(
  * \param a     Output real BFP vector
  * \param b     Input complex BFP vector
  */
-void bfp_mag_vect_complex_s16(
+void bfp_vect_complex_s16_mag(
     bfp_s16_t* a, 
     const bfp_complex_s16_t* b);
 
@@ -938,7 +667,7 @@ void bfp_mag_vect_complex_s16(
  * \param a     Output real BFP vector
  * \param b     Input complex BFP vector
  */
-void bfp_mag_vect_complex_s32(
+void bfp_vect_complex_s32_mag(
     bfp_s32_t* a, 
     const bfp_complex_s32_t* b);
 
@@ -961,7 +690,7 @@ void bfp_mag_vect_complex_s32(
  * 
  * \returns     Complex sum of vector elements.
  */
-complex_s32_t bfp_sum_complex_s16(
+complex_s32_t bfp_vect_complex_s16_sum(
     const bfp_complex_s16_t* b);
 
 /** Sum the elements of a 32-bit complex BFP vector.
@@ -983,7 +712,7 @@ complex_s32_t bfp_sum_complex_s16(
  * 
  * \returns     Complex sum of vector elements
  */
-complex_s64_t bfp_sum_complex_s32( 
+complex_s64_t bfp_vect_complex_s32_sum( 
     exponent_t* a_exp,
     const bfp_complex_s32_t* b);
 

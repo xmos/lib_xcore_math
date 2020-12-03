@@ -8,7 +8,7 @@
 
 
 WEAK_FUNC
-headroom_t xs3_abs_vect_s16(
+headroom_t xs3_vect_s16_abs(
     int16_t a[],
     const int16_t b[],
     const unsigned length)
@@ -19,12 +19,12 @@ headroom_t xs3_abs_vect_s16(
         a[k] = (B >= 0)? B : -B;
     }
 
-    return xs3_headroom_vect_s16(a, length);
+    return xs3_vect_s16_headroom(a, length);
 }
 
 
 WEAK_FUNC
-headroom_t xs3_abs_vect_s32(
+headroom_t xs3_vect_s32_abs(
     int32_t a[],
     const int32_t b[],
     const unsigned length)
@@ -35,14 +35,14 @@ headroom_t xs3_abs_vect_s32(
         a[k] = (B >= 0)? B : -B;
     }
 
-    return xs3_headroom_vect_s32(a, length);
+    return xs3_vect_s32_headroom(a, length);
 }
 
 
 
 
 WEAK_FUNC
-headroom_t xs3_clip_vect_s16(
+headroom_t xs3_vect_s16_clip(
     int16_t a[],
     const int16_t b[],
     const unsigned length,
@@ -55,12 +55,12 @@ headroom_t xs3_clip_vect_s16(
         a[k] = (B <= lower_bound)? lower_bound : (B >= upper_bound)? upper_bound : B;
     }
 
-    return xs3_headroom_vect_s16(a, length);
+    return xs3_vect_s16_headroom(a, length);
 }
 
 
 WEAK_FUNC
-headroom_t xs3_clip_vect_s32(
+headroom_t xs3_vect_s32_clip(
     int32_t a[],
     const int32_t b[],
     const unsigned length,
@@ -73,12 +73,12 @@ headroom_t xs3_clip_vect_s32(
         a[k] = (B <= lower_bound)? lower_bound : (B >= upper_bound)? upper_bound : B;
     }
 
-    return xs3_headroom_vect_s32(a, length);
+    return xs3_vect_s32_headroom(a, length);
 }
 
 
 WEAK_FUNC
-headroom_t xs3_rect_vect_s16(
+headroom_t xs3_vect_s16_rect(
     int16_t a[],
     const int16_t b[],
     const unsigned length)
@@ -87,12 +87,12 @@ headroom_t xs3_rect_vect_s16(
         int16_t B = b[k];
         a[k] = (B >= 0)? B : 0;
     }
-    return xs3_headroom_vect_s16(a, length);
+    return xs3_vect_s16_headroom(a, length);
 }
 
 
 WEAK_FUNC
-headroom_t xs3_rect_vect_s32(
+headroom_t xs3_vect_s32_rect(
     int32_t a[],
     const int32_t b[],
     const unsigned length)
@@ -101,5 +101,5 @@ headroom_t xs3_rect_vect_s32(
         int32_t B = b[k];
         a[k] = (B >= 0)? B : 0;
     }
-    return xs3_headroom_vect_s32(a, length);
+    return xs3_vect_s32_headroom(a, length);
 }

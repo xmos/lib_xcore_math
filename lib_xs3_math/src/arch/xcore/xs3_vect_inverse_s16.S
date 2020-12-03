@@ -6,7 +6,7 @@
 
 /*  
 
-void xs3_inverse_vect_s16(
+void xs3_vect_s16_inverse(
     int16_t a[],
     const int16_t b[],
     const unsigned length,
@@ -16,7 +16,7 @@ void xs3_inverse_vect_s16(
 
 #define NSTACKWORDS     (0)
 
-#define FUNCTION_NAME   xs3_inverse_vect_s16
+#define FUNCTION_NAME   xs3_vect_s16_inverse
 
 #define a               r0
 #define b               r1

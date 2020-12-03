@@ -32,7 +32,7 @@ void xs3_mag_vect_complex_calc_params(
 
 
 
-void xs3_mul_vect_complex_s16_calc_params(
+void xs3_vect_complex_s16_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* sat,
     const exponent_t b_exp,
@@ -87,7 +87,7 @@ void xs3_mul_vect_complex_s16_calc_params(
     Otherwise, that will be explicitly avoided. (Beware: avoiding saturation effectively loses
     a bit of precision).
 
-    Note that if the vector inputs B and C to bfp_mul_vect_complex_s16() are the result of a previous VPU 
+    Note that if the vector inputs B and C to bfp_vect_complex_s16_mul() are the result of a previous VPU 
     operation, the saturating condition cannot occur, because the VPU cannot output -0x8000. In that case
     there's no reason not to allow saturation.
     */
@@ -108,7 +108,7 @@ void xs3_mul_vect_complex_s16_calc_params(
     *a_exp = b_exp + c_exp + *sat;
 }
 
-void xs3_complex_mul_vect_complex_s16_calc_params(
+void xs3_vect_complex_s16_complex_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* sat,
     const exponent_t b_exp,
@@ -152,7 +152,7 @@ void xs3_complex_mul_vect_complex_s16_calc_params(
     *a_exp = b_exp + c_exp + *sat;
 }
 
-void xs3_squared_mag_vect_complex_s16_calc_params(
+void xs3_vect_complex_s16_squared_mag_calc_params(
     exponent_t* a_exp,
     right_shift_t* sat,
     const exponent_t b_exp,
@@ -194,7 +194,7 @@ void xs3_squared_mag_vect_complex_s16_calc_params(
 
 
 
-void xs3_mul_vect_complex_s32_calc_params(
+void xs3_vect_complex_s32_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,
@@ -232,7 +232,7 @@ void xs3_mul_vect_complex_s32_calc_params(
     *a_exp = b_exp + c_exp + *b_shr + *c_shr + 30;
 }
 
-void xs3_complex_mul_vect_complex_s32_calc_params(
+void xs3_vect_complex_s32_complex_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,
@@ -277,7 +277,7 @@ void xs3_complex_mul_vect_complex_s32_calc_params(
 }
 
 
-void xs3_complex_scal_mul_vect_complex_s32_calc_params(
+void xs3_vect_complex_s32_complex_scal_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* alpha_shr,
@@ -316,7 +316,7 @@ void xs3_complex_scal_mul_vect_complex_s32_calc_params(
 }
 
 
-void xs3_squared_mag_vect_complex_s32_calc_params(
+void xs3_vect_complex_s32_squared_mag_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,

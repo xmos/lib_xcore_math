@@ -30,7 +30,7 @@ static char msg_buff[200];
 
 #define MAX_LEN     200
 #define REPS        IF_QUICK_TEST(10, 100)
-void test_xs3_energy_s16()
+void test_xs3_vect_s16_energy()
 {
     PRINTF("%s...\n", __func__);
     seed = 343446;
@@ -77,7 +77,7 @@ void test_xs3_energy_s16()
             exp += t*t;
         }
 
-        result = xs3_energy_s16(B, len, b_shr);
+        result = xs3_vect_s16_energy(B, len, b_shr);
 
         TEST_ASSERT_EQUAL(exp, result);
         
@@ -92,7 +92,7 @@ void test_xs3_energy_s16()
 
 #define MAX_LEN     200
 #define REPS        IF_QUICK_TEST(10, 100)
-void test_xs3_energy_s32()
+void test_xs3_vect_s32_energy()
 {
     PRINTF("%s...\n", __func__);
     seed = 346332123;
@@ -144,7 +144,7 @@ void test_xs3_energy_s32()
             exp += t;
         }
 
-        result = xs3_energy_s32(B, len, b_shr);
+        result = xs3_vect_s32_energy(B, len, b_shr);
 
         TEST_ASSERT_EQUAL(exp, result);
         
@@ -159,6 +159,6 @@ void test_xs3_energy()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_energy_s16);
-    RUN_TEST(test_xs3_energy_s32);
+    RUN_TEST(test_xs3_vect_s16_energy);
+    RUN_TEST(test_xs3_vect_s32_energy);
 }

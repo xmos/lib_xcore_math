@@ -4,7 +4,7 @@
 
 /*  
 
-int64_t xs3_abs_sum_s32(
+int64_t xs3_vect_s32_abs_sum(
     const int32_t b[],
     const unsigned length);
 */
@@ -18,7 +18,7 @@ int64_t xs3_abs_sum_s32(
 #define NSTACKVECS      (2)
 #define NSTACKWORDS     (8 + 8*NSTACKVECS)
 
-#define FUNCTION_NAME       xs3_abs_sum_s32
+#define FUNCTION_NAME       xs3_vect_s32_abs_sum
 
 #define STACK_VEC_TMP       (NSTACKWORDS-8)
 #define STACK_VEC_VR        (NSTACKWORDS-16)

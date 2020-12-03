@@ -25,7 +25,7 @@ static unsigned seed = 2314567;
 
 
 
-static void test_xs3_set_vect_s16()
+static void test_xs3_vect_s16_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -42,7 +42,7 @@ static void test_xs3_set_vect_s16()
 
         const int16_t new_val = pseudo_rand_int16(&seed);
         
-        xs3_set_vect_s16(A, new_val, length);
+        xs3_vect_s16_set(A, new_val, length);
 
         for(int i = 0; i < length; i++)
             TEST_ASSERT_EQUAL_INT16(new_val, A[i]);
@@ -53,7 +53,7 @@ static void test_xs3_set_vect_s16()
 }
 
 
-static void test_xs3_set_vect_s32()
+static void test_xs3_vect_s32_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -70,7 +70,7 @@ static void test_xs3_set_vect_s32()
 
         const int32_t new_val = pseudo_rand_int32(&seed);
         
-        xs3_set_vect_s32(A, new_val, length);
+        xs3_vect_s32_set(A, new_val, length);
 
         for(int i = 0; i < length; i++)
             TEST_ASSERT_EQUAL_INT32(new_val, A[i]);
@@ -84,7 +84,7 @@ static void test_xs3_set_vect_s32()
 
 
 
-static void test_xs3_set_vect_complex_s16()
+static void test_xs3_vect_complex_s16_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -104,7 +104,7 @@ static void test_xs3_set_vect_complex_s16()
         const int16_t new_real = pseudo_rand_int16(&seed);
         const int16_t new_imag = pseudo_rand_int16(&seed);
         
-        xs3_set_vect_complex_s16(A_real, A_imag, new_real, new_imag, length);
+        xs3_vect_complex_s16_set(A_real, A_imag, new_real, new_imag, length);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_INT16(new_real, A_real[i]);
@@ -122,7 +122,7 @@ static void test_xs3_set_vect_complex_s16()
 
 
 
-static void test_xs3_set_vect_complex_s32()
+static void test_xs3_vect_complex_s32_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -140,7 +140,7 @@ static void test_xs3_set_vect_complex_s32()
         const int32_t new_real = pseudo_rand_int32(&seed);
         const int32_t new_imag = pseudo_rand_int32(&seed);
         
-        xs3_set_vect_complex_s32(A, new_real, new_imag, length);
+        xs3_vect_complex_s32_set(A, new_real, new_imag, length);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_INT32(new_real, A[i].re);
@@ -159,7 +159,7 @@ static void test_xs3_set_vect_complex_s32()
 
 
 
-static void test_xs3_set_vect_ch_pair_s16()
+static void test_xs3_vect_ch_pair_s16_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -177,7 +177,7 @@ static void test_xs3_set_vect_ch_pair_s16()
         const int16_t new_ch_a = pseudo_rand_int16(&seed);
         const int16_t new_ch_b = pseudo_rand_int16(&seed);
         
-        xs3_set_vect_ch_pair_s16(A, new_ch_a, new_ch_b, length);
+        xs3_vect_ch_pair_s16_set(A, new_ch_a, new_ch_b, length);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_INT16(new_ch_a, A[i].ch_a);
@@ -196,7 +196,7 @@ static void test_xs3_set_vect_ch_pair_s16()
 
 
 
-static void test_xs3_set_vect_ch_pair_s32()
+static void test_xs3_vect_ch_pair_s32_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -214,7 +214,7 @@ static void test_xs3_set_vect_ch_pair_s32()
         const int32_t new_ch_a = pseudo_rand_int32(&seed);
         const int32_t new_ch_b = pseudo_rand_int32(&seed);
         
-        xs3_set_vect_ch_pair_s32(A, new_ch_a, new_ch_b, length);
+        xs3_vect_ch_pair_s32_set(A, new_ch_a, new_ch_b, length);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_INT32(new_ch_a, A[i].ch_a);
@@ -233,10 +233,10 @@ void test_xs3_set_vect()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_set_vect_s16);
-    RUN_TEST(test_xs3_set_vect_s32);
-    RUN_TEST(test_xs3_set_vect_complex_s16);
-    RUN_TEST(test_xs3_set_vect_complex_s32);
-    RUN_TEST(test_xs3_set_vect_ch_pair_s16);
-    RUN_TEST(test_xs3_set_vect_ch_pair_s32);
+    RUN_TEST(test_xs3_vect_s16_set);
+    RUN_TEST(test_xs3_vect_s32_set);
+    RUN_TEST(test_xs3_vect_complex_s16_set);
+    RUN_TEST(test_xs3_vect_complex_s32_set);
+    RUN_TEST(test_xs3_vect_ch_pair_s16_set);
+    RUN_TEST(test_xs3_vect_ch_pair_s32_set);
 }

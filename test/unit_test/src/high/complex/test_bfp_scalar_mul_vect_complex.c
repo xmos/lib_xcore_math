@@ -30,7 +30,7 @@ static char msg_buff[200];
 
 
 
-void test_bfp_scalar_mul_vect_complex_s16()
+void test_bfp_vect_complex_s16_scalar_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -57,11 +57,11 @@ void test_bfp_scalar_mul_vect_complex_s16()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        bfp_init_vect_complex_s16(&B, B_data.real, B_data.imag,
+        bfp_vect_complex_s16_init(&B, B_data.real, B_data.imag,
             pseudo_rand_int(&seed, -100, 100),
             pseudo_rand_int(&seed, 1, MAX_LEN+1), 0);
 
-        bfp_init_vect_complex_s16(&A, A_data.real, A_data.imag, 0, B.length, 0);
+        bfp_vect_complex_s16_init(&A, A_data.real, A_data.imag, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
 
@@ -82,11 +82,11 @@ void test_bfp_scalar_mul_vect_complex_s16()
             Af.imag[i] = ldexp(B.imag[i], B.exp) * ldexp(C, c_exp);
         }
 
-        bfp_headroom_vect_complex_s16(&B);
+        bfp_vect_complex_s16_headroom(&B);
 
-        bfp_scalar_mul_vect_complex_s16(&A, &B, C, c_exp);
+        bfp_vect_complex_s16_scalar_mul(&A, &B, C, c_exp);
 
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_headroom_vect_complex_s16(A.real, A.imag, A.length), A.hr, "[A.hr is wrong.]");
+        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr, "[A.hr is wrong.]");
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
@@ -105,7 +105,7 @@ void test_bfp_scalar_mul_vect_complex_s16()
 
 
 
-void test_bfp_scalar_mul_vect_complex_s32()
+void test_bfp_vect_complex_s32_scalar_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -125,11 +125,11 @@ void test_bfp_scalar_mul_vect_complex_s32()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        bfp_init_vect_complex_s32(&B, B_data,
+        bfp_vect_complex_s32_init(&B, B_data,
             pseudo_rand_int(&seed, -100, 100),
             pseudo_rand_int(&seed, 1, MAX_LEN+1), 0);
 
-        bfp_init_vect_complex_s32(&A, A_data, 0, B.length, 0);
+        bfp_vect_complex_s32_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
@@ -146,11 +146,11 @@ void test_bfp_scalar_mul_vect_complex_s32()
             Af.imag[i] = ldexp(B.data[i].im, B.exp) * ldexp(C, c_exp);
         }
 
-        bfp_headroom_vect_complex_s32(&B);
+        bfp_vect_complex_s32_headroom(&B);
         
-        bfp_scalar_mul_vect_complex_s32(&A, &B, C, c_exp);
+        bfp_vect_complex_s32_scalar_mul(&A, &B, C, c_exp);
         
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_headroom_vect_complex_s32(A.data, A.length), A.hr, "[A.hr is wrong.]");
+        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
         
         TEST_ASSERT_LESS_OR_EQUAL_MESSAGE(2, A.hr, "[A.hr is too large.]");
 
@@ -170,6 +170,6 @@ void test_bfp_scalar_mul_vect_complex()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_bfp_scalar_mul_vect_complex_s16);
-    RUN_TEST(test_bfp_scalar_mul_vect_complex_s32);
+    RUN_TEST(test_bfp_vect_complex_s16_scalar_mul);
+    RUN_TEST(test_bfp_vect_complex_s32_scalar_mul);
 }

@@ -4,7 +4,7 @@
 
 /*  
 
-unsigned xs3_argmin_s32(
+unsigned xs3_vect_s32_argmin(
     const int32_t b[],
     const unsigned length);
 
@@ -20,7 +20,7 @@ unsigned xs3_argmin_s32(
 #define NSTACKVECS      (3)
 #define NSTACKWORDS     (8 + 8*NSTACKVECS)
 
-#define FUNCTION_NAME       xs3_argmin_s32
+#define FUNCTION_NAME       xs3_vect_s32_argmin
 
 #define STACK_VEC_MAX_DEX   (NSTACKWORDS-8)
 #define STACK_VEC_CUR_MAX   (NSTACKWORDS-16)

@@ -8,7 +8,7 @@
 
 
 WEAK_FUNC
-headroom_t xs3_headroom_vect_s16(
+headroom_t xs3_vect_s16_headroom(
     const int16_t v[],
     const unsigned length)
 {
@@ -50,7 +50,7 @@ headroom_t xs3_headroom_vect_s16(
 
 
 WEAK_FUNC
-headroom_t xs3_headroom_vect_s32(
+headroom_t xs3_vect_s32_headroom(
     const int32_t v[],
     const unsigned length)
 {

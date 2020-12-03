@@ -28,7 +28,7 @@ static char msg_buff[200];
 #endif
 
 
-void test_xs3_abs_sum_s16_basic()
+void test_xs3_vect_s16_abs_sum_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -69,7 +69,7 @@ void test_xs3_abs_sum_s16_basic()
                 B[i] = casse->b;
             }
 
-            result = xs3_abs_sum_s16(B, len);
+            result = xs3_vect_s16_abs_sum(B, len);
 
             int16_t t = casse->b;
             t = (t>=0)? t : -t;
@@ -84,7 +84,7 @@ void test_xs3_abs_sum_s16_basic()
 
 #define MAX_LEN     200
 #define REPS        IF_QUICK_TEST(10, 100)
-void test_xs3_abs_sum_s16_random()
+void test_xs3_vect_s16_abs_sum_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 343446;
@@ -102,7 +102,7 @@ void test_xs3_abs_sum_s16_random()
             B[i] = pseudo_rand_int16(&seed);
         }
 
-        result = xs3_abs_sum_s16(B, len);
+        result = xs3_vect_s16_abs_sum(B, len);
 
         int32_t exp = 0;
         for(int i = 0; i < len; i++){
@@ -120,7 +120,7 @@ void test_xs3_abs_sum_s16_random()
 
 
 
-void test_xs3_abs_sum_s32_basic()
+void test_xs3_vect_s32_abs_sum_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -161,7 +161,7 @@ void test_xs3_abs_sum_s32_basic()
                 B[i] = casse->b;
             }
 
-            result = xs3_abs_sum_s32(B, len);
+            result = xs3_vect_s32_abs_sum(B, len);
 
             int64_t t = casse->b;
             t = (t>=0)? t : -t;
@@ -176,7 +176,7 @@ void test_xs3_abs_sum_s32_basic()
 
 #define MAX_LEN     200
 #define REPS        IF_QUICK_TEST(10, 100)
-void test_xs3_abs_sum_s32_random()
+void test_xs3_vect_s32_abs_sum_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 346332123;
@@ -195,7 +195,7 @@ void test_xs3_abs_sum_s32_random()
             B[i] = pseudo_rand_int32(&seed);
         }
 
-        result = xs3_abs_sum_s32(B, len);
+        result = xs3_vect_s32_abs_sum(B, len);
 
         int32_t exp = 0;
         for(int i = 0; i < len; i++){
@@ -217,9 +217,9 @@ void test_xs3_abs_sum()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_abs_sum_s16_basic);
-    RUN_TEST(test_xs3_abs_sum_s16_random);
+    RUN_TEST(test_xs3_vect_s16_abs_sum_basic);
+    RUN_TEST(test_xs3_vect_s16_abs_sum_random);
 
-    RUN_TEST(test_xs3_abs_sum_s32_basic);
-    RUN_TEST(test_xs3_abs_sum_s32_random);
+    RUN_TEST(test_xs3_vect_s32_abs_sum_basic);
+    RUN_TEST(test_xs3_vect_s32_abs_sum_random);
 }

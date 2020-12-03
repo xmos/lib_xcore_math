@@ -281,7 +281,7 @@ void test_xs3_sum_complex_s32_random()
             B[i].im = pseudo_rand_int32(&seed);
         }
 
-        headroom_t hr = xs3_headroom_vect_complex_s32(B, len);
+        headroom_t hr = xs3_vect_complex_s32_headroom(B, len);
 
         unsigned len_log2 = ceil_log2(len);
 

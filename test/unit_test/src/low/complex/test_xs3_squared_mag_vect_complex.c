@@ -80,7 +80,7 @@ static int32_t squared_mag_complex_s32(
 
 
 #define REPS        1000
-static void test_xs3_squared_mag_vect_complex_s16_calc_params()
+static void test_xs3_vect_complex_s16_squared_mag_calc_params()
 {
     PRINTF("%s...\n", __func__);
 
@@ -105,12 +105,12 @@ static void test_xs3_squared_mag_vect_complex_s16_calc_params()
             // PRINTF("\t    b_exp = %d\n", b_exp);
             // PRINTF("\t    b_hr = %d\n", b_hr);
 
-            xs3_squared_mag_vect_complex_s16_calc_params(&a_exp, &sat, b_exp, b_hr, allow_sat);
+            xs3_vect_complex_s16_squared_mag_calc_params(&a_exp, &sat, b_exp, b_hr, allow_sat);
 
             // PRINTF("\t    B_re = %d    (0x%04X)\n", B_re, (uint16_t) B_re);
             // PRINTF("\t    B_im = %d    (0x%04X)\n", B_im, (uint16_t) B_im);
 
-            xs3_squared_mag_vect_complex_s16(&A_mag, &B_re, &B_im, 1, sat);
+            xs3_vect_complex_s16_squared_mag(&A_mag, &B_re, &B_im, 1, sat);
 
             // PRINTF("\t    A_mag = %d   (0x%04X)\n", A_mag, (uint16_t) A_mag);
             // PRINTF("\t    a_exp = %d\n", a_exp);
@@ -147,7 +147,7 @@ static void test_xs3_squared_mag_vect_complex_s16_calc_params()
 
 
 #define REPS        1000
-static void test_xs3_squared_mag_vect_complex_s32_calc_params()
+static void test_xs3_vect_complex_s32_squared_mag_calc_params()
 {
     PRINTF("%s...\n", __func__);
 
@@ -172,12 +172,12 @@ static void test_xs3_squared_mag_vect_complex_s32_calc_params()
             // PRINTF("\t    b_exp = %d\n", b_exp);
             // PRINTF("\t    b_hr = %d\n", b_hr);
 
-            xs3_squared_mag_vect_complex_s32_calc_params(&a_exp, &b_shr, b_exp, b_hr, allow_sat);
+            xs3_vect_complex_s32_squared_mag_calc_params(&a_exp, &b_shr, b_exp, b_hr, allow_sat);
 
             // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B.re, (uint32_t) B.re);
             // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B.im, (uint32_t) B.im);
 
-            xs3_squared_mag_vect_complex_s32(&A, &B, 1, b_shr);
+            xs3_vect_complex_s32_squared_mag(&A, &B, 1, b_shr);
 
             // PRINTF("\t    A = %ld   (0x%08lX)\n", A, (uint32_t) A);
             // PRINTF("\t    a_exp = %d\n", a_exp);
@@ -194,7 +194,7 @@ static void test_xs3_squared_mag_vect_complex_s32_calc_params()
                 TEST_ASSERT_EQUAL_INT32(0x7FFFFFFF, A);
 
                 //Increasing b_shr by 1 should divide the pre-saturation result by 4
-                xs3_squared_mag_vect_complex_s32(&A, &B, 1, b_shr+1);
+                xs3_vect_complex_s32_squared_mag(&A, &B, 1, b_shr+1);
 
                 TEST_ASSERT_EQUAL_INT32(0x20000000, A);
             } else {
@@ -212,7 +212,7 @@ static void test_xs3_squared_mag_vect_complex_s32_calc_params()
 
 
 #define THRESHOLD   5
-static void test_xs3_squared_mag_vect_complex_s16_basic()
+static void test_xs3_vect_complex_s16_squared_mag_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -277,13 +277,13 @@ static void test_xs3_squared_mag_vect_complex_s16_basic()
                 B.imag[i] = casse->b.im;
             }
 
-            hr = xs3_squared_mag_vect_complex_s16(A, B.real, B.imag, len, casse->sat);
+            hr = xs3_vect_complex_s16_squared_mag(A, B.real, B.imag, len, casse->sat);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[i], casse->line);
             }
 
-            TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+            TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
         }
     }
 }
@@ -296,7 +296,7 @@ static void test_xs3_squared_mag_vect_complex_s16_basic()
 #define MAX_LEN     100
 #define REPS        1000
 #define THRESHOLD   10
-static void test_xs3_squared_mag_vect_complex_s16_random()
+static void test_xs3_vect_complex_s16_squared_mag_random()
 {
     PRINTF("%s...\n", __func__);
     unsigned seed = 0x9B54F255;
@@ -323,7 +323,7 @@ static void test_xs3_squared_mag_vect_complex_s16_random()
             B.imag[i] = pseudo_rand_int16(&seed) >> B_hr;
         }
 
-        B_hr = xs3_headroom_vect_complex_s16(B.real, B.imag, len);
+        B_hr = xs3_vect_complex_s16_headroom(B.real, B.imag, len);
 
         //With 0 bits of headroom, the size of the result can be up to (0x8000**2 * 2)
         //  = (2**(15))**2 * 2 = 2**30 * 2 = 2**31
@@ -335,7 +335,7 @@ static void test_xs3_squared_mag_vect_complex_s16_random()
         //For the sake of testing, add an extra bit of shift.
         right_shift_t sat = sat_min + (pseudo_rand_uint32(&seed) % 14);
         
-        hr = xs3_squared_mag_vect_complex_s16(A, B.real, B.imag, len, sat);
+        hr = xs3_vect_complex_s16_squared_mag(A, B.real, B.imag, len, sat);
 
         for(int i = 0; i < len; i++){
             complex_s16_t bbb = {B.real[i], B.imag[i]};
@@ -345,7 +345,7 @@ static void test_xs3_squared_mag_vect_complex_s16_random()
                   "(test vect %d) (len: %u) (index %d): (mag(%d + i*%d))**2 >> %d",
                    v, len, i, B.real[i], B.imag[i], sat);
         }
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, v);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, v);
     }
 }
 #undef MAX_LEN
@@ -357,7 +357,7 @@ static void test_xs3_squared_mag_vect_complex_s16_random()
 
 
 #define THRESHOLD   7
-static void test_xs3_squared_mag_vect_complex_s32_basic()
+static void test_xs3_vect_complex_s32_squared_mag_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -416,14 +416,14 @@ static void test_xs3_squared_mag_vect_complex_s32_basic()
                 B[i].im = casse->b.im;
             }
 
-            hr = xs3_squared_mag_vect_complex_s32(A, B, len, casse->b_shr);
+            hr = xs3_vect_complex_s32_squared_mag(A, B, len, casse->b_shr);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG_FMT(casse->expected, A[i], 
                   "(test vect %d @ line %u) (len: %u) (index %d): (mag(( %ld + i*%ld) >> %d))**2",
                    v, casse->line, len, i, B[i].re, B[i].im, casse->b_shr);
             }
-            TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32((int32_t*) A, len), hr, casse->line);
+            TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, len), hr, casse->line);
         }
     }
 }
@@ -438,7 +438,7 @@ static void test_xs3_squared_mag_vect_complex_s32_basic()
 #define MAX_LEN     100
 #define REPS        1000
 #define THRESHOLD   7
-static void test_xs3_squared_mag_vect_complex_s32_random()
+static void test_xs3_vect_complex_s32_squared_mag_random()
 {
     PRINTF("%s...\n", __func__);
     unsigned seed = 3463456;
@@ -461,7 +461,7 @@ static void test_xs3_squared_mag_vect_complex_s32_random()
             B[i].im = pseudo_rand_int32(&seed) >> B_hr;
         }
         
-        B_hr = xs3_headroom_vect_complex_s32(B, len);
+        B_hr = xs3_vect_complex_s32_headroom(B, len);
 
         // with 0 bits of headroom, B could be -0x8000000 + 0x8000000j = -(2**31) + -(2**31)j
         // Squared mag would be:   (-(2**31))**2 + (-(2**31))**2 = 2**62 + 2**62 = 2**63
@@ -472,7 +472,7 @@ static void test_xs3_squared_mag_vect_complex_s32_random()
 
         right_shift_t b_shr = (1-B_hr) + (pseudo_rand_uint32(&seed) % 4);
         
-        hr = xs3_squared_mag_vect_complex_s32(A, B, len, b_shr);
+        hr = xs3_vect_complex_s32_squared_mag(A, B, len, b_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = squared_mag_complex_s32(B[i], b_shr);
@@ -480,7 +480,7 @@ static void test_xs3_squared_mag_vect_complex_s32_random()
                   "(test vect %d) (len: %u) (index %d): (mag(( %ld + i*%ld) >> %d))**2",
                    v, len, i, B[i].re, B[i].im, b_shr);
         }
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, v);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, v);
     }
 }
 #undef MAX_LEN
@@ -492,12 +492,12 @@ static void test_xs3_squared_mag_vect_complex_s32_random()
 void test_xs3_squared_mag_vect_complex()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_xs3_squared_mag_vect_complex_s16_calc_params);
-    RUN_TEST(test_xs3_squared_mag_vect_complex_s32_calc_params);
+    RUN_TEST(test_xs3_vect_complex_s16_squared_mag_calc_params);
+    RUN_TEST(test_xs3_vect_complex_s32_squared_mag_calc_params);
 
-    RUN_TEST(test_xs3_squared_mag_vect_complex_s16_basic);
-    RUN_TEST(test_xs3_squared_mag_vect_complex_s16_random);
+    RUN_TEST(test_xs3_vect_complex_s16_squared_mag_basic);
+    RUN_TEST(test_xs3_vect_complex_s16_squared_mag_random);
 
-    RUN_TEST(test_xs3_squared_mag_vect_complex_s32_basic);
-    RUN_TEST(test_xs3_squared_mag_vect_complex_s32_random);
+    RUN_TEST(test_xs3_vect_complex_s32_squared_mag_basic);
+    RUN_TEST(test_xs3_vect_complex_s32_squared_mag_random);
 }

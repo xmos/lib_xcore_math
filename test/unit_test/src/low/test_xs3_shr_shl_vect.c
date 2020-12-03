@@ -36,7 +36,7 @@ static char msg_buff[200];
 
 
 
-static void test_xs3_shr_vect_s16_basic()
+static void test_xs3_vect_s16_shr_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -87,21 +87,21 @@ static void test_xs3_shr_vect_s16_basic()
         int16_t B[1] = { casse->value };
         int16_t A[1] = { 0xCC };
 
-        headroom_t hr = xs3_shr_vect_s16(A, B, 1, casse->shr);
+        headroom_t hr = xs3_vect_s16_shr(A, B, 1, casse->shr);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, 1), hr, casse->line);
 
-        hr = xs3_shr_vect_s16(B, B, 1, casse->shr);
+        hr = xs3_vect_s16_shr(B, B, 1, casse->shr);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, B[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(B, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(B, 1), hr, casse->line);
     }
 }
 
 
 #define LEN     68
-static void test_xs3_shr_vect_s16_random()
+static void test_xs3_vect_s16_shr_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -129,7 +129,7 @@ static void test_xs3_shr_vect_s16_random()
             if(in_place)
                 memcpy(A, B, sizeof(A));
 
-            headroom_t hr = xs3_shr_vect_s16(A, (in_place)? A : B, LEN, shr);
+            headroom_t hr = xs3_vect_s16_shr(A, (in_place)? A : B, LEN, shr);
 
             for(int i = 0; i < LEN; i++){
                 int32_t b = B[i];
@@ -150,7 +150,7 @@ static void test_xs3_shr_vect_s16_random()
                 TEST_ASSERT_EQUAL_MESSAGE((int16_t)exp, A[i], msg_buff);
             }
 
-            TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, LEN), hr);
+            TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, LEN), hr);
         }
         
     }
@@ -160,7 +160,7 @@ static void test_xs3_shr_vect_s16_random()
 
 
 
-static void test_xs3_shr_vect_s32_basic()
+static void test_xs3_vect_s32_shr_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -211,15 +211,15 @@ static void test_xs3_shr_vect_s32_basic()
         int32_t B[1] = { casse->value };
         int32_t A[1] = { 0xCC };
 
-        headroom_t hr = xs3_shr_vect_s32(A, B, 1, casse->shr);
+        headroom_t hr = xs3_vect_s32_shr(A, B, 1, casse->shr);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, 1), hr, casse->line);
 
-        hr = xs3_shr_vect_s32(B, B, 1, casse->shr);
+        hr = xs3_vect_s32_shr(B, B, 1, casse->shr);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, B[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(B, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(B, 1), hr, casse->line);
     }
 }
 
@@ -228,7 +228,7 @@ static void test_xs3_shr_vect_s32_basic()
 
 
 #define LEN     68
-static void test_xs3_shr_vect_s32_random()
+static void test_xs3_vect_s32_shr_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -256,7 +256,7 @@ static void test_xs3_shr_vect_s32_random()
             if(in_place)
                 memcpy(A, B, sizeof(A));
 
-            headroom_t hr = xs3_shr_vect_s32(A, (in_place)? A : B, LEN, shr);
+            headroom_t hr = xs3_vect_s32_shr(A, (in_place)? A : B, LEN, shr);
 
             for(int i = 0; i < LEN; i++){
                 int64_t b = B[i];
@@ -277,7 +277,7 @@ static void test_xs3_shr_vect_s32_random()
                 TEST_ASSERT_EQUAL_MESSAGE((int32_t)exp, A[i], msg_buff);
             }
 
-            TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, LEN), hr);
+            TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, LEN), hr);
         }
     }
 }
@@ -289,7 +289,7 @@ static void test_xs3_shr_vect_s32_random()
 
 
 
-static void test_xs3_shr_vect_ch_pair_s16()
+static void test_xs3_vect_ch_pair_s16_shr()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -312,7 +312,7 @@ static void test_xs3_shr_vect_ch_pair_s16()
             B[i].ch_b = pseudo_rand_int16(&seed) >> hr;
         }
 
-        xs3_shr_vect_ch_pair_s16(A, B, length, shr);
+        xs3_vect_ch_pair_s16_shr(A, B, length, shr);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B[i].ch_a, shr), A[i].ch_a );
@@ -321,7 +321,7 @@ static void test_xs3_shr_vect_ch_pair_s16()
 
         memcpy(A, B, sizeof(A));
 
-        xs3_shr_vect_ch_pair_s16(A, A, length, shr);
+        xs3_vect_ch_pair_s16_shr(A, A, length, shr);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B[i].ch_a, shr), A[i].ch_a );
@@ -334,7 +334,7 @@ static void test_xs3_shr_vect_ch_pair_s16()
 
 
 
-static void test_xs3_shr_vect_ch_pair_s32()
+static void test_xs3_vect_ch_pair_s32_shr()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -357,7 +357,7 @@ static void test_xs3_shr_vect_ch_pair_s32()
             B[i].ch_b = pseudo_rand_int32(&seed) >> hr;
         }
 
-        xs3_shr_vect_ch_pair_s32(A, B, length, shr);
+        xs3_vect_ch_pair_s32_shr(A, B, length, shr);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].ch_a, shr), A[i].ch_a );
@@ -366,7 +366,7 @@ static void test_xs3_shr_vect_ch_pair_s32()
 
         memcpy(A, B, sizeof(A));
 
-        xs3_shr_vect_ch_pair_s32(A, A, length, shr);
+        xs3_vect_ch_pair_s32_shr(A, A, length, shr);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].ch_a, shr), A[i].ch_a );
@@ -377,7 +377,7 @@ static void test_xs3_shr_vect_ch_pair_s32()
 
 
 
-static void test_xs3_shr_vect_complex_s16()
+static void test_xs3_vect_complex_s16_shr()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -402,7 +402,7 @@ static void test_xs3_shr_vect_complex_s16()
             B_imag[i] = pseudo_rand_int16(&seed) >> hr;
         }
 
-        xs3_shr_vect_complex_s16(A_real, A_imag, B_real, B_imag, length, shr);
+        xs3_vect_complex_s16_shr(A_real, A_imag, B_real, B_imag, length, shr);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], shr), A_real[i] );
@@ -412,7 +412,7 @@ static void test_xs3_shr_vect_complex_s16()
         memcpy(A_real, B_real, sizeof(A_real));
         memcpy(A_imag, B_imag, sizeof(A_imag));
 
-        xs3_shr_vect_complex_s16(A_real, A_imag, A_real, A_imag, length, shr);
+        xs3_vect_complex_s16_shr(A_real, A_imag, A_real, A_imag, length, shr);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], shr), A_real[i] );
@@ -423,7 +423,7 @@ static void test_xs3_shr_vect_complex_s16()
 
 
 
-static void test_xs3_shr_vect_complex_s32()
+static void test_xs3_vect_complex_s32_shr()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -446,7 +446,7 @@ static void test_xs3_shr_vect_complex_s32()
             B[i].im = pseudo_rand_int32(&seed) >> hr;
         }
 
-        xs3_shr_vect_complex_s32(A, B, length, shr);
+        xs3_vect_complex_s32_shr(A, B, length, shr);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, shr), A[i].re );
@@ -455,7 +455,7 @@ static void test_xs3_shr_vect_complex_s32()
 
         memcpy(A, B, sizeof(B));
 
-        xs3_shr_vect_complex_s32(A, A, length, shr);
+        xs3_vect_complex_s32_shr(A, A, length, shr);
         
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, shr), A[i].re );
@@ -467,7 +467,7 @@ static void test_xs3_shr_vect_complex_s32()
 
 
 
-static void test_xs3_shl_vect_s16_basic()
+static void test_xs3_vect_s16_shl_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -518,21 +518,21 @@ static void test_xs3_shl_vect_s16_basic()
         int16_t B[1] = { casse->value };
         int16_t A[1] = { 0xCC };
 
-        headroom_t hr = xs3_shl_vect_s16(A, B, 1, casse->shl);
+        headroom_t hr = xs3_vect_s16_shl(A, B, 1, casse->shl);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, 1), hr, casse->line);
 
-        hr = xs3_shl_vect_s16(B, B, 1, casse->shl);
+        hr = xs3_vect_s16_shl(B, B, 1, casse->shl);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, B[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(B, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(B, 1), hr, casse->line);
     }
 }
 
 
 #define LEN     68
-static void test_xs3_shl_vect_s16_random()
+static void test_xs3_vect_s16_shl_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -560,7 +560,7 @@ static void test_xs3_shl_vect_s16_random()
             if(in_place)
                 memcpy(A, B, sizeof(A));
 
-            headroom_t hr = xs3_shl_vect_s16(A, (in_place)? A : B, LEN, shl);
+            headroom_t hr = xs3_vect_s16_shl(A, (in_place)? A : B, LEN, shl);
 
             for(int i = 0; i < LEN; i++){
                 int32_t b = B[i];
@@ -581,7 +581,7 @@ static void test_xs3_shl_vect_s16_random()
                 TEST_ASSERT_EQUAL_MESSAGE((int16_t)exp, A[i], msg_buff);
             }
 
-            TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, LEN), hr);
+            TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, LEN), hr);
         }
         
     }
@@ -591,7 +591,7 @@ static void test_xs3_shl_vect_s16_random()
 
 
 
-static void test_xs3_shl_vect_s32_basic()
+static void test_xs3_vect_s32_shl_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -642,15 +642,15 @@ static void test_xs3_shl_vect_s32_basic()
         int32_t B[1] = { casse->value };
         int32_t A[1] = { 0xCC };
 
-        headroom_t hr = xs3_shl_vect_s32(A, B, 1, casse->shl);
+        headroom_t hr = xs3_vect_s32_shl(A, B, 1, casse->shl);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, 1), hr, casse->line);
 
-        hr = xs3_shl_vect_s32(B, B, 1, casse->shl);
+        hr = xs3_vect_s32_shl(B, B, 1, casse->shl);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, B[0], casse->line);
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(B, 1), hr, casse->line);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(B, 1), hr, casse->line);
     }
 }
 
@@ -659,7 +659,7 @@ static void test_xs3_shl_vect_s32_basic()
 
 
 #define LEN     68
-static void test_xs3_shl_vect_s32_random()
+static void test_xs3_vect_s32_shl_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -687,7 +687,7 @@ static void test_xs3_shl_vect_s32_random()
             if(in_place)
                 memcpy(A, B, sizeof(A));
 
-            headroom_t hr = xs3_shl_vect_s32(A, (in_place)? A : B, LEN, shl);
+            headroom_t hr = xs3_vect_s32_shl(A, (in_place)? A : B, LEN, shl);
 
             for(int i = 0; i < LEN; i++){
                 int64_t b = B[i];
@@ -708,7 +708,7 @@ static void test_xs3_shl_vect_s32_random()
                 TEST_ASSERT_EQUAL_MESSAGE((int32_t)exp, A[i], msg_buff);
             }
 
-            TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, LEN), hr);
+            TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, LEN), hr);
         }
     }
 }
@@ -720,7 +720,7 @@ static void test_xs3_shl_vect_s32_random()
 
 
 
-static void test_xs3_shl_vect_ch_pair_s16()
+static void test_xs3_vect_ch_pair_s16_shl()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -743,7 +743,7 @@ static void test_xs3_shl_vect_ch_pair_s16()
             B[i].ch_b = pseudo_rand_int16(&seed) >> hr;
         }
 
-        xs3_shl_vect_ch_pair_s16(A, B, length, shl);
+        xs3_vect_ch_pair_s16_shl(A, B, length, shl);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B[i].ch_a, -shl), A[i].ch_a );
@@ -752,7 +752,7 @@ static void test_xs3_shl_vect_ch_pair_s16()
 
         memcpy(A, B, sizeof(A));
 
-        xs3_shl_vect_ch_pair_s16(A, A, length, shl);
+        xs3_vect_ch_pair_s16_shl(A, A, length, shl);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B[i].ch_a, -shl), A[i].ch_a );
@@ -765,7 +765,7 @@ static void test_xs3_shl_vect_ch_pair_s16()
 
 
 
-static void test_xs3_shl_vect_ch_pair_s32()
+static void test_xs3_vect_ch_pair_s32_shl()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -788,7 +788,7 @@ static void test_xs3_shl_vect_ch_pair_s32()
             B[i].ch_b = pseudo_rand_int32(&seed) >> hr;
         }
 
-        xs3_shl_vect_ch_pair_s32(A, B, length, shl);
+        xs3_vect_ch_pair_s32_shl(A, B, length, shl);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].ch_a, -shl), A[i].ch_a );
@@ -797,7 +797,7 @@ static void test_xs3_shl_vect_ch_pair_s32()
 
         memcpy(A, B, sizeof(A));
 
-        xs3_shl_vect_ch_pair_s32(A, A, length, shl);
+        xs3_vect_ch_pair_s32_shl(A, A, length, shl);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].ch_a, -shl), A[i].ch_a );
@@ -808,7 +808,7 @@ static void test_xs3_shl_vect_ch_pair_s32()
 
 
 
-static void test_xs3_shl_vect_complex_s16()
+static void test_xs3_vect_complex_s16_shl()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -833,7 +833,7 @@ static void test_xs3_shl_vect_complex_s16()
             B_imag[i] = pseudo_rand_int16(&seed) >> hr;
         }
 
-        xs3_shl_vect_complex_s16(A_real, A_imag, B_real, B_imag, length, shl);
+        xs3_vect_complex_s16_shl(A_real, A_imag, B_real, B_imag, length, shl);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], -shl), A_real[i] );
@@ -843,7 +843,7 @@ static void test_xs3_shl_vect_complex_s16()
         memcpy(A_real, B_real, sizeof(A_real));
         memcpy(A_imag, B_imag, sizeof(A_imag));
 
-        xs3_shl_vect_complex_s16(A_real, A_imag, A_real, A_imag, length, shl);
+        xs3_vect_complex_s16_shl(A_real, A_imag, A_real, A_imag, length, shl);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], -shl), A_real[i] );
@@ -854,7 +854,7 @@ static void test_xs3_shl_vect_complex_s16()
 
 
 
-static void test_xs3_shl_vect_complex_s32()
+static void test_xs3_vect_complex_s32_shl()
 {
     PRINTF("%s...\n", __func__);
     seed = 362546234;
@@ -877,7 +877,7 @@ static void test_xs3_shl_vect_complex_s32()
             B[i].im = pseudo_rand_int32(&seed) >> hr;
         }
 
-        xs3_shl_vect_complex_s32(A, B, length, shl);
+        xs3_vect_complex_s32_shl(A, B, length, shl);
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, -shl), A[i].re );
@@ -886,7 +886,7 @@ static void test_xs3_shl_vect_complex_s32()
 
         memcpy(A, B, sizeof(B));
 
-        xs3_shl_vect_complex_s32(A, A, length, shl);
+        xs3_vect_complex_s32_shl(A, A, length, shl);
         
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, -shl), A[i].re );
@@ -902,27 +902,27 @@ void test_xs3_shr_shl_vect()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_shr_vect_s16_basic);
-    RUN_TEST(test_xs3_shr_vect_s16_random);
+    RUN_TEST(test_xs3_vect_s16_shr_basic);
+    RUN_TEST(test_xs3_vect_s16_shr_random);
     
-    RUN_TEST(test_xs3_shr_vect_s32_basic);
-    RUN_TEST(test_xs3_shr_vect_s32_random);
+    RUN_TEST(test_xs3_vect_s32_shr_basic);
+    RUN_TEST(test_xs3_vect_s32_shr_random);
     
-    RUN_TEST(test_xs3_shr_vect_ch_pair_s16);
-    RUN_TEST(test_xs3_shr_vect_ch_pair_s32);
+    RUN_TEST(test_xs3_vect_ch_pair_s16_shr);
+    RUN_TEST(test_xs3_vect_ch_pair_s32_shr);
     
-    RUN_TEST(test_xs3_shr_vect_complex_s16);
-    RUN_TEST(test_xs3_shr_vect_complex_s32);
+    RUN_TEST(test_xs3_vect_complex_s16_shr);
+    RUN_TEST(test_xs3_vect_complex_s32_shr);
 
-    RUN_TEST(test_xs3_shl_vect_s16_basic);
-    RUN_TEST(test_xs3_shl_vect_s16_random);
+    RUN_TEST(test_xs3_vect_s16_shl_basic);
+    RUN_TEST(test_xs3_vect_s16_shl_random);
     
-    RUN_TEST(test_xs3_shl_vect_s32_basic);
-    RUN_TEST(test_xs3_shl_vect_s32_random);
+    RUN_TEST(test_xs3_vect_s32_shl_basic);
+    RUN_TEST(test_xs3_vect_s32_shl_random);
     
-    RUN_TEST(test_xs3_shl_vect_ch_pair_s16);
-    RUN_TEST(test_xs3_shl_vect_ch_pair_s32);
+    RUN_TEST(test_xs3_vect_ch_pair_s16_shl);
+    RUN_TEST(test_xs3_vect_ch_pair_s32_shl);
     
-    RUN_TEST(test_xs3_shl_vect_complex_s16);
-    RUN_TEST(test_xs3_shl_vect_complex_s32);
+    RUN_TEST(test_xs3_vect_complex_s16_shl);
+    RUN_TEST(test_xs3_vect_complex_s32_shl);
 }

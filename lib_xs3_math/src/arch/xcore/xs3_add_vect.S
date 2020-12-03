@@ -32,7 +32,7 @@
 
 
 /*  
-headroom_t xs3_add_vect_s16(
+headroom_t xs3_vect_s16_add(
     int16_t a[],
     const int16_t b[],
     const int16_t c[],
@@ -40,8 +40,8 @@ headroom_t xs3_add_vect_s16(
     const int b_shr,
     const int c_shr);
 */
-.cc_top xs3_add_vect_s16.function,xs3_add_vect_s16
-xs3_add_vect_s16:
+.cc_top xs3_vect_s16_add.function,xs3_vect_s16_add
+xs3_vect_s16_add:
 FNAME_S16:
         dualentsp NSTACKWORDS
         ldc r11, 0x100
@@ -49,13 +49,13 @@ FNAME_S16:
     {   zext r11, 5                             ;   shr len, len, EPV_LOG2_S16          }
     {                                           ;   bu .L_apply_op                      }
 .L_func_end_s16: 
-.cc_bottom xs3_add_vect_s16.function
+.cc_bottom xs3_vect_s16_add.function
 
 
 
 
 /*
-headroom_t xs3_add_vect_s32(
+headroom_t xs3_vect_s32_add(
     int32_t a[],
     const int32_t b[],
     const int32_t c[],
@@ -63,8 +63,8 @@ headroom_t xs3_add_vect_s32(
     const int b_shr,
     const int c_shr);
 */
-.cc_top xs3_add_vect_s32.function,xs3_add_vect_s32
-xs3_add_vect_s32:
+.cc_top xs3_vect_s32_add.function,xs3_vect_s32_add
+xs3_vect_s32_add:
 FNAME_S32:
         dualentsp NSTACKWORDS
     {   ldc r11, 0                              ;                                           }
@@ -72,7 +72,7 @@ FNAME_S32:
     {   zext r11, 5                             ;   shr len, len, EPV_LOG2_S32              }
     {                                           ;   bu .L_apply_op                          }
 .L_func_end_s32: 
-.cc_bottom xs3_add_vect_s32.function
+.cc_bottom xs3_vect_s32_add.function
 
 
 
@@ -145,21 +145,21 @@ FNAME_S32:
 
 
 
-.global xs3_add_vect_s16
-.type xs3_add_vect_s16,@function
-.set xs3_add_vect_s16.nstackwords,NSTACKWORDS;  .global xs3_add_vect_s16.nstackwords
-.set xs3_add_vect_s16.maxcores,1;               .global xs3_add_vect_s16.maxcores
-.set xs3_add_vect_s16.maxtimers,0;              .global xs3_add_vect_s16.maxtimers
-.set xs3_add_vect_s16.maxchanends,0;            .global xs3_add_vect_s16.maxchanends
-.size xs3_add_vect_s16, .L_func_end_s16 - xs3_add_vect_s16
+.global xs3_vect_s16_add
+.type xs3_vect_s16_add,@function
+.set xs3_vect_s16_add.nstackwords,NSTACKWORDS;  .global xs3_vect_s16_add.nstackwords
+.set xs3_vect_s16_add.maxcores,1;               .global xs3_vect_s16_add.maxcores
+.set xs3_vect_s16_add.maxtimers,0;              .global xs3_vect_s16_add.maxtimers
+.set xs3_vect_s16_add.maxchanends,0;            .global xs3_vect_s16_add.maxchanends
+.size xs3_vect_s16_add, .L_func_end_s16 - xs3_vect_s16_add
 
-.global xs3_add_vect_s32
-.type xs3_add_vect_s32,@function
-.set xs3_add_vect_s32.nstackwords,NSTACKWORDS;  .global xs3_add_vect_s32.nstackwords
-.set xs3_add_vect_s32.maxcores,1;               .global xs3_add_vect_s32.maxcores
-.set xs3_add_vect_s32.maxtimers,0;              .global xs3_add_vect_s32.maxtimers
-.set xs3_add_vect_s32.maxchanends,0;            .global xs3_add_vect_s32.maxchanends
-.size xs3_add_vect_s32, .L_func_end_s32 - xs3_add_vect_s32
+.global xs3_vect_s32_add
+.type xs3_vect_s32_add,@function
+.set xs3_vect_s32_add.nstackwords,NSTACKWORDS;  .global xs3_vect_s32_add.nstackwords
+.set xs3_vect_s32_add.maxcores,1;               .global xs3_vect_s32_add.maxcores
+.set xs3_vect_s32_add.maxtimers,0;              .global xs3_vect_s32_add.maxtimers
+.set xs3_vect_s32_add.maxchanends,0;            .global xs3_vect_s32_add.maxchanends
+.size xs3_vect_s32_add, .L_func_end_s32 - xs3_vect_s32_add
 
 
 

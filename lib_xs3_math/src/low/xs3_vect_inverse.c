@@ -53,7 +53,7 @@ static int32_t min_abs_s32(
 
 
 
-void xs3_inverse_vect_s16_calc_params(
+void xs3_vect_s16_inverse_calc_params(
     exponent_t* a_exp,
     unsigned* scale,
     const int16_t b[],
@@ -102,7 +102,7 @@ void xs3_inverse_vect_s16_calc_params(
     *a_exp = shr - b_exp - 30;
 }
 
-void xs3_inverse_vect_s32_calc_params(
+void xs3_vect_s32_inverse_calc_params(
     exponent_t* a_exp,
     unsigned* scale,
     const int32_t b[],
@@ -156,7 +156,7 @@ void xs3_inverse_vect_s32_calc_params(
 
 
 WEAK_FUNC
-void xs3_inverse_vect_s16(
+void xs3_vect_s16_inverse(
     int16_t a[],
     const int16_t b[],
     const unsigned length,
@@ -172,7 +172,7 @@ void xs3_inverse_vect_s16(
 
 
 WEAK_FUNC
-headroom_t xs3_inverse_vect_s32(
+headroom_t xs3_vect_s32_inverse(
     int32_t a[],
     const int32_t b[],
     const unsigned length,
@@ -187,5 +187,5 @@ headroom_t xs3_inverse_vect_s32(
         // printf("0x%016llX / %ld = %ld\n", (uint64_t) d, b[k], a[k]);
     }
 
-    return xs3_headroom_vect_s32(a, length);
+    return xs3_vect_s32_headroom(a, length);
 }

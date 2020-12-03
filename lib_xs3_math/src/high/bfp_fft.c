@@ -21,7 +21,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
 
     right_shift_t x_shr = 2 - x->hr;
 
-    xs3_shl_vect_s32(x->data, x->data, x->length, -x_shr);
+    xs3_vect_s32_shl(x->data, x->data, x->length, -x_shr);
 
     x->hr  = x->hr  + x_shr;
     x->exp = x->exp + x_shr;
@@ -50,7 +50,7 @@ bfp_s32_t* bfp_fft_inverse_mono(
     bfp_s32_t* x = (bfp_s32_t*)X;
     
     right_shift_t X_shr = 2 - X->hr;
-    xs3_shl_vect_s32((int32_t*) X->data, (int32_t*) X->data, FFT_N, -X_shr);
+    xs3_vect_s32_shl((int32_t*) X->data, (int32_t*) X->data, FFT_N, -X_shr);
     
     X->hr  = X->hr  + X_shr;
     X->exp = X->exp + X_shr;
@@ -81,7 +81,7 @@ void bfp_fft_forward_complex(
     //The FFT implementation unfortunately requires 2 bits of headroom to avoid saturation.
     if(samples->hr < 2){
         left_shift_t shl = samples->hr - 2;
-        samples->hr = xs3_shl_vect_s32((int32_t*) samples->data,(int32_t*)  samples->data, 2*samples->length, shl);
+        samples->hr = xs3_vect_s32_shl((int32_t*) samples->data,(int32_t*)  samples->data, 2*samples->length, shl);
         samples->exp -= shl;
     }
 
@@ -99,7 +99,7 @@ void bfp_fft_inverse_complex(
     //The FFT implementation unfortunately requires 2 bits of headroom to avoid saturation.
     if(spectrum->hr < 2){
         left_shift_t shl = spectrum->hr - 2;
-        spectrum->hr = xs3_shl_vect_s32((int32_t*) spectrum->data,(int32_t*)  spectrum->data, 2*spectrum->length, shl);
+        spectrum->hr = xs3_vect_s32_shl((int32_t*) spectrum->data,(int32_t*)  spectrum->data, 2*spectrum->length, shl);
         spectrum->exp -= shl;
     }   
 
@@ -131,7 +131,7 @@ void bfp_fft_forward_stereo(
     input->exp += input_shr;
     
     if(input_shr)
-        input->hr = xs3_shl_vect_s32((int32_t*) input->data,(int32_t*)  input->data, 2*input->length, -input_shr);
+        input->hr = xs3_vect_s32_shl((int32_t*) input->data,(int32_t*)  input->data, 2*input->length, -input_shr);
     xs3_fft_index_bit_reversal((complex_s32_t*) input->data, input->length);
     xs3_fft_dit_forward((complex_s32_t*) input->data, input->length, &input->hr, xs3_dit_fft_lut, &input->exp); 
 
@@ -180,8 +180,8 @@ void  bfp_fft_inverse_stereo(
         x->exp = b->exp + b_shr;
     }
 
-    if(a_shr) xs3_shl_vect_s32((int32_t*)a->data, (int32_t*) a->data, FFT_N, -a_shr);
-    if(b_shr) xs3_shl_vect_s32((int32_t*)b->data, (int32_t*) b->data, FFT_N, -b_shr);
+    if(a_shr) xs3_vect_s32_shl((int32_t*)a->data, (int32_t*) a->data, FFT_N, -a_shr);
+    if(b_shr) xs3_vect_s32_shl((int32_t*)b->data, (int32_t*) b->data, FFT_N, -b_shr);
 
     x->data = (ch_pair_s32_t*) a->data;
     x->length = a->length;

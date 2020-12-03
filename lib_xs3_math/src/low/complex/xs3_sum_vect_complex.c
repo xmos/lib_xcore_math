@@ -15,8 +15,8 @@
 //     const unsigned length)
 // {
 //     complex_s32_t res = {
-//         xs3_sum_s16(b_real, length),
-//         xs3_sum_s16(b_imag, length) 
+//         xs3_vect_s16_sum(b_real, length),
+//         xs3_vect_s16_sum(b_imag, length) 
 //     };
 
 //     return res;

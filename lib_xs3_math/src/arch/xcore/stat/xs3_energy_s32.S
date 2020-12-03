@@ -3,7 +3,7 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-int64_t xs3_energy_s32(
+int64_t xs3_vect_s32_energy(
     const int32_t b[],
     const unsigned length,
     const right_shift_t b_shr);
@@ -19,7 +19,7 @@ int64_t xs3_energy_s32(
 #define NSTACKWORDS     (8 + 8*NSTACKVECS)
 
 
-#define FUNCTION_NAME   xs3_energy_s32
+#define FUNCTION_NAME   xs3_vect_s32_energy
 
 #define STACK_VEC_TMP       (NSTACKWORDS-8)
 #define STACK_VEC_VR        (NSTACKWORDS-16)

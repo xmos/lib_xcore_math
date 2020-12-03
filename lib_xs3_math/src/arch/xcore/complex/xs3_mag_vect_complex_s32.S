@@ -5,7 +5,7 @@
 
 /*  
 
-headroom_t xs3_mag_vect_complex_s32(
+headroom_t xs3_vect_complex_s32_mag(
     int32_t a[],
     const complex_s32_t* b,
     const unsigned length,
@@ -24,7 +24,7 @@ headroom_t xs3_mag_vect_complex_s32(
 #define STACK_VEC_TMP   (NSTACKWORDS-8)
 #define STACK_VEC_TMP2  (NSTACKWORDS-16)
 
-#define FUNCTION_NAME xs3_mag_vect_complex_s32
+#define FUNCTION_NAME xs3_vect_complex_s32_mag
 
 #define Q(R)    R
 

@@ -5,7 +5,7 @@
 
 /*  
 
-headroom_t xs3_complex_mul_vect_complex_s32(
+headroom_t xs3_vect_complex_s32_complex_mul(
     complex_s32_t* a,
     const complex_s32_t* b,
     const complex_s32_t* c,
@@ -36,7 +36,7 @@ headroom_t xs3_complex_mul_vect_complex_s32(
 
 #define STACK_BYTEMASK  1
 
-#define FUNCTION_NAME xs3_complex_mul_vect_complex_s32
+#define FUNCTION_NAME xs3_vect_complex_s32_complex_mul
     
 ASM_PREAMBLE(FUNCTION_NAME)
 

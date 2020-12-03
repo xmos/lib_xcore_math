@@ -60,7 +60,7 @@ void test_bfp_fft_forward_complex()
             }
             TEST_ASSERT_CONVERSION(error);
 
-            bfp_init_vect_complex_s32(&A, a, initial_exponent, FFT_N, 1);
+            bfp_vect_complex_s32_init(&A, a, initial_exponent, FFT_N, 1);
 
             flt_bit_reverse_indexes_double(ref, FFT_N);
             flt_fft_forward_double(ref, FFT_N, sine_table);
@@ -134,7 +134,7 @@ void test_bfp_fft_inverse_complex()
             }
             TEST_ASSERT_CONVERSION(error);
 
-            bfp_init_vect_complex_s32(&A, a, initial_exponent, FFT_N, 1);
+            bfp_vect_complex_s32_init(&A, a, initial_exponent, FFT_N, 1);
 
             flt_bit_reverse_indexes_double(ref, FFT_N);
             flt_fft_inverse_double(ref, FFT_N, sine_table);
@@ -208,7 +208,7 @@ void test_bfp_fft_forward_stereo()
             }
             TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error");
 
-            bfp_init_vect_ch_pair_s32(&A, a, initial_exponent, FFT_N, 1);
+            bfp_vect_ch_pair_s32_init(&A, a, initial_exponent, FFT_N, 1);
 
             flt_bit_reverse_indexes_double(ref, FFT_N);
             flt_fft_forward_double(ref, FFT_N, sine_table);
@@ -287,10 +287,10 @@ void test_bfp_fft_inverse_stereo()
             }
             TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error");
 
-            bfp_init_vect_complex_s32(&A_fft, &ab_data[0], initial_exponent, FFT_N/2, 1);
-            bfp_init_vect_complex_s32(&B_fft, &ab_data[FFT_N/2], initial_exponent, FFT_N/2, 1);
+            bfp_vect_complex_s32_init(&A_fft, &ab_data[0], initial_exponent, FFT_N/2, 1);
+            bfp_vect_complex_s32_init(&B_fft, &ab_data[FFT_N/2], initial_exponent, FFT_N/2, 1);
 
-            bfp_init_vect_ch_pair_s32(&AB, (ch_pair_s32_t*) ab_data, 0, FFT_N, 0);
+            bfp_vect_ch_pair_s32_init(&AB, (ch_pair_s32_t*) ab_data, 0, FFT_N, 0);
 
             flt_fft_merge_spectra_double(ref, FFT_N);
             flt_bit_reverse_indexes_double(ref, FFT_N);
@@ -368,7 +368,7 @@ void test_bfp_fft_forward_mono()
             }
             TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error");
 
-            bfp_init_vect_s32(&A, a, initial_exponent, FFT_N, 1);
+            bfp_vect_s32_init(&A, a, initial_exponent, FFT_N, 1);
 
             flt_bit_reverse_indexes_double(ref, FFT_N);
             flt_fft_forward_double(ref, FFT_N, sine_table);
@@ -453,7 +453,7 @@ void test_bfp_fft_inverse_mono()
             ref[N/2].re = ref[0].im;
             ref[N/2].im = ref[0].im = 0;
 
-            bfp_init_vect_complex_s32(&A_fft, a, initial_exponent, N/2, 1);
+            bfp_vect_complex_s32_init(&A_fft, a, initial_exponent, N/2, 1);
 
             flt_bit_reverse_indexes_double(ref, FFT_N);
             flt_fft_inverse_double(ref, FFT_N, sine_table);

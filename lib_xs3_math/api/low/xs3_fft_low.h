@@ -124,7 +124,7 @@ headroom_t xs3_fft_spectra_merge(
  *      int32_t x[N] = { ... };
  *      complex_s32_t* X = (complex_s32_t*)x;
  *      exponent_t x_exp = ...;
- *      headroom_t hr = xs3_headroom_vect_s32(x, N);
+ *      headroom_t hr = xs3_vect_s32_headroom(x, N);
  *      xs3_fft_index_bit_reversal(X, N);
  *      xs3_fft_dit_forward(X, N/2, &hr, xs3_dit_fft_lut, &x_exp);
  *      xs3_fft_mono_adjust(X, N, XS3_DIT_REAL_FFT_LUT(N), 0);
@@ -135,7 +135,7 @@ headroom_t xs3_fft_spectra_merge(
  *      complex_s32_t X[N/2] = { ... };
  *      int32_t* x = (int32_t*)X;
  *      exponent_t X_exp = ...;
- *      headroom_t hr = xs3_headroom_vect_s32(x, N);
+ *      headroom_t hr = xs3_vect_s32_headroom(x, N);
  *      xs3_fft_mono_adjust(X, N, XS3_DIT_REAL_FFT_LUT(N), 1);
  *      xs3_fft_index_bit_reversal(X, N);
  *      xs3_fft_dit_inverse(X, N/2, &hr, xs3_dit_fft_lut, &X_exp);

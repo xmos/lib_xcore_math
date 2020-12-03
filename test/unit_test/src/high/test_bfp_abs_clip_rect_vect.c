@@ -36,7 +36,7 @@ static char msg_buff[200];
 
 
 
-static void test_bfp_abs_vect_s16()
+static void test_bfp_vect_s16_abs()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -53,10 +53,10 @@ static void test_bfp_abs_vect_s16()
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
-        bfp_abs_vect_s16(&A, &B);
+        bfp_vect_s16_abs(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, B.length);
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
 
         unsigned cc = (B.hr == 0)  && (!XS3_BFP_ALLOW_SATURATION);
         
@@ -72,7 +72,7 @@ static void test_bfp_abs_vect_s16()
 
 
 
-static void test_bfp_abs_vect_s32()
+static void test_bfp_vect_s32_abs()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -89,10 +89,10 @@ static void test_bfp_abs_vect_s32()
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
         test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
-        bfp_abs_vect_s32(&A, &B);
+        bfp_vect_s32_abs(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, B.length);
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
 
         unsigned cc = (B.hr == 0)  && (!XS3_BFP_ALLOW_SATURATION);
         
@@ -107,7 +107,7 @@ static void test_bfp_abs_vect_s32()
 
 
 
-static void test_bfp_clip_vect_s16()
+static void test_bfp_vect_s16_clip()
 {
     PRINTF("%s...\n", __func__);
 
@@ -136,9 +136,9 @@ static void test_bfp_clip_vect_s16()
 
         exponent_t bound_exp = B.exp + 1;
 
-        bfp_clip_vect_s16(&A, &B, lower, upper, bound_exp);
+        bfp_vect_s16_clip(&A, &B, lower, upper, bound_exp);
 
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
 
         right_shift_t bound_shr = A.exp - bound_exp;
         assert(bound_shr > -16);
@@ -155,7 +155,7 @@ static void test_bfp_clip_vect_s16()
     }
 }
 
-static void test_bfp_clip_vect_s32()
+static void test_bfp_vect_s32_clip()
 {
     PRINTF("%s...\n", __func__);
 
@@ -184,9 +184,9 @@ static void test_bfp_clip_vect_s32()
 
         exponent_t bound_exp = B.exp + 1;
 
-        bfp_clip_vect_s32(&A, &B, lower, upper, bound_exp);
+        bfp_vect_s32_clip(&A, &B, lower, upper, bound_exp);
 
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
 
         right_shift_t bound_shr = A.exp - bound_exp;
         assert(bound_shr > -32);
@@ -205,7 +205,7 @@ static void test_bfp_clip_vect_s32()
 
 
 
-static void test_bfp_rect_vect_s16()
+static void test_bfp_vect_s16_rect()
 {
     PRINTF("%s...\n", __func__);
 
@@ -222,11 +222,11 @@ static void test_bfp_rect_vect_s16()
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
-        bfp_rect_vect_s16(&A, &B);
+        bfp_vect_s16_rect(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, B.length);
         TEST_ASSERT_EQUAL(B.exp, A.exp);
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
 
         for(int i = 0; i < A.length; i++){
             int16_t expected = (B.data[i] < 0)? 0 : B.data[i];
@@ -238,7 +238,7 @@ static void test_bfp_rect_vect_s16()
 
 
 
-static void test_bfp_rect_vect_s32()
+static void test_bfp_vect_s32_rect()
 {
     PRINTF("%s...\n", __func__);
 
@@ -255,11 +255,11 @@ static void test_bfp_rect_vect_s32()
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
         test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
-        bfp_rect_vect_s32(&A, &B);
+        bfp_vect_s32_rect(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, B.length);
         TEST_ASSERT_EQUAL(B.exp, A.exp);
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
 
         for(int i = 0; i < A.length; i++){
             int32_t expected = (B.data[i] < 0)? 0 : B.data[i];
@@ -276,12 +276,12 @@ void test_bfp_abs_clip_rect_vect()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_bfp_abs_vect_s16);
-    RUN_TEST(test_bfp_abs_vect_s32);
+    RUN_TEST(test_bfp_vect_s16_abs);
+    RUN_TEST(test_bfp_vect_s32_abs);
 
-    RUN_TEST(test_bfp_clip_vect_s16);
-    RUN_TEST(test_bfp_clip_vect_s32);
+    RUN_TEST(test_bfp_vect_s16_clip);
+    RUN_TEST(test_bfp_vect_s32_clip);
 
-    RUN_TEST(test_bfp_rect_vect_s16);
-    RUN_TEST(test_bfp_rect_vect_s32);
+    RUN_TEST(test_bfp_vect_s16_rect);
+    RUN_TEST(test_bfp_vect_s32_rect);
 }

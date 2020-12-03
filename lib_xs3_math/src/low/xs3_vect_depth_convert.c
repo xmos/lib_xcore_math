@@ -43,7 +43,7 @@ int32_t xs3_scalar_s16_to_s32(
 
 
 WEAK_FUNC
-void xs3_s32_to_s16(
+void xs3_vect_s32_to_s16(
     int16_t a[],
     const int32_t b[],
     const unsigned length,
@@ -61,7 +61,7 @@ void xs3_s32_to_s16(
 
 
 WEAK_FUNC
-void xs3_s16_to_s32(
+void xs3_vect_s16_to_s32(
     int32_t a[],
     const int16_t b[],
     const unsigned length)

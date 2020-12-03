@@ -8,7 +8,7 @@
 
 
 WEAK_FUNC
-int16_t xs3_max_s16(
+int16_t xs3_vect_s16_max(
     const int16_t b[],
     const unsigned length)
 {
@@ -20,7 +20,7 @@ int16_t xs3_max_s16(
 
 
 WEAK_FUNC
-int32_t xs3_max_s32(
+int32_t xs3_vect_s32_max(
     const int32_t b[],
     const unsigned length)
 {
@@ -33,7 +33,7 @@ int32_t xs3_max_s32(
 
 
 WEAK_FUNC
-int16_t xs3_min_s16(
+int16_t xs3_vect_s16_min(
     const int16_t b[],
     const unsigned length)
 {
@@ -45,7 +45,7 @@ int16_t xs3_min_s16(
 
 
 WEAK_FUNC
-int32_t xs3_min_s32(
+int32_t xs3_vect_s32_min(
     const int32_t b[],
     const unsigned length)
 {
@@ -59,7 +59,7 @@ int32_t xs3_min_s32(
 
 
 WEAK_FUNC
-unsigned xs3_argmax_s16(
+unsigned xs3_vect_s16_argmax(
     const int16_t b[],
     const unsigned length)
 {
@@ -71,7 +71,7 @@ unsigned xs3_argmax_s16(
 }
 
 WEAK_FUNC
-unsigned xs3_argmax_s32(
+unsigned xs3_vect_s32_argmax(
     const int32_t b[],
     const unsigned length)
 {
@@ -83,7 +83,7 @@ unsigned xs3_argmax_s32(
 
 
 WEAK_FUNC
-unsigned xs3_argmin_s16(
+unsigned xs3_vect_s16_argmin(
     const int16_t b[],
     const unsigned length)
 {
@@ -94,7 +94,7 @@ unsigned xs3_argmin_s16(
 }
 
 WEAK_FUNC
-unsigned xs3_argmin_s32(
+unsigned xs3_vect_s32_argmin(
     const int32_t b[],
     const unsigned length)
 {
@@ -109,7 +109,7 @@ unsigned xs3_argmin_s32(
 
 
 WEAK_FUNC
-int32_t xs3_abs_sum_s16(
+int32_t xs3_vect_s16_abs_sum(
     const int16_t b[],
     const unsigned length)
 {
@@ -127,7 +127,7 @@ int32_t xs3_abs_sum_s16(
 
 
 WEAK_FUNC
-int64_t xs3_abs_sum_s32(
+int64_t xs3_vect_s32_abs_sum(
     const int32_t b[],
     const unsigned length)
 {
@@ -140,7 +140,7 @@ int64_t xs3_abs_sum_s32(
 
 
 WEAK_FUNC
-int32_t xs3_energy_s16(
+int32_t xs3_vect_s16_energy(
     const int16_t b[],
     const unsigned length,
     const right_shift_t b_shr)
@@ -156,7 +156,7 @@ int32_t xs3_energy_s16(
 }
 
 WEAK_FUNC
-int64_t xs3_energy_s32(
+int64_t xs3_vect_s32_energy(
     const int32_t b[],
     const unsigned length,
     const right_shift_t b_shr)

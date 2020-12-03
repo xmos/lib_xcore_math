@@ -44,7 +44,7 @@ static char msg_buff[200];
 
 
 
-void test_bfp_complex_mul_vect_complex_s16()
+void test_bfp_vect_complex_s16_complex_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -90,7 +90,7 @@ void test_bfp_complex_mul_vect_complex_s16()
             Af.imag[i] = Bf.real[i] * Cf.imag[i] + Bf.imag[i] * Cf.real[i];
         }
 
-        bfp_complex_mul_vect_complex_s16(&A, &B, &C);
+        bfp_vect_complex_s16_complex_mul(&A, &B, &C);
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
@@ -106,7 +106,7 @@ void test_bfp_complex_mul_vect_complex_s16()
 
 
 
-void test_bfp_complex_mul_vect_complex_s32()
+void test_bfp_vect_complex_s32_complex_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -149,7 +149,7 @@ void test_bfp_complex_mul_vect_complex_s32()
             Af.imag[i] = Bf.real[i] * Cf.imag[i] + Bf.imag[i] * Cf.real[i];
         }
 
-        bfp_complex_mul_vect_complex_s32(&A, &B, &C);
+        bfp_vect_complex_s32_complex_mul(&A, &B, &C);
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, MAX_LEN, A.exp);
 
@@ -166,6 +166,6 @@ void test_bfp_complex_mul_vect_complex_s32()
 void test_bfp_complex_mul_vect_complex()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_mul_vect_complex_s16);
-    RUN_TEST(test_bfp_complex_mul_vect_complex_s32);
+    RUN_TEST(test_bfp_vect_complex_s16_complex_mul);
+    RUN_TEST(test_bfp_vect_complex_s32_complex_mul);
 }

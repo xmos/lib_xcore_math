@@ -58,7 +58,7 @@ static void test_bfp_s32_to_s16_()
         bfp_s32_to_s16(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, A.length);
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
 
         unsigned cc = !XS3_BFP_ALLOW_SATURATION;
         

@@ -83,7 +83,7 @@ const int16_t rot_table16[14][2][16] = {
 /////////////////////////////////////
 
 WEAK_FUNC
-headroom_t xs3_mag_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_mag(
     int16_t a[],
     const int16_t b_real[],
     const int16_t b_imag[],
@@ -126,12 +126,12 @@ headroom_t xs3_mag_vect_complex_s16(
     }
 
 
-    return xs3_headroom_vect_s16(a, length);
+    return xs3_vect_s16_headroom(a, length);
 }
 
 
 WEAK_FUNC
-headroom_t xs3_mag_vect_complex_s32(
+headroom_t xs3_vect_complex_s32_mag(
     int32_t a[],
     const complex_s32_t b[],
     const unsigned length,
@@ -176,7 +176,7 @@ headroom_t xs3_mag_vect_complex_s32(
 
     }
 
-    return xs3_headroom_vect_s32( (int32_t*) a, length);
+    return xs3_vect_s32_headroom( (int32_t*) a, length);
 }
 
 
@@ -185,7 +185,7 @@ headroom_t xs3_mag_vect_complex_s32(
 /////////////////////////////////////
 
 WEAK_FUNC
-headroom_t xs3_squared_mag_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_squared_mag(
     int16_t a[],
     const int16_t b_real[],
     const int16_t b_imag[],
@@ -200,12 +200,12 @@ headroom_t xs3_squared_mag_vect_complex_s16(
         a[k] = SAT(16)(ROUND_SHR(acc, sat));
     }
 
-    return xs3_headroom_vect_s16(a, length);
+    return xs3_vect_s16_headroom(a, length);
 }
 
 
 WEAK_FUNC
-headroom_t xs3_squared_mag_vect_complex_s32(
+headroom_t xs3_vect_complex_s32_squared_mag(
     int32_t a[],
     const complex_s32_t b[],
     const unsigned length,
@@ -225,5 +225,5 @@ headroom_t xs3_squared_mag_vect_complex_s32(
         a[k] = B.re + B.im;
     }
 
-    return xs3_headroom_vect_s32(a, length);
+    return xs3_vect_s32_headroom(a, length);
 }

@@ -6,7 +6,7 @@
 
 /*  
 
-headroom_t xs3_squared_mag_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_squared_mag(
     int16_t a[],
     const int16_t* b_real,
     const int16_t* b_imag,
@@ -24,7 +24,7 @@ headroom_t xs3_squared_mag_vect_complex_s16(
 #define STACK_VEC_TMP   (NSTACKWORDS-8)
 #define STACK_VEC_SAT   (NSTACKWORDS-16)
 
-#define FUNCTION_NAME xs3_squared_mag_vect_complex_s16
+#define FUNCTION_NAME xs3_vect_complex_s16_squared_mag
     
 #define a           r0
 #define b_re        r1

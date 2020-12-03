@@ -40,7 +40,7 @@ static char msg_buff[200];
 
 
 
-static void test_xs3_add_vect_complex_s16()
+static void test_xs3_vect_complex_s16_add()
 {
     PRINTF("%s...\n", __func__);
 
@@ -83,9 +83,9 @@ static void test_xs3_add_vect_complex_s16()
             Af.imag[i] = ldexp(B.imag[i], b_exp) + ldexp(C.imag[i], c_exp);
         }
 
-        headroom_t hr = xs3_add_vect_complex_s16(A.real, A.imag, B.real, B.imag, C.real, C.imag, length, b_shr, c_shr);
+        headroom_t hr = xs3_vect_complex_s16_add(A.real, A.imag, B.real, B.imag, C.real, C.imag, length, b_shr, c_shr);
         
-        TEST_ASSERT_EQUAL( xs3_headroom_vect_complex_s16(A.real, A.imag, length), hr );
+        TEST_ASSERT_EQUAL( xs3_vect_complex_s16_headroom(A.real, A.imag, length), hr );
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, length, a_exp);
 
@@ -105,7 +105,7 @@ static void test_xs3_add_vect_complex_s16()
 
 
 
-static void test_xs3_add_vect_complex_s32()
+static void test_xs3_vect_complex_s32_add()
 {
     PRINTF("%s...\n", __func__);
 
@@ -148,9 +148,9 @@ static void test_xs3_add_vect_complex_s32()
             Af.imag[i] = ldexp(B[i].im, b_exp) + ldexp(C[i].im, c_exp);
         }
 
-        headroom_t hr = xs3_add_vect_complex_s32(&A[0], &B[0], &C[0], length, b_shr, c_shr);
+        headroom_t hr = xs3_vect_complex_s32_add(&A[0], &B[0], &C[0], length, b_shr, c_shr);
         
-        TEST_ASSERT_EQUAL( xs3_headroom_vect_complex_s32(A, length), hr );
+        TEST_ASSERT_EQUAL( xs3_vect_complex_s32_headroom(A, length), hr );
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, length, a_exp);
 
@@ -168,7 +168,7 @@ static void test_xs3_add_vect_complex_s32()
 
 
 
-static void test_xs3_sub_vect_complex_s16()
+static void test_xs3_vect_complex_s16_sub()
 {
     PRINTF("%s...\n", __func__);
 
@@ -211,9 +211,9 @@ static void test_xs3_sub_vect_complex_s16()
             Af.imag[i] = ldexp(B.imag[i], b_exp) - ldexp(C.imag[i], c_exp);
         }
 
-        headroom_t hr = xs3_sub_vect_complex_s16(A.real, A.imag, B.real, B.imag, C.real, C.imag, length, b_shr, c_shr);
+        headroom_t hr = xs3_vect_complex_s16_sub(A.real, A.imag, B.real, B.imag, C.real, C.imag, length, b_shr, c_shr);
         
-        TEST_ASSERT_EQUAL( xs3_headroom_vect_complex_s16(A.real, A.imag, length), hr );
+        TEST_ASSERT_EQUAL( xs3_vect_complex_s16_headroom(A.real, A.imag, length), hr );
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, length, a_exp);
 
@@ -233,7 +233,7 @@ static void test_xs3_sub_vect_complex_s16()
 
 
 
-static void test_xs3_sub_vect_complex_s32()
+static void test_xs3_vect_complex_s32_sub()
 {
     PRINTF("%s...\n", __func__);
 
@@ -276,9 +276,9 @@ static void test_xs3_sub_vect_complex_s32()
             Af.imag[i] = ldexp(B[i].im, b_exp) - ldexp(C[i].im, c_exp);
         }
 
-        headroom_t hr = xs3_sub_vect_complex_s32(&A[0], &B[0], &C[0], length, b_shr, c_shr);
+        headroom_t hr = xs3_vect_complex_s32_sub(&A[0], &B[0], &C[0], length, b_shr, c_shr);
         
-        TEST_ASSERT_EQUAL( xs3_headroom_vect_complex_s32(A, length), hr );
+        TEST_ASSERT_EQUAL( xs3_vect_complex_s32_headroom(A, length), hr );
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, length, a_exp);
 
@@ -300,10 +300,10 @@ void test_xs3_add_sub_vect_complex()
 {
     SET_TEST_FILE();
     
-    RUN_TEST(test_xs3_add_vect_complex_s16);
-    RUN_TEST(test_xs3_add_vect_complex_s32);
+    RUN_TEST(test_xs3_vect_complex_s16_add);
+    RUN_TEST(test_xs3_vect_complex_s32_add);
     
-    RUN_TEST(test_xs3_sub_vect_complex_s16);
-    RUN_TEST(test_xs3_sub_vect_complex_s32);
+    RUN_TEST(test_xs3_vect_complex_s16_sub);
+    RUN_TEST(test_xs3_vect_complex_s32_sub);
 
 }

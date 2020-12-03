@@ -27,7 +27,7 @@ static unsigned seed = 666;
 
 
 
-static void test_bfp_sum_s16()
+static void test_bfp_vect_s16_sum()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -43,7 +43,7 @@ static void test_bfp_sum_s16()
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, NULL, 0);
 
-        int32_t result = bfp_sum_s16(&B);
+        int32_t result = bfp_vect_s16_sum(&B);
 
         int32_t exp = 0;
         for(int i = 0; i < B.length; i++)
@@ -53,7 +53,7 @@ static void test_bfp_sum_s16()
     }
 }
 
-static void test_bfp_sum_s32()
+static void test_bfp_vect_s32_sum()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -69,7 +69,7 @@ static void test_bfp_sum_s32()
 
         test_random_bfp_s32(&B, MAX_LEN, &seed, NULL, 0);
 
-        int64_t result = bfp_sum_s32(&B);
+        int64_t result = bfp_vect_s32_sum(&B);
 
         int64_t exp = 0;
         for(int i = 0; i < B.length; i++)
@@ -85,6 +85,6 @@ static void test_bfp_sum_s32()
 void test_bfp_sum()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_bfp_sum_s16);
-    RUN_TEST(test_bfp_sum_s32);
+    RUN_TEST(test_bfp_vect_s16_sum);
+    RUN_TEST(test_bfp_vect_s32_sum);
 }

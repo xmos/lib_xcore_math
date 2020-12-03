@@ -72,18 +72,18 @@ Example
     #include "xs3_math.h"
 
     void foo(const bfp_s32_t* a, const bfp_s32_t* b){
-        // BFP vector to store result (although bfp_add_vect_s32() can operate in-place))
+        // BFP vector to store result (although bfp_vect_s32_add() can operate in-place))
         bfp_s32_t sum;
 
         // Initialize new BFP vector
-        bfp_init_vect_s32(&sum, 
+        bfp_vect_s32_init(&sum, 
             (int32_t*) malloc(a->length * sizeof(int32_t)), // allocate space for data; assume malloc succeeds()
             0,          // exponent of vector; doesn't matter because it will be over-written
             a->length,  // length of vector (in elements)
             0);         // Do not calculate headroom; doesn't matter because it will be over-written
 
         // Add together the vectors a and b element-wise. Place result in sum.
-        bfp_add_vect_s32(&sum, &a, &b);
+        bfp_vect_s32_add(&sum, &a, &b);
 
         for(int i=0; i<a->length; i++)
             printf("%d:\t%f + %f = %f\n", i, ldexp(a->data[i], a->exp), 

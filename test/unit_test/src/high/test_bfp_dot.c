@@ -30,7 +30,7 @@ static char msg_buff[200];
     }} while(0)
 
 
-static void test_bfp_dot_s16()
+static void test_bfp_vect_s16_dot()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -46,10 +46,10 @@ static void test_bfp_dot_s16()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        bfp_init_vect_s16(&B, dataB, pseudo_rand_int(&seed, -100, 100),
+        bfp_vect_s16_init(&B, dataB, pseudo_rand_int(&seed, -100, 100),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
-        bfp_init_vect_s16(&C, dataC, pseudo_rand_int(&seed, -100, 100), B.length, 0);
+        bfp_vect_s16_init(&C, dataC, pseudo_rand_int(&seed, -100, 100), B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 1, 12);
         C.hr = pseudo_rand_uint(&seed, 1, 12);
@@ -63,8 +63,8 @@ static void test_bfp_dot_s16()
             expected += ldexp(B.data[i], B.exp) * ldexp(C.data[i], C.exp);
         }
 
-        bfp_headroom_vect_s16(&B);
-        bfp_headroom_vect_s16(&C);
+        bfp_vect_s16_headroom(&B);
+        bfp_vect_s16_headroom(&C);
 
         // printf("B.length = %u\n", B.length);
         // printf("B.exp = %d\n", B.exp);
@@ -74,7 +74,7 @@ static void test_bfp_dot_s16()
         // printf("C.hr = %u\n", C.hr);
         
         exponent_t a_exp;
-        int64_t result = bfp_dot_s16(&a_exp, &B, &C);
+        int64_t result = bfp_vect_s16_dot(&a_exp, &B, &C);
 
         double diff = expected-ldexp(result, a_exp);
         double error = fabs(diff/expected);
@@ -91,7 +91,7 @@ static void test_bfp_dot_s16()
 
 
 
-static void test_bfp_dot_s32_A()
+static void test_bfp_vect_s32_dot_A()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -163,7 +163,7 @@ static void test_bfp_dot_s32_A()
 
         exponent_t a_exp;
 
-        int64_t result = bfp_dot_s32(&a_exp, &B, &C);
+        int64_t result = bfp_vect_s32_dot(&a_exp, &B, &C);
 
         right_shift_t shr = a_exp - casse->expected.exp;
 
@@ -178,7 +178,7 @@ static void test_bfp_dot_s32_A()
     } 
 }
 
-static void test_bfp_dot_s32_B()
+static void test_bfp_vect_s32_dot_B()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -194,10 +194,10 @@ static void test_bfp_dot_s32_B()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        bfp_init_vect_s32(&B, dataB, pseudo_rand_int(&seed, -100, 100),
+        bfp_vect_s32_init(&B, dataB, pseudo_rand_int(&seed, -100, 100),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
-        bfp_init_vect_s32(&C, dataC, pseudo_rand_int(&seed, -100, 100), B.length, 0);
+        bfp_vect_s32_init(&C, dataC, pseudo_rand_int(&seed, -100, 100), B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
         C.hr = pseudo_rand_uint(&seed, 0, 28);
@@ -211,11 +211,11 @@ static void test_bfp_dot_s32_B()
             expected += ldexp(B.data[i], B.exp) * ldexp(C.data[i], C.exp);
         }
 
-        bfp_headroom_vect_s32(&B);
-        bfp_headroom_vect_s32(&C);
+        bfp_vect_s32_headroom(&B);
+        bfp_vect_s32_headroom(&C);
         
         exponent_t a_exp;
-        int64_t result = bfp_dot_s32(&a_exp, &B, &C);
+        int64_t result = bfp_vect_s32_dot(&a_exp, &B, &C);
 
         double diff = expected-ldexp(result, a_exp);
         double error = fabs(diff/expected);
@@ -230,7 +230,7 @@ void test_bfp_dot()
 {
     SET_TEST_FILE();
     
-    RUN_TEST(test_bfp_dot_s16);
-    RUN_TEST(test_bfp_dot_s32_A);
-    RUN_TEST(test_bfp_dot_s32_B);
+    RUN_TEST(test_bfp_vect_s16_dot);
+    RUN_TEST(test_bfp_vect_s32_dot_A);
+    RUN_TEST(test_bfp_vect_s32_dot_B);
 }

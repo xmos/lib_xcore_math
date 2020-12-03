@@ -24,7 +24,7 @@
 
 
 
-static void test_bfp_set_vect_s16()
+static void test_bfp_vect_s16_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -44,7 +44,7 @@ static void test_bfp_set_vect_s16()
 
         unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
 
-        bfp_init_vect_s16(&A, data, 0, length, 0);
+        bfp_vect_s16_init(&A, data, 0, length, 0);
 
         exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
 
@@ -52,7 +52,7 @@ static void test_bfp_set_vect_s16()
 
         // PRINTF("\t\t(length, exp, val) = (%u, %d, %d)\n", length, exponent, val);
 
-        bfp_set_vect_s16(&A, val, exponent);
+        bfp_vect_s16_set(&A, val, exponent);
 
         headroom_t exp_hr = HR_S16(val);
 
@@ -67,7 +67,7 @@ static void test_bfp_set_vect_s16()
     }
 }
 
-static void test_bfp_set_vect_s32()
+static void test_bfp_vect_s32_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -87,7 +87,7 @@ static void test_bfp_set_vect_s32()
 
         unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
 
-        bfp_init_vect_s32(&A, data, 0, length, 0);
+        bfp_vect_s32_init(&A, data, 0, length, 0);
 
         exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
 
@@ -95,7 +95,7 @@ static void test_bfp_set_vect_s32()
 
         // PRINTF("\t\t(length, exp, val) = (%u, %d, %d)\n", length, exponent, val);
 
-        bfp_set_vect_s32(&A, val, exponent);
+        bfp_vect_s32_set(&A, val, exponent);
 
         headroom_t exp_hr = HR_S32(val);
 
@@ -112,7 +112,7 @@ static void test_bfp_set_vect_s32()
 
 
 
-static void test_bfp_set_vect_complex_s16()
+static void test_bfp_vect_complex_s16_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -134,14 +134,14 @@ static void test_bfp_set_vect_complex_s16()
 
         unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
 
-        bfp_init_vect_complex_s16(&A, real_data, imag_data, 0, length, 0);
+        bfp_vect_complex_s16_init(&A, real_data, imag_data, 0, length, 0);
 
         exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
 
         val.re = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
         val.im = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
 
-        bfp_set_vect_complex_s16(&A, val, exponent);
+        bfp_vect_complex_s16_set(&A, val, exponent);
 
         headroom_t exp_hr = HR_S16(val.re) < HR_S16(val.im)? 
                             HR_S16(val.re) : HR_S16(val.im);
@@ -163,7 +163,7 @@ static void test_bfp_set_vect_complex_s16()
 
 
 
-static void test_bfp_set_vect_complex_s32()
+static void test_bfp_vect_complex_s32_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -183,14 +183,14 @@ static void test_bfp_set_vect_complex_s32()
 
         unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
 
-        bfp_init_vect_complex_s32(&A, data, 0, length, 0);
+        bfp_vect_complex_s32_init(&A, data, 0, length, 0);
 
         exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
 
         val.re = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
         val.im = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
 
-        bfp_set_vect_complex_s32(&A, val, exponent);
+        bfp_vect_complex_s32_set(&A, val, exponent);
 
         headroom_t exp_hr = HR_S32(val.re) < HR_S32(val.im)? 
                             HR_S32(val.re) : HR_S32(val.im);
@@ -212,7 +212,7 @@ static void test_bfp_set_vect_complex_s32()
 
 
 
-static void test_bfp_set_vect_ch_pair_s16()
+static void test_bfp_vect_ch_pair_s16_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -232,14 +232,14 @@ static void test_bfp_set_vect_ch_pair_s16()
 
         unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
 
-        bfp_init_vect_ch_pair_s16(&A, data, 0, length, 0);
+        bfp_vect_ch_pair_s16_init(&A, data, 0, length, 0);
 
         exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
 
         val.ch_a = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
         val.ch_b = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
 
-        bfp_set_vect_ch_pair_s16(&A, val, exponent);
+        bfp_vect_ch_pair_s16_set(&A, val, exponent);
 
         headroom_t exp_hr = HR_S16(val.ch_a) < HR_S16(val.ch_b)? 
                             HR_S16(val.ch_a) : HR_S16(val.ch_b);
@@ -261,7 +261,7 @@ static void test_bfp_set_vect_ch_pair_s16()
 
 
 
-static void test_bfp_set_vect_ch_pair_s32()
+static void test_bfp_vect_ch_pair_s32_set()
 {
     PRINTF("%s...\n", __func__);
 
@@ -281,14 +281,14 @@ static void test_bfp_set_vect_ch_pair_s32()
 
         unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
 
-        bfp_init_vect_ch_pair_s32(&A, data, 0, length, 0);
+        bfp_vect_ch_pair_s32_init(&A, data, 0, length, 0);
 
         exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
 
         val.ch_a = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
         val.ch_b = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
 
-        bfp_set_vect_ch_pair_s32(&A, val, exponent);
+        bfp_vect_ch_pair_s32_set(&A, val, exponent);
 
         headroom_t exp_hr = HR_S32(val.ch_a) < HR_S32(val.ch_b)? 
                             HR_S32(val.ch_a) : HR_S32(val.ch_b);
@@ -316,10 +316,10 @@ void test_bfp_set_vect()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_bfp_set_vect_s16);
-    RUN_TEST(test_bfp_set_vect_s32);
-    RUN_TEST(test_bfp_set_vect_complex_s16);
-    RUN_TEST(test_bfp_set_vect_complex_s32);
-    RUN_TEST(test_bfp_set_vect_ch_pair_s16);
-    RUN_TEST(test_bfp_set_vect_ch_pair_s32);
+    RUN_TEST(test_bfp_vect_s16_set);
+    RUN_TEST(test_bfp_vect_s32_set);
+    RUN_TEST(test_bfp_vect_complex_s16_set);
+    RUN_TEST(test_bfp_vect_complex_s32_set);
+    RUN_TEST(test_bfp_vect_ch_pair_s16_set);
+    RUN_TEST(test_bfp_vect_ch_pair_s32_set);
 }

@@ -75,7 +75,7 @@ static complex_s32_t mul_complex_s32(
 
 
 #define REPS   IF_QUICK_TEST(100, 1000)
-void test_xs3_mul_vect_complex_s16_calc_params()
+void test_xs3_vect_complex_s16_mul_calc_params()
 {
     PRINTF("%s...\n", __func__);
     seed = 786786;
@@ -94,7 +94,7 @@ void test_xs3_mul_vect_complex_s16_calc_params()
         right_shift_t sat;
 
         // Allow saturation
-        xs3_mul_vect_complex_s16_calc_params(&A_exp, &sat, B_exp, C_exp, B_hr, C_hr, 1);
+        xs3_vect_complex_s16_mul_calc_params(&A_exp, &sat, B_exp, C_exp, B_hr, C_hr, 1);
 
         int32_t B = -0x8000 >> B_hr;
         int32_t C = -0x8000 >> C_hr;
@@ -116,7 +116,7 @@ void test_xs3_mul_vect_complex_s16_calc_params()
         }
 
         // Disallow saturation
-        xs3_mul_vect_complex_s16_calc_params(&A_exp, &sat, B_exp, C_exp, B_hr, C_hr, 0);
+        xs3_vect_complex_s16_mul_calc_params(&A_exp, &sat, B_exp, C_exp, B_hr, C_hr, 0);
 
         if(P <= 0x4000){
             TEST_ASSERT_EQUAL(0, sat);
@@ -139,7 +139,7 @@ void test_xs3_mul_vect_complex_s16_calc_params()
 
 
 
-static void test_xs3_mul_vect_complex_s16_basic()
+static void test_xs3_vect_complex_s16_mul_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -193,13 +193,13 @@ static void test_xs3_mul_vect_complex_s16_basic()
 
             int16_t C[40];
 
-            xs3_set_vect_s16(A.real, 0xCC, len);
-            xs3_set_vect_s16(A.imag, 0xCC, len);
-            xs3_set_vect_s16(B.real, casse->value.b.re, len);
-            xs3_set_vect_s16(B.imag, casse->value.b.im, len);
-            xs3_set_vect_s16(C, casse->value.c, len);
+            xs3_vect_s16_set(A.real, 0xCC, len);
+            xs3_vect_s16_set(A.imag, 0xCC, len);
+            xs3_vect_s16_set(B.real, casse->value.b.re, len);
+            xs3_vect_s16_set(B.imag, casse->value.b.im, len);
+            xs3_vect_s16_set(C, casse->value.c, len);
 
-            hr = xs3_mul_vect_complex_s16(A.real, A.imag, 
+            hr = xs3_vect_complex_s16_mul(A.real, A.imag, 
                                           B.real, B.imag, 
                                           C, len, casse->sat);
 
@@ -208,11 +208,11 @@ static void test_xs3_mul_vect_complex_s16_basic()
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[i], casse->line);
             }
 
-            headroom_t exp_hr = xs3_headroom_vect_complex_s16(A.real, A.imag, len);
+            headroom_t exp_hr = xs3_vect_complex_s16_headroom(A.real, A.imag, len);
             TEST_ASSERT_EQUAL_MSG(exp_hr, hr, casse->line);
 
             memcpy(&A, &B, sizeof(A));
-            hr = xs3_mul_vect_complex_s16(A.real, A.imag,
+            hr = xs3_vect_complex_s16_mul(A.real, A.imag,
                                           A.real, A.imag,
                                           C, len, casse->sat);
 
@@ -221,7 +221,7 @@ static void test_xs3_mul_vect_complex_s16_basic()
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[i], casse->line);
             }
 
-            exp_hr = xs3_headroom_vect_complex_s16(A.real, A.imag, len);
+            exp_hr = xs3_vect_complex_s16_headroom(A.real, A.imag, len);
             TEST_ASSERT_EQUAL_MSG(exp_hr, hr, casse->line);
         }
     }
@@ -232,7 +232,7 @@ static void test_xs3_mul_vect_complex_s16_basic()
 
 #define MAX_LEN     100
 #define REPS        IF_QUICK_TEST(20, 100)
-static void test_xs3_mul_vect_complex_s16_random()
+static void test_xs3_vect_complex_s16_mul_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 0xAD04D98D;
@@ -261,7 +261,7 @@ static void test_xs3_mul_vect_complex_s16_random()
 
         int sat = (pseudo_rand_uint32(&seed) % 10);
         
-        hr = xs3_mul_vect_complex_s16(A.real, A.imag, 
+        hr = xs3_vect_complex_s16_mul(A.real, A.imag, 
                                       B.real, B.imag, 
                                       C, len, sat);
 
@@ -274,10 +274,10 @@ static void test_xs3_mul_vect_complex_s16_random()
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
         }
 
-        TEST_ASSERT_EQUAL_MSG( xs3_headroom_vect_complex_s16(A.real,A.imag,len),  hr, v);
+        TEST_ASSERT_EQUAL_MSG( xs3_vect_complex_s16_headroom(A.real,A.imag,len),  hr, v);
         
         memcpy(&A, &B, sizeof(A));
-        hr = xs3_mul_vect_complex_s16(A.real, A.imag, 
+        hr = xs3_vect_complex_s16_mul(A.real, A.imag, 
                                       A.real, A.imag, 
                                       C, len, sat);
 
@@ -287,7 +287,7 @@ static void test_xs3_mul_vect_complex_s16_random()
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
         }
 
-        TEST_ASSERT_EQUAL_MSG( xs3_headroom_vect_complex_s16(A.real,A.imag,len),  hr, v);
+        TEST_ASSERT_EQUAL_MSG( xs3_vect_complex_s16_headroom(A.real,A.imag,len),  hr, v);
     }
 }
 #undef MAX_LEN
@@ -302,7 +302,7 @@ static void test_xs3_mul_vect_complex_s16_random()
 
 
 
-static void test_xs3_mul_vect_complex_s32_basic()
+static void test_xs3_vect_complex_s32_mul_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -357,29 +357,29 @@ static void test_xs3_mul_vect_complex_s32_basic()
             complex_s32_t B[40];
             int32_t C[40];
 
-            xs3_set_vect_complex_s32(A, 0xCC, 0xCC, len);
-            xs3_set_vect_complex_s32(B, casse->value.b.re, casse->value.b.im, len);
-            xs3_set_vect_s32(C, casse->value.c, len);
+            xs3_vect_complex_s32_set(A, 0xCC, 0xCC, len);
+            xs3_vect_complex_s32_set(B, casse->value.b.re, casse->value.b.im, len);
+            xs3_vect_s32_set(C, casse->value.c, len);
 
-            hr = xs3_mul_vect_complex_s32(A, B, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_complex_s32_mul(A, B, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[i].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[i].im, casse->line);
             }
 
-            headroom_t exp_hr = xs3_headroom_vect_complex_s32(A, len);
+            headroom_t exp_hr = xs3_vect_complex_s32_headroom(A, len);
             TEST_ASSERT_EQUAL_MSG(exp_hr, hr, casse->line);
 
             memcpy(&A, &B, sizeof(A));
-            hr = xs3_mul_vect_complex_s32(A, A, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_complex_s32_mul(A, A, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[i].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[i].im, casse->line);
             }
 
-            exp_hr = xs3_headroom_vect_complex_s32(A, len);
+            exp_hr = xs3_vect_complex_s32_headroom(A, len);
             TEST_ASSERT_EQUAL_MSG(exp_hr, hr, casse->line);
         }
     }
@@ -392,7 +392,7 @@ static void test_xs3_mul_vect_complex_s32_basic()
 
 #define MAX_LEN     100
 #define REPS        IF_QUICK_TEST(20, 100)
-static void test_xs3_mul_vect_complex_s32_random()
+static void test_xs3_vect_complex_s32_mul_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 0xAD04D98D;
@@ -419,24 +419,24 @@ static void test_xs3_mul_vect_complex_s32_random()
         int b_shr = (pseudo_rand_uint32(&seed) % 10);
         int c_shr = (pseudo_rand_uint32(&seed) % 10);
         
-        hr = xs3_mul_vect_complex_s32(A, B, C, len, b_shr, c_shr);
+        hr = xs3_vect_complex_s32_mul(A, B, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_s32(B[i], C[i], b_shr, c_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
         }
-        TEST_ASSERT_EQUAL_MSG(  xs3_headroom_vect_complex_s32(A, len),  hr, v);
+        TEST_ASSERT_EQUAL_MSG(  xs3_vect_complex_s32_headroom(A, len),  hr, v);
         
         memcpy(&A, &B, sizeof(A));
-        hr = xs3_mul_vect_complex_s32(A, A, C, len, b_shr, c_shr);
+        hr = xs3_vect_complex_s32_mul(A, A, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_s32(B[i], C[i], b_shr, c_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
         }
-        TEST_ASSERT_EQUAL_MSG(  xs3_headroom_vect_complex_s32(A, len),  hr, v);
+        TEST_ASSERT_EQUAL_MSG(  xs3_vect_complex_s32_headroom(A, len),  hr, v);
     }
 }
 #undef MAX_LEN
@@ -447,11 +447,11 @@ static void test_xs3_mul_vect_complex_s32_random()
 void test_xs3_mul_vect_complex()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_xs3_mul_vect_complex_s16_calc_params);
+    RUN_TEST(test_xs3_vect_complex_s16_mul_calc_params);
 
-    RUN_TEST(test_xs3_mul_vect_complex_s16_basic);
-    RUN_TEST(test_xs3_mul_vect_complex_s16_random);
+    RUN_TEST(test_xs3_vect_complex_s16_mul_basic);
+    RUN_TEST(test_xs3_vect_complex_s16_mul_random);
 
-    RUN_TEST(test_xs3_mul_vect_complex_s32_basic);
-    RUN_TEST(test_xs3_mul_vect_complex_s32_random);
+    RUN_TEST(test_xs3_vect_complex_s32_mul_basic);
+    RUN_TEST(test_xs3_vect_complex_s32_mul_random);
 }

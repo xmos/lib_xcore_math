@@ -24,7 +24,7 @@
 static unsigned seed = 666;
 
 
-static void test_bfp_abs_sum_s16()
+static void test_bfp_vect_s16_abs_sum()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -46,9 +46,9 @@ static void test_bfp_abs_sum_s16()
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
         }
 
-        bfp_headroom_vect_s16(&B);
+        bfp_vect_s16_headroom(&B);
 
-        int32_t result = bfp_abs_sum_s16(&B);
+        int32_t result = bfp_vect_s16_abs_sum(&B);
 
         int32_t exp = 0;
         for(int i = 0; i < B.length; i++)
@@ -58,7 +58,7 @@ static void test_bfp_abs_sum_s16()
     }
 }
 
-static void test_bfp_abs_sum_s32()
+static void test_bfp_vect_s32_abs_sum()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -84,9 +84,9 @@ static void test_bfp_abs_sum_s32()
             sum += abs( B.data[i] );
         }
 
-        bfp_headroom_vect_s32(&B);
+        bfp_vect_s32_headroom(&B);
 
-        int64_t result = bfp_abs_sum_s32(&B);
+        int64_t result = bfp_vect_s32_abs_sum(&B);
 
         TEST_ASSERT_EQUAL(sum, result);
     }
@@ -98,6 +98,6 @@ static void test_bfp_abs_sum_s32()
 void test_bfp_abs_sum()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_bfp_abs_sum_s16);
-    RUN_TEST(test_bfp_abs_sum_s32);
+    RUN_TEST(test_bfp_vect_s16_abs_sum);
+    RUN_TEST(test_bfp_vect_s32_abs_sum);
 }

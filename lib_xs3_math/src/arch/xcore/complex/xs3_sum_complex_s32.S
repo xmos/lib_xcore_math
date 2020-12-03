@@ -85,7 +85,7 @@ FUNCTION_NAME:
 #define tmp_re      r6
 #define tmp_im      r7
 
-// astew [2020-10-16]: There's probably a faster way to do this. See the VPU-based solution I found for xs3_sum_s32 for
+// astew [2020-10-16]: There's probably a faster way to do this. See the VPU-based solution I found for xs3_vect_s32_sum for
 //                     non-complex values
 
 .L_get_res:

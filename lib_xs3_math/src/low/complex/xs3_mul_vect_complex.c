@@ -12,7 +12,7 @@
 
 // complex vector multiplied by real vector
 WEAK_FUNC
-headroom_t xs3_mul_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_mul(
     int16_t a_real[],
     int16_t a_imag[],
     const int16_t b_real[],
@@ -38,13 +38,13 @@ headroom_t xs3_mul_vect_complex_s16(
         a_imag[k] = SAT(16)(P.im);
     }
 
-    return xs3_headroom_vect_complex_s16(a_real, a_imag, length);
+    return xs3_vect_complex_s16_headroom(a_real, a_imag, length);
 }
 
 
 // complex vector multiplied by complex vector
 WEAK_FUNC
-headroom_t xs3_complex_mul_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_complex_mul(
     int16_t a_real[],
     int16_t a_imag[],
     const int16_t b_real[],
@@ -71,13 +71,13 @@ headroom_t xs3_complex_mul_vect_complex_s16(
         a_imag[k] = SAT(16)(P.im);
     }
 
-    return xs3_headroom_vect_complex_s16(a_real, a_imag, length);
+    return xs3_vect_complex_s16_headroom(a_real, a_imag, length);
 }
 
 
 // complex vector (conjugate) multiplied by complex vector
 WEAK_FUNC
-headroom_t xs3_complex_conj_mul_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_complex_conj_mul(
     int16_t a_real[],
     int16_t a_imag[],
     const int16_t b_real[],
@@ -104,13 +104,13 @@ headroom_t xs3_complex_conj_mul_vect_complex_s16(
         a_imag[k] = SAT(16)(P.im);
     }
 
-    return xs3_headroom_vect_complex_s16(a_real, a_imag, length);
+    return xs3_vect_complex_s16_headroom(a_real, a_imag, length);
 }
 
 
 // complex vector multiplied by complex vector
 WEAK_FUNC
-headroom_t xs3_complex_scal_mul_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_complex_scal_mul(
     int16_t a_real[],
     int16_t a_imag[],
     const int16_t b_real[],
@@ -137,7 +137,7 @@ headroom_t xs3_complex_scal_mul_vect_complex_s16(
         a_imag[k] = SAT(16)(P.im);
     }
 
-    return xs3_headroom_vect_complex_s16(a_real, a_imag, length);
+    return xs3_vect_complex_s16_headroom(a_real, a_imag, length);
 }
 
 
@@ -153,7 +153,7 @@ headroom_t xs3_complex_scal_mul_vect_complex_s16(
 
 // complex vector multiplied by real vector
 WEAK_FUNC
-headroom_t xs3_mul_vect_complex_s32(
+headroom_t xs3_vect_complex_s32_mul(
     complex_s32_t a[],
     const complex_s32_t b[],
     const int32_t c[],
@@ -175,13 +175,13 @@ headroom_t xs3_mul_vect_complex_s32(
     }
 
 
-    return xs3_headroom_vect_complex_s32(a, length);
+    return xs3_vect_complex_s32_headroom(a, length);
 }
 
 
 // complex vector multiplied by complex vector
 WEAK_FUNC
-headroom_t xs3_complex_mul_vect_complex_s32(
+headroom_t xs3_vect_complex_s32_complex_mul(
     complex_s32_t a[],
     const complex_s32_t b[],
     const complex_s32_t c[],
@@ -209,13 +209,13 @@ headroom_t xs3_complex_mul_vect_complex_s32(
         a[k].im = SAT(32)(q3 + q4);
     }
 
-    return xs3_headroom_vect_complex_s32(a, length);
+    return xs3_vect_complex_s32_headroom(a, length);
 }
 
 
 // complex vector (conjugate) multiplied by complex vector
 WEAK_FUNC
-headroom_t xs3_complex_conj_mul_vect_complex_s32(
+headroom_t xs3_vect_complex_s32_complex_conj_mul(
     complex_s32_t a[],
     const complex_s32_t b[],
     const complex_s32_t c[],
@@ -244,14 +244,14 @@ headroom_t xs3_complex_conj_mul_vect_complex_s32(
         a[k].im = SAT(32)(q4 - q3);
     }
 
-    return xs3_headroom_vect_complex_s32(a, length);
+    return xs3_vect_complex_s32_headroom(a, length);
 }
 
 
 
 // complex vector multiplied by complex scalar
 WEAK_FUNC
-headroom_t xs3_complex_scal_mul_vect_complex_s32(
+headroom_t xs3_vect_complex_s32_complex_scal_mul(
     complex_s32_t a[],
     const complex_s32_t b[],
     const int32_t c_real,
@@ -274,7 +274,7 @@ headroom_t xs3_complex_scal_mul_vect_complex_s32(
         a[k].im = SAT(32)(q3 + q4);
     }
 
-    return xs3_headroom_vect_complex_s32(a, length);
+    return xs3_vect_complex_s32_headroom(a, length);
 }
 
 

@@ -6,7 +6,7 @@
 
 /*  
 
-headroom_t xs3_complex_conj_mul_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_complex_conj_mul(
     int16_t* a_real,
     int16_t* a_imag,
     const int16_t* b_real,
@@ -18,7 +18,7 @@ headroom_t xs3_complex_conj_mul_vect_complex_s16(
 
 */
 
-#define FUNCTION_NAME xs3_complex_conj_mul_vect_complex_s16
+#define FUNCTION_NAME xs3_vect_complex_s16_complex_conj_mul
 
 #define NSTACKVECS      (2)
 #define NSTACKWORDS     (12+8*(NSTACKVECS))

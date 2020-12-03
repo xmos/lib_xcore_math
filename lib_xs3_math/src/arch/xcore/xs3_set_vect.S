@@ -19,38 +19,38 @@
 
 
 /*  
-void xs3_set_vect_s16(
+void xs3_vect_s16_set(
     int16_t data[],
     const int16_t value,
     const unsigned length);
 */
-.cc_top xs3_set_vect_s16.function,xs3_set_vect_s16
-xs3_set_vect_s16:
+.cc_top xs3_vect_s16_set.function,xs3_vect_s16_set
+xs3_vect_s16_set:
         dualentsp NSTACKWORDS
     {   shl r11, value, 16                      ;   shl r3, length, SIZEOF_LOG2_S16     }
     {   zext value, 16                          ;   zext r3, 5                          }
     {   or r11, r11, value                      ;   shr length, length, EPV_LOG2_S16    }
     {   mov value, r11                          ;   bu .L_set_bytes                     }
-.cc_bottom xs3_set_vect_s16.function
-.L_size_end_xs3_set_vect_s16: 
-    .size xs3_set_vect_s16, .L_size_end_xs3_set_vect_s16 - xs3_set_vect_s16
+.cc_bottom xs3_vect_s16_set.function
+.L_size_end_xs3_vect_s16_set: 
+    .size xs3_vect_s16_set, .L_size_end_xs3_vect_s16_set - xs3_vect_s16_set
 
 
 /*  
-void xs3_set_vect_s32(
+void xs3_vect_s32_set(
     int32_t data[],
     const int32_t value,
     const unsigned length);
 */
-.cc_top xs3_set_vect_s32.function,xs3_set_vect_s32
-xs3_set_vect_s32:
+.cc_top xs3_vect_s32_set.function,xs3_vect_s32_set
+xs3_vect_s32_set:
         dualentsp NSTACKWORDS
     {   mov r11, value                          ;   shl r3, length, SIZEOF_LOG2_S32     }
     {   zext r3, 5                              ;   shr length, length, EPV_LOG2_S32    }
     {                                           ;   bu .L_set_bytes                     }
-.cc_bottom xs3_set_vect_s32.function
-.L_size_end_xs3_set_vect_s32: 
-    .size xs3_set_vect_s32, .L_size_end_xs3_set_vect_s32 - xs3_set_vect_s32
+.cc_bottom xs3_vect_s32_set.function
+.L_size_end_xs3_vect_s32_set: 
+    .size xs3_vect_s32_set, .L_size_end_xs3_vect_s32_set - xs3_vect_s32_set
 
 #undef value
 #undef length
@@ -59,21 +59,21 @@ xs3_set_vect_s32:
 #define length r3
 
 /*  
-void xs3_set_vect_complex_s32(
+void xs3_vect_complex_s32_set(
     complex_s32_t data[],
     const int32_t real_part,
     const int32_t imag_part,
     const unsigned length);
 */
-.cc_top xs3_set_vect_complex_s32.function,xs3_set_vect_complex_s32
-xs3_set_vect_complex_s32:
+.cc_top xs3_vect_complex_s32_set.function,xs3_vect_complex_s32_set
+xs3_vect_complex_s32_set:
         dualentsp NSTACKWORDS
     {   mov r11, imag                           ;   shl r3, length, SIZEOF_LOG2_C32     }
     {   shr r2, length, 5                       ;   zext r3, 5                          }
     {                                           ;   bu .L_set_bytes                     }
-.cc_bottom xs3_set_vect_complex_s32.function
-.L_size_end_xs3_set_vect_complex_s32: 
-    .size xs3_set_vect_complex_s32, .L_size_end_xs3_set_vect_complex_s32 - xs3_set_vect_complex_s32
+.cc_bottom xs3_vect_complex_s32_set.function
+.L_size_end_xs3_vect_complex_s32_set: 
+    .size xs3_vect_complex_s32_set, .L_size_end_xs3_vect_complex_s32_set - xs3_vect_complex_s32_set
 
 
 
@@ -114,26 +114,26 @@ xs3_set_vect_complex_s32:
 
 
 
-.globl xs3_set_vect_s16
-.type xs3_set_vect_s16,@function
-.set xs3_set_vect_s16.nstackwords,NSTACKWORDS;  .global xs3_set_vect_s16.nstackwords; 
-.set xs3_set_vect_s16.maxcores,1;               .global xs3_set_vect_s16.maxcores; 
-.set xs3_set_vect_s16.maxtimers,0;              .global xs3_set_vect_s16.maxtimers; 
-.set xs3_set_vect_s16.maxchanends,0;            .global xs3_set_vect_s16.maxchanends; 
+.globl xs3_vect_s16_set
+.type xs3_vect_s16_set,@function
+.set xs3_vect_s16_set.nstackwords,NSTACKWORDS;  .global xs3_vect_s16_set.nstackwords; 
+.set xs3_vect_s16_set.maxcores,1;               .global xs3_vect_s16_set.maxcores; 
+.set xs3_vect_s16_set.maxtimers,0;              .global xs3_vect_s16_set.maxtimers; 
+.set xs3_vect_s16_set.maxchanends,0;            .global xs3_vect_s16_set.maxchanends; 
 
-.globl xs3_set_vect_s32
-.type xs3_set_vect_s32,@function
-.set xs3_set_vect_s32.nstackwords,NSTACKWORDS;  .global xs3_set_vect_s32.nstackwords; 
-.set xs3_set_vect_s32.maxcores,1;               .global xs3_set_vect_s32.maxcores; 
-.set xs3_set_vect_s32.maxtimers,0;              .global xs3_set_vect_s32.maxtimers; 
-.set xs3_set_vect_s32.maxchanends,0;            .global xs3_set_vect_s32.maxchanends; 
+.globl xs3_vect_s32_set
+.type xs3_vect_s32_set,@function
+.set xs3_vect_s32_set.nstackwords,NSTACKWORDS;  .global xs3_vect_s32_set.nstackwords; 
+.set xs3_vect_s32_set.maxcores,1;               .global xs3_vect_s32_set.maxcores; 
+.set xs3_vect_s32_set.maxtimers,0;              .global xs3_vect_s32_set.maxtimers; 
+.set xs3_vect_s32_set.maxchanends,0;            .global xs3_vect_s32_set.maxchanends; 
 
-.globl xs3_set_vect_complex_s32
-.type xs3_set_vect_complex_s32,@function
-.set xs3_set_vect_complex_s32.nstackwords,NSTACKWORDS;  .global xs3_set_vect_complex_s32.nstackwords; 
-.set xs3_set_vect_complex_s32.maxcores,1;               .global xs3_set_vect_complex_s32.maxcores; 
-.set xs3_set_vect_complex_s32.maxtimers,0;              .global xs3_set_vect_complex_s32.maxtimers; 
-.set xs3_set_vect_complex_s32.maxchanends,0;            .global xs3_set_vect_complex_s32.maxchanends; 
+.globl xs3_vect_complex_s32_set
+.type xs3_vect_complex_s32_set,@function
+.set xs3_vect_complex_s32_set.nstackwords,NSTACKWORDS;  .global xs3_vect_complex_s32_set.nstackwords; 
+.set xs3_vect_complex_s32_set.maxcores,1;               .global xs3_vect_complex_s32_set.maxcores; 
+.set xs3_vect_complex_s32_set.maxtimers,0;              .global xs3_vect_complex_s32_set.maxtimers; 
+.set xs3_vect_complex_s32_set.maxchanends,0;            .global xs3_vect_complex_s32_set.maxchanends; 
 
 #endif //!defined(XS3_MATH_NO_ASM)
 #endif //defined(__XS3A__)

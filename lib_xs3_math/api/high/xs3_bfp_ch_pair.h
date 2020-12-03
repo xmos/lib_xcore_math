@@ -9,31 +9,6 @@
 extern "C" {
 #endif
 
-/** Count the leading sign bits of a 16-bit channel pair.
- * 
- * The leading sign bits of a channel pair is the lesser of the leading sign
- * bits among its two channels.
- *
- * \param a    Input channel pair 
- * 
- * \returns    Number of leading sign bits of ``a``. 
- */
-headroom_t xs3_headroom_ch_pair_s16(
-    const ch_pair_s16_t a);
-
-
-/** Count the leading sign bits of a 32-bit channel pair.
- * 
- * The leading sign bits of a channel pair is the lesser of the leading sign
- * bits among its two channels.
- *
- * \param a    Input channel pair 
- * 
- * \returns    Number of leading sign bits of ``a``. 
- */
-headroom_t xs3_headroom_ch_pair_s32(
-    const ch_pair_s32_t a);
-
 
 
 /** Count the leading sign bits of a 16-bit channel pair BFP vector.
@@ -45,7 +20,7 @@ headroom_t xs3_headroom_ch_pair_s32(
  * 
  * \returns    Number of leading sign bits of ``a``. 
  */
-headroom_t bfp_headroom_vect_ch_pair_s16(
+headroom_t bfp_vect_ch_pair_s16_headroom(
     bfp_ch_pair_s16_t* a);
 
 /** Count the leading sign bits of a 32-bit channel pair BFP vector.
@@ -57,7 +32,7 @@ headroom_t bfp_headroom_vect_ch_pair_s16(
  * 
  * \returns    Number of leading sign bits of ``a``. 
  */
-headroom_t bfp_headroom_vect_ch_pair_s32(
+headroom_t bfp_vect_ch_pair_s32_headroom(
     bfp_ch_pair_s32_t* a);
 
     
@@ -79,7 +54,7 @@ headroom_t bfp_headroom_vect_ch_pair_s32(
  * \param b     Input BFP vector
  * \param shl   Number of bits to left shift
  */
-void bfp_shl_vect_ch_pair_s16(
+void bfp_vect_ch_pair_s16_shl(
     bfp_ch_pair_s16_t* a,
     const bfp_ch_pair_s16_t* b,
     const left_shift_t shl);
@@ -102,7 +77,7 @@ void bfp_shl_vect_ch_pair_s16(
  * \param b     Input BFP vector
  * \param shl   Number of bits to left shift
  */
-void bfp_shl_vect_ch_pair_s32(
+void bfp_vect_ch_pair_s32_shl(
     bfp_ch_pair_s32_t* a,
     const bfp_ch_pair_s32_t* b,
     const left_shift_t shl);

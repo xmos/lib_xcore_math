@@ -24,7 +24,7 @@
 static unsigned seed = 666;
 
 
-static void test_bfp_energy_s16()
+static void test_bfp_vect_s16_energy()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -50,11 +50,11 @@ static void test_bfp_energy_s16()
             sum64 += ((int32_t)B.data[i]) * B.data[i];
         }
 
-        bfp_headroom_vect_s16(&B);
+        bfp_vect_s16_headroom(&B);
 
         exponent_t a_exp;
 
-        int64_t result = bfp_energy_s16(&a_exp, &B);
+        int64_t result = bfp_vect_s16_energy(&a_exp, &B);
 
         double expf = ldexp(sum64, 2*B.exp);
         double resf = ldexp(result, a_exp);
@@ -65,7 +65,7 @@ static void test_bfp_energy_s16()
 
 
 
-static void test_bfp_energy_s32_B()
+static void test_bfp_vect_s32_energy_B()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -79,7 +79,7 @@ static void test_bfp_energy_s32_B()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        bfp_init_vect_s32(&B, dataB, pseudo_rand_int(&seed, -5, 5),
+        bfp_vect_s32_init(&B, dataB, pseudo_rand_int(&seed, -5, 5),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
@@ -92,10 +92,10 @@ static void test_bfp_energy_s32_B()
             expected += pow(ldexp(B.data[i], B.exp), 2);
         }
 
-        bfp_headroom_vect_s32(&B);
+        bfp_vect_s32_headroom(&B);
         
         exponent_t a_exp;
-        int64_t result = bfp_energy_s32(&a_exp, &B);
+        int64_t result = bfp_vect_s32_energy(&a_exp, &B);
 
         double diff = expected-ldexp(result, a_exp);
         double error = fabs(diff/expected);
@@ -112,6 +112,6 @@ static void test_bfp_energy_s32_B()
 void test_bfp_energy()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_bfp_energy_s16);
-    RUN_TEST(test_bfp_energy_s32_B);
+    RUN_TEST(test_bfp_vect_s16_energy);
+    RUN_TEST(test_bfp_vect_s32_energy_B);
 }

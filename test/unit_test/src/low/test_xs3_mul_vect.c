@@ -108,7 +108,7 @@ static int32_t scalar_mul_s32(int32_t b, int32_t alpha, int b_shr)
 
 
 
-static void test_xs3_mul_vect_s16_calc_params()
+static void test_xs3_vect_s16_mul_calc_params()
 {
     PRINTF("%s...\n", __func__);
 
@@ -125,14 +125,14 @@ static void test_xs3_mul_vect_s16_calc_params()
         exponent_t a_exp;
         right_shift_t a_shr;
 
-        xs3_mul_vect_s16_calc_params(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_s16_mul_calc_params(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr);
 
         // a_exp and a_shr should be calculated for exactly this case
         int16_t WORD_ALIGNED B = (-0x8000) >> b_hr;
         int16_t WORD_ALIGNED C = (-0x8000) >> c_hr;
         int16_t WORD_ALIGNED A;
 
-        xs3_mul_vect_s16(&A, &B, &C, 1, a_shr);
+        xs3_vect_s16_mul(&A, &B, &C, 1, a_shr);
 
         double q = ldexp(B, b_exp) * ldexp(C, c_exp);
         double p = ldexp(A, a_exp);
@@ -146,7 +146,7 @@ static void test_xs3_mul_vect_s16_calc_params()
 
 
 
-static void test_xs3_mul_vect_s32_calc_params()
+static void test_xs3_vect_s32_mul_calc_params()
 {
     PRINTF("%s...\n", __func__);
 
@@ -163,7 +163,7 @@ static void test_xs3_mul_vect_s32_calc_params()
         exponent_t a_exp;
         right_shift_t b_shr, c_shr;
 
-        xs3_mul_vect_s32_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_s32_mul_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         // a_exp and a_shr should be calculated for exactly this case
         int32_t WORD_ALIGNED B = -0x80000000;
@@ -172,7 +172,7 @@ static void test_xs3_mul_vect_s32_calc_params()
         C = C >> c_hr;
         int32_t WORD_ALIGNED A;
 
-        xs3_mul_vect_s32(&A, &B, &C, 1, b_shr, c_shr);
+        xs3_vect_s32_mul(&A, &B, &C, 1, b_shr, c_shr);
 
         double q = ldexp(B, b_exp) * ldexp(C, c_exp);
         double p = ldexp(A, a_exp);
@@ -189,7 +189,7 @@ static void test_xs3_mul_vect_s32_calc_params()
 
 
 
-static void test_xs3_scalar_mul_vect_s16_calc_params()
+static void test_xs3_vect_s16_scalar_mul_calc_params()
 {
     PRINTF("%s...\n", __func__);
 
@@ -214,9 +214,9 @@ static void test_xs3_scalar_mul_vect_s16_calc_params()
             exponent_t a_exp;
             right_shift_t sat, c_shr;
 
-            xs3_scalar_mul_vect_s16_calc_params(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
+            xs3_vect_s16_scalar_mul_calc_params(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
 
-            xs3_scalar_mul_vect_complex_s16(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
+            xs3_vect_complex_s16_scalar_mul(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
 
             const int32_t p = ((int32_t)B_re) * C;
             int16_t expected = p;
@@ -249,7 +249,7 @@ static void test_xs3_scalar_mul_vect_s16_calc_params()
 
 
 
-static void test_xs3_mul_vect_s16_basic()
+static void test_xs3_vect_s16_mul_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -306,27 +306,27 @@ static void test_xs3_mul_vect_s16_basic()
                 C[i] = casse->value.c;
             }
 
-            hr = xs3_mul_vect_s16(A, B, C, len, casse->a_shr);
+            hr = xs3_vect_s16_mul(A, B, C, len, casse->a_shr);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_mul_vect_s16(A, A, C, len, casse->a_shr);
+            hr = xs3_vect_s16_mul(A, A, C, len, casse->a_shr);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, C, sizeof(A));
-            hr = xs3_mul_vect_s16(A, B, A, len, casse->a_shr);
+            hr = xs3_vect_s16_mul(A, B, A, len, casse->a_shr);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
 
         }
@@ -338,7 +338,7 @@ static void test_xs3_mul_vect_s16_basic()
 
 
 
-static void test_xs3_mul_vect_s16_random()
+static void test_xs3_vect_s16_mul_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 456354333;
@@ -362,31 +362,31 @@ static void test_xs3_mul_vect_s16_random()
 
         int a_shr = (pseudo_rand_uint32(&seed) % 5);
         
-        hr = xs3_mul_vect_s16(A, B, C, len, a_shr);
+        hr = xs3_vect_s16_mul(A, B, C, len, a_shr);
 
         for(int i = 0; i < len; i++){
             int16_t expected = mul_s16(B[i], C[i], a_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_mul_vect_s16(A, A, C, len, a_shr);
+        hr = xs3_vect_s16_mul(A, A, C, len, a_shr);
 
         for(int i = 0; i < len; i++){
             int16_t expected = mul_s16(B[i], C[i], a_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
         memcpy(A, C, sizeof(A[0])*len);
-        hr = xs3_mul_vect_s16(A, B, A, len, a_shr);
+        hr = xs3_vect_s16_mul(A, B, A, len, a_shr);
 
         for(int i = 0; i < len; i++){
             int16_t expected = mul_s16(B[i], C[i], a_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
     }
 }
@@ -396,7 +396,7 @@ static void test_xs3_mul_vect_s16_random()
 
 
 
-static void test_xs3_mul_vect_s32_basic()
+static void test_xs3_vect_s32_mul_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -470,27 +470,27 @@ static void test_xs3_mul_vect_s32_basic()
                 C[i] = casse->value.c;
             }
 
-            hr = xs3_mul_vect_s32(A, B, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s32_mul(A, B, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_mul_vect_s32(A, A, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s32_mul(A, A, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, C, sizeof(A));
-            hr = xs3_mul_vect_s32(A, B, A, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_s32_mul(A, B, A, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
         }
     }
@@ -500,7 +500,7 @@ static void test_xs3_mul_vect_s32_basic()
 
 
 
-static void test_xs3_mul_vect_s32_random()
+static void test_xs3_vect_s32_mul_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 67456;
@@ -527,41 +527,41 @@ static void test_xs3_mul_vect_s32_random()
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) * (%ld >> %d)) >> 30     (A[i]=0x%08X; B[i]=0x%08X; C[i]=0x%08X)";
 
-        hr = xs3_mul_vect_s32(A, B, C, len, b_shr, c_shr);
+        hr = xs3_vect_s32_mul(A, B, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = mul_s32(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i], (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_mul_vect_s32(A, A, C, len, b_shr, c_shr);
+        hr = xs3_vect_s32_mul(A, A, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = mul_s32(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
         memcpy(A, C, sizeof(A[0])*len);
-        hr = xs3_mul_vect_s32(A, B, A, len, b_shr, c_shr);
+        hr = xs3_vect_s32_mul(A, B, A, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = mul_s32(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
     }
 }
 
 
 
-static void test_xs3_scalar_mul_vect_s16_basic()
+static void test_xs3_vect_s16_scalar_mul_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -635,19 +635,19 @@ static void test_xs3_scalar_mul_vect_s16_basic()
             }
 
 
-            hr = xs3_scalar_mul_vect_s16(A, B, len, casse->value.alpha, casse->sat);
+            hr = xs3_vect_s16_scalar_mul(A, B, len, casse->value.alpha, casse->sat);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_scalar_mul_vect_s16(A, A, len, casse->value.alpha, casse->sat);
+            hr = xs3_vect_s16_scalar_mul(A, A, len, casse->value.alpha, casse->sat);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom(A, len), hr, casse->line);
             }
         }
     }
@@ -657,7 +657,7 @@ static void test_xs3_scalar_mul_vect_s16_basic()
 
 
 
-static void test_xs3_scalar_mul_vect_s16_random()
+static void test_xs3_vect_s16_scalar_mul_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 0x091C2511;
@@ -684,24 +684,24 @@ static void test_xs3_scalar_mul_vect_s16_random()
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %d <-- ((%d >> %d) * %d) >> 14     (A[i]=0x%04X; B[i]=0x%04X; alpha=0x%04X)";
 
-        hr = xs3_scalar_mul_vect_s16(A, B, len, alpha, sat);
+        hr = xs3_vect_s16_scalar_mul(A, B, len, alpha, sat);
 
         for(int i = 0; i < len; i++){
             int16_t expected = scalar_mul_s16(B[i], alpha, sat);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], sat, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_scalar_mul_vect_s16(A, A, len, alpha, sat);
+        hr = xs3_vect_s16_scalar_mul(A, A, len, alpha, sat);
 
         for(int i = 0; i < len; i++){
             int16_t expected = scalar_mul_s16(B[i], alpha, sat);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], sat, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
     }
 }
 
@@ -709,7 +709,7 @@ static void test_xs3_scalar_mul_vect_s16_random()
 
 
 
-static void test_xs3_scalar_mul_vect_s32_basic()
+static void test_xs3_vect_s32_scalar_mul_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -781,19 +781,19 @@ static void test_xs3_scalar_mul_vect_s32_basic()
                 B[i] = casse->value.b;
             }
 
-            hr = xs3_scalar_mul_vect_s32(A, B, len, casse->value.alpha, casse->shr.b);
+            hr = xs3_vect_s32_scalar_mul(A, B, len, casse->value.alpha, casse->shr.b);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_scalar_mul_vect_s32(A, A, len, casse->value.alpha, casse->shr.b);
+            hr = xs3_vect_s32_scalar_mul(A, A, len, casse->value.alpha, casse->shr.b);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32(A, len), hr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom(A, len), hr, casse->line);
             }
         }
     }
@@ -803,7 +803,7 @@ static void test_xs3_scalar_mul_vect_s32_basic()
 
 
 
-static void test_xs3_scalar_mul_vect_s32_random()
+static void test_xs3_vect_s32_scalar_mul_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 67456;
@@ -830,24 +830,24 @@ static void test_xs3_scalar_mul_vect_s32_random()
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) * %ld) >> 30     (A[i]=0x%08X; B[i]=0x%08X; alpha=0x%08X)";
 
-        hr = xs3_scalar_mul_vect_s32(A, B, len, alpha, b_shr);
+        hr = xs3_vect_s32_scalar_mul(A, B, len, alpha, b_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = scalar_mul_s32(B[i], alpha, b_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, alpha, (unsigned)A[i], (unsigned)B[i],  (unsigned)alpha);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_scalar_mul_vect_s32(A, A, len, alpha, b_shr);
+        hr = xs3_vect_s32_scalar_mul(A, A, len, alpha, b_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = scalar_mul_s32(B[i], alpha, b_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, alpha, (unsigned)A[i], (unsigned)B[i],  (unsigned)alpha);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, len), hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
     }
 }
 
@@ -857,20 +857,20 @@ void test_xs3_mul_vect()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_mul_vect_s16_calc_params);
-    RUN_TEST(test_xs3_mul_vect_s32_calc_params);
-    RUN_TEST(test_xs3_scalar_mul_vect_s16_calc_params);
+    RUN_TEST(test_xs3_vect_s16_mul_calc_params);
+    RUN_TEST(test_xs3_vect_s32_mul_calc_params);
+    RUN_TEST(test_xs3_vect_s16_scalar_mul_calc_params);
 
-    RUN_TEST(test_xs3_mul_vect_s16_basic);
-    RUN_TEST(test_xs3_mul_vect_s16_random);
+    RUN_TEST(test_xs3_vect_s16_mul_basic);
+    RUN_TEST(test_xs3_vect_s16_mul_random);
 
-    RUN_TEST(test_xs3_mul_vect_s32_basic);
-    RUN_TEST(test_xs3_mul_vect_s32_random);
+    RUN_TEST(test_xs3_vect_s32_mul_basic);
+    RUN_TEST(test_xs3_vect_s32_mul_random);
 
 
-    RUN_TEST(test_xs3_scalar_mul_vect_s16_basic);
-    RUN_TEST(test_xs3_scalar_mul_vect_s16_random);
+    RUN_TEST(test_xs3_vect_s16_scalar_mul_basic);
+    RUN_TEST(test_xs3_vect_s16_scalar_mul_random);
 
-    RUN_TEST(test_xs3_scalar_mul_vect_s32_basic);
-    RUN_TEST(test_xs3_scalar_mul_vect_s32_random);
+    RUN_TEST(test_xs3_vect_s32_scalar_mul_basic);
+    RUN_TEST(test_xs3_vect_s32_scalar_mul_random);
 }

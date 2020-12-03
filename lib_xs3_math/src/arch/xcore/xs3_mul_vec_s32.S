@@ -6,7 +6,7 @@
 
 /*  
 
-headroom_t xs3_mul_vect_s32(
+headroom_t xs3_vect_s32_mul(
     int32_t a[],
     const int32_t b[],
     const int32_t c[],
@@ -18,7 +18,7 @@ headroom_t xs3_mul_vect_s32(
 
 #define NSTACKWORDS     (8+8)
 
-#define FUNCTION_NAME   xs3_mul_vect_s32
+#define FUNCTION_NAME   xs3_vect_s32_mul
 
 #define STACK_B_SHR     (NSTACKWORDS+1)
 #define STACK_C_SHR     (NSTACKWORDS+2)

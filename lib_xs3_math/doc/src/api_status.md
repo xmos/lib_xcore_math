@@ -10,76 +10,76 @@ This table is unlikely to have actually captured everything that will be needed 
 | :---------------------------------------- | :--: | :--: | :----: | :--------: |
 |                                           | ASM  |  C   |        |            | 
 |  @tab @tab xs3_bfp_low.h                                                  ||||| 
-| `xs3_set_vect_s16()`                      |  X   |  X   |   X    |     X      |
-| `xs3_set_vect_s32()`                      |  X   |  X   |   X    |     X      |
-| `xs3_headroom_vect_s16()`                 |  X   |  X   |   X    |     X      |
-| `xs3_headroom_vect_s32()`                 |  X   |  X   |   X    |     X      |
-| `xs3_shr_vect_s16()`                      |  X   |  X   |   X    |            |
-| `xs3_shr_vect_s32()`                      |  X   |  X   |   X    |            |
-| `xs3_shl_vect_s16()`                      |  X   |  X   |   X    |     X      |
-| `xs3_shl_vect_s32()`                      |  X   |  X   |   X    |     X      |
-| `xs3_add_vect_s16()`                      |  X   |  X   |   X    |     X      |
-| `xs3_add_vect_s32()`                      |  X   |  X   |   X    |     X      |
-| `xs3_sub_vect_s16()`                      |  X   |  X   |   X    |     X      |
-| `xs3_sub_vect_s32()`                      |  X   |  X   |   X    |     X      |
-| `xs3_mul_vect_s16()`                      |  X   |  X   |   X    |     X      |
-| `xs3_mul_vect_s32()`                      |  X   |  X   |   X    |     X      |
-| `xs3_scalar_mul_vect_s16()`               |  X   |  X   |   X    |     X      |
-| `xs3_scalar_mul_vect_s32()`               |  X   |  X   |   X    |     X      |
-| `xs3_abs_vect_s16()`                      |  X   |  X   |   X    |     X      |
-| `xs3_abs_vect_s32()`                      |  X   |  X   |   X    |     X      |
-| `xs3_sum_s16()`                           |  X   |  X   |   X    |     X      |
-| `xs3_sum_s32()`                           |  X   |  X   |   X    |     X      |
-| `xs3_dot_s16()`                           |  X   |  X   |   X    |     X      |
-| `xs3_dot_s32()`                           |  X   |  X   |   X    |     X      |
-| `xs3_clip_vect_s16()`                     |  X   |  X   |   X    |     X      |
-| `xs3_clip_vect_s32()`                     |  X   |  X   |   X    |     X      |
-| `xs3_rect_vect_s16()`                     |  X   |  X   |   X    |     X      |
-| `xs3_rect_vect_s32()`                     |  X   |  X   |   X    |     X      |
-| `xs3_s32_to_s16()`                        |  X   |  X   |   X    |     X      |
-| `xs3_s16_to_s32()`                        |  X   |  X   |   X    |     X      |
-| `xs3_sqrt_vect_s16()`                     |  X   |  X   |   X    |            |
-| `xs3_sqrt_vect_s32()`                     |  X   |  X   |   X    |            |
-| `xs3_inverse_vect_s16()`                  |  X   |  X   |   X    |            |
-| `xs3_inverse_vect_s32()`                  |  X   |  X   |   X    |            |
+| `xs3_vect_s16_set()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_set()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_headroom()`                 |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_headroom()`                 |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_shr()`                      |  X   |  X   |   X    |            |
+| `xs3_vect_s32_shr()`                      |  X   |  X   |   X    |            |
+| `xs3_vect_s16_shl()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_shl()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_add()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_add()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_sub()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_sub()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_mul()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_mul()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_scalar_mul()`               |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_scalar_mul()`               |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_abs()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_abs()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_sum()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_sum()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_dot()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_dot()`                      |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_clip()`                     |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_clip()`                     |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_rect()`                     |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_rect()`                     |  X   |  X   |   X    |     X      |
+| `xs3_vect_s32_to_s16()`                   |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_to_s32()`                   |  X   |  X   |   X    |     X      |
+| `xs3_vect_s16_sqrt()`                     |  X   |  X   |   X    |            |
+| `xs3_vect_s32_sqrt()`                     |  X   |  X   |   X    |            |
+| `xs3_vect_s16_inverse()`                  |  X   |  X   |   X    |            |
+| `xs3_vect_s32_inverse()`                  |  X   |  X   |   X    |            |
 |  @tab @tab xs3_bfp_ch_pair_low.h                                          ||||| 
-| `xs3_set_vect_ch_pair_s16()`              |  X   |  X   |   X    |            |
-| `xs3_set_vect_ch_pair_s32()`              |  X   |  X   |   X    |            |
-| `xs3_headroom_vect_ch_pair_s16()`         |  X   |  X   |   X    |            |
-| `xs3_headroom_vect_ch_pair_s32()`         |  X   |  X   |   X    |            |
-| `xs3_shr_vect_ch_pair_s16()`              |  X   |  X   |   X    |            |
-| `xs3_shr_vect_ch_pair_s32()`              |  X   |  X   |   X    |            |
-| `xs3_shl_vect_ch_pair_s16()`              |  X   |  X   |   X    |            |
-| `xs3_shl_vect_ch_pair_s32()`              |  X   |  X   |   X    |            |
+| `xs3_vect_ch_pair_s16_set()`              |  X   |  X   |   X    |            |
+| `xs3_vect_ch_pair_s32_set()`              |  X   |  X   |   X    |            |
+| `xs3_vect_ch_pair_s16_headroom()`         |  X   |  X   |   X    |            |
+| `xs3_vect_ch_pair_s32_headroom()`         |  X   |  X   |   X    |            |
+| `xs3_vect_ch_pair_s16_shr()`              |  X   |  X   |   X    |            |
+| `xs3_vect_ch_pair_s32_shr()`              |  X   |  X   |   X    |            |
+| `xs3_vect_ch_pair_s16_shl()`              |  X   |  X   |   X    |            |
+| `xs3_vect_ch_pair_s32_shl()`              |  X   |  X   |   X    |            |
 |  @tab @tab xs3_bfp_complex_low.h                                          ||||| 
-| `xs3_set_vect_complex_s16()`              |  X   |  X   |   X    |            |
-| `xs3_set_vect_complex_s32()`              |  X   |  X   |   X    |     X      |
-| `xs3_headroom_vect_complex_s16()`         |  X   |  X   |   X    |            |
-| `xs3_headroom_vect_complex_s32()`         |  X   |  X   |   X    |            |
-| `xs3_shr_vect_complex_s16()`              |  X   |  X   |   X    |            |
-| `xs3_shr_vect_complex_s32()`              |  X   |  X   |   X    |            |
-| `xs3_shl_vect_complex_s16()`              |  X   |  X   |   X    |            |
-| `xs3_shl_vect_complex_s32()`              |  X   |  X   |   X    |            |
-| `xs3_add_vect_complex_s16()`              |  X   |  X   |   X    |            |
-| `xs3_add_vect_complex_s32()`              |  X   |  X   |   X    |            |
-| `xs3_sub_vect_complex_s16()`              |  X   |  X   |   X    |            |
-| `xs3_sub_vect_complex_s32()`              |  X   |  X   |   X    |            |
-| `xs3_mul_vect_complex_s16()`              |  X   |  X   |   X    |     X      |
-| `xs3_mul_vect_complex_s32()`              |  X   |  X   |   X    |     X      |
-| `xs3_complex_mul_vect_complex_s16()`      |  X   |  X   |   X    |     X      |
-| `xs3_complex_mul_vect_complex_s32()`      |  X   |  X   |   X    |     X      |
-| `xs3_complex_conj_mul_vect_complex_s16()` |  X   |  X   |   X    |     X      |
-| `xs3_complex_conj_mul_vect_complex_s32()` |  X   |  X   |   X    |     X      |
-| `xs3_complex_scal_mul_vect_complex_s16()` |  X   |  X   |   X    |     X      |
-| `xs3_complex_scal_mul_vect_complex_s32()` |  X   |  X   |   X    |     X      |
-| `xs3_scalar_mul_vect_complex_s16()`       |  X   |  X   |   X    |            |
-| `xs3_scalar_mul_vect_complex_s32()`       |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s16_set()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s32_set()`              |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s16_headroom()`         |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s32_headroom()`         |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s16_shr()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s32_shr()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s16_shl()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s32_shl()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s16_add()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s32_add()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s16_sub()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s32_sub()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s16_mul()`              |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s32_mul()`              |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s16_complex_mul()`      |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s32_complex_mul()`      |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s16_complex_conj_mul()` |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s32_complex_conj_mul()` |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s16_complex_scal_mul()` |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s32_complex_scal_mul()` |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s16_scalar_mul()`       |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s32_scalar_mul()`       |  X   |  X   |   X    |            |
 | `xs3_complex_s16_to_complex_s32()`        |  X   |  X   |   X    |     X      |
 | `xs3_complex_s32_to_complex_s16()`        |  X   |  X   |   X    |     X      |
-| `xs3_squared_mag_vect_complex_s16()`      |  X   |  X   |   X    |     X      |
-| `xs3_squared_mag_vect_complex_s32()`      |  X   |  X   |   X    |     X      |
-| `xs3_mag_vect_complex_s16()`              |  X   |  X   |   X    |            |
-| `xs3_mag_vect_complex_s32()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s16_squared_mag()`      |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s32_squared_mag()`      |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s16_mag()`              |  X   |  X   |   X    |            |
+| `xs3_vect_complex_s32_mag()`              |  X   |  X   |   X    |            |
 | `xs3_sum_complex_s16()`                   |  X   |  X   |   X    |     X      |
 | `xs3_sum_complex_s32()`                   |  X   |  X   |   X    |     X      |
 | `xs3_tail_reverse_complex_s32()`          |  X   |  X   |   X    |     X      |
@@ -98,18 +98,18 @@ This table is unlikely to have actually captured everything that will be needed 
 | `xs3_filter_biquad_s32()`                 |  X   |  X   |   X    |            |
 | `xs3_filter_biquads_s32()`                |  X   |  X   |   X    |            |
 |  @tab @tab xs3_statistics_low.h                                           ||||| 
-| `xs3_abs_sum_s16()`                       |  X   |  X   |   X    |            |
-| `xs3_abs_sum_s32()`                       |  X   |  X   |   X    |            |
-| `xs3_energy_s16()`                        |  X   |  X   |   X    |            |
-| `xs3_energy_s32()`                        |  X   |  X   |   X    |            |
-| `xs3_max_s16()`                           |  X   |  X   |   X    |            |
-| `xs3_max_s32()`                           |  X   |  X   |   X    |            |
-| `xs3_min_s16()`                           |  X   |  X   |   X    |            |
-| `xs3_min_s32()`                           |  X   |  X   |   X    |            |
-| `xs3_argmax_s16()`                        |  X   |  X   |   X    |            |
-| `xs3_argmax_s32()`                        |  X   |  X   |   X    |            |
-| `xs3_argmin_s16()`                        |  X   |  X   |   X    |            |
-| `xs3_argmin_s32()`                        |  X   |  X   |   X    |            |
+| `xs3_vect_s16_abs_sum()`                  |  X   |  X   |   X    |            |
+| `xs3_vect_s32_abs_sum()`                  |  X   |  X   |   X    |            |
+| `xs3_vect_s16_energy()`                   |  X   |  X   |   X    |            |
+| `xs3_vect_s32_energy()`                   |  X   |  X   |   X    |            |
+| `xs3_vect_s16_max()`                      |  X   |  X   |   X    |            |
+| `xs3_vect_s32_max()`                      |  X   |  X   |   X    |            |
+| `xs3_vect_s16_min()`                      |  X   |  X   |   X    |            |
+| `xs3_vect_s32_min()`                      |  X   |  X   |   X    |            |
+| `xs3_vect_s16_argmax()`                   |  X   |  X   |   X    |            |
+| `xs3_vect_s32_argmax()`                   |  X   |  X   |   X    |            |
+| `xs3_vect_s16_argmin()`                   |  X   |  X   |   X    |            |
+| `xs3_vect_s32_argmin()`                   |  X   |  X   |   X    |            |
 
 
 ### High-Level API Functions ###
@@ -119,104 +119,104 @@ The high-level API functions are written entirely in C (perhaps C++ wrappers wil
 | Function                                  | Implemented | Tested | Documented |
 | :---------------------------------------- | :---------: | :----: | :--------: |
 | @tab @tab                  xs3_bfp_init.h                                  |||| 
-| `bfp_init_vect_s16()`                     |      X      |   X    |     X      |
-| `bfp_init_vect_s32()`                     |      X      |   X    |     X      |
-| `bfp_init_vect_complex_s16()`             |      X      |   X    |     X      |
-| `bfp_init_vect_complex_s32()`             |      X      |   X    |     X      |
-| `bfp_init_vect_ch_pair_s16()`             |      X      |   X    |     X      |
-| `bfp_init_vect_ch_pair_s32()`             |      X      |   X    |     X      |
-| `bfp_set_vect_s16()`                      |      X      |   X    |     X      |
-| `bfp_set_vect_s32()`                      |      X      |   X    |     X      |
-| `bfp_set_vect_complex_s16()`              |      X      |   X    |     X      |
-| `bfp_set_vect_complex_s32()`              |      X      |   X    |     X      |
-| `bfp_set_vect_ch_pair_s16()`              |      X      |   X    |     X      |
-| `bfp_set_vect_ch_pair_s32()`              |      X      |   X    |     X      |
+| `bfp_vect_s16_init()`                     |      X      |   X    |     X      |
+| `bfp_vect_s32_init()`                     |      X      |   X    |     X      |
+| `bfp_vect_complex_s16_init()`             |      X      |   X    |     X      |
+| `bfp_vect_complex_s32_init()`             |      X      |   X    |     X      |
+| `bfp_vect_ch_pair_s16_init()`             |      X      |   X    |     X      |
+| `bfp_vect_ch_pair_s32_init()`             |      X      |   X    |     X      |
+| `bfp_vect_s16_set()`                      |      X      |   X    |     X      |
+| `bfp_vect_s32_set()`                      |      X      |   X    |     X      |
+| `bfp_vect_complex_s16_set()`              |      X      |   X    |     X      |
+| `bfp_vect_complex_s32_set()`              |      X      |   X    |     X      |
+| `bfp_vect_ch_pair_s16_set()`              |      X      |   X    |     X      |
+| `bfp_vect_ch_pair_s32_set()`              |      X      |   X    |     X      |
 | @tab @tab                       xs3_bfp.h                                  |||| 
-| `bfp_headroom_vect_s16()`                 |      X      |   X    |     X      |
-| `bfp_headroom_vect_s32()`                 |      X      |   X    |     X      |
-| `bfp_shl_vect_s16()`                      |      X      |   X    |     X      |
-| `bfp_shl_vect_s32()`                      |      X      |   X    |     X      |
-| `bfp_add_vect_s16()`                      |      X      |   X    |     X      |
-| `bfp_add_vect_s32()`                      |      X      |   X    |     X      |
-| `bfp_sub_vect_s16()`                      |      X      |   X    |     X      |
-| `bfp_sub_vect_s32()`                      |      X      |   X    |     X      |
-| `bfp_mul_vect_s16()`                      |      X      |   X    |     X      |
-| `bfp_mul_vect_s32()`                      |      X      |   X    |     X      |
-| `bfp_scalar_mul_vect_s16()`               |      X      |   X    |     X      |
-| `bfp_scalar_mul_vect_s32()`               |      X      |   X    |     X      |
-| `bfp_abs_vect_s16()`                      |      X      |   X    |     X      |
-| `bfp_abs_vect_s32()`                      |      X      |   X    |     X      |
-| `bfp_sum_s16()`                           |      X      |   X    |     X      |
-| `bfp_sum_s32()`                           |      X      |   X    |     X      |
-| `bfp_dot_s16()`                           |      X      |   X    |            |
-| `bfp_dot_s32()`                           |      X      |   X    |            |
-| `bfp_clip_vect_s16()`                     |      X      |   X    |            |
-| `bfp_clip_vect_s32()`                     |      X      |   X    |            |
-| `bfp_rect_vect_s16()`                     |      X      |   X    |     X      |
-| `bfp_rect_vect_s32()`                     |      X      |   X    |     X      |
+| `bfp_vect_s16_headroom()`                 |      X      |   X    |     X      |
+| `bfp_vect_s32_headroom()`                 |      X      |   X    |     X      |
+| `bfp_vect_s16_shl()`                      |      X      |   X    |     X      |
+| `bfp_vect_s32_shl()`                      |      X      |   X    |     X      |
+| `bfp_vect_s16_add()`                      |      X      |   X    |     X      |
+| `bfp_vect_s32_add()`                      |      X      |   X    |     X      |
+| `bfp_vect_s16_sub()`                      |      X      |   X    |     X      |
+| `bfp_vect_s32_sub()`                      |      X      |   X    |     X      |
+| `bfp_vect_s16_mul()`                      |      X      |   X    |     X      |
+| `bfp_vect_s32_mul()`                      |      X      |   X    |     X      |
+| `bfp_vect_s16_scalar_mul()`               |      X      |   X    |     X      |
+| `bfp_vect_s32_scalar_mul()`               |      X      |   X    |     X      |
+| `bfp_vect_s16_abs()`                      |      X      |   X    |     X      |
+| `bfp_vect_s32_abs()`                      |      X      |   X    |     X      |
+| `bfp_vect_s16_sum()`                      |      X      |   X    |     X      |
+| `bfp_vect_s32_sum()`                      |      X      |   X    |     X      |
+| `bfp_vect_dot_s16()`                      |      X      |   X    |            |
+| `bfp_vect_dot_s32()`                      |      X      |   X    |            |
+| `bfp_vect_s16_clip()`                     |      X      |   X    |            |
+| `bfp_vect_s32_clip()`                     |      X      |   X    |            |
+| `bfp_vect_s16_rect()`                     |      X      |   X    |     X      |
+| `bfp_vect_s32_rect()`                     |      X      |   X    |     X      |
 | `bfp_s32_to_s16()`                        |      X      |   X    |     X      |
 | `bfp_s16_to_s32()`                        |      X      |   X    |     X      |
-| `bfp_sqrt_vect_s16()`                     |      X      |   X    |            |
-| `bfp_sqrt_vect_s32()`                     |      X      |   X    |            |
-| `bfp_inverse_vect_s16()`                  |      X      |   X    |            |
-| `bfp_inverse_vect_s32()`                  |      X      |   X    |            |
+| `bfp_vect_s16_sqrt()`                     |      X      |   X    |            |
+| `bfp_vect_s32_sqrt()`                     |      X      |   X    |            |
+| `bfp_vect_s16_inverse()`                  |      X      |   X    |            |
+| `bfp_vect_s32_inverse()`                  |      X      |   X    |            |
 | @tab @tab               xs3_bfp_complex.h                                  |||| 
-| `bfp_headroom_vect_complex_s16()`         |      X      |   X    |            |
-| `bfp_headroom_vect_complex_s32()`         |      X      |   X    |            |
-| `bfp_shl_vect_complex_s16()`              |      X      |   X    |            |
-| `bfp_shl_vect_complex_s32()`              |      X      |   X    |            |
-| `bfp_mul_vect_complex_s16()`              |      X      |   X    |            |
-| `bfp_mul_vect_complex_s32()`              |      X      |   X    |            |
-| `bfp_complex_mul_vect_complex_s16()`      |      X      |   X    |            |
-| `bfp_complex_mul_vect_complex_s32()`      |      X      |   X    |            |
-| `bfp_complex_conj_mul_vect_complex_s16()` |      X      |   X    |            |
-| `bfp_complex_conj_mul_vect_complex_s32()` |      X      |   X    |            |
-| `bfp_scalar_mul_vect_complex_s16()`       |      X      |   X    |            |
-| `bfp_scalar_mul_vect_complex_s32()`       |      X      |   X    |            |
-| `bfp_complex_scal_mul_vect_complex_s16()` |      X      |   X    |            |
-| `bfp_complex_scal_mul_vect_complex_s32()` |      X      |   X    |            |
-| `bfp_add_vect_complex_s16()`              |      X      |   X    |            |
-| `bfp_add_vect_complex_s32()`              |      X      |   X    |            |
-| `bfp_sub_vect_complex_s16()`              |      X      |   X    |            |
-| `bfp_sub_vect_complex_s32()`              |      X      |   X    |            |
-| `bfp_complex_s16_to_complex_s32()`        |      X      |   X    |            |
-| `bfp_complex_s32_to_complex_s16()`        |      X      |   X    |            |
-| `bfp_squared_mag_vect_complex_s16()`      |      X      |   X    |            |
-| `bfp_squared_mag_vect_complex_s32()`      |      X      |   X    |            |
-| `bfp_mag_vect_complex_s16()`              |      X      |   X    |            |
-| `bfp_mag_vect_complex_s32()`              |      X      |   X    |            |
-| `bfp_sum_complex_s16()`                   |      X      |   X    |            |
-| `bfp_sum_complex_s32()`                   |      X      |   X    |            |
+| `bfp_vect_complex_s16_headroom()`         |      X      |   X    |            |
+| `bfp_vect_complex_s32_headroom()`         |      X      |   X    |            |
+| `bfp_vect_complex_s16_shl()`              |      X      |   X    |            |
+| `bfp_vect_complex_s32_shl()`              |      X      |   X    |            |
+| `bfp_vect_complex_s16_mul()`              |      X      |   X    |            |
+| `bfp_vect_complex_s32_mul()`              |      X      |   X    |            |
+| `bfp_vect_complex_s16_complex_mul()`      |      X      |   X    |            |
+| `bfp_vect_complex_s32_complex_mul()`      |      X      |   X    |            |
+| `bfp_vect_complex_s16_complex_conj_mul()` |      X      |   X    |            |
+| `bfp_vect_complex_s32_complex_conj_mul()` |      X      |   X    |            |
+| `bfp_vect_complex_s16_scalar_mul()`       |      X      |   X    |            |
+| `bfp_vect_complex_s32_scalar_mul()`       |      X      |   X    |            |
+| `bfp_vect_complex_s16_complex_scal_mul()` |      X      |   X    |            |
+| `bfp_vect_complex_s32_complex_scal_mul()` |      X      |   X    |            |
+| `bfp_vect_complex_s16_add()`              |      X      |   X    |            |
+| `bfp_vect_complex_s32_add()`              |      X      |   X    |            |
+| `bfp_vect_complex_s16_sub()`              |      X      |   X    |            |
+| `bfp_vect_complex_s32_sub()`              |      X      |   X    |            |
+| `bfp_vect_complex_s16_to_complex_s32()`   |      X      |   X    |            |
+| `bfp_vect_complex_s32_to_complex_s16()`   |      X      |   X    |            |
+| `bfp_vect_complex_s16_squared_mag()`      |      X      |   X    |            |
+| `bfp_vect_complex_s32_squared_mag()`      |      X      |   X    |            |
+| `bfp_vect_complex_s16_mag()`              |      X      |   X    |            |
+| `bfp_vect_complex_s32_mag()`              |      X      |   X    |            |
+| `bfp_vect_complex_s16_sum()`              |      X      |   X    |            |
+| `bfp_vect_complex_s32_sum()`              |      X      |   X    |            |
 | @tab @tab               xs3_bfp_ch_pair.h                                  |||| 
-| `bfp_headroom_vect_ch_pair_s16()`         |      X      |   X    |            |
-| `bfp_headroom_vect_ch_pair_s32()`         |      X      |   X    |            |
-| `bfp_shl_vect_ch_pair_s16()`              |      X      |   X    |            |
-| `bfp_shl_vect_ch_pair_s32()`              |      X      |   X    |            |
+| `bfp_vect_ch_pair_s16_headroom()`         |      X      |   X    |            |
+| `bfp_vect_ch_pair_s32_headroom()`         |      X      |   X    |            |
+| `bfp_vect_ch_pair_s16_shl()`              |      X      |   X    |            |
+| `bfp_vect_ch_pair_s32_shl()`              |      X      |   X    |            |
 | @tab @tab                   xs3_filters.h                                  |||| 
 | @tab @tab            xs3_bfp_statistics.h                                  |||| 
-| `bfp_abs_sum_s16()`                       |     X       |   X    |            |
-| `bfp_abs_sum_s32()`                       |     X       |   X    |            |
-| `bfp_mean_s16()`                          |     X       |   X    |            |
-| `bfp_mean_s32()`                          |     X       |   X    |            |
-| `bfp_energy_s16()`                        |     X       |   X    |            |
-| `bfp_energy_s32()`                        |     X       |   X    |            |
-| `bfp_rms_s16()`                           |     X       |   X    |            |
-| `bfp_rms_s32()`                           |     X       |   X    |            |
-| `bfp_max_s16()`                           |     X       |   X    |            |
-| `bfp_max_s32()`                           |     X       |   X    |            |
-| `bfp_min_s16()`                           |     X       |   X    |            |
-| `bfp_min_s32()`                           |     X       |   X    |            |
-| `bfp_argmax_s16()`                        |     X       |   X    |            |
-| `bfp_argmax_s32()`                        |     X       |   X    |            |
-| `bfp_argmin_s16()`                        |     X       |   X    |            |
-| `bfp_argmin_s32()`                        |     X       |   X    |            |
+| `bfp_vect_s16_abs_sum()`                  |      X      |   X    |            |
+| `bfp_vect_s32_abs_sum()`                  |      X      |   X    |            |
+| `bfp_vect_s16_mean()`                     |      X      |   X    |            |
+| `bfp_vect_s32_mean()`                     |      X      |   X    |            |
+| `bfp_vect_s16_energy()`                   |      X      |   X    |            |
+| `bfp_vect_s32_energy()`                   |      X      |   X    |            |
+| `bfp_vect_s16_rms()`                      |      X      |   X    |            |
+| `bfp_vect_s32_rms()`                      |      X      |   X    |            |
+| `bfp_vect_s16_max()`                      |      X      |   X    |            |
+| `bfp_vect_s32_max()`                      |      X      |   X    |            |
+| `bfp_vect_s16_min()`                      |      X      |   X    |            |
+| `bfp_vect_s32_min()`                      |      X      |   X    |            |
+| `bfp_vect_s16_argmax()`                   |      X      |   X    |            |
+| `bfp_vect_s32_argmax()`                   |      X      |   X    |            |
+| `bfp_vect_s16_argmin()`                   |      X      |   X    |            |
+| `bfp_vect_s32_argmin()`                   |      X      |   X    |            |
 | @tab @tab                       xs3_fft.h                                  |||| 
-| `bfp_fft_forward_complex()`               |     X       |   X    |     X      |
-| `bfp_fft_inverse_complex()`               |     X       |   X    |     X      |
-| `bfp_fft_forward_mono()`                  |     X       |   X    |     X      |
-| `bfp_fft_inverse_mono()`                  |     X       |   X    |     X      |
-| `bfp_fft_forward_stereo()`                |     X       |   X    |     X      |
-| `bfp_fft_inverse_stereo()`                |     X       |   X    |     X      |
+| `bfp_fft_forward_complex()`               |      X      |   X    |     X      |
+| `bfp_fft_inverse_complex()`               |      X      |   X    |     X      |
+| `bfp_fft_forward_mono()`                  |      X      |   X    |     X      |
+| `bfp_fft_inverse_mono()`                  |      X      |   X    |     X      |
+| `bfp_fft_forward_stereo()`                |      X      |   X    |     X      |
+| `bfp_fft_inverse_stereo()`                |      X      |   X    |     X      |
 | @tab @tab                       xs3_dct.h                                  |||| 
 | `bfp_dct_forward()`                       |             |        |            |
 | `bfp_dct_inverse()`                       |             |        |            |

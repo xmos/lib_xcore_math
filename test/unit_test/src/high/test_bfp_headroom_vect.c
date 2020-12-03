@@ -24,7 +24,7 @@
 
 
 
-static void test_bfp_headroom_vect_s16()
+static void test_bfp_vect_s16_headroom()
 {
     PRINTF("%s...\n", __func__);
 
@@ -42,17 +42,17 @@ static void test_bfp_headroom_vect_s16()
         for(int i = 0; i < length; i++)
             data[i] = pseudo_rand_int16(&seed) >> shr;
         
-        headroom_t exp_hr = xs3_headroom_vect_s16(data, length);
+        headroom_t exp_hr = xs3_vect_s16_headroom(data, length);
 
         bfp_s16_t A;
 
-        bfp_init_vect_s16(&A, data, exponent, length, 0);
+        bfp_vect_s16_init(&A, data, exponent, length, 0);
 
         TEST_ASSERT_EQUAL(data, A.data);
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(0, A.hr);
 
-        headroom_t got_hr = bfp_headroom_vect_s16(&A);
+        headroom_t got_hr = bfp_vect_s16_headroom(&A);
 
         TEST_ASSERT_EQUAL(data, A.data);
         TEST_ASSERT_EQUAL(exponent, A.exp);
@@ -63,7 +63,7 @@ static void test_bfp_headroom_vect_s16()
 
 
 
-static void test_bfp_headroom_vect_s32()
+static void test_bfp_vect_s32_headroom()
 {
     PRINTF("%s...\n", __func__);
 
@@ -81,17 +81,17 @@ static void test_bfp_headroom_vect_s32()
         for(int i = 0; i < length; i++)
             data[i] = pseudo_rand_int32(&seed) >> shr;
         
-        headroom_t exp_hr = xs3_headroom_vect_s32(data, length);
+        headroom_t exp_hr = xs3_vect_s32_headroom(data, length);
 
         bfp_s32_t A;
 
-        bfp_init_vect_s32(&A, data, exponent, length, 0);
+        bfp_vect_s32_init(&A, data, exponent, length, 0);
 
         TEST_ASSERT_EQUAL(data, A.data);
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(0, A.hr);
 
-        headroom_t got_hr = bfp_headroom_vect_s32(&A);
+        headroom_t got_hr = bfp_vect_s32_headroom(&A);
 
         TEST_ASSERT_EQUAL(data, A.data);
         TEST_ASSERT_EQUAL(exponent, A.exp);
@@ -106,7 +106,7 @@ static void test_bfp_headroom_vect_s32()
 
 
 
-static void test_bfp_headroom_vect_complex_s16()
+static void test_bfp_vect_complex_s16_headroom()
 {
     PRINTF("%s...\n", __func__);
 
@@ -127,21 +127,21 @@ static void test_bfp_headroom_vect_complex_s16()
             imag[i] = pseudo_rand_int16(&seed) >> shr;
         }
         
-        headroom_t exp_hr_a = xs3_headroom_vect_s16(real, length);
-        headroom_t exp_hr_b = xs3_headroom_vect_s16(imag, length);
+        headroom_t exp_hr_a = xs3_vect_s16_headroom(real, length);
+        headroom_t exp_hr_b = xs3_vect_s16_headroom(imag, length);
         headroom_t exp_hr = exp_hr_a < exp_hr_b?
                             exp_hr_a : exp_hr_b;
 
         bfp_complex_s16_t A;
 
-        bfp_init_vect_complex_s16(&A, real, imag, exponent, length, 0);
+        bfp_vect_complex_s16_init(&A, real, imag, exponent, length, 0);
 
         TEST_ASSERT_EQUAL(real, A.real);
         TEST_ASSERT_EQUAL(imag, A.imag);
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(0, A.hr);
 
-        headroom_t got_hr = bfp_headroom_vect_complex_s16(&A);
+        headroom_t got_hr = bfp_vect_complex_s16_headroom(&A);
 
         TEST_ASSERT_EQUAL(real, A.real);
         TEST_ASSERT_EQUAL(imag, A.imag);
@@ -155,7 +155,7 @@ static void test_bfp_headroom_vect_complex_s16()
 
 
 
-static void test_bfp_headroom_vect_complex_s32()
+static void test_bfp_vect_complex_s32_headroom()
 {
     PRINTF("%s...\n", __func__);
 
@@ -175,17 +175,17 @@ static void test_bfp_headroom_vect_complex_s32()
             data[i].im = pseudo_rand_int32(&seed) >> shr;
         }
         
-        headroom_t exp_hr = xs3_headroom_vect_s32((int32_t*)data, length*2);
+        headroom_t exp_hr = xs3_vect_s32_headroom((int32_t*)data, length*2);
 
         bfp_complex_s32_t A;
 
-        bfp_init_vect_complex_s32(&A, data, exponent, length, 0);
+        bfp_vect_complex_s32_init(&A, data, exponent, length, 0);
 
         TEST_ASSERT_EQUAL(data, A.data);
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(0, A.hr);
 
-        headroom_t got_hr = bfp_headroom_vect_complex_s32(&A);
+        headroom_t got_hr = bfp_vect_complex_s32_headroom(&A);
 
         TEST_ASSERT_EQUAL(data, A.data);
         TEST_ASSERT_EQUAL(exponent, A.exp);
@@ -199,7 +199,7 @@ static void test_bfp_headroom_vect_complex_s32()
 
 
 
-static void test_bfp_headroom_vect_ch_pair_s16()
+static void test_bfp_vect_ch_pair_s16_headroom()
 {
     PRINTF("%s...\n", __func__);
 
@@ -219,17 +219,17 @@ static void test_bfp_headroom_vect_ch_pair_s16()
             data[i].ch_b = pseudo_rand_int16(&seed) >> shr;
         }
         
-        headroom_t exp_hr = xs3_headroom_vect_s16((int16_t*)data, length*2);
+        headroom_t exp_hr = xs3_vect_s16_headroom((int16_t*)data, length*2);
 
         bfp_ch_pair_s16_t A;
 
-        bfp_init_vect_ch_pair_s16(&A, data, exponent, length, 0);
+        bfp_vect_ch_pair_s16_init(&A, data, exponent, length, 0);
 
         TEST_ASSERT_EQUAL(data, A.data);
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(0, A.hr);
 
-        headroom_t got_hr = bfp_headroom_vect_ch_pair_s16(&A);
+        headroom_t got_hr = bfp_vect_ch_pair_s16_headroom(&A);
 
         TEST_ASSERT_EQUAL(data, A.data);
         TEST_ASSERT_EQUAL(exponent, A.exp);
@@ -242,7 +242,7 @@ static void test_bfp_headroom_vect_ch_pair_s16()
 
 
 
-static void test_bfp_headroom_vect_ch_pair_s32()
+static void test_bfp_vect_ch_pair_s32_headroom()
 {
     PRINTF("%s...\n", __func__);
 
@@ -262,17 +262,17 @@ static void test_bfp_headroom_vect_ch_pair_s32()
             data[i].ch_b = pseudo_rand_int32(&seed) >> shr;
         }
         
-        headroom_t exp_hr = xs3_headroom_vect_s32((int32_t*)data, length*2);
+        headroom_t exp_hr = xs3_vect_s32_headroom((int32_t*)data, length*2);
 
         bfp_ch_pair_s32_t A;
 
-        bfp_init_vect_ch_pair_s32(&A, data, exponent, length, 0);
+        bfp_vect_ch_pair_s32_init(&A, data, exponent, length, 0);
 
         TEST_ASSERT_EQUAL(data, A.data);
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(0, A.hr);
 
-        headroom_t got_hr = bfp_headroom_vect_ch_pair_s32(&A);
+        headroom_t got_hr = bfp_vect_ch_pair_s32_headroom(&A);
 
         TEST_ASSERT_EQUAL(data, A.data);
         TEST_ASSERT_EQUAL(exponent, A.exp);
@@ -290,12 +290,12 @@ void test_bfp_headroom_vect()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_bfp_headroom_vect_s16);
-    RUN_TEST(test_bfp_headroom_vect_s32);
+    RUN_TEST(test_bfp_vect_s16_headroom);
+    RUN_TEST(test_bfp_vect_s32_headroom);
     
-    RUN_TEST(test_bfp_headroom_vect_complex_s16);
-    RUN_TEST(test_bfp_headroom_vect_complex_s32);
+    RUN_TEST(test_bfp_vect_complex_s16_headroom);
+    RUN_TEST(test_bfp_vect_complex_s32_headroom);
     
-    RUN_TEST(test_bfp_headroom_vect_ch_pair_s16);
-    RUN_TEST(test_bfp_headroom_vect_ch_pair_s32);
+    RUN_TEST(test_bfp_vect_ch_pair_s16_headroom);
+    RUN_TEST(test_bfp_vect_ch_pair_s32_headroom);
 }

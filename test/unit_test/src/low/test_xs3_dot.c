@@ -35,7 +35,7 @@ static char msg_buff[200];
 
 
 
-static void test_xs3_dot_s32_calc_params()
+static void test_xs3_vect_s32_dot_calc_params()
 {
     PRINTF("%s...\n", __func__);
     seed = 0xEF70DEF9;
@@ -64,9 +64,9 @@ static void test_xs3_dot_s32_calc_params()
             exponent_t A_exp;
             right_shift_t b_shr, c_shr;
 
-            xs3_dot_s32_calc_params(&A_exp, &b_shr, &c_shr, B_exp, C_exp, B_hr, C_hr, B_length, allow_sat);
+            xs3_vect_s32_dot_calc_params(&A_exp, &b_shr, &c_shr, B_exp, C_exp, B_hr, C_hr, B_length, allow_sat);
 
-            int64_t result = xs3_dot_s32(B, C, B_length, b_shr, c_shr);
+            int64_t result = xs3_vect_s32_dot(B, C, B_length, b_shr, c_shr);
 
             // PRINTF("\t    allow_sat = %u\n", allow_sat);
             // PRINTF("\t        B_length  = %u\n", B_length);
@@ -97,7 +97,7 @@ static void test_xs3_dot_s32_calc_params()
 
 #define MAX_LEN     4096
 #define REPS        1000
-static void test_xs3_dot_s16()
+static void test_xs3_vect_s16_dot()
 {
     PRINTF("%s...\n", __func__);
     seed = 0x92B7BD9A;
@@ -127,10 +127,10 @@ static void test_xs3_dot_s16()
             expected += ((int32_t)B[i]) * C[i];
         }
 
-        B_hr = xs3_headroom_vect_s16(B, len);
-        C_hr = xs3_headroom_vect_s16(C, len);
+        B_hr = xs3_vect_s16_headroom(B, len);
+        C_hr = xs3_vect_s16_headroom(C, len);
 
-        int64_t result = xs3_dot_s16(B, C, len, B_hr + C_hr);
+        int64_t result = xs3_vect_s16_dot(B, C, len, B_hr + C_hr);
 
         // printf("============\n");
         // printf("Length: %u\n", len);
@@ -148,7 +148,7 @@ static void test_xs3_dot_s16()
 
 
 
-static void test_xs3_dot_s32_basic()
+static void test_xs3_vect_s32_dot_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -206,7 +206,7 @@ static void test_xs3_dot_s32_basic()
             C[i] = casse->input.c;
         }
 
-        result = xs3_dot_s32(B, C, len, casse->shr.b, casse->shr.c);
+        result = xs3_vect_s32_dot(B, C, len, casse->shr.b, casse->shr.c);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected, result, casse->line);
     }
@@ -218,8 +218,8 @@ static void test_xs3_dot_s32_basic()
 void test_xs3_dot()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_xs3_dot_s32_calc_params);
+    RUN_TEST(test_xs3_vect_s32_dot_calc_params);
 
-    RUN_TEST(test_xs3_dot_s16);
-    RUN_TEST(test_xs3_dot_s32_basic);
+    RUN_TEST(test_xs3_vect_s16_dot);
+    RUN_TEST(test_xs3_vect_s32_dot_basic);
 }

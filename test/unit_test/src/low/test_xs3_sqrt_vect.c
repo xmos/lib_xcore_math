@@ -29,7 +29,7 @@ static char msg_buff[200];
 
 
 
-static void test_xs3_sqrt_vect_s32_calc_params()
+static void test_xs3_vect_s32_sqrt_calc_params()
 {
 
     typedef struct {
@@ -69,12 +69,12 @@ static void test_xs3_sqrt_vect_s32_calc_params()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_sqrt_vect_s32_calc_params(&a_exp, &b_shr, vector->B.exp, vector->B.hr);
+        xs3_vect_s32_sqrt_calc_params(&a_exp, &b_shr, vector->B.exp, vector->B.hr);
 
         int32_t B = 0x40000000 >> vector->B.hr;
         int32_t A;
 
-        const headroom_t a_hr = xs3_sqrt_vect_s32(&A, &B, 1, b_shr, XS3_VECT_SQRT_S32_MAX_DEPTH);
+        const headroom_t a_hr = xs3_vect_s32_sqrt(&A, &B, 1, b_shr, XS3_VECT_SQRT_S32_MAX_DEPTH);
         const int32_t p = vlmul32(A, A);
         const int32_t target = vlashr32(B, b_shr);
         const int32_t delta = target - p;
@@ -88,7 +88,7 @@ static void test_xs3_sqrt_vect_s32_calc_params()
 
 }
 
-static void test_xs3_sqrt_vect_s16_calc_params()
+static void test_xs3_vect_s16_sqrt_calc_params()
 {
 
     typedef struct {
@@ -128,12 +128,12 @@ static void test_xs3_sqrt_vect_s16_calc_params()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_sqrt_vect_s16_calc_params(&a_exp, &b_shr, vector->B.exp, vector->B.hr);
+        xs3_vect_s16_sqrt_calc_params(&a_exp, &b_shr, vector->B.exp, vector->B.hr);
 
         int16_t WORD_ALIGNED B = 0x4000 >> vector->B.hr;
         int16_t WORD_ALIGNED A;
 
-        const headroom_t a_hr = xs3_sqrt_vect_s16(&A, &B, 1, b_shr, XS3_VECT_SQRT_S16_MAX_DEPTH);
+        const headroom_t a_hr = xs3_vect_s16_sqrt(&A, &B, 1, b_shr, XS3_VECT_SQRT_S16_MAX_DEPTH);
         const int16_t p = vlmul16(A, A);
         const int16_t target = vlashr16(B, b_shr);
         const int16_t delta = target - p;
@@ -150,7 +150,7 @@ static void test_xs3_sqrt_vect_s16_calc_params()
 
 
 
-static void test_xs3_sqrt_vect_s16_A()
+static void test_xs3_vect_s16_sqrt_A()
 {
 
     PRINTF("%s...\n", __func__);
@@ -172,17 +172,17 @@ static void test_xs3_sqrt_vect_s16_A()
             B[i] = pseudo_rand_uint(&seed, 0, INT16_MAX) >> b_hr;
         }
 
-        b_hr = xs3_headroom_vect_s16(B, length);
+        b_hr = xs3_vect_s16_headroom(B, length);
 
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_sqrt_vect_s16_calc_params(&a_exp, &b_shr, b_exp, b_hr);
+        xs3_vect_s16_sqrt_calc_params(&a_exp, &b_shr, b_exp, b_hr);
 
 
-        const headroom_t a_hr = xs3_sqrt_vect_s16(A, B, length, b_shr, XS3_VECT_SQRT_S16_MAX_DEPTH);
+        const headroom_t a_hr = xs3_vect_s16_sqrt(A, B, length, b_shr, XS3_VECT_SQRT_S16_MAX_DEPTH);
 
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s16(A, length), a_hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, length), a_hr);
 
         TEST_ASSERT_EQUAL(b_exp+b_shr, 2*a_exp + 14);
 
@@ -201,7 +201,7 @@ static void test_xs3_sqrt_vect_s16_A()
 
 
 
-static void test_xs3_sqrt_vect_s16_B()
+static void test_xs3_vect_s16_sqrt_B()
 {
 
     PRINTF("%s...\n", __func__);
@@ -224,18 +224,18 @@ static void test_xs3_sqrt_vect_s16_B()
             B[i] = pseudo_rand_uint(&seed, 0, INT16_MAX) >> b_hr;
         }
 
-        b_hr = xs3_headroom_vect_s16(B, length);
+        b_hr = xs3_vect_s16_headroom(B, length);
 
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_sqrt_vect_s16_calc_params(&a_exp, &b_shr, b_exp, b_hr);
+        xs3_vect_s16_sqrt_calc_params(&a_exp, &b_shr, b_exp, b_hr);
 
-        xs3_sqrt_vect_s16(A_full, B, length, b_shr, XS3_VECT_SQRT_S16_MAX_DEPTH);
+        xs3_vect_s16_sqrt(A_full, B, length, b_shr, XS3_VECT_SQRT_S16_MAX_DEPTH);
 
         for(unsigned depth = 1; depth <= XS3_VECT_SQRT_S16_MAX_DEPTH; depth++){
 
-            xs3_sqrt_vect_s16(A, B, length, b_shr, depth);
+            xs3_vect_s16_sqrt(A, B, length, b_shr, depth);
 
             const uint16_t mask = (0x7FFF >> depth) ^ 0xFFFFFFFF;
 
@@ -254,7 +254,7 @@ static void test_xs3_sqrt_vect_s16_B()
 
 
 
-static void test_xs3_sqrt_vect_s32_A()
+static void test_xs3_vect_s32_sqrt_A()
 {
 
     PRINTF("%s...\n", __func__);
@@ -276,17 +276,17 @@ static void test_xs3_sqrt_vect_s32_A()
             B[i] = pseudo_rand_uint(&seed, 0, INT32_MAX) >> b_hr;
         }
 
-        b_hr = xs3_headroom_vect_s32(B, length);
+        b_hr = xs3_vect_s32_headroom(B, length);
 
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_sqrt_vect_s32_calc_params(&a_exp, &b_shr, b_exp, b_hr);
+        xs3_vect_s32_sqrt_calc_params(&a_exp, &b_shr, b_exp, b_hr);
 
 
-        const headroom_t a_hr = xs3_sqrt_vect_s32(A, B, length, b_shr, XS3_VECT_SQRT_S32_MAX_DEPTH);
+        const headroom_t a_hr = xs3_vect_s32_sqrt(A, B, length, b_shr, XS3_VECT_SQRT_S32_MAX_DEPTH);
 
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, length), a_hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, length), a_hr);
 
         TEST_ASSERT_EQUAL(b_exp+b_shr, 2*a_exp + 30);
 
@@ -305,7 +305,7 @@ static void test_xs3_sqrt_vect_s32_A()
 
 
 
-static void test_xs3_sqrt_vect_s32_B()
+static void test_xs3_vect_s32_sqrt_B()
 {
 
     PRINTF("%s...\n", __func__);
@@ -328,18 +328,18 @@ static void test_xs3_sqrt_vect_s32_B()
             B[i] = pseudo_rand_uint(&seed, 0, INT32_MAX) >> b_hr;
         }
 
-        b_hr = xs3_headroom_vect_s32(B, length);
+        b_hr = xs3_vect_s32_headroom(B, length);
 
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_sqrt_vect_s32_calc_params(&a_exp, &b_shr, b_exp, b_hr);
+        xs3_vect_s32_sqrt_calc_params(&a_exp, &b_shr, b_exp, b_hr);
 
-        xs3_sqrt_vect_s32(A_full, B, length, b_shr, XS3_VECT_SQRT_S32_MAX_DEPTH);
+        xs3_vect_s32_sqrt(A_full, B, length, b_shr, XS3_VECT_SQRT_S32_MAX_DEPTH);
 
         for(unsigned depth = 1; depth <= XS3_VECT_SQRT_S32_MAX_DEPTH; depth++){
 
-            xs3_sqrt_vect_s32(A, B, length, b_shr, depth);
+            xs3_vect_s32_sqrt(A, B, length, b_shr, depth);
 
             const uint32_t mask = (0x7FFFFFFF >> depth) ^ 0xFFFFFFFF;
 
@@ -363,11 +363,11 @@ void test_xs3_sqrt_vect()
 {
     SET_TEST_FILE();
     
-    RUN_TEST(test_xs3_sqrt_vect_s16_calc_params);
-    RUN_TEST(test_xs3_sqrt_vect_s32_calc_params);
-    RUN_TEST(test_xs3_sqrt_vect_s16_A);
-    RUN_TEST(test_xs3_sqrt_vect_s16_B);
-    RUN_TEST(test_xs3_sqrt_vect_s32_A);
-    RUN_TEST(test_xs3_sqrt_vect_s32_B);
+    RUN_TEST(test_xs3_vect_s16_sqrt_calc_params);
+    RUN_TEST(test_xs3_vect_s32_sqrt_calc_params);
+    RUN_TEST(test_xs3_vect_s16_sqrt_A);
+    RUN_TEST(test_xs3_vect_s16_sqrt_B);
+    RUN_TEST(test_xs3_vect_s32_sqrt_A);
+    RUN_TEST(test_xs3_vect_s32_sqrt_B);
 
 }

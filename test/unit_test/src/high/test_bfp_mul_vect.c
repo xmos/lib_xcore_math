@@ -35,7 +35,7 @@ static char msg_buff[200];
 
 
 
-static void test_bfp_mul_vect_s16()
+static void test_bfp_vect_s16_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -68,7 +68,7 @@ static void test_bfp_mul_vect_s16()
             Af[i] = Bf[i] * Cf[i];
         }
 
-        bfp_mul_vect_s16(&A, &B, &C);
+        bfp_vect_s16_mul(&A, &B, &C);
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -80,7 +80,7 @@ static void test_bfp_mul_vect_s16()
 }
 
 
-static void test_bfp_mul_vect_s32()
+static void test_bfp_vect_s32_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -119,7 +119,7 @@ static void test_bfp_mul_vect_s32()
             Af[i] = Bf[i] * Cf[i];
         }
 
-        bfp_mul_vect_s32(&A, &B, &C);
+        bfp_vect_s32_mul(&A, &B, &C);
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -132,7 +132,7 @@ static void test_bfp_mul_vect_s32()
 
 
 
-static void test_bfp_scalar_mul_vect_s16()
+static void test_bfp_vect_s16_scalar_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -163,7 +163,7 @@ static void test_bfp_scalar_mul_vect_s16()
             Af[i] = Bf[i] * alpha_f;
         }
         
-        bfp_scalar_mul_vect_s16(&A, &B, alpha_mant, alpha_exp);
+        bfp_vect_s16_scalar_mul(&A, &B, alpha_mant, alpha_exp);
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -176,7 +176,7 @@ static void test_bfp_scalar_mul_vect_s16()
 
 
 
-static void test_bfp_scalar_mul_vect_s32()
+static void test_bfp_vect_s32_scalar_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -207,7 +207,7 @@ static void test_bfp_scalar_mul_vect_s32()
             Af[i] = Bf[i] * alpha_f;
         }
 
-        bfp_scalar_mul_vect_s32(&A, &B, alpha_mant, alpha_exp);
+        bfp_vect_s32_scalar_mul(&A, &B, alpha_mant, alpha_exp);
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -224,10 +224,10 @@ static void test_bfp_scalar_mul_vect_s32()
 void test_bfp_mul_vect()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_bfp_mul_vect_s16);
-    RUN_TEST(test_bfp_mul_vect_s32);
+    RUN_TEST(test_bfp_vect_s16_mul);
+    RUN_TEST(test_bfp_vect_s32_mul);
     
 
-    RUN_TEST(test_bfp_scalar_mul_vect_s16);
-    RUN_TEST(test_bfp_scalar_mul_vect_s32);
+    RUN_TEST(test_bfp_vect_s16_scalar_mul);
+    RUN_TEST(test_bfp_vect_s32_scalar_mul);
 }

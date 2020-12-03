@@ -5,7 +5,7 @@
 
 /*  
 
-headroom_t xs3_mag_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_mag(
     int16_t a[],
     const int16_t* b_real,
     const int16_t* b_imag,
@@ -29,7 +29,7 @@ headroom_t xs3_mag_vect_complex_s16(
 #define STACK_VEC_NEG_ONES  (NSTACKWORDS-40)
 #define STACK_VEC_SAT       (NSTACKWORDS-32)
 
-#define FUNCTION_NAME xs3_mag_vect_complex_s16
+#define FUNCTION_NAME xs3_vect_complex_s16_mag
 
 #define Q(R)    R
 

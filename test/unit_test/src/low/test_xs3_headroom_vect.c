@@ -24,7 +24,7 @@ static unsigned seed = 2314567;
 #define REPS        IF_QUICK_TEST(100,1000)
 
 
-static void test_xs3_headroom_vect_s16()
+static void test_xs3_vect_s16_headroom()
 {
     seed = 0x5F0BE930;
 
@@ -41,7 +41,7 @@ static void test_xs3_headroom_vect_s16()
             A[i] = pseudo_rand_int16(&seed) >> shr;
         }
 
-        headroom_t hr = xs3_headroom_vect_s16(A, length);
+        headroom_t hr = xs3_vect_s16_headroom(A, length);
 
         headroom_t min_hr = INT32_MAX;
 
@@ -56,7 +56,7 @@ static void test_xs3_headroom_vect_s16()
 
 
 
-static void test_xs3_headroom_vect_s32()
+static void test_xs3_vect_s32_headroom()
 {
     seed = 567457;
 
@@ -73,7 +73,7 @@ static void test_xs3_headroom_vect_s32()
             A[i] = pseudo_rand_int32(&seed) >> shr;
         }
 
-        headroom_t hr = xs3_headroom_vect_s32(A, length);
+        headroom_t hr = xs3_vect_s32_headroom(A, length);
 
         headroom_t min_hr = INT32_MAX;
         
@@ -86,7 +86,7 @@ static void test_xs3_headroom_vect_s32()
 }
 
 
-static void test_xs3_headroom_vect_ch_pair_s16()
+static void test_xs3_vect_ch_pair_s16_headroom()
 {
     seed = 362546234;
 
@@ -104,7 +104,7 @@ static void test_xs3_headroom_vect_ch_pair_s16()
             A[i].ch_b = pseudo_rand_int16(&seed) >> shr;
         }
 
-        headroom_t hr = xs3_headroom_vect_ch_pair_s16(A, length);
+        headroom_t hr = xs3_vect_ch_pair_s16_headroom(A, length);
 
         headroom_t min_hr = INT32_MAX;
         
@@ -120,7 +120,7 @@ static void test_xs3_headroom_vect_ch_pair_s16()
 
 
 
-static void test_xs3_headroom_vect_ch_pair_s32()
+static void test_xs3_vect_ch_pair_s32_headroom()
 {
     seed = 567457;
 
@@ -138,7 +138,7 @@ static void test_xs3_headroom_vect_ch_pair_s32()
             A[i].ch_b = pseudo_rand_int32(&seed) >> shr;
         }
 
-        headroom_t hr = xs3_headroom_vect_ch_pair_s32(A, length);
+        headroom_t hr = xs3_vect_ch_pair_s32_headroom(A, length);
 
         headroom_t min_hr = INT32_MAX;
         
@@ -153,7 +153,7 @@ static void test_xs3_headroom_vect_ch_pair_s32()
 
 
 
-static void test_xs3_headroom_vect_complex_s16()
+static void test_xs3_vect_complex_s16_headroom()
 {
     seed = 3;
 
@@ -172,7 +172,7 @@ static void test_xs3_headroom_vect_complex_s16()
             A_imag[i] = pseudo_rand_int16(&seed) >> shr;
         }
 
-        headroom_t hr = xs3_headroom_vect_complex_s16(A_real, A_imag, length);
+        headroom_t hr = xs3_vect_complex_s16_headroom(A_real, A_imag, length);
 
         headroom_t min_hr = INT32_MAX;
         
@@ -188,7 +188,7 @@ static void test_xs3_headroom_vect_complex_s16()
 
 
 
-static void test_xs3_headroom_vect_complex_s32()
+static void test_xs3_vect_complex_s32_headroom()
 {
     seed = 786;
 
@@ -206,7 +206,7 @@ static void test_xs3_headroom_vect_complex_s32()
             A[i].im = pseudo_rand_int32(&seed) >> shr;
         }
 
-        headroom_t hr = xs3_headroom_vect_complex_s32(A, length);
+        headroom_t hr = xs3_vect_complex_s32_headroom(A, length);
 
         headroom_t min_hr = INT32_MAX;
         
@@ -226,12 +226,12 @@ void test_xs3_headroom_vect()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_headroom_vect_s16);
-    RUN_TEST(test_xs3_headroom_vect_s32);
+    RUN_TEST(test_xs3_vect_s16_headroom);
+    RUN_TEST(test_xs3_vect_s32_headroom);
 
-    RUN_TEST(test_xs3_headroom_vect_ch_pair_s16);
-    RUN_TEST(test_xs3_headroom_vect_ch_pair_s32);
+    RUN_TEST(test_xs3_vect_ch_pair_s16_headroom);
+    RUN_TEST(test_xs3_vect_ch_pair_s32_headroom);
 
-    RUN_TEST(test_xs3_headroom_vect_complex_s16);
-    RUN_TEST(test_xs3_headroom_vect_complex_s32);
+    RUN_TEST(test_xs3_vect_complex_s16_headroom);
+    RUN_TEST(test_xs3_vect_complex_s32_headroom);
 }

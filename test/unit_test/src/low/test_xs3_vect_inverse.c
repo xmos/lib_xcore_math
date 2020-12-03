@@ -30,7 +30,7 @@ static char msg_buff[200];
 
 
 #define LEN  4
-static void test_xs3_inverse_vect_s16_calc_params()
+static void test_xs3_vect_s16_inverse_calc_params()
 {
     PRINTF("%s...\n", __func__);
     seed = 56456;
@@ -47,7 +47,7 @@ static void test_xs3_inverse_vect_s16_calc_params()
         exponent_t a_exp;
         unsigned scale;
 
-        xs3_inverse_vect_s16_calc_params(&a_exp, &scale, b, b_exp, LEN);
+        xs3_vect_s16_inverse_calc_params(&a_exp, &scale, b, b_exp, LEN);
 
         // printf("hr = %u\n", hr);
         // printf("b_exp = %d\n", b_exp);
@@ -73,7 +73,7 @@ static void test_xs3_inverse_vect_s16_calc_params()
 
         int16_t a[4];
 
-        xs3_inverse_vect_s16(a, b, LEN, scale);
+        xs3_vect_s16_inverse(a, b, LEN, scale);
 
         double b_float = ldexp(b[0], b_exp);
         double b_float_inv = 1.0 / b_float;
@@ -97,7 +97,7 @@ static void test_xs3_inverse_vect_s16_calc_params()
 #undef LEN
 
 #define LEN  4
-static void test_xs3_inverse_vect_s32_calc_params()
+static void test_xs3_vect_s32_inverse_calc_params()
 {
     PRINTF("%s...\n", __func__);
     seed = 435634;
@@ -114,7 +114,7 @@ static void test_xs3_inverse_vect_s32_calc_params()
         exponent_t a_exp;
         unsigned scale;
 
-        xs3_inverse_vect_s32_calc_params(&a_exp, &scale, b, b_exp, LEN);
+        xs3_vect_s32_inverse_calc_params(&a_exp, &scale, b, b_exp, LEN);
 
         // printf("hr = %u\n", hr);
         // printf("b_exp = %d\n", b_exp);
@@ -140,7 +140,7 @@ static void test_xs3_inverse_vect_s32_calc_params()
 
         int32_t a[4];
 
-        xs3_inverse_vect_s32(a, b, LEN, scale);
+        xs3_vect_s32_inverse(a, b, LEN, scale);
 
         TEST_ASSERT_EQUAL_INT32(0x40000000, a[0]);
 
@@ -165,7 +165,7 @@ static void test_xs3_inverse_vect_s32_calc_params()
 
 
 
-static void test_xs3_inverse_vect_s16()
+static void test_xs3_vect_s16_inverse()
 {
 
     PRINTF("%s...\n", __func__);
@@ -192,9 +192,9 @@ static void test_xs3_inverse_vect_s16()
         exponent_t a_exp;
         unsigned scale;
 
-        xs3_inverse_vect_s16_calc_params(&a_exp, &scale, B, b_exp, length);
+        xs3_vect_s16_inverse_calc_params(&a_exp, &scale, B, b_exp, length);
 
-        xs3_inverse_vect_s16(A, B, length, scale);
+        xs3_vect_s16_inverse(A, B, length, scale);
 
         double expected_flt[MAX_LEN];
 
@@ -214,7 +214,7 @@ static void test_xs3_inverse_vect_s16()
 
 
 
-static void test_xs3_inverse_vect_s32()
+static void test_xs3_vect_s32_inverse()
 {
 
     PRINTF("%s...\n", __func__);
@@ -241,11 +241,11 @@ static void test_xs3_inverse_vect_s32()
         exponent_t a_exp;
         unsigned scale;
 
-        xs3_inverse_vect_s32_calc_params(&a_exp, &scale, B, b_exp, length);
+        xs3_vect_s32_inverse_calc_params(&a_exp, &scale, B, b_exp, length);
 
-        headroom_t a_hr = xs3_inverse_vect_s32(A, B, length, scale);
+        headroom_t a_hr = xs3_vect_s32_inverse(A, B, length, scale);
 
-        // TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A, length), a_hr);
+        // TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, length), a_hr);
 
         double expected_flt[MAX_LEN];
 
@@ -290,9 +290,9 @@ void test_xs3_inverse_vect()
 {
     SET_TEST_FILE();
     
-    RUN_TEST(test_xs3_inverse_vect_s16_calc_params);
-    RUN_TEST(test_xs3_inverse_vect_s32_calc_params);
-    RUN_TEST(test_xs3_inverse_vect_s16);
-    RUN_TEST(test_xs3_inverse_vect_s32);
+    RUN_TEST(test_xs3_vect_s16_inverse_calc_params);
+    RUN_TEST(test_xs3_vect_s32_inverse_calc_params);
+    RUN_TEST(test_xs3_vect_s16_inverse);
+    RUN_TEST(test_xs3_vect_s32_inverse);
 
 }

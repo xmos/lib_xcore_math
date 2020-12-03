@@ -30,7 +30,7 @@ static char msg_buff[200];
 
 
 
-static void test_bfp_inverse_vect_s16()
+static void test_bfp_vect_s16_inverse()
 {
 
     PRINTF("%s...\n", __func__);
@@ -45,10 +45,10 @@ static void test_bfp_inverse_vect_s16()
 
         bfp_s16_t A, B;
 
-        bfp_init_vect_s16(&B, B_data, 
+        bfp_vect_s16_init(&B, B_data, 
                           pseudo_rand_int(&seed, -30, 30),
                           pseudo_rand_uint(&seed, 0, MAX_LEN-1), 0);
-        bfp_init_vect_s16(&A, A_data, 0, B.length, 0);
+        bfp_vect_s16_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
 
@@ -58,7 +58,7 @@ static void test_bfp_inverse_vect_s16()
                 B.data[i] = 1;
         }
 
-        bfp_inverse_vect_s16(&A, &B);
+        bfp_vect_s16_inverse(&A, &B);
 
         double expected_flt[MAX_LEN];
 
@@ -78,7 +78,7 @@ static void test_bfp_inverse_vect_s16()
 
 
 
-static void test_bfp_inverse_vect_s32()
+static void test_bfp_vect_s32_inverse()
 {
     PRINTF("%s...\n", __func__);
     seed = 47685;
@@ -92,10 +92,10 @@ static void test_bfp_inverse_vect_s32()
 
         bfp_s32_t A, B;
 
-        bfp_init_vect_s32(&B, B_data, 
+        bfp_vect_s32_init(&B, B_data, 
                           pseudo_rand_int(&seed, -30, 30),
                           pseudo_rand_uint(&seed, 0, MAX_LEN-1), 0);
-        bfp_init_vect_s32(&A, A_data, 0, B.length, 0);
+        bfp_vect_s32_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
@@ -105,7 +105,7 @@ static void test_bfp_inverse_vect_s32()
                 B.data[i] = 1;
         }
 
-        bfp_inverse_vect_s32(&A, &B);
+        bfp_vect_s32_inverse(&A, &B);
 
         double expected_flt[MAX_LEN];
 
@@ -130,7 +130,7 @@ void test_bfp_inverse_vect()
 {
     SET_TEST_FILE();
     
-    RUN_TEST(test_bfp_inverse_vect_s16);
-    RUN_TEST(test_bfp_inverse_vect_s32);
+    RUN_TEST(test_bfp_vect_s16_inverse);
+    RUN_TEST(test_bfp_vect_s32_inverse);
 
 }

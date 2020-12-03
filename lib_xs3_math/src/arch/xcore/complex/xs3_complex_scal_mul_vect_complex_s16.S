@@ -6,7 +6,7 @@
 
 /*  
 
-headroom_t xs3_complex_scal_mul_vect_complex_s16(
+headroom_t xs3_vect_complex_s16_complex_scal_mul(
     int16_t* a_real,
     int16_t* a_imag,
     const int16_t* b_real,
@@ -32,7 +32,7 @@ headroom_t xs3_complex_scal_mul_vect_complex_s16(
 #define STACK_VEC_C_IMAG    (NSTACKWORDS-24)
 #define STACK_VEC_C_IMAG_N  (NSTACKWORDS-32)
 
-#define FUNCTION_NAME xs3_complex_scal_mul_vect_complex_s16
+#define FUNCTION_NAME xs3_vect_complex_s16_complex_scal_mul
     
 #define a_real      r0
 #define a_imag      r1

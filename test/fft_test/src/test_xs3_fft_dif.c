@@ -58,7 +58,7 @@ void test_xs3_fft_dif_forward_complete()
             conv_vect_complex_s32_to_complex_double_v2(real, imag, a, FFT_N, exponent, &error);
             TEST_ASSERT_CONVERSION(error);
 
-            headroom_t headroom = xs3_headroom_vect_complex_s32(a, FFT_N);
+            headroom_t headroom = xs3_vect_complex_s32_headroom(a, FFT_N);
 
             Fft_transform(real, imag, FFT_N);
 
@@ -82,7 +82,7 @@ void test_xs3_fft_dif_forward_complete()
 
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
 
-            TEST_ASSERT_EQUAL_MESSAGE(xs3_headroom_vect_complex_s32(a, FFT_N), headroom, "Reported headroom was incorrect.");
+            TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(a, FFT_N), headroom, "Reported headroom was incorrect.");
         }
 
 #if PRINT_ERRORS
@@ -135,7 +135,7 @@ void test_xs3_fft_dif_inverse_complete()
             conv_vect_complex_s32_to_complex_double_v2(real, imag, a, FFT_N, exponent, &error);
             TEST_ASSERT_CONVERSION(error);
             
-            headroom_t headroom = xs3_headroom_vect_complex_s32(a, FFT_N);
+            headroom_t headroom = xs3_vect_complex_s32_headroom(a, FFT_N);
 
             flt_bit_reverse_indexes_double(A, FFT_N);
             flt_fft_inverse_double(A, FFT_N, sine_table);
@@ -165,7 +165,7 @@ void test_xs3_fft_dif_inverse_complete()
             if(diff > worst_case) { worst_case = diff;  }
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
 
-            TEST_ASSERT_EQUAL_MESSAGE(xs3_headroom_vect_complex_s32(a, FFT_N), headroom, "Reported headroom was incorrect.");
+            TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(a, FFT_N), headroom, "Reported headroom was incorrect.");
         }
 
 
@@ -219,7 +219,7 @@ void test_xs3_fft_dif_forward()
             conv_vect_complex_s32_to_complex_double(A, a, FFT_N, exponent, &error);
             TEST_ASSERT_CONVERSION(error);
             
-            headroom_t headroom = xs3_headroom_vect_complex_s32(a, FFT_N);
+            headroom_t headroom = xs3_vect_complex_s32_headroom(a, FFT_N);
 
             flt_bit_reverse_indexes_double(A, FFT_N);
             flt_fft_forward_double(A, FFT_N, sine_table);
@@ -236,7 +236,7 @@ void test_xs3_fft_dif_forward()
             TEST_ASSERT_CONVERSION(error);
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
 
-            TEST_ASSERT_EQUAL_MESSAGE(xs3_headroom_vect_complex_s32(a, FFT_N), headroom, "Reported headroom was incorrect.");
+            TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(a, FFT_N), headroom, "Reported headroom was incorrect.");
         }
 
 #if TIME_FUNCS
@@ -286,7 +286,7 @@ void test_xs3_fft_dif_inverse()
             conv_vect_complex_s32_to_complex_double(A, a, FFT_N, exponent, &error);
             TEST_ASSERT_CONVERSION(error);
             
-            headroom_t headroom = xs3_headroom_vect_complex_s32(a, FFT_N);
+            headroom_t headroom = xs3_vect_complex_s32_headroom(a, FFT_N);
             
             flt_bit_reverse_indexes_double(A, FFT_N);
             flt_fft_inverse_double(A, FFT_N, sine_table);
@@ -303,7 +303,7 @@ void test_xs3_fft_dif_inverse()
             TEST_ASSERT_CONVERSION(error);
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
 
-            TEST_ASSERT_EQUAL_MESSAGE(xs3_headroom_vect_complex_s32(a, FFT_N), headroom, "Reported headroom was incorrect.");
+            TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(a, FFT_N), headroom, "Reported headroom was incorrect.");
         }
 #if TIME_FUNCS
         printf("    %s (%u-point): %f us\n", __func__, FFT_N, worst_timing);

@@ -36,7 +36,7 @@ static int64_t mul_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 
 
 WEAK_FUNC
-int64_t xs3_dot_s16(
+int64_t xs3_vect_s16_dot(
     const int16_t b[],
     const int16_t c[],
     const unsigned length,
@@ -52,7 +52,7 @@ int64_t xs3_dot_s16(
 
 
 WEAK_FUNC
-int64_t xs3_dot_s32(
+int64_t xs3_vect_s32_dot(
     const int32_t b[],
     const int32_t c[],
     const unsigned length,

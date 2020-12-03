@@ -9,27 +9,27 @@
 
 
 
-int32_t bfp_abs_sum_s16(
+int32_t bfp_vect_s16_abs_sum(
     const bfp_s16_t* b)
 {
-    return xs3_abs_sum_s16(b->data, b->length);
+    return xs3_vect_s16_abs_sum(b->data, b->length);
 }
 
 
 
-int64_t bfp_abs_sum_s32(
+int64_t bfp_vect_s32_abs_sum(
     const bfp_s32_t* b)
 {
-    return xs3_abs_sum_s32(b->data, b->length);
+    return xs3_vect_s32_abs_sum(b->data, b->length);
 }
 
 
 
-int16_t bfp_mean_s16(
+int16_t bfp_vect_s16_mean(
     exponent_t* a_exp,
     const bfp_s16_t* b)
 {
-    int32_t sum = xs3_sum_s16(b->data, b->length);
+    int32_t sum = xs3_vect_s16_sum(b->data, b->length);
 
     headroom_t hr = HR_S32(sum) + 32;
     int64_t sum64 = ((int64_t)sum) << hr;
@@ -47,11 +47,11 @@ int16_t bfp_mean_s16(
 }
 
 
-int32_t bfp_mean_s32(
+int32_t bfp_vect_s32_mean(
     exponent_t* a_exp,
     const bfp_s32_t* b)
 {
-    int64_t sum = xs3_sum_s32(b->data, b->length);
+    int64_t sum = xs3_vect_s32_sum(b->data, b->length);
     
     headroom_t hr = HR_S64(sum);
     sum = sum << hr;
@@ -69,23 +69,23 @@ int32_t bfp_mean_s32(
 
 }
 
-int64_t bfp_energy_s16(
+int64_t bfp_vect_s16_energy(
     exponent_t* a_exp,
     const bfp_s16_t* b)
 {
     *a_exp = 2*b->exp;
-    return xs3_dot_s16(b->data, b->data, b->length, 2*b->hr);
+    return xs3_vect_s16_dot(b->data, b->data, b->length, 2*b->hr);
 }
 
-int64_t bfp_energy_s32(
+int64_t bfp_vect_s32_energy(
     exponent_t* a_exp,
     const bfp_s32_t* b)
 {
     right_shift_t b_shr;
-    xs3_energy_s32_calc_params(a_exp, &b_shr, b->length, b->exp, b->hr);
+    xs3_vect_s32_energy_calc_params(a_exp, &b_shr, b->length, b->exp, b->hr);
 
     assert(b_shr + ((int)b->hr) >= 0);
-    return xs3_energy_s32(b->data, b->length, b_shr);
+    return xs3_vect_s32_energy(b->data, b->length, b_shr);
 }
 
 
@@ -95,12 +95,12 @@ int64_t bfp_energy_s32(
 
 
 
-int32_t bfp_rms_s16(
+int32_t bfp_vect_s16_rms(
     exponent_t* a_exp,
     const bfp_s16_t* b)
 {
     exponent_t exp, len_inv_exp;
-    const int64_t energy64 = bfp_energy_s16(&exp, b);
+    const int64_t energy64 = bfp_vect_s16_energy(&exp, b);
     const int32_t energy32 = xs3_scalar_s64_to_s32(&exp, energy64, exp);
     const int32_t len_inv = xs3_inverse_s32(&len_inv_exp, b->length);
     const int32_t mean_energy = xs3_mul_s32(&exp, energy32, len_inv, exp, len_inv_exp);
@@ -108,12 +108,12 @@ int32_t bfp_rms_s16(
     return xs3_sqrt_s32(a_exp, mean_energy, exp, XS3_BFP_SQRT_DEPTH_S32);
 }
 
-int32_t bfp_rms_s32(
+int32_t bfp_vect_s32_rms(
     exponent_t* a_exp,
     const bfp_s32_t* b)
 {
     exponent_t exp, len_inv_exp;
-    const int64_t energy64 = bfp_energy_s32(&exp, b);
+    const int64_t energy64 = bfp_vect_s32_energy(&exp, b);
     const int32_t energy32 = xs3_scalar_s64_to_s32(&exp, energy64, exp);
     const int32_t len_inv = xs3_inverse_s32(&len_inv_exp, b->length);
     const int32_t mean_energy = xs3_mul_s32(&exp, energy32, len_inv, exp, len_inv_exp);
@@ -130,52 +130,52 @@ int32_t bfp_rms_s32(
 
 
 
-int16_t bfp_max_s16(
+int16_t bfp_vect_s16_max(
     const bfp_s16_t* b)
 {
-    return xs3_max_s16(b->data, b->length);
+    return xs3_vect_s16_max(b->data, b->length);
 }
 
-int32_t bfp_max_s32(
+int32_t bfp_vect_s32_max(
     const bfp_s32_t* b)
 {
-    return xs3_max_s32(b->data, b->length);
+    return xs3_vect_s32_max(b->data, b->length);
 }
 
 
-int16_t bfp_min_s16(
+int16_t bfp_vect_s16_min(
     const bfp_s16_t* b)
 {
-    return xs3_min_s16(b->data, b->length);
+    return xs3_vect_s16_min(b->data, b->length);
 }
 
-int32_t bfp_min_s32(
+int32_t bfp_vect_s32_min(
     const bfp_s32_t* b)
 {
-    return xs3_min_s32(b->data, b->length);
+    return xs3_vect_s32_min(b->data, b->length);
 }
 
 
-unsigned bfp_argmax_s16(
+unsigned bfp_vect_s16_argmax(
     const bfp_s16_t* b)
 {
-    return xs3_argmax_s16(b->data, b->length);
+    return xs3_vect_s16_argmax(b->data, b->length);
 }
 
-unsigned bfp_argmax_s32(
+unsigned bfp_vect_s32_argmax(
     const bfp_s32_t* b)
 {
-    return xs3_argmax_s32(b->data, b->length);
+    return xs3_vect_s32_argmax(b->data, b->length);
 }
 
-unsigned bfp_argmin_s16(
+unsigned bfp_vect_s16_argmin(
     const bfp_s16_t* b)
 {
-    return xs3_argmin_s16(b->data, b->length);
+    return xs3_vect_s16_argmin(b->data, b->length);
 }
 
-unsigned bfp_argmin_s32(
+unsigned bfp_vect_s32_argmin(
     const bfp_s32_t* b)
 {
-    return xs3_argmin_s32(b->data, b->length);
+    return xs3_vect_s32_argmin(b->data, b->length);
 }

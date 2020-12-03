@@ -10,7 +10,7 @@
 
 
 WEAK_FUNC
-headroom_t xs3_sqrt_vect_s16(
+headroom_t xs3_vect_s16_sqrt(
     int16_t a[],
     const int16_t b[],
     const unsigned length,
@@ -43,12 +43,12 @@ headroom_t xs3_sqrt_vect_s16(
         }
     }
 
-    return xs3_headroom_vect_s16(a, length);
+    return xs3_vect_s16_headroom(a, length);
 
 }
 
 WEAK_FUNC
-headroom_t xs3_sqrt_vect_s32(
+headroom_t xs3_vect_s32_sqrt(
     int32_t a[],
     const int32_t b[],
     const unsigned length,
@@ -80,5 +80,5 @@ headroom_t xs3_sqrt_vect_s32(
         }
     }
 
-    return xs3_headroom_vect_s32(a, length);
+    return xs3_vect_s32_headroom(a, length);
 }

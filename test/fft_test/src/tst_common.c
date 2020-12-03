@@ -74,7 +74,7 @@ void test_random_bfp_s16(
     for(int i = 0; i < length; i++)
         B->data[i] = pseudo_rand_int16(seed) >> shr;
     
-    bfp_init_vect_s16(B, B->data, exponent, length, 1);
+    bfp_vect_s16_init(B, B->data, exponent, length, 1);
 
     if(A != NULL){
         A->length = B->length;
@@ -102,7 +102,7 @@ void test_random_bfp_s32(
     for(int i = 0; i < length; i++)
         B->data[i] = pseudo_rand_int32(seed) >> shr;
     
-    bfp_init_vect_s32(B, B->data, exponent, length, 1);
+    bfp_vect_s32_init(B, B->data, exponent, length, 1);
 
     if(A != NULL){
         A->length = B->length;
@@ -131,7 +131,7 @@ void test_random_bfp_complex_s16(
         B->imag[i] = pseudo_rand_int16(seed) >> shr;
     }
 
-    bfp_init_vect_complex_s16(B, B->real, B->imag, exponent, length, 1);
+    bfp_vect_complex_s16_init(B, B->real, B->imag, exponent, length, 1);
 
     if(A != NULL){
         A->length = B->length;
@@ -162,7 +162,7 @@ void test_random_bfp_complex_s32(
         B->data[i].im = pseudo_rand_int32(seed) >> shr;
     }
     
-    bfp_init_vect_complex_s32(B, B->data, exponent, length, 1);
+    bfp_vect_complex_s32_init(B, B->data, exponent, length, 1);
 
     if(A != NULL){
         A->length = B->length;
@@ -193,7 +193,7 @@ void test_random_bfp_ch_pair_s16(
         B->data[i].ch_b = pseudo_rand_int16(seed) >> shr;
     }
     
-    bfp_init_vect_ch_pair_s16(B, B->data, exponent, length, 1);
+    bfp_vect_ch_pair_s16_init(B, B->data, exponent, length, 1);
 
     if(A != NULL){
         A->length = B->length;
@@ -224,7 +224,7 @@ void test_random_bfp_ch_pair_s32(
         B->data[i].ch_b = pseudo_rand_int32(seed) >> shr;
     }
     
-    bfp_init_vect_ch_pair_s32(B, B->data, exponent, length, 1);
+    bfp_vect_ch_pair_s32_init(B, B->data, exponent, length, 1);
 
     if(A != NULL){
         A->length = B->length;

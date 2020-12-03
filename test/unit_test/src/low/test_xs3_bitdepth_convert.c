@@ -35,7 +35,7 @@ static char msg_buff[200];
 
 
 
-static void test_xs3_s16_to_s32_basic()
+static void test_xs3_vect_s16_to_s32_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -81,7 +81,7 @@ static void test_xs3_s16_to_s32_basic()
                 A[i] = 0xCCCCCCCC;
             }
 
-            xs3_s16_to_s32(A, B, len);
+            xs3_vect_s16_to_s32(A, B, len);
 
             for(int k = 0; k < MAX_LEN; k++){
                 int32_t exp = k < len? ((int32_t)casse->input) << 8 : 0xCCCCCCCC;
@@ -97,7 +97,7 @@ static void test_xs3_s16_to_s32_basic()
 
 
 
-static void test_xs3_s16_to_s32_random()
+static void test_xs3_vect_s16_to_s32_random()
 {
     PRINTF("%s...\n", __func__);
     unsigned seed = 778;
@@ -117,7 +117,7 @@ static void test_xs3_s16_to_s32_random()
         }
 
         memset(A, 0xCC, sizeof(A));
-        xs3_s16_to_s32(A, B, len);
+        xs3_vect_s16_to_s32(A, B, len);
 
         for(int k = 0; k < MAX_LEN; k++){
             int32_t exp = k < len? ((int32_t)B[k]) << 8 : 0xCCCCCCCC;
@@ -128,7 +128,7 @@ static void test_xs3_s16_to_s32_random()
 
 
 
-static void test_xs3_s32_to_s16_basic()
+static void test_xs3_vect_s32_to_s16_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -177,14 +177,14 @@ static void test_xs3_s32_to_s16_basic()
                 A[i] = 0xCCCC;
             }
 
-            xs3_s32_to_s16(A, B, len, casse->b_shr);
+            xs3_vect_s32_to_s16(A, B, len, casse->b_shr);
 
             for(int k = 0; k < len; k++)
                 TEST_ASSERT_EQUAL_MESSAGE(casse->expected, A[k], buff);
             for(int k = len; k < MAX_LEN; k++)
                 TEST_ASSERT_EQUAL_MESSAGE((int16_t)0xCCCC, A[k], buff);
 
-            xs3_s32_to_s16((int16_t*)B, B, len, casse->b_shr);
+            xs3_vect_s32_to_s16((int16_t*)B, B, len, casse->b_shr);
 
             for(int k = 0; k < len; k++)
                 TEST_ASSERT_EQUAL_MESSAGE(casse->expected, ((int16_t*)B)[k], buff);
@@ -199,8 +199,8 @@ void test_xs3_bitdepth_convert()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_s16_to_s32_basic);
-    RUN_TEST(test_xs3_s16_to_s32_random);
+    RUN_TEST(test_xs3_vect_s16_to_s32_basic);
+    RUN_TEST(test_xs3_vect_s16_to_s32_random);
 
-    RUN_TEST(test_xs3_s32_to_s16_basic);
+    RUN_TEST(test_xs3_vect_s32_to_s16_basic);
 }

@@ -4,7 +4,7 @@
 
 
 /*
-    int64_t xs3_sum_s32(
+    int64_t xs3_vect_s32_sum(
         const int32_t b[],
         const unsigned length);
 */
@@ -13,7 +13,7 @@
 #include "asm_helper.h"
 
 
-#define FUNCTION_NAME   xs3_sum_s32
+#define FUNCTION_NAME   xs3_vect_s32_sum
 #define NSTACKWORDS     (16)
 
 

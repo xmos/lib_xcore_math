@@ -88,7 +88,7 @@ headroom_t xs3_headroom_s64(
  * 
  * @return    Number of leading sign bits of `a`. 
  */
-headroom_t bfp_headroom_vect_s16(
+headroom_t bfp_vect_s16_headroom(
     bfp_s16_t* a);
 
 
@@ -101,7 +101,7 @@ headroom_t bfp_headroom_vect_s16(
  * 
  * @return    Number of leading sign bits of `a`. 
  */
-headroom_t bfp_headroom_vect_s32(
+headroom_t bfp_vect_s32_headroom(
     bfp_s32_t* a);
 
 
@@ -118,7 +118,7 @@ headroom_t bfp_headroom_vect_s32(
  * 
  * The operation saturates to 16-bit bounds.
  * 
- * Both `bfp_s16_t` vectors must already have been initialized using `bfp_init_vect_s16()`.
+ * Both `bfp_s16_t` vectors must already have been initialized using `bfp_vect_s16_init()`.
  * 
  * @bfp_op{16, @f$ \bar A \leftarrow \bar B \cdot 2^\{shl\}  @f$ }
  * 
@@ -128,7 +128,7 @@ headroom_t bfp_headroom_vect_s32(
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  * @param[in]  shl   Number of bits to left shift
  */
-void bfp_shl_vect_s16(
+void bfp_vect_s16_shl(
     bfp_s16_t* a,
     const bfp_s16_t* b,
     const left_shift_t shl);
@@ -146,7 +146,7 @@ void bfp_shl_vect_s16(
  * 
  * The operation saturates to 32-bit bounds.
  * 
- * Both `bfp_s32_t` vectors must already have been initialized using `bfp_init_vect_s32()`.
+ * Both `bfp_s32_t` vectors must already have been initialized using `bfp_vect_s32_init()`.
  * 
  * @bfp_op{32, @f$ \bar A \leftarrow \bar B \cdot 2^\{shl\}  @f$ }
  * 
@@ -156,7 +156,7 @@ void bfp_shl_vect_s16(
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  * @param[in]  shl   Number of bits to left shift
  */
-void bfp_shl_vect_s32(
+void bfp_vect_s32_shl(
     bfp_s32_t* a,
     const bfp_s32_t* b,
     const left_shift_t shl);
@@ -183,7 +183,7 @@ void bfp_shl_vect_s32(
  * (enabled by default), this function will detect and avoid corner case saturation (see \ref saturation).
  *  
  * All three `bfp_s16_t` vectors (including the one to which `a` points) must already have been initialized 
- * using `bfp_init_vect_s16()`.
+ * using `bfp_vect_s16_init()`.
  * 
  * @bfp_op{16, @f$ \bar A \leftarrow \bar B + \bar C  @f$ }
  * 
@@ -193,7 +193,7 @@ void bfp_shl_vect_s32(
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  * @param[in]  c     Input BFP vector @bfp_vec{C}
  */
-void bfp_add_vect_s16(
+void bfp_vect_s16_add(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const bfp_s16_t* c);
@@ -219,7 +219,7 @@ void bfp_add_vect_s16(
  * (enabled by default), this function will detect and avoid corner case saturation (see \ref saturation).
  *  
  * All three `bfp_s32_t` vectors (including the one to which `a` points) must already have been initialized 
- * using `bfp_init_vect_s32()`.
+ * using `bfp_vect_s32_init()`.
  * 
  * @bfp_op{32, @f$ \bar A \leftarrow \bar B + \bar C  @f$ }
  * 
@@ -229,7 +229,7 @@ void bfp_add_vect_s16(
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  * @param[in]  c     Input BFP vector @bfp_vec{C}
  */
-void bfp_add_vect_s32(
+void bfp_vect_s32_add(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
@@ -253,7 +253,7 @@ void bfp_add_vect_s32(
  * @bfp_vec{B} dictates the number of elements to be updated.
  *  
  * All three `bfp_s16_t` vectors (including the one to which `a` points) must already have been initialized 
- * using `bfp_init_vect_s16()`.
+ * using `bfp_vect_s16_init()`.
  * 
  * @bfp_op{16, @f$ \bar A \leftarrow \bar B - \bar C  @f$ }
  * 
@@ -263,7 +263,7 @@ void bfp_add_vect_s32(
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  * @param[in]  c     Input BFP vector @bfp_vec{C}
  */
-void bfp_sub_vect_s16(
+void bfp_vect_s16_sub(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const bfp_s16_t* c);
@@ -285,7 +285,7 @@ void bfp_sub_vect_s16(
  * @bfp_vec{B} dictates the number of elements to be updated.
  *  
  * All three `bfp_s32_t` vectors (including the one to which `a` points) must already have been initialized 
- * using `bfp_init_vect_s32()`.
+ * using `bfp_vect_s32_init()`.
  * 
  * @bfp_op{32, @f$ \bar A \leftarrow \bar B - \bar C  @f$ }
  * 
@@ -295,7 +295,7 @@ void bfp_sub_vect_s16(
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  * @param[in]  c     Input BFP vector @bfp_vec{C}
  */
-void bfp_sub_vect_s32(
+void bfp_vect_s32_sub(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
@@ -316,7 +316,7 @@ void bfp_sub_vect_s32(
  * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
  * @bfp_vec{B} dictates the number of elements to be updated.
  *  
- * All three `bfp_s16_t` vectors must already have been initialized using `bfp_init_vect_s16()`.
+ * All three `bfp_s16_t` vectors must already have been initialized using `bfp_vect_s16_init()`.
  * 
  * @bfp_op{16, @f$ A_k \leftarrow B_k \cdot C_k  \qquad\text{ for } k\in 0 .. \left(B_\{length\}-1\right)@f$ }
  * 
@@ -326,7 +326,7 @@ void bfp_sub_vect_s32(
  * @param b     Input BFP vector @bfp_vec{B}
  * @param c     Input BFP vector @bfp_vec{C}
  */
-void bfp_mul_vect_s16(
+void bfp_vect_s16_mul(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const bfp_s16_t* c);
@@ -348,7 +348,7 @@ void bfp_mul_vect_s16(
  * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
  * @bfp_vec{B} dictates the number of elements to be updated.
  *  
- * All three `bfp_s32_t` vectors must already have been initialized using `bfp_init_vect_s32()`.
+ * All three `bfp_s32_t` vectors must already have been initialized using `bfp_vect_s32_init()`.
  * 
  * @bfp_op{32, @f$ A_k \leftarrow B_k \cdot C_k  \qquad\text{ for } k\in 0 .. \left(B_\{length\}-1\right)@f$ }
  * 
@@ -358,7 +358,7 @@ void bfp_mul_vect_s16(
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  * @param[in]  c     Input BFP vector @bfp_vec{C}
  */
-void bfp_mul_vect_s32(
+void bfp_vect_s32_mul(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
@@ -379,7 +379,7 @@ void bfp_mul_vect_s32(
  * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
  * @bfp_vec{B} dictates the number of elements to be updated.
  *  
- * Both `bfp_s16_t` must already have been initialized using `bfp_init_vect_s16()`.
+ * Both `bfp_s16_t` must already have been initialized using `bfp_vect_s16_init()`.
  * 
  * @bfp_op{16, @f$ \bar A\leftarrow \alpha \bar B@f$ }
  * 
@@ -390,7 +390,7 @@ void bfp_mul_vect_s32(
  * @param[in]  alpha_mant    Input BFP vector @bfp_vec{C}
  * @param[in]  alpha_exp     Input BFP vector @bfp_vec{C}
  */
-void bfp_scalar_mul_vect_s16(
+void bfp_vect_s16_scalar_mul(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const int16_t alpha_mant,
@@ -411,7 +411,7 @@ void bfp_scalar_mul_vect_s16(
  * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
  * @bfp_vec{B} dictates the number of elements to be updated.
  *  
- * Both `bfp_s32_t` must already have been initialized using `bfp_init_vect_s32()`.
+ * Both `bfp_s32_t` must already have been initialized using `bfp_vect_s32_init()`.
  * 
  * @bfp_op{32, @f$ \bar A\leftarrow \alpha \bar B@f$ }
  * 
@@ -422,7 +422,7 @@ void bfp_scalar_mul_vect_s16(
  * @param[in]  alpha_mant    Input BFP vector @bfp_vec{C}
  * @param[in]  alpha_exp     Input BFP vector @bfp_vec{C}
  */
-void bfp_scalar_mul_vect_s32(
+void bfp_vect_s32_scalar_mul(
     bfp_s32_t* a, 
     const bfp_s32_t* b,
     const int32_t alpha_mant,
@@ -448,7 +448,7 @@ void bfp_scalar_mul_vect_s32(
  * The corner case condition is detected if `b->hr == 0`, as a mantissa value of `-0x4000` would saturate 
  * to `0x3FFF`.
  *  
- * Both `bfp_s16_t` vectors must already have been initialized using `bfp_init_vect_s16()`.
+ * Both `bfp_s16_t` vectors must already have been initialized using `bfp_vect_s16_init()`.
  * 
  * @bfp_op{16, @f$ a_k \leftarrow \left|b_k\right|  \qquad\text{ for } k\in 0 .. \left(B_\{length\}-1\right)@f$ }
  * 
@@ -457,7 +457,7 @@ void bfp_scalar_mul_vect_s32(
  * @param[out] a     Output BFP vector @bfp_vec{A}
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  */
-void bfp_abs_vect_s16(
+void bfp_vect_s16_abs(
     bfp_s16_t* a,
     const bfp_s16_t* b);
 
@@ -480,7 +480,7 @@ void bfp_abs_vect_s16(
  * The corner case condition is detected if `b->hr == 0`, as a mantissa value of `-0x40000000` would saturate 
  * to `0x3FFFFFFF`.
  *  
- * Both `bfp_s32_t` vectors must already have been initialized using `bfp_init_vect_s32()`.
+ * Both `bfp_s32_t` vectors must already have been initialized using `bfp_vect_s32_init()`.
  * 
  * @bfp_op{32, @f$ a_k \leftarrow \left|b_k\right|  \qquad\text{ for } k\in 0 .. \left(B_\{length\}-1\right)@f$ }
  * 
@@ -489,7 +489,7 @@ void bfp_abs_vect_s16(
  * @param[out] a     Output BFP vector @bfp_vec{A}
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  */
-void bfp_abs_vect_s32(
+void bfp_vect_s32_abs(
     bfp_s32_t* a,
     const bfp_s32_t* b);
 
@@ -505,7 +505,7 @@ void bfp_abs_vect_s32(
  * 
  * @return  Sum of mantissas of @bfp_vec{B}
  */
-int32_t bfp_sum_s16(
+int32_t bfp_vect_s16_sum(
     const bfp_s16_t* b);
 
 /** 
@@ -521,7 +521,7 @@ int32_t bfp_sum_s16(
  * 
  * @return  Sum of mantissas of @bfp_vec{B}
  */
-int64_t bfp_sum_s32(
+int64_t bfp_vect_s32_sum(
     const bfp_s32_t* b);
 
 
@@ -540,7 +540,7 @@ int64_t bfp_sum_s32(
  * 
  * @return The 32-bit mantissa of the inner product.
  */
-int64_t bfp_dot_s16(
+int64_t bfp_vect_s16_dot(
     exponent_t* a_exp,
     const bfp_s16_t* b, 
     const bfp_s16_t* c);
@@ -560,7 +560,7 @@ int64_t bfp_dot_s16(
  * 
  * @return The 40-bit mantissa of the inner product.
  */
-int64_t bfp_dot_s32(
+int64_t bfp_vect_s32_dot(
     exponent_t* a_exp,
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
@@ -591,7 +591,7 @@ int64_t bfp_dot_s32(
  * @param[in]  upper_bound   Mantissa of the upper clipping bound
  * @param[in]  bound_exp     Shared exponent of the clipping bounds
  */
-void bfp_clip_vect_s16(
+void bfp_vect_s16_clip(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const int16_t lower_bound, 
@@ -622,7 +622,7 @@ void bfp_clip_vect_s16(
  * @param[in]  upper_bound   Mantissa of the upper clipping bound
  * @param[in]  bound_exp     Shared exponent of the clipping bounds
  */
-void bfp_clip_vect_s32(
+void bfp_vect_s32_clip(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
     const int32_t lower_bound, 
@@ -642,7 +642,7 @@ void bfp_clip_vect_s32(
  * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
  * @bfp_vec{B} dictates the number of elements to be updated.
  *  
- * Both `bfp_s16_t` vectors must already have been initialized using `bfp_init_vect_s16()`.
+ * Both `bfp_s16_t` vectors must already have been initialized using `bfp_vect_s16_init()`.
  * 
  * @bfp_op{16, @f$ a_k \leftarrow \begin\{cases\}b_k & b_k \gt 0 \\ 
  *                                  0 & b_k \leq 0\end\{cases\} 
@@ -653,7 +653,7 @@ void bfp_clip_vect_s32(
  * @param[out] a     Output BFP vector @bfp_vec{A}
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  */
-void bfp_rect_vect_s16(
+void bfp_vect_s16_rect(
     bfp_s16_t* a,
     const bfp_s16_t* b);
 
@@ -670,7 +670,7 @@ void bfp_rect_vect_s16(
  * the length of @bfp_vec{A} is updated to the length of @bfp_vec{B}. In either case, the length of 
  * @bfp_vec{B} dictates the number of elements to be updated.
  *  
- * Both `bfp_s16_t` vectors must already have been initialized using `bfp_init_vect_s16()`.
+ * Both `bfp_s16_t` vectors must already have been initialized using `bfp_vect_s16_init()`.
  * 
  * @bfp_op{32, @f$ a_k \leftarrow \begin\{cases\}b_k & b_k \gt 0 \\ 
  *                                  0 & b_k \leq 0\end\{cases\} 
@@ -681,7 +681,7 @@ void bfp_rect_vect_s16(
  * @param[out] a     Output BFP vector @bfp_vec{A}
  * @param[in]  b     Input BFP vector @bfp_vec{B}
  */
-void bfp_rect_vect_s32(
+void bfp_vect_s32_rect(
     bfp_s32_t* a, 
     const bfp_s32_t* b);
 
@@ -702,7 +702,7 @@ void bfp_rect_vect_s32(
  * Otherwise all headroom is removed.
  *  
  * Vectors @bfp_vec{A} and vector @bfp_vec{B} must already have been initialized using 
- * `bfp_init_vect_s16()` and `bfp_init_vect_s32()` respectively.
+ * `bfp_vect_s16_init()` and `bfp_vect_s32_init()` respectively.
  * 
  * @bfp_op{32, @f$ \bar A \overset\{16-bit\}\{\longleftarrow\} \bar B@f$ }
  * 
@@ -730,7 +730,7 @@ void bfp_s32_to_s16(
  * @bfp_vec{B} dictates the number of elements to be updated.
  *  
  * Vectors @bfp_vec{A} and vector @bfp_vec{B} must already have been initialized using 
- * `bfp_init_vect_s32()` and `bfp_init_vect_s16()` respectively.
+ * `bfp_vect_s32_init()` and `bfp_vect_s16_init()` respectively.
  * 
  * @bfp_op{16, @f$ \bar A \overset\{32-bit\}\{\longleftarrow\} \bar B@f$ }
  * 
@@ -743,22 +743,22 @@ void bfp_s16_to_s32(
 
 
 
-void bfp_sqrt_vect_s16(
+void bfp_vect_s16_sqrt(
     bfp_s16_t* a,
     const bfp_s16_t* b);
 
 
-void bfp_sqrt_vect_s32(
+void bfp_vect_s32_sqrt(
     bfp_s32_t* a,
     const bfp_s32_t* b);
 
 
-void bfp_inverse_vect_s16(
+void bfp_vect_s16_inverse(
     bfp_s16_t* a,
     const bfp_s16_t* b);
 
 
-void bfp_inverse_vect_s32(
+void bfp_vect_s32_inverse(
     bfp_s32_t* a,
     const bfp_s32_t* b);
 

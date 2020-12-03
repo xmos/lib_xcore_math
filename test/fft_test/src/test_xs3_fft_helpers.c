@@ -159,7 +159,7 @@ void test_xs3_fft_spectra_split()
             TEST_ASSERT_CONVERSION(error);
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(1, diff, "Output delta is too large");
 
-            headroom_t exp_hr = xs3_headroom_vect_s32((int32_t*)a,2*N);
+            headroom_t exp_hr = xs3_vect_s32_headroom((int32_t*)a,2*N);
             TEST_ASSERT_EQUAL_MESSAGE(exp_hr, got_hr, "Headroom error");
 
             if(diff > worst_error) worst_error = diff;
@@ -221,7 +221,7 @@ void test_xs3_fft_spectra_merge()
             TEST_ASSERT_CONVERSION(error);
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k, diff, "Output delta is too large");
 
-            headroom_t exp_hr = xs3_headroom_vect_s32((int32_t*)a,2*N);
+            headroom_t exp_hr = xs3_vect_s32_headroom((int32_t*)a,2*N);
             TEST_ASSERT_EQUAL_MESSAGE(exp_hr, got_hr, "Headroom error");
 
             if(diff > worst_error) worst_error = diff;

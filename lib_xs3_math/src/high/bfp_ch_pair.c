@@ -9,39 +9,24 @@
 
 
 
-headroom_t xs3_headroom_ch_pair_s16(
-    const ch_pair_s16_t a)
-{
-    complex_s16_t* b = (complex_s16_t*) &a;
-    return HR_C16( *b);
-}
 
 
-headroom_t xs3_headroom_ch_pair_s32(
-    const ch_pair_s32_t a)
-{
-    complex_s32_t* b = (complex_s32_t*) &a;
-    return HR_C32( *b);
-}
-
-
-
-headroom_t bfp_headroom_vect_ch_pair_s16(
+headroom_t bfp_vect_ch_pair_s16_headroom(
     bfp_ch_pair_s16_t* a)
 {
-    a->hr = xs3_headroom_vect_ch_pair_s16(a->data, a->length);
+    a->hr = xs3_vect_ch_pair_s16_headroom(a->data, a->length);
     return a->hr;
 }
 
 
-headroom_t bfp_headroom_vect_ch_pair_s32(
+headroom_t bfp_vect_ch_pair_s32_headroom(
     bfp_ch_pair_s32_t* a)
 {
-    a->hr = xs3_headroom_vect_ch_pair_s32(a->data, a->length);
+    a->hr = xs3_vect_ch_pair_s32_headroom(a->data, a->length);
     return a->hr;
 }
 
-void bfp_shl_vect_ch_pair_s16(
+void bfp_vect_ch_pair_s16_shl(
     bfp_ch_pair_s16_t* a,
     const bfp_ch_pair_s16_t* b,
     const left_shift_t shl)
@@ -52,10 +37,10 @@ void bfp_shl_vect_ch_pair_s16(
 
     a->length = b->length;
     a->exp = b->exp;
-    a->hr = xs3_shl_vect_ch_pair_s16(a->data, b->data, b->length, shl);
+    a->hr = xs3_vect_ch_pair_s16_shl(a->data, b->data, b->length, shl);
 }
 
-void bfp_shl_vect_ch_pair_s32(
+void bfp_vect_ch_pair_s32_shl(
     bfp_ch_pair_s32_t* a,
     const bfp_ch_pair_s32_t* b,
     const left_shift_t shl)
@@ -66,5 +51,5 @@ void bfp_shl_vect_ch_pair_s32(
 
     a->length = b->length;
     a->exp = b->exp;
-    a->hr = xs3_shl_vect_ch_pair_s32(a->data, b->data, b->length, shl);
+    a->hr = xs3_vect_ch_pair_s32_shl(a->data, b->data, b->length, shl);
 }

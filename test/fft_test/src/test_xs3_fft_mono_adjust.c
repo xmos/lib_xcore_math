@@ -66,7 +66,7 @@ void test_xs3_fft_mono_adjust_forward()
             }
             TEST_ASSERT_CONVERSION(error);
 
-            headroom = xs3_headroom_vect_s32(a, N);
+            headroom = xs3_vect_s32_headroom(a, N);
 
             diff = abs_diff_vect_complex_s32((complex_s32_t*)a, exponent, (complex_double_t*) ref1, N/2, &error);
             TEST_ASSERT_CONVERSION(error);

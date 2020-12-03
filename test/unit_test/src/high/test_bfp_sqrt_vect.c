@@ -30,7 +30,7 @@ static char msg_buff[200];
 
 
 
-static void test_bfp_sqrt_vect_s16()
+static void test_bfp_vect_s16_sqrt()
 {
 
     PRINTF("%s...\n", __func__);
@@ -45,10 +45,10 @@ static void test_bfp_sqrt_vect_s16()
     for(int v = 0; v < REPS; v++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
 
-        bfp_init_vect_s16(&B, B_data, pseudo_rand_int(&seed, -30, 30),
+        bfp_vect_s16_init(&B, B_data, pseudo_rand_int(&seed, -30, 30),
                                       pseudo_rand_uint(&seed, 0, MAX_LEN-1), 0);
 
-        bfp_init_vect_s16(&A, A_data, 0, B.length, 0);
+        bfp_vect_s16_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 4);
 
@@ -56,11 +56,11 @@ static void test_bfp_sqrt_vect_s16()
             B_data[i] = pseudo_rand_uint(&seed, INT16_MAX / 10, INT16_MAX) >> B.hr;
         }
 
-        bfp_headroom_vect_s16(&B);
+        bfp_vect_s16_headroom(&B);
 
-        bfp_sqrt_vect_s16(&A, &B);
+        bfp_vect_s16_sqrt(&A, &B);
 
-        TEST_ASSERT_EQUAL(bfp_headroom_vect_s16(&A), A.hr);
+        TEST_ASSERT_EQUAL(bfp_vect_s16_headroom(&A), A.hr);
 
         
         for(int i = 0; i < B.length; i++){
@@ -78,7 +78,7 @@ static void test_bfp_sqrt_vect_s16()
 }
 
 
-static void test_bfp_sqrt_vect_s32()
+static void test_bfp_vect_s32_sqrt()
 {
 
     PRINTF("%s...\n", __func__);
@@ -92,10 +92,10 @@ static void test_bfp_sqrt_vect_s32()
     for(int v = 0; v < REPS; v++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
 
-        bfp_init_vect_s32(&B, B_data, pseudo_rand_int(&seed, -30, 30),
+        bfp_vect_s32_init(&B, B_data, pseudo_rand_int(&seed, -30, 30),
                                       pseudo_rand_uint(&seed, 0, MAX_LEN-1), 0);
 
-        bfp_init_vect_s32(&A, A_data, 0, B.length, 0);
+        bfp_vect_s32_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
@@ -103,11 +103,11 @@ static void test_bfp_sqrt_vect_s32()
             B_data[i] = pseudo_rand_uint(&seed, INT32_MAX/10, INT32_MAX) >> B.hr;
         }
 
-        bfp_headroom_vect_s32(&B);
+        bfp_vect_s32_headroom(&B);
 
-        bfp_sqrt_vect_s32(&A, &B);
+        bfp_vect_s32_sqrt(&A, &B);
 
-        TEST_ASSERT_EQUAL(bfp_headroom_vect_s32(&A), A.hr);
+        TEST_ASSERT_EQUAL(bfp_vect_s32_headroom(&A), A.hr);
         
         for(int i = 0; i < B.length; i++){
             double b_val = ldexp(B.data[i], B.exp);
@@ -130,7 +130,7 @@ void test_bfp_sqrt_vect()
 {
     SET_TEST_FILE();
     
-    RUN_TEST(test_bfp_sqrt_vect_s16);
-    RUN_TEST(test_bfp_sqrt_vect_s32);
+    RUN_TEST(test_bfp_vect_s16_sqrt);
+    RUN_TEST(test_bfp_vect_s32_sqrt);
 
 }

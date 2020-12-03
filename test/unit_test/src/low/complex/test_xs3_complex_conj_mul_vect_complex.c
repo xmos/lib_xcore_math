@@ -105,7 +105,7 @@ static complex_s32_t mul_complex_conj_s32(complex_s32_t b, complex_s32_t c, int 
 
 
 
-static void test_xs3_complex_conj_mul_vect_complex_s16_basic()
+static void test_xs3_vect_complex_s16_complex_conj_mul_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -171,7 +171,7 @@ static void test_xs3_complex_conj_mul_vect_complex_s16_basic()
                 C.imag[i] = casse->value.c.im;
             }
 
-            hr = xs3_complex_conj_mul_vect_complex_s16(A.real, A.imag, 
+            hr = xs3_vect_complex_s16_complex_conj_mul(A.real, A.imag, 
                                                   B.real, B.imag, 
                                                   C.real, C.imag, 
                                                   len, casse->sat);
@@ -181,11 +181,11 @@ static void test_xs3_complex_conj_mul_vect_complex_s16_basic()
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[0], casse->line);
             }
-            hrre = xs3_headroom_vect_s16(A.real, len); hrim = xs3_headroom_vect_s16(A.imag, len);
+            hrre = xs3_vect_s16_headroom(A.real, len); hrim = xs3_vect_s16_headroom(A.imag, len);
             TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, casse->line);
 
             memcpy(&A, &B, sizeof(A));
-            hr = xs3_complex_conj_mul_vect_complex_s16(A.real, A.imag,
+            hr = xs3_vect_complex_s16_complex_conj_mul(A.real, A.imag,
                                                   A.real, A.imag,
                                                   C.real, C.imag,
                                                   len, casse->sat);
@@ -194,7 +194,7 @@ static void test_xs3_complex_conj_mul_vect_complex_s16_basic()
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[0], casse->line);
             }
-            hrre = xs3_headroom_vect_s16(A.real, len); hrim = xs3_headroom_vect_s16(A.imag, len);
+            hrre = xs3_vect_s16_headroom(A.real, len); hrim = xs3_vect_s16_headroom(A.imag, len);
             TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, casse->line);
 
             /* NOTE: It is NOT safe to operate in-place with A == C */
@@ -208,7 +208,7 @@ static void test_xs3_complex_conj_mul_vect_complex_s16_basic()
 
 #define MAX_LEN     100
 #define REPS        IF_QUICK_TEST(100, 100)
-static void test_xs3_complex_conj_mul_vect_complex_s16_random()
+static void test_xs3_vect_complex_s16_complex_conj_mul_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 0xAD04D98D;
@@ -236,7 +236,7 @@ static void test_xs3_complex_conj_mul_vect_complex_s16_random()
 
         int sat = (pseudo_rand_uint32(&seed) % 10);
         
-        hr = xs3_complex_conj_mul_vect_complex_s16(A.real, A.imag, 
+        hr = xs3_vect_complex_s16_complex_conj_mul(A.real, A.imag, 
                                               B.real, B.imag, 
                                               C.real, C.imag, 
                                               len, sat);
@@ -249,11 +249,11 @@ static void test_xs3_complex_conj_mul_vect_complex_s16_random()
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
         }
-        hrre = xs3_headroom_vect_s16(A.real, len); hrim = xs3_headroom_vect_s16(A.imag, len);
+        hrre = xs3_vect_s16_headroom(A.real, len); hrim = xs3_vect_s16_headroom(A.imag, len);
         TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, v);
         
         memcpy(&A, &B, sizeof(A));
-        hr = xs3_complex_conj_mul_vect_complex_s16(A.real, A.imag, 
+        hr = xs3_vect_complex_s16_complex_conj_mul(A.real, A.imag, 
                                               A.real, A.imag, 
                                               C.real, C.imag, 
                                               len, sat);
@@ -263,7 +263,7 @@ static void test_xs3_complex_conj_mul_vect_complex_s16_random()
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
         }
-        hrre = xs3_headroom_vect_s16(A.real, len); hrim = xs3_headroom_vect_s16(A.imag, len);
+        hrre = xs3_vect_s16_headroom(A.real, len); hrim = xs3_vect_s16_headroom(A.imag, len);
         TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, v);
         
         /* NOT safe to do A==C in place !! */
@@ -283,7 +283,7 @@ static void test_xs3_complex_conj_mul_vect_complex_s16_random()
 
 
 
-static void test_xs3_complex_conj_mul_vect_complex_s32_basic()
+static void test_xs3_vect_complex_s32_complex_conj_mul_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -345,31 +345,31 @@ static void test_xs3_complex_conj_mul_vect_complex_s32_basic()
                 C[i].im = casse->value.c.im;
             }
 
-            hr = xs3_complex_conj_mul_vect_complex_s32(A, B, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_complex_s32_complex_conj_mul(A, B, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[0].im, casse->line);
             }
-            TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32((int32_t*) A, 2*len), hr, casse->line);
+            TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, 2*len), hr, casse->line);
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_complex_conj_mul_vect_complex_s32(A, A, C, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_complex_s32_complex_conj_mul(A, A, C, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[0].im, casse->line);
             }
-            TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32((int32_t*) A, 2*len), hr, casse->line);
+            TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, 2*len), hr, casse->line);
 
             memcpy(A, C, sizeof(A));
-            hr = xs3_complex_conj_mul_vect_complex_s32(A, B, A, len, casse->shr.b, casse->shr.c);
+            hr = xs3_vect_complex_s32_complex_conj_mul(A, B, A, len, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[0].im, casse->line);
             }
-            TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32((int32_t*) A, 2*len), hr, casse->line);
+            TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, 2*len), hr, casse->line);
         }
     }
 }
@@ -382,7 +382,7 @@ static void test_xs3_complex_conj_mul_vect_complex_s32_basic()
 
 #define MAX_LEN     100
 #define REPS        IF_QUICK_TEST(100, 100)
-static void test_xs3_complex_conj_mul_vect_complex_s32_random()
+static void test_xs3_vect_complex_s32_complex_conj_mul_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 0xAD04D98D;
@@ -410,7 +410,7 @@ static void test_xs3_complex_conj_mul_vect_complex_s32_random()
         int b_shr = (pseudo_rand_uint32(&seed) % 10);
         int c_shr = (pseudo_rand_uint32(&seed) % 10);
         
-        hr = xs3_complex_conj_mul_vect_complex_s32(A, B, C, len, b_shr, c_shr);
+        hr = xs3_vect_complex_s32_complex_conj_mul(A, B, C, len, b_shr, c_shr);
 
         headroom_t hrre, hrim;
 
@@ -419,27 +419,27 @@ static void test_xs3_complex_conj_mul_vect_complex_s32_random()
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
         }
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32((int32_t*) A, 2*len), hr, v);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, 2*len), hr, v);
         
         memcpy(&A, &B, sizeof(A));
-        hr = xs3_complex_conj_mul_vect_complex_s32(A, A, C, len, b_shr, c_shr);
+        hr = xs3_vect_complex_s32_complex_conj_mul(A, A, C, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_conj_s32(B[i], C[i], b_shr, c_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
         }
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32((int32_t*) A, 2*len), hr, v);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, 2*len), hr, v);
         
         memcpy(&A, &C, sizeof(A));
-        hr = xs3_complex_conj_mul_vect_complex_s32(A, B, A, len, b_shr, c_shr);
+        hr = xs3_vect_complex_s32_complex_conj_mul(A, B, A, len, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_conj_s32(B[i], C[i], b_shr, c_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
         }
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32((int32_t*) A, 2*len), hr, v);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, 2*len), hr, v);
 
         
     }
@@ -453,9 +453,9 @@ void test_xs3_complex_conj_mul_vect_complex()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_complex_conj_mul_vect_complex_s16_basic);
-    RUN_TEST(test_xs3_complex_conj_mul_vect_complex_s16_random);
+    RUN_TEST(test_xs3_vect_complex_s16_complex_conj_mul_basic);
+    RUN_TEST(test_xs3_vect_complex_s16_complex_conj_mul_random);
 
-    RUN_TEST(test_xs3_complex_conj_mul_vect_complex_s32_basic);
-    RUN_TEST(test_xs3_complex_conj_mul_vect_complex_s32_random);
+    RUN_TEST(test_xs3_vect_complex_s32_complex_conj_mul_basic);
+    RUN_TEST(test_xs3_vect_complex_s32_complex_conj_mul_random);
 }

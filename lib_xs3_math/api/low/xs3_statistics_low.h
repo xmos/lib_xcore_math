@@ -28,7 +28,7 @@ extern "C" {
  * 
  * \return  Absolute sum
  */
-int32_t xs3_abs_sum_s16(
+int32_t xs3_vect_s16_abs_sum(
     const int16_t b[],
     const unsigned length);
 
@@ -52,14 +52,14 @@ int32_t xs3_abs_sum_s16(
  * 
  * \return  Absolute sum
  */
-int64_t xs3_abs_sum_s32(
+int64_t xs3_vect_s32_abs_sum(
     const int32_t b[],
     const unsigned length);
 
 
 
 
-void xs3_energy_s32_calc_params(
+void xs3_vect_s32_energy_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const unsigned length,
@@ -86,13 +86,13 @@ void xs3_energy_s32_calc_params(
  * 
  * \return  Energy
  */
-int32_t xs3_energy_s16(
+int32_t xs3_vect_s16_energy(
     const int16_t b[],
     const unsigned length,
     const right_shift_t b_shr);
     
 
-right_shift_t xs3_energy_s32_calc_shift(
+right_shift_t xs3_vect_s32_energy_calc_shift(
     const unsigned length,
     const headroom_t b_hr);
 
@@ -116,7 +116,7 @@ right_shift_t xs3_energy_s32_calc_shift(
  * 
  * \return  Energy
  */
-int64_t xs3_energy_s32(
+int64_t xs3_vect_s32_energy(
     const int32_t b[],
     const unsigned length,
     const right_shift_t b_shr);
@@ -140,7 +140,7 @@ int64_t xs3_energy_s32(
  * 
  * \return  Maximum value of `a`
  */
-int16_t xs3_max_s16(
+int16_t xs3_vect_s16_max(
     const int16_t a[], 
     const unsigned length);
 
@@ -162,7 +162,7 @@ int16_t xs3_max_s16(
  * 
  * \return  Maximum value of `a`
  */
-int32_t xs3_max_s32(
+int32_t xs3_vect_s32_max(
     const int32_t a[],
     const unsigned length);
 
@@ -185,7 +185,7 @@ int32_t xs3_max_s32(
  * 
  * \return  Minimum value of `a`
  */
-int16_t xs3_min_s16(
+int16_t xs3_vect_s16_min(
     const int16_t a[], 
     const unsigned length);
 
@@ -207,7 +207,7 @@ int16_t xs3_min_s16(
  * 
  * \return  Minimum value of `a`
  */
-int32_t xs3_min_s32(
+int32_t xs3_vect_s32_min(
     const int32_t a[],
     const unsigned length);
 
@@ -230,7 +230,7 @@ int32_t xs3_min_s32(
  * 
  * \return  Index of the maximum element of `a`.
  */
-unsigned xs3_argmax_s16(
+unsigned xs3_vect_s16_argmax(
     const int16_t a[], 
     const unsigned length);
 
@@ -252,7 +252,7 @@ unsigned xs3_argmax_s16(
  * 
  * \return         Index of the maximum element of `a`
  */
-unsigned xs3_argmax_s32(
+unsigned xs3_vect_s32_argmax(
     const int32_t a[],
     const unsigned length);
 
@@ -274,7 +274,7 @@ unsigned xs3_argmax_s32(
  *  
  * \return  Index of the minimum element of `a`.
  */
-unsigned xs3_argmin_s16(
+unsigned xs3_vect_s16_argmin(
     const int16_t a[], 
     const unsigned length);
 
@@ -296,7 +296,7 @@ unsigned xs3_argmin_s16(
  * 
  * \return         Index of the minimum element of `a`.
  */
-unsigned xs3_argmin_s32(
+unsigned xs3_vect_s32_argmin(
     const int32_t a[],
     const unsigned length);
 

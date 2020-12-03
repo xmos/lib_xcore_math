@@ -33,7 +33,7 @@ static char msg_buff[200];
 
 
 
-void test_bfp_mag_vect_complex_s16()
+void test_bfp_vect_complex_s16_mag()
 {
     PRINTF("%s...\n", __func__);
 
@@ -63,11 +63,11 @@ void test_bfp_mag_vect_complex_s16()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        bfp_init_vect_complex_s16(&B, B_data.real, B_data.imag,
+        bfp_vect_complex_s16_init(&B, B_data.real, B_data.imag,
             pseudo_rand_int(&seed, -100, 100),
             pseudo_rand_int(&seed, 1, MAX_LEN+1), 0);
 
-        bfp_init_vect_s16(&A, A_data, 0, B.length, 0);
+        bfp_vect_s16_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
 
@@ -79,11 +79,11 @@ void test_bfp_mag_vect_complex_s16()
 
         }
 
-        bfp_headroom_vect_complex_s16(&B);
+        bfp_vect_complex_s16_headroom(&B);
 
-        bfp_mag_vect_complex_s16(&A, &B);
+        bfp_vect_complex_s16_mag(&A, &B);
 
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_headroom_vect_s16(A.data, A.length), A.hr, "[A.hr is wrong.]");
+        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_s16_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
 
         // PRINTF("\t    B.length = %u\n", B.length);
         // PRINTF("\t    B.exp    = %d\n", B.exp);
@@ -122,7 +122,7 @@ void test_bfp_mag_vect_complex_s16()
 
 
 
-void test_bfp_mag_vect_complex_s32()
+void test_bfp_vect_complex_s32_mag()
 {
     PRINTF("%s...\n", __func__);
 
@@ -143,11 +143,11 @@ void test_bfp_mag_vect_complex_s32()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        bfp_init_vect_complex_s32(&B, B_data,
+        bfp_vect_complex_s32_init(&B, B_data,
             pseudo_rand_int(&seed, -100, 100),
             pseudo_rand_int(&seed, 1, MAX_LEN+1), 0);
 
-        bfp_init_vect_s32(&A, A_data, 0, B.length, 0);
+        bfp_vect_s32_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
@@ -158,7 +158,7 @@ void test_bfp_mag_vect_complex_s32()
             Af[i] = sqrt(pow(ldexp(B.data[i].re, B.exp), 2) + pow(ldexp(B.data[i].im, B.exp), 2));
         }
 
-        bfp_headroom_vect_complex_s32(&B);
+        bfp_vect_complex_s32_headroom(&B);
 
 
         // PRINTF("\t    B.length = %u\n", B.length);
@@ -170,9 +170,9 @@ void test_bfp_mag_vect_complex_s32()
         //     PRINTF("\t        B.data[% 3d].im = % 15ld    (0x%08X)\n", i, B.data[i].im, (unsigned) B.data[i].im);
         // }
 
-        bfp_mag_vect_complex_s32(&A, &B);
+        bfp_vect_complex_s32_mag(&A, &B);
         
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_headroom_vect_s32(A.data, A.length), A.hr, "[A.hr is wrong.]");
+        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_s32_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
 
         // PRINTF("\t    A.length = %u\n", A.length);
         // PRINTF("\t    A.exp    = %d\n", A.exp);
@@ -199,6 +199,6 @@ void test_bfp_mag_vect_complex()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_bfp_mag_vect_complex_s16);
-    RUN_TEST(test_bfp_mag_vect_complex_s32);
+    RUN_TEST(test_bfp_vect_complex_s16_mag);
+    RUN_TEST(test_bfp_vect_complex_s32_mag);
 }

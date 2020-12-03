@@ -36,7 +36,7 @@ static char msg_buff[200];
 
 
 
-static void test_xs3_scalar_mul_vect_s16_calc_params()
+static void test_xs3_vect_s16_scalar_mul_calc_params()
 {
     PRINTF("%s...\n", __func__);
 
@@ -61,9 +61,9 @@ static void test_xs3_scalar_mul_vect_s16_calc_params()
             exponent_t a_exp;
             right_shift_t sat, c_shr;
 
-            xs3_scalar_mul_vect_s16_calc_params(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
+            xs3_vect_s16_scalar_mul_calc_params(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
 
-            xs3_scalar_mul_vect_complex_s16(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
+            xs3_vect_complex_s16_scalar_mul(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
 
             const int32_t p = ((int32_t)B_re) * C;
             int16_t expected = p;
@@ -95,7 +95,7 @@ static void test_xs3_scalar_mul_vect_s16_calc_params()
 
 
 
-static void test_xs3_scalar_mul_vect_complex_s16()
+static void test_xs3_vect_complex_s16_scalar_mul()
 {
     PRINTF("%s...\n", __func__);
     seed = 0xAD24398D;
@@ -129,11 +129,11 @@ static void test_xs3_scalar_mul_vect_complex_s16()
         
 
         {
-            headroom_t hr = xs3_scalar_mul_vect_complex_s16(A.real, A.imag, 
+            headroom_t hr = xs3_vect_complex_s16_scalar_mul(A.real, A.imag, 
                                                             B.real, B.imag, 
                                                             C, length, sat);
 
-            headroom_t exp_hr = xs3_headroom_vect_complex_s16(A.real, A.imag, length);
+            headroom_t exp_hr = xs3_vect_complex_s16_headroom(A.real, A.imag, length);
 
             TEST_ASSERT_EQUAL(exp_hr, hr);
 
@@ -156,11 +156,11 @@ static void test_xs3_scalar_mul_vect_complex_s16()
             memcpy(A.imag, B.imag, sizeof(A.imag));
 
 
-            headroom_t hr = xs3_scalar_mul_vect_complex_s16(A.real, A.imag, 
+            headroom_t hr = xs3_vect_complex_s16_scalar_mul(A.real, A.imag, 
                                                             A.real, A.imag, 
                                                             C, length, sat);
 
-            headroom_t exp_hr = xs3_headroom_vect_complex_s16(A.real, A.imag, length);
+            headroom_t exp_hr = xs3_vect_complex_s16_headroom(A.real, A.imag, length);
 
             TEST_ASSERT_EQUAL(exp_hr, hr);
 
@@ -186,7 +186,7 @@ static void test_xs3_scalar_mul_vect_complex_s16()
 
 
 
-static void test_xs3_scalar_mul_vect_complex_s32()
+static void test_xs3_vect_complex_s32_scalar_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -217,7 +217,7 @@ static void test_xs3_scalar_mul_vect_complex_s32()
 
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
-        xs3_mul_vect_s32_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_s32_mul_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         int32_t C = C_orig >> c_shr;
 
@@ -229,9 +229,9 @@ static void test_xs3_scalar_mul_vect_complex_s32()
             Af.imag[i] = ldexp(B[i].im, b_exp) * ldexp(C_orig, c_exp);
         }
 
-        headroom_t hr = xs3_scalar_mul_vect_complex_s32(&A[0], &B[0], C, length, b_shr);
+        headroom_t hr = xs3_vect_complex_s32_scalar_mul(&A[0], &B[0], C, length, b_shr);
         
-        TEST_ASSERT_EQUAL( xs3_headroom_vect_complex_s32(A, length), hr );
+        TEST_ASSERT_EQUAL( xs3_vect_complex_s32_headroom(A, length), hr );
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, length, a_exp);
 
@@ -253,8 +253,8 @@ void test_xs3_scalar_mul_vect_complex()
 {
     SET_TEST_FILE();
     
-    RUN_TEST(test_xs3_scalar_mul_vect_s16_calc_params);
-    RUN_TEST(test_xs3_scalar_mul_vect_complex_s16);
-    RUN_TEST(test_xs3_scalar_mul_vect_complex_s32);
+    RUN_TEST(test_xs3_vect_s16_scalar_mul_calc_params);
+    RUN_TEST(test_xs3_vect_complex_s16_scalar_mul);
+    RUN_TEST(test_xs3_vect_complex_s32_scalar_mul);
 
 }

@@ -24,7 +24,7 @@
 static unsigned seed;
 
 
-static void test_bfp_rms_s16()
+static void test_bfp_vect_s16_rms()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -40,7 +40,7 @@ static void test_bfp_rms_s16()
 
         bfp_s16_t B;
 
-        bfp_init_vect_s16(&B, dataB,
+        bfp_vect_s16_init(&B, dataB,
                           pseudo_rand_int(&seed, -30, 30),
                           pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
                           
@@ -50,11 +50,11 @@ static void test_bfp_rms_s16()
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
         }
 
-        bfp_headroom_vect_s16(&B);
+        bfp_vect_s16_headroom(&B);
 
         exponent_t a_exp;
 
-        int32_t result = bfp_rms_s16(&a_exp, &B);
+        int32_t result = bfp_vect_s16_rms(&a_exp, &B);
 
         double energy = 0;
         for(int i = 0; i < B.length; i++){
@@ -93,7 +93,7 @@ static void test_bfp_rms_s16()
 }
 
 
-static void test_bfp_rms_s32()
+static void test_bfp_vect_s32_rms()
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -109,7 +109,7 @@ static void test_bfp_rms_s32()
 
         bfp_s32_t B;
 
-        bfp_init_vect_s32(&B, dataB,
+        bfp_vect_s32_init(&B, dataB,
                           pseudo_rand_int(&seed, -30, 30),
                           pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
                           
@@ -119,11 +119,11 @@ static void test_bfp_rms_s32()
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
         }
 
-        bfp_headroom_vect_s32(&B);
+        bfp_vect_s32_headroom(&B);
 
         exponent_t a_exp;
 
-        int32_t result = bfp_rms_s32(&a_exp, &B);
+        int32_t result = bfp_vect_s32_rms(&a_exp, &B);
 
         double energy = 0;
         for(int i = 0; i < B.length; i++){
@@ -170,6 +170,6 @@ static void test_bfp_rms_s32()
 void test_bfp_rms()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_bfp_rms_s16);
-    RUN_TEST(test_bfp_rms_s32);
+    RUN_TEST(test_bfp_vect_s16_rms);
+    RUN_TEST(test_bfp_vect_s32_rms);
 }

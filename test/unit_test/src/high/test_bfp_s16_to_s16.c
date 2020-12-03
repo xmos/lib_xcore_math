@@ -51,7 +51,7 @@ static void test_bfp_s16_to_s32_()
 
         TEST_ASSERT_EQUAL(B.length, A.length);
         TEST_ASSERT_EQUAL(B.hr + 8, A.hr);
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_s32(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
         
         TEST_ASSERT_EQUAL(B.exp-8, A.exp);
 

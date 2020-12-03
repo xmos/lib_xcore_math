@@ -3,7 +3,7 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-int64_t xs3_dot_s32(
+int64_t xs3_vect_s32_dot(
     const int32_t b[],
     const int32_t c[],
     const unsigned length,
@@ -15,7 +15,7 @@ int64_t xs3_dot_s32(
 
 #define NSTACKWORDS     (8 + 24)
 
-#define FUNCTION_NAME   xs3_dot_s32
+#define FUNCTION_NAME   xs3_vect_s32_dot
 
 #define STACK_C_SHR     (NSTACKWORDS+1)
 

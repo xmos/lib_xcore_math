@@ -3,7 +3,7 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-headroom_t xs3_mul_vect_s16(
+headroom_t xs3_vect_s16_mul(
     int16_t a[],
     const int16_t b[],
     const int16_t c[],
@@ -16,7 +16,7 @@ headroom_t xs3_mul_vect_s16(
 
 #define NSTACKWORDS     (8+8)
 
-#define FUNCTION_NAME   xs3_mul_vect_s16
+#define FUNCTION_NAME   xs3_vect_s16_mul
 
 #define STACK_A_SHR     (NSTACKWORDS+1)
 #define STACK_VEC_SAT   (NSTACKWORDS-8)

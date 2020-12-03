@@ -4,7 +4,7 @@
 
 /*  
 
-int32_t xs3_min_s16(
+int32_t xs3_vect_s16_min(
     const int32_t b[],
     const unsigned length);
 
@@ -20,7 +20,7 @@ int32_t xs3_min_s16(
 #define NSTACKVECS      (2)
 #define NSTACKWORDS     (8 + 8*NSTACKVECS)
 
-#define FUNCTION_NAME       xs3_min_s16
+#define FUNCTION_NAME       xs3_vect_s16_min
 
 #define STACK_VEC_TMP       (NSTACKWORDS-8)
 #define STACK_VEC_CUR_MIN   (NSTACKWORDS-16)

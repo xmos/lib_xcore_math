@@ -38,7 +38,7 @@ static char msg_buff[200];
 
 
 
-void test_bfp_complex_scal_mul_vect_complex_s16()
+void test_bfp_vect_complex_s16_complex_scal_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -65,11 +65,11 @@ void test_bfp_complex_scal_mul_vect_complex_s16()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        bfp_init_vect_complex_s16(&B, B_data.real, B_data.imag,
+        bfp_vect_complex_s16_init(&B, B_data.real, B_data.imag,
             pseudo_rand_int(&seed, -100, 100),
             pseudo_rand_int(&seed, 1, MAX_LEN+1), 0);
 
-        bfp_init_vect_complex_s16(&A, A_data.real, A_data.imag, 0, B.length, 0);
+        bfp_vect_complex_s16_init(&A, A_data.real, A_data.imag, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
 
@@ -90,9 +90,9 @@ void test_bfp_complex_scal_mul_vect_complex_s16()
                        + ldexp(B.imag[i], B.exp) * ldexp(C.re, c_exp);
         }
 
-        bfp_headroom_vect_complex_s16(&B);
+        bfp_vect_complex_s16_headroom(&B);
 
-        bfp_complex_scal_mul_vect_complex_s16(&A, &B, C, c_exp);
+        bfp_vect_complex_s16_complex_scal_mul(&A, &B, C, c_exp);
         
         // PRINTF("\t    B.length = %u\n", B.length);
         // PRINTF("\t    B.exp    = %d\n", B.exp);
@@ -131,7 +131,7 @@ void test_bfp_complex_scal_mul_vect_complex_s16()
 
 
 
-void test_bfp_complex_scal_mul_vect_complex_s32_calc_params()
+void test_bfp_vect_complex_s32_complex_scal_mul_calc_params()
 {
     PRINTF("%s...\n", __func__);
 
@@ -159,14 +159,14 @@ void test_bfp_complex_scal_mul_vect_complex_s32_calc_params()
             // printf("!!!! b_hr = %d\n", b_hr);
             // printf("!!!! c_hr = %d\n\n", c_hr);
 
-            xs3_complex_scal_mul_vect_complex_s32_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
+            xs3_vect_complex_s32_complex_scal_mul_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
 
             C.re = SIGNED_ASHR(C.re, c_shr);
             C.im = SIGNED_ASHR(C.im, c_shr);
             c_exp += c_shr;
             c_hr += c_shr;
 
-            xs3_complex_scal_mul_vect_complex_s32(&A, &B, C.re, C.im, 1, b_shr);
+            xs3_vect_complex_s32_complex_scal_mul(&A, &B, C.re, C.im, 1, b_shr);
 
             
             // printf("!!!! A.im = %ld   (0x%08X)\n", A.im, (unsigned) A.im);
@@ -200,7 +200,7 @@ void test_bfp_complex_scal_mul_vect_complex_s32_calc_params()
 
 
 
-void test_bfp_complex_scal_mul_vect_complex_s32()
+void test_bfp_vect_complex_s32_complex_scal_mul()
 {
     PRINTF("%s...\n", __func__);
 
@@ -220,11 +220,11 @@ void test_bfp_complex_scal_mul_vect_complex_s32()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        bfp_init_vect_complex_s32(&B, B_data,
+        bfp_vect_complex_s32_init(&B, B_data,
             pseudo_rand_int(&seed, -100, 100),
             pseudo_rand_int(&seed, 1, MAX_LEN+1), 0);
 
-        bfp_init_vect_complex_s32(&A, A_data, 0, B.length, 0);
+        bfp_vect_complex_s32_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
@@ -245,9 +245,9 @@ void test_bfp_complex_scal_mul_vect_complex_s32()
                        + ldexp(B.data[i].im, B.exp) * ldexp(C.re, c_exp);
         }
 
-        bfp_headroom_vect_complex_s32(&B);
+        bfp_vect_complex_s32_headroom(&B);
 
-        bfp_complex_scal_mul_vect_complex_s32(&A, &B, C, c_exp);
+        bfp_vect_complex_s32_complex_scal_mul(&A, &B, C, c_exp);
         
         // PRINTF("\t    B.length = %u\n", B.length);
         // PRINTF("\t    B.exp    = %d\n", B.exp);
@@ -288,7 +288,7 @@ void test_bfp_complex_scal_mul_vect_complex_s32()
 void test_bfp_complex_scal_mul_vect_complex()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_scal_mul_vect_complex_s16);
-    RUN_TEST(test_bfp_complex_scal_mul_vect_complex_s32_calc_params);
-    RUN_TEST(test_bfp_complex_scal_mul_vect_complex_s32);
+    RUN_TEST(test_bfp_vect_complex_s16_complex_scal_mul);
+    RUN_TEST(test_bfp_vect_complex_s32_complex_scal_mul_calc_params);
+    RUN_TEST(test_bfp_vect_complex_s32_complex_scal_mul);
 }

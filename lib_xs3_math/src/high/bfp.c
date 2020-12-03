@@ -33,10 +33,10 @@ headroom_t xs3_headroom_s64(
  *
  * 
  * ******************/
-headroom_t bfp_headroom_vect_s16(
+headroom_t bfp_vect_s16_headroom(
     bfp_s16_t* a)
 {
-     a->hr = xs3_headroom_vect_s16(a->data, a->length);
+     a->hr = xs3_vect_s16_headroom(a->data, a->length);
 
      return a->hr;
 }
@@ -48,10 +48,10 @@ headroom_t bfp_headroom_vect_s16(
  *
  * 
  * ******************/
-headroom_t bfp_headroom_vect_s32(
+headroom_t bfp_vect_s32_headroom(
     bfp_s32_t* a)
 {
-     a->hr = xs3_headroom_vect_s32(a->data, a->length);
+     a->hr = xs3_vect_s32_headroom(a->data, a->length);
 
      return a->hr;
 }
@@ -62,7 +62,7 @@ headroom_t bfp_headroom_vect_s32(
  *
  * 
  * ******************/
-void bfp_shl_vect_s16(
+void bfp_vect_s16_shl(
     bfp_s16_t* a,
     const bfp_s16_t* b,
     const left_shift_t shl)
@@ -73,7 +73,7 @@ void bfp_shl_vect_s16(
 
     a->length = b->length;
     a->exp = b->exp;
-    a->hr = xs3_shl_vect_s16(a->data, b->data, b->length, shl);
+    a->hr = xs3_vect_s16_shl(a->data, b->data, b->length, shl);
 }
 
 
@@ -82,7 +82,7 @@ void bfp_shl_vect_s16(
  *
  * 
  * ******************/
-void bfp_shl_vect_s32(
+void bfp_vect_s32_shl(
     bfp_s32_t* a,
     const bfp_s32_t* b,
     const left_shift_t shl)
@@ -92,7 +92,7 @@ void bfp_shl_vect_s32(
 #endif
     a->length = b->length;
     a->exp = b->exp;
-    a->hr = xs3_shl_vect_s32(a->data, b->data, b->length, shl);
+    a->hr = xs3_vect_s32_shl(a->data, b->data, b->length, shl);
 }
 
 
@@ -102,7 +102,7 @@ void bfp_shl_vect_s32(
  *
  * 
  * ******************/
-void bfp_add_vect_s16(
+void bfp_vect_s16_add(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const bfp_s16_t* c)
@@ -119,7 +119,7 @@ void bfp_add_vect_s16(
     xs3_add_sub_vect_calc_params(&a->exp, &b_shr, &c_shr,
             b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
 
-    a->hr = xs3_add_vect_s16(a->data, b->data, c->data, b->length, b_shr, c_shr);
+    a->hr = xs3_vect_s16_add(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
 
@@ -128,7 +128,7 @@ void bfp_add_vect_s16(
  *
  * 
  * ******************/
-void bfp_add_vect_s32(
+void bfp_vect_s32_add(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
@@ -145,7 +145,7 @@ void bfp_add_vect_s32(
     xs3_add_sub_vect_calc_params(&a->exp, &b_shr, &c_shr,
             b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
 
-    a->hr = xs3_add_vect_s32(a->data, b->data, c->data, b->length, b_shr, c_shr);
+    a->hr = xs3_vect_s32_add(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
 
@@ -155,7 +155,7 @@ void bfp_add_vect_s32(
  *
  * 
  * ******************/
-void bfp_sub_vect_s16(
+void bfp_vect_s16_sub(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const bfp_s16_t* c)
@@ -172,7 +172,7 @@ void bfp_sub_vect_s16(
     xs3_add_sub_vect_calc_params(&a->exp, &b_shr, &c_shr, b->exp, c->exp, 
             b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
 
-    a->hr = xs3_sub_vect_s16(a->data, b->data, c->data, b->length, b_shr, c_shr);
+    a->hr = xs3_vect_s16_sub(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
 
@@ -182,7 +182,7 @@ void bfp_sub_vect_s16(
  *
  * 
  * ******************/
-void bfp_sub_vect_s32(
+void bfp_vect_s32_sub(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
@@ -199,7 +199,7 @@ void bfp_sub_vect_s32(
     xs3_add_sub_vect_calc_params(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b
             ->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
 
-    a->hr = xs3_sub_vect_s32(a->data, b->data, c->data, b->length, b_shr, c_shr);
+    a->hr = xs3_vect_s32_sub(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
 
@@ -210,7 +210,7 @@ void bfp_sub_vect_s32(
  *
  * 
  * ******************/
-void bfp_mul_vect_s16(
+void bfp_vect_s16_mul(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const bfp_s16_t* c)
@@ -224,10 +224,10 @@ void bfp_mul_vect_s16(
 
     right_shift_t a_shr;
 
-    xs3_mul_vect_s16_calc_params(&a->exp, &a_shr,
+    xs3_vect_s16_mul_calc_params(&a->exp, &a_shr,
             b->exp, c->exp, b->hr, c->hr);
 
-    a->hr = xs3_mul_vect_s16(a->data, b->data, c->data, b->length, a_shr);
+    a->hr = xs3_vect_s16_mul(a->data, b->data, c->data, b->length, a_shr);
 }
 
 
@@ -241,7 +241,7 @@ void bfp_mul_vect_s16(
  *
  * 
  * ******************/
-void bfp_mul_vect_s32(
+void bfp_vect_s32_mul(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
@@ -254,9 +254,9 @@ void bfp_mul_vect_s32(
 #endif
 
     right_shift_t b_shr, c_shr;
-    xs3_mul_vect_s32_calc_params(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr); 
+    xs3_vect_s32_mul_calc_params(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr); 
 
-    a->hr = xs3_mul_vect_s32(a->data, b->data, c->data, b->length, b_shr, c_shr);
+    a->hr = xs3_vect_s32_mul(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
 
@@ -266,7 +266,7 @@ void bfp_mul_vect_s32(
  *
  * 
  * ******************/
-void bfp_scalar_mul_vect_s16(
+void bfp_vect_s16_scalar_mul(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const int16_t alpha_mant,
@@ -281,10 +281,10 @@ void bfp_scalar_mul_vect_s16(
     right_shift_t sat;
     headroom_t s_hr = HR_S16(alpha_mant);
 
-    xs3_scalar_mul_vect_s16_calc_params(&a->exp, &sat, b->exp, alpha_exp, b->hr, s_hr,
+    xs3_vect_s16_scalar_mul_calc_params(&a->exp, &sat, b->exp, alpha_exp, b->hr, s_hr,
                                         XS3_BFP_ALLOW_SATURATION);
 
-    a->hr = xs3_scalar_mul_vect_s16(a->data, b->data, b->length, alpha_mant, sat);
+    a->hr = xs3_vect_s16_scalar_mul(a->data, b->data, b->length, alpha_mant, sat);
 }
 
 
@@ -294,7 +294,7 @@ void bfp_scalar_mul_vect_s16(
  *
  * 
  * ******************/
-void bfp_scalar_mul_vect_s32(
+void bfp_vect_s32_scalar_mul(
     bfp_s32_t* a, 
     const bfp_s32_t* b,
     const int32_t alpha_mant,
@@ -310,11 +310,11 @@ void bfp_scalar_mul_vect_s32(
 
     headroom_t s_hr = HR_S32(alpha_mant);
 
-    xs3_mul_vect_s32_calc_params(&a->exp, &b_shr, &s_shr, b->exp, alpha_exp, b->hr, s_hr);
+    xs3_vect_s32_mul_calc_params(&a->exp, &b_shr, &s_shr, b->exp, alpha_exp, b->hr, s_hr);
 
     int32_t alpha = alpha_mant >> s_shr;
 
-    a->hr = xs3_scalar_mul_vect_s32(a->data, b->data, b->length, alpha, b_shr);
+    a->hr = xs3_vect_s32_scalar_mul(a->data, b->data, b->length, alpha, b_shr);
 }
 
 
@@ -324,7 +324,7 @@ void bfp_scalar_mul_vect_s32(
  *
  * 
  * ******************/
-void bfp_abs_vect_s16(
+void bfp_vect_s16_abs(
     bfp_s16_t* a,
     const bfp_s16_t* b)
 {
@@ -337,7 +337,7 @@ void bfp_abs_vect_s16(
 #if !XS3_BFP_ALLOW_SATURATION
     if(b->hr == 0){
         //shift down by one bit first
-        xs3_shl_vect_s16(a->data, b->data, b->length, -1);
+        xs3_vect_s16_shl(a->data, b->data, b->length, -1);
         a->exp = b->exp+1;
         a->hr = b->hr+1;
         b = a;
@@ -345,7 +345,7 @@ void bfp_abs_vect_s16(
 #endif
 
     a->exp = b->exp;
-    a->hr = xs3_abs_vect_s16(a->data, b->data, b->length);
+    a->hr = xs3_vect_s16_abs(a->data, b->data, b->length);
 }
 
 
@@ -355,7 +355,7 @@ void bfp_abs_vect_s16(
  *
  * 
  * ******************/
-void bfp_abs_vect_s32(
+void bfp_vect_s32_abs(
     bfp_s32_t* a,
     const bfp_s32_t* b)
 {
@@ -368,7 +368,7 @@ void bfp_abs_vect_s32(
 #if !XS3_BFP_ALLOW_SATURATION
     if(b->hr == 0){
         //shift down by one bit first
-        xs3_shl_vect_s32(a->data, b->data, b->length, -1);
+        xs3_vect_s32_shl(a->data, b->data, b->length, -1);
         a->exp = b->exp+1;
         a->hr = b->hr+1;
         b = a;
@@ -376,7 +376,7 @@ void bfp_abs_vect_s32(
 #endif
 
     a->exp = b->exp;
-    a->hr = xs3_abs_vect_s32(a->data, b->data, b->length);
+    a->hr = xs3_vect_s32_abs(a->data, b->data, b->length);
 }
 
 
@@ -387,10 +387,10 @@ void bfp_abs_vect_s32(
  *
  * 
  * ******************/
-int32_t bfp_sum_s16(
+int32_t bfp_vect_s16_sum(
     const bfp_s16_t* b)
 {
-    return xs3_sum_s16(b->data, b->length);
+    return xs3_vect_s16_sum(b->data, b->length);
 }
 
 
@@ -399,10 +399,10 @@ int32_t bfp_sum_s16(
  *
  * 
  * ******************/
-int64_t bfp_sum_s32(
+int64_t bfp_vect_s32_sum(
     const bfp_s32_t* b)
 {
-    return xs3_sum_s32(b->data, b->length);
+    return xs3_vect_s32_sum(b->data, b->length);
 }
 
 
@@ -411,7 +411,7 @@ int64_t bfp_sum_s32(
  *
  * 
  * ******************/
-int64_t bfp_dot_s16(
+int64_t bfp_vect_s16_dot(
     exponent_t* a_exp,
     const bfp_s16_t* b, 
     const bfp_s16_t* c)
@@ -424,7 +424,7 @@ int64_t bfp_dot_s16(
 
     *a_exp = b->exp + c->exp;
 
-    return xs3_dot_s16(b->data, c->data, b->length, bc_hr);
+    return xs3_vect_s16_dot(b->data, c->data, b->length, bc_hr);
 }
 
 
@@ -433,7 +433,7 @@ int64_t bfp_dot_s16(
  *
  * 
  * ******************/
-int64_t bfp_dot_s32(
+int64_t bfp_vect_s32_dot(
     exponent_t* a_exp,
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
@@ -444,11 +444,11 @@ int64_t bfp_dot_s32(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_dot_s32_calc_params(a_exp, &b_shr, &c_shr, b->exp, c->exp, 
+    xs3_vect_s32_dot_calc_params(a_exp, &b_shr, &c_shr, b->exp, c->exp, 
                             b->hr, c->hr, b->length,
                             XS3_BFP_ALLOW_SATURATION);
 
-    int64_t res = xs3_dot_s32(b->data, c->data, b->length, b_shr, c_shr);
+    int64_t res = xs3_vect_s32_dot(b->data, c->data, b->length, b_shr, c_shr);
 
     return res;
 }
@@ -459,7 +459,7 @@ int64_t bfp_dot_s32(
  *
  * 
  * ******************/
-void bfp_clip_vect_s16(
+void bfp_vect_s16_clip(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
     const int16_t lower_bound, 
@@ -513,22 +513,22 @@ void bfp_clip_vect_s16(
         /* upper bound must be smaller than any element of b, so set everything to that */
         a->exp = bound_exp;
         a->hr = HR_S16(upper_bound);
-        xs3_set_vect_s16(a->data, upper_bound, b->length);
+        xs3_vect_s16_set(a->data, upper_bound, b->length);
     } else if(lb == VPU_INT16_MAX){
         /* lower bound must be larger than any element of b, so set everything to that */
         a->exp = bound_exp;
         a->hr = HR_S16(lower_bound);
-        xs3_set_vect_s16(a->data, lower_bound, b->length);
+        xs3_vect_s16_set(a->data, lower_bound, b->length);
     } else if(ub == lb){
         /* upper and lower bounds are indistinguishable */
         a->exp = a_exp;
         a->hr = HR_S16(ub);
-        xs3_set_vect_s16(a->data, ub, b->length);
+        xs3_vect_s16_set(a->data, ub, b->length);
 
     } else {
         /* some elements may be between bounds */
         a->exp = a_exp;
-        a->hr = xs3_clip_vect_s16(a->data, b->data, b->length, lb, ub, b_shr);
+        a->hr = xs3_vect_s16_clip(a->data, b->data, b->length, lb, ub, b_shr);
     }
 }
 
@@ -538,7 +538,7 @@ void bfp_clip_vect_s16(
  *
  * 
  * ******************/
-void bfp_clip_vect_s32(
+void bfp_vect_s32_clip(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
     const int32_t lower_bound, 
@@ -592,22 +592,22 @@ void bfp_clip_vect_s32(
         /* upper bound must be smaller than any element of b, so set everything to that */
         a->exp = bound_exp;
         a->hr = HR_S32(upper_bound);
-        xs3_set_vect_s32(a->data, upper_bound, b->length);
+        xs3_vect_s32_set(a->data, upper_bound, b->length);
     } else if(lb == VPU_INT32_MAX){
         /* lower bound must be larger than any element of b, so set everything to that */
         a->exp = bound_exp;
         a->hr = HR_S32(lower_bound);
-        xs3_set_vect_s32(a->data, lower_bound, b->length);
+        xs3_vect_s32_set(a->data, lower_bound, b->length);
     } else if(ub == lb){
         /* upper and lower bounds are indistinguishable */
         a->exp = a_exp;
         a->hr = HR_S32(ub);
-        xs3_set_vect_s32(a->data, ub, b->length);
+        xs3_vect_s32_set(a->data, ub, b->length);
 
     } else {
         /* some elements may be between bounds */
         a->exp = a_exp;
-        a->hr = xs3_clip_vect_s32(a->data, b->data, b->length, lb, ub, b_shr);
+        a->hr = xs3_vect_s32_clip(a->data, b->data, b->length, lb, ub, b_shr);
     }
 }
 
@@ -616,7 +616,7 @@ void bfp_clip_vect_s32(
  *
  * 
  * ******************/
-void bfp_rect_vect_s16(
+void bfp_vect_s16_rect(
     bfp_s16_t* a,
     const bfp_s16_t* b)
 {
@@ -627,7 +627,7 @@ void bfp_rect_vect_s16(
 #endif
 
     a->exp = b->exp;
-    a->hr = xs3_rect_vect_s16(a->data, b->data, b->length);
+    a->hr = xs3_vect_s16_rect(a->data, b->data, b->length);
 }
 
 
@@ -636,7 +636,7 @@ void bfp_rect_vect_s16(
  *
  * 
  * ******************/
-void bfp_rect_vect_s32(
+void bfp_vect_s32_rect(
     bfp_s32_t* a,
     const bfp_s32_t* b)
 {
@@ -647,7 +647,7 @@ void bfp_rect_vect_s32(
 #endif
 
     a->exp = b->exp;
-    a->hr = xs3_rect_vect_s32(a->data, b->data, b->length);
+    a->hr = xs3_vect_s32_rect(a->data, b->data, b->length);
 }
 
 
@@ -674,7 +674,7 @@ void bfp_s32_to_s16(
     a->exp = b->exp + mod;
     a->hr = mod;
     // printf("%d\t%d\t%d\n", b->hr, b_shr, a->hr);
-    xs3_s32_to_s16(a->data, b->data, b->length, b_shr);
+    xs3_vect_s32_to_s16(a->data, b->data, b->length, b_shr);
     // printf("0x%08X\t0x%08X\n", b->data[0], a->data[0]);
 }
 
@@ -698,7 +698,7 @@ void bfp_s16_to_s32(
 
     a->exp = a_exp - 8;
     a->hr = b->hr + 8;
-    xs3_s16_to_s32(a->data, b->data, b->length);
+    xs3_vect_s16_to_s32(a->data, b->data, b->length);
 }
 
     
@@ -706,7 +706,7 @@ void bfp_s16_to_s32(
  *
  * 
  * ******************/
-void bfp_sqrt_vect_s16(
+void bfp_vect_s16_sqrt(
     bfp_s16_t* a,
     const bfp_s16_t* b)
 {
@@ -718,9 +718,9 @@ void bfp_sqrt_vect_s16(
 
     right_shift_t b_shr;
 
-    xs3_sqrt_vect_s16_calc_params(&a->exp, &b_shr, b->exp, b->hr);
+    xs3_vect_s16_sqrt_calc_params(&a->exp, &b_shr, b->exp, b->hr);
 
-    a->hr = xs3_sqrt_vect_s16(a->data, b->data, b->length, b_shr, XS3_BFP_SQRT_DEPTH_S16);
+    a->hr = xs3_vect_s16_sqrt(a->data, b->data, b->length, b_shr, XS3_BFP_SQRT_DEPTH_S16);
 }
 
     
@@ -728,7 +728,7 @@ void bfp_sqrt_vect_s16(
  *
  * 
  * ******************/
-void bfp_sqrt_vect_s32(
+void bfp_vect_s32_sqrt(
     bfp_s32_t* a,
     const bfp_s32_t* b)
 {
@@ -740,9 +740,9 @@ void bfp_sqrt_vect_s32(
 
     right_shift_t b_shr;
 
-    xs3_sqrt_vect_s32_calc_params(&a->exp, &b_shr, b->exp, b->hr);
+    xs3_vect_s32_sqrt_calc_params(&a->exp, &b_shr, b->exp, b->hr);
 
-    a->hr = xs3_sqrt_vect_s32(a->data, b->data, b->length, b_shr, XS3_BFP_SQRT_DEPTH_S32);
+    a->hr = xs3_vect_s32_sqrt(a->data, b->data, b->length, b_shr, XS3_BFP_SQRT_DEPTH_S32);
 }
 
     
@@ -750,7 +750,7 @@ void bfp_sqrt_vect_s32(
  *
  * 
  * ******************/
-void bfp_inverse_vect_s16(
+void bfp_vect_s16_inverse(
     bfp_s16_t* a,
     const bfp_s16_t* b)
 {
@@ -762,11 +762,11 @@ void bfp_inverse_vect_s16(
 
     unsigned scale;
 
-    xs3_inverse_vect_s16_calc_params(&a->exp, &scale, b->data, b->exp, b->length);
+    xs3_vect_s16_inverse_calc_params(&a->exp, &scale, b->data, b->exp, b->length);
     
-    xs3_inverse_vect_s16(a->data, b->data, b->length, scale);
+    xs3_vect_s16_inverse(a->data, b->data, b->length, scale);
     
-    bfp_headroom_vect_s16(a);
+    bfp_vect_s16_headroom(a);
 }
 
     
@@ -774,7 +774,7 @@ void bfp_inverse_vect_s16(
  *
  * 
  * ******************/
-void bfp_inverse_vect_s32(
+void bfp_vect_s32_inverse(
     bfp_s32_t* a,
     const bfp_s32_t* b)
 {
@@ -786,7 +786,7 @@ void bfp_inverse_vect_s32(
 
     unsigned scale;
 
-    xs3_inverse_vect_s32_calc_params(&a->exp, &scale, b->data, b->exp, b->length);
+    xs3_vect_s32_inverse_calc_params(&a->exp, &scale, b->data, b->exp, b->length);
 
-    a->hr = xs3_inverse_vect_s32(a->data, b->data, b->length, scale);
+    a->hr = xs3_vect_s32_inverse(a->data, b->data, b->length, scale);
 }

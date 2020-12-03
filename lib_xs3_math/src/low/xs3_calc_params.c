@@ -79,7 +79,7 @@ void xs3_add_sub_vect_calc_params(
  *
  * 
  * ******************/
-void xs3_mul_vect_s16_calc_params(
+void xs3_vect_s16_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* a_shr,
     const exponent_t b_exp,
@@ -112,7 +112,7 @@ void xs3_mul_vect_s16_calc_params(
  *
  * 
  * ******************/
-void xs3_dot_s16_calc_params(
+void xs3_vect_s16_dot_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,
@@ -189,7 +189,7 @@ void xs3_dot_s16_calc_params(
  *        to be adjusted for 16-bit... so maybe just create a second function?
  * 
  * ******************/
-void xs3_mul_vect_s32_calc_params(
+void xs3_vect_s32_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,
@@ -231,7 +231,7 @@ void xs3_mul_vect_s32_calc_params(
 
 
 
-void xs3_scalar_mul_vect_s16_calc_params(
+void xs3_vect_s16_scalar_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* sat,
     const exponent_t b_exp,
@@ -268,7 +268,7 @@ void xs3_scalar_mul_vect_s16_calc_params(
 
 
 
-void xs3_sqrt_vect_s16_calc_params(
+void xs3_vect_s16_sqrt_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,
@@ -298,7 +298,7 @@ void xs3_sqrt_vect_s16_calc_params(
  *
  * 
  * ******************/
-void xs3_dot_s32_calc_params(
+void xs3_vect_s32_dot_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,
@@ -375,7 +375,7 @@ void xs3_dot_s32_calc_params(
 
 
 
-void xs3_sqrt_vect_s32_calc_params(
+void xs3_vect_s32_sqrt_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,

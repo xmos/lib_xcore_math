@@ -8,7 +8,7 @@
 
 
 WEAK_FUNC
-int32_t xs3_sum_s16(
+int32_t xs3_vect_s16_sum(
     const int16_t b[],
     const unsigned length)
 {
@@ -22,7 +22,7 @@ int32_t xs3_sum_s16(
 
 
 WEAK_FUNC
-int64_t xs3_sum_s32(
+int64_t xs3_vect_s32_sum(
     const int32_t b[],
     const unsigned length)
 {

@@ -4,7 +4,7 @@
 
 /*  
 
-int32_t xs3_max_s32(
+int32_t xs3_vect_s32_max(
     const int32_t b[],
     const unsigned length);
 
@@ -20,7 +20,7 @@ int32_t xs3_max_s32(
 #define NSTACKVECS      (2)
 #define NSTACKWORDS     (8 + 8*NSTACKVECS)
 
-#define FUNCTION_NAME       xs3_max_s32
+#define FUNCTION_NAME       xs3_vect_s32_max
 
 #define STACK_VEC_TMP       (NSTACKWORDS-8)
 #define STACK_VEC_CUR_MAX   (NSTACKWORDS-16)

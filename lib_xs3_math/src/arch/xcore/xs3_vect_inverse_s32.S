@@ -6,7 +6,7 @@
 
 /*  
 
-headroom_t xs3_inverse_vect_s32(
+headroom_t xs3_vect_s32_inverse(
     int32_t a[],
     const int32_t b[],
     const unsigned length,
@@ -18,7 +18,7 @@ headroom_t xs3_inverse_vect_s32(
 #define NSTACKVECTS     (1)
 #define NSTACKWORDS     (10+8*(NSTACKVECTS))
 
-#define FUNCTION_NAME   xs3_inverse_vect_s32
+#define FUNCTION_NAME   xs3_vect_s32_inverse
 
 
 #define STACK_VEC_TMP       (NSTACKWORDS-8)

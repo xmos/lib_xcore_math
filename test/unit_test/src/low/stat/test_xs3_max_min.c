@@ -36,7 +36,7 @@ static char msg_buff[200];
 
 
 
-static void test_xs3_max_s16_random()
+static void test_xs3_vect_s16_max_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 0x6D734F1E;
@@ -58,7 +58,7 @@ static void test_xs3_max_s16_random()
             max = MAX(max, B[i]);
         }
 
-        result = xs3_max_s16(B, len);
+        result = xs3_vect_s16_max(B, len);
 
         TEST_ASSERT_EQUAL(max, result);
     }
@@ -70,7 +70,7 @@ static void test_xs3_max_s16_random()
 
 
 
-static void test_xs3_max_s32_random()
+static void test_xs3_vect_s32_max_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 346332123;
@@ -92,7 +92,7 @@ static void test_xs3_max_s32_random()
             max = MAX(max, B[i]);
         }
 
-        result = xs3_max_s32(B, len);
+        result = xs3_vect_s32_max(B, len);
 
         TEST_ASSERT_EQUAL(max, result);
         
@@ -107,7 +107,7 @@ static void test_xs3_max_s32_random()
 
 
 
-static void test_xs3_min_s16_random()
+static void test_xs3_vect_s16_min_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 0x6D734F1E;
@@ -129,7 +129,7 @@ static void test_xs3_min_s16_random()
             min = MIN(min, B[i]);
         }
 
-        result = xs3_min_s16(B, len);
+        result = xs3_vect_s16_min(B, len);
 
         TEST_ASSERT_EQUAL(min, result);
     }
@@ -143,7 +143,7 @@ static void test_xs3_min_s16_random()
 
 
 
-static void test_xs3_min_s32_random()
+static void test_xs3_vect_s32_min_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 346332123;
@@ -166,7 +166,7 @@ static void test_xs3_min_s32_random()
             min = MIN(min, B[i]);
         }
 
-        result = xs3_min_s32(B, len);
+        result = xs3_vect_s32_min(B, len);
 
         TEST_ASSERT_EQUAL(min, result);
         
@@ -176,7 +176,7 @@ static void test_xs3_min_s32_random()
 
 
 
-static void test_xs3_argmax_s16_A()
+static void test_xs3_vect_s16_argmax_A()
 {
     PRINTF("%s...\n", __func__);
 
@@ -194,21 +194,21 @@ static void test_xs3_argmax_s16_A()
     };
 
 
-    TEST_ASSERT_EQUAL(data[0][32], xs3_argmax_s16(&data[0][0],32));
-    TEST_ASSERT_EQUAL(data[1][32], xs3_argmax_s16(&data[1][0],32));
-    TEST_ASSERT_EQUAL(data[2][32], xs3_argmax_s16(&data[2][0],32));
-    TEST_ASSERT_EQUAL(data[3][32], xs3_argmax_s16(&data[3][0],32));
-    TEST_ASSERT_EQUAL(data[4][32], xs3_argmax_s16(&data[4][0],32));
-    TEST_ASSERT_EQUAL(data[5][32], xs3_argmax_s16(&data[5][0],32));
-    TEST_ASSERT_EQUAL(data[6][32], xs3_argmax_s16(&data[6][0],32));
-    TEST_ASSERT_EQUAL(data[7][32], xs3_argmax_s16(&data[7][0],32));
+    TEST_ASSERT_EQUAL(data[0][32], xs3_vect_s16_argmax(&data[0][0],32));
+    TEST_ASSERT_EQUAL(data[1][32], xs3_vect_s16_argmax(&data[1][0],32));
+    TEST_ASSERT_EQUAL(data[2][32], xs3_vect_s16_argmax(&data[2][0],32));
+    TEST_ASSERT_EQUAL(data[3][32], xs3_vect_s16_argmax(&data[3][0],32));
+    TEST_ASSERT_EQUAL(data[4][32], xs3_vect_s16_argmax(&data[4][0],32));
+    TEST_ASSERT_EQUAL(data[5][32], xs3_vect_s16_argmax(&data[5][0],32));
+    TEST_ASSERT_EQUAL(data[6][32], xs3_vect_s16_argmax(&data[6][0],32));
+    TEST_ASSERT_EQUAL(data[7][32], xs3_vect_s16_argmax(&data[7][0],32));
 
 }
 
 
 
 
-static void test_xs3_argmax_s16_B()
+static void test_xs3_vect_s16_argmax_B()
 {
     PRINTF("%s...\n", __func__);
     seed = 0x6D734F1E;
@@ -231,7 +231,7 @@ static void test_xs3_argmax_s16_B()
             exp = (B[i] > B[exp])? i : exp;
         }
 
-        result = xs3_argmax_s16(B, len);
+        result = xs3_vect_s16_argmax(B, len);
 
         TEST_ASSERT_EQUAL(exp, result);
     }
@@ -243,7 +243,7 @@ static void test_xs3_argmax_s16_B()
 
 
 
-static void test_xs3_argmax_s32_A()
+static void test_xs3_vect_s32_argmax_A()
 {
     PRINTF("%s...\n", __func__);
 
@@ -260,14 +260,14 @@ static void test_xs3_argmax_s32_A()
     };
 
 
-    // TEST_ASSERT_EQUAL(data[0][32], xs3_argmax_s32(&data[0][0],32));
-    // TEST_ASSERT_EQUAL(data[1][32], xs3_argmax_s32(&data[1][0],32));
-    TEST_ASSERT_EQUAL(data[2][32], xs3_argmax_s32(&data[2][0],32));
-    TEST_ASSERT_EQUAL(data[3][32], xs3_argmax_s32(&data[3][0],32));
-    TEST_ASSERT_EQUAL(data[4][32], xs3_argmax_s32(&data[4][0],32));
-    TEST_ASSERT_EQUAL(data[5][32], xs3_argmax_s32(&data[5][0],32));
-    TEST_ASSERT_EQUAL(data[6][32], xs3_argmax_s32(&data[6][0],32));
-    TEST_ASSERT_EQUAL(data[7][32], xs3_argmax_s32(&data[7][0],32));
+    // TEST_ASSERT_EQUAL(data[0][32], xs3_vect_s32_argmax(&data[0][0],32));
+    // TEST_ASSERT_EQUAL(data[1][32], xs3_vect_s32_argmax(&data[1][0],32));
+    TEST_ASSERT_EQUAL(data[2][32], xs3_vect_s32_argmax(&data[2][0],32));
+    TEST_ASSERT_EQUAL(data[3][32], xs3_vect_s32_argmax(&data[3][0],32));
+    TEST_ASSERT_EQUAL(data[4][32], xs3_vect_s32_argmax(&data[4][0],32));
+    TEST_ASSERT_EQUAL(data[5][32], xs3_vect_s32_argmax(&data[5][0],32));
+    TEST_ASSERT_EQUAL(data[6][32], xs3_vect_s32_argmax(&data[6][0],32));
+    TEST_ASSERT_EQUAL(data[7][32], xs3_vect_s32_argmax(&data[7][0],32));
 
 }
 
@@ -275,7 +275,7 @@ static void test_xs3_argmax_s32_A()
 
 
 
-static void test_xs3_argmax_s32_B()
+static void test_xs3_vect_s32_argmax_B()
 {
     PRINTF("%s...\n", __func__);
     seed = 0x5634564;
@@ -298,7 +298,7 @@ static void test_xs3_argmax_s32_B()
             exp = (B[i] > B[exp])? i : exp;
         }
 
-        result = xs3_argmax_s32(B, len);
+        result = xs3_vect_s32_argmax(B, len);
 
         TEST_ASSERT_EQUAL(exp, result);
         
@@ -313,7 +313,7 @@ static void test_xs3_argmax_s32_B()
 
 
 
-static void test_xs3_argmin_s16_A()
+static void test_xs3_vect_s16_argmin_A()
 {
     PRINTF("%s...\n", __func__);
 
@@ -331,21 +331,21 @@ static void test_xs3_argmin_s16_A()
     };
 
 
-    TEST_ASSERT_EQUAL(data[0][32], xs3_argmin_s16(&data[0][0],32));
-    TEST_ASSERT_EQUAL(data[1][32], xs3_argmin_s16(&data[1][0],32));
-    TEST_ASSERT_EQUAL(data[2][32], xs3_argmin_s16(&data[2][0],32));
-    TEST_ASSERT_EQUAL(data[3][32], xs3_argmin_s16(&data[3][0],32));
-    TEST_ASSERT_EQUAL(data[4][32], xs3_argmin_s16(&data[4][0],32));
-    TEST_ASSERT_EQUAL(data[5][32], xs3_argmin_s16(&data[5][0],32));
-    TEST_ASSERT_EQUAL(data[6][32], xs3_argmin_s16(&data[6][0],32));
-    TEST_ASSERT_EQUAL(data[7][32], xs3_argmin_s16(&data[7][0],32));
+    TEST_ASSERT_EQUAL(data[0][32], xs3_vect_s16_argmin(&data[0][0],32));
+    TEST_ASSERT_EQUAL(data[1][32], xs3_vect_s16_argmin(&data[1][0],32));
+    TEST_ASSERT_EQUAL(data[2][32], xs3_vect_s16_argmin(&data[2][0],32));
+    TEST_ASSERT_EQUAL(data[3][32], xs3_vect_s16_argmin(&data[3][0],32));
+    TEST_ASSERT_EQUAL(data[4][32], xs3_vect_s16_argmin(&data[4][0],32));
+    TEST_ASSERT_EQUAL(data[5][32], xs3_vect_s16_argmin(&data[5][0],32));
+    TEST_ASSERT_EQUAL(data[6][32], xs3_vect_s16_argmin(&data[6][0],32));
+    TEST_ASSERT_EQUAL(data[7][32], xs3_vect_s16_argmin(&data[7][0],32));
 
 }
 
 
 
 
-static void test_xs3_argmin_s16_B()
+static void test_xs3_vect_s16_argmin_B()
 {
     PRINTF("%s...\n", __func__);
     seed = 0x6D734F1E;
@@ -367,7 +367,7 @@ static void test_xs3_argmin_s16_B()
             exp = (B[i] < B[exp])? i : exp;
         }
 
-        result = xs3_argmin_s16(B, len);
+        result = xs3_vect_s16_argmin(B, len);
 
         TEST_ASSERT_EQUAL(exp, result);
     }
@@ -380,7 +380,7 @@ static void test_xs3_argmin_s16_B()
 
 
 
-static void test_xs3_argmin_s32_A()
+static void test_xs3_vect_s32_argmin_A()
 {
     PRINTF("%s...\n", __func__);
 
@@ -397,19 +397,19 @@ static void test_xs3_argmin_s32_A()
     };
 
 
-    TEST_ASSERT_EQUAL(data[0][32], xs3_argmin_s32(&data[0][0],32));
-    TEST_ASSERT_EQUAL(data[1][32], xs3_argmin_s32(&data[1][0],32));
-    TEST_ASSERT_EQUAL(data[2][32], xs3_argmin_s32(&data[2][0],32));
-    TEST_ASSERT_EQUAL(data[3][32], xs3_argmin_s32(&data[3][0],32));
-    TEST_ASSERT_EQUAL(data[4][32], xs3_argmin_s32(&data[4][0],32));
-    TEST_ASSERT_EQUAL(data[5][32], xs3_argmin_s32(&data[5][0],32));
-    TEST_ASSERT_EQUAL(data[6][32], xs3_argmin_s32(&data[6][0],32));
-    TEST_ASSERT_EQUAL(data[7][32], xs3_argmin_s32(&data[7][0],32));
+    TEST_ASSERT_EQUAL(data[0][32], xs3_vect_s32_argmin(&data[0][0],32));
+    TEST_ASSERT_EQUAL(data[1][32], xs3_vect_s32_argmin(&data[1][0],32));
+    TEST_ASSERT_EQUAL(data[2][32], xs3_vect_s32_argmin(&data[2][0],32));
+    TEST_ASSERT_EQUAL(data[3][32], xs3_vect_s32_argmin(&data[3][0],32));
+    TEST_ASSERT_EQUAL(data[4][32], xs3_vect_s32_argmin(&data[4][0],32));
+    TEST_ASSERT_EQUAL(data[5][32], xs3_vect_s32_argmin(&data[5][0],32));
+    TEST_ASSERT_EQUAL(data[6][32], xs3_vect_s32_argmin(&data[6][0],32));
+    TEST_ASSERT_EQUAL(data[7][32], xs3_vect_s32_argmin(&data[7][0],32));
 
 }
 
 
-static void test_xs3_argmin_s32_B()
+static void test_xs3_vect_s32_argmin_B()
 {
     PRINTF("%s...\n", __func__);
     seed = 346332123;
@@ -430,7 +430,7 @@ static void test_xs3_argmin_s32_B()
             exp = (B[i] < B[exp])? i : exp;
         }
 
-        result = xs3_argmin_s32(B, len);
+        result = xs3_vect_s32_argmin(B, len);
 
         TEST_ASSERT_EQUAL(exp, result);
         
@@ -445,16 +445,16 @@ void test_xs3_max_min()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_max_s16_random);
-    RUN_TEST(test_xs3_max_s32_random);
-    RUN_TEST(test_xs3_min_s16_random);
-    RUN_TEST(test_xs3_min_s32_random);
-    RUN_TEST(test_xs3_argmax_s16_A);
-    RUN_TEST(test_xs3_argmax_s16_B);
-    RUN_TEST(test_xs3_argmax_s32_A);
-    RUN_TEST(test_xs3_argmax_s32_B);
-    RUN_TEST(test_xs3_argmin_s16_A);
-    RUN_TEST(test_xs3_argmin_s16_B);
-    RUN_TEST(test_xs3_argmin_s32_A);
-    RUN_TEST(test_xs3_argmin_s32_B);
+    RUN_TEST(test_xs3_vect_s16_max_random);
+    RUN_TEST(test_xs3_vect_s32_max_random);
+    RUN_TEST(test_xs3_vect_s16_min_random);
+    RUN_TEST(test_xs3_vect_s32_min_random);
+    RUN_TEST(test_xs3_vect_s16_argmax_A);
+    RUN_TEST(test_xs3_vect_s16_argmax_B);
+    RUN_TEST(test_xs3_vect_s32_argmax_A);
+    RUN_TEST(test_xs3_vect_s32_argmax_B);
+    RUN_TEST(test_xs3_vect_s16_argmin_A);
+    RUN_TEST(test_xs3_vect_s16_argmin_B);
+    RUN_TEST(test_xs3_vect_s32_argmin_A);
+    RUN_TEST(test_xs3_vect_s32_argmin_B);
 }

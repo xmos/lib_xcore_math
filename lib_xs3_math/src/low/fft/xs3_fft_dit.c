@@ -107,7 +107,7 @@ void xs3_fft_dit_forward (
             int b = 1<<(n+2);
             int a = 1<<((FFT_N_LOG2-3)-n);
 
-            headroom_t cur_hr = xs3_headroom_vect_complex_s32(x, N);
+            headroom_t cur_hr = xs3_vect_complex_s32_headroom(x, N);
 
             shift_mode = (cur_hr == 3)? 0 : (cur_hr < 3)? 1 : -1;
             exp_modifier += shift_mode;
@@ -122,7 +122,7 @@ void xs3_fft_dit_forward (
                 for(int j = 0; j < a; j++){
                     load_vec(vD, &x[s+b]);
 
-                    xs3_complex_mul_vect_complex_s32(vR, vD, vC, 4, 0, 0);
+                    xs3_vect_complex_s32_complex_mul(vR, vD, vC, 4, 0, 0);
 
                     for(int i = 0; i < 4; i++){
                         vD[i].re = ASHR(32)(((int64_t)x[s+i].re) - vR[i].re, shift_mode);
@@ -139,7 +139,7 @@ void xs3_fft_dit_forward (
         }
     }
 
-    *hr = xs3_headroom_vect_complex_s32(x, N);
+    *hr = xs3_vect_complex_s32_headroom(x, N);
     *exp = *exp + exp_modifier;
 }
 
@@ -178,7 +178,7 @@ void xs3_fft_dit_inverse (
             int b = 1<<(n+2);
             int a = 1<<((FFT_N_LOG2-3)-n);
 
-            headroom_t cur_hr = xs3_headroom_vect_complex_s32(x, N);
+            headroom_t cur_hr = xs3_vect_complex_s32_headroom(x, N);
 
             shift_mode = (cur_hr == 3)? 0 : (cur_hr < 3)? 1 : -1;
             exp_modifier += shift_mode;
@@ -194,7 +194,7 @@ void xs3_fft_dit_inverse (
                 for(int j = 0; j < a; j++){
                     load_vec(vD, &x[s+b]);
 
-                    xs3_complex_conj_mul_vect_complex_s32(vR, vD, vC, 4, 0, 0);
+                    xs3_vect_complex_s32_complex_conj_mul(vR, vD, vC, 4, 0, 0);
 
                     for(int i = 0; i < 4; i++){
                         vD[i].re = ASHR(32)(((int64_t)x[s+i].re) - vR[i].re, shift_mode);
@@ -211,6 +211,6 @@ void xs3_fft_dit_inverse (
         }
     }
 
-    *hr = xs3_headroom_vect_complex_s32(x, N);
+    *hr = xs3_vect_complex_s32_headroom(x, N);
     *exp = *exp + exp_modifier;
 }

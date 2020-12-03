@@ -119,7 +119,7 @@ static void test_xs3_mag_vect_complex_calc_params()
             // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B.re, (uint32_t) B.re);
             // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B.im, (uint32_t) B.im);
 
-            xs3_mag_vect_complex_s32(&A_mag, &B, 1, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
+            xs3_vect_complex_s32_mag(&A_mag, &B, 1, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
 
             // PRINTF("\t    A_mag = %ld   (0x%08lX)\n", A_mag, (uint32_t) A_mag);
             // PRINTF("\t    a_exp = %d\n", a_exp);
@@ -144,7 +144,7 @@ static void test_xs3_mag_vect_complex_calc_params()
 
 
 #define THRESHOLD   5
-static void test_xs3_mag_vect_complex_s16_basic()
+static void test_xs3_vect_complex_s16_mag_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -221,7 +221,7 @@ static void test_xs3_mag_vect_complex_s16_basic()
                 B.imag[i] = casse->b.im;
             }
 
-            hr = xs3_mag_vect_complex_s16(A, B.real, B.imag, len, casse->b_shr, (int16_t*) rot_table16, rot_table16_rows);
+            hr = xs3_vect_complex_s16_mag(A, B.real, B.imag, len, casse->b_shr, (int16_t*) rot_table16, rot_table16_rows);
 
             for(int i = 0; i < len; i++){
                 
@@ -233,7 +233,7 @@ static void test_xs3_mag_vect_complex_s16_basic()
 
                 max_abs_delta = MAX(max_abs_delta, abs_delta);
             }
-            TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16((int16_t*) A, len), hr, casse->line);
+            TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom((int16_t*) A, len), hr, casse->line);
         }
     }
 
@@ -248,7 +248,7 @@ static void test_xs3_mag_vect_complex_s16_basic()
 #define MAX_LEN     100
 #define REPS        1000
 #define THRESHOLD   10
-static void test_xs3_mag_vect_complex_s16_random()
+static void test_xs3_vect_complex_s16_mag_random()
 {
     PRINTF("%s...\n", __func__);
     unsigned seed = 0x9B54F255;
@@ -279,11 +279,11 @@ static void test_xs3_mag_vect_complex_s16_random()
             B.imag[i] = pseudo_rand_int16(&seed) >> B_hr;
         }
 
-        B_hr = MIN( xs3_headroom_vect_s16(B.real, len), xs3_headroom_vect_s16(B.imag, len) );
+        B_hr = MIN( xs3_vect_s16_headroom(B.real, len), xs3_vect_s16_headroom(B.imag, len) );
 // printf("! %d\t\t%d\n", B_hr, B.imag[0]);
         right_shift_t b_shr = -B_hr + 1;
         
-        hr = xs3_mag_vect_complex_s16(A, B.real, B.imag, len, b_shr, (int16_t*) rot_table16, rot_table16_rows);
+        hr = xs3_vect_complex_s16_mag(A, B.real, B.imag, len, b_shr, (int16_t*) rot_table16, rot_table16_rows);
 
 
         for(int i = 0; i < len; i++){
@@ -298,7 +298,7 @@ static void test_xs3_mag_vect_complex_s16_random()
 
             max_abs_delta = MAX(max_abs_delta, abs_delta);
         }
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s16((int16_t*) A, len), hr, v);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom((int16_t*) A, len), hr, v);
     }
 
     PRINTF("\tMaximum absolute delta: %u\n", max_abs_delta);
@@ -312,7 +312,7 @@ static void test_xs3_mag_vect_complex_s16_random()
 
 
 #define THRESHOLD   7
-static void test_xs3_mag_vect_complex_s32_basic()
+static void test_xs3_vect_complex_s32_mag_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -378,7 +378,7 @@ static void test_xs3_mag_vect_complex_s32_basic()
                 B[i].im = casse->b.im;
             }
 
-            hr = xs3_mag_vect_complex_s32(A, B, len, casse->b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
+            hr = xs3_vect_complex_s32_mag(A, B, len, casse->b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
 
             for(int i = 0; i < len; i++){
                 
@@ -390,7 +390,7 @@ static void test_xs3_mag_vect_complex_s32_basic()
 
                 max_abs_delta = MAX(max_abs_delta, abs_delta);
             }
-            TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32((int32_t*) A, len), hr, casse->line);
+            TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, len), hr, casse->line);
         }
     }
 
@@ -407,7 +407,7 @@ static void test_xs3_mag_vect_complex_s32_basic()
 #define MAX_LEN     100
 #define REPS        1000
 #define THRESHOLD   7
-static void test_xs3_mag_vect_complex_s32_random()
+static void test_xs3_vect_complex_s32_mag_random()
 {
     PRINTF("%s...\n", __func__);
     unsigned seed = 3463456;
@@ -437,11 +437,11 @@ static void test_xs3_mag_vect_complex_s32_random()
             B[i].im = ( pseudo_rand_int32(&seed) & 0xFFFFFF00   ) >> (B_hr);
         }
         
-        B_hr = xs3_headroom_vect_s32((int32_t*) B, 2*len);
+        B_hr = xs3_vect_s32_headroom((int32_t*) B, 2*len);
 
         right_shift_t b_shr = (-B_hr)+1;
         
-        hr = xs3_mag_vect_complex_s32(A, B, len, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
+        hr = xs3_vect_complex_s32_mag(A, B, len, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
 
 
         for(int i = 0; i < len; i++){
@@ -455,7 +455,7 @@ static void test_xs3_mag_vect_complex_s32_random()
 
             max_abs_delta = MAX(max_abs_delta, abs_delta);
         }
-        TEST_ASSERT_EQUAL_MSG(xs3_headroom_vect_s32((int32_t*) A, len), hr, v);
+        TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, len), hr, v);
     }
 
     PRINTF("\tMaximum absolute delta: %u\n", max_abs_delta);
@@ -472,9 +472,9 @@ void test_xs3_mag_vect_complex()
 
     RUN_TEST(test_xs3_mag_vect_complex_calc_params);
 
-    RUN_TEST(test_xs3_mag_vect_complex_s16_basic);
-    RUN_TEST(test_xs3_mag_vect_complex_s16_random);
+    RUN_TEST(test_xs3_vect_complex_s16_mag_basic);
+    RUN_TEST(test_xs3_vect_complex_s16_mag_random);
 
-    RUN_TEST(test_xs3_mag_vect_complex_s32_basic);
-    RUN_TEST(test_xs3_mag_vect_complex_s32_random);
+    RUN_TEST(test_xs3_vect_complex_s32_mag_basic);
+    RUN_TEST(test_xs3_vect_complex_s32_mag_random);
 }

@@ -5,7 +5,7 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-void xs3_s32_to_s16(
+void xs3_vect_s32_to_s16(
     int16_t a[],
     const int32_t b[],
     const unsigned length,
@@ -20,7 +20,7 @@ void xs3_s32_to_s16(
 
 #define NSTACKWORDS     (4)
 
-#define FUNCTION_NAME   xs3_s32_to_s16
+#define FUNCTION_NAME   xs3_vect_s32_to_s16
 
 #define a           r0
 #define b           r1

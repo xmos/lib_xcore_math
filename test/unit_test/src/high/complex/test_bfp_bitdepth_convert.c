@@ -33,7 +33,7 @@ static char msg_buff[200];
     }} while(0)
 
 
-void test_bfp_complex_s32_to_complex_s16_case0()
+void test_bfp_vect_complex_s32_to_complex_s16_case0()
 {
     PRINTF("%s...\n", __func__);
 
@@ -67,11 +67,11 @@ void test_bfp_complex_s32_to_complex_s16_case0()
     // 0xFFFFFFF9 -> ...1111 1001 -> ...1111 1011 -> ...1111 1110 = -2
     // 0xFFFFFFFA -> ...1111 1010 -> ...1111 1100 -> ...1111 1111 = -1
 
-    bfp_headroom_vect_complex_s32(&B);
+    bfp_vect_complex_s32_headroom(&B);
 
     TEST_ASSERT_EQUAL(14, B.hr);
 
-    bfp_complex_s32_to_complex_s16(&A, &B);
+    bfp_vect_complex_s32_to_complex_s16(&A, &B);
 
     TEST_ASSERT_EQUAL(2, A.exp);
     TEST_ASSERT_EQUAL(0, A.hr);
@@ -86,7 +86,7 @@ void test_bfp_complex_s32_to_complex_s16_case0()
 
 
 
-void test_bfp_complex_s32_to_complex_s16_case1()
+void test_bfp_vect_complex_s32_to_complex_s16_case1()
 {
     PRINTF("%s...\n", __func__);
 
@@ -109,10 +109,10 @@ void test_bfp_complex_s32_to_complex_s16_case1()
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
         
-        bfp_init_vect_complex_s32(&B, B_data, pseudo_rand_int(&seed, -30, 30),
+        bfp_vect_complex_s32_init(&B, B_data, pseudo_rand_int(&seed, -30, 30),
                                               pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
-        bfp_init_vect_complex_s16(&A, A_real, A_imag, INT_MAX, B.length, 0);
+        bfp_vect_complex_s16_init(&A, A_real, A_imag, INT_MAX, B.length, 0);
 
         B.hr = r? pseudo_rand_uint(&seed, 0, 28) : 0;
 
@@ -153,9 +153,9 @@ void test_bfp_complex_s32_to_complex_s16_case1()
         //     PRINTF("\t        B.data[% 3d].im = % 15ld  (0x%08lX)\n", i, B.data[i].im, (uint32_t) B.data[i].im);
         // }
         
-        TEST_ASSERT_EQUAL(B.hr, xs3_headroom_vect_complex_s32(B.data, B.length));
+        TEST_ASSERT_EQUAL(B.hr, xs3_vect_complex_s32_headroom(B.data, B.length));
 
-        bfp_complex_s32_to_complex_s16(&A, &B);
+        bfp_vect_complex_s32_to_complex_s16(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, A.length);
         
@@ -168,7 +168,7 @@ void test_bfp_complex_s32_to_complex_s16_case1()
         //     PRINTF("\t        A.imag[% 3d] = % 15d  (0x%04X)\n", i, A.imag[i], (uint16_t) A.imag[i]);
         // }
 
-        TEST_ASSERT_EQUAL(xs3_headroom_vect_complex_s16(A.real, A.imag, A.length), A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr);
         TEST_ASSERT_EQUAL(0, A.hr);
         
         TEST_ASSERT(ldexp(A.real[0], A.exp) == ldexp(B.data[0].re, B.exp)   );
@@ -187,7 +187,7 @@ void test_bfp_complex_s32_to_complex_s16_case1()
 
 
 
-void test_bfp_complex_s16_to_complex_s32()
+void test_bfp_vect_complex_s16_to_complex_s32()
 {
     PRINTF("%s...\n", __func__);
 
@@ -239,9 +239,9 @@ void test_bfp_complex_s16_to_complex_s32()
         //     PRINTF("\t        B.imag[% 3d] = % 7d  (0x%04X)\n", i, B.imag[i], (uint16_t) B.imag[i]);
         // }
 
-        TEST_ASSERT_EQUAL_MESSAGE(B.hr, xs3_headroom_vect_complex_s16(B.real, B.imag, B.length), "[Input headroom is wrong]");
+        TEST_ASSERT_EQUAL_MESSAGE(B.hr, xs3_vect_complex_s16_headroom(B.real, B.imag, B.length), "[Input headroom is wrong]");
 
-        bfp_complex_s16_to_complex_s32(&A, &B);
+        bfp_vect_complex_s16_to_complex_s32(&A, &B);
 
         // PRINTF("\t    A.length = %u\n", A.length);
         // PRINTF("\t    A.exp = %d\n", A.exp);
@@ -254,7 +254,7 @@ void test_bfp_complex_s16_to_complex_s32()
 
         TEST_ASSERT_EQUAL_MESSAGE(B.exp, A.exp, "[Output exponent is wrong]");
         
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_headroom_vect_complex_s32(A.data, A.length), A.hr, "[Output headroom is wrong]");
+        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr, "[Output headroom is wrong]");
 
         TEST_ASSERT_EQUAL_INT32_ARRAY((int32_t*) &expected, (int32_t*) A.data, 2*A.length);
 
@@ -268,7 +268,7 @@ void test_bfp_complex_s16_to_complex_s32()
 void test_bfp_complex_bitdepth_convert()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_s32_to_complex_s16_case0);
-    RUN_TEST(test_bfp_complex_s32_to_complex_s16_case1);
-    RUN_TEST(test_bfp_complex_s16_to_complex_s32);
+    RUN_TEST(test_bfp_vect_complex_s32_to_complex_s16_case0);
+    RUN_TEST(test_bfp_vect_complex_s32_to_complex_s16_case1);
+    RUN_TEST(test_bfp_vect_complex_s16_to_complex_s32);
 }

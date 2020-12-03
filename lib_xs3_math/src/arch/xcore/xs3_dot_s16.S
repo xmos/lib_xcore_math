@@ -3,7 +3,7 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-int64_t xs3_dot_s16(
+int64_t xs3_vect_s16_dot(
     const int16_t b[],
     const int16_t c[],
     const unsigned length,
@@ -18,7 +18,7 @@ int64_t xs3_dot_s16(
 #define NSTACKVECTS     (4)
 #define NSTACKWORDS     (2 + 8*NSTACKVECTS)
 
-#define FUNCTION_NAME   xs3_dot_s16
+#define FUNCTION_NAME   xs3_vect_s16_dot
 
 #define STACK_VEC_TMP   (NSTACKWORDS-8)
 #define STACK_ACC_LOW   (NSTACKWORDS-16)

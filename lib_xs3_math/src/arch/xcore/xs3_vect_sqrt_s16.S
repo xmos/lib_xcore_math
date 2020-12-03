@@ -6,7 +6,7 @@
 
 /*  
 
-headroom_t xs3_sqrt_vect_s16(
+headroom_t xs3_vect_s16_sqrt(
     int16_t a[],
     const int16_t b[],
     const unsigned length,
@@ -21,7 +21,7 @@ headroom_t xs3_sqrt_vect_s16(
 #define NSTACKVECTS     (3)
 #define NSTACKWORDS     (10+8*(NSTACKVECTS))
 
-#define FUNCTION_NAME   xs3_sqrt_vect_s16
+#define FUNCTION_NAME   xs3_vect_s16_sqrt
 
 // Temporary vector needed because there's no instruction to do vR[] * vR[]
 #define STACK_VEC_TMP       (NSTACKWORDS-8)
