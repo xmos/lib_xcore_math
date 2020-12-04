@@ -3,7 +3,7 @@ Changing Library FFT Length Support             {#fft_length_support}
 ===================================
 
 When computing DFTs this library relies on one or both of a pair of look-up tables which contain portions of the 
-Discrete Fourier Transform matrix. The table(s) can be found in `lib_xs3_math/src/low/c/xs3_fft_lut.c`, with accompanying definitions and macros in `lib_xs3_math_src/low/c/xs3_fft_lut.h`.
+Discrete Fourier Transform matrix. The table(s) can be found in `lib_xs3_math/src/vect/c/xs3_fft_lut.c`, with accompanying definitions and macros in `lib_xs3_math/src/vect/c/xs3_fft_lut.h`.
 
 By default the tables contain the coefficients necessary to perform forward or inverse DFTs of up to 1024 points. If 
 larger DFTs are required, or if the maximum required DFT size is known to be less than 1024 points, these look-up tables 

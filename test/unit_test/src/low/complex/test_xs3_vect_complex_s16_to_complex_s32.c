@@ -28,7 +28,7 @@ static char msg_buff[200];
 #endif
 
 #define MAX_LEN 50
-static void test_xs3_complex_s16_to_complex_s32_basic()
+static void test_xs3_vect_complex_s16_to_complex_s32_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -79,7 +79,7 @@ static void test_xs3_complex_s16_to_complex_s32_basic()
                 A[i].im = 0xCCCCCCCC;
             }
 
-            xs3_complex_s16_to_complex_s32(A, B.real, B.imag, len);
+            xs3_vect_complex_s16_to_complex_s32(A, B.real, B.imag, len);
 
             for(int k = 0; k < MAX_LEN; k++){
                 complex_s32_t exp = {
@@ -97,7 +97,7 @@ static void test_xs3_complex_s16_to_complex_s32_basic()
 
 #define MAX_LEN     68
 #define REPS        IF_QUICK_TEST(10, 100)
-static void test_xs3_complex_s16_to_complex_s32_random()
+static void test_xs3_vect_complex_s16_to_complex_s32_random()
 {
     PRINTF("%s...\n", __func__);
     unsigned seed = 778;
@@ -121,7 +121,7 @@ static void test_xs3_complex_s16_to_complex_s32_random()
         }
 
         memset(A, 0xCC, sizeof(A));
-        xs3_complex_s16_to_complex_s32(A, B.real, B.imag, len);
+        xs3_vect_complex_s16_to_complex_s32(A, B.real, B.imag, len);
 
         for(int k = 0; k < MAX_LEN; k++){
                 complex_s32_t exp = {
@@ -136,10 +136,10 @@ static void test_xs3_complex_s16_to_complex_s32_random()
 #undef MAX_LEN
 #undef REPS
 
-void test_xs3_complex_s16_to_complex_s32()
+void test_xs3_vect_complex_s16_to_complex_s32()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_complex_s16_to_complex_s32_basic);
-    RUN_TEST(test_xs3_complex_s16_to_complex_s32_random);
+    RUN_TEST(test_xs3_vect_complex_s16_to_complex_s32_basic);
+    RUN_TEST(test_xs3_vect_complex_s16_to_complex_s32_random);
 }

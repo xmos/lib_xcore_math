@@ -6,7 +6,7 @@
 #include <assert.h>
 
 #include "xs3_math.h"
-#include "low/xs3_vpu_scalar_ops.h"
+#include "xs3_vpu_scalar_ops.h"
 
 #include "../tst_common.h"
 
@@ -189,7 +189,7 @@ static void test_xs3_vect_s32_mul_calc_params()
 
 
 
-static void test_xs3_vect_s16_scalar_mul_calc_params()
+static void test_xs3_vect_s16_scale_calc_params()
 {
     PRINTF("%s...\n", __func__);
 
@@ -214,9 +214,9 @@ static void test_xs3_vect_s16_scalar_mul_calc_params()
             exponent_t a_exp;
             right_shift_t sat, c_shr;
 
-            xs3_vect_s16_scalar_mul_calc_params(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
+            xs3_vect_s16_scale_calc_params(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
 
-            xs3_vect_complex_s16_scalar_mul(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
+            xs3_vect_complex_s16_real_scale(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
 
             const int32_t p = ((int32_t)B_re) * C;
             int16_t expected = p;
@@ -561,7 +561,7 @@ static void test_xs3_vect_s32_mul_random()
 
 
 
-static void test_xs3_vect_s16_scalar_mul_basic()
+static void test_xs3_vect_s16_scale_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -635,7 +635,7 @@ static void test_xs3_vect_s16_scalar_mul_basic()
             }
 
 
-            hr = xs3_vect_s16_scalar_mul(A, B, len, casse->value.alpha, casse->sat);
+            hr = xs3_vect_s16_scale(A, B, len, casse->value.alpha, casse->sat);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
@@ -643,7 +643,7 @@ static void test_xs3_vect_s16_scalar_mul_basic()
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_vect_s16_scalar_mul(A, A, len, casse->value.alpha, casse->sat);
+            hr = xs3_vect_s16_scale(A, A, len, casse->value.alpha, casse->sat);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
@@ -657,7 +657,7 @@ static void test_xs3_vect_s16_scalar_mul_basic()
 
 
 
-static void test_xs3_vect_s16_scalar_mul_random()
+static void test_xs3_vect_s16_scale_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 0x091C2511;
@@ -684,7 +684,7 @@ static void test_xs3_vect_s16_scalar_mul_random()
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %d <-- ((%d >> %d) * %d) >> 14     (A[i]=0x%04X; B[i]=0x%04X; alpha=0x%04X)";
 
-        hr = xs3_vect_s16_scalar_mul(A, B, len, alpha, sat);
+        hr = xs3_vect_s16_scale(A, B, len, alpha, sat);
 
         for(int i = 0; i < len; i++){
             int16_t expected = scalar_mul_s16(B[i], alpha, sat);
@@ -694,7 +694,7 @@ static void test_xs3_vect_s16_scalar_mul_random()
         TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_vect_s16_scalar_mul(A, A, len, alpha, sat);
+        hr = xs3_vect_s16_scale(A, A, len, alpha, sat);
 
         for(int i = 0; i < len; i++){
             int16_t expected = scalar_mul_s16(B[i], alpha, sat);
@@ -709,7 +709,7 @@ static void test_xs3_vect_s16_scalar_mul_random()
 
 
 
-static void test_xs3_vect_s32_scalar_mul_basic()
+static void test_xs3_vect_s32_scale_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -781,7 +781,7 @@ static void test_xs3_vect_s32_scalar_mul_basic()
                 B[i] = casse->value.b;
             }
 
-            hr = xs3_vect_s32_scalar_mul(A, B, len, casse->value.alpha, casse->shr.b);
+            hr = xs3_vect_s32_scale(A, B, len, casse->value.alpha, casse->shr.b);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
@@ -789,7 +789,7 @@ static void test_xs3_vect_s32_scalar_mul_basic()
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_vect_s32_scalar_mul(A, A, len, casse->value.alpha, casse->shr.b);
+            hr = xs3_vect_s32_scale(A, A, len, casse->value.alpha, casse->shr.b);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
@@ -803,7 +803,7 @@ static void test_xs3_vect_s32_scalar_mul_basic()
 
 
 
-static void test_xs3_vect_s32_scalar_mul_random()
+static void test_xs3_vect_s32_scale_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 67456;
@@ -830,7 +830,7 @@ static void test_xs3_vect_s32_scalar_mul_random()
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) * %ld) >> 30     (A[i]=0x%08X; B[i]=0x%08X; alpha=0x%08X)";
 
-        hr = xs3_vect_s32_scalar_mul(A, B, len, alpha, b_shr);
+        hr = xs3_vect_s32_scale(A, B, len, alpha, b_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = scalar_mul_s32(B[i], alpha, b_shr);
@@ -840,7 +840,7 @@ static void test_xs3_vect_s32_scalar_mul_random()
         TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_vect_s32_scalar_mul(A, A, len, alpha, b_shr);
+        hr = xs3_vect_s32_scale(A, A, len, alpha, b_shr);
 
         for(int i = 0; i < len; i++){
             int32_t expected = scalar_mul_s32(B[i], alpha, b_shr);
@@ -859,7 +859,7 @@ void test_xs3_mul_vect()
 
     RUN_TEST(test_xs3_vect_s16_mul_calc_params);
     RUN_TEST(test_xs3_vect_s32_mul_calc_params);
-    RUN_TEST(test_xs3_vect_s16_scalar_mul_calc_params);
+    RUN_TEST(test_xs3_vect_s16_scale_calc_params);
 
     RUN_TEST(test_xs3_vect_s16_mul_basic);
     RUN_TEST(test_xs3_vect_s16_mul_random);
@@ -868,9 +868,9 @@ void test_xs3_mul_vect()
     RUN_TEST(test_xs3_vect_s32_mul_random);
 
 
-    RUN_TEST(test_xs3_vect_s16_scalar_mul_basic);
-    RUN_TEST(test_xs3_vect_s16_scalar_mul_random);
+    RUN_TEST(test_xs3_vect_s16_scale_basic);
+    RUN_TEST(test_xs3_vect_s16_scale_random);
 
-    RUN_TEST(test_xs3_vect_s32_scalar_mul_basic);
-    RUN_TEST(test_xs3_vect_s32_scalar_mul_random);
+    RUN_TEST(test_xs3_vect_s32_scale_basic);
+    RUN_TEST(test_xs3_vect_s32_scale_random);
 }

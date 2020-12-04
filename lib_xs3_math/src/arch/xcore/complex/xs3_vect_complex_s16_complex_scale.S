@@ -6,7 +6,7 @@
 
 /*  
 
-headroom_t xs3_vect_complex_s16_complex_scal_mul(
+headroom_t xs3_vect_complex_s16_scale(
     int16_t* a_real,
     int16_t* a_imag,
     const int16_t* b_real,
@@ -32,7 +32,7 @@ headroom_t xs3_vect_complex_s16_complex_scal_mul(
 #define STACK_VEC_C_IMAG    (NSTACKWORDS-24)
 #define STACK_VEC_C_IMAG_N  (NSTACKWORDS-32)
 
-#define FUNCTION_NAME xs3_vect_complex_s16_complex_scal_mul
+#define FUNCTION_NAME xs3_vect_complex_s16_scale
     
 #define a_real      r0
 #define a_imag      r1
@@ -43,9 +43,8 @@ headroom_t xs3_vect_complex_s16_complex_scal_mul(
 #define bytemask    r6
 
 
-
-ASM_PREAMBLE(FUNCTION_NAME)
-
+.text
+.align 4
 
 /*
     We're doing this:
@@ -69,6 +68,7 @@ ASM_PREAMBLE(FUNCTION_NAME)
     a.imag <- vR
 */
 
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
 
 FUNCTION_NAME:
     
@@ -179,7 +179,17 @@ FUNCTION_NAME:
     {   sub r0, r0, r11                         ;   retsp NSTACKWORDS                       }
 
 
-ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS)
+.L_func_end:
+.cc_bottom FUNCTION_NAME.function
+
+.globl FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
+.size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
+
 
 #undef FUNCTION_NAME
 

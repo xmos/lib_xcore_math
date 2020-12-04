@@ -5,7 +5,7 @@
 #include "asm_helper.h"
 
 /*  
-headroom_t xs3_vect_s16_scalar_mul(
+headroom_t xs3_vect_s16_scale(
     int16_t a[],
     const int16_t b[],
     const unsigned length,
@@ -17,7 +17,7 @@ headroom_t xs3_vect_s16_scalar_mul(
 
 #define NSTACKWORDS     (8+8)
 
-#define FUNCTION_NAME   xs3_vect_s16_scalar_mul
+#define FUNCTION_NAME   xs3_vect_s16_scale
 
 #define STACK_SAT       (NSTACKWORDS+1)
 

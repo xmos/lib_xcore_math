@@ -360,7 +360,7 @@ Functions in the high-level API generally are prefixed with `bfp_`.
 #### Initializing BFP Vectors ####
 
 Before calling these functions, the BFP vectors represented by the arguments must be initialized. For `bfp_s32_t` this 
-is accomplished with bfp_vect_s32_init().
+is accomplished with bfp_s32_init().
 
 @code{.c}
     #define LEN (20)
@@ -375,12 +375,12 @@ is accomplished with bfp_vect_s32_init().
     // The initial exponent associated with bfp_vect
     exponent_t initial_exponent = 0; 
 
-    // If non-zero, bfp_vect_s32_init() will compute the headroom currently present in data_buffer. 
+    // If non-zero, bfp_s32_init() will compute the headroom currently present in data_buffer. 
     // Otherwise, headroom is initialized to 0 (which is always safe but may not be optimal)
     unsigned calculate_headroom = 1; 
 
     // Initialize the vector object
-    bfp_vect_s32_init(&bfp_vec, data_buffer, initial_exponent, LEN, calculate_headroom);
+    bfp_s32_init(&bfp_vec, data_buffer, initial_exponent, LEN, calculate_headroom);
 
     // Go do stuff with bfp_vect
     ...
@@ -394,17 +394,17 @@ respectively, with the logical (floating-point) value of element `k` being given
 
 The following snippet shows a function `foo()` which takes 3 BFP vectors, `a`, `b` and `c`, as arguments. It multiplies
 together `a` and `b` element-wise, and then subtracts `c` from the product. In this example both operations are
-performed in-place on `a`. (See bfp_vect_s32_mul() and bfp_vect_s32_sub() for more information about those functions)
+performed in-place on `a`. (See bfp_s32_mul() and bfp_s32_sub() for more information about those functions)
 
 @code{.c}
 
     void foo(bfp_s32_t* a, const bfp_s32_t* b, const bfp_s32_t* c)
     {
         // Multiply together a and b, updating a with the result.
-        bfp_vect_s32_mul(a, a, b);
+        bfp_s32_mul(a, a, b);
 
         // Subtract c from the product, again updating a with the result.
-        bfp_vect_s32_sub(a, a, c);
+        bfp_s32_sub(a, a, c);
     }
 
 @endcode
@@ -421,7 +421,7 @@ their data by arithmetic saturation/overflows or underflows. Functions in the lo
 As an example of a function from the low-level API, see xs3_vect_s32_mul() from xs3_bfp_low.h, which multiplies together
 two `int32_t` vectors element by element.
 
-@snippet{lineno} api/low/xs3_bfp_low.h xs3_vect_s32_mul
+@snippet{lineno} api/vect/xs3_vect.h xs3_vect_s32_mul
 
 This function takes two `int32_t` arrays, `b` and `c`, as inputs and one `int32_t` array, `a`, as output. `length` 
 indicates the number of elements in each array. The final two parameters, `b_shr` and `c_shr`, are the arithmetic 
@@ -434,7 +434,7 @@ are scaled as desired.
 
 Contrast this with xs3_vect_s16_mul():
 
-@snippet{lineno} api/low/xs3_bfp_low.h xs3_vect_s16_mul
+@snippet{lineno} api/vect/xs3_vect.h xs3_vect_s16_mul
 
 The parameters are similar here, but instead of `b_shr` and `c_shr`, there's only an `a_shr`. This reflects the fact 
 that products of 16-bit numbers can be accumulated without a compulsory right-shift, and so there is no risk of losing

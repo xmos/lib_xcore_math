@@ -52,7 +52,7 @@ def main():
 
             if(args.dit):
                 header_file.write("\n/** @brief Maximum FFT length (log2) that can be performed using decimation-in-time. */\n")
-                header_file.write(f"#define XS3_MAX_DIT_FFT_LOG2 {args.max_fft_log2}\n")
+                header_file.write(f"#define MAX_DIT_FFT_LOG2 {args.max_fft_log2}\n")
                 header_file.write("\n/** @brief Convenience macro to index into the decimation-in-time FFT look-up table. \n\n")
                 header_file.write("\tThis will return the address at which the coefficients for the final pass of the real DIT\n")
                 header_file.write("\tFFT algorithm begin. \n\n")
@@ -61,12 +61,12 @@ def main():
                 header_file.write("#define XS3_DIT_REAL_FFT_LUT(N) &xs3_dit_fft_lut[(N)-8]\n\n")
             if(args.dif):
                 header_file.write("\n/** @brief Maximum FFT length (log2) that can be performed using decimation-in-frequency. */\n")
-                header_file.write(f"#define XS3_MAX_DIF_FFT_LOG2 {args.max_fft_log2}\n")
+                header_file.write(f"#define MAX_DIF_FFT_LOG2 {args.max_fft_log2}\n")
                 header_file.write("\n/** @brief Convenience macro to index into the decimation-in-frequency FFT look-up table. \n\n")
                 header_file.write("\tUse this to retrieve the correct address for the DIF FFT look-up table when performing\n")
                 header_file.write("\tan FFT (or IFFT) using the DIF algorithm. (@see xs3_fft_dif_forward).\n\n")
                 header_file.write("\t@param N\tThe FFT length.\n*/\n")
-                header_file.write("#define XS3_DIF_FFT_LUT(N) &xs3_dif_fft_lut[(1<<(XS3_MAX_DIF_FFT_LOG2)) - (N)]\n\n")
+                header_file.write("#define XS3_DIF_FFT_LUT(N) &xs3_dif_fft_lut[(1<<(MAX_DIF_FFT_LOG2)) - (N)]\n\n")
 
 
             if args.dit:

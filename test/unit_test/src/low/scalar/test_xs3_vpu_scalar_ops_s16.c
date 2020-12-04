@@ -7,7 +7,7 @@
 #include <stdarg.h>
 
 #include "xs3_math.h"
-#include "low/xs3_vpu_scalar_ops.h"
+#include "xs3_vpu_scalar_ops.h"
 #include "xs3_vpu.h"
 
 #include "../../tst_common.h"

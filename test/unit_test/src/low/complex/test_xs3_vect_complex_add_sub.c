@@ -6,9 +6,9 @@
 #include <assert.h>
 
 #include "xs3_math.h"
-#include "low/xs3_vpu_scalar_ops.h"
+#include "xs3_vpu_scalar_ops.h"
 
-#include "../src/low/vpu_helper.h"
+#include "../src/vect/vpu_helper.h"
 
 #include "../../tst_common.h"
 
@@ -70,7 +70,7 @@ static void test_xs3_vect_complex_s16_add()
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
 
-        xs3_add_sub_vect_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, 1);
+        xs3_vect_add_sub_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, 1);
 
         for(int i = 0; i < length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> b_hr;
@@ -135,7 +135,7 @@ static void test_xs3_vect_complex_s32_add()
 
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
-        xs3_add_sub_vect_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, 1);
+        xs3_vect_add_sub_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, 1);
 
         for(int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> b_hr;
@@ -198,7 +198,7 @@ static void test_xs3_vect_complex_s16_sub()
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
 
-        xs3_add_sub_vect_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, 1);
+        xs3_vect_add_sub_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, 1);
 
         for(int i = 0; i < length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> b_hr;
@@ -263,7 +263,7 @@ static void test_xs3_vect_complex_s32_sub()
 
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
-        xs3_add_sub_vect_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, 1);
+        xs3_vect_add_sub_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, 1);
 
         for(int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> b_hr;

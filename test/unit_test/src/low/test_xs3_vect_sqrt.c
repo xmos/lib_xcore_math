@@ -9,7 +9,7 @@
 #include "xs3_math.h"
 
 #include "../tst_common.h"
-#include "low/xs3_vpu_scalar_ops.h"
+#include "xs3_vpu_scalar_ops.h"
 
 #include "unity.h"
 

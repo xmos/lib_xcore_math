@@ -15,6 +15,10 @@ void xs3_sum_complex_s32(
 
 */
 
+.text
+.issue_mode dual
+.align 4
+
 #define NSTACKVECS      (2)
 #define NSTACKWORDS     (6+(8*NSTACKVECS))
 
@@ -32,8 +36,9 @@ void xs3_sum_complex_s32(
 
 #define FUNCTION_NAME xs3_sum_complex_s32
     
-ASM_PREAMBLE(FUNCTION_NAME)
 
+
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
 FUNCTION_NAME:
 
         dualentsp NSTACKWORDS
@@ -120,7 +125,16 @@ FUNCTION_NAME:
         ldd r6, r7, sp[2]
         retsp NSTACKWORDS
 
-ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS)
+.L_func_end:
+.cc_bottom FUNCTION_NAME.function
+
+.globl FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
+.size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 #undef FUNCTION_NAME
 

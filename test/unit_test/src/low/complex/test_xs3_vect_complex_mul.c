@@ -7,7 +7,7 @@
 
 #include "xs3_math.h"
 
-#include "../src/low/vpu_helper.h"
+#include "../src/vect/vpu_helper.h"
 
 #include "../../tst_common.h"
 

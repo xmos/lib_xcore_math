@@ -7,6 +7,8 @@
 .text
 .issue_mode dual
 
+#define CAT_(A, B)    A##B
+#define CAT(A, B)     CAT_(A,B)
 
 #define FUNC_START                                  \
     .globl FUNCTION_NAME;                           \

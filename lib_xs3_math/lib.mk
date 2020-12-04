@@ -30,7 +30,7 @@ lib_xs3_math_INCLUDES :=
 ###### 
 ### [optional] Directories, relative to the dependency folder, to look for source files.
 ###            defaults to nothing.
-SOURCE_DIRS := src/low src/high
+SOURCE_DIRS := src/vect src/bfp
 
 ###### 
 ### [optional] Source file extentions. Defaults to: c cc xc cpp S

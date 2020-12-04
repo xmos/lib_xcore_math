@@ -7,7 +7,7 @@
 
 #include "xs3_math.h"
 
-#include "../src/low/vpu_helper.h"
+#include "../src/vect/vpu_helper.h"
 
 #include "../../tst_common.h"
 
@@ -104,7 +104,7 @@ static complex_s32_t mul_complex_s32(complex_s32_t b, complex_s32_t c, int b_shr
 
 
 
-static void test_xs3_vect_complex_s16_complex_scal_mul_basic()
+static void test_xs3_vect_complex_s16_scale_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -168,7 +168,7 @@ static void test_xs3_vect_complex_s16_complex_scal_mul_basic()
                 B.imag[i] = casse->value.b.im;
             }
 
-            hr = xs3_vect_complex_s16_complex_scal_mul(A.real, A.imag, 
+            hr = xs3_vect_complex_s16_scale(A.real, A.imag, 
                                                        B.real, B.imag, 
                                                        casse->value.c.re, casse->value.c.im, 
                                                        len, casse->sat);
@@ -182,7 +182,7 @@ static void test_xs3_vect_complex_s16_complex_scal_mul_basic()
             TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, casse->line);
 
             memcpy(&A, &B, sizeof(A));
-            hr = xs3_vect_complex_s16_complex_scal_mul(A.real, A.imag,
+            hr = xs3_vect_complex_s16_scale(A.real, A.imag,
                                                        A.real, A.imag,
                                                        casse->value.c.re, casse->value.c.im, 
                                                        len, casse->sat);
@@ -204,7 +204,7 @@ static void test_xs3_vect_complex_s16_complex_scal_mul_basic()
 
 #define MAX_LEN     100
 #define REPS        IF_QUICK_TEST(100, 100)
-static void test_xs3_vect_complex_s16_complex_scal_mul_random()
+static void test_xs3_vect_complex_s16_scale_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 0xAD24398D;
@@ -234,7 +234,7 @@ static void test_xs3_vect_complex_s16_complex_scal_mul_random()
 
         int sat = (pseudo_rand_uint32(&seed) % 10);
         
-        hr = xs3_vect_complex_s16_complex_scal_mul(A.real, A.imag, 
+        hr = xs3_vect_complex_s16_scale(A.real, A.imag, 
                                                    B.real, B.imag, 
                                                    C.re, C.im, 
                                                    len, sat);
@@ -251,7 +251,7 @@ static void test_xs3_vect_complex_s16_complex_scal_mul_random()
         TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, v);
         
         memcpy(&A, &B, sizeof(A));
-        hr = xs3_vect_complex_s16_complex_scal_mul(A.real, A.imag, 
+        hr = xs3_vect_complex_s16_scale(A.real, A.imag, 
                                                    A.real, A.imag, 
                                                    C.re, C.im, 
                                                    len, sat);
@@ -279,7 +279,7 @@ static void test_xs3_vect_complex_s16_complex_scal_mul_random()
 
 
 
-static void test_xs3_vect_complex_s32_complex_scal_mul_basic()
+static void test_xs3_vect_complex_s32_scale_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -343,7 +343,7 @@ static void test_xs3_vect_complex_s32_complex_scal_mul_basic()
             C.re = (casse->shr.c >= 0)? (casse->value.c.re >> casse->shr.c) : (casse->value.c.re << -casse->shr.c);
             C.im = (casse->shr.c >= 0)? (casse->value.c.im >> casse->shr.c) : (casse->value.c.im << -casse->shr.c);
 
-            hr = xs3_vect_complex_s32_complex_scal_mul(A, B, C.re, C.im, len, casse->shr.b);
+            hr = xs3_vect_complex_s32_scale(A, B, C.re, C.im, len, casse->shr.b);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
@@ -352,7 +352,7 @@ static void test_xs3_vect_complex_s32_complex_scal_mul_basic()
             TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, 2*len), hr, casse->line);
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_vect_complex_s32_complex_scal_mul(A, A, C.re, C.im, len, casse->shr.b);
+            hr = xs3_vect_complex_s32_scale(A, A, C.re, C.im, len, casse->shr.b);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
@@ -372,7 +372,7 @@ static void test_xs3_vect_complex_s32_complex_scal_mul_basic()
 
 #define MAX_LEN     100
 #define REPS        IF_QUICK_TEST(100, 100)
-static void test_xs3_vect_complex_s32_complex_scal_mul_random()
+static void test_xs3_vect_complex_s32_scale_random()
 {
     PRINTF("%s...\n", __func__);
     seed = 0xAD04D98D;
@@ -399,7 +399,7 @@ static void test_xs3_vect_complex_s32_complex_scal_mul_random()
 
         int b_shr = (pseudo_rand_uint32(&seed) % 10);
         
-        hr = xs3_vect_complex_s32_complex_scal_mul(A, B, C.re, C.im, len, b_shr);
+        hr = xs3_vect_complex_s32_scale(A, B, C.re, C.im, len, b_shr);
 
         headroom_t hrre, hrim;
 
@@ -411,7 +411,7 @@ static void test_xs3_vect_complex_s32_complex_scal_mul_random()
         TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, 2*len), hr, v);
         
         memcpy(&A, &B, sizeof(A));
-        hr = xs3_vect_complex_s32_complex_scal_mul(A, A, C.re, C.im, len, b_shr);
+        hr = xs3_vect_complex_s32_scale(A, A, C.re, C.im, len, b_shr);
 
         for(int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_s32(B[i], C, b_shr, 0);
@@ -431,9 +431,9 @@ void test_xs3_complex_scal_mul_vect_complex()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_vect_complex_s16_complex_scal_mul_basic);
-    RUN_TEST(test_xs3_vect_complex_s16_complex_scal_mul_random);
+    RUN_TEST(test_xs3_vect_complex_s16_scale_basic);
+    RUN_TEST(test_xs3_vect_complex_s16_scale_random);
 
-    RUN_TEST(test_xs3_vect_complex_s32_complex_scal_mul_basic);
-    RUN_TEST(test_xs3_vect_complex_s32_complex_scal_mul_random);
+    RUN_TEST(test_xs3_vect_complex_s32_scale_basic);
+    RUN_TEST(test_xs3_vect_complex_s32_scale_random);
 }

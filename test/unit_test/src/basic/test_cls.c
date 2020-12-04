@@ -119,7 +119,7 @@ static void test_CLS_C32()
     for(int i = 0; i < N; i++){
         numbers[i].re = pseudo_rand_int32(&seed) >> (pseudo_rand_int32(&seed) % 32);
         numbers[i].im = pseudo_rand_int32(&seed) >> (pseudo_rand_int32(&seed) % 32);
-        expected[i] = XS3_MIN(cls(numbers[i].re), cls(numbers[i].im));
+        expected[i] = MIN(cls(numbers[i].re), cls(numbers[i].im));
         actual[i] = CLS_C32(numbers[i]);
     }
 
@@ -141,7 +141,7 @@ static void test_CLS_C16()
     for(int i = 0; i < N; i++){
         numbers[i].re = pseudo_rand_int16(&seed) >> (pseudo_rand_int32(&seed) % 16);
         numbers[i].im = pseudo_rand_int16(&seed) >> (pseudo_rand_int32(&seed) % 16);
-        expected[i] = XS3_MIN(CLS_S16(numbers[i].re), CLS_S16(numbers[i].im));
+        expected[i] = MIN(CLS_S16(numbers[i].re), CLS_S16(numbers[i].im));
         actual[i] = CLS_C16(numbers[i]);
     }
 

@@ -28,7 +28,7 @@ static char msg_buff[200];
 #endif
 
 #define MAX_LEN 50
-static void test_xs3_complex_s32_to_complex_s16_basic()
+static void test_xs3_vect_complex_s32_to_complex_s16_basic()
 {
     PRINTF("%s...\n", __func__);
 
@@ -93,7 +93,7 @@ static void test_xs3_complex_s32_to_complex_s16_basic()
                 A.imag[i] = 0xCCCC;
             }
 
-            xs3_complex_s32_to_complex_s16(A.real, A.imag, B, len, casse->b_shr);
+            xs3_vect_complex_s32_to_complex_s16(A.real, A.imag, B, len, casse->b_shr);
 
             for(int k = 0; k < len; k++) {
                 TEST_ASSERT_EQUAL_MESSAGE(casse->expected.re, A.real[k], buff);
@@ -109,10 +109,10 @@ static void test_xs3_complex_s32_to_complex_s16_basic()
 #undef MAC_LEN
 
 
-void test_xs3_complex_s32_to_complex_s16()
+void test_xs3_vect_complex_s32_to_complex_s16()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_complex_s32_to_complex_s16_basic);
+    RUN_TEST(test_xs3_vect_complex_s32_to_complex_s16_basic);
 
 }

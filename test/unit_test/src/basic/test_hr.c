@@ -78,7 +78,7 @@ static void test_HR_C32()
     for(int i = 0; i < N; i++){
         numbers[i].re = pseudo_rand_int32(&seed) >> pseudo_rand_uint(&seed, 0, 28);
         numbers[i].im = pseudo_rand_int32(&seed) >> pseudo_rand_uint(&seed, 0, 28);
-        expected[i] = XS3_MIN(cls(numbers[i].re)-1, cls(numbers[i].im)-1);
+        expected[i] = MIN(cls(numbers[i].re)-1, cls(numbers[i].im)-1);
         actual[i] = HR_C32(numbers[i]);
     }
 
@@ -100,7 +100,7 @@ static void test_HR_C16()
     for(int i = 0; i < N; i++){
         numbers[i].re = pseudo_rand_int16(&seed) >> pseudo_rand_uint(&seed, 0, 12);
         numbers[i].im = pseudo_rand_int16(&seed) >> pseudo_rand_uint(&seed, 0, 12);
-        expected[i] = XS3_MIN(HR_S16(numbers[i].re), HR_S16(numbers[i].im));
+        expected[i] = MIN(HR_S16(numbers[i].re), HR_S16(numbers[i].im));
         actual[i] = HR_C16(numbers[i]);
     }
 

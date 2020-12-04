@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "xs3_math.h"
+#include "bfp_math.h"
 #include "test_random.h"
 
 #define SET_TEST_FILE()     Unity.TestFile = __FILE__

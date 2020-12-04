@@ -11,7 +11,8 @@ See @ref getting_started to get going.
 
 ### API ### 
 
-To use the functions in this library in an application, include `xs3_math.h`.
+To use the functions in this library in an application, include `bfp_math.h` for the high-level block floating-point 
+functions, or `xs3_math.h` for the low-level functions.
 
 The API is documented in the following header files.
 

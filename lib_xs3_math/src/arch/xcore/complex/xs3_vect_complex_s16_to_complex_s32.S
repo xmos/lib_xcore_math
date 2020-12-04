@@ -3,7 +3,7 @@
 #ifndef XS3_MATH_NO_ASM
 
 /*  
-void xs3_complex_s16_to_complex_s32(
+void xs3_vect_complex_s16_to_complex_s32(
     complex_s32_t* a,
     const int16_t* b_real,
     const int16_t* b_imag,
@@ -15,7 +15,7 @@ void xs3_complex_s16_to_complex_s32(
 #define NSTACKVECS      0
 #define NSTACKWORDS     (4 + (8*NSTACKVECS))
 
-#define FUNCTION_NAME   xs3_complex_s16_to_complex_s32
+#define FUNCTION_NAME   xs3_vect_complex_s16_to_complex_s32
 
 #define VEC_TMP_REAL    (NSTACKWORDS - 8)
 #define VEC_TMP_IMAG    (NSTACKWORDS - 16)
@@ -55,8 +55,9 @@ FUNCTION_NAME:
     .set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
     .set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 
     .set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends; 
-CAT(.L_end_, FUNCTION_NAME): 
-    .size FUNCTION_NAME, CAT(.L_end_, FUNCTION_NAME) - FUNCTION_NAME
+    
+.L_func_end:
+    .size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 #endif //!defined(XS3_MATH_NO_ASM)
 #endif //defined(__XS3A__)

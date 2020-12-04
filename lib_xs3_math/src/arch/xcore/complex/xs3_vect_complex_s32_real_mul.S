@@ -5,7 +5,7 @@
 
 /*  
 
-headroom_t xs3_vect_complex_s32_mul(
+headroom_t xs3_vect_complex_s32_real_mul(
     complex_s32_t* a,
     const complex_s32_t* b,
     const int32_t c[],
@@ -15,7 +15,11 @@ headroom_t xs3_vect_complex_s32_mul(
 
 */
 
-#define FUNCTION_NAME xs3_vect_complex_s32_mul
+.text
+.issue_mode dual
+.align 4
+
+#define FUNCTION_NAME xs3_vect_complex_s32_real_mul
 
 #define NSTACKVECS      (2)
 #define NSTACKWORDS     (10+8*NSTACKVECS)
@@ -42,9 +46,9 @@ headroom_t xs3_vect_complex_s32_mul(
 #define tmpA        r9
 #define tmpB        r10
 
-ASM_PREAMBLE(FUNCTION_NAME)
 
 
+.cc_top FUNCTION_NAME.function,FUNCTION_NAME
 FUNCTION_NAME:
     dualentsp NSTACKWORDS
     std r4, r5, sp[1]
@@ -109,7 +113,16 @@ FUNCTION_NAME:
     {   sub r0, r0, r11                         ;   retsp NSTACKWORDS                       }
 
 
-ASM_POSTAMBLE(FUNCTION_NAME, NSTACKWORDS)
+.L_func_end:
+.cc_bottom FUNCTION_NAME.function
+
+.globl FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
+.size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 #undef FUNCTION_NAME
 

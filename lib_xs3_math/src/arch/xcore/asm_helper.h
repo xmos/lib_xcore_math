@@ -18,28 +18,6 @@
 #define HR_SUB_S16  15
 #define HR_SUB_S32  31
 
-#define ASM_PREAMBLE(FNAME)                         \
-    .text;                                          \
-    .issue_mode dual;                               \
-    .globl FNAME;                                   \
-    .type FNAME,@function;                          \
-    .align 16;                                      \
-    .cc_top FNAME.function,FNAME;                   \
-
-
-#define CAT_(A, B)    A##B
-#define CAT(A, B)     CAT_(A,B)
-
-#define ASM_POSTAMBLE(FNAME, NSTACKWORDS)                                 \
-    .cc_bottom FNAME.function;                                            \
-    .set FNAME.nstackwords,NSTACKWORDS;     .global FNAME.nstackwords;    \
-    .set FNAME.maxcores,1;                  .global FNAME.maxcores;       \
-    .set FNAME.maxtimers,0;                 .global FNAME.maxtimers;      \
-    .set FNAME.maxchanends,0;               .global FNAME.maxchanends;    \
-    CAT(.L_size_end_, FNAME):                                             \
-    .size FNAME, CAT(.L_size_end_, FNAME) - FNAME
-
-
 
     
 #endif // ASM_HELPER_H_

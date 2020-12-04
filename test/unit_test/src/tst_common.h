@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-#include "xs3_math.h"
+#include "bfp_math.h"
 
 #define SET_TEST_FILE()     Unity.TestFile = __FILE__
 
