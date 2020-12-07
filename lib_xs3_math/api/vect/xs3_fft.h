@@ -2,7 +2,7 @@
 #ifndef XS3_FFT_H_
 #define XS3_FFT_H_
 
-#include "xs3_fft_lut.h"
+// #include "xs3_fft_lut.h"
 
 #ifdef __XC__
 extern "C" {

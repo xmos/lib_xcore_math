@@ -12,7 +12,7 @@ int32_t xs3_vect_s16_min(
 */
 
 
-#include "asm_helper.h"
+#include "../asm_helper.h"
 
 .text
 .issue_mode dual

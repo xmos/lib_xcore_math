@@ -9,7 +9,7 @@ int32_t xs3_vect_s16_abs_sum(
 */
 
 
-#include "asm_helper.h"
+#include "../asm_helper.h"
 
 .text
 .issue_mode dual

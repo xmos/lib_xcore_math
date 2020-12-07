@@ -13,15 +13,13 @@ extern "C" {
 
 
 
+#ifdef __XC__
 
-void xs3_vect_complex_s16_set(
-    int16_t real[],
-    int16_t imag[],
-    const int16_t real_value,
-    const int16_t imag_value,
-    const unsigned length);
+  // For some reason I can't get the static inline functions to compile when included
+  // from a .xc file. There's probably some fix I don't know about. This is temporary.
+  // @todo Make these work from XC.
 
-
+#else    
 
 /** Set all elements of a `complex_s32_t` array to the specified value.
  * 
@@ -34,20 +32,22 @@ void xs3_vect_complex_s16_set(
  * \param[in]  imag     Imaginary part of value to set
  * \param[in]  length   Number of elements in `data`
  */
+static inline void xs3_vect_complex_s16_set(
+    int16_t real[],
+    int16_t imag[],
+    const int16_t real_value,
+    const int16_t imag_value,
+    const unsigned length)
+{
+    xs3_vect_s16_set(real, real_value, length);
+    xs3_vect_s16_set(imag, imag_value, length);
+}
+
 void xs3_vect_complex_s32_set(
     complex_s32_t data[],
-    const int32_t real,
-    const int32_t imag,
+    const int32_t real_part,
+    const int32_t imag_part,
     const unsigned length);
-    
-
-#ifdef __XC__
-
-  // For some reason I can't get the static inline functions to compile when included
-  // from a .xc file. There's probably some fix I don't know about. This is temporary.
-  // @todo Make these work from XC.
-
-#else    
 
 /**
  * @brief Get headroom of complex 16-bit vector.

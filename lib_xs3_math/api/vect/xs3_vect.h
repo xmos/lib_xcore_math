@@ -555,7 +555,7 @@ headroom_t xs3_vect_s16_scale(
  * Multiply the `int32_t` vector `b`, arithmetically right-shifted `b_shr` bits, by `alpha`, 
  * and place the 64-bit result, arithmetically right-shifted another `30` bits, in output 
  * vector `a`.
- * 
+ *  
  * If `b_shr` is negative, a left-shift will occur instead of a right-shift. Left-shifts are 
  * saturating operations which saturate to 16-bit bounds. The result of the final right-shift is also 
  * saturated to 32-bit bounds.

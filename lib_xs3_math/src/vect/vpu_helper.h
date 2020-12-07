@@ -5,10 +5,6 @@
 #include "xs3_math.h"
 #include "xs3_vpu.h"
 
-/**
- * Define C implementations as weak so ASM overrides them.
- */
-#define WEAK_FUNC __attribute__((weak))
 
 /**
  * VPU saturation logic for 8-, 16- or 32-bit values.

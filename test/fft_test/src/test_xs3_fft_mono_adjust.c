@@ -9,6 +9,7 @@
 #include "tst_common.h"
 #include "fft.h"
 #include "unity.h"
+#include "../src/vect/xs3_fft_lut.h"
 
 
 #define MAX_PROC_FRAME_LENGTH_LOG2 (MAX_DIT_FFT_LOG2)

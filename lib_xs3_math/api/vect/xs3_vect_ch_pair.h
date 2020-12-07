@@ -4,16 +4,8 @@
 
 #include "xs3_math_types.h"
 #include "xs3_vect.h"
+#include "xs3_vect_complex.h"
 
-// XC uses 'safe' pointers by default. For the most part the 'extern "C"` block will make
-// XC files being compiled treat the pointers as unsafe, but that doesn't appear to work
-// for the casts in static inline functions. This fixes that behavior when compiling an
-// XC file.
-#ifdef __XC__
-  #define UNSAFE    unsafe
-#else
-  #define UNSAFE    
-#endif
 
 
 #ifdef __XC__
@@ -21,20 +13,6 @@ extern "C" {
 #endif
 
 
-
-void xs3_vect_ch_pair_s16_set(
-    ch_pair_s16_t data[],
-    const int16_t ch_a,
-    const int16_t ch_b,
-    const unsigned length);
-
-
-
-void xs3_vect_ch_pair_s32_set(
-    ch_pair_s32_t data[],
-    const int32_t ch_a,
-    const int32_t ch_b,
-    const unsigned length);
 
 
 #ifdef __XC__
@@ -44,6 +22,32 @@ void xs3_vect_ch_pair_s32_set(
   // @todo Make these work from XC.
 
 #else    
+
+static inline void xs3_vect_ch_pair_s16_set(
+    ch_pair_s16_t data[],
+    const int16_t ch_a,
+    const int16_t ch_b,
+    const unsigned length)
+{
+    union {
+        int32_t s32;
+        ch_pair_s16_t cp16;
+    } tmp;
+
+    tmp.cp16.ch_a = ch_a;
+    tmp.cp16.ch_b = ch_b;
+    
+    xs3_vect_s32_set((int32_t*) data, tmp.s32, length);
+}
+
+static inline void xs3_vect_ch_pair_s32_set(
+    ch_pair_s32_t data[],
+    const int32_t ch_a,
+    const int32_t ch_b,
+    const unsigned length)
+{
+    xs3_vect_complex_s32_set((complex_s32_t*) data, ch_a, ch_b, length);
+}
 
 static inline headroom_t xs3_vect_ch_pair_s16_headroom(
     const ch_pair_s16_t a[],

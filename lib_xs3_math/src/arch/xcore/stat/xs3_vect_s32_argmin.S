@@ -12,7 +12,7 @@ unsigned xs3_vect_s32_argmin(
 */
 
 
-#include "asm_helper.h"
+#include "../asm_helper.h"
 
 .text
 .issue_mode dual

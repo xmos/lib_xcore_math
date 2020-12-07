@@ -10,7 +10,7 @@ int64_t xs3_vect_s32_energy(
 */
 
 
-#include "asm_helper.h"
+#include "../asm_helper.h"
 
 .text
 .issue_mode dual

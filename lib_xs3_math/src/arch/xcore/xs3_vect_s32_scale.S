@@ -5,7 +5,7 @@
 #include "asm_helper.h"
 
 /*  
-headroom_t FUNCTION_NAME(
+headroom_t xs3_vect_s32_scale(
     int32_t a[],
     const int32_t b[],
     const unsigned len,
@@ -16,7 +16,7 @@ headroom_t FUNCTION_NAME(
 
 #define NSTACKWORDS     (8+8)
 
-#define FUNCTION_NAME   FUNCTION_NAME
+#define FUNCTION_NAME   xs3_vect_s32_scale
 
 #define STACK_B_SHR     (NSTACKWORDS+1)
 #define STACK_VEC_TMP   (NSTACKWORDS-8)

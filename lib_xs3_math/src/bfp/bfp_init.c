@@ -130,9 +130,6 @@ void bfp_ch_pair_s32_init(
 
 
 
-
-
-
 void bfp_s16_set(
     bfp_s16_t* a,
     const int16_t value,
