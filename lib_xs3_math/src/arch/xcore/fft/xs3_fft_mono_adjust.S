@@ -41,7 +41,7 @@ void xs3_fft_mono_adjust(
 .issue_mode dual
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.call FUNCTION_NAME, xs3_tail_reverse_complex_s32
+.call FUNCTION_NAME, xs3_vect_complex_s32_tail_reverse
 
 .align 16
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
@@ -62,7 +62,7 @@ FUNCTION_NAME:
         ldaw X, X[N]
     {   shr N, N, 1                             ;   stw W, sp[STACK_W]                      }
 
-    bl xs3_tail_reverse_complex_s32
+    bl xs3_vect_complex_s32_tail_reverse
     ldw X, sp[STACK_X]
     ldw N, sp[STACK_N]
     ldw W, sp[STACK_W]
@@ -178,7 +178,7 @@ FUNCTION_NAME:
         ldaw X, X[N]
     {   shr N, N, 1                             ;                                           }
 
-    bl xs3_tail_reverse_complex_s32
+    bl xs3_vect_complex_s32_tail_reverse
 
 .L_finish:
     {                                           ;   ldw r10, sp[1]                          }
@@ -189,7 +189,7 @@ FUNCTION_NAME:
         retsp NSTACKWORDS
 
 .cc_bottom FUNCTION_NAME.function; 
-.set FUNCTION_NAME.nstackwords,((NSTACKWORDS) + xs3_tail_reverse_complex_s32.nstackwords);
+.set FUNCTION_NAME.nstackwords,((NSTACKWORDS) + xs3_vect_complex_s32_tail_reverse.nstackwords);
 .global FUNCTION_NAME.nstackwords; 
 .set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
 .set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 

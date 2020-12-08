@@ -5,7 +5,7 @@
 
 /*  
 
-complex_s16_t xs3_sum_complex_s16(
+complex_s16_t xs3_vect_complex_s16_sum(
     const int16_t* b_real,
     const int16_t* b_imag,
     const unsigned length,
@@ -34,7 +34,7 @@ complex_s16_t xs3_sum_complex_s16(
 #define STACK_LENGTH        6
 #define STACK_SAT           7
 
-#define FUNCTION_NAME xs3_sum_complex_s16_OLLD //why did I think I needed to write this in assembly?
+#define FUNCTION_NAME xs3_vect_complex_s16_sum_OLLD //why did I think I needed to write this in assembly?
     
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
 FUNCTION_NAME:

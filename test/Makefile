@@ -1,8 +1,10 @@
 
 all:
-	$(MAKE) -C unit_test all
-	$(MAKE) -C fft_test all
+	$(MAKE) -C vect_tests all
+	$(MAKE) -C bfp_tests all
+	$(MAKE) -C fft_tests all
 
 clean:
-	$(MAKE) -C unit_test clean
-	$(MAKE) -C fft_test clean
+	$(MAKE) -C vect_tests clean
+	$(MAKE) -C bfp_tests clean
+	$(MAKE) -C fft_tests clean

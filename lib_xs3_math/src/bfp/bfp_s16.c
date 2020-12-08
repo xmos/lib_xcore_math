@@ -2,7 +2,8 @@
 
 #include "bfp_math.h"
 
-#include "vect/xs3_vect.h"
+#include "vect/xs3_vect_s32.h"
+#include "vect/xs3_vect_s16.h"
 
 #include <assert.h>
 #include <stdio.h>

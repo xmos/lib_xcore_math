@@ -78,7 +78,7 @@ void test_xs3_fft_index_bit_reversal()
 }
 
 
-void test_xs3_tail_reverse_complex_s32()
+void test_xs3_vect_complex_s32_tail_reverse()
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -101,7 +101,7 @@ void test_xs3_tail_reverse_complex_s32()
                 ref[(N-i) % N] = a[i];
 
             unsigned ts1 = getTimestamp();
-            xs3_tail_reverse_complex_s32(a, N);
+            xs3_vect_complex_s32_tail_reverse(a, N);
             unsigned ts2 = getTimestamp();
 
             float timing = (ts2-ts1)/100.0;
@@ -250,7 +250,7 @@ void test_xs3_fft_helpers()
     SET_TEST_FILE();
 
     RUN_TEST(test_xs3_fft_index_bit_reversal);
-    RUN_TEST(test_xs3_tail_reverse_complex_s32);
+    RUN_TEST(test_xs3_vect_complex_s32_tail_reverse);
     RUN_TEST(test_xs3_fft_spectra_split);
     RUN_TEST(test_xs3_fft_spectra_merge);
 }

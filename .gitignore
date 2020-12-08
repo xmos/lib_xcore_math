@@ -21,3 +21,4 @@ lib_xs3_math/lib/
 
 #misc cruft
 **/*.local.*
+**/*.local/

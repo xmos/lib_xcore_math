@@ -9,7 +9,7 @@
 
 
 // 
-// complex_s32_t xs3_sum_complex_s16(
+// complex_s32_t xs3_vect_complex_s16_sum(
 //     const int16_t b_real[],
 //     const int16_t b_imag[],
 //     const unsigned length)
@@ -24,7 +24,7 @@
 
 
 
-void xs3_sum_complex_s32(
+void xs3_vect_complex_s32_sum(
     complex_s64_t* res,
     const complex_s32_t b[],
     const unsigned length,

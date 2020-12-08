@@ -1,6 +1,7 @@
 #pragma once
 
-#include "bfp_math.h"
+#include "xs3_math_conf.h"
+#include "xs3_math_types.h"
 
 #ifdef __XC__
 extern "C" {

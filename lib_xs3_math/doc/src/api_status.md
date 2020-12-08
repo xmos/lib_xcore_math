@@ -80,9 +80,9 @@ This table is unlikely to have actually captured everything that will be needed 
 | `xs3_vect_complex_s32_squared_mag()`      |  X   |  X   |   X    |     X      |
 | `xs3_vect_complex_s16_mag()`              |  X   |  X   |   X    |            |
 | `xs3_vect_complex_s32_mag()`              |  X   |  X   |   X    |            |
-| `xs3_sum_complex_s16()`                   |  X   |  X   |   X    |     X      |
-| `xs3_sum_complex_s32()`                   |  X   |  X   |   X    |     X      |
-| `xs3_tail_reverse_complex_s32()`          |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s16_sum()`                   |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s32_sum()`                   |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s32_tail_reverse()`          |  X   |  X   |   X    |     X      |
 |  @tab @tab xs3_fft.h                                                      ||||| 
 | `xs3_fft_index_bit_reversal()`            |  X   |  X   |   X    |     X      |
 | `xs3_fft_spectra_split()`                 |  X   |  X   |   X    |     X      |

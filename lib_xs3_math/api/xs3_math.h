@@ -6,9 +6,8 @@
 #include "xs3_math_types.h"
 
 
-#include "vect/xs3_vect.h"
-#include "vect/xs3_vect_complex.h"
-#include "vect/xs3_vect_ch_pair.h"
+#include "vect/xs3_vect_s32.h"
+#include "vect/xs3_vect_s16.h"
 #include "vect/xs3_fft.h"
 #include "vect/xs3_filters.h"
 #include "xs3_util.h"

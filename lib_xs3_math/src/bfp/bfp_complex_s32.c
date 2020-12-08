@@ -2,8 +2,8 @@
 
 #include "bfp_math.h"
 
-#include "vect/xs3_vect.h"
-#include "vect/xs3_vect_complex.h"
+#include "vect/xs3_vect_s32.h"
+#include "vect/xs3_vect_s16.h"
 #include "../vect/vpu_helper.h"
 
 #define ASSERT(COND)    assert(COND)
@@ -220,7 +220,7 @@ void bfp_complex_s32_mag(
 
     right_shift_t b_shr;
 
-    xs3_mag_vect_complex_calc_params(&a->exp, &b_shr, b->exp, b->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_mag_calc_params(&a->exp, &b_shr, b->exp, b->hr, XS3_BFP_ALLOW_SATURATION);
 
     a->length = b->length;
     a->hr = xs3_vect_complex_s32_mag(a->data, b->data, b->length, 
@@ -235,8 +235,8 @@ complex_s64_t bfp_complex_s32_sum(
     right_shift_t b_shr;
     complex_s64_t res;
 
-    xs3_sum_complex_s32_calc_params(a_exp, &b_shr, b->exp, b->hr, b->length, XS3_BFP_ALLOW_SATURATION);
-    xs3_sum_complex_s32(&res, b->data, b->length, b_shr);
+    xs3_vect_complex_s32_sum_calc_params(a_exp, &b_shr, b->exp, b->hr, b->length, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_s32_sum(&res, b->data, b->length, b_shr);
     return res;
 }
 

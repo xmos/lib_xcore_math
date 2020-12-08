@@ -4,9 +4,8 @@
 
 #include "bfp_math.h"
 
-#include "vect/xs3_vect.h"
-#include "vect/xs3_vect_complex.h"
-#include "vect/xs3_vect_ch_pair.h"
+#include "vect/xs3_vect_s32.h"
+#include "vect/xs3_vect_s16.h"
 
 
 void bfp_s16_init(

@@ -2,8 +2,8 @@
 
 #include "bfp_math.h"
 
-#include "vect/xs3_vect.h"
-#include "vect/xs3_vect_complex.h"
+#include "vect/xs3_vect_s32.h"
+#include "vect/xs3_vect_s16.h"
 #include "../vect/vpu_helper.h"
 
 
@@ -219,7 +219,7 @@ void bfp_complex_s16_mag(
 
     right_shift_t b_shr;
 
-    xs3_mag_vect_complex_calc_params(&a->exp, &b_shr, b->exp, b->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_mag_calc_params(&a->exp, &b_shr, b->exp, b->hr, XS3_BFP_ALLOW_SATURATION);
 
     a->length = b->length;
 
@@ -231,7 +231,7 @@ void bfp_complex_s16_mag(
 complex_s32_t bfp_complex_s16_sum(
     const bfp_complex_s16_t* b)
 {
-    return xs3_sum_complex_s16(b->real, b->imag, b->length);
+    return xs3_vect_complex_s16_sum(b->real, b->imag, b->length);
 }
 
 

@@ -12,7 +12,7 @@
 ////////////////////////////////////////
 
 
-void xs3_mag_vect_complex_calc_params(
+void xs3_vect_complex_mag_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,
@@ -354,7 +354,7 @@ void xs3_vect_complex_s32_squared_mag_calc_params(
 }
 
 
-void xs3_sum_complex_s32_calc_params(
+void xs3_vect_complex_s32_sum_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,

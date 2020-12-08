@@ -6,7 +6,7 @@
 /*  
 
 
-void xs3_sum_complex_s32(
+void xs3_vect_complex_s32_sum(
     const complex_s64_t* res,
     const complex_s32_t* b,
     const unsigned length,
@@ -34,7 +34,7 @@ void xs3_sum_complex_s32(
 
 #define STACK_RES   (1)
 
-#define FUNCTION_NAME xs3_sum_complex_s32
+#define FUNCTION_NAME xs3_vect_complex_s32_sum
     
 
 

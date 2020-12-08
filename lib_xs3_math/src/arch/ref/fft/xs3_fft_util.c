@@ -177,7 +177,7 @@ void xs3_fft_mono_adjust(
     complex_s32_t X0 = x[0];
     complex_s32_t XQ = x[FFT_N/4];
 
-    xs3_tail_reverse_complex_s32(&x[FFT_N/4], FFT_N/4);
+    xs3_vect_complex_s32_tail_reverse(&x[FFT_N/4], FFT_N/4);
 
     complex_s32_t* p_X_lo = &x[0];
     complex_s32_t* p_X_hi = &x[FFT_N/4];
@@ -244,12 +244,12 @@ void xs3_fft_mono_adjust(
     x[FFT_N/4].re =  XQ.re;
     x[FFT_N/4].im = -XQ.im;
     
-    xs3_tail_reverse_complex_s32(&x[FFT_N/4], FFT_N/4);
+    xs3_vect_complex_s32_tail_reverse(&x[FFT_N/4], FFT_N/4);
 }
 
 
 
-void xs3_tail_reverse_complex_s32(
+void xs3_vect_complex_s32_tail_reverse(
     complex_s32_t x[],
     const unsigned N)
 {

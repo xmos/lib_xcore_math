@@ -26,7 +26,7 @@ help:
 	$(info *************************************************************************************)
 
 
-APP_NAME := unit_test
+APP_NAME := vect_tests
 
 TARGET_DEVICE = XCORE-AI-EXPLORER
 

@@ -421,7 +421,7 @@ their data by arithmetic saturation/overflows or underflows. Functions in the lo
 As an example of a function from the low-level API, see xs3_vect_s32_mul() from xs3_bfp_low.h, which multiplies together
 two `int32_t` vectors element by element.
 
-@snippet{lineno} api/vect/xs3_vect.h xs3_vect_s32_mul
+@snippet{lineno} api/vect/xs3_vect_s32.h xs3_vect_s32_mul
 
 This function takes two `int32_t` arrays, `b` and `c`, as inputs and one `int32_t` array, `a`, as output. `length` 
 indicates the number of elements in each array. The final two parameters, `b_shr` and `c_shr`, are the arithmetic 
@@ -434,7 +434,7 @@ are scaled as desired.
 
 Contrast this with xs3_vect_s16_mul():
 
-@snippet{lineno} api/vect/xs3_vect.h xs3_vect_s16_mul
+@snippet{lineno} api/vect/xs3_vect_s16.h xs3_vect_s16_mul
 
 The parameters are similar here, but instead of `b_shr` and `c_shr`, there's only an `a_shr`. This reflects the fact 
 that products of 16-bit numbers can be accumulated without a compulsory right-shift, and so there is no risk of losing
