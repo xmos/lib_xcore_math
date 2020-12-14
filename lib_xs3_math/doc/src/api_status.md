@@ -66,8 +66,8 @@ This table captures the current development status of the API. As new API functi
 | `xs3_vect_complex_s32_sub()`              |  X   |  X   |   X    |            |
 | `xs3_vect_complex_s16_real_mul()`         |  X   |  X   |   X    |     X      |
 | `xs3_vect_complex_s32_real_mul()`         |  X   |  X   |   X    |     X      |
-| `xs3_vect_complex_s16_complex_mul()`      |  X   |  X   |   X    |     X      |
-| `xs3_vect_complex_s32_complex_mul()`      |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s16_mul()`      |  X   |  X   |   X    |     X      |
+| `xs3_vect_complex_s32_mul()`      |  X   |  X   |   X    |     X      |
 | `xs3_vect_complex_s16_conj_mul()`         |  X   |  X   |   X    |     X      |
 | `xs3_vect_complex_s32_conj_mul()`         |  X   |  X   |   X    |     X      |
 | `xs3_vect_complex_s16_scale()`            |  X   |  X   |   X    |     X      |

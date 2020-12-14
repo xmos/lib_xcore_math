@@ -107,7 +107,7 @@ void xs3_vect_complex_s16_real_mul_calc_params(
     *a_exp = b_exp + c_exp + *sat;
 }
 
-void xs3_vect_complex_s16_complex_mul_calc_params(
+void xs3_vect_complex_s16_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* sat,
     const exponent_t b_exp,
@@ -231,7 +231,7 @@ void xs3_vect_complex_s32_real_mul_calc_params(
     *a_exp = b_exp + c_exp + *b_shr + *c_shr + 30;
 }
 
-void xs3_vect_complex_s32_complex_mul_calc_params(
+void xs3_vect_complex_s32_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,

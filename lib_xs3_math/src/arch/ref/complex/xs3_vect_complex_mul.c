@@ -44,7 +44,7 @@ headroom_t xs3_vect_complex_s16_real_mul(
 
 // complex vector multiplied by complex vector
 
-headroom_t xs3_vect_complex_s16_complex_mul(
+headroom_t xs3_vect_complex_s16_mul(
     int16_t a_real[],
     int16_t a_imag[],
     const int16_t b_real[],
@@ -181,7 +181,7 @@ headroom_t xs3_vect_complex_s32_real_mul(
 
 // complex vector multiplied by complex vector
 
-headroom_t xs3_vect_complex_s32_complex_mul(
+headroom_t xs3_vect_complex_s32_mul(
     complex_s32_t a[],
     const complex_s32_t b[],
     const complex_s32_t c[],

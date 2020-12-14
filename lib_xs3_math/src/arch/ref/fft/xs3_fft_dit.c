@@ -122,7 +122,7 @@ void xs3_fft_dit_forward (
                 for(int j = 0; j < a; j++){
                     load_vec(vD, &x[s+b]);
 
-                    xs3_vect_complex_s32_complex_mul(vR, vD, vC, 4, 0, 0);
+                    xs3_vect_complex_s32_mul(vR, vD, vC, 4, 0, 0);
 
                     for(int i = 0; i < 4; i++){
                         vD[i].re = ASHR(32)(((int64_t)x[s+i].re) - vR[i].re, shift_mode);

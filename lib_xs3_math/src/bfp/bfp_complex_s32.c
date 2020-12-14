@@ -6,8 +6,6 @@
 #include "vect/xs3_vect_s16.h"
 #include "../vect/vpu_helper.h"
 
-#define ASSERT(COND)    assert(COND)
-
 
 const extern unsigned rot_table32_rows;
 const extern complex_s32_t rot_table32[30][4];
@@ -113,12 +111,12 @@ void bfp_complex_s32_mul(
     exponent_t a_exp;
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_complex_s32_complex_mul_calc_params(&a_exp, &b_shr, &c_shr, b->exp, c->exp, 
+    xs3_vect_complex_s32_mul_calc_params(&a_exp, &b_shr, &c_shr, b->exp, c->exp, 
                                                  b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
 
     a->length = b->length;
     a->exp = a_exp;
-    a->hr = xs3_vect_complex_s32_complex_mul(a->data, b->data, c->data, b->length, b_shr, c_shr);
+    a->hr = xs3_vect_complex_s32_mul(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
 
@@ -135,7 +133,7 @@ void bfp_complex_s32_conj_mul(
     exponent_t a_exp;
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_complex_s32_complex_mul_calc_params(&a_exp, &b_shr, &c_shr, 
+    xs3_vect_complex_s32_mul_calc_params(&a_exp, &b_shr, &c_shr, 
                                                  b->exp, c->exp, b->hr, c->hr,
                                                  XS3_BFP_ALLOW_SATURATION);
 

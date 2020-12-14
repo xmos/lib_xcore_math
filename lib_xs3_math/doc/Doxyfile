@@ -263,27 +263,6 @@ TAB_SIZE               = 4
 
 ALIASES =                                                                                                   
 
-ALIASES += safe_in_place{2}="@par Safe In-Place Computation:^^The output of this function can be            \
-             safely computed in-place if the output vector pointer `\1` is equal to the input               \
-             vector pointer `\2`. Using in-place operations may reduce peak memory requirements." 
-
-ALIASES += safe_in_place{3}="@par Safe In-Place Computation:^^The output of this function can be            \
-             safely computed in-place if the output vector pointer `\1` is equal to one of the              \
-             input vector pointers `\2` or `\3`. Using in-place operations may reduce peak memory           \
-             requirements." 
-
-ALIASES += requires_word_alignment{1}="@par Word Alignment Required:^^Vector `\1`                          \
-            must begin at a word-aligned (4-byte) address. For more about alignment requirements,          \
-            see \ref vector_alignment."  
-
-ALIASES += requires_word_alignment{2}="@par Word Alignment Required:^^Vectors `\1` and `\2`                \
-            must begin at a word-aligned (4-byte) address. For more about alignment requirements,          \
-            see \ref vector_alignment."  
-
-ALIASES += requires_word_alignment{3}="@par Word Alignment Required:^^Vectors `\1`, `\2` and `\3`          \
-            must begin at a word-aligned (4-byte) address. For more about alignment requirements,          \
-            see \ref vector_alignment."                 
-
 # Just makes short MATHJAX sequences prettier
 ALIASES += math{1}="@f$\1@f$"
 
@@ -298,12 +277,6 @@ ALIASES += low_op{2}="@par Operation Performed (\1-bit)^^\xrefitem vector_functi
 ALIASES += bfp_op{2}="@par Operation Performed (\1-bit)^^\xrefitem bfp_vector_functions\1 \"\" \"\1-bit BFP Vector Functions\" <BLOCKQUOTE style="margin-left:40px;display:inline-block">\2</BLOCKQUOTE>"
 
 ALIASES += mycode{1}="\code\1\endcode"
-
-ALIASES += saturating_op{1}="\color\{blue\}\{\1\}"
-
-# I really wish doxygen gave a way of defining file-local aliases within individual header files...
-
-ALIASES += bfp_vec{1}="@f$\bar \1@f$"
 
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).

@@ -117,7 +117,7 @@ void xs3_fft_dif_forward (
 
                     load_vec(&x[s], vR);
 
-                    xs3_vect_complex_s32_complex_mul(vR, vD, vC, 4, 0, 0);
+                    xs3_vect_complex_s32_mul(vR, vD, vC, 4, 0, 0);
 
                     load_vec(&x[s+b], vR);
                     

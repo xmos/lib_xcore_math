@@ -10,25 +10,105 @@ extern "C" {
 #endif
 
 
+/**
+ * Maximum bit-depth that can be calculated by xs3_vect_s16_sqrt().
+ * 
+ * @sa xs3_vect_s16_sqrt
+ */
 #define XS3_VECT_SQRT_S16_MAX_DEPTH     (15)
 
 
-
-
-
+/**
+ * @brief Calculate the headroom of a 16-bit channel-pair vector.
+ * 
+ * The headroom of an N-bit integer is the number of bits that the integer's value may be left-shifted
+ * without any information being lost. Equivalently, it is one less than the number of leading sign bits.
+ * 
+ * The headroom of a `ch_pair_s16_t` struct is the minimum of the headroom of each of its 16-bit fields,
+ * `ch_a` and `ch_b`.
+ * 
+ * The headroom of a 16-bit channel-pair vector is the minimum of the headroom of each of its `ch_pair_s16_t`
+ * elements.
+ * 
+ * This function efficiently traverses the elements of `a[]` to determine its headroom.
+ * 
+ * @param[in]   x       The 16-bit channel-pair vector to compute the headroom of
+ * @param[in]   length  The number of elements in `a[]`
+ * 
+ * @returns     The headroom of `a[]` 
+ * 
+ * @sa xs3_vect_ch_pair_s32_headroom
+ * @sa xs3_vect_s16_headroom
+ * @sa xs3_vect_s32_headroom
+ * @sa xs3_vect_complex_s16_headroom
+ * @sa xs3_vect_complex_s32_headroom
+ */
 headroom_t xs3_vect_ch_pair_s16_headroom(
-    const ch_pair_s16_t a[],
+    const ch_pair_s16_t x[],
     const unsigned length);
 
 
-
+/**
+ * @brief Set the elements of a 16-bit channel-pair vector to a specified value.
+ * 
+ * Each `x[k].ch_a` is set to `ch_a`, and each `x[k].ch_b` is set to `ch_b` (for `0 < k <= length`).
+ * 
+ * @low_op{16, @f$ 
+ *      ChA\\{x_k\\} \leftarrow ch\_a \\
+ *      ChB\\{x_k\\} \leftarrow ch\_b \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ *  @f$ }
+ * 
+ * @param[out]  x       The 16-bit channel-pair vector whose elements are to be set
+ * @param[in]   ch_a    The value to set each `x[k].ch_a` to
+ * @param[in]   ch_b    The value to set each `x[k].ch_b` to
+ * @param[in]   length  The number of elements of `x[]`
+ * 
+ * @sa xs3_vect_ch_pair_s16_set
+ * @sa xs3_vect_s16_set
+ * @sa xs3_vect_s32_set
+ * @sa xs3_vect_complex_s16_set
+ * @sa xs3_vect_complex_s32_set
+ */
 void xs3_vect_ch_pair_s16_set(
-    ch_pair_s16_t data[],
+    ch_pair_s16_t x[],
     const int16_t ch_a,
     const int16_t ch_b,
     const unsigned length);
 
 
+/**
+ * @brief Left-shift each element of a 16-bit channel-pair vector by a specified number of bits.
+ * 
+ * Left-shift each element of @vector{b} by @math{b\_shl} bits, placing the result in the corresponding
+ * element of @vector{a}. This is equivalent to multiplying each element of @vector{b} by @math{2^{b\_shl}}.
+ * 
+ * The parameters `a[]` and `b[]` represent vectors @vector{a} and @vector{b} respectively.
+ * 
+ * `length` is the length of @vector{b} and @vector{a}, in elements.
+ * 
+ * `b_shl` is the number of bits to left-shift each element of @vector{b}. If `b_shl` is negative, the
+ * elements of @vector{b} are right-shifted instead.
+ * 
+ * This function returns the headroom of output vector @vector{a}.
+ * 
+ * @low_op{32, @f$ ChA\\{a_k\\} floor\!\left( \leftarrow ChA\\{b_k\\} \cdot {2^{b\_shl}} \right) \\
+ *                 ChB\\{a_k\\} floor\!\left( \leftarrow ChB\\{b_k\\} \cdot {2^{b\_shl}} \right) \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) @f$}
+ * 
+ * @note This function saturates the output elements to the symmetric 32-bit range.
+ * @par
+ * @note This function can safely operate in-place if `a` and `b` point to the same vector.
+ * 
+ * @param[out]  a           The output vector @vector{a}
+ * @param[in]   b           The input vector @vector{b}
+ * @param[in]   length      The number of elements in @vector{a} and @vector{b}
+ * @param[in]   b_shl       The number of bits @math{b\_shl} to left-shift the elements of @vector{b}
+ * 
+ * @returns     The headroom of `a[]`
+ * 
+ * @sa xs3_vect_ch_pair_s32_shr
+ */
 headroom_t xs3_vect_ch_pair_s16_shl(
     ch_pair_s16_t a[],
     const ch_pair_s16_t b[],
@@ -55,7 +135,7 @@ headroom_t xs3_vect_complex_s16_add(
     const right_shift_t c_shr);
 
 
-void xs3_vect_complex_s16_complex_mul_calc_params(
+void xs3_vect_complex_s16_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* a_shr,
     const exponent_t b_exp,
@@ -118,7 +198,7 @@ void xs3_vect_complex_s16_complex_mul_calc_params(
  * 
  * @return The headroom of the output vector @vector{a} is returned.
  */
-headroom_t xs3_vect_complex_s16_complex_mul(
+headroom_t xs3_vect_complex_s16_mul(
     int16_t a_real[],
     int16_t a_imag[],
     const int16_t b_real[],

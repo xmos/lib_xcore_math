@@ -9,35 +9,38 @@
 extern "C" {
 #endif
 
+/**
+ * Maximum bit-depth that can be calculated by xs3_vect_s32_sqrt().
+ * 
+ * @see xs3_vect_s32_sqrt
+ */
 #define XS3_VECT_SQRT_S32_MAX_DEPTH     (31)
 
 
-
-
-
-
 /**
- * @brief Calculate the output exponent and input shifts needed to perform a
- * BFP vector addition.
+ * @brief Calculate the output exponent and input shifts to add or subtract two 16- or 32-bit BFP vectors.
  * 
- * This function is used to calcular the output exponent and operand shift parameter values 
- * required to compute the element-wise sum @f$\bar A = \bar B - \bar C@f$ of BFP vectors 
- * @f$\bar B@f$ and @f$\bar C@f$
+ * When adding or subtracting two BFP vectors (which may have different exponents), the operand elements may 
+ * need to be scaled by a power of 2 (i.e. bit-shifted) prior to the operation. This process can also be used
+ * to avoid any overflow or saturation.
  * 
- * Logic is identical for `bfp_s16_t`, `bfp_s32_t`, `bfp_complex_s16_t`, `bfp_complex_s32_t`.
+ * This function is used to calculate the output exponent and operand shift parameter values required to 
+ * compute the element-wise sum @math{ \bar A = \bar B + \bar C } or difference @math{ \bar A = \bar B - \bar C } 
+ * of two BFP vectors @math{\bar B} and @math{\bar C}.
  * 
- * The `allow_saturation` parameter is used to specify whether to check for the possibility of 
- * corner-case saturation. For an explanation of corner-case saturation, see \ref saturation.
- * Corner-case saturation is avoided if `allow_saturation` is zero.
  * 
- * For BFP vector addition, corner-case saturation may occur when BFP vectors `B` and `C` have
- * similar magnitudes (in the sense of their @f$L\infty@f$-norm). Specifically, for input BFP 
- * vectors @f$B@f$ and @f$C@f$, the corner case will be detected and avoided when 
- * @f$\left(B_{exp}-B_{hr}\right) = \left(C_{exp}-C_{hr}\right)@f$.
+ * Call this to compute the requierd parameters for:
+ * The outputs of this function `b_shr` and `c_shr` can be used as the shift values for:
+ * * xs3_vect_s16_add()
+ * * xs3_vect_s32_add()
+ * * xs3_vect_s16_sub()
+ * * xs3_vect_s32_sub()
+ * * xs3_vect_complex_s16_add()
+ * * xs3_vect_complex_s32_add()
+ * * xs3_vect_complex_s16_sub()
+ * * xs3_vect_complex_s32_sub()
  * 
- * The outputs of this function `b_shr` and `c_shr` can be used with `xs3_vect_s16_add()` and 
- * `xs3_vect_s32_add()` as the shift values for that function's corresponding parameters. The output 
- * `a_exp` is the exponent associated with the result computed by those functions.
+ * The output `a_exp` is the exponent associated with the result computed by those functions.
  * 
  * If a specific output exponent `desired_exp` is needed for the result, the `b_shr` and `c_shr` 
  * produced by this function can be adjusted according to the following:
@@ -46,22 +49,33 @@ extern "C" {
  *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
  *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
  * \endcode
- * Note that using smaller values than necessary for `b_shr` and `c_shr` can result in saturation, 
- * and using larger values may result in unnecessary underflows.
+ * Note that using smaller values than strictly necessary for `b_shr` and `c_shr` can result in saturation, 
+ * and using larger values may result in unnecessary underflows or loss of precision.
  * 
- * @param[out] a_exp    Exponent @f$A_{exp}@f$ of the result vector @f$\bar A@f$
- * @param[out] b_shr    Right-shift to be applied to vector @f$\bar B@f$
- * @param[out] c_shr    Right-shift to be applied to vector @f$\bar C@f$
- * @param[in]  b_exp    Exponent @f$B_{exp}@f$ associated with @f$\bar B@f$
- * @param[in]  c_exp    Exponent @f$C_{exp}@f$ associated with @f$\bar C@f$
- * @param[in]  b_hr     Headroom @f$B_{hr}@f$ associated with @f$\bar B@f$
- * @param[in]  c_hr     Headroom @f$B_{hr}@f$ associated with @f$\bar B@f$
+ * If @math{B_{hr}} or @math{C_{hr}} are unknown, they can be calculated using xs3_vect_s16_headroom() 
+ * or xs3_vect_s32_headroom(), or the value `0` can be supplied, which will account for the worst case.
+ * 
+ * The `allow_saturation` parameter, if `0`, specifies that this function should detect and avoid the possibility
+ * that any element of the output vector @math{\bar A} may saturate. This is usually unnecessary. In the worst
+ * case, saturation will cause 1 LSb of error.
+ * 
+ * @param[out] a_exp    Exponent @math{A_{exp}} of the result vector @math{\bar A}
+ * @param[out] b_shr    Right-shift to be applied to vector @math{\bar B}
+ * @param[out] c_shr    Right-shift to be applied to vector @math{\bar C}
+ * @param[in]  b_exp    Exponent @math{B_{exp}} associated with @math{\bar B}
+ * @param[in]  c_exp    Exponent @math{C_{exp}} associated with @math{\bar C}
+ * @param[in]  b_hr     Headroom @math{B_{hr}} associated with @math{\bar B}
+ * @param[in]  c_hr     Headroom @math{B_{hr}} associated with @math{\bar C}
  * @param[in]  allow_saturation  Whether to avoid corner-case saturation.
  * 
- * \sa xs3_vect_s16_add
- * \sa xs3_vect_s32_add
- * \sa xs3_vect_s16_sub
- * \sa xs3_vect_s32_sub
+ * @see xs3_vect_s16_add
+ * @see xs3_vect_s32_add
+ * @see xs3_vect_s16_sub
+ * @see xs3_vect_s32_sub
+ * @see xs3_vect_complex_s16_add
+ * @see xs3_vect_complex_s32_add
+ * @see xs3_vect_complex_s16_sub
+ * @see xs3_vect_complex_s32_sub
  */
 void xs3_vect_add_sub_calc_params(
     exponent_t* a_exp,
@@ -74,31 +88,179 @@ void xs3_vect_add_sub_calc_params(
     const unsigned allow_saturation);
 
 
+/**
+ * @brief Calculate the headroom of a 32-bit channel-pair vector.
+ * 
+ * The headroom of an N-bit integer is the number of bits that the integer's value may be left-shifted
+ * without any information being lost. Equivalently, it is one less than the number of leading sign bits.
+ * 
+ * The headroom of a `ch_pair_s32_t` struct is the minimum of the headroom of each of its 32-bit fields,
+ * `ch_a` and `ch_b`.
+ * 
+ * The headroom of a 32-bit channel-pair vector is the minimum of the headroom of each of its `ch_pair_s32_t`
+ * elements.
+ * 
+ * This function efficiently traverses the elements of @vector{x} to determine its headroom.
+ * 
+ * @par Parameter Details
+ * 
+ * `x[]` represents a 32-bit channel-pair vector @vector{x}. `x[]` must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in `x[]`.
+ * 
+ * @low_op{32, @f$
+ *      min\!\\{ HR_{32}\left(x_0\right), HR_{32}\left(x_1\right), ..., HR_{32}\left(x_{length-1}\right) \\}
+ * @f$ }
+ * 
+ * @param[in]   x       Input channel-pair vector @vector{x}
+ * @param[in]   length  Number of elements in @vector{x}
+ * 
+ * @returns     Headroom of vector @vector{x}
+ * 
+ * @see xs3_vect_ch_pair_s16_headroom
+ * @see xs3_vect_s16_headroom
+ * @see xs3_vect_s32_headroom
+ * @see xs3_vect_complex_s16_headroom
+ * @see xs3_vect_complex_s32_headroom
+ */
 headroom_t xs3_vect_ch_pair_s32_headroom(
-    const ch_pair_s32_t a[],
+    const ch_pair_s32_t x[],
     const unsigned length);
 
+
+/**
+ * @brief Set each element of a 32-bit channel-pair vector to a specified value.
+ * 
+ * Each `x[k].ch_a` is set to `ch_a`, and each `x[k].ch_b` is set to `ch_b` (for `0 < k <= length`).
+ * 
+ * @par Parameter Details
+ * 
+ * `x[]` represents a 32-bit vector @vector{x}. `x[]` must begin at a word-aligned address.
+ * 
+ * `ch_a` and `ch_b` are respectively the channel A and channel B values to which each element will be set.
+ * 
+ * `length` is the number of elements in `x[]`.
+ * 
+ * @low_op{32, @f$ 
+ *      ChA\\{x_k\\} \leftarrow ch\_a \\
+ *      ChB\\{x_k\\} \leftarrow ch\_b \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Word-alignment Required
+ *      `x[]` must begin at a word-aligned (4 byte) address.
+ * 
+ * @param[out]  x           Output channel-pair vector @vector{x}
+ * @param[in]   ch_b        Value to set channel A of elements of @vector{x} to
+ * @param[in]   ch_a        Value to set channel B of elements of @vector{x} to
+ * @param[in]   length      Number of elements in vector{x}
+ * 
+ * @see xs3_vect_ch_pair_s16_set
+ * @see xs3_vect_s16_set
+ * @see xs3_vect_s32_set
+ * @see xs3_vect_complex_s16_set
+ * @see xs3_vect_complex_s32_set
+ */
 void xs3_vect_ch_pair_s32_set(
-    ch_pair_s32_t data[],
+    ch_pair_s32_t x[],
     const int32_t ch_a,
     const int32_t ch_b,
     const unsigned length);
 
+
+/**
+ * @brief Left-shift each element of a 32-bit channel-pair vector by a specified number of bits.
+ * 
+ * Left-shift each element of @vector{b} by @math{b\_shl} bits, placing the result in the corresponding
+ * element of @vector{a}. This is equivalent to multiplying each element of @vector{b} by @math{2^{b\_shl}}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in @vector{a} and @vector{b}.
+ * 
+ * `b_shl` is the signed arithmetic left-shift applied to each element of @vector{b}.
+ * 
+ * @low_op{32, @f$ 
+ *      ChA\\{a_k\\} \leftarrow sat_{32}(\lfloor ChA\\{b_k\\} \cdot {2^{b\_shl}} \rfloor) \\
+ *      ChB\\{a_k\\} \leftarrow sat_{32}(\lfloor ChB\\{b_k\\} \cdot {2^{b\_shl}} \rfloor) \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @param[out]  a           Output channel-pair vector @vector{a}
+ * @param[in]   b           Input channel-pair vector @vector{b}
+ * @param[in]   length      Number of elements in @vector{a} and @vector{b}
+ * @param[in]   b_shl       Number of bits @math{b\_shl} to left-shift the elements of @vector{b}
+ * 
+ * @returns     Headroom of output vector @vector{a}
+ * 
+ * @see xs3_vect_ch_pair_s32_shr
+ */
 headroom_t xs3_vect_ch_pair_s32_shl(
     ch_pair_s32_t a[],
     const ch_pair_s32_t b[],
     const unsigned length,
-    const left_shift_t shl);
+    const left_shift_t b_shl);
 
+
+/**
+ * @brief Right-shift each element of a 32-bit channel-pair vector by a specified number of bits.
+ * 
+ * Right-shift each element of @vector{b} by @math{b\_shr} bits, placing the result in the corresponding
+ * element of @vector{a}. This is equivalent to dividing each element of @vector{b} by @math{2^{b\_shr}}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in @vector{a} and @vector{b}.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * 
+ * @low_op{32, @f$ 
+ *      ChA\\{a_k\\} \leftarrow sat_{32}(\lfloor ChA\\{b_k\\} \cdot {2^{-b\_shr}} \rfloor) \\
+ *      ChB\\{a_k\\} \leftarrow sat_{32}(\lfloor ChB\\{b_k\\} \cdot {2^{-b\_shr}} \rfloor) \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @note This function saturates the output elements to the symmetric 32-bit range.
+ * 
+ * @par Safe In-place Computation
+ *      This function may safely operate in-place on `b[]`.
+ * 
+ * @par Word-alignment Required
+ *      `a[]` and `b[]` must each begin at a word-aligned (4 byte) address.
+ * 
+ * @param[out]  a           Complex output vector @vector{a}
+ * @param[in]   b           Complex input vector @vector{b}
+ * @param[in]   length      Number of elements in @vector{a} and @vector{b}
+ * @param[in]   b_shr       Number of bits @math{b\_shr} to right-shift the elements of @vector{b}
+ * 
+ * @returns     Headroom of output vector @vector{a}
+ * 
+ * @see xs3_vect_ch_pair_s32_shl
+ */
 headroom_t xs3_vect_ch_pair_s32_shr(
     ch_pair_s32_t a[],
     const ch_pair_s32_t b[],
     const unsigned length,
-    const right_shift_t shr);
+    const right_shift_t b_shr);
 
 
 /**
- * @todo 
+ * @brief Obtain the shift params used by xs3_vect_complex_s32_mag() and xs3_vect_complex_s16_mag().
+ * 
+ * @param[out]  a_exp               Exponent of output of xs3_vect_complex_s32_mag()
+ * @param[out]  b_shr               Right-shift to be applied to elements of @vector{b}
+ * @param[in]   b_exp               Exponent of @vector{b}
+ * @param[in]   b_hr                Headroom of @vector{b}
+ * @param[in]   allow_saturation    Whether xs3_vect_complex_s32_mag() is allowed to saturate
+ * 
+ * @see xs3_vect_complex_s16_mag()
+ * @see xs3_vect_complex_s32_mag()
  */
 void xs3_vect_complex_mag_calc_params(
     exponent_t* a_exp,
@@ -108,6 +270,48 @@ void xs3_vect_complex_mag_calc_params(
     const unsigned allow_saturation);
 
 
+/**
+ * @brief Add together two complex 32-bit vectors element-wise.
+ * 
+ * xs3_vect_complex_s32_add() and xs3_vect_add_sub_calc_params() together represent the following BFP operation: 
+ * 
+ * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
+ *                                          + \left( \bar{c} \cdot 2^{c\_exp} \right) }
+ * 
+ * xs3_vect_add_sub_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
+ * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
+ * mantissa vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]`, `b[]` and `c[]` represent the complex 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c}  
+ * respectively. Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or
+ * `c[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      c_k' \leftarrow sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)     \\
+ *      Re\\{a_k\\} \leftarrow Re\\{b_k'\\} + Re\\{c_k'\\}                  \\
+*       Im\\{a_k\\} \leftarrow Im\\{b_k'\\} + Im\\{c_k'\\}                  \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out]      a           Complex output vector @vector{a}
+ * @param[in]       b           Complex input vector @vector{b}
+ * @param[in]       c           Complex input vector @vector{c}
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       b_shr       Right-shift applied to @vector{b}
+ * @param[in]       c_shr       Right-shift applied to @vector{c}
+ * 
+ * @returns     Headroom of output vector @vector{a}.
+ * 
+ * @see xs3_vect_add_sub_calc_params
+ */
 headroom_t xs3_vect_complex_s32_add(
     complex_s32_t a[],
     const complex_s32_t b[],
@@ -117,125 +321,51 @@ headroom_t xs3_vect_complex_s32_add(
     const right_shift_t c_shr);
 
 
-void xs3_vect_complex_s32_complex_mul_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    right_shift_t* c_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation);
-
 /**
- * @brief Compute the complex product of two complex 32-bit vectors.
+ * @brief Multiply one complex 32-bit vector element-wise by the complex conjugate of another.
  * 
- * Multiply the vector @vector{b} element-wise with the vector @vector{c}, placing the final result in the 
- * vector @vector{a}. This function saturates the output elements to the symmetric 32-bit range. To avoid 
- * saturation, 3 scaling factors are applied during the operation. 
+ * xs3_vect_complex_s32_conj_mul() and xs3_vect_complex_s32_mul_calc_params() together represent the following BFP
+ * operation:
  * 
- * Prior to computing their product, the elements of @vector{b} and @vector{c} are respectively scaled by the factors 
- * @math{2^{-b\_shr}} and @math{2^{-c\_shr}}. This can be used to scale the elements up or down (without rounding). Note
- * that the results of this scaling are also saturated, and so in general neither input vector should be scaled up by
- * more than its headroom.
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) 
+ *                                  \cdot \left( c_k \cdot 2^{c\_exp} \right)^*  \\
+ *          \qquad\text{where } (\cdot)^* \text{ is the complex conjugate}
+ * }
  * 
- * Finally, a scale factor of @math{2^{-30}} is applied to the 64-bit products of elements. Rounding is applied with
- * this scaling.
+ * xs3_vect_complex_s32_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and
+ * @math{c\_shr} used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute
+ * the resulting mantissa vector @vector{a}.
  * 
- * The parameters `a[]`, `b[]` and `c[]` represent the vectors @vector{a}, @vector{b} and @vector{c} respectively.
+ * @par Parameter Details
  * 
- * The parameter `length` is the number of elements in each of the vectors.
+ * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} respectively. 
+ * Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
  * 
- * The parameters `b_shr` and `c_shr` define the scaling factors applied to elements of @vector{b} and @vector{c} 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
  * respectively.
  * 
- * This function returns the headroom of the output vector @vector{a}.
+ * @low_op{32, @f$ 
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)                     \\
+ *      c_k' \leftarrow sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)                     \\
+ *      Re\\{a_k\\} \leftarrow \left( Re\\{b_k'\\} \cdot Re\\{c_k'\\} 
+ *                                  + Im\\{b_k'\\} \cdot Im\\{c_k'\\} \right) \cdot 2^{-30} \\
+ *      Im\\{a_k\\} \leftarrow \left( Im\\{b_k'\\} \cdot Re\\{c_k'\\} 
+ *                                  - Re\\{b_k'\\} \cdot Im\\{c_k'\\} \right) \cdot 2^{-30} \\
+ *      \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
  * 
- * @low_op{32, @f$ Re\\{a_k\\} \leftarrow \left( \frac{Re\\{b_k\\}}{2^{b\_shr}} \cdot \frac{Re\\{c_k\\}}{2^{c\_shr}} 
- *              - \frac{Im\\{b_k\\}}{2^{b\_shr}} \cdot \frac{Im\\{c_k\\}}{2^{c\_shr}} \right) \cdot 2^{-30} \\
- *          Im\\{a_k\\} \leftarrow \left( \frac{Re\\{b_k\\}}{2^{b\_shr}} \cdot \frac{Im\\{c_k\\}}{2^{c\_shr}} 
- *              + \frac{Im\\{b_k\\}}{2^{b\_shr}} \cdot \frac{Re\\{c_k\\}}{2^{c\_shr}} \right) \cdot 2^{-30} \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1) @f$}
+ * @param[out] a        Complex output vector @vector{a}
+ * @param[in]  b        Complex input vector @vector{b}
+ * @param[in]  c        Complex input vector @vector{c}
+ * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}
+ * @param[in]  b_shr    Right-shift appled to @vector{b}
+ * @param[in]  c_shr    Right-shift appled to @vector{c}
  * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
+ * @return      Headroom of the output vector @vector{a}
  * 
- * @par Safe In-Place Computation:
- *      The output of this function can be safely computed in-place if the output `a[]` is equal to the input pointer 
- *      `b[]`. Using in-place operations may reduce peak memory requirements.
- * 
- * @par Word Alignment Required:
- *      Parameters `a[]`, `b[]`, and `c[]` must begin at a word-aligned (4-byte) address. For more about alignment 
- *      requirements, see \ref vector_alignment.
- * 
- * @param[out] a        Complex output vector @vector{a}.
- * @param[in]  b        Complex input vector @vector{b}.
- * @param[in]  c        Complex input vector @vector{c}.
- * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}.
- * @param[in]  b_shr    Right-shift applied to elements of @vector{b}.
- * @param[in]  c_shr    Right-shift applied to elements of @vector{c}.
- * 
- * @return The headroom of the output vector @vector{a} is returned.
- */
-headroom_t xs3_vect_complex_s32_complex_mul(
-    complex_s32_t a[],
-    const complex_s32_t b[],
-    const complex_s32_t c[],
-    const unsigned length,
-    const right_shift_t b_shr,
-    const right_shift_t c_shr);
-
-
-
-/**
- * @brief Compute the complex product of a complex 32-bit vector with the complex conjugate of another.
- * 
- * Multiply the vector @vector{b} element-wise with the complex conjugate of vector @vector{c}, placing the final result 
- * in the vector @vector{a}. This function saturates the output elements to the symmetric 32-bit range. To avoid 
- * saturation, 3 scaling factors are applied during the operation. 
- * 
- * Prior to computing their product, the elements of @vector{b} and @vector{c^*} are respectively scaled by the factors 
- * @math{2^{-b\_shr}} and @math{2^{-c\_shr}}. This can be used to scale the elements up or down (without rounding). Note
- * that the results of this scaling are also saturated, and so in general neither input vector should be scaled up by
- * more than its headroom.
- * 
- * Finally, a scale factor of @math{2^{-30}} is applied to the 64-bit products of elements. Rounding is applied with
- * this scaling.
- * 
- * The parameters `a[]`, `b[]` and `c[]` represent the vectors @vector{a}, @vector{b} and @vector{c} respectively.
- * 
- * The parameter `length` is the number of elements in each of the vectors.
- * 
- * The parameters `b_shr` and `c_shr` define the scaling factors applied to elements of @vector{b} and @vector{c} 
- * respectively.
- * 
- * This function returns the headroom of the output vector @vector{a}.
- * 
- * @low_op{32, @f$ Re\\{a_k\\} \leftarrow \left( \frac{Re\\{b_k\\}}{2^{b\_shr}} \cdot \frac{Re\\{c_k\\}}{2^{c\_shr}} 
- *              + \frac{Im\\{b_k\\}}{2^{b\_shr}} \cdot \frac{Im\\{c_k\\}}{2^{c\_shr}} \right) \cdot 2^{-30} \\
- *          Im\\{a_k\\} \leftarrow \left( \frac{Im\\{b_k\\}}{2^{b\_shr}} \cdot \frac{Re\\{c_k\\}}{2^{c\_shr}} 
- *              - \frac{Re\\{b_k\\}}{2^{b\_shr}} \cdot \frac{Im\\{c_k\\}}{2^{c\_shr}} \right) \cdot 2^{-30} \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1) @f$}
- * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
- * 
- * @par Safe In-Place Computation:
- *      The output of this function can be safely computed in-place if the output `a[]` is equal to the input pointer 
- *      `b[]`. Using in-place operations may reduce peak memory requirements.
- * 
- * @par Word Alignment Required:
- *      Parameters `a[]`, `b[]`, and `c[]` must begin at a word-aligned (4-byte) address. For more about alignment 
- *      requirements, see \ref vector_alignment.
- * 
- * @param[out] a        Complex output vector @vector{a}.
- * @param[in]  b        Complex input vector @vector{b}.
- * @param[in]  c        Complex input vector @vector{c}.
- * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}.
- * @param[in]  b_shr    Right-shift applied to elements of @vector{b}.
- * @param[in]  c_shr    Right-shift applied to elements of @vector{c}.
- * 
- * @return The headroom of the output vector @vector{a} is returned.
+ * @see xs3_vect_complex_s32_mul_calc_params
  */
 headroom_t xs3_vect_complex_s32_conj_mul(
     complex_s32_t a[],
@@ -246,24 +376,96 @@ headroom_t xs3_vect_complex_s32_conj_mul(
     const right_shift_t c_shr);
 
 
-
 /**
- * @brief Get headroom of complex 32-bit vector.
+ * @brief Calculate the headroom of a complex 32-bit array.
  * 
+ * The headroom of an N-bit integer is the number of bits that the integer's value may be left-shifted
+ * without any information being lost. Equivalently, it is one less than the number of leading sign bits.
+ * 
+ * The headroom of a `complex_s32_t` struct is the minimum of the headroom of each of its 32-bit fields,
+ * `re` and `im`.
+ * 
+ * The headroom of a `complex_s32_t` array is the minimum of the headroom of each of its `complex_s32_t`
+ * elements.
+ * 
+ * This function efficiently traverses the elements of @vector{x} to determine its headroom.
+ * 
+ * @par Parameter Details
+ * 
+ * `x[]` represents the complex 32-bit vector @vector{x}. `x[]` must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in `x[]`.
+ * 
+ * @low_op{32, @f$
+ *      min\!\\{ HR_{32}\left(x_0\right), HR_{32}\left(x_1\right), ..., HR_{32}\left(x_{length-1}\right) \\}
+ * @f$ }
+ * 
+ * @param[in]   x       Complex input vector @vector{x}
+ * @param[in]   length  Number of elements in @vector{x}
+ * 
+ * @returns     Headroom of vector @vector{x} 
+ * 
+ * @see xs3_vect_ch_pair_s16_headroom
+ * @see xs3_vect_ch_pair_s32_headroom
+ * @see xs3_vect_s16_headroom
+ * @see xs3_vect_s32_headroom
+ * @see xs3_vect_complex_s16_headroom
  */
 headroom_t xs3_vect_complex_s32_headroom(
-    const complex_s32_t a[], 
+    const complex_s32_t x[], 
     const unsigned length);
 
+
 /**
- * Returns headroom
+ * @brief Compute the magnitude of each element of a complex 32-bit vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * xs3_vect_complex_s32_mag() and xs3_vect_complex_mag_calc_params() together represent the following BFP operation:
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left| b_k \cdot 2^{b\_exp} \right|   \\
+ *      \qquad\text{where } \left|\cdot\right| \text{ is the complex magnitude operator}
+ * }
  * 
+ * @par Parameter Details
+ * 
+ * `a[]` represents the real 32-bit output mantissa vector @vector{a}.
+ * 
+ * `b[]` represents the complex 32-bit input mantissa vector @vector{b}.
+ * 
+ * `a[]` and `b[]` must each begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
+ * 
+ * `rot_table` must point to a pre-computed table of complex vectors used in calculating the magnitudes. `table_rows` is
+ * the number of rows in the table. This library is distributed with a default version of the required rotation table. 
+ * The following symbols can be used to refer to it in user code:
+ * 
+ * @code
+ *     const extern unsigned rot_table32_rows;
+ *     const extern complex_s32_t rot_table32[30][4];
+ * @endcode
+ * 
+ * Faster computation (with reduced precision) can be achieved by generating a smaller version of the table. A python
+ * script is provided to generate this table.
+ * @todo Point to documentation page on generating this table.
+ * 
+ * @low_op{32, @f$ 
+ *      v_k \leftarrow b_k \cdot 2^{-b\_shr}    \\
+ *      a_k \leftarrow \sqrt { {\left( Re\\{v_k\\} \right)}^2 + {\left( Im\\{v_k\\} \right)}^2 }
+ *        \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out]  a           Real output vector @vector{a}
+ * @param[in]   b           Complex input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shr       Right-shift appled to @vector{b}
+ * @param[in]   rot_table   Pre-computed rotation table required for calculating magnitudes
+ * @param[in]   table_rows  Number of rows in `rot_table`
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @see xs3_vect_complex_mag_calc_params
  */
 headroom_t xs3_vect_complex_s32_mag(
     int32_t a[],
@@ -274,7 +476,153 @@ headroom_t xs3_vect_complex_s32_mag(
     const unsigned table_rows);
 
 
+/**
+ * @brief Multiply one complex 32-bit vector element-wise by another.
+ * 
+ * xs3_vect_complex_s32_mul() and xs3_vect_complex_s32_mul_calc_params() together represent the following BFP
+ * operation:
+ * 
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) 
+ *                                  \cdot \left( c_k \cdot 2^{c\_exp} \right) }
+ * 
+ * xs3_vect_complex_s32_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and
+ * @math{c\_shr} used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute
+ * the resulting mantissa vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} respectively. 
+ * Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)                     \\
+ *      c_k' \leftarrow sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)                     \\
+ *      Re\\{a_k\\} \leftarrow \left( Re\\{b_k'\\} \cdot Re\\{c_k'\\} 
+ *                                  - Im\\{b_k'\\} \cdot Im\\{c_k'\\} \right) \cdot 2^{-30} \\
+ *      Im\\{a_k\\} \leftarrow \left( Im\\{b_k'\\} \cdot Re\\{c_k'\\} 
+ *                                  + Re\\{b_k'\\} \cdot Im\\{c_k'\\} \right) \cdot 2^{-30} \\
+ *      \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out] a        Complex output vector @vector{a}
+ * @param[in]  b        Complex input vector @vector{b}
+ * @param[in]  c        Complex input vector @vector{c}
+ * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}
+ * @param[in]  b_shr    Right-shift appled to @vector{b}
+ * @param[in]  c_shr    Right-shift appled to @vector{c}
+ * 
+ * @return      Headroom of the output vector @vector{a}
+ * 
+ * @see xs3_vect_complex_s32_mul_calc_params
+ */
+headroom_t xs3_vect_complex_s32_mul(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const complex_s32_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
+
+/**
+ * @brief Obtain the shift params used by xs3_vect_complex_s32_mul()
+ * 
+ * @param[out]  a_exp               Exponent of output of xs3_vect_complex_s32_mul()
+ * @param[out]  b_shr               Right-shift to be applied to elements of @vector{b}
+ * @param[out]  c_shr               Right-shift to be applied to elements of @vector{c}
+ * @param[in]   b_exp               Exponent of @vector{b}
+ * @param[in]   c_exp               Exponent of @vector{c}
+ * @param[in]   b_hr                Headroom of @vector{b}
+ * @param[in]   c_hr                Headroom of @vector{c}
+ * @param[in]   allow_saturation    Whether xs3_vect_complex_s32_mul() is allowed to saturate
+ * 
+ * @see xs3_vect_complex_s32_mul
+ */
+void xs3_vect_complex_s32_mul_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const unsigned allow_saturation);
+
+
+/**
+ * @brief Multiply a complex 32-bit vector element-wise by a real 32-bit vector.
+ * 
+ * xs3_vect_complex_s32_real_mul() and xs3_vect_complex_s32_real_mul_calc_params() together represent the following BFP
+ * operation:
+ * 
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) 
+ *                                  \cdot \left( c_k \cdot 2^{c\_exp} \right) }
+ * 
+ * xs3_vect_complex_s32_real_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and
+ * @math{c\_shr} used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute
+ * the resulting mantissa vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the complex 32-bit mantissa vectors @vector{a} and @vector{b} respectively. 
+ * 
+ * `c[]` represents the real 32-bit mantissa vector @vector{c}.
+ * 
+ * `a[]`, `b[]`, and `c[]` each must begin at a word-aligned address. This operation can be performed safely in-place on 
+ * `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)      \\
+ *      c_k' \leftarrow sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)      \\
+ *      Re\\{a_k\\} \leftarrow \left( Re\\{b_k'\\} \cdot c_k' \right) \cdot 2^{-30} \\
+ *      Im\\{a_k\\} \leftarrow \left( Im\\{b_k'\\} \cdot c_k' \right) \cdot 2^{-30} \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @param[out] a        Complex output vector @vector{a}.
+ * @param[in]  b        Complex input vector @vector{b}.
+ * @param[in]  c        Real input vector @vector{c}.
+ * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}.
+ * @param[in]  b_shr    Right-shift appled to @vector{b}.
+ * @param[in]  c_shr    Right-shift appled to @vector{c}.
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @see xs3_vect_complex_s32_real_mul_calc_params
+ */
+headroom_t xs3_vect_complex_s32_real_mul(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const int32_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
+
+
+/**
+ * @brief Obtain the shift params used by xs3_vect_complex_s32_real_mul().
+ * 
+ * @param[out]  a_exp               Exponent of output from xs3_vect_complex_s32_real_mul()
+ * @param[out]  b_shr               Arithmetic right-shift to be applied to elements of vector @vector{b}
+ * @param[out]  c_shr               Arithmetic right-shift to be applied to elements of vector @vector{c}
+ * @param[in]   b_exp               Exponent of @vector{b}
+ * @param[in]   c_exp               Exponent of @vector{c}
+ * @param[in]   b_hr                Headroom of @vector{b}
+ * @param[in]   c_hr                Headroom of @vector{c}
+ * @param[in]   allow_saturation    Whether xs3_vect_complex_s32_real_mul() is allowed to saturate
+ * 
+ * @see xs3_vect_complex_s32_real_mul
+ */
 void xs3_vect_complex_s32_real_mul_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -285,64 +633,49 @@ void xs3_vect_complex_s32_real_mul_calc_params(
     const headroom_t c_hr,
     const unsigned allow_saturation);
 
-/**
- * @brief Multiply a complex 32-bit vector by a real 32-bit vector.
- * 
- * Multiply the complex vector @vector{b} element-wise with the real vector @vector{c}, placing the final result in the 
- * complex vector @vector{a}. This function saturates the output elements to the symmetric 32-bit range. To avoid 
- * saturation, 3 scaling factors are applied during the operation. 
- * 
- * Prior to computing their product, the elements of @vector{b} and @vector{c} are respectively scaled by the factors 
- * @math{2^{-b\_shr}} and @math{2^{-c\_shr}}. This can be used to scale the elements up or down (without rounding). Note
- * that the results of this scaling are also saturated, and so in general neither input vector should be scaled up by
- * more than its headroom.
- * 
- * Finally, a scale factor of @math{2^{-30}} is applied to the 64-bit products of elements. Rounding is applied with
- * this scaling.
- * 
- * The parameters `a[]`, `b[]` and `c[]` represent the vectors @vector{a}, @vector{b} and @vector{c} respectively.
- * 
- * The parameter `length` is the number of elements in each of the vectors.
- * 
- * The parameters `b_shr` and `c_shr` define the scaling factors applied to elements of @vector{b} and @vector{c} 
- * respectively.
- * 
- * This function returns the headroom of the output vector @vector{a}.
- * 
- * @low_op{32, @f$ Re\\{a_k\\} \leftarrow \left( \frac{Re\\{b_k\\}}{2^{b\_shr}}\right) \left(\frac{c_k}{2^{c\_shr}}\right) \cdot 2^{-30} \\
- *                 Im\\{a_k\\} \leftarrow \left( \frac{Im\\{b_k\\}}{2^{b\_shr}}\right) \left(\frac{c_k}{2^{c\_shr}}\right) \cdot 2^{-30} \\
- *              \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
- * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
- * 
- * @par Safe In-Place Computation:
- *      The output of this function can be safely computed in-place if the output `a[]` is equal to the input pointer 
- *      `b[]`. Using in-place operations may reduce peak memory requirements.
- * 
- * @par Word Alignment Required:
- *      Parameters `a[]`, `b[]`, and `c[]` must begin at a word-aligned (4-byte) address. For more about alignment 
- *      requirements, see \ref vector_alignment.
- * 
- * @param[out] a        Complex output vector @vector{a}.
- * @param[in]  b        Complex input vector @vector{b}.
- * @param[in]  c        Real input vector @vector{c}.
- * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}.
- * @param[in]  b_shr    Right-shift applied to elements of @vector{b}.
- * @param[in]  c_shr    Right-shift applied to elements of @vector{c}.
- * 
- * @return The headroom of the output vector @vector{a} is returned.
- */
-headroom_t xs3_vect_complex_s32_real_mul(
-    complex_s32_t a[],
-    const complex_s32_t b[],
-    const int32_t c[],
-    const unsigned length,
-    const right_shift_t b_shr,
-    const right_shift_t c_shr);
 
 /**
- * @todo
+ * @brief Multiply a complex 32-bit vector by a real scalar.
+ * 
+ * xs3_vect_complex_s32_real_scale() and xs3_vect_complex_s32_real_mul_calc_params() together represent the following 
+ * BFP operation:
+ * 
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) \cdot \left( c \cdot 2^{c\_exp} \right) }
+ * 
+ * xs3_vect_complex_s32_real_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and
+ * @math{c\_shr}, as well as the output exponent @math{a\_exp}. @math{b\_shr} is used by this function, and 
+ * @math{c\_shr} is applied in user code prior to calling this function. This function is then used to compute the 
+ * resulting mantissa vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the complex 32-bit mantissa vectors @vector{a} and @vector{b} respectively. 
+ * 
+ * `c` represents the real 32-bit scale factor @math{c}.
+ * 
+ * `a[]` and `b[]` each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * 
+ * @low_op{32, @f$
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      Re\\{a_k\\} \leftarrow Re\\{b_k'\\} \cdot c                         \\
+ *      Im\\{a_k\\} \leftarrow Im\\{b_k'\\} \cdot c                         \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @todo To make things simpler I should just have this function take `c_shr` as a parameter so that the user can't 
+ *       accidentally apply it incorrectly.
+ * 
+ * @param[out]  a           Complex output vector @vector{a}
+ * @param[in]   b           Complex input vector @vector{b}
+ * @param[in]   c           Complex input vector @vector{c}
+ * @param[in]   length      Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}
+ * @param[in]   b_shr       Right-shift applied to @vector{b}
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
  */
 headroom_t xs3_vect_complex_s32_real_scale(
     complex_s32_t a[],
@@ -353,8 +686,73 @@ headroom_t xs3_vect_complex_s32_real_scale(
 
 
 /**
+ * @brief Multiply a complex 32-bit vector by a complex 32-bit scalar.
  * 
+ * xs3_vect_complex_s32_scale() and xs3_vect_complex_s32_scale_calc_params() together represent the following 
+ * BFP operation:
  * 
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) \cdot \left( c \cdot 2^{c\_exp} \right) }
+ * 
+ * xs3_vect_complex_s32_scale_calc_params() should be called first to compute the shift parameters @math{b\_shr} and
+ * @math{c\_shr}, as well as the output exponent @math{a\_exp}. @math{b\_shr} is used by this function, and 
+ * @math{c\_shr} is applied in user code prior to calling this function. This function is then used to compute the 
+ * resulting mantissa vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the complex 32-bit mantissa vectors @vector{a} and @vector{b} respectively. 
+ * 
+ * `c` represents the complex 32-bit scale factor @math{c}.
+ * 
+ * `a[]` and `b[]` each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)                     \\
+ *      Re\\{a_k\\} \leftarrow \left( Re\\{v_k\\} \cdot Re\\{c\\} 
+ *                                  - Im\\{v_k\\} \cdot Im\\{c\\} \right) \cdot 2^{-30}     \\
+ *      Im\\{a_k\\} \leftarrow \left( Re\\{v_k\\} \cdot Im\\{c\\} 
+ *                                  + Im\\{v_k\\} \cdot Re\\{c\\} \right) \cdot 2^{-30}     \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @todo To make things simpler I should just have this function take `c_shr` as a parameter so that the user can't 
+ *       accidentally apply it incorrectly.
+ * 
+ * @param[out] a        Complex output vector @vector{a}.
+ * @param[in]  b        Complex input vector @vector{b}.
+ * @param[in]  c_real   Real part of @math{c}
+ * @param[in]  c_imag   Imaginary part of @math{c}
+ * @param[in]  length   Number of elements in vectors @vector{a} and @vector{b}.
+ * @param[in]  b_shr    Right-shift appled to @vector{b}.
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
+ */
+headroom_t xs3_vect_complex_s32_scale(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const int32_t c_real,
+    const int32_t c_imag,
+    const unsigned length,
+    const right_shift_t b_shr);
+
+
+/**
+ * @brief Obtain shift params used by xs3_vect_complex_s32_scale()
+ * 
+ * @param[out]  a_exp               Exponent of output from xs3_vect_complex_s32_scale()
+ * @param[out]  b_shr               Arithmetic right-shift to be applied to elements of @vector{b}
+ * @param[out]  alpha_shr           Arithmetic right-shift to be applied to @math{\alpha}
+ * @param[in]   b_exp               Exponent of @vector{b}
+ * @param[in]   alpha_exp           Exponent of @math{\alpha}
+ * @param[in]   b_hr                Headroom of @vector{b}
+ * @param[in]   alpha_hr            Headroom of @math{\alpha}
+ * @param[in]   allow_saturation    Whether xs3_vect_complex_s32_scale() is allowed to saturate
+ * 
+ * @see xs3_vect_complex_s32_scale
  */
 void xs3_vect_complex_s32_scale_calc_params(
     exponent_t* a_exp,
@@ -366,89 +764,152 @@ void xs3_vect_complex_s32_scale_calc_params(
     const headroom_t alpha_hr,
     const unsigned allow_saturation);
 
+
 /**
- * @brief Compute complex product of a complex 32-bit vector with a complex 32-bit scalar.
+ * @brief Set each element of a complex 32-bit vector to a specified value.
  * 
- * Multiply the vector @vector{b} with the scalar @math{c}, placing the final result in the 
- * vector @vector{a}. This function saturates the output elements to the symmetric 32-bit range. To avoid 
- * saturation, 2 scaling factors are applied during the operation. 
+ * @par Parameter Details
  * 
- * Prior to computing their product, the elements of @vector{b} are scaled by the factor @math{2^{-b\_shr}}. This can 
- * be used to scale the elements up or down (without rounding). Note that the results of this scaling are also 
- * saturated, and so in general @vector{b} should not be scaled up by more than its headroom.
+ * `x[]` represents a complex 32-bit vector @vector{x}. `x[]` must begin at a word-aligned address.
  * 
- * Finally, a scale factor of @math{2^{-30}} is applied to the 64-bit products of elements. Rounding is applied with
- * this scaling.
+ * `real` and `imag` are the real and imaginary parts to which each element will be set.
  * 
- * The parameters `a[]` and `b[]` represent the vectors @vector{a} and @vector{b} respectively.
+ * `length` is the number of elements in `x[]`.
  * 
- * The parameters `c_real` and `c_imag` represent the real and imaginary parts of the complex scalar @math{c}.
+ * @low_op{32, @f$ 
+ *      x_k \leftarrow  real + j\cdot imag              \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)   \\
+ *          \qquad\text{ where } j^2 = -1
+ *  @f$ }
  * 
- * The parameter `length` is the number of elements in each of the vectors.
- * 
- * The parameter `b_shr` defines the scaling factor applied to elements of @vector{b}.
- * 
- * This function returns the headroom of the output vector @vector{a}.
- * 
- * @low_op{32, @f$ Re\\{a_k\\} \leftarrow \left( \frac{Re\\{b_k\\}}{2^{b\_shr}} \cdot Re\\{c\\} 
- *              - \frac{Im\\{b_k\\}}{2^{b\_shr}} \cdot Im\\{c\\} \right) \cdot 2^{-30} \\
- *          Im\\{a_k\\} \leftarrow \left( \frac{Re\\{b_k\\}}{2^{b\_shr}} \cdot Im\\{c\\} 
- *              + \frac{Im\\{b_k\\}}{2^{b\_shr}} \cdot Re\\{c\\} \right) \cdot 2^{-30} \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1) @f$}
- * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
- * 
- * @par Safe In-Place Computation:
- *      The output of this function can be safely computed in-place if the output `a[]` is equal to the input pointer 
- *      `b[]`. Using in-place operations may reduce peak memory requirements.
- * 
- * @par Word Alignment Required:
- *      Parameters `a[]` and `b[]` must begin at a word-aligned (4-byte) address. For more about alignment 
- *      requirements, see \ref vector_alignment.
- * 
- * @param[out] a        Complex output vector @vector{a}.
- * @param[in]  b        Complex input vector @vector{b}.
- * @param[in]  c_real   Real part of @math{c}
- * @param[in]  c_imag   Imaginary part of @math{c}
- * @param[in]  length   Number of elements in vectors @vector{a} and @vector{b}.
- * @param[in]  b_shr    Right-shift applied to elements of @vector{b}.
- * 
- * @return The headroom of the output vector @vector{a} is returned.
+ * @param[out]  x           Complex output vector @vector{x}
+ * @param[in]   real        Value to set real part of elements of @vector{x} to
+ * @param[in]   imag        Value to set imaginary part of elements of @vector{x} to
+ * @param[in]   length      Number of elements in @vector{x}
  */
-headroom_t xs3_vect_complex_s32_scale(
-    complex_s32_t a[],
-    const complex_s32_t b[],
-    const int32_t c_real,
-    const int32_t c_imag,
-    const unsigned length,
-    const right_shift_t b_shr);
-
-
-
 void xs3_vect_complex_s32_set(
-    complex_s32_t data[],
-    const int32_t real_part,
-    const int32_t imag_part,
+    complex_s32_t x[],
+    const int32_t real,
+    const int32_t imag,
     const unsigned length);
 
+
+/**
+ * @brief Left-shift each element of a complex 32-bit vector by a specified number of bits.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the complex 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin 
+ * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in @vector{a} and @vector{b}.
+ * 
+ * `b_shl` is the signed arithmetic left-shift applied to each element of @vector{b}.
+ * 
+ * @low_op{32, @f$
+ *      Re\\{a_k\\} \leftarrow sat_{32}(\lfloor Re\\{b_k\\} \cdot 2^{b\_shl} \rfloor)     \\
+ *      Im\\{a_k\\} \leftarrow sat_{32}(\lfloor Im\\{b_k\\} \cdot 2^{b\_shl} \rfloor)     \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out]  a           Complex output vector @vector{a}
+ * @param[in]   b           Complex input vector @vector{b}
+ * @param[in]   length      Number of elements in vector @vector{b}
+ * @param[in]   b_shl       Left-shift applied to @vector{b} 
+ * 
+ * @returns     Headroom of the output vector @vector{a}
+ */
 headroom_t xs3_vect_complex_s32_shl(
     complex_s32_t a[],
     const complex_s32_t b[],
     const unsigned length,
-    const left_shift_t shl);
+    const left_shift_t b_shl);
 
 
-
-
+/**
+ * @brief Right-shift each element of a complex 32-bit vector by a specified number of bits.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the complex 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin 
+ * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in @vector{a} and @vector{b}.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * 
+ * @low_op{32, @f$
+ *      Re\\{a_k\\} \leftarrow sat_{32}(\lfloor Re\\{b_k\\} \cdot 2^{-b\_shr} \rfloor)     \\
+ *      Im\\{a_k\\} \leftarrow sat_{32}(\lfloor Im\\{b_k\\} \cdot 2^{-b\_shr} \rfloor)     \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out]  a           Complex output vector @vector{a}
+ * @param[in]   b           Complex input vector @vector{b}
+ * @param[in]   length      Number of elements in vector @vector{b}
+ * @param[in]   b_shr       Right-shift applied to @vector{b} 
+ * 
+ * @returns     Headroom of the output vector @vector{a}
+ */
 headroom_t xs3_vect_complex_s32_shr(
     complex_s32_t a[],
     const complex_s32_t b[],
     const unsigned length,
     const right_shift_t shr);
 
+
 /**
- * @todo
+ * @brief Computes the squared magnitudes of elements of a complex 32-bit vector.
+ * 
+ * xs3_vect_complex_s32_squared_mag() and xs3_vect_complex_s32_squared_mag_calc_params() together represent the 
+ * following BFP operation:
+ * 
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow  \left|b_k \cdot 2^{b\_exp} \right|^2   }
+ * 
+ * xs3_vect_complex_s32_squared_mag_calc_params() should be called first to compute the shift parameter @math{b\_shr}
+ * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
+ * mantissa vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` represents the complex 32-bit mantissa vector @vector{a}. `b[]` represents the real 32-bit mantissa vector
+ * @vector{b}. Each must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` is the signed arithmetic right-shift appled to each element of @vector{b}.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      a_k \leftarrow ((Re\\{b_k'\\})^2 + (Im\\{b_k'\\})^2)\cdot 2^{-30}   \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @param[out]  a           Complex output vector @vector{a}
+ * @param[in]   b           Complex input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shr       Right-shift appled to @vector{b}
+ * 
+ * @see xs3_vect_complex_s32_squared_mag_calc_params
+ */
+headroom_t xs3_vect_complex_s32_squared_mag(
+    int32_t a[],
+    const complex_s32_t b[],
+    const unsigned length,
+    const right_shift_t b_shr);
+
+
+/**
+ * @brief Obtain the shift parameters used by xs3_vect_complex_s32_squared_mag.
+ * 
+ * @param[out]  a_exp                   Exponent of output of xs3_vect_complex_s32_squared_mag()
+ * @param[out]  b_shr                   Right-shift to be applied to elements of @vector{b}
+ * @param[in]   b_exp                   Exponent of @vector{b}
+ * @param[in]   b_hr                    Headroom of @vector{b}
+ * @param[in]   allow_saturation        Indicates whether xs3_vect_complex_s32_squared_mag() should be allowed to 
+ *                                      saturate
+ * 
+ * @see xs3_vect_complex_s32_squared_mag
  */
 void xs3_vect_complex_s32_squared_mag_calc_params(
     exponent_t* a_exp,
@@ -457,49 +918,48 @@ void xs3_vect_complex_s32_squared_mag_calc_params(
     const headroom_t b_hr,
     const unsigned allow_saturation);
 
-/**
- * @brief Computes the squared magnitudes of elements of a complex 32-bit vector.
- * 
- * Computes the squared magnitudes of each element of the input vector @vector{b}. The results are output as vector
- * @vector{a}. Results are saturated to symmetric 32-bit bounds. To avoid saturation and underflow, 2 scaling factors
- * are applied during this operation.
- * 
- * The first scaling is given by `b_shr` (scales by @math{2^{b\_shr}}) and occurs on the real and imaginary parts of 
- * each element of @vector{b} prior to squaring them. The second scale is by the constant factor @math{2^{-30}} and 
- * happens after the real and imaginary parts are summed.
- * 
- * The parameter `a[]` represents the vector of squared magnitudes @vector{a}.
- * 
- * The parameter `b` represents the complex input vector @vector{b}.
- * 
- * The parameter `length` is the number of elements in each of the vectors.
- * 
- * The parameter `b_shr` is the right-shift applied to each element of @vector{b} to avoid saturation and underflow.
- * 
- * @low_op{16, @f$ 
- *                  v_k = b_k \cdot 2^{-b\_shr} \\
- *                  a_k \leftarrow ((Re\\{v_k\\})^2 + (Im\\{v_k\\})^2)\cdot 2^{-30} \\
- *                      \qquad\text{ for }k\in 0\ ...\ (length-1)
- *             @f$}
- * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
- * 
- * @param[out] a        The output vector @vector{a}.
- * @param[in]  b_real   The real part of input vector @vector{b}.
- * @param[in]  b_imag   The imaginary part of input vector @vector{b}.
- * @param[in]  length   The number of elements in vector @vector{b}.
- * @param[in]  sat      The right-shift applied to the results.
- */
-headroom_t xs3_vect_complex_s32_squared_mag(
-    int32_t a[],
-    const complex_s32_t b[],
-    const unsigned length,
-    const right_shift_t b_shr);
 
 /**
- * @brief Subtracts one complex 32-bit vector from another.
+ * @brief Subtract one complex 32-bit vector from another.
  * 
+ * xs3_vect_complex_s32_sub() and xs3_vect_add_sub_calc_params() together represent the following BFP operation: 
+ * 
+ * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
+ *                                          - \left( \bar{c} \cdot 2^{c\_exp} \right) }
+ * 
+ * xs3_vect_add_sub_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
+ * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
+ * mantissa vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]`, `b[]` and `c[]` represent the complex 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c}  
+ * respectively. Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or
+ * `c[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      c_k' \leftarrow sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)     \\
+ *      Re\\{a_k\\} \leftarrow Re\\{b_k'\\} - Re\\{c_k'\\}                  \\
+*       Im\\{a_k\\} \leftarrow Im\\{b_k'\\} - Im\\{c_k'\\}                  \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out]      a           Complex output vector @vector{a}
+ * @param[in]       b           Complex input vector @vector{b}
+ * @param[in]       c           Complex input vector @vector{c}
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       b_shr       Right-shift applied to @vector{b}
+ * @param[in]       c_shr       Right-shift applied to @vector{c}
+ * 
+ * @returns     Headroom of output vector @vector{a}.
+ * 
+ * @see xs3_vect_add_sub_calc_params
  */
 headroom_t xs3_vect_complex_s32_sub(
     complex_s32_t a[], 
@@ -510,7 +970,71 @@ headroom_t xs3_vect_complex_s32_sub(
     const right_shift_t c_shr);
 
 
+/**
+ * @brief Compute the sum of elements of a complex 32-bit vector.
+ * 
+ * xs3_vect_complex_s32_sum() and xs3_vect_complex_s32_sum_calc_params() together represent the following BFP operation:
+ * 
+ * @math{ a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{length-1} \left( b_k \cdot 2^{b\_exp} \right) }
+ * 
+ * xs3_vect_complex_s32_sum_calc_params() should be called first to compute the shift parameter @math{b\_shr} which is
+ * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
+ * mantissa.
+ * 
+ * @par Parameter Details
+ * 
+ * `a` is the complex 64-bit mantissa of the resulting sum.
+ * 
+ * `b[]` represents the complex 32-bit mantissa vector @vector{b}. `b[]` must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in @vector{b}.
+ * 
+ * `b_shr` is the **unsigned** arithmetic right-shift appled to each element of @vector{b}. `b_shr` _cannot_ be 
+ * negative.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' \leftarrow b_k \cdot 2^{-b\_shr}                                       \\
+ *      Re\\{a\\} \leftarrow \sum_{k=0}^{length-1} \left( Re\\{b_k'\\} \right)      \\
+ *      Im\\{a\\} \leftarrow \sum_{k=0}^{length-1} \left( Im\\{b_k'\\} \right)      
+ * @f$ }
+ * 
+ * @par Additional Details
+ * 
+ * Internally the sum accumulates into four separate complex 40-bit accumulators. These accumulators apply symmetric 
+ * 40-bit saturation logic (with bounds @math{\pm 2^{39}-1}) with each added element. At the end, the 4 accumulators are
+ * summed together into the 64-bit fields of `a`. No saturation logic is applied at this final step.
+ * 
+ * In the most extreme case, each @math{b_k} may be @math{-2^{31}}. @math{256} of these added into the same accumulator 
+ * is @math{-2^{39}} which would saturate to @math{-2^{39}+1}, introducing 1 LSb of error (which may or may not be 
+ * acceptable given a particular circumstance). The final result for each part then may be as large as 
+ * @math{4\cdot(-2^{39}+1) = -2^{41}+4 }, each fitting into a 42-bit signed integer.
+ * 
+ * @param[out]  a           Complex sum @math{a}
+ * @param[in]   b           Complex input vector @vector{b}.
+ * @param[in]   length      Number of elements in vector @vector{b}.
+ * @param[in]   b_shr       Right-shift appled to @vector{b}.
+ * 
+ * @see xs3_vect_complex_s32_sum_calc_params
+ */
+void xs3_vect_complex_s32_sum(
+    complex_s64_t* a,
+    const complex_s32_t b[],
+    const unsigned length,
+    const right_shift_t b_shr);
 
+
+/**
+ * @brief Obtain the shift parameters used by xs3_vect_complex_s32_sum().
+ * 
+ * @param[out]  a_exp                   Exponent of output from xs3_vect_complex_sum()
+ * @param[out]  b_shr                   Right-shift to be applied to elements of @vector{b}
+ * @param[in]   b_exp                   Exponent of @vector{b}
+ * @param[in]   b_hr                    Headroom of @vector{b}
+ * @param[in]   length                  Number of elements in @vector{b}
+ * @param[in]   allow_saturation        Indicates whether xs3_vect_complex_s32_sum() should be allowed to saturate
+ * 
+ * @see xs3_vect_complex_s32_sum
+ */
 void xs3_vect_complex_s32_sum_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -521,77 +1045,79 @@ void xs3_vect_complex_s32_sum_calc_params(
 
 
 /**
- * @brief Compute the sum of elements of a complex 32-bit vector.
- * 
- * This function computes the 40-bit complex sum of elements of vector @vector{b}. Prior to being added, each element 
- * is scaled down by a factor @math{2^{b\_shr}}. This function does not support scaling up the elements of @vector{b}, 
- * so `b_shr` must be non-negative. The sum saturates at symmetric 40-bit boundaries. The result is output through
- * @math{a}, with the real and imaginary parts sign-extended to 64 bits.
- * 
- * @low_op{32, @f$ a \leftarrow \sum_{k=0}^{length-1} \left( \frac{Re\\{b_k\\}}{2^{b\_shr}} 
- *                                                  + j\cdot \frac{Im\\{b_k\\}}{2^{b\_shr}} \right) 
- *          \qquad\text{ for }k\in 0\ ...\ (length-1)   @f$}
- * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
- * 
- * @param[out] a        The result @math{a}.
- * @param[in]  b        The complex input vector @vector{b}.
- * @param[in]  length   The number of elements in vector @vector{b}.
- * @param[in]  b_shr    The right-shift applied to elements of @vector{b}.
- */
-void xs3_vect_complex_s32_sum(
-    complex_s64_t* a,
-    const complex_s32_t b[],
-    const unsigned length,
-    const right_shift_t b_shr);
-
-
-
-
-/**
  * @brief Reverses the order of the tail of a complex 32-bit vector.
  * 
- * Reverses the tail of the complex 32-bit vector @vect{X}. In other words, the first element @math{X[0]} remains where 
- * it is, and the remaining @math{N-1} elements are rearranged to have their order reversed.
+ * Reverses the order of elements in the tail of the complex 32-bit vector @vector{x}. The tail of @vector{x}, in this 
+ * context, is all elements of @vector{x} except for @math{x_0}. In other words, the first element @math{x_0} remains 
+ * where it is, and the remaining @math{length-1} elements are rearranged to have their order reversed.
  * 
- * @note This function is used when performing a mono FFT.
- * @par
- * @note Saturation logic may be applied to the real or imaginary parts of elements (@ref saturation).
+ * This function is used when performing a forward or inverse FFT on a single sequence of real values (i.e. the mono 
+ * FFT), and operates in-place on `x[]`.
  * 
- * @param[in]   x   The vector to have its tail reversed.
- * @param[in]   N   The length of `x`.
+ * @par Parameter Details
+ * 
+ * `x[]` represents the complex 32-bit vector @vector{x}, which is both an input to and an output of this function. 
+ * `x[]` must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in @vector{x}.
+ * 
+ * @low_op{32, @f$
+ *      x_0 \leftarrow x_0              \\
+ *      x_k \leftarrow x_{length - k}   \\
+ *          \qquad\text{ for }k\in 1\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[inout]    x           Complex vector to have its tail reversed.
+ * @param[in]       length      Number of elements in @vector{x}
+ * 
+ * @see bfp_fft_forward_mono
+ * @see bfp_fft_inverse_mono
  */
 void xs3_vect_complex_s32_tail_reverse(
     complex_s32_t x[],
-    const unsigned N);
+    const unsigned length);
+
 
 /** 
  * @brief Convert a complex 32-bit vector into a complex 16-bit vector.
  * 
- * Each element of the input vector @vector{b} scaled by @math{2^{-b\_shr}} abd assigned to the corresponding element 
- * of output vector @vector{b}.
+ * This function converts a complex 32-bit mantissa vector @vector{b} into a complex 16-bit mantissa vector @vector{a}.
+ * Conceptually, the output BFP vector @math{\bar{a}\cdot 2^{a\_exp}} represents the same value as the input BFP vector
+ * @math{\bar{b}\cdot 2^{b\_exp}}, only with a reduced bit-depth.
  * 
- * The parameters `a_real[]` and `a_imag[]` together represent the complex 16-bit output vector @vector{b}.
+ * In most cases @math{b\_shr} should be @math{16 - b\_hr}, where @math{b\_hr} is the headroom of the 32-bit input
+ * mantissa vector @vector{b}. The output exponent @math{a\_exp} will then be given by
  * 
- * The parameter `b[]` represents the complex 32-bit input vector @vector{a}.
+ * @math{ a\_exp = b\_exp + b\_shr }
  * 
- * The parameter `length` is the number of elements in each of the vectors.
+ * @par Parameter Details
  * 
- * @low_op{32, @f$ Re\\{a_k\\} \leftarrow \frac{Re\\{b_k\\}}{2^{b\_shr}} \\
- *                 Im\\{a_k\\} \leftarrow \frac{Im\\{b_k\\}}{2^{b\_shr}} \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1) @f$}
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}, with the real part
+ * of each @math{a_k} going in `a_real[]` and the imaginary part going in `a_imag[]`.
  * 
- * @par Maximizing Precision:
- *      To maintain the greatest possible precision, the value provided for `b_shr` should be in the range
- *      @math{-hr \le b\_shr \le 16 - hr} where @math{hr} is the headroom of vector @vector{b}.
+ * `b[]` represents the complex 32-bit mantissa vector @vector{b}.
  * 
- * @param[out] a_real   Real part of complex output vector @vector{b}.
- * @param[out] a_imag   Imaginary part of complex output vector @vector{b}.
- * @param[in]  b        Complex input vector @vector{a}.
- * @param[in]  length   Number of elements in vectors @vector{a} and @vector{b}
- * @param[in]  b_shr    Right-shift applied to elements of @vector{b}.
+ * `a_real[]`, `a_imag[]` and `b[]` must each begin at a word-aligned address.
  * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      Re\\{a_k\\} \leftarrow Re\\{b_k'\\}                                 \\
+ *      Im\\{a_k\\} \leftarrow Im\\{b_k'\\}                                 \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out]  a_real      Real part of complex output vector @vector{a}.
+ * @param[out]  a_imag      Imaginary part of complex output vector @vector{a}.
+ * @param[in]   b           Complex input vector @vector{b}.
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shr       Right-shift appled to @vector{b}.
+ * 
+ * @see xs3_vect_s32_to_s16
+ * @see xs3_vect_complex_s16_to_complex_s32
  */
 void xs3_vect_complex_s32_to_complex_s16(
     int16_t a_real[],
@@ -600,81 +1126,125 @@ void xs3_vect_complex_s32_to_complex_s16(
     const unsigned length,
     const right_shift_t b_shr);
 
-/** Calculate the absolute sum of a 32-bit BFP vector.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      A <-  ( |B[0]| + |B[1]| + ... + |B[N-1]| )
- *        where A is a scalar
- *              B[] is a BFP vector of size N
- * 
- * \param[in] b         Input vector
- * \param[in] length    Length of input vector
- * \param[in] b_shr     Right-shift applied to elements of `b`
- * 
- * \return  Absolute sum
- */
-int64_t xs3_vect_s32_abs_sum(
-    const int32_t b[],
-    const unsigned length);
-
 
 /** 
- * \brief Compute the absolute value (element-wise) of an `int32_t` vector.
+ * @brief Compute the element-wise absolute value of a 32-bit vector.
  * 
- * Each output element `a[k]` is set to the absolute value of the corresponding 
- * input element `b[k]` 
+ * xs3_vect_s32_abs() represents the following BFP operation:
  * 
- * \low_op{32, @f$a_k \leftarrow \saturating_op\{\left| b_k \right|\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * @math{ 
+ *      a_k \cdot 2^{a\_exp} \leftarrow \left|b_k \cdot 2^{b\_exp}\right|       \\
+ *          \qquad\text{with } a\_exp = b\_exp
+ * }
  * 
- * \requires_word_alignment{a,b}
- * \safe_in_place{a,b}
+ * @par Parameter Details
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector
- * \param[in] length    Number of elements in vectors `a` and `b`
+ * `a[]` and `b[]` represent teh 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
- * \return  Headroom of the output vector `a`
+ * `length` is the number of elements in each of the vectors.
  * 
+ * @low_op{32, @f$ 
+ *      a_k \leftarrow sat_{32}(\left| b_k \right|)         \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input vector @vector{b}
+ * @param[in]  length   Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
  */
 headroom_t xs3_vect_s32_abs(
     int32_t a[],
     const int32_t b[],
     const unsigned length);
 
+
 /**
- * \brief Add together two `int32_t` vectors.
+ * @brief Compute the sum of the absolute values of elements of a 32-bit vector.
  * 
- * Add together the two `int32_t` vectors `b[]` and `c[]`, placing the result in `a[]`. Each element of `b[]` 
- * or `c[]` has an arithmetic right shift of `b_shr` or `c_shr` bits (respectively) applied before the addition.
- * Negative values of `b_shr` and `c_shr` will left-shift.
+ * xs3_vect_s32_abs_sum() represents the following BFP operation:
  * 
- * \low_op{32, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} + c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * @math{   
+ *      a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{length-1} \left| b_k \right| \cdot 2^{b\_exp}     \\
+ *          \qquad\text{with } a\_exp = b\_exp
+ * }
  * 
- * \safe_in_place{a,b,c}
- * \requires_word_alignment{a,b,c}
+ * @par Parameter Details
  * 
- * \warning \li Both shifts (if they are negative) and the addition are saturating operations, and will saturate to the
- *       symmetric 32-bit range  (see: TODO).
+ * `b[]` represents the 32-bit mantissa vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
- * \warning \li Where negative values underflow due to a right-shift, the resulting value is `-1`, rather than `0`. (see: TODO)
+ * `length` is the number of elements in @vector{b}.
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector 1
- * \param[in] c         Input vector 2
- * \param[in] length    Number of elements in `a`, `b` and `c`
- * \param[in] b_shr     Arithmetic right-shift applied to elements of `b[]`
- * \param[in] c_shr     Arithmetic right-shift applied to elements of `c[]`
+ * @low_op{32, @f$
+ *      \sum_{k=0}^{length-1} sat_{32}(\left| b_k \right|)
+ * @f$ }
  * 
- * \return  Headroom of output vector `a[]`
+ * @par Additional Details
  * 
- * \see bfp_s32_add()
+ * Internally the sum accumulates into 8 separate 40-bit accumulators. These accumulators apply symmetric 40-bit 
+ * saturation logic (with bounds @math{\pm (2^{39}-1)}) with each added element. At the end, the 8 accumulators are summed
+ * together into the 64-bit value @math{a} which is returned by this function. No saturation logic is applied at this
+ * final step.
+ * 
+ * Because symmetric 32-bit saturation logic is applied when computing the absolute value, in the corner case where 
+ * each element is `INT32_MIN`, each of the 8 accumulators can accumulate @math{256} elements before saturation is
+ * possible. Therefore, with @math{b\_hr} bits of headroom, no saturation of intermediate results is possible with fewer 
+ * than @math{2^{11 + b\_hr}} elements in @vector{b}.
+ * 
+ * If the length of @vector{b} is greater than @math{2^{11 + b\_hr}}, the sum can be computed piece-wise in several 
+ * calls to this function, with the partial results summed in user code.
+ * 
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in @vector{b}
+ * 
+ * @returns The 64-bit sum @math{a}
+ */
+int64_t xs3_vect_s32_abs_sum(
+    const int32_t b[],
+    const unsigned length);
+
+
+/**
+ * @brief Add together two 32-bit vectors.
+ * 
+ * xs3_vect_s32_add() and xs3_vect_add_sub_calc_params() together represent the following BFP operation: 
+ * 
+ * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
+ *                                          + \left( \bar{c} \cdot 2^{c\_exp} \right) }
+ * 
+ * xs3_vect_add_sub_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
+ * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
+ * mantissa vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} respectively. 
+ * Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' = sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)  \\
+ *      c_k' = sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)  \\
+ *      a_k \leftarrow sat_{32}\!\left( b_k' + c_k' \right)     \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out]      a           Output vector @vector{a}
+ * @param[in]       b           Input vector @vector{b}
+ * @param[in]       c           Input vector @vector{c}
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       b_shr       Right-shift appled to @vector{b}
+ * @param[in]       c_shr       Right-shift appled to @vector{c}
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @see xs3_vect_add_sub_calc_params
  */
 headroom_t xs3_vect_s32_add(
     int32_t a[],
@@ -684,77 +1254,101 @@ headroom_t xs3_vect_s32_add(
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
-/** Find the index of the maximum element of a 32-bit integer vector.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      result <- argmax[i]{ A[i] }
- *        where A[] is an integer vector of size N
- * 
- * \param a         Input vector
- * \param length    Length of the vector `a`
- * 
- * \return         Index of the maximum element of `a`
- */
-unsigned xs3_vect_s32_argmax(
-    const int32_t a[],
-    const unsigned length);
-
-/** Find the index of the minimum element of a 32-bit integer vector.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      result <- argmin[i]{ A[i] }
- *        where A[] is an integer vector of size N
- * 
- * \param a         Input vector
- * \param length    Length of the vector `a`
- * 
- * \return         Index of the minimum element of `a`.
- */
-unsigned xs3_vect_s32_argmin(
-    const int32_t a[],
-    const unsigned length);
 
 /**
- * \brief Clamp the elements of an `int32_t` vector to a specified range.
+ * @brief Obtain the array index of the maximum element of a 32-bit vector.
  * 
- * Each element of `b` is right-shifted by `b_shr` and compared to `lower_bound`
- * and `upper_bound`. If the shifted value is less than `lower_bound`, the output
- * element will be `lower_bound`. If the shifted value is greater than `upper_bound`,
- * the output element will be `upper_bound`. Otherwise, the shifted value is output.
+ * @par Parameter Details
  * 
- * \low_op{16, @f$a_k \leftarrow \begin\{cases\}
- *                       lower\_bound & b_k \cdot 2^\{-b\_shr\} \lt lower\_bound \\
- *                       upper\_bound & b_k \cdot 2^\{-b\_shr\} \gt upper\_bound \\
- *                       b_k \cdot 2^\{-b\_shr\} & otherwise
- *                          \end\{cases\}
- *                                  \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * `x[]` represents the 32-bit mantissa vector @vector{x}. It must begin at a word-aligned address.
  * 
- * \safe_in_place{a,b}
- * \requires_word_alignment{a,b}
+ * `length` is the number of elements in @vector{x}.
  * 
- * \param[out]  a               Output vector
- * \param[in]   b               Input vector
- * \param[in]   length          Number of elements in vectors `a` and `b`
- * \param[in]   lower_bound     Lower bound of clipping range
- * \param[in]   upper_bound     Upper bound of clipping range
- * \param[in]   b_shr           Right-shift applied to elements of `b`
+ * @low_op{32, @f$ 
+ *      argmax_k\\{ x_k \\}     \\ 
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
  * 
- * \return  Headroom of output vector `a`
+ * @param[in]   x           Input vector @vector{x}
+ * @param[in]   length      Number of elemetns in @vector{x}
  * 
+ * @returns Index of the maximum element of mantissa vector @vector{x}. If there is a tie for the maximum value, the 
+ * lowest tying index is returned.
+ */
+unsigned xs3_vect_s32_argmax(
+    const int32_t x[],
+    const unsigned length);
+
+
+/**
+ * @brief Obtain the array index of the minimum element of a 32-bit vector.
+ * 
+ * @par Parameter Details
+ * 
+ * `x[]` represents the 32-bit mantissa vector @vector{x}. It must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in @vector{x}.
+ * 
+ * @low_op{32, @f$ 
+ *      argmin_k\\{ x_k \\}     \\ 
+ *              \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[in]   x           Input vector @vector{x}
+ * @param[in]   length      Number of elements in @vector{x}
+ * 
+ * @returns Index of the minimum element of mantissa vector @vector{x}. If there is a tie for the minimum value, the 
+ * lowest tying index is returned.
+ */
+unsigned xs3_vect_s32_argmin(
+    const int32_t x[],
+    const unsigned length);
+
+
+/**
+ * @brief Clamp the elements of a 32-bit vector to a specified range.
+ * 
+ * xs3_vect_s32_clip() represents the following BFP operation:
+ * 
+ * @math{   a_k \cdot 2^{a\_exp} \leftarrow min\!\left( U, max\!\left( L, b_k \cdot 2^{b\_exp} \right)\right)   \\
+ *              \qquad\text{ for }k\in 0\ ...\ (length-1)                               \\
+ *              \qquad\text{ where } L = lower\_bound \cdot 2^{b\_exp+b\_shr},          \\
+ *              \qquad\text{       } U = upper\_bound \cdot 2^{b\_exp+b\_shr},          \\
+ *              \qquad\text{ and } a\_exp = b\_exp  
+ * }
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `lower_bound` and `upper_bound` are the lower and upper bounds of the clipping range respectively. These bounds are
+ * checked for each element of @vector{b} only _after_ `b_shr` is applied.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b} _before_ being compared to the upper
+ * and lower bounds.
+ * 
+ * @low_op{32, @f$
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      a_k \leftarrow 
+ *        \begin\{cases\}
+ *          lower\_bound & b_k' \le lower\_bound     \\
+ *          upper\_bound & b_k' \ge upper\_bound     \\
+ *          b_k' & otherwise
+ *        \end\{cases\}                                                 \\
+ *      \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @param[out]  a               Output vector @vector{a}
+ * @param[in]   b               Input vector @vector{b}
+ * @param[in]   length          Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   lower_bound     Lower bound of clipping range
+ * @param[in]   upper_bound     Upper bound of clipping range
+ * @param[in]   b_shr           Arithmetic right-shift applied to elements of `b`
+ * 
+ * @returns  Headroom of output vector @vector{a}
  */
 headroom_t xs3_vect_s32_clip(
     int32_t a[],
@@ -765,6 +1359,89 @@ headroom_t xs3_vect_s32_clip(
     const right_shift_t b_shr);
 
 
+/**
+ * @brief Compute the inner product between two 32-bit vectors.
+ * 
+ * xs3_vect_s32_dot() and xs3_vect_s32_dot_calc_params() together represent the following BFP operation:
+ * 
+ * @math{ a \cdot 2^{a\_exp} \leftarrow 
+ *      \sum_{k=0}^{length-1} \left( (b_k \cdot 2^{b\_exp}) \cdot (c_k \cdot 2^{c\_exp}) \right) }
+ * 
+ * xs3_vect_s32_dot_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr}
+ * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
+ * mantissa vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{b} and @vector{c} respectively. Each must begin at a 
+ * word-aligned address.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * \low_op{32, @f$ 
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)                     \\
+ *      c_k' \leftarrow sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)                     \\
+ *      a \leftarrow \sum_{k=0}^{length-1}\left(round( b_k' \cdot c_k' \cdot 2^{-30} ) \right)   \\
+ *      \qquad\text{where } a \text{ is returned}
+ * @f$ }
+ * 
+ * @par Additional Details
+ * 
+ * The 30-bit rounding right-shift applied to each of the 64-bit products @math{b_k \cdot c_k} is a feature of the 
+ * hardware and cannot be avoided. As such, if the input vectors @vector{b} and @vector{c} together have too much 
+ * headroom (i.e. @math{b\_hr + c\_hr}), the sum may effectively vanish. To avoid this situation, negative values of 
+ * `b_shr` and `c_shr` may be used (with the stipulation that @math{b\_shr \ge -b\_hr} and @math{c\_shr \ge -c\_hr} if
+ * saturation of @math{b_k'} and @math{c_k'} is to be avoided). The less headroom @math{b_k'} and @math{c_k'} have, the
+ * greater the precision of the final result.
+ * 
+ * Internally, each product @math{(b_k' \cdot c_k' \cdot 2^{-30})} accumulates into one of eight 40-bit accumulators 
+ * (which are all used simultaneously) which apply symmetric 40-bit saturation logic (with bounds @math{\approx 2^{39})
+ * with each value added. The saturating arithmetic employed is _not associative_ and no indication is given if 
+ * saturation occurs at an intermediate step. To avoid satuation errors, `length` should be no greater than 
+ * @math{2^{10+b\_hr+c\_hr}}, where @math{b\_hr} and @math{c\_hr} are the headroom of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * If the caller's mantissa vectors are longer than that, the full inner product can be found by calling this function 
+ * multiple times for partial inner products on sub-sequences of the input vectors, and adding the results in user code. 
+ * 
+ * In many situations the caller may have _a priori_ knowledge that saturation is impossible (or very nearly so), in 
+ * which case this guideline may be disregarded. However, such situations are application-specific and are well beyond 
+ * the scope of this documentation, and as such are left to the user's discretion.
+ * 
+ * @param[in] b             Input vector @vector{b}
+ * @param[in] c             Input vector @vector{c}
+ * @param[in] length        Number of elements in vectors @vector{b} and @vector{c}
+ * @param[in] b_shr         Right-shift appled to @vector{b}
+ * @param[in] c_shr         Right-shift appled to @vector{c}
+ * 
+ * @returns The inner product of vectors @vector{b} and @vector{c}, scaled as indicated above.
+ */
+int64_t xs3_vect_s32_dot(
+    const int32_t b[],
+    const int32_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
+
+
+/**
+ * @brief Obtain the shift parameters used by xs3_vect_s32_dot().
+ * 
+ * @param[out]  a_exp               Exponent of output of xs3_vect_s32_dot()
+ * @param[out]  b_shr               Right-shift to be applied to elements of @vector{b}
+ * @param[out]  c_shr               Right-shift to be applied to elements of @vector{c}
+ * @param[in]   b_exp               Exponent of @vector{b}
+ * @param[in]   c_exp               Exponent of @vector{c}
+ * @param[in]   b_hr                Headroom of @vector{b}
+ * @param[in]   c_hr                Headroom of @vector{c}
+ * @param[in]   length              Number of elements in vectors @vector{b} and @vector{c}
+ * @param[in]   allow_saturation    Whether xs3_vect_s32_dot() may saturate
+ * 
+ * @see xs3_vect_s32_dot
+ */
 void xs3_vect_s32_dot_calc_params(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -778,101 +1455,171 @@ void xs3_vect_s32_dot_calc_params(
 
 
 /**
- * \brief Compute the dot product between two `int32_t` vectors.
+ * @brief Calculate the energy (sum of squares of elements) of a 32-bit vector.
  * 
- * Elements of the vector `b` are right-shifted `b_shr` bits and multiplied by the corresponding 
- * elements of vector `c` right-shifted `c_shr` bits. The element-wise products are right-shifted
- * an additional 30 bits and are added together into a 40-bit accumulator. The 40-bit sum is right-shifted
- * `sat` bits to produce the final 32-bit result.
+ * xs3_vect_s32_energy() and xs3_vect_s32_energy_calc_params() together represent the following BFP operation:
  * 
- * Either `b_shr` and `c_shr` (or both) may be negative (which may be useful if the corresponding vector has 
- * excessive headroom), in which case left-shifting occurs instead of right-shifting. The shifts on the 
- * elements of `b` and `c` are saturating (if negative) and truncate rather than round (if positive). Negative 
- * values for `sat` are treated as zeros. The final shift is rounding, and the result saturates to 32-bit
- * bounds.
+ * @math{ a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{length-1} \left( b_k \cdot 2^{b\_exp} \right)^2 }
  * 
- * The accumulator into which the element-wise products are accumulated is 40 bits wide and saturates to 40-bit
- * bounds. To avoid saturation, choose sufficiently large values for `b_shr` and `c_shr` such that saturation
- * of the accumulator is not possible.
+ * xs3_vect_s32_energy_calc_params() should be called first to compute the shift parameter @math{b\_shr} which is used
+ * by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
+ * mantissa @math{a}, which is returned.
  * 
- * All shifts are arithmetic.
+ * @par Parameter Details
  * 
- * \low_op{32, @f$ \left(\sum_\{k=0\}^\{length-1\} \{\left(\left(b_k \cdot 2^\{-b\_shr\}\right)\times\left(c_k\cdot 2^\{-c\_shr\}\right)\right)\cdot 2^\{-30\}\}\right) \cdot 2^\{-sat\}    @f$ }
+ * `b[]` represents the 32-bit mantissa vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
- * \requires_word_alignment{b,c}
+ * `length` is the number of elements in @vector{b}.
  * 
- * \param[in] b         First input vector
- * \param[in] c         Second input vector
- * \param[in] length    Number of elements in vectors `b` and `c`
- * \param[in] b_shr     Right-shift applied to elements of `b`
- * \param[in] c_shr     Right-shift applied to elements of `c`
- * \param[in] sat       Right-shift applied to final sum
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
  * 
- * \return The dot product of `b` and `c`
- */
-int64_t xs3_vect_s32_dot(
-    const int32_t b[],
-    const int32_t c[],
-    const unsigned length,
-    const right_shift_t b_shr,
-    const right_shift_t c_shr);
-
-
-
-
-void xs3_vect_s32_energy_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    const unsigned length,
-    const exponent_t b_exp,
-    const headroom_t b_hr);
-    
-
-right_shift_t xs3_vect_s32_energy_calc_shift(
-    const unsigned length,
-    const headroom_t b_hr);
-
-/** Calculate the energy of a 32-bit BFP vector.
+ * @low_op{32, @f$
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)                 \\
+ *      a \leftarrow \sum_{k=0}^{length-1} round((b_k')^2 \cdot 2^{-30})
+ * @f$ }
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * @par Additional Details
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * The 30-bit rounding right-shift applied to each element of the 64-bit products @math{(b_k')^2} is a feature of the 
+ * hardware and cannot be avoided. As such, if the input vector @vector{b} has too much headroom (i.e. 
+ * @math{2\cdot b\_hr}), the sum may effectively vanish. To avoid this situation, negative values of `b_shr` may be used
+ * (with the stipulation that @math{b\_shr \ge -b\_hr} if satuartion of @math{b_k'} is to be avoided). The less headroom
+ * @math{b_k'} has, the greater the precision of the final result.
  * 
+ * Internally, each product @math{(b_k')^2 \cdot 2^{-30}} accumulates into one of eight 40-bit accumulators (which are 
+ * all used simultaneously) which apply symmetric 40-bit saturation logic (with bounds @math{\approx 2^{39}) with each
+ * value added. The saturating arithmetic employed is _not associative_ and no indication is given if saturation occurs
+ * at an intermediate step. To avoid saturation errors, `length` should be no greater than @math{2^{10+2\cdotb\_hr}}, 
+ * where @math{b\_hr} is the headroom of @vector{b}.
  * 
- * Conceptually, the operation performed is:
- *      A <-  ( (B[0])^2 + (B[1])^2 + ... + (B[N-1])^2 )
- *        where A is a scalar
- *              B[] is a BFP vector of size N
+ * If the caller's mantissa vector is longer than that, the full result can be found by calling this function multiple 
+ * times for partial results on sub-sequences of the input, and adding the results in user code. 
  * 
- * \param[in] b         Input vector
- * \param[in] length    Length of input vector
- * \param[in] b_shr     Right-shift applied to elements of `b`
+ * In many situations the caller may have _a priori_ knowledge that saturation is impossible (or very nearly so), in 
+ * which case this guideline may be disregarded. However, such situations are application-specific and are well beyond 
+ * the scope of this documentation, and as such are left to the user's discretion.
  * 
- * \return  Energy
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in @vector{b}
+ * @param[in]   b_shr       Right-shift appled to @vector{b}
+ * 
+ * @returns 64-bit mantissa of vector @vector{b}'s energy
  */
 int64_t xs3_vect_s32_energy(
     const int32_t b[],
     const unsigned length,
     const right_shift_t b_shr);
 
+
 /**
- * \brief Compute headroom of an `int32_t` array.
+ * @brief Obtain the shift parameters used by xs3_vect_s32_energy().
  * 
- * \low_op{32, @f$ min(\ \ \ hr(v_0)\,\ hr(v_1)\,\ ...\,\ hr(v_\{N-1\})\ \ ) @f$ \n\tab where @f$hr(a)@f$ is the headroom of element @f$a@f$  }
+ * @param[out]  a_exp       Exponent of outputs of xs3_vect_s32_energy()
+ * @param[out]  b_shr       Right-shift to be applied to elements of @vector{b}
+ * @param[in]   length      Number of elements in vector @vector{b}
+ * @param[in]   b_exp       Exponent of vector{b}
+ * @param[in]   b_hr        Headroom of vector{b}
  * 
- * \requires_word_alignment{v}
+ * @see xs3_vect_s32_energy
+ */
+void xs3_vect_s32_energy_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const unsigned length,
+    const exponent_t b_exp,
+    const headroom_t b_hr);
+
+
+/**
+ * @brief Calculate the headroom of a 32-bit vector.
  * 
- * \param[in] v     Array of `int32_t`
- * \param[in] N     Number of elements in `v`
+ * The headroom of an N-bit integer is the number of bits that the integer's value may be left-shifted
+ * without any information being lost. Equivalently, it is one less than the number of leading sign bits.
  * 
- * \return  Headroom of the array `v`
+ * The headroom of an `int32_t` array is the minimum of the headroom of each of its `int32_t` elements.
+ * 
+ * This function efficiently traverses the elements of `a[]` to determine its headroom.
+ * 
+ * @par Parameter Details
+ * 
+ * `x[]` represents the 32-bit vector @vector{x}. `x[]` must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in `x[]`.
+ * 
+ * 
+ * @low_op{32, @f$
+ *      min\!\\{ HR_{32}\left(x_0\right), HR_{32}\left(x_1\right), ..., HR_{32}\left(x_{length-1}\right) \\}
+ * @f$ }
+ * 
+ * @param[in]   x           Input vector @vector{x}
+ * @param[in]   length      The number of elements in `x[]`
+ * 
+ * @returns     Headroom of vector @vector{x} 
+ * 
+ * @see xs3_vect_ch_pair_s16_headroom
+ * @see xs3_vect_ch_pair_s32_headroom
+ * @see xs3_vect_s16_headroom
+ * @see xs3_vect_complex_s16_headroom
+ * @see xs3_vect_complex_s32_headroom
  */
 headroom_t xs3_vect_s32_headroom(
-    const int32_t v[],
-    const unsigned N);
+    const int32_t x[],
+    const unsigned length);
 
+
+/**
+ * @brief Compute the inverse of elements of a 32-bit vector.
+ * 
+ * xs3_vect_s32_inverse() and xs3_vect_s32_inverse_calc_params() together represent the following BFP operation:
+ * 
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow \frac{1}{b_k \cdot 2^{b\_exp}} }
+ * 
+ * xs3_vect_complex_s32_inverse_calc_params() should be called first to compute the shift parameter @math{b\_shr} used
+ * by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
+ * mantissa vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each vectors must begin
+ * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `scale` is a scaling parameter used to maximize the precision of the result.
+ * 
+ * @low_op{32, @f$
+ *      a_k \leftarrow \lfloor\frac{2^{scale}}{b_k}\rfloor      \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   scale       Scale factor applied to dividend when computing inverse
+ * 
+ * @returns     Headroom of output vector @vector{a}
+ */
+headroom_t xs3_vect_s32_inverse(
+    int32_t a[],
+    const int32_t b[],
+    const unsigned length,
+    const unsigned scale);
+
+
+/**
+ * @brief Obtain the shift parameters used by xs3_vect_s32_inverse().
+ * 
+ * @par Word-alignment Required
+ *      `b[]` must begin at a word-aligned (4 byte) address.
+ * 
+ * @param[out]  a_exp       Exponent of output vector @vector{a}
+ * @param[out]  scale       Scale factor to be applied when computing inverse
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   b_exp       Exponent of @vector{b}
+ * @param[in]   length      Number of elements in vector @vector{b}
+ * 
+ * @see xs3_vect_s32_inverse
+ */
 void xs3_vect_s32_inverse_calc_params(
     exponent_t* a_exp,
     unsigned* scale,
@@ -880,102 +1627,89 @@ void xs3_vect_s32_inverse_calc_params(
     const exponent_t b_exp,
     const unsigned length);
 
-headroom_t xs3_vect_s32_inverse(
-    int32_t a[],
-    const int32_t b[],
-    const unsigned length,
-    const unsigned scale);
 
-/** Find the maximum value in a 32-bit integer vector.
+/**
+ * @brief Find the maximum value in a 32-bit vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * @par Parameter Details
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `x[]` represents the 32-bit mantissa vector @vector{x}. It must begin at a word-aligned address.
  * 
+ * `length` is the number of elements in @vector{x}.
  * 
- * Conceptually, the operation performed is:
- *      result <- max( A[0], A[1], A[N-1] )
- *        where A[] is an integer vector of size N
+ * @low_op{32, @f$ 
+ *      max\\{ x_0, x_1, ..., x_{length-1} \\}
+ * @f$ }
  * 
- * \param[in] a         Input vector
- * \param[in] length    Length of input vector
+ * @param[in]   x           Input vector @vector{x}     
+ * @param[in]   length      Number of elements in @vector{x}
  * 
- * \return  Maximum value of `a`
+ * @returns     Maximum value from @vector{x}
  */
 int32_t xs3_vect_s32_max(
-    const int32_t a[],
+    const int32_t x[],
     const unsigned length);
 
-/** Find the minimum value in a 32-bit integer vector.
+
+/**
+ * @brief Find the minimum value in a 32-bit vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * @par Parameter Details
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `x[]` represents the 32-bit mantissa vector @vector{x}. It must begin at a word-aligned address.
  * 
+ * `length` is the number of elements in @vector{x}.
  * 
- * Conceptually, the operation performed is:
- *      result <- min( A[0], A[1], A[N-1] )
- *        where A[] is an integer vector of size N
+ * @low_op{32, @f$ 
+ *      min\\{ x_0, x_1, ..., x_{length-1} \\}
+ * @f$ }
  * 
- * \param[in] a         Input vector
- * \param[in] length    Length of input vector
+ * @param[in]   x           Input vector @vector{x}     
+ * @param[in]   length      Number of elements in @vector{x}
  * 
- * \return  Minimum value of `a`
+ * @returns     Minimum value from @vector{x}
  */
 int32_t xs3_vect_s32_min(
-    const int32_t a[],
+    const int32_t x[],
     const unsigned length);
 
 
-
 /**
- * @brief Calculate the exponent and input shifts for `xs3_vect_s32_mul`.
+ * @brief Multiply one 32-bit vector element-wise by another.
  * 
- * @param[out] a_exp
- * @param[out] b_shr
- * @param[out] c_shr
- * @param[in]  b_exp
- * @param[in]  c_exp
- * @param[in]  b_hr
- * @param[in]  c_hr
- */
-void xs3_vect_s32_mul_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    right_shift_t* c_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr);
-
-/**
- * \brief Multiply one `int32_t` vector by another.
+ * xs3_vect_s32_mul() and xs3_s32_mul_calc_params() together represent the following BFP operation:
  * 
- * Multiply the `int32_t` vector `b`, arithmetically right-shifted `b_shr` bits, by the `int32_t` 
- * vector `c`, arithmetically right-shifted `c_shr` bits, and place the 64-bit product, arithmetically 
- * right-shifted another `30` bits, in output vector `a`.
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow (b_k \cdot 2^{b\_exp}) \cdot (c_k \cdot 2^{c\_exp}) \cdot 2^{-30} }
  * 
- * If `b_shr` or `c_shr`are negative, a left-shift will occur instead of a right-shift. Left-shifts are 
- * saturating operations which saturate to 32-bit bounds. The result of the final right-shift is also 
- * saturated to 32-bit bounds.
+ * xs3_vect_s32_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr}
+ * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
+ * mantissa vector @vector{a}.
  * 
- * \low_op{16, @f$a_k \leftarrow \left(b_k \cdot 2^\{-b\_shr\} \times c_k \cdot 2^\{-c\_shr\}\right) \cdot 2^\{-30\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * @par Parameter Details
  * 
- * \safe_in_place{a,b,c}
- * \requires_word_alignment{a,b,c}
+ * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} respectively. 
+ * Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector 1
- * \param[in] c         Input vector 2
- * \param[in] length    Number of elements in `a`, `b` and `c`
- * \param[in] b_shr     Arithmetic right-shift applied to elements of `b`
- * \param[in] c_shr     Arithmetic right-shift applied to elements of `c`
+ * `length` is the number of elements in each of the vectors.
  * 
- * \return  Headroom of output vector `a`
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * \low_op{32, @f$
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      c_k' \leftarrow sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)     \\
+ *      a_k \leftarrow sat_{32}(round(b_k' \cdot c_k' \cdot 2^{-30}))       \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input vector @vector{b}
+ * @param[in]  c        Input vector @vector{c}
+ * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]  b_shr    Right-shift appled to @vector{b}
+ * @param[in]  c_shr    Right-shift appled to @vector{c}
+ * 
+ * @returns  Headroom of vector @vector{a}
  */
 //! [xs3_vect_s32_mul]
 headroom_t xs3_vect_s32_mul(
@@ -988,117 +1722,209 @@ headroom_t xs3_vect_s32_mul(
 //! [xs3_vect_s32_mul]
 
 
+/**
+ * @brief Obtain the shift parameters used by xs3_vect_s32_mul().
+ * 
+ * @param[out]  a_exp       Exponent of output elements of xs3_vect_s32_mul()
+ * @param[out]  b_shr       Right-shift to be applied to elements of @vector{b}
+ * @param[out]  c_shr       Right-shift to be applied to elemetns of @vector{c}
+ * @param[in]   b_exp       Exponent of @vector{b}
+ * @param[in]   c_exp       Exponent of @vector{c}
+ * @param[in]   b_hr        Headroom of @vector{b}
+ * @param[in]   c_hr        Headroom of @vector{c}
+ * 
+ * @see xs3_vect_s32_mul
+ */
+void xs3_vect_s32_mul_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
+
+
 /** 
- * \brief Rectify the elements of an `int32_t` vector.
+ * @brief Rectify the elements of a 32-bit vector.
  * 
- * Each output element `a[k]` is set to the value of the corresponding input element 
- * `b[k]` if it is positive, and `a[k]` is set to zero otherwise. 
+ * xs3_vect_s32_rect() represents the following BFP operation:
  * 
- * \low_op{32, @f$a_k \leftarrow \begin\{cases\}b_k & b_k \gt 0 \\ 
- *                                  0 & b_k \leq 0\end\{cases\} 
- *                                  \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow 
+ *          \begin{cases}
+ *              b_k \cdot 2^{b\_exp} & b_k \cdot 2^{b\_exp} \gt 0 \\
+ *              0 & otherwise
+ *          \end{cases}     \\
+ *       \qquad\text{where }a\_exp = b\_exp
+ * }
  * 
- * \safe_in_place{a,b}
- * \requires_word_alignment{a,b}
+ * The output exponent @math{a\_exp} 
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector
- * \param[in] length    Number of elements in vectors `a` and `b`
+ * @par Parameter Details
  * 
- * \return  Headroom of the output vector `a`
+ * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * \low_op{32, @f$
+ *      a_k \leftarrow 
+ *          \begin\{cases\}
+ *              b_k & b_k \gt 0 \\ 
+ *              0 & b_k \leq 0
+ *      \end\{cases\}           \\
+ *      \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @par Safe In-place Computation
+ *      This function may safely operate in-place on `b[]`.
+ * 
+ * @par Word-alignment Required
+ *      `a[]` and `b[]` must each begin at a word-aligned (4 byte) address.
+ * 
+ * @param[out]  a       Output vector @vector{a}
+ * @param[in]   b       Input vector @vector{b}
+ * @param[in]   length  Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @returns  Headroom of the output vector @vector{a}
  */
 headroom_t xs3_vect_s32_rect(
     int32_t a[],
     const int32_t b[],
     const unsigned length);
 
+
 /**
- * \brief Multiply one `int32_t` vector by a 32-bit scalar.
+ * @brief Multiply a 32-bit vector by a scalar.
  * 
- * Multiply the `int32_t` vector `b`, arithmetically right-shifted `b_shr` bits, by `alpha`, 
- * and place the 64-bit result, arithmetically right-shifted another `30` bits, in output 
- * vector `a`.
- *  
- * If `b_shr` is negative, a left-shift will occur instead of a right-shift. Left-shifts are 
- * saturating operations which saturate to 16-bit bounds. The result of the final right-shift is also 
- * saturated to 32-bit bounds.
+ * xs3_vect_s32_scale() and xs3_vect_s32_mul_calc_params() together represent the following BFP operation:
  * 
- * \low_op{16, @f$a_k \leftarrow \left(\alpha \cdot b_k \cdot 2^\{-b\_shr\}\right)\cdot 2^\{-30\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow (b_k \cdot 2^{b\_exp}) \cdot (c \cdot 2^{c\_exp}) \cdot 2^{-30} }
  * 
- * \safe_in_place{a,b}
- * \requires_word_alignment{a,b}
+ * xs3_vect_s32_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and 
+ * @math{c\_shr}, as well as the output exponent @math{a\_exp}. @math{b\_shr} is used by this function and @math{c\_exp}
+ * is applied to @math{c} in user code. This function is then used to compute the resulting mantissa vector @vector{a}.
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector 1
- * \param[in] length    Number of elements in `a` and `b`
- * \param[in] alpha     Scalar multiplier
- * \param[in] b_shr     Arithmetic right-shift applied to elements of `b`
+ * @todo To mitigate the possibility of user error, this function should just take @math{c\_shr} directly as a parameter 
+ * and apply the shift itself.
  * 
- * \return  Headroom of output vector `a`
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]`represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `c` is the 32-bit scalar @math{c} by which each element of @vector{b} is multiplied.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * 
+ * \low_op{32, @f$
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      a_k  \leftarrow sat_{32}(round(c \cdot b_k' \cdot 2^{-30}))         \\
+ *           \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   c           Scalar to be multiplied by elements of @vector{b}
+ * @param[in]   b_shr       Right-shift appled to @vector{b}
+ * 
+ * @returns  Headroom of output vector @vector{a}
+ * 
+ * @see xs3_vect_s32_mul_calc_params
  */
 headroom_t xs3_vect_s32_scale(
     int32_t a[],
     const int32_t b[],
     const unsigned length,
-    const int32_t alpha,
+    const int32_t c,
     const right_shift_t b_shr);
 
-/** Set all elements of an `int32_t` array to the specified value.
+
+/** 
+ * @brief Set all elements of a 32-bit vector to the specified value.
  * 
- * \low_op{32, @f$data_k \leftarrow value\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * xs3_vect_s32_set() represents the following BFP operation:
  * 
- * \requires_word_alignment{data}
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow b \cdot 2^{b\_exp}    \\
+ *          \qquad\text{where } a\_exp = b\_exp }
  * 
- * \param[out] data     Array to set
- * \param[in]  value    Value to set
- * \param[in]  length   Number of elements in `data`
+ * @par Parameter Details
+ * 
+ * `a[]` represents the 32-bit output vector @vector{a}. `a[]` must begin at a word-aligned address.
+ * 
+ * `b` is the new value to set each element of @vector{a} to.
+ * 
+ * @low_op{32, @f$
+ *      a_k \leftarrow b    \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           New value for the elements of @vector{a}
+ * @param[in]   length      Number of elements in @vector{a}
  */
 void xs3_vect_s32_set(
-    int32_t data[],
-    const int32_t value,
+    int32_t a[],
+    const int32_t b,
     const unsigned length);
 
 
 /**
- * \brief Perform a signed, saturating arithmetic left shift of an `int32_t` vector.
+ * @brief Left-shift the elements of a 32-bit vector by a specified number of bits.
  * 
- * \low_op{32, @f$a_k \leftarrow b_k \cdot 2^\{shl\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * `a[]` and `b[]` represent the 32-bit integer vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
- * \par Performance
- * The performance of this function is specified as the number of thread-cycles between function
- * entrance and return (including instruction fetches).
- * \code
- *     if ( a == b )
- *         cycles = 3*(length >> 4) + K0;  //(TODO: K0 to be determined)
- *     else
- *         cycles = 4*(length >> 4) + K1   //(TODO: K1 to be determined)
- * \endcode
+ * `length` is the number of elements in @vector{a} and @vector{b}.
  * 
- * \safe_in_place{a,b}
- * \requires_word_alignment{a,b}
+ * `b_shl` is the signed arithmetic left-shift applied to each element of @vector{b}. 
  * 
- * \note\li With `shl < 0`,  for each  `(1<<(-shl)) < v[k] < 0`, underflows will result in `-1` rather than `0`.
+ * @low_op{32, @f$ 
+ *      a_k \leftarrow sat_{32}(\lfloor b_k \cdot 2^{b\_shl} \rfloor)     \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
  * 
- * \warning\li Unlike many operations, if the supplied value for `shl` is negative (i.e. performing an arithmetic
- *       right shift), the resulting value is truncated, rather than rounded. Rounding can be 
- *       accomplished by first adding `(1<<((-shl)-1))` to each element of the input vector if (and only 
- *       if) `shl` is negative.
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shl       Arithmetic left-shift applied to elements of @vector{b}
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector
- * \param[in] length    Number of elements in input (and output)
- * \param[in] shl       Number of bits to shift left
- * 
- * \return         The headroom of the output vector `a`
+ * @returns     Headroom of output vector @vector{a}
  */
 headroom_t xs3_vect_s32_shl(
     int32_t a[],
     const int32_t b[],
     const unsigned length,
-    const left_shift_t shl);
+    const left_shift_t b_shl);
 
     
-
+/**
+ * @brief Right-shift the elements of a 32-bit vector by a specified number of bits.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the 32-bit integer vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in @vector{a} and @vector{b}.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}. 
+ * 
+ * @low_op{32, @f$ 
+ *      a_k \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)      \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shr       Arithmetic right-shift applied to elements of @vector{b}
+ * 
+ * @returns     Headroom of output vector @vector{a}
+ */
 headroom_t xs3_vect_s32_shr(
     int32_t a[],
     const int32_t b[],
@@ -1106,15 +1932,46 @@ headroom_t xs3_vect_s32_shr(
     const right_shift_t shr);
 
 
-
-
-
-void xs3_vect_s32_sqrt_calc_params(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    const exponent_t b_exp,
-    const right_shift_t b_hr);
-
+/**
+ * @brief Compute the square root of elements of a 32-bit vector.
+ * 
+ * xs3_vect_s32_sqrt() and xs3_vect_s32_sqrt_calc_params() together represent the following BFP operation:
+ * 
+ * @math{ a_k \cdot 2^{a\_exp} \leftarrow \sqrt{ b_k \cdot 2^{b\_exp}  }}
+ * 
+ * xs3_vect_s32_sqrt_calc_params() should be called first to compute the shift parameter @math{b\_shr} which is used by
+ * this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting mantissa
+ * vector @vector{a}.
+ * 
+ * @par Parameter Details
+ * 
+ * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each vectors must begin
+ * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
+ * 
+ * `depth` is the number of most significant bits to calculate of each @math{a_k}. For example, a `depth` value of 8 
+ * will only compute the 8 most significant byte of the result, with the remaining 3 bytes as 0. The maximum value
+ * for this parameter is `XS3_VECT_SQRT_S32_MAX_DEPTH` (31). The time cost of this operation is approximately 
+ * proportional to the number of bits computed.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      a_k \leftarrow \sqrt{ b_k' }                                        \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)                       \\
+ *          \qquad\text{ where } sqrt() \text{ computes the first } depth \text{ bits of the square root.}
+ * @f$ }
+ * 
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shr       Right-shift appled to @vector{b}
+ * @param[in]   depth       Number of bits of each output value to compute
+ * 
+ * @returns     Headroom of output vector @vector{a}
+ */
 headroom_t xs3_vect_s32_sqrt(
     int32_t a[],
     const int32_t b[],
@@ -1122,34 +1979,64 @@ headroom_t xs3_vect_s32_sqrt(
     const right_shift_t b_shr,
     const unsigned depth);
 
+
 /**
- * \brief Subtract one `int32_t` vector from another.
+ * @brief Obtain the shift parameters used by xs3_vect_s32_sqrt().
  * 
- * Subtract the `int32_t` vector `c[]` from the `int32_t` vector `b[]`, placing the result in `a[]`. Each 
- * element of `b[]` or `c[]` has an arithmetic right shift of `b_shr` or `c_shr` bits (respectively) applied 
- * before the subtraction. Negative values of `b_shr` and `c_shr` will left-shift.
+ * @param[out]  a_exp       Exponent of output elements from xs3_vect_s32_sqrt()
+ * @param[out]  b_shr       Right-shift appled to @vector{b}
+ * @param[in]   b_exp       Exponent of input vector @vector{b}
+ * @param[in]   b_hr        Headroom of input vector @vector{b}
  * 
- * \low_op{32, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} - c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * @see xs3_vect_s32_sqrt
+ */
+void xs3_vect_s32_sqrt_calc_params(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const exponent_t b_exp,
+    const right_shift_t b_hr);
+
+
+/**
+ * @brief Subtract one 32-bit vector from another.
  * 
- * \safe_in_place{a,b,c}
- * \requires_word_alignment{a,b,c}
+ * xs3_vect_s32_sub() and xs3_vect_add_sub_calc_params() together represent the following BFP operation: 
  * 
- * \warning \li Both shifts (if they are negative) and the addition are saturating operations, and will saturate to the
- *       symmetric 32-bit range  (see: TODO).
+ * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
+ *                                          - \left( \bar{c} \cdot 2^{c\_exp} \right) }
  * 
- * \warning \li Where negative values underflow due to a right-shift, the resulting value is `-1`, rather than `0`. 
- *              (see: TODO)
+ * xs3_vect_add_sub_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
+ * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
+ * mantissa vector @vector{a}.
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector 1
- * \param[in] c         Input vector 2
- * \param[in] length    Number of elements in `a`, `b` and `c`
- * \param[in] b_shr     Arithmetic right-shift applied to elements of `b[]`
- * \param[in] c_shr     Arithmetic right-shift applied to elements of `c[]`
+ * @par Parameter Details
  * 
- * \return  Headroom of output vector `a`
+ * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} 
+ * respectively. Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or
+ * `c[]`.
  * 
- * \see bfp_s16_sub()
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * @low_op{32, @f$ 
+ *      b_k' = sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)  \\
+ *      c_k' = sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)  \\
+ *      a_k \leftarrow sat_{32}\!\left( b_k' - c_k' \right)     \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in] b         Input vector @vector{b}
+ * @param[in] c         Input vector @vector{c}
+ * @param[in] length    Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in] b_shr     Right-shift appled to @vector{b}
+ * @param[in] c_shr     Right-shift appled to @vector{c}
+ * 
+ * @returns  Headroom of output vector @vector{a}
+ * 
+ * @see xs3_vect_add_sub_calc_params
  */
 headroom_t xs3_vect_s32_sub(
     int32_t a[],
@@ -1159,58 +2046,88 @@ headroom_t xs3_vect_s32_sub(
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
+
 /**
- * \brief Sum the elements of an `int32_t` vector.
+ * @brief Sum the elements of a 32-bit vector.
  * 
- * Sums together the elements of the `int32_t` vector `b` into a 40-bit saturating accumulator. The result
- * is returned as an `int64_t`.
+ * xs3_vect_s32_sum() represents the following BFP operation:
  * 
- * \low_op{32, @f$ \sum_\{k=0\}^\{length-1\} b_k     @f$ }
+ * @math{ a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{length-1} \left( b_k \cdot 2^{b\_exp} \right)   \\
+ *          \qquad\text{where } a\_exp = b\_exp
+ * }
  * 
- * \requires_word_alignment{b}
+ * @par Parameter Details
  * 
- * \warning If `length > 256` it is possible for saturation to occur on the 40-bit accumulator. Saturating
- *          additions are *not* associative, and so no guarantees are made with respect to the correctness of
- *          the result unless it is known *a priori* that no partial sums of elements from `b` (taken in any 
- *          order) will saturate. If more than `256` elements are to be summed, it is recommended that
- *          the user instead make multiple calls to `xs3_vect_s32_sum()`, adding together partial sums of 
- *          subsequences of `b` in user code.
+ * `b[]` represents the 32-bit mantissa vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
- * \param[in] b         Input vector
- * \param[in] length    Number of elements in vector `b`
+ * `length` is the number of elements in @vector{b}.
  * 
- * \return  Sum of elements in `b`
+ * \low_op{32, @f$ 
+ *      a \leftarrow \sum_\{k=0\}^\{length-1\} b_k     
+ * @f$ }
+ * 
+ * @par Additional Details
+ * 
+ * Internally, each element accumulates into one of eight 40-bit accumulators (which are all used simultaneously) which 
+ * apply symmetric 40-bit saturation logic (with bounds @math{\approx 2^{39}) with each value added. The saturating 
+ * arithmetic employed is _not associative_ and no indication is given if saturation occurs at an intermediate step. To 
+ * avoid the possibility of saturation errors, `length` should be no greater than @math{2^{11+b\_hr}}, where 
+ * @math{b\_hr} is the headroom of @vector{b}.
+ * 
+ * If the caller's mantissa vector is longer than that, the full result can be found by calling this function multiple 
+ * times for partial results on sub-sequences of the input, and adding the results in user code. 
+ * 
+ * In many situations the caller may have _a priori_ knowledge that saturation is impossible (or very nearly so), in 
+ * which case this guideline may be disregarded. However, such situations are application-specific and are well beyond 
+ * the scope of this documentation, and as such are left to the user's discretion.
+ * 
+ * @param[in]   b         Input vector @vector{b}
+ * @param[in]   length    Number of elements in vector @vector{b}
+ * 
+ * @returns  64-bit mantissa of the sum, @math{a}.
  */
 int64_t xs3_vect_s32_sum(
     const int32_t b[],
     const unsigned length);
 
 
-
 /** 
- * \brief Convert an `int32_t` vector to an `int16_t` vector.
+ * @brief Convert a 32-bit vector to a 16-bit vector.
  * 
- * Each element of `b` is right-shifted `b_shr` bits (rounded towards positive infinity), 
- * saturated to 16-bit bounds and then written to `a`. 
+ * This function converts a 32-bit mantissa vector @vector{b} into a 16-bit mantissa vector @vector{a}. Conceptually,
+ * the output BFP vector @math{\bar{a}\cdot 2^{a\_exp}} represents the same values as the input BFP vector
+ * @math{\bar{b}\cdot 2^{b\_exp}}, only with a reduced bit-depth.
  * 
- * \low_op{32, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * In most cases @math{b\_shr} should be @math{16 - b\_hr}, where @math{b\_hr} is the headroom of the 32-bit input
+ * mantissa vector @vector{b}. 
  * 
- * \safe_in_place{a,b}
- * \requires_word_alignment{a,b}
+ * The output exponent @math{a\_exp} will be given by
  * 
- * \note \li Underflows of negative values result in `-1` rather than `0`.
+ * @math{ a\_exp = b\_exp + b\_shr }
  * 
- * \note \li This function does not return headroom of the resulting vector. So long as the
- *       value of `b_shr` is chosen to avoid saturation, `a` should have `b_shr` more bits of 
- *       headroom than `b`.
+ * @par Parameter Details
  * 
- * \note \li To avoid saturation, `b_shr >= 16-b_hr` where `b_hr` is the initial headroom of
- *           the vector `b`.
+ * `a[]` represents the 16-bit output mantissa vector @vector{a}.
  * 
- * \param[out] a        Output vector
- * \param[in]  b        Input vector
- * \param[in]  length   Number of elements in vectors `a` and `b`
- * \param[in]  b_shr    Right-shift to apply to elements of `b`
+ * `b[]` represents the 32-bit input mantissa vector @vector{b}.
+ * 
+ * `a[]` and `b[]` must each begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
+ * 
+ * \low_op{32, @f$
+ *      a_k \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)      \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @param[out]  a        Output vector @vector{a}
+ * @param[in]   b        Input vector @vector{b}
+ * @param[in]   length   Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shr    Right-shift appled to @vector{b}
+ * 
+ * @see xs3_vect_s16_to_s32
  */
 void xs3_vect_s32_to_s16(
     int16_t a[],

@@ -199,7 +199,7 @@ void xs3_fft_mono_adjust(
         load_vec(tmp, W);
 
         // tmp = j*W
-        xs3_vect_complex_s32_complex_mul(tmp, tmp, vpu_vec_complex_pos_j, VEC_ELMS, 0, 0);
+        xs3_vect_complex_s32_mul(tmp, tmp, vpu_vec_complex_pos_j, VEC_ELMS, 0, 0);
 
 
         // A = 0.5*(1 - j*W)
@@ -218,7 +218,7 @@ void xs3_fft_mono_adjust(
 
 
         // new_X_lo = A*X_lo + B*conjugate(X_hi)
-        xs3_vect_complex_s32_complex_mul(p_X_lo, A, X_lo, VEC_ELMS, 0, 0);
+        xs3_vect_complex_s32_mul(p_X_lo, A, X_lo, VEC_ELMS, 0, 0);
         xs3_vect_complex_s32_conj_mul(tmp, B, X_hi, VEC_ELMS, 0, 0);
         xs3_vect_complex_s32_add(p_X_lo, p_X_lo, tmp, VEC_ELMS, 0, 0);
 
