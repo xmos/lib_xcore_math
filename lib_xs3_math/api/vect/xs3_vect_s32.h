@@ -77,7 +77,7 @@ extern "C" {
  * @see xs3_vect_complex_s16_sub
  * @see xs3_vect_complex_s32_sub
  */
-void xs3_vect_add_sub_calc_params(
+void xs3_vect_add_sub_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,
@@ -262,7 +262,7 @@ headroom_t xs3_vect_ch_pair_s32_shr(
  * @see xs3_vect_complex_s16_mag()
  * @see xs3_vect_complex_s32_mag()
  */
-void xs3_vect_complex_mag_calc_params(
+void xs3_vect_complex_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,
@@ -273,12 +273,12 @@ void xs3_vect_complex_mag_calc_params(
 /**
  * @brief Add together two complex 32-bit vectors element-wise.
  * 
- * xs3_vect_complex_s32_add() and xs3_vect_add_sub_calc_params() together represent the following BFP operation: 
+ * xs3_vect_complex_s32_add() and xs3_vect_add_sub_prepare() together represent the following BFP operation: 
  * 
  * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
  *                                          + \left( \bar{c} \cdot 2^{c\_exp} \right) }
  * 
- * xs3_vect_add_sub_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
+ * xs3_vect_add_sub_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
  * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
  * mantissa vector @vector{a}.
  * 
@@ -310,7 +310,7 @@ void xs3_vect_complex_mag_calc_params(
  * 
  * @returns     Headroom of output vector @vector{a}.
  * 
- * @see xs3_vect_add_sub_calc_params
+ * @see xs3_vect_add_sub_prepare
  */
 headroom_t xs3_vect_complex_s32_add(
     complex_s32_t a[],
@@ -324,7 +324,7 @@ headroom_t xs3_vect_complex_s32_add(
 /**
  * @brief Multiply one complex 32-bit vector element-wise by the complex conjugate of another.
  * 
- * xs3_vect_complex_s32_conj_mul() and xs3_vect_complex_s32_mul_calc_params() together represent the following BFP
+ * xs3_vect_complex_s32_conj_mul() and xs3_vect_complex_s32_mul_prepare() together represent the following BFP
  * operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) 
@@ -332,7 +332,7 @@ headroom_t xs3_vect_complex_s32_add(
  *          \qquad\text{where } (\cdot)^* \text{ is the complex conjugate}
  * }
  * 
- * xs3_vect_complex_s32_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and
+ * xs3_vect_complex_s32_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and
  * @math{c\_shr} used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute
  * the resulting mantissa vector @vector{a}.
  * 
@@ -365,7 +365,7 @@ headroom_t xs3_vect_complex_s32_add(
  * 
  * @return      Headroom of the output vector @vector{a}
  * 
- * @see xs3_vect_complex_s32_mul_calc_params
+ * @see xs3_vect_complex_s32_mul_prepare
  */
 headroom_t xs3_vect_complex_s32_conj_mul(
     complex_s32_t a[],
@@ -419,7 +419,7 @@ headroom_t xs3_vect_complex_s32_headroom(
 /**
  * @brief Compute the magnitude of each element of a complex 32-bit vector.
  * 
- * xs3_vect_complex_s32_mag() and xs3_vect_complex_mag_calc_params() together represent the following BFP operation:
+ * xs3_vect_complex_s32_mag() and xs3_vect_complex_mag_prepare() together represent the following BFP operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left| b_k \cdot 2^{b\_exp} \right|   \\
  *      \qquad\text{where } \left|\cdot\right| \text{ is the complex magnitude operator}
@@ -465,7 +465,7 @@ headroom_t xs3_vect_complex_s32_headroom(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  * 
- * @see xs3_vect_complex_mag_calc_params
+ * @see xs3_vect_complex_mag_prepare
  */
 headroom_t xs3_vect_complex_s32_mag(
     int32_t a[],
@@ -479,13 +479,13 @@ headroom_t xs3_vect_complex_s32_mag(
 /**
  * @brief Multiply one complex 32-bit vector element-wise by another.
  * 
- * xs3_vect_complex_s32_mul() and xs3_vect_complex_s32_mul_calc_params() together represent the following BFP
+ * xs3_vect_complex_s32_mul() and xs3_vect_complex_s32_mul_prepare() together represent the following BFP
  * operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) 
  *                                  \cdot \left( c_k \cdot 2^{c\_exp} \right) }
  * 
- * xs3_vect_complex_s32_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and
+ * xs3_vect_complex_s32_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and
  * @math{c\_shr} used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute
  * the resulting mantissa vector @vector{a}.
  * 
@@ -518,7 +518,7 @@ headroom_t xs3_vect_complex_s32_mag(
  * 
  * @return      Headroom of the output vector @vector{a}
  * 
- * @see xs3_vect_complex_s32_mul_calc_params
+ * @see xs3_vect_complex_s32_mul_prepare
  */
 headroom_t xs3_vect_complex_s32_mul(
     complex_s32_t a[],
@@ -543,7 +543,7 @@ headroom_t xs3_vect_complex_s32_mul(
  * 
  * @see xs3_vect_complex_s32_mul
  */
-void xs3_vect_complex_s32_mul_calc_params(
+void xs3_vect_complex_s32_mul_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,
@@ -557,13 +557,13 @@ void xs3_vect_complex_s32_mul_calc_params(
 /**
  * @brief Multiply a complex 32-bit vector element-wise by a real 32-bit vector.
  * 
- * xs3_vect_complex_s32_real_mul() and xs3_vect_complex_s32_real_mul_calc_params() together represent the following BFP
+ * xs3_vect_complex_s32_real_mul() and xs3_vect_complex_s32_real_mul_prepare() together represent the following BFP
  * operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) 
  *                                  \cdot \left( c_k \cdot 2^{c\_exp} \right) }
  * 
- * xs3_vect_complex_s32_real_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and
+ * xs3_vect_complex_s32_real_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and
  * @math{c\_shr} used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute
  * the resulting mantissa vector @vector{a}.
  * 
@@ -598,7 +598,7 @@ void xs3_vect_complex_s32_mul_calc_params(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  * 
- * @see xs3_vect_complex_s32_real_mul_calc_params
+ * @see xs3_vect_complex_s32_real_mul_prepare
  */
 headroom_t xs3_vect_complex_s32_real_mul(
     complex_s32_t a[],
@@ -623,7 +623,7 @@ headroom_t xs3_vect_complex_s32_real_mul(
  * 
  * @see xs3_vect_complex_s32_real_mul
  */
-void xs3_vect_complex_s32_real_mul_calc_params(
+void xs3_vect_complex_s32_real_mul_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,
@@ -637,12 +637,12 @@ void xs3_vect_complex_s32_real_mul_calc_params(
 /**
  * @brief Multiply a complex 32-bit vector by a real scalar.
  * 
- * xs3_vect_complex_s32_real_scale() and xs3_vect_complex_s32_real_mul_calc_params() together represent the following 
+ * xs3_vect_complex_s32_real_scale() and xs3_vect_complex_s32_real_mul_prepare() together represent the following 
  * BFP operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) \cdot \left( c \cdot 2^{c\_exp} \right) }
  * 
- * xs3_vect_complex_s32_real_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and
+ * xs3_vect_complex_s32_real_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and
  * @math{c\_shr}, as well as the output exponent @math{a\_exp}. @math{b\_shr} is used by this function, and 
  * @math{c\_shr} is applied in user code prior to calling this function. This function is then used to compute the 
  * resulting mantissa vector @vector{a}.
@@ -688,12 +688,12 @@ headroom_t xs3_vect_complex_s32_real_scale(
 /**
  * @brief Multiply a complex 32-bit vector by a complex 32-bit scalar.
  * 
- * xs3_vect_complex_s32_scale() and xs3_vect_complex_s32_scale_calc_params() together represent the following 
+ * xs3_vect_complex_s32_scale() and xs3_vect_complex_s32_scale_prepare() together represent the following 
  * BFP operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) \cdot \left( c \cdot 2^{c\_exp} \right) }
  * 
- * xs3_vect_complex_s32_scale_calc_params() should be called first to compute the shift parameters @math{b\_shr} and
+ * xs3_vect_complex_s32_scale_prepare() should be called first to compute the shift parameters @math{b\_shr} and
  * @math{c\_shr}, as well as the output exponent @math{a\_exp}. @math{b\_shr} is used by this function, and 
  * @math{c\_shr} is applied in user code prior to calling this function. This function is then used to compute the 
  * resulting mantissa vector @vector{a}.
@@ -754,7 +754,7 @@ headroom_t xs3_vect_complex_s32_scale(
  * 
  * @see xs3_vect_complex_s32_scale
  */
-void xs3_vect_complex_s32_scale_calc_params(
+void xs3_vect_complex_s32_scale_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* alpha_shr,
@@ -861,12 +861,12 @@ headroom_t xs3_vect_complex_s32_shr(
 /**
  * @brief Computes the squared magnitudes of elements of a complex 32-bit vector.
  * 
- * xs3_vect_complex_s32_squared_mag() and xs3_vect_complex_s32_squared_mag_calc_params() together represent the 
+ * xs3_vect_complex_s32_squared_mag() and xs3_vect_complex_s32_squared_mag_prepare() together represent the 
  * following BFP operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow  \left|b_k \cdot 2^{b\_exp} \right|^2   }
  * 
- * xs3_vect_complex_s32_squared_mag_calc_params() should be called first to compute the shift parameter @math{b\_shr}
+ * xs3_vect_complex_s32_squared_mag_prepare() should be called first to compute the shift parameter @math{b\_shr}
  * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
  * mantissa vector @vector{a}.
  * 
@@ -890,7 +890,7 @@ headroom_t xs3_vect_complex_s32_shr(
  * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
  * @param[in]   b_shr       Right-shift appled to @vector{b}
  * 
- * @see xs3_vect_complex_s32_squared_mag_calc_params
+ * @see xs3_vect_complex_s32_squared_mag_prepare
  */
 headroom_t xs3_vect_complex_s32_squared_mag(
     int32_t a[],
@@ -911,7 +911,7 @@ headroom_t xs3_vect_complex_s32_squared_mag(
  * 
  * @see xs3_vect_complex_s32_squared_mag
  */
-void xs3_vect_complex_s32_squared_mag_calc_params(
+void xs3_vect_complex_s32_squared_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,
@@ -922,12 +922,12 @@ void xs3_vect_complex_s32_squared_mag_calc_params(
 /**
  * @brief Subtract one complex 32-bit vector from another.
  * 
- * xs3_vect_complex_s32_sub() and xs3_vect_add_sub_calc_params() together represent the following BFP operation: 
+ * xs3_vect_complex_s32_sub() and xs3_vect_add_sub_prepare() together represent the following BFP operation: 
  * 
  * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
  *                                          - \left( \bar{c} \cdot 2^{c\_exp} \right) }
  * 
- * xs3_vect_add_sub_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
+ * xs3_vect_add_sub_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
  * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
  * mantissa vector @vector{a}.
  * 
@@ -959,7 +959,7 @@ void xs3_vect_complex_s32_squared_mag_calc_params(
  * 
  * @returns     Headroom of output vector @vector{a}.
  * 
- * @see xs3_vect_add_sub_calc_params
+ * @see xs3_vect_add_sub_prepare
  */
 headroom_t xs3_vect_complex_s32_sub(
     complex_s32_t a[], 
@@ -973,11 +973,11 @@ headroom_t xs3_vect_complex_s32_sub(
 /**
  * @brief Compute the sum of elements of a complex 32-bit vector.
  * 
- * xs3_vect_complex_s32_sum() and xs3_vect_complex_s32_sum_calc_params() together represent the following BFP operation:
+ * xs3_vect_complex_s32_sum() and xs3_vect_complex_s32_sum_prepare() together represent the following BFP operation:
  * 
  * @math{ a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{length-1} \left( b_k \cdot 2^{b\_exp} \right) }
  * 
- * xs3_vect_complex_s32_sum_calc_params() should be called first to compute the shift parameter @math{b\_shr} which is
+ * xs3_vect_complex_s32_sum_prepare() should be called first to compute the shift parameter @math{b\_shr} which is
  * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
  * mantissa.
  * 
@@ -1014,7 +1014,7 @@ headroom_t xs3_vect_complex_s32_sub(
  * @param[in]   length      Number of elements in vector @vector{b}.
  * @param[in]   b_shr       Right-shift appled to @vector{b}.
  * 
- * @see xs3_vect_complex_s32_sum_calc_params
+ * @see xs3_vect_complex_s32_sum_prepare
  */
 void xs3_vect_complex_s32_sum(
     complex_s64_t* a,
@@ -1035,7 +1035,7 @@ void xs3_vect_complex_s32_sum(
  * 
  * @see xs3_vect_complex_s32_sum
  */
-void xs3_vect_complex_s32_sum_calc_params(
+void xs3_vect_complex_s32_sum_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,
@@ -1209,12 +1209,12 @@ int64_t xs3_vect_s32_abs_sum(
 /**
  * @brief Add together two 32-bit vectors.
  * 
- * xs3_vect_s32_add() and xs3_vect_add_sub_calc_params() together represent the following BFP operation: 
+ * xs3_vect_s32_add() and xs3_vect_add_sub_prepare() together represent the following BFP operation: 
  * 
  * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
  *                                          + \left( \bar{c} \cdot 2^{c\_exp} \right) }
  * 
- * xs3_vect_add_sub_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
+ * xs3_vect_add_sub_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
  * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
  * mantissa vector @vector{a}.
  * 
@@ -1244,7 +1244,7 @@ int64_t xs3_vect_s32_abs_sum(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  * 
- * @see xs3_vect_add_sub_calc_params
+ * @see xs3_vect_add_sub_prepare
  */
 headroom_t xs3_vect_s32_add(
     int32_t a[],
@@ -1362,12 +1362,12 @@ headroom_t xs3_vect_s32_clip(
 /**
  * @brief Compute the inner product between two 32-bit vectors.
  * 
- * xs3_vect_s32_dot() and xs3_vect_s32_dot_calc_params() together represent the following BFP operation:
+ * xs3_vect_s32_dot() and xs3_vect_s32_dot_prepare() together represent the following BFP operation:
  * 
  * @math{ a \cdot 2^{a\_exp} \leftarrow 
  *      \sum_{k=0}^{length-1} \left( (b_k \cdot 2^{b\_exp}) \cdot (c_k \cdot 2^{c\_exp}) \right) }
  * 
- * xs3_vect_s32_dot_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr}
+ * xs3_vect_s32_dot_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr}
  * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
  * mantissa vector @vector{a}.
  * 
@@ -1442,7 +1442,7 @@ int64_t xs3_vect_s32_dot(
  * 
  * @see xs3_vect_s32_dot
  */
-void xs3_vect_s32_dot_calc_params(
+void xs3_vect_s32_dot_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,
@@ -1457,11 +1457,11 @@ void xs3_vect_s32_dot_calc_params(
 /**
  * @brief Calculate the energy (sum of squares of elements) of a 32-bit vector.
  * 
- * xs3_vect_s32_energy() and xs3_vect_s32_energy_calc_params() together represent the following BFP operation:
+ * xs3_vect_s32_energy() and xs3_vect_s32_energy_prepare() together represent the following BFP operation:
  * 
  * @math{ a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{length-1} \left( b_k \cdot 2^{b\_exp} \right)^2 }
  * 
- * xs3_vect_s32_energy_calc_params() should be called first to compute the shift parameter @math{b\_shr} which is used
+ * xs3_vect_s32_energy_prepare() should be called first to compute the shift parameter @math{b\_shr} which is used
  * by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
  * mantissa @math{a}, which is returned.
  * 
@@ -1522,7 +1522,7 @@ int64_t xs3_vect_s32_energy(
  * 
  * @see xs3_vect_s32_energy
  */
-void xs3_vect_s32_energy_calc_params(
+void xs3_vect_s32_energy_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const unsigned length,
@@ -1570,11 +1570,11 @@ headroom_t xs3_vect_s32_headroom(
 /**
  * @brief Compute the inverse of elements of a 32-bit vector.
  * 
- * xs3_vect_s32_inverse() and xs3_vect_s32_inverse_calc_params() together represent the following BFP operation:
+ * xs3_vect_s32_inverse() and xs3_vect_s32_inverse_prepare() together represent the following BFP operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow \frac{1}{b_k \cdot 2^{b\_exp}} }
  * 
- * xs3_vect_complex_s32_inverse_calc_params() should be called first to compute the shift parameter @math{b\_shr} used
+ * xs3_vect_complex_s32_inverse_prepare() should be called first to compute the shift parameter @math{b\_shr} used
  * by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
  * mantissa vector @vector{a}.
  * 
@@ -1620,7 +1620,7 @@ headroom_t xs3_vect_s32_inverse(
  * 
  * @see xs3_vect_s32_inverse
  */
-void xs3_vect_s32_inverse_calc_params(
+void xs3_vect_s32_inverse_prepare(
     exponent_t* a_exp,
     unsigned* scale,
     const int32_t b[],
@@ -1677,11 +1677,11 @@ int32_t xs3_vect_s32_min(
 /**
  * @brief Multiply one 32-bit vector element-wise by another.
  * 
- * xs3_vect_s32_mul() and xs3_s32_mul_calc_params() together represent the following BFP operation:
+ * xs3_vect_s32_mul() and xs3_s32_mul_prepare() together represent the following BFP operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow (b_k \cdot 2^{b\_exp}) \cdot (c_k \cdot 2^{c\_exp}) \cdot 2^{-30} }
  * 
- * xs3_vect_s32_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr}
+ * xs3_vect_s32_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr}
  * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
  * mantissa vector @vector{a}.
  * 
@@ -1735,7 +1735,7 @@ headroom_t xs3_vect_s32_mul(
  * 
  * @see xs3_vect_s32_mul
  */
-void xs3_vect_s32_mul_calc_params(
+void xs3_vect_s32_mul_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     right_shift_t* c_shr,
@@ -1797,11 +1797,11 @@ headroom_t xs3_vect_s32_rect(
 /**
  * @brief Multiply a 32-bit vector by a scalar.
  * 
- * xs3_vect_s32_scale() and xs3_vect_s32_mul_calc_params() together represent the following BFP operation:
+ * xs3_vect_s32_scale() and xs3_vect_s32_mul_prepare() together represent the following BFP operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow (b_k \cdot 2^{b\_exp}) \cdot (c \cdot 2^{c\_exp}) \cdot 2^{-30} }
  * 
- * xs3_vect_s32_mul_calc_params() should be called first to compute the shift parameters @math{b\_shr} and 
+ * xs3_vect_s32_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and 
  * @math{c\_shr}, as well as the output exponent @math{a\_exp}. @math{b\_shr} is used by this function and @math{c\_exp}
  * is applied to @math{c} in user code. This function is then used to compute the resulting mantissa vector @vector{a}.
  * 
@@ -1833,7 +1833,7 @@ headroom_t xs3_vect_s32_rect(
  * 
  * @returns  Headroom of output vector @vector{a}
  * 
- * @see xs3_vect_s32_mul_calc_params
+ * @see xs3_vect_s32_mul_prepare
  */
 headroom_t xs3_vect_s32_scale(
     int32_t a[],
@@ -1935,11 +1935,11 @@ headroom_t xs3_vect_s32_shr(
 /**
  * @brief Compute the square root of elements of a 32-bit vector.
  * 
- * xs3_vect_s32_sqrt() and xs3_vect_s32_sqrt_calc_params() together represent the following BFP operation:
+ * xs3_vect_s32_sqrt() and xs3_vect_s32_sqrt_prepare() together represent the following BFP operation:
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow \sqrt{ b_k \cdot 2^{b\_exp}  }}
  * 
- * xs3_vect_s32_sqrt_calc_params() should be called first to compute the shift parameter @math{b\_shr} which is used by
+ * xs3_vect_s32_sqrt_prepare() should be called first to compute the shift parameter @math{b\_shr} which is used by
  * this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting mantissa
  * vector @vector{a}.
  * 
@@ -1990,7 +1990,7 @@ headroom_t xs3_vect_s32_sqrt(
  * 
  * @see xs3_vect_s32_sqrt
  */
-void xs3_vect_s32_sqrt_calc_params(
+void xs3_vect_s32_sqrt_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,
@@ -2000,12 +2000,12 @@ void xs3_vect_s32_sqrt_calc_params(
 /**
  * @brief Subtract one 32-bit vector from another.
  * 
- * xs3_vect_s32_sub() and xs3_vect_add_sub_calc_params() together represent the following BFP operation: 
+ * xs3_vect_s32_sub() and xs3_vect_add_sub_prepare() together represent the following BFP operation: 
  * 
  * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
  *                                          - \left( \bar{c} \cdot 2^{c\_exp} \right) }
  * 
- * xs3_vect_add_sub_calc_params() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
+ * xs3_vect_add_sub_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
  * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
  * mantissa vector @vector{a}.
  * 
@@ -2036,7 +2036,7 @@ void xs3_vect_s32_sqrt_calc_params(
  * 
  * @returns  Headroom of output vector @vector{a}
  * 
- * @see xs3_vect_add_sub_calc_params
+ * @see xs3_vect_add_sub_prepare
  */
 headroom_t xs3_vect_s32_sub(
     int32_t a[],

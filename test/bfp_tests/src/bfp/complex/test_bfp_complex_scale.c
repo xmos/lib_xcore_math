@@ -131,7 +131,7 @@ void test_bfp_complex_s16_scale()
 
 
 
-void test_bfp_complex_s32_scale_calc_params()
+void test_bfp_complex_s32_scale_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -159,7 +159,7 @@ void test_bfp_complex_s32_scale_calc_params()
             // printf("!!!! b_hr = %d\n", b_hr);
             // printf("!!!! c_hr = %d\n\n", c_hr);
 
-            xs3_vect_complex_s32_scale_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
+            xs3_vect_complex_s32_scale_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
 
             C.re = SIGNED_ASHR(C.re, c_shr);
             C.im = SIGNED_ASHR(C.im, c_shr);
@@ -289,6 +289,6 @@ void test_bfp_complex_scal_mul_vect_complex()
 {
     SET_TEST_FILE();
     RUN_TEST(test_bfp_complex_s16_scale);
-    RUN_TEST(test_bfp_complex_s32_scale_calc_params);
+    RUN_TEST(test_bfp_complex_s32_scale_prepare);
     RUN_TEST(test_bfp_complex_s32_scale);
 }

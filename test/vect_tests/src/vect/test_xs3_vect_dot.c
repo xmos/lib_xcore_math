@@ -35,7 +35,7 @@ static char msg_buff[200];
 
 
 
-static void test_xs3_vect_s32_dot_calc_params()
+static void test_xs3_vect_s32_dot_prepare()
 {
     PRINTF("%s...\n", __func__);
     seed = 0xEF70DEF9;
@@ -64,7 +64,7 @@ static void test_xs3_vect_s32_dot_calc_params()
             exponent_t A_exp;
             right_shift_t b_shr, c_shr;
 
-            xs3_vect_s32_dot_calc_params(&A_exp, &b_shr, &c_shr, B_exp, C_exp, B_hr, C_hr, B_length, allow_sat);
+            xs3_vect_s32_dot_prepare(&A_exp, &b_shr, &c_shr, B_exp, C_exp, B_hr, C_hr, B_length, allow_sat);
 
             int64_t result = xs3_vect_s32_dot(B, C, B_length, b_shr, c_shr);
 
@@ -218,7 +218,7 @@ static void test_xs3_vect_s32_dot_basic()
 void test_xs3_dot()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_xs3_vect_s32_dot_calc_params);
+    RUN_TEST(test_xs3_vect_s32_dot_prepare);
 
     RUN_TEST(test_xs3_vect_s16_dot);
     RUN_TEST(test_xs3_vect_s32_dot_basic);

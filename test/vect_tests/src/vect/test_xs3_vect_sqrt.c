@@ -29,7 +29,7 @@ static char msg_buff[200];
 
 
 
-static void test_xs3_vect_s32_sqrt_calc_params()
+static void test_xs3_vect_s32_sqrt_prepare()
 {
 
     typedef struct {
@@ -69,7 +69,7 @@ static void test_xs3_vect_s32_sqrt_calc_params()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_vect_s32_sqrt_calc_params(&a_exp, &b_shr, vector->B.exp, vector->B.hr);
+        xs3_vect_s32_sqrt_prepare(&a_exp, &b_shr, vector->B.exp, vector->B.hr);
 
         int32_t B = 0x40000000 >> vector->B.hr;
         int32_t A;
@@ -88,7 +88,7 @@ static void test_xs3_vect_s32_sqrt_calc_params()
 
 }
 
-static void test_xs3_vect_s16_sqrt_calc_params()
+static void test_xs3_vect_s16_sqrt_prepare()
 {
 
     typedef struct {
@@ -128,7 +128,7 @@ static void test_xs3_vect_s16_sqrt_calc_params()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_vect_s16_sqrt_calc_params(&a_exp, &b_shr, vector->B.exp, vector->B.hr);
+        xs3_vect_s16_sqrt_prepare(&a_exp, &b_shr, vector->B.exp, vector->B.hr);
 
         int16_t WORD_ALIGNED B = 0x4000 >> vector->B.hr;
         int16_t WORD_ALIGNED A;
@@ -177,7 +177,7 @@ static void test_xs3_vect_s16_sqrt_A()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_vect_s16_sqrt_calc_params(&a_exp, &b_shr, b_exp, b_hr);
+        xs3_vect_s16_sqrt_prepare(&a_exp, &b_shr, b_exp, b_hr);
 
 
         const headroom_t a_hr = xs3_vect_s16_sqrt(A, B, length, b_shr, XS3_VECT_SQRT_S16_MAX_DEPTH);
@@ -229,7 +229,7 @@ static void test_xs3_vect_s16_sqrt_B()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_vect_s16_sqrt_calc_params(&a_exp, &b_shr, b_exp, b_hr);
+        xs3_vect_s16_sqrt_prepare(&a_exp, &b_shr, b_exp, b_hr);
 
         xs3_vect_s16_sqrt(A_full, B, length, b_shr, XS3_VECT_SQRT_S16_MAX_DEPTH);
 
@@ -281,7 +281,7 @@ static void test_xs3_vect_s32_sqrt_A()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_vect_s32_sqrt_calc_params(&a_exp, &b_shr, b_exp, b_hr);
+        xs3_vect_s32_sqrt_prepare(&a_exp, &b_shr, b_exp, b_hr);
 
 
         const headroom_t a_hr = xs3_vect_s32_sqrt(A, B, length, b_shr, XS3_VECT_SQRT_S32_MAX_DEPTH);
@@ -333,7 +333,7 @@ static void test_xs3_vect_s32_sqrt_B()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_vect_s32_sqrt_calc_params(&a_exp, &b_shr, b_exp, b_hr);
+        xs3_vect_s32_sqrt_prepare(&a_exp, &b_shr, b_exp, b_hr);
 
         xs3_vect_s32_sqrt(A_full, B, length, b_shr, XS3_VECT_SQRT_S32_MAX_DEPTH);
 
@@ -363,8 +363,8 @@ void test_xs3_sqrt_vect()
 {
     SET_TEST_FILE();
     
-    RUN_TEST(test_xs3_vect_s16_sqrt_calc_params);
-    RUN_TEST(test_xs3_vect_s32_sqrt_calc_params);
+    RUN_TEST(test_xs3_vect_s16_sqrt_prepare);
+    RUN_TEST(test_xs3_vect_s32_sqrt_prepare);
     RUN_TEST(test_xs3_vect_s16_sqrt_A);
     RUN_TEST(test_xs3_vect_s16_sqrt_B);
     RUN_TEST(test_xs3_vect_s32_sqrt_A);

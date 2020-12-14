@@ -135,7 +135,7 @@ headroom_t xs3_vect_complex_s16_add(
     const right_shift_t c_shr);
 
 
-void xs3_vect_complex_s16_mul_calc_params(
+void xs3_vect_complex_s16_mul_prepare(
     exponent_t* a_exp,
     right_shift_t* a_shr,
     const exponent_t b_exp,
@@ -308,7 +308,7 @@ headroom_t xs3_vect_complex_s16_mag(
  * TODO: useful documentation info in the function's body. Copy some of that.
  * 
  */
-void xs3_vect_complex_s16_real_mul_calc_params(
+void xs3_vect_complex_s16_real_mul_prepare(
     exponent_t* a_exp,
     right_shift_t* sat,
     const exponent_t b_exp,
@@ -502,7 +502,7 @@ headroom_t xs3_vect_complex_s16_shr(
 /**
  * @todo
  */
-void xs3_vect_complex_s16_squared_mag_calc_params(
+void xs3_vect_complex_s16_squared_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* sat,
     const exponent_t b_exp,
@@ -855,7 +855,7 @@ headroom_t xs3_vect_s16_headroom(
     const unsigned N);
 
 
-void xs3_vect_s16_inverse_calc_params(
+void xs3_vect_s16_inverse_prepare(
     exponent_t* a_exp,
     unsigned* scale,
     const int16_t b[],
@@ -926,7 +926,7 @@ int16_t xs3_vect_s16_min(
  * @param[in]  b_hr
  * @param[in]  c_hr
  */
-void xs3_vect_s16_mul_calc_params(
+void xs3_vect_s16_mul_prepare(
     exponent_t* a_exp,
     right_shift_t* a_shr,
     const exponent_t b_exp,
@@ -992,7 +992,7 @@ headroom_t xs3_vect_s16_rect(
 
 
 
-void xs3_vect_s16_scale_calc_params(
+void xs3_vect_s16_scale_prepare(
     exponent_t* a_exp,
     right_shift_t* sat,
     const exponent_t b_exp,
@@ -1100,7 +1100,7 @@ headroom_t xs3_vect_s16_shr(
 
 
 
-void xs3_vect_s16_sqrt_calc_params(
+void xs3_vect_s16_sqrt_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,

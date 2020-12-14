@@ -49,7 +49,7 @@ Of course, the very nature of BFP arithmetic routinely involves errors of this m
 
 The solution to this problem is to detect the possibility of this corner case and adjust parameters to avoid it when it is possible. To that end, this library has a compile time option, `XS3_BFP_ALLOW_SATURATION` (which defaults to `0`) to specify whether the BFP API functions should globally detect and avoid this corner case. 
 
-If there are specific operations where a different local behavior is desired, most of the BFP operations have a function (e.g. `bfp_add_vect_calc_params()` for vector addition) which can be used in combination with the low-level API to specify local behavior at run-time. The low-level API requires the user to manually specify the shift values used as its operations are carried out, and is thus agnostic to (and has no visibility of) the setting for `XS3_BFP_ALLOW_SATURATION`.
+If there are specific operations where a different local behavior is desired, most of the BFP operations have a function (e.g. `bfp_add_vect_prepare()` for vector addition) which can be used in combination with the low-level API to specify local behavior at run-time. The low-level API requires the user to manually specify the shift values used as its operations are carried out, and is thus agnostic to (and has no visibility of) the setting for `XS3_BFP_ALLOW_SATURATION`.
 
 Note that the logic which regards `XS3_BFP_ALLOW_SATURATION` only checks for the _possibility_ of reaching the saturating corner case, rather than whether it will _actually_ occur. Detecting the actuality of this corner case is much more expensive.
 

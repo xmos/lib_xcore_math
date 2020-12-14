@@ -49,7 +49,7 @@ void bfp_s16_add(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_calc_params(&a->exp, &b_shr, &c_shr,
+    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr,
             b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
 
     a->hr = xs3_vect_s16_add(a->data, b->data, c->data, b->length, b_shr, c_shr);
@@ -70,7 +70,7 @@ void bfp_s16_sub(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_calc_params(&a->exp, &b_shr, &c_shr, b->exp, c->exp, 
+    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, 
             b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
 
     a->hr = xs3_vect_s16_sub(a->data, b->data, c->data, b->length, b_shr, c_shr);
@@ -91,7 +91,7 @@ void bfp_s16_mul(
 
     right_shift_t a_shr;
 
-    xs3_vect_s16_mul_calc_params(&a->exp, &a_shr,
+    xs3_vect_s16_mul_prepare(&a->exp, &a_shr,
             b->exp, c->exp, b->hr, c->hr);
 
     a->hr = xs3_vect_s16_mul(a->data, b->data, c->data, b->length, a_shr);
@@ -113,7 +113,7 @@ void bfp_s16_scale(
     right_shift_t sat;
     headroom_t s_hr = HR_S16(alpha_mant);
 
-    xs3_vect_s16_scale_calc_params(&a->exp, &sat, b->exp, alpha_exp, b->hr, s_hr,
+    xs3_vect_s16_scale_prepare(&a->exp, &sat, b->exp, alpha_exp, b->hr, s_hr,
                                         XS3_BFP_ALLOW_SATURATION);
 
     a->hr = xs3_vect_s16_scale(a->data, b->data, b->length, alpha_mant, sat);
@@ -270,7 +270,7 @@ void bfp_s16_sqrt(
 
     right_shift_t b_shr;
 
-    xs3_vect_s16_sqrt_calc_params(&a->exp, &b_shr, b->exp, b->hr);
+    xs3_vect_s16_sqrt_prepare(&a->exp, &b_shr, b->exp, b->hr);
 
     a->hr = xs3_vect_s16_sqrt(a->data, b->data, b->length, b_shr, XS3_BFP_SQRT_DEPTH_S16);
 }
@@ -288,7 +288,7 @@ void bfp_s16_inverse(
 
     unsigned scale;
 
-    xs3_vect_s16_inverse_calc_params(&a->exp, &scale, b->data, b->exp, b->length);
+    xs3_vect_s16_inverse_prepare(&a->exp, &scale, b->data, b->exp, b->length);
     
     xs3_vect_s16_inverse(a->data, b->data, b->length, scale);
     

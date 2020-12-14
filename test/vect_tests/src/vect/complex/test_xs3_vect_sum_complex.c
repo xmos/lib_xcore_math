@@ -32,7 +32,7 @@ static char msg_buff[200];
 
 #define MAX_LEN     1024
 #define REPS        IF_QUICK_TEST(100, 1000)
-void test_xs3_vect_complex_s32_sum_calc_params()
+void test_xs3_vect_complex_s32_sum_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -66,7 +66,7 @@ void test_xs3_vect_complex_s32_sum_calc_params()
             // PRINTF("\t    b_exp = %d\n", b_exp);
             // PRINTF("\t    b_hr = %d\n", b_hr);
 
-            xs3_vect_complex_s32_sum_calc_params(&a_exp, &b_shr, b_exp, b_hr, b_length, allow_sat);
+            xs3_vect_complex_s32_sum_prepare(&a_exp, &b_shr, b_exp, b_hr, b_length, allow_sat);
 
             TEST_ASSERT_EQUAL(b_exp + b_shr, a_exp);
 
@@ -342,7 +342,7 @@ void test_xs3_sum_complex()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_vect_complex_s32_sum_calc_params);
+    RUN_TEST(test_xs3_vect_complex_s32_sum_prepare);
 
     RUN_TEST(test_xs3_vect_complex_s16_sum_basic);
     RUN_TEST(test_xs3_vect_complex_s16_sum_random);

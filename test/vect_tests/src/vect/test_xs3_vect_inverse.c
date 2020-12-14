@@ -30,7 +30,7 @@ static char msg_buff[200];
 
 
 #define LEN  4
-static void test_xs3_vect_s16_inverse_calc_params()
+static void test_xs3_vect_s16_inverse_prepare()
 {
     PRINTF("%s...\n", __func__);
     seed = 56456;
@@ -47,7 +47,7 @@ static void test_xs3_vect_s16_inverse_calc_params()
         exponent_t a_exp;
         unsigned scale;
 
-        xs3_vect_s16_inverse_calc_params(&a_exp, &scale, b, b_exp, LEN);
+        xs3_vect_s16_inverse_prepare(&a_exp, &scale, b, b_exp, LEN);
 
         // printf("hr = %u\n", hr);
         // printf("b_exp = %d\n", b_exp);
@@ -97,7 +97,7 @@ static void test_xs3_vect_s16_inverse_calc_params()
 #undef LEN
 
 #define LEN  4
-static void test_xs3_vect_s32_inverse_calc_params()
+static void test_xs3_vect_s32_inverse_prepare()
 {
     PRINTF("%s...\n", __func__);
     seed = 435634;
@@ -114,7 +114,7 @@ static void test_xs3_vect_s32_inverse_calc_params()
         exponent_t a_exp;
         unsigned scale;
 
-        xs3_vect_s32_inverse_calc_params(&a_exp, &scale, b, b_exp, LEN);
+        xs3_vect_s32_inverse_prepare(&a_exp, &scale, b, b_exp, LEN);
 
         // printf("hr = %u\n", hr);
         // printf("b_exp = %d\n", b_exp);
@@ -192,7 +192,7 @@ static void test_xs3_vect_s16_inverse()
         exponent_t a_exp;
         unsigned scale;
 
-        xs3_vect_s16_inverse_calc_params(&a_exp, &scale, B, b_exp, length);
+        xs3_vect_s16_inverse_prepare(&a_exp, &scale, B, b_exp, length);
 
         xs3_vect_s16_inverse(A, B, length, scale);
 
@@ -241,7 +241,7 @@ static void test_xs3_vect_s32_inverse()
         exponent_t a_exp;
         unsigned scale;
 
-        xs3_vect_s32_inverse_calc_params(&a_exp, &scale, B, b_exp, length);
+        xs3_vect_s32_inverse_prepare(&a_exp, &scale, B, b_exp, length);
 
         headroom_t a_hr = xs3_vect_s32_inverse(A, B, length, scale);
 
@@ -290,8 +290,8 @@ void test_xs3_inverse_vect()
 {
     SET_TEST_FILE();
     
-    RUN_TEST(test_xs3_vect_s16_inverse_calc_params);
-    RUN_TEST(test_xs3_vect_s32_inverse_calc_params);
+    RUN_TEST(test_xs3_vect_s16_inverse_prepare);
+    RUN_TEST(test_xs3_vect_s32_inverse_prepare);
     RUN_TEST(test_xs3_vect_s16_inverse);
     RUN_TEST(test_xs3_vect_s32_inverse);
 

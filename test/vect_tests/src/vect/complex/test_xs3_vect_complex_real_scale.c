@@ -36,7 +36,7 @@ static char msg_buff[200];
 
 
 
-static void test_xs3_vect_s16_scale_calc_params()
+static void test_xs3_vect_s16_scale_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -61,7 +61,7 @@ static void test_xs3_vect_s16_scale_calc_params()
             exponent_t a_exp;
             right_shift_t sat, c_shr;
 
-            xs3_vect_s16_scale_calc_params(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
+            xs3_vect_s16_scale_prepare(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
 
             xs3_vect_complex_s16_real_scale(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
 
@@ -217,7 +217,7 @@ static void test_xs3_vect_complex_s32_real_scale()
 
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
-        xs3_vect_s32_mul_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         int32_t C = C_orig >> c_shr;
 
@@ -253,7 +253,7 @@ void test_xs3_scalar_mul_vect_complex()
 {
     SET_TEST_FILE();
     
-    RUN_TEST(test_xs3_vect_s16_scale_calc_params);
+    RUN_TEST(test_xs3_vect_s16_scale_prepare);
     RUN_TEST(test_xs3_vect_complex_s16_real_scale);
     RUN_TEST(test_xs3_vect_complex_s32_real_scale);
 

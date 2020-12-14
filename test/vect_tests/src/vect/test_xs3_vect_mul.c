@@ -108,7 +108,7 @@ static int32_t scalar_mul_s32(int32_t b, int32_t alpha, int b_shr)
 
 
 
-static void test_xs3_vect_s16_mul_calc_params()
+static void test_xs3_vect_s16_mul_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -125,7 +125,7 @@ static void test_xs3_vect_s16_mul_calc_params()
         exponent_t a_exp;
         right_shift_t a_shr;
 
-        xs3_vect_s16_mul_calc_params(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_s16_mul_prepare(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr);
 
         // a_exp and a_shr should be calculated for exactly this case
         int16_t WORD_ALIGNED B = (-0x8000) >> b_hr;
@@ -146,7 +146,7 @@ static void test_xs3_vect_s16_mul_calc_params()
 
 
 
-static void test_xs3_vect_s32_mul_calc_params()
+static void test_xs3_vect_s32_mul_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -163,7 +163,7 @@ static void test_xs3_vect_s32_mul_calc_params()
         exponent_t a_exp;
         right_shift_t b_shr, c_shr;
 
-        xs3_vect_s32_mul_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         // a_exp and a_shr should be calculated for exactly this case
         int32_t WORD_ALIGNED B = -0x80000000;
@@ -189,7 +189,7 @@ static void test_xs3_vect_s32_mul_calc_params()
 
 
 
-static void test_xs3_vect_s16_scale_calc_params()
+static void test_xs3_vect_s16_scale_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -214,7 +214,7 @@ static void test_xs3_vect_s16_scale_calc_params()
             exponent_t a_exp;
             right_shift_t sat, c_shr;
 
-            xs3_vect_s16_scale_calc_params(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
+            xs3_vect_s16_scale_prepare(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
 
             xs3_vect_complex_s16_real_scale(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
 
@@ -857,9 +857,9 @@ void test_xs3_mul_vect()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_vect_s16_mul_calc_params);
-    RUN_TEST(test_xs3_vect_s32_mul_calc_params);
-    RUN_TEST(test_xs3_vect_s16_scale_calc_params);
+    RUN_TEST(test_xs3_vect_s16_mul_prepare);
+    RUN_TEST(test_xs3_vect_s32_mul_prepare);
+    RUN_TEST(test_xs3_vect_s16_scale_prepare);
 
     RUN_TEST(test_xs3_vect_s16_mul_basic);
     RUN_TEST(test_xs3_vect_s16_mul_random);

@@ -98,7 +98,7 @@ static complex_s32_t mul_complex_s32(complex_s32_t b, complex_s32_t c, int b_shr
 
 
 #define REPS        IF_QUICK_TEST(100, 1000)
-void test_xs3_vect_complex_s16_mul_calc_params()
+void test_xs3_vect_complex_s16_mul_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -118,7 +118,7 @@ void test_xs3_vect_complex_s16_mul_calc_params()
 
         for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat++){
 
-            xs3_vect_complex_s16_mul_calc_params(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
+            xs3_vect_complex_s16_mul_prepare(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
 
             TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(0, a_shr, "[Computed sat value is negative.]");
 
@@ -148,7 +148,7 @@ void test_xs3_vect_complex_s16_mul_calc_params()
 
 
 #define REPS        IF_QUICK_TEST(100, 1000)
-static void test_xs3_vect_complex_s32_mul_calc_params()
+static void test_xs3_vect_complex_s32_mul_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -172,7 +172,7 @@ static void test_xs3_vect_complex_s32_mul_calc_params()
 
         for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat++){
 
-            xs3_vect_complex_s32_mul_calc_params(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
+            xs3_vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
 
             xs3_vect_complex_s32_mul(&A, &B, &C, 1, b_shr, c_shr);
 
@@ -577,8 +577,8 @@ static void test_xs3_vect_complex_s32_mul_random()
 void test_xs3_complex_mul_vect_complex()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_xs3_vect_complex_s16_mul_calc_params);
-    RUN_TEST(test_xs3_vect_complex_s32_mul_calc_params);
+    RUN_TEST(test_xs3_vect_complex_s16_mul_prepare);
+    RUN_TEST(test_xs3_vect_complex_s32_mul_prepare);
 
     RUN_TEST(test_xs3_vect_complex_s16_mul_basic);
     RUN_TEST(test_xs3_vect_complex_s16_mul_random);

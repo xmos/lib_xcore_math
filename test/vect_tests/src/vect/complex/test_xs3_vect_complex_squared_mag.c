@@ -80,7 +80,7 @@ static int32_t squared_mag_complex_s32(
 
 
 #define REPS        1000
-static void test_xs3_vect_complex_s16_squared_mag_calc_params()
+static void test_xs3_vect_complex_s16_squared_mag_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -105,7 +105,7 @@ static void test_xs3_vect_complex_s16_squared_mag_calc_params()
             // PRINTF("\t    b_exp = %d\n", b_exp);
             // PRINTF("\t    b_hr = %d\n", b_hr);
 
-            xs3_vect_complex_s16_squared_mag_calc_params(&a_exp, &sat, b_exp, b_hr, allow_sat);
+            xs3_vect_complex_s16_squared_mag_prepare(&a_exp, &sat, b_exp, b_hr, allow_sat);
 
             // PRINTF("\t    B_re = %d    (0x%04X)\n", B_re, (uint16_t) B_re);
             // PRINTF("\t    B_im = %d    (0x%04X)\n", B_im, (uint16_t) B_im);
@@ -147,7 +147,7 @@ static void test_xs3_vect_complex_s16_squared_mag_calc_params()
 
 
 #define REPS        1000
-static void test_xs3_vect_complex_s32_squared_mag_calc_params()
+static void test_xs3_vect_complex_s32_squared_mag_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -172,7 +172,7 @@ static void test_xs3_vect_complex_s32_squared_mag_calc_params()
             // PRINTF("\t    b_exp = %d\n", b_exp);
             // PRINTF("\t    b_hr = %d\n", b_hr);
 
-            xs3_vect_complex_s32_squared_mag_calc_params(&a_exp, &b_shr, b_exp, b_hr, allow_sat);
+            xs3_vect_complex_s32_squared_mag_prepare(&a_exp, &b_shr, b_exp, b_hr, allow_sat);
 
             // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B.re, (uint32_t) B.re);
             // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B.im, (uint32_t) B.im);
@@ -492,8 +492,8 @@ static void test_xs3_vect_complex_s32_squared_mag_random()
 void test_xs3_squared_mag_vect_complex()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_xs3_vect_complex_s16_squared_mag_calc_params);
-    RUN_TEST(test_xs3_vect_complex_s32_squared_mag_calc_params);
+    RUN_TEST(test_xs3_vect_complex_s16_squared_mag_prepare);
+    RUN_TEST(test_xs3_vect_complex_s32_squared_mag_prepare);
 
     RUN_TEST(test_xs3_vect_complex_s16_squared_mag_basic);
     RUN_TEST(test_xs3_vect_complex_s16_squared_mag_random);
