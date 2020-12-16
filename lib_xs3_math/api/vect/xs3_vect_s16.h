@@ -30,84 +30,102 @@ extern "C" {
  * The headroom of a 16-bit channel-pair vector is the minimum of the headroom of each of its `ch_pair_s16_t`
  * elements.
  * 
- * This function efficiently traverses the elements of `a[]` to determine its headroom.
+ * This function efficiently traverses the elements of @vector{b} to determine its headroom.
  * 
- * @param[in]   x       The 16-bit channel-pair vector to compute the headroom of
- * @param[in]   length  The number of elements in `a[]`
+ * `b[]` represents a 16-bit channel-pair vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
- * @returns     The headroom of `a[]` 
+ * `length` is the number of elements in `b[]`.
  * 
- * @sa xs3_vect_ch_pair_s32_headroom
- * @sa xs3_vect_s16_headroom
- * @sa xs3_vect_s32_headroom
- * @sa xs3_vect_complex_s16_headroom
- * @sa xs3_vect_complex_s32_headroom
+ * @low_op{16, @f$
+ *      a \leftarrow min\!\\{ HR_{16}\left(x_0\right), HR_{16}\left(x_1\right), ..., 
+ *              HR_{16}\left(x_{length-1}\right) \\}
+ * @f$ }
+ * 
+ * @param[in]   b       Input channel-pair vector @vector{b}
+ * @param[in]   length  Number of elements in @vector{b}
+ * 
+ * @returns     @math{a}, the headroom of vector @vector{b}
+ * 
+ * @see xs3_vect_ch_pair_s32_headroom
+ * @see xs3_vect_s16_headroom
+ * @see xs3_vect_s32_headroom
+ * @see xs3_vect_complex_s16_headroom
+ * @see xs3_vect_complex_s32_headroom
  */
 headroom_t xs3_vect_ch_pair_s16_headroom(
-    const ch_pair_s16_t x[],
+    const ch_pair_s16_t b[],
     const unsigned length);
 
 
 /**
- * @brief Set the elements of a 16-bit channel-pair vector to a specified value.
+ * @brief Set all elements of a 16-bit channel-pair vector to the specified value.
  * 
- * Each `x[k].ch_a` is set to `ch_a`, and each `x[k].ch_b` is set to `ch_b` (for `0 < k <= length`).
+ * `a[]` represents the 16-bit vector @vector{a}. It must begin at a word-aligned address.
+ * 
+ * `ch_a` and `ch_b` are respectively the channel A and channel B values to which each element will be set.
+ * 
+ * `length` is the number of elements in `a[]`.
  * 
  * @low_op{16, @f$ 
- *      ChA\\{x_k\\} \leftarrow ch\_a \\
- *      ChB\\{x_k\\} \leftarrow ch\_b \\
+ *      ChA\\{a_k\\} \leftarrow ch\_a \\
+ *      ChB\\{a_k\\} \leftarrow ch\_b \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
- *  @f$ }
+ * @f$ }
  * 
- * @param[out]  x       The 16-bit channel-pair vector whose elements are to be set
- * @param[in]   ch_a    The value to set each `x[k].ch_a` to
- * @param[in]   ch_b    The value to set each `x[k].ch_b` to
- * @param[in]   length  The number of elements of `x[]`
+ * @par Block Floating-Point
  * 
- * @sa xs3_vect_ch_pair_s16_set
- * @sa xs3_vect_s16_set
- * @sa xs3_vect_s32_set
- * @sa xs3_vect_complex_s16_set
- * @sa xs3_vect_complex_s32_set
+ * If `ch_a` and `ch_b` are channel A and channel B mantissas of a floating-point channel-pair with exponent 
+ * @math{b\_exp}, then the output channel-pair vector @vector{a} are the mantissas of BFP channel-pair vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * 
+ * @param[out]  a           Output channel-pair vector @vector{a}
+ * @param[in]   ch_b        Value to set channel A of elements of @vector{a} to
+ * @param[in]   ch_a        Value to set channel B of elements of @vector{a} to
+ * @param[in]   length      Number of elements in vector{a}
+ * 
+ * @see xs3_vect_ch_pair_s32_set
+ * @see xs3_vect_s16_set
+ * @see xs3_vect_s32_set
+ * @see xs3_vect_complex_s16_set
+ * @see xs3_vect_complex_s32_set
  */
 void xs3_vect_ch_pair_s16_set(
-    ch_pair_s16_t x[],
+    ch_pair_s16_t a[],
     const int16_t ch_a,
     const int16_t ch_b,
     const unsigned length);
 
 
 /**
- * @brief Left-shift each element of a 16-bit channel-pair vector by a specified number of bits.
+ * @brief Left-shift the elements of a 16-bit channel-pair vector by a specified number of bits.
  * 
- * Left-shift each element of @vector{b} by @math{b\_shl} bits, placing the result in the corresponding
- * element of @vector{a}. This is equivalent to multiplying each element of @vector{b} by @math{2^{b\_shl}}.
+ * `a[]` and `b[]` represent the 16-bit channel-pair vectors @vector{a} and @vector{b} respectively. Each must begin 
+ * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
- * The parameters `a[]` and `b[]` represent vectors @vector{a} and @vector{b} respectively.
+ * `length` is the number of elements in vectors @vector{a} and @vector{b}.
  * 
- * `length` is the length of @vector{b} and @vector{a}, in elements.
+ * `b_shl` is the signed arithmetic left-shift applied to each element of @vector{b}. 
  * 
- * `b_shl` is the number of bits to left-shift each element of @vector{b}. If `b_shl` is negative, the
- * elements of @vector{b} are right-shifted instead.
+ * @low_op{16, @f$ 
+ *      ChA\\{a_k\\} \leftarrow sat_{16}(\lfloor ChA\\{b_k\\} \cdot {2^{b\_shl}} \rfloor) \\
+ *      ChB\\{a_k\\} \leftarrow sat_{16}(\lfloor ChB\\{b_k\\} \cdot {2^{b\_shl}} \rfloor) \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
  * 
- * This function returns the headroom of output vector @vector{a}.
+ * @par Block Floating-Point
  * 
- * @low_op{32, @f$ ChA\\{a_k\\} floor\!\left( \leftarrow ChA\\{b_k\\} \cdot {2^{b\_shl}} \right) \\
- *                 ChB\\{a_k\\} floor\!\left( \leftarrow ChB\\{b_k\\} \cdot {2^{b\_shl}} \right) \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1) @f$}
+ * If @vector{b} are the mantissas of a BFP channel-pair vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the mantissas of BFP channel-pair vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{b\_shl}} and @math{a\_exp = b\_exp}.
  * 
- * @note This function saturates the output elements to the symmetric 32-bit range.
- * @par
- * @note This function can safely operate in-place if `a` and `b` point to the same vector.
+ * @param[out]  a           Output channel-pair vector @vector{a}
+ * @param[in]   b           Input channel-pair vector @vector{b}
+ * @param[in]   length      Number of elements in @vector{a} and @vector{b}
+ * @param[in]   b_shl       Arithmetic left-shift applied to elements of @vector{b}
  * 
- * @param[out]  a           The output vector @vector{a}
- * @param[in]   b           The input vector @vector{b}
- * @param[in]   length      The number of elements in @vector{a} and @vector{b}
- * @param[in]   b_shl       The number of bits @math{b\_shl} to left-shift the elements of @vector{b}
+ * @returns     Headroom of output vector @vector{a}
  * 
- * @returns     The headroom of `a[]`
- * 
- * @sa xs3_vect_ch_pair_s32_shr
+ * @see xs3_vect_ch_pair_s16_shr
  */
 headroom_t xs3_vect_ch_pair_s16_shl(
     ch_pair_s16_t a[],
@@ -116,6 +134,37 @@ headroom_t xs3_vect_ch_pair_s16_shl(
     const left_shift_t shl);
 
 
+/**
+ * @brief Right-shift the elements of a 16-bit channel-pair vector by a specified number of bits.
+ * 
+ * `a[]` and `b[]` represent the 16-bit channel-pair vectors @vector{a} and @vector{b} respectively. Each must begin 
+ * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in vectors @vector{a} and @vector{b}.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}. 
+ * 
+ * @low_op{16, @f$ 
+ *      ChA\\{a_k\\} \leftarrow sat_{16}(\lfloor ChA\\{b_k\\} \cdot {2^{-b\_shr}} \rfloor) \\
+ *      ChB\\{a_k\\} \leftarrow sat_{16}(\lfloor ChB\\{b_k\\} \cdot {2^{-b\_shr}} \rfloor) \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of a BFP channel-pair vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the mantissas of BFP channel-pair vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{-b\_shr}} and @math{a\_exp = b\_exp}.
+ * 
+ * @param[out]  a           Output channel-pair vector @vector{a}
+ * @param[in]   b           Input channel-pair vector @vector{b}
+ * @param[in]   length      Number of elements in @vector{a} and @vector{b}
+ * @param[in]   b_shr       Arithmetic right-shift applied to elements of @vector{b}
+ * 
+ * @returns     Headroom of output vector @vector{a}
+ * 
+ * @see xs3_vect_ch_pair_s16_shr
+ */
 headroom_t xs3_vect_ch_pair_s16_shr(
     ch_pair_s16_t a[],
     const ch_pair_s16_t b[],
@@ -123,6 +172,62 @@ headroom_t xs3_vect_ch_pair_s16_shr(
     const right_shift_t shr);
 
 
+/**
+ * @brief Add one complex 16-bit vector to another.
+ * 
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `a_real[k]`, and each @math{Im\\{a_k\\}} is `a_imag[k]`.
+ * 
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
+ * 
+ * `c_real[]` and `c_imag[]` together represent the complex 16-bit input mantissa vector @vector{c}.
+ * Each @math{Re\\{c_k\\}} is `c_real[k]`, and each @math{Im\\{c_k\\}} is `c_imag[k]`.
+ * 
+ * Each of the input vectors must begin at a word-aligned address. This operation can be performed safely in-place on
+ * inputs `b_real[]`, `b_imag[]`, `c_real[]` and `c_imag[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * @low_op{16, @f$ 
+ *      b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      c_k' \leftarrow sat_{16}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)     \\
+ *      Re\\{a_k\\} \leftarrow Re\\{b_k'\\} + Re\\{c_k'\\}                  \\
+*       Im\\{a_k\\} \leftarrow Im\\{b_k'\\} + Im\\{c_k'\\}                  \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} and @vector{c} are the complex 16-bit mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the complex 16-bit mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}. 
+ * 
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
+ * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
+ * are associated with the same exponent.
+ * 
+ * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
+ * 
+ * @param[out]      a_real      Real part of complex output vector @vector{a}
+ * @param[out]      a_imag      Imaginary aprt of complex output vector @vector{a}
+ * @param[in]       b_real      Real part of complex input vector @vector{b}
+ * @param[in]       b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]       c_real      Real part of complex input vector @vector{c}
+ * @param[in]       c_imag      Imaginary part of complex input vector @vector{c} 
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       b_shr       Right-shift applied to @vector{b}
+ * @param[in]       c_shr       Right-shift applied to @vector{c}
+ * 
+ * @returns     Headroom of output vector @vector{a}.
+ * 
+ * @see xs3_vect_add_sub_prepare
+ */
 headroom_t xs3_vect_complex_s16_add(
     int16_t a_real[],
     int16_t a_imag[],
@@ -135,132 +240,56 @@ headroom_t xs3_vect_complex_s16_add(
     const right_shift_t c_shr);
 
 
-void xs3_vect_complex_s16_mul_prepare(
-    exponent_t* a_exp,
-    right_shift_t* a_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation);
-
-
 /**
- * @brief Compute complex product of two complex 16-bit vectors.
+ * @brief Multiply one complex 16-bit vector element-wise by the complex conjugate of another.
  * 
- * Multiply the vector @vector{b} element-wise with the vector @vector{c} and divide the product by 
- * @math{2^{-sat}}, placing the result in the complex vector @vector{a}.
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `a_real[k]`, and each @math{Im\\{a_k\\}} is `a_imag[k]`.
  * 
- * The 16-bit elements of @vector{b} and @vector{c} are multiplied to produce 32-bit values for the real and imaginary
- * part of the result. Those 32-bit values are divided by @math{2^{sat}} and finally saturated to the symmetric 16-bit 
- * range (see TODO) for the final result. The division rounds away from zero.
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
  * 
- * The parameters `a_real[]` and `a_imag[]` together represent the complex output vector @vector{a}, with the former 
- * representing the real part of its elements and the latter representing the imaginary parts.
+ * `c_real[]` and `c_imag[]` together represent the complex 16-bit input mantissa vector @vector{c}.
+ * Each @math{Re\\{c_k\\}} is `c_real[k]`, and each @math{Im\\{c_k\\}} is `c_imag[k]`.
  * 
- * Similarly, `b_real[]` and `b_imag[]` together represent the complex input vector @vector{b}, and the parameters
- * `c_real[]` and `c_imag[]` together represent the complex input vector @vector{c}.
+ * Each of the input vectors must begin at a word-aligned address. This operation can be performed safely in-place on
+ * inputs `b_real[]`, `b_imag[]`, `c_real[]` and `c_imag[]`.
  * 
- * `sat` is the right-shift applied to the products of @vector{b} and @vector{c}, as @math{2^{-sat}}. `sat` can only
- * be used to apply a right shift of the products, so `sat` must be non-negative.
+ * `length` is the number of elements in each of the vectors.
  * 
- * `length` is the number of elements in vectors @vector{a}, @vector{b} and @vector{c}.
+ * `a_shr` is the unsigned arithmetic right-shift applied to the 32-bit accumulators holding the penultimate results.
  * 
- * This function returns the headroom of the output vector @vector{a}. The headroom of a complex 16-bit vector is the 
- * minimum of the headroom between its real and imaginary parts (i.e. `a_real[]` and `a_imag[]`).
+ * @low_op{16, @f$ 
+ *      v_k = \leftarrow Re\\{b_k\\} \cdot Re\\{c_k\\}
+ *                     + Im\\{b_k\\} \cdot Im\\{c_k\\}                      \\
+ *      s_k = \leftarrow Im\\{b_k\\} \cdot Re\\{c_k\\}
+ *                     - Re\\{b_k\\} \cdot Im\\{c_k\\}                      \\
+ *      Re\\{a_k\\} \leftarrow  round( sat_{16}( v_k \cdot 2^{-a\_shr} ) )  \\
+ *      Im\\{a_k\\} \leftarrow  round( sat_{16}( s_k \cdot 2^{-a\_shr} ) )  \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
  * 
- * @low_op{16, @f$ Re\\{a_k\\} \leftarrow \left(Re\\{b_k\\}\cdot Re\\{c_k\\}-Im\\{b_k\\}\cdot Im\\{c_k\\}\right) 
- *          \cdot 2^{-sat} \\
- *          Im\\{a_k\\} \leftarrow \left(Re\\{b_k\\}\cdot Im\\{c_k\\}+Im\\{b_k\\}\cdot Re\\{c_k\\}\right)
- *          \cdot 2^{-sat} \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1) @f$}
+ * @par Block Floating-Point
  * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the 
+ * complex 16-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + a\_shr}.
  * 
- * @par Safe In-Place Computation:
- *      The output of this function can be safely computed in-place if the output pointers `a_real[]` and `a_imag[]` are
- *      equal to the input pointers `b_real[]`, `b_imag[]`, `c_real[]` or `c_imag`. Using in-place operations may 
- *      reduce peak memory requirements.
+ * The function xs3_vect_complex_s16_mul_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} 
+ * based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}. 
  * 
- * @par Word Alignment Required:
- *      Parameters `a_real[]`, `a_imag[]`, `b_real[]`, `b_imag[]`, `c_real[]` and `c_imag[]` must begin at a 
- *      word-aligned (4-byte) address. For more about alignment requirements, see \ref vector_alignment.
+ * @param[out]      a_real      Real part of complex output vector @vector{a}
+ * @param[out]      a_imag      Imaginary aprt of complex output vector @vector{a}
+ * @param[in]       b_real      Real part of complex input vector @vector{b}
+ * @param[in]       b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]       c_real      Real part of complex input vector @vector{c}
+ * @param[in]       c_imag      Imaginary part of complex input vector @vector{c} 
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       a_shr       Right-shift applied to 32-bit intermediate results.
  * 
- * @param[out] a_real   Real part of output vector @vector{a}.
- * @param[out] a_imag   Imaginary part of output vector @vector{a}.
- * @param[in]  b_real   Real part of input vector @vector{b}.
- * @param[in]  b_imag   Imaginary part of input vector @vector{b}.
- * @param[in]  c_real   Real part of input vector @vector{c}.
- * @param[in]  c_real   Imaginary part of input vector @vector{c}.
- * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}.
- * @param[in]  sat      Right-shift applied to products.
+ * @return      Headroom of the output vector @vector{a}
  * 
- * @return The headroom of the output vector @vector{a} is returned.
- */
-headroom_t xs3_vect_complex_s16_mul(
-    int16_t a_real[],
-    int16_t a_imag[],
-    const int16_t b_real[],
-    const int16_t b_imag[],
-    const int16_t c_real[],
-    const int16_t c_imag[],
-    const unsigned length,
-    const right_shift_t sat);
-
-
-/**
- * @brief Compute the complex product of a complex 16-bit vector and the complex conjugate of another.
- * 
- * Multiply the vector @vector{b} element-wise with the complex conjugate of vector @vector{c} and divide the product by 
- * @math{2^{-sat}}, placing the result in the complex vector @vector{a}.
- * 
- * The 16-bit elements of @vector{b} and the complex conjugate of @vector{c} are multiplied to produce 32-bit values for 
- * the real and imaginary part of the result. Those 32-bit values are divided by @math{2^{sat}} and finally saturated to 
- * the symmetric 16-bit range (see TODO) for the final result. The division rounds away from zero.
- * 
- * The parameters `a_real[]` and `a_imag[]` together represent the complex output vector @vector{a}, with the former 
- * representing the real part of its elements and the latter representing the imaginary parts.
- * 
- * Similarly, `b_real[]` and `b_imag[]` together represent the complex input vector @vector{b}, and the parameters
- * `c_real[]` and `c_imag[]` together represent the complex input vector @vector{c}.
- * 
- * `sat` is the right-shift applied to the products of @vector{b} and @vector{c}, as @math{2^{-sat}}. `sat` can only
- * be used to apply a right shift of the products, so `sat` must be non-negative.
- * 
- * `length` is the number of elements in vectors @vector{a}, @vector{b} and @vector{c}.
- * 
- * This function returns the headroom of the output vector @vector{a}. The headroom of a complex 16-bit vector is the 
- * minimum of the headroom between its real and imaginary parts (i.e. `a_real[]` and `a_imag[]`).
- * 
- * @low_op{16, @f$ Re\\{a_k\\} \leftarrow \left(Re\\{b_k\\}\cdot Re\\{c_k\\} + Im\\{b_k\\}\cdot Im\\{c_k\\}\right) 
- *          \cdot 2^{-sat} \\
- *          Im\\{a_k\\} \leftarrow \left(Im\\{b_k\\}\cdot Re\\{c_k\\} - Re\\{b_k\\}\cdot Im\\{c_k\\}\right)
- *          \cdot 2^{-sat} \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1) @f$}
- * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
- * 
- * @par Safe In-Place Computation:
- *      The output of this function can be safely computed in-place if the output pointers `a_real[]` and `a_imag[]` are
- *      equal to the input pointers `b_real[]`, `b_imag[]`, `c_real[]` or `c_imag`. Using in-place operations may 
- *      reduce peak memory requirements.
- * 
- * @par Word Alignment Required:
- *      Parameters `a_real[]`, `a_imag[]`, `b_real[]`, `b_imag[]`, `c_real[]` and `c_imag[]` must begin at a 
- *      word-aligned (4-byte) address. For more about alignment requirements, see \ref vector_alignment.
- * 
- * @param[out] a_real   Real part of output vector @vector{a}.
- * @param[out] a_imag   Imaginary part of output vector @vector{a}.
- * @param[in]  b_real   Real part of input vector @vector{b}.
- * @param[in]  b_imag   Imaginary part of input vector @vector{b}.
- * @param[in]  c_real   Real part of input vector @vector{c}.
- * @param[in]  c_real   Imaginary part of input vector @vector{c}.
- * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}.
- * @param[in]  sat      Right-shift applied to products.
- * 
- * @return The headroom of the output vector @vector{a} is returned.
+ * @see xs3_vect_complex_s16_mul_prepare
  */
 headroom_t xs3_vect_complex_s16_conj_mul(
     int16_t a_real[],
@@ -270,26 +299,102 @@ headroom_t xs3_vect_complex_s16_conj_mul(
     const int16_t c_real[],
     const int16_t c_imag[],
     const unsigned length,
-    const right_shift_t sat);
+    const right_shift_t a_shr);
 
 /**
- * @brief Get headroom of complex 16-bit vector.
+ * @brief Calculate the headroom of a complex 16-bit array.
  * 
+ * The headroom of an N-bit integer is the number of bits that the integer's value may be left-shifted
+ * without any information being lost. Equivalently, it is one less than the number of leading sign bits.
+ * 
+ * The headroom of a `complex_s16_t` struct is the minimum of the headroom of each of its 16-bit fields,
+ * `re` and `im`.
+ * 
+ * The headroom of a `complex_s16_t` array is the minimum of the headroom of each of its `complex_s16_t`
+ * elements.
+ * 
+ * This function efficiently traverses the elements of @vector{x} to determine its headroom.
+ * 
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * 
+ * `length` is the number of elements in `b_real[]` and `b_imag[]`.
+ * 
+ * @low_op{16, @f$
+ *      min\!\\{ HR_{16}\left(x_0\right), HR_{16}\left(x_1\right), ..., HR_{16}\left(x_{length-1}\right) \\}
+ * @f$ }
+ * 
+ * @param[in]   b_real      Real part of complex input vector @vector{b}
+ * @param[in]   b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]   length      Number of elements in @vector{x}
+ * 
+ * @returns     Headroom of vector @vector{x} 
+ * 
+ * @see xs3_vect_ch_pair_s16_headroom
+ * @see xs3_vect_ch_pair_s32_headroom
+ * @see xs3_vect_s16_headroom
+ * @see xs3_vect_s32_headroom
+ * @see xs3_vect_complex_s32_headroom
  */
 headroom_t xs3_vect_complex_s16_headroom(
-    const int16_t a_real[],
-    const int16_t a_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
     const unsigned length);
 
+
 /**
- * Returns headroom
+ * @brief Compute the magnitude of each element of a complex 16-bit vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * `a[]` represents the real 16-bit output mantissa vector @vector{a}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
  * 
+ * Each of the input vectors must begin at a word-aligned address. This operation can be performed safely in-place on
+ * inputs `b_real[]` or `b_imag[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
+ * 
+ * `rot_table` must point to a pre-computed table of complex vectors used in calculating the magnitudes. `table_rows` is
+ * the number of rows in the table. This library is distributed with a default version of the required rotation table. 
+ * The following symbols can be used to refer to it in user code:
+ * 
+ * @code
+ *     const extern unsigned rot_table16_rows;
+ *     const extern complex_s16_t rot_table16[30][4];
+ * @endcode
+ * 
+ * Faster computation (with reduced precision) can be achieved by generating a smaller version of the table. A python
+ * script is provided to generate this table.
+ * @todo Point to documentation page on generating this table.
+ * 
+ * @low_op{16, @f$ 
+ *      v_k \leftarrow b_k \cdot 2^{-b\_shr}    \\
+ *      a_k \leftarrow \sqrt { {\left( Re\\{v_k\\} \right)}^2 + {\left( Im\\{v_k\\} \right)}^2 }
+ *        \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the real 16-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{a\_exp = b\_exp + b\_shr}.
+ * 
+ * The function xs3_vect_complex_mag_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} based on 
+ * the input exponent @math{b\_exp} and headroom @math{b\_hr}.
+ * 
+ * @param[out]  a           Real output vector @vector{a}
+ * @param[in]   b_real      Real part of complex input vector @vector{b}
+ * @param[in]   b_imag      Imag part of complex input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shr       Right-shift appled to @vector{b}
+ * @param[in]   rot_table   Pre-computed rotation table required for calculating magnitudes
+ * @param[in]   table_rows  Number of rows in `rot_table`
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @see xs3_vect_complex_mag_prepare
  */
 headroom_t xs3_vect_complex_s16_mag(
     int16_t a[],
@@ -301,72 +406,178 @@ headroom_t xs3_vect_complex_s16_mag(
     const unsigned table_rows);
 
 
+/**
+ * @brief Multiply one complex 16-bit vector element-wise by another.
+ * 
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `a_real[k]`, and each @math{Im\\{a_k\\}} is `a_imag[k]`.
+ * 
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
+ * 
+ * `c_real[]` and `c_imag[]` together represent the complex 16-bit input mantissa vector @vector{c}.
+ * Each @math{Re\\{c_k\\}} is `c_real[k]`, and each @math{Im\\{c_k\\}} is `c_imag[k]`.
+ * 
+ * Each of the input vectors must begin at a word-aligned address. This operation can be performed safely in-place on
+ * inputs `b_real[]`, `b_imag[]`, `c_real[]` and `c_imag[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `a_shr` is the unsigned arithmetic right-shift applied to the 32-bit accumulators holding intermediate results.
+ * 
+ * @low_op{16, @f$ 
+ *      v_k = \leftarrow Re\\{b_k\\} \cdot Re\\{c_k\\}
+ *                     - Im\\{b_k\\} \cdot Im\\{c_k\\}                      \\
+ *      s_k = \leftarrow Im\\{b_k\\} \cdot Re\\{c_k\\}
+ *                     + Re\\{b_k\\} \cdot Im\\{c_k\\}                      \\
+ *      Re\\{a_k\\} \leftarrow  round( sat_{16}( v_k \cdot 2^{-a\_shr} ) )  \\
+ *      Im\\{a_k\\} \leftarrow  round( sat_{16}( s_k \cdot 2^{-a\_shr} ) )  \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the 
+ * complex 16-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + a\_shr}.
+ * 
+ * The function xs3_vect_complex_s16_mul_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} 
+ * based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}. 
+ * 
+ * @param[out]      a_real      Real part of complex output vector @vector{a}
+ * @param[out]      a_imag      Imaginary aprt of complex output vector @vector{a}
+ * @param[in]       b_real      Real part of complex input vector @vector{b}
+ * @param[in]       b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]       c_real      Real part of complex input vector @vector{c}
+ * @param[in]       c_imag      Imaginary part of complex input vector @vector{c} 
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       a_shr       Right-shift applied to 32-bit intermediate results.
+ * 
+ * @return      Headroom of the output vector @vector{a}
+ * 
+ * @see xs3_vect_complex_s16_mul_prepare
+ */
+headroom_t xs3_vect_complex_s16_mul(
+    int16_t a_real[],
+    int16_t a_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const int16_t c_real[],
+    const int16_t c_imag[],
+    const unsigned length,
+    const right_shift_t a_shr);
 
 
 /**
+ * @brief Obtain the output exponent and output shift used by xs3_vect_complex_s16_mul() and 
+ * xs3_vect_complex_s16_conj_mul().
  * 
- * TODO: useful documentation info in the function's body. Copy some of that.
+ * This function is used in conjunction with xs3_vect_complex_s16_mul() to perform a complex element-wise multiplication
+ * of two complex 16-bit BFP vectors.
  * 
+ * This function computes `a_exp` and `a_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and must be chosen to be large enough to avoid 
+ * overflow when elements of @vector{a} are computed. To maximize precision, this function chooses `a_exp` to be the 
+ * smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this function is derived 
+ * from the exponents and headrooms of associated with the input vectors.
+ * 
+ * `a_shr` is the shift parameter required by xs3_vect_complex_s16_mul() to achieve the chosen output exponent `a_exp`.
+ * 
+ * `b_exp` and `c_exp` are the exponents associated with the input mantissa vectors @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If the headroom of @vector{b} or 
+ * @vector{c} is unknown, they can be obtained by calling xs3_vect_complex_s16_headroom(). Alternatively, the value `0`
+ * can always be safely used (but may result in reduced precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `a_shr` and `c_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_a_shr = a_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `new_a_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `a_shr` can result in saturation, and using larger 
+ * values may result in unnecessary underflows or loss of precision.
+ * 
+ * @par Notes
+ * 
+ * * Using the outputs of this function, an output mantissa which would otherwise be `INT16_MIN` will instead saturate 
+ *   to `-INT16_MAX`. This is due to the symmetric saturation logic employed by the VPU and is a hardware feature. This 
+ *   is a corner case which is usually unlikely and results in 1 LSb of error when it occurs.
+ * 
+ * @param[out]  a_exp               Exponent associated with output mantissa vector @vector{a}
+ * @param[out]  a_shr               Unsigned arithmetic right-shift for @vector{b} used by xs3_vect_complex_s16_mul()
+ * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   c_exp               Exponent associated with input mantissa vector @vector{c}
+ * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
+ * @param[in]   c_hr                Headroom of input mantissa vector @vector{c}
+ * 
+ * @see xs3_vect_complex_s16_conj_mul
+ * @see xs3_vect_complex_s16_mul
  */
-void xs3_vect_complex_s16_real_mul_prepare(
+void xs3_vect_complex_s16_mul_prepare(
     exponent_t* a_exp,
-    right_shift_t* sat,
+    right_shift_t* a_shr,
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
     const headroom_t c_hr,
     const unsigned allow_saturation);
 
+
 /**
- * @brief Multiply a complex 16-bit vector by a real 16-bit vector.
+ * @brief Multiply a complex 16-bit vector element-wise by a real 16-bit vector.
  * 
- * Multiply the complex vector @vector{b} element-wise with the real vector @vector{c} and divide the product by 
- * @math{2^{-sat}}, placing the result in the complex vector @vector{a}. 
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `a_real[k]`, and each @math{Im\\{a_k\\}} is `a_imag[k]`.
  * 
- * The 16-bit elements of @vector{b} and @vector{c} are multiplied for a 32-bit product. The 32-bit product is divided
- * by @math{2^{sat}} and finally saturated to the symmetric 16-bit range (see TODO) for the final result. The division
- * rounds away from zero.
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
  * 
- * The parameters `a_real[]` and `a_imag[]` together represent the complex output vector @vector{a}, with the former 
- * representing the real part of its elements and the latter representing the imaginary parts.
+ * `c_real[]` represents the real 16-bit input mantissa vector @vector{c}.
  * 
- * Similarly, `b_real[]` and `b_imag[]` together represent the complex input vector @vector{b}.
+ * Each of the input vectors must begin at a word-aligned address. This operation can be performed safely in-place on
+ * inputs `b_real[]`, `b_imag[]` and `c_real[]`.
  * 
- * The parameter `c_real[]` represents the real input vector @vector{c}.
+ * `length` is the number of elements in each of the vectors.
  * 
- * `sat` is the right-shift applied to the products of @vector{b} and @vector{c}, as @math{2^{-sat}}. `sat` can only
- * be used to apply a right shift of the products, so `sat` must be non-negative.
+ * `a_shr` is the unsigned arithmetic right-shift applied to the 32-bit accumulators holding the penultimate results.
  * 
- * `length` is the number of elements in vectors @vector{a}, @vector{b} and @vector{c}.
+ * @low_op{16, @f$ 
+ *      v_k = \leftarrow Re\\{b_k\\} \cdot c_k                              \\
+ *      s_k = \leftarrow Im\\{b_k\\} \cdot c_k                              \\
+ *      Re\\{a_k\\} \leftarrow  round( sat_{16}( v_k \cdot 2^{-a\_shr} ) )  \\
+ *      Im\\{a_k\\} \leftarrow  round( sat_{16}( s_k \cdot 2^{-a\_shr} ) )  \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
  * 
- * This function returns the headroom of the output vector @vector{a}. The headroom of a complex 16-bit vector is the 
- * minimum of the headroom between its real and imaginary parts (i.e. `a_real[]` and `a_imag[]`).
+ * @par Block Floating-Point
  * 
- * @low_op{16, @f$ Re\\{a_k\\} \leftarrow Re\\{b_k\\} \cdot c_k \cdot 2^{-sat} \\
- *                 Im\\{a_k\\} \leftarrow Im\\{b_k\\} \cdot c_k \cdot 2^{-sat} \\
- *                      \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the 
+ * complex 16-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + a\_shr}.
  * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
+ * The function xs3_vect_s16_real_mul_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} based 
+ * on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}. 
  * 
- * @par Safe In-Place Computation:
- *      The output of this function can be safely computed in-place if the output pointers `a_real[]` and `a_imag[]` are
- *      equal to the input pointers `b_real[]`, `b_imag[]` or `c_real[]`. Using in-place operations may reduce peak 
- *      memory requirements.
+ * @param[out]      a_real      Real part of complex output vector @vector{a}
+ * @param[out]      a_imag      Imaginary aprt of complex output vector @vector{a}
+ * @param[in]       b_real      Real part of complex input vector @vector{b}
+ * @param[in]       b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]       c_real      Real part of complex input vector @vector{c}
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       a_shr       Right-shift applied to 32-bit intermediate results.
  * 
- * @par Word Alignment Required:
- *      Parameters `a_real[]`, `a_imag[]`, `b_real[]`, `b_imag[]`, and `c_real[]` must begin at a word-aligned (4-byte)
- *      address. For more about alignment requirements, see \ref vector_alignment.
+ * @returns     Headroom of the output vector @vector{a}.
  * 
- * @param[out] a_real   Real part of output vector @vector{a}.
- * @param[out] a_imag   Imaginary part of output vector @vector{a}.
- * @param[in]  b_real   Real part of input vector @vector{b}.
- * @param[in]  b_imag   Imaginary part of input vector @vector{b}.
- * @param[in]  c_real   Input vector @vector{c}.
- * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}.
- * @param[in]  sat      Right-shift applied to products.
- * 
- * @return The headroom of the output vector @vector{a} is returned.
+ * @see xs3_vect_complex_s16_real_mul_prepare
  */
 headroom_t xs3_vect_complex_s16_real_mul(
     int16_t a_real[],
@@ -375,17 +586,116 @@ headroom_t xs3_vect_complex_s16_real_mul(
     const int16_t b_imag[],
     const int16_t c_real[],
     const unsigned length,
-    const right_shift_t sat);
+    const right_shift_t a_shr);
+
 
 /**
- * @todo No need for separate low-level 16-bit real scalar multiplication of complex vector. Although, I suppose we 
- *       could speed it up a little if we had a dedicated assembly function for this... currently the inner loop of
- *       xs3_vect_s16_scale() is 4 instructions (with no FNOPs). But we have separate arrays for real and imag in
- *       16-bit vectors, so we go through it twice per complex element. If it was a dedicated function, we could do both
- *       the real and imag parts in a single iteration, saving one branch instruction... but, if it ends up adding an
- *       FNOP, then it hasn't really sped it up. There would only be 7 dual-issue instructions in the loop though... at
- *       least after the first pass it seems like it should be able to hold all of them in the instruction buffer 
- *       (which theoretically fits 8?)
+ * @brief Obtain the output exponent and output shift used by xs3_vect_complex_s16_real_mul().
+ * 
+ * This function is used in conjunction with xs3_vect_complex_s16_real_mul() to perform a complex element-wise 
+ * multiplication of a complex 16-bit BFP vector by a real 16-bit vector.
+ * 
+ * This function computes `a_exp` and `a_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and must be chosen to be large enough to avoid 
+ * overflow when elements of @vector{a} are computed. To maximize precision, this function chooses `a_exp` to be the 
+ * smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this function is derived 
+ * from the exponents and headrooms of associated with the input vectors.
+ * 
+ * `a_shr` is the shift parameter required by xs3_vect_complex_s16_real_mul() to achieve the chosen output exponent 
+ * `a_exp`.
+ * 
+ * `b_exp` and `c_exp` are the exponents associated with the input mantissa vectors @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If the headroom of @vector{b} or 
+ * @vector{c} is unknown, they can be obtained by calling xs3_vect_complex_s16_headroom(). Alternatively, the value `0`
+ * can always be safely used (but may result in reduced precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `a_shr` and `c_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_a_shr = a_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `new_a_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `a_shr` can result in saturation, and using larger 
+ * values may result in unnecessary underflows or loss of precision.
+ * 
+ * @par Notes
+ * 
+ * * Using the outputs of this function, an output mantissa which would otherwise be `INT16_MIN` will instead saturate 
+ *   to `-INT16_MAX`. This is due to the symmetric saturation logic employed by the VPU and is a hardware feature. This 
+ *   is a corner case which is usually unlikely and results in 1 LSb of error when it occurs.
+ * 
+ * @param[out]  a_exp               Exponent associated with output mantissa vector @vector{a}
+ * @param[out]  a_shr               Unsigned arithmetic right-shift for @vector{a} used by 
+ *                                  xs3_vect_complex_s16_real_mul()
+ * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   c_exp               Exponent associated with input mantissa vector @vector{c}
+ * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
+ * @param[in]   c_hr                Headroom of input mantissa vector @vector{c}
+ * 
+ * @see xs3_vect_complex_s16_real_mul
+ */
+void xs3_vect_complex_s16_real_mul_prepare(
+    exponent_t* a_exp,
+    right_shift_t* a_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
+
+
+/**
+ * @brief Multiply a complex 16-bit vector by a real scalar.
+ * 
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `a_real[k]`, and each @math{Im\\{a_k\\}} is `a_imag[k]`.
+ * 
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
+ * 
+ * Each of the input vectors must begin at a word-aligned address. This operation can be performed safely in-place on
+ * inputs `b_real[]` and `b_imag[]`.
+ * 
+ * `c` is the real 16-bit input mantissa @math{c}.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `a_shr` is an unsigned arithmetic right-shift applied to the 32-bit accumulators holding the penultimate results.
+ * 
+ * @low_op{16, @f$
+ *      v_k = \leftarrow Re\\{b_k\\} \cdot c                                \\
+ *      s_k = \leftarrow Im\\{b_k\\} \cdot c                                \\
+ *      Re\\{a_k\\} \leftarrow  round( sat_{16}( v_k \cdot 2^{-a\_shr} ) )  \\
+ *      Im\\{a_k\\} \leftarrow  round( sat_{16}( s_k \cdot 2^{-a\_shr} ) )  \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the 
+ * complex 16-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + a\_shr}.
+ * 
+ * The function xs3_vect_s16_real_mul_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} based 
+ * on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}. 
+ * 
+ * @param[out]      a_real      Real part of complex output vector @vector{a}
+ * @param[out]      a_imag      Imaginary aprt of complex output vector @vector{a}
+ * @param[in]       b_real      Real part of complex input vector @vector{b}
+ * @param[in]       b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]       c           Real input scalar @math{c}
+ * @param[in]       length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]       a_shr       Right-shift applied to 32-bit intermediate results.
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
  */
 headroom_t xs3_vect_complex_s16_real_scale(
     int16_t a_real[],
@@ -394,62 +704,56 @@ headroom_t xs3_vect_complex_s16_real_scale(
     const int16_t b_imag[],
     const int16_t c,
     const unsigned length,
-    const right_shift_t sat);
+    const right_shift_t a_shr);
 
 
 /**
- * @brief Compute complex product of a complex 16-bit vector with a complex 16-bit scalar.
+ * @brief Multiply a complex 16-bit vector by a complex 16-bit scalar.
  * 
- * Multiply the vector @vector{b} with the scalar @math{c} and divide the product by 
- * @math{2^{-sat}}, placing the result in the complex vector @vector{a}.
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `a_real[k]`, and each @math{Im\\{a_k\\}} is `a_imag[k]`.
  * 
- * Each 16-bit element of @vector{b} is multiplied by @math{c} to produce a 32-bit value for the real and imaginary
- * part of the result. Those 32-bit values are divided by @math{2^{sat}} and finally saturated to the symmetric 16-bit 
- * range (see TODO) for the final result. The division rounds away from zero.
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
  * 
- * The parameters `a_real[]` and `a_imag[]` together represent the complex output vector @vector{a}, with the former 
- * representing the real part of its elements and the latter representing the imaginary parts.
+ * Each of the input vectors must begin at a word-aligned address. This operation can be performed safely in-place on
+ * inputs `b_real[]` and `b_imag[]`.
  * 
- * Similarly, `b_real[]` and `b_imag[]` together represent the complex input vector @vector{b}. 
+ * `c_real` and `c_imag` are the real and imaginary parts of the complex 16-bit input mantissa @math{c}.
  * 
- * The parameters `c_real` and `c_imag` together represent the complex input scalar @math{c}.
+ * `length` is the number of elements in each of the vectors.
  * 
- * `sat` is the right-shift applied to the products of @vector{b} and @math{c}, as @math{2^{-sat}}. `sat` can only
- * be used to apply a right shift of the products, so `sat` must be non-negative.
+ * `a_shr` is the unsigned arithmetic right-shift applied to the 32-bit accumulators holding the penultimate results.
  * 
- * `length` is the number of elements in vectors @vector{a} and @vector{b}.
+ * @low_op{16, @f$
+ *      v_k = \leftarrow Re\\{b_k\\} \cdot Re\\{c\\}  
+ *                     - Im\\{b_k\\} \cdot Im\\{c\\}                        \\
+ *      s_k = \leftarrow Im\\{b_k\\} \cdot Re\\{c\\}  
+ *                     + Re\\{b_k\\} \cdot Im\\{c\\}                        \\
+ *      Re\\{a_k\\} \leftarrow  round( sat_{16}( v_k \cdot 2^{-a\_shr} ) )  \\
+ *      Im\\{a_k\\} \leftarrow  round( sat_{16}( s_k \cdot 2^{-a\_shr} ) )  \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
  * 
- * This function returns the headroom of the output vector @vector{a}. The headroom of a complex 16-bit vector is the 
- * minimum of the headroom between its real and imaginary parts (i.e. `a_real[]` and `a_imag[]`).
+ * @par Block Floating-Point
  * 
- * @low_op{16, @f$ Re\\{a_k\\} \leftarrow \left(Re\\{b_k\\}\cdot Re\\{c\\}-Im\\{b_k\\}\cdot Im\\{c\\}\right) 
- *          \cdot 2^{-sat} \\
- *          Im\\{a_k\\} \leftarrow \left(Re\\{b_k\\}\cdot Im\\{c\\}+Im\\{b_k\\}\cdot Re\\{c\\}\right)
- *          \cdot 2^{-sat} \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1) @f$}
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the 
+ * complex 16-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + a\_shr}.
  * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
+ * The function xs3_vect_complex_s16_mul_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} 
+ * based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}. 
  * 
- * @par Safe In-Place Computation:
- *      The output of this function can be safely computed in-place if the output pointers `a_real[]` and `a_imag[]` are
- *      equal to the input pointers `b_real[]` or `b_imag[]`. Using in-place operations may reduce peak memory 
- *      requirements.
+ * @param[out]      a_real      Real part of complex output vector @vector{a}
+ * @param[out]      a_imag      Imaginary aprt of complex output vector @vector{a}
+ * @param[in]       b_real      Real part of complex input vector @vector{b}
+ * @param[in]       b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]       c_real      Real part of complex input scalar @math{c}
+ * @param[in]       c_imag      Imaginary part of complex input scalar @math{c}
+ * @param[in]       length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]       a_shr       Right-shift applied to 32-bit intermediate results
  * 
- * @par Word Alignment Required:
- *      Parameters `a_real[]`, `a_imag[]`, `b_real[]`, and `b_imag[]` must begin at a word-aligned (4-byte) address. 
- *      For more about alignment requirements, see \ref vector_alignment.
- * 
- * @param[out] a_real   Real part of output vector @vector{a}.
- * @param[out] a_imag   Imaginary part of output vector @vector{a}.
- * @param[in]  b_real   Real part of input vector @vector{b}.
- * @param[in]  b_imag   Imaginary part of input vector @vector{b}.
- * @param[in]  c_real   Real part of input scalar @math{c}.
- * @param[in]  c_real   Imaginary part of input scalar @math{c}.
- * @param[in]  length   Number of elements in vectors @vector{a} and @vector{b}.
- * @param[in]  sat      Right-shift applied to products.
- * 
- * @return The headroom of the output vector @vector{a} is returned.
+ * @returns     Headroom of the output vector @vector{a}.
  */
 headroom_t xs3_vect_complex_s16_scale(
     int16_t a_real[],
@@ -459,91 +763,290 @@ headroom_t xs3_vect_complex_s16_scale(
     const int16_t c_real,
     const int16_t c_imag,
     const unsigned length,
-    const right_shift_t sat);
+    const right_shift_t a_shr);
 
 
-
-/** Set all elements of a `complex_s32_t` array to the specified value.
+/**
+ * @brief Set each element of a complex 16-bit vector to a specified value.
  * 
- * \low_op{Complex&nbsp;32, @f$data_k \leftarrow real + i\cdot imag\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `a_real[k]`, and each @math{Im\\{a_k\\}} is `a_imag[k]`. Each must begin at a word-aligned 
+ * address.
  * 
- * \requires_word_alignment{data}
+ * `b_real` and `b_imag` are the real and imaginary parts of the complex 16-bit input mantissa @math{b}. Each 
+ * `a_real[k]` will be set to `b_real`. Each `a_imag[k]` will be set to `b_imag`.
  * 
- * \param[out] data     Array to set
- * \param[in]  real     Real part of value to set
- * \param[in]  imag     Imaginary part of value to set
- * \param[in]  length   Number of elements in `data`
+ * `length` is the number of elements in `a_real[]` and `a_imag[]`.
+ * 
+ * @low_op{16, @f$ 
+ *      Re\\{a_k\\} \leftarrow Re\\{b\\}                \\
+ *      Im\\{a_k\\} \leftarrow Im\\{b\\}                \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @math{b} is the mantissa of floating-point value @math{b \cdot 2^{b\_exp}}, then the output vector @vector{a} are
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * 
+ * @param[out]      a_real      Real part of complex output vector @vector{a}
+ * @param[out]      a_imag      Imaginary aprt of complex output vector @vector{a}
+ * @param[in]       b_real      Real part of complex input scalar @math{b}
+ * @param[in]       b_imag      Imaginary part of complex input scalar @math{b}
+ * @param[in]       length      Number of elements in vectors @vector{a} and @vector{b}
  */
 void xs3_vect_complex_s16_set(
-    int16_t real[],
-    int16_t imag[],
-    const int16_t real_value,
-    const int16_t imag_value,
+    int16_t a_real[],
+    int16_t a_imag[],
+    const int16_t b_real,
+    const int16_t b_imag,
     const unsigned length);
 
 
+/**
+ * @brief Left-shift each element of a complex 16-bit vector by a specified number of bits.
+ * 
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `a_real[k]`, and each @math{Im\\{a_k\\}} is `a_imag[k]`.
+ * 
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
+ * 
+ * Each of the input vectors must begin at a word-aligned address. This operation can be performed safely in-place on
+ * inputs `b_real[]` and `b_imag[]`.
+ * 
+ * `length` is the number of elements in @vector{a} and @vector{b}.
+ * 
+ * `b_shl` is the signed arithmetic left-shift applied to each element of @vector{b}.
+ * 
+ * @low_op{16, @f$
+ *      Re\\{a_k\\} \leftarrow sat_{16}(\lfloor Re\\{b_k\\} \cdot 2^{b\_shl} \rfloor)     \\
+ *      Im\\{a_k\\} \leftarrow sat_{16}(\lfloor Im\\{b_k\\} \cdot 2^{b\_shl} \rfloor)     \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the complex 16-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{b\_shl}} and @math{a\_exp = b\_exp}.
+ * 
+ * @param[out] a_real       Real part of complex output vector @vector{a}
+ * @param[out] a_imag       Imaginary aprt of complex output vector @vector{a}
+ * @param[in]  b_real       Real part of complex input vector @vector{b}
+ * @param[in]  b_imag       Imaginary part of complex input vector @vector{b}
+ * @param[in]  length       Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]  b_shl        Left-shift applied to @vector{b} 
+ * 
+ * @returns     Headroom of the output vector @vector{a}
+ */
 headroom_t xs3_vect_complex_s16_shl(
     int16_t a_real[],
     int16_t a_imag[],
     const int16_t b_real[],
     const int16_t b_imag[],
     const unsigned length,
-    const left_shift_t shl);
+    const left_shift_t b_shl);
 
+
+/**
+ * @brief Right-shift each element of a complex 16-bit vector by a specified number of bits.
+ * 
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `a_real[k]`, and each @math{Im\\{a_k\\}} is `a_imag[k]`.
+ * 
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
+ * 
+ * Each of the input vectors must begin at a word-aligned address. This operation can be performed safely in-place on
+ * inputs `b_real[]` and `b_imag[]`.
+ * 
+ * `length` is the number of elements in @vector{a} and @vector{b}.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * 
+ * @low_op{16, @f$
+ *      Re\\{a_k\\} \leftarrow sat_{16}(\lfloor Re\\{b_k\\} \cdot 2^{-b\_shr} \rfloor)     \\
+ *      Im\\{a_k\\} \leftarrow sat_{16}(\lfloor Im\\{b_k\\} \cdot 2^{-b\_shr} \rfloor)     \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the complex 16-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{-b\_shr}} and @math{a\_exp = b\_exp}.
+ * 
+ * @param[out] a_real       Real part of complex output vector @vector{a}
+ * @param[out] a_imag       Imaginary aprt of complex output vector @vector{a}
+ * @param[in]  b_real       Real part of complex input vector @vector{b}
+ * @param[in]  b_imag       Imaginary part of complex input vector @vector{b}
+ * @param[in]  length       Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]  b_shr        Right-shift applied to @vector{b} 
+ * 
+ * @returns     Headroom of the output vector @vector{a}
+ */
 headroom_t xs3_vect_complex_s16_shr(
     int16_t a_real[],
     int16_t a_imag[],
     const int16_t b_real[],
     const int16_t b_imag[],
     const unsigned length,
-    const right_shift_t shr);
+    const right_shift_t b_shr);
 
 
 /**
- * @todo
- */
-void xs3_vect_complex_s16_squared_mag_prepare(
-    exponent_t* a_exp,
-    right_shift_t* sat,
-    const exponent_t b_exp,
-    const headroom_t b_hr,
-    const unsigned allow_saturation);
-
-
-/**
- * @brief Compute the squared magnitudes of elements of a complex 16-bit vector.
+ * @brief Get the squared magnitudes of elements of a complex 16-bit vector.
  * 
- * The parameter `a[]` represents the vector of squared magnitudes @vector{a}.
+ * `a[]` represents the real 16-bit output mantissa vector @vector{a}.
  * 
- * The parameters `b_real[]` and `b_imag[]` together represent the complex input vector @vector{b}.
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
  * 
- * The parameter `length` is the number of elements in each of the vectors.
+ * Each of the input vectors must begin at a word-aligned address.
  * 
- * The parameter `sat` is the right-shift applied to each result to avoid saturation. `sat` can only be used to apply a 
- * right-shift of the products, so `sat` must be non-negative.
+ * `length` is the number of elements in each of the vectors.
  * 
- * @low_op{16, @f$ a_k \leftarrow ((Re\\{b_k\\})^2 + (Im\\{b_k\\})^2)\cdot 2^{-sat} \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1)@f$}
+ * `a_shr` is the unsigned arithmetic right-shift applied to the 32-bit accumulators holding the penultimate results.
  * 
- * @par Maximizing Precision:
- *      TODO - Guidelines for keeping maximal precision with this function.
+ * @low_op{16, @f$ 
+ *      a_k \leftarrow ((Re\\{b_k'\\})^2 + (Im\\{b_k'\\})^2)\cdot 2^{-a\_shr}   \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
  * 
- * @param[out] a        The output vector @vector{a}.
- * @param[in]  b_real   The real part of input vector @vector{b}.
- * @param[in]  b_imag   The imaginary part of input vector @vector{b}.
- * @param[in]  length   The number of elements in vector @vector{b}.
- * @param[in]  sat      The right-shift applied to the results.
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the real 16-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{a\_exp = 2 \cdot b\_exp + a\_shr}.
+ * 
+ * The function xs3_vect_complex_s16_squared_mag_prepare() can be used to obtain values for @math{a\_exp} and 
+ * @math{a\_shr} based on the input exponent @math{b\_exp} and headroom @math{b\_hr}.
+ * 
+ * @param[out]  a           Real output vector @vector{a}
+ * @param[in]   b_real      Real part of complex input vector @vector{b}
+ * @param[in]   b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   a_shr       Right-shift appled to 32-bit intermediate results
+ * 
+ * @see xs3_vect_complex_s16_squared_mag_prepare
  */
 headroom_t xs3_vect_complex_s16_squared_mag(
     int16_t a[],
     const int16_t b_real[],
     const int16_t b_imag[],
     const unsigned length,
-    const right_shift_t sat);
+    const right_shift_t a_shr);
 
 
 /**
- * @todo
+ * @brief Obtain the output exponent and input shift used by xs3_vect_complex_s16_squared_mag().
+ * 
+ * This function is used in conjunction with xs3_vect_complex_s16_squared_mag() to compute the squared magnitude of each 
+ * element of a complex 16-bit BFP vector.
+ * 
+ * This function computes `a_exp` and `a_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and is be chosen to maximize precision when
+ * elements of @vector{a} are computed. The `a_exp` chosen by this function is derived from the exponent and headroom
+ * associated with the input vector.
+ * 
+ * `a_shr` is the shift parameter required by xs3_vect_complex_s16_mag() to achieve the chosen output exponent `a_exp`.
+ * 
+ * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
+ * 
+ * `b_hr` is the headroom of @vector{b}. If the headroom of @vector{b} is unknown it can be calculated using 
+ * xs3_vect_complex_s16_headroom(). Alternatively, the value `0` can always be safely used (but may result in reduced
+ * precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `a_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t a_exp;
+ *      right_shift_t a_shr;
+ *      xs3_vect_s16_mul_prepare(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr);
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      a_shr = a_shr + (desired_exp - a_exp);
+ *      a_exp = desired_exp;
+ * \endcode
+ * 
+ * When applying the above adjustment, the following condition should be maintained:
+ * * `a_shr >= 0`
+ * 
+ * Using larger values than strictly necessary for `a_shr` may result in unnecessary underflows or loss of precision.
+ * 
+ * @param[out]  a_exp               Output exponent associated with output mantissa vector @vector{a}
+ * @param[out]  a_shr               Unsigned arithmetic right-shift for @vector{a} used by 
+ *                                  xs3_vect_complex_s16_squared_mag()
+ * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
+ * 
+ * @see xs3_vect_complex_s16_squared_mag()
+ */
+void xs3_vect_complex_s16_squared_mag_prepare(
+    exponent_t* a_exp,
+    right_shift_t* a_shr,
+    const exponent_t b_exp,
+    const headroom_t b_hr);
+
+
+/**
+ * @brief Subtract one complex 16-bit vector from another.
+ * 
+ * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `a_real[k]`, and each @math{Im\\{a_k\\}} is `a_imag[k]`.
+ * 
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
+ * 
+ * `c_real[]` and `c_imag[]` together represent the complex 16-bit input mantissa vector @vector{c}.
+ * Each @math{Re\\{c_k\\}} is `c_real[k]`, and each @math{Im\\{c_k\\}} is `c_imag[k]`.
+ * 
+ * Each of the input vectors must begin at a word-aligned address. This operation can be performed safely in-place on
+ * inputs `b_real[]`, `b_imag[]`, `c_real[]` and `c_imag[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * @low_op{16, @f$ 
+ *      b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      c_k' \leftarrow sat_{16}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)     \\
+ *      Re\\{a_k\\} \leftarrow Re\\{b_k'\\} - Re\\{c_k'\\}                  \\
+*       Im\\{a_k\\} \leftarrow Im\\{b_k'\\} - Im\\{c_k'\\}                  \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} and @vector{c} are the complex 16-bit mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the complex 16-bit mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}. 
+ * 
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
+ * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
+ * are associated with the same exponent.
+ * 
+ * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
+ * 
+ * @param[out]      a_real      Real part of complex output vector @vector{a}
+ * @param[out]      a_imag      Imaginary aprt of complex output vector @vector{a}
+ * @param[in]       b_real      Real part of complex input vector @vector{b}
+ * @param[in]       b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]       c_real      Real part of complex input vector @vector{c}
+ * @param[in]       c_imag      Imaginary part of complex input vector @vector{c} 
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       b_shr       Right-shift applied to @vector{b}
+ * @param[in]       c_shr       Right-shift applied to @vector{c}
+ * 
+ * @returns     Headroom of output vector @vector{a}.
+ * 
+ * @see xs3_vect_add_sub_prepare
  */
 headroom_t xs3_vect_complex_s16_sub(
     int16_t a_real[],
@@ -555,23 +1058,31 @@ headroom_t xs3_vect_complex_s16_sub(
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
-    
-    
-    
+
+
 /**
- * @brief Compute the sum of elements of a complex 16-bit vector.
+ * @brief Get the sum of elements of a complex 16-bit vector.
  * 
- * This function computes the 32-bit complex sum of the elements of vector @vector{b}. The result is returned 
- * as a `complex_s32_t`.
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}, and must both begin
+ * at a word-aligned address. Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
  * 
- * @low_op{16, @f$ \sum_{k=0}^{length-1} \left( Re\\{b_k\\} + j\cdot Im\\{b_k\\} \right) 
- *          \qquad\text{ for }k\in 0\ ...\ (length-1)   @f$}
+ * `length` is the number of elements in @vector{b}.
  * 
- * @param[in] b_real    The real part of input vector @vector{b}.
- * @param[in] b_imag    The imaginary part of input vector @vector{b}.
- * @param[in] length    The number of elements in vector @vector{b}.
+ * @low_op{16, @f$ 
+ *      Re\\{a\\} \leftarrow \sum_{k=0}^{length-1} \left( Re\\{b_k\\} \right)      \\
+ *      Im\\{a\\} \leftarrow \sum_{k=0}^{length-1} \left( Im\\{b_k\\} \right)      
+ * @f$ }
  * 
- * @return The complex 32-bit sum.
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the returned value @math{a} is 
+ * the complex 32-bit mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * 
+ * @param[in] b_real    Real part of complex input vector @vector{b}
+ * @param[in] b_imag    Imaginary part of complex input vector @vector{b}
+ * @param[in] length    Number of elements in vector @vector{b}.
+ * 
+ * @returns @math{a}, the 32-bit complex sum of elements in @vector{b}.
  */
 complex_s32_t xs3_vect_complex_s16_sum(
     const int16_t b_real[],
@@ -581,20 +1092,31 @@ complex_s32_t xs3_vect_complex_s16_sum(
 /**
  * @brief Convert a complex 16-bit vector into a complex 32-bit vector.
  * 
- * Each element of the input vector @vector{b} is assigned to the corresponding element of output vector @vector{b}. No
- * scaling is applied by this operation.
+ * `a[]` represents the complex 32-bit output vector @vector{a}. It must begin at a double word (8-byte) aligned 
+ * address.
  * 
- * The parameter `a[]` represents the 32-bit output vector @vector{a}.
- * 
- * The parameters `b_real[]` and `b_imag[]` together represent the complex input vector @vector{b}.
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
  * 
  * The parameter `length` is the number of elements in each of the vectors.
  * 
- * @low_op{16, @f$ Re\\{a_k\\} \leftarrow Re\\{b_k\\} \\
- *                 Im\\{a_k\\} \leftarrow Im\\{b_k\\} \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1)@f$}
+ * `length` is the number of elements in each of the vectors.
  * 
- * @note The headroom of the output vector @vector{a} is 16 more than that of the input vector @vector{b}.
+ * @low_op{16, @f$ 
+ *      Re\\{a_k\\} \leftarrow Re\\{b_k\\}              \\
+ *      Im\\{a_k\\} \leftarrow Im\\{b_k\\}              \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the resulting 
+ * vector @vector{a} are the complex 32-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where
+ * @math{a\_exp = b\_exp}.
+ * 
+ * @par Notes
+ * * The headroom of output vector @vector{a} is not returned by this function. The headroom of the output is always
+ *   16 bits greater than the headroom of the input.
  * 
  * @param[out] a        Complex output vector @vector{a}.
  * @param[in]  b_real   Real part of complex input vector @vector{b}.
@@ -608,80 +1130,104 @@ void xs3_vect_complex_s16_to_complex_s32(
     const unsigned length);
 
 
-/** Calculate the absolute sum of a 16-bit BFP vector.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * Conceptually, the operation performed is:
- *      A <-  ( |B[0]| + |B[1]| + ... + |B[N-1]| )
- *        where A is a scalar
- *              B[] is a BFP vector of size N
- * 
- * \param[in] b         Input vector
- * \param[in] length    Length of input vector
- * \param[in] b_shr     Right-shift applied to elements of `b`
- * 
- * \return  Absolute sum
- */
-int32_t xs3_vect_s16_abs_sum(
-    const int16_t b[],
-    const unsigned length);
-
-
 /** 
- * \brief Compute the absolute value (element-wise) of an `int16_t` vector.
+ * @brief Compute the element-wise absolute value of a 16-bit vector.
  * 
- * Each output element `a[k]` is set to the absolute value of the corresponding 
- * input element `b[k]` 
+ * `a[]` and `b[]` represent the 16-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
- * \low_op{16, @f$a_k \leftarrow \left| b_k \right|\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * `length` is the number of elements in each of the vectors.
  * 
- * \requires_word_alignment{a,b}
- * \safe_in_place{a,b}
+ * @low_op{32, @f$ 
+ *      a_k \leftarrow sat_{32}(\left| b_k \right|)         \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector
- * \param[in] length    Number of elements in vectors `a` and `b`
+ * @par Block Floating-Point
  * 
- * \return  Headroom of the output vector `a`
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the output vector @vector{a} are
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input vector @vector{b}
+ * @param[in]  length   Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
  */
 headroom_t xs3_vect_s16_abs(
     int16_t a[],
     const int16_t b[],
     const unsigned length);
 
-    
+
 /**
- * \brief Add together two `int16_t` vectors.
+ * @brief Compute the sum of the absolute values of elements of a 16-bit vector.
  * 
- * Add together the two `int16_t` vectors `b[]` and `c[]`, placing the result in `a[]`. Each element of `b[]` 
- * or `c[]` has an arithmetic right shift of `b_shr` or `c_shr` bits (respectively) applied before the addition.
- * Negative values of `b_shr` and `c_shr` will left-shift.
+ * `b[]` represents the 16-bit vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
- * \low_op{16, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} + c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * `length` is the number of elements in @vector{b}.
  * 
- * \safe_in_place{a,b,c}
- * \requires_word_alignment{a,b,c}
+ * @low_op{16, @f$
+ *      a \leftarrow \sum_{k=0}^{length-1} sat_{16}(\left| b_k \right|)
+ * @f$ }
  * 
- * \warning \li Both shifts (if they are negative) and the addition are saturating operations, and will saturate to the
- *       symmetric 16-bit range  (see: TODO).
+ * @par Block Floating-Point
  * 
- * \warning \li Where negative values underflow due to a right-shift, the resulting value is `-1`, rather than `0`. (see: TODO)
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the returned value @math{a} is 
+ * the 32-bit mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector 1
- * \param[in] c         Input vector 2
- * \param[in] length    Number of elements in `a`, `b` and `c`
- * \param[in] b_shr     Arithmetic right-shift applied to elements of `b[]`
- * \param[in] c_shr     Arithmetic right-shift applied to elements of `c[]`
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in @vector{b}
  * 
- * \return  Headroom of output vector `a[]`
+ * @returns The 32-bit sum @math{a}
+ */
+int32_t xs3_vect_s16_abs_sum(
+    const int16_t b[],
+    const unsigned length);
+
+
+/**
+ * @brief Add one 16-bit BFP vector to another.
  * 
- * \see bfp_s16_add()
+ * `a[]`, `b[]` and `c[]` represent the 16-bit vectors @vector{a}, @vector{b} and @vector{c} respectively. Each must 
+ * begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * @low_op{16, @f$ 
+ *      b_k' = sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)  \\
+ *      c_k' = sat_{16}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)  \\
+ *      a_k \leftarrow sat_{16}\!\left( b_k' + c_k' \right)     \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}. 
+ * 
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
+ * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
+ * are associated with the same exponent.
+ * 
+ * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
+ * 
+ * @param[out]      a           Output vector @vector{a}
+ * @param[in]       b           Input vector @vector{b}
+ * @param[in]       c           Input vector @vector{c}
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       b_shr       Right-shift appled to @vector{b}
+ * @param[in]       c_shr       Right-shift appled to @vector{c}
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @see xs3_vect_add_sub_prepare
  */
 headroom_t xs3_vect_s16_add(
     int16_t a[],
@@ -692,77 +1238,92 @@ headroom_t xs3_vect_s16_add(
     const right_shift_t c_shr);
 
 
-/** Find the index of the maximum element of a 16-bit integer vector.
+/**
+ * @brief Obtain the array index of the maximum element of a 16-bit vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * `b[]` represents the 16-bit input vector @vector{b}. It must begin at a word-aligned address.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `length` is the number of elements in @vector{b}.
  * 
+ * @low_op{16, @f$ 
+ *      a \leftarrow argmax_k\\{ b_k \\}     \\ 
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
  * 
- * Conceptually, the operation performed is:
- *      result <- argmax[i]{ A[i] }
- *        where A[] is an integer vector of size N
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elemetns in @vector{b}
  * 
- * \param a         Input vector
- * \param length    Length of the vector `a`
- * 
- * \return  Index of the maximum element of `a`.
+ * @returns @math{a}, the index of the maximum element of vector @vector{b}. If there is a tie for the maximum value, 
+ *          the lowest tying index is returned.
  */
 unsigned xs3_vect_s16_argmax(
-    const int16_t a[], 
+    const int16_t b[], 
     const unsigned length);
 
-/** Find the index of the minimum element of a 16-bit integer vector.
- * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
- * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
- * 
- * 
- * Conceptually, the operation performed is:
- *      result <- argmin[i]{ A[i] }
- *        where A[] is an integer vector of size N
- * 
- * \param a         Input vector
- * \param length    Length of the vector `a`
- *  
- * \return  Index of the minimum element of `a`.
- */
-unsigned xs3_vect_s16_argmin(
-    const int16_t a[], 
-    const unsigned length);
 
 /**
- * \brief Clamp the elements of an `int16_t` vector to a specified range.
+ * @brief Obtain the array index of the minimum element of a 16-bit vector.
  * 
- * Each element of `b` is right-shifted by `b_shr` and compared to `lower_bound`
- * and `upper_bound`. If the shifted value is less than `lower_bound`, the output
- * element will be `lower_bound`. If the shifted value is greater than `upper_bound`,
- * the output element will be `upper_bound`. Otherwise, the shifted value is output.
+ * `b[]` represents the 16-bit input vector @vector{b}. It must begin at a word-aligned address.
  * 
- * \low_op{16, @f$a_k \leftarrow \begin\{cases\}
- *                       lower\_bound & b_k \cdot 2^\{-b\_shr\} \lt lower\_bound \\
- *                       upper\_bound & b_k \cdot 2^\{-b\_shr\} \gt upper\_bound \\
- *                       b_k \cdot 2^\{-b\_shr\} & otherwise
- *                          \end\{cases\}
- *                                  \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * `length` is the number of elements in @vector{b}.
  * 
- * \safe_in_place{a,b}
- * \requires_word_alignment{a,b}
+ * @low_op{16, @f$ 
+ *      a \leftarrow argmin_k\\{ b_k \\}     \\ 
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
  * 
- * \param[out]  a               Output vector
- * \param[in]   b               Input vector
- * \param[in]   length          Number of elements in vectors `a` and `b`
- * \param[in]   lower_bound     Lower bound of clipping range
- * \param[in]   upper_bound     Upper bound of clipping range
- * \param[in]   b_shr           Right-shift applied to elements of `b`
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elemetns in @vector{b}
  * 
- * \return  Headroom of output vector `a`
+ * @returns @math{a}, the index of the minimum element of vector @vector{b}. If there is a tie for the minimum value, 
+ *          the lowest tying index is returned.
+ */
+unsigned xs3_vect_s16_argmin(
+    const int16_t b[], 
+    const unsigned length);
+
+
+/**
+ * @brief Clamp the elements of a 16-bit vector to a specified range.
  * 
+ * `a[]` and `b[]` represent the 16-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `lower_bound` and `upper_bound` are the lower and upper bounds of the clipping range respectively. These bounds are
+ * checked for each element of @vector{b} only _after_ `b_shr` is applied.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b} _before_ being compared to the upper
+ * and lower bounds. 
+ * 
+ * If @vector{b} are the mantissas for a BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the exponent @math{a\_exp} of
+ * the output BFP vector @math{\bar{a} \cdot 2^{a\_exp}} is given by @math{a\_exp = b\_exp + b\_shr}.
+ * 
+ * @low_op{16, @f$
+ *      b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor) \\
+ *      a_k \leftarrow \begin\{cases\}
+ *          lower\_bound & b_k' \le lower\_bound                        \\
+ *          upper\_bound & b_k' \ge upper\_bound                        \\
+ *          b_k' & otherwise \end\{cases\}                              \\
+ *      \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the output vector @vector{a} are
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{a\_exp = b\_exp + b\_shr}.
+ * 
+ * @param[out]  a               Output vector @vector{a}
+ * @param[in]   b               Input vector @vector{b}
+ * @param[in]   length          Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   lower_bound     Lower bound of clipping range
+ * @param[in]   upper_bound     Upper bound of clipping range
+ * @param[in]   b_shr           Arithmetic right-shift applied to elements of @vector{b} prior to clipping
+ * 
+ * @returns  Headroom of output vector @vector{a}
  */
 headroom_t xs3_vect_s16_clip(
     int16_t a[],
@@ -774,61 +1335,86 @@ headroom_t xs3_vect_s16_clip(
 
 
 /**
- * @brief Compute the dot product between two `int16_t` vectors.
+ * @brief Compute the inner product of two 16-bit vectors.
  * 
- * Elements of the vector `b` are right-shifted `b_shr` bits and multiplied by the corresponding 
- * elements of vector `c` right-shifted `c_shr` bits. The element-wise products are added together
- * and the sum is right-shifted `sat` bits to produce the final 16-bit result.
+ * `b[]` and `c[]` represent the 32-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * word-aligned address.
  * 
- * Either `b_shr` and `c_shr` (or both) may be negative, in which case left-shifting occurs instead of right-shifting.
- * The shifts on the elements of `b` and `c` are saturating (if negative) and truncate rather than round (if positive).
- * Negative values for `sat` are treated as zeros. The final shift is rounding, and the result saturates to 16-bit
- * bounds.
+ * `length` is the number of elements in each of the vectors.
  * 
- * The accumulator into which the element-wise products are accumulated is 32 bits wide and saturates to 32-bit
- * bounds. To avoid saturation, choose sufficiently large values for `b_shr` and `c_shr` such that saturation
- * of the accumulator is not possible.
+ * \low_op{16, @f$ 
+ *      a \leftarrow \sum_{k=0}^{length-1}\left( b_k \cdot c_k \right)
+ * @f$ }
  * 
- * All shifts are arithmetic.
+ * @par Block Floating-Point
  * 
- * @low_op{16, @f$ \left(\sum_\{k=0\}^\{length-1\} \{\left(b_k \cdot 2^\{-b\_shr\}\right)\times\left(c_k\cdot 2^\{-c\_shr\}\right)\}\right) \cdot 2^\{-sat\}    @f$ }
+ * If @vector{b} and @vector{c} are the mantissas of the BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c}\cdot 2^{c\_exp}, then result @math{a} is the mantissa of the result @math{a \cdot 2^{a\_exp}}, where
+ * @math{a\_exp = b\_exp + c\_exp}.
  * 
- * @requires_word_alignment{b,c}
+ * If needed, the bit-depth of @math{a} can then be reduced to 16 or 32 bits to get a new result 
+ * @math{a' \cdot 2^{a\_exp'}} where @math{a' = a \cdot 2^{-a\_shr}} and @math{a\_exp' = a\_exp + a\_shr}.
  * 
- * @param[in] b         First input vector
- * @param[in] c         Second input vector
- * @param[in] length    Number of elements in vectors `b` and `c`
- * @param[in] b_shr     Right-shift applied to elements of `b`
- * @param[in] c_shr     Right-shift applied to elements of `c`
- * @param[in] sat       Right-shift applied to final sum
+ * @todo I don't think there are currently any functions in this library to perform this bit-depth reduction in a 
+ *       user-friendly way.
  * 
- * @return The dot product of `b` and `c`
+ * @par Notes
+ * 
+ * The sum @math{a} is accumulated simultaneously into 16 48-bit accumulators which are summed together at the final
+ * step. So long as `length` is less than roughly 2 million, no overflow or saturation of the resulting sum is possible. 
+ * 
+ * @param[in] b             Input vector @vector{b}
+ * @param[in] c             Input vector @vector{c}
+ * @param[in] length        Number of elements in vectors @vector{b} and @vector{c}
+ * 
+ * @returns @math{a}, the inner product of vectors @vector{b} and @vector{c}.
  */
 int64_t xs3_vect_s16_dot(
     const int16_t b[],
     const int16_t c[],
-    const unsigned length,
-    const headroom_t bc_hr);
+    const unsigned length);
 
-/** Calculate the energy of a 16-bit BFP vector.
+
+/**
+ * @brief Calculate the energy (sum of squares of elements) of a 16-bit vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * `b[]` represents the 16-bit vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `length` is the number of elements in @vector{b}.
  * 
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}. `b_shr` should be chosen to avoid
+ * the possibility of saturation. See the note below.
  * 
- * Conceptually, the operation performed is:
- *      A <-  ( (B[0])^2 + (B[1])^2 + ... + (B[N-1])^2 )
- *        where A is a scalar
- *              B[] is a BFP vector of size N
+ * @low_op{16, @f$
+ *      b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)         \\
+ *      a \leftarrow \sum_{k=0}^{length-1} (b_k')^2
+ * @f$ }
  * 
- * \param[in] b         Input vector
- * \param[in] length    Length of input vector
- * \param[in] b_shr     Right-shift applied to elements of `b`
+ * @par Block Floating-Point
  * 
- * \return  Energy
+ * If @vector{b} are the mantissas of the BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then floating-point result is
+ * @math{a \cdot 2^{a\_exp}}, where the 32-bit mantissa @math{a} is returned by this function, and 
+ * @math{a\_exp = 2 \cdot (b\_exp + b\_shr) }.
+ * 
+ * @par Additional Details
+ * 
+ * If @vector{b} has @math{b\_hr} bits of headroom, then each product @math{(b_k')^2} can be a maximum of 
+ * @math{ 2^{30 - 2 \cdot (b\_hr + b\_shr)}}. So long as `length` is less than @math{1 + 2\cdot (b\_hr + b\_shr) }, 
+ * such errors should not be possible. Each increase of @math{b\_shr} by @math{1} doubles the number of elements that
+ * can be summed without risk of overflow.
+ * 
+ * If the caller's mantissa vector is longer than that, the full result can be found by calling this function multiple 
+ * times for partial results on sub-sequences of the input, and adding the results in user code. 
+ * 
+ * In many situations the caller may have _a priori_ knowledge that saturation is impossible (or very nearly so), in 
+ * which case this guideline may be disregarded. However, such situations are application-specific and are well beyond 
+ * the scope of this documentation, and as such are left to the user's discretion.
+ * 
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in @vector{b}
+ * @param[in]   b_shr       Right-shift appled to @vector{b}
+ * 
+ * @returns 64-bit mantissa of vector @vector{b}'s energy
  */
 int32_t xs3_vect_s16_energy(
     const int16_t b[],
@@ -836,32 +1422,72 @@ int32_t xs3_vect_s16_energy(
     const right_shift_t b_shr);
 
 
+/**
+ * @brief Calculate the headroom of a 16-bit vector.
+ * 
+ * The headroom of an N-bit integer is the number of bits that the integer's value may be left-shifted
+ * without any information being lost. Equivalently, it is one less than the number of leading sign bits.
+ * 
+ * The headroom of an `int16_t` array is the minimum of the headroom of each of its `int16_t` elements.
+ * 
+ * This function efficiently traverses the elements of `b[]` to determine its headroom.
+ * 
+ * `b[]` represents the 16-bit vector @vector{b}. `b[]` must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in `b[]`.
+ * 
+ * @low_op{16, @f$
+ *      a \leftarrow min\!\\{ HR_{16}\left(x_0\right), HR_{16}\left(x_1\right), ..., 
+ *              HR_{16}\left(x_{length-1}\right) \\}
+ * @f$ }
+ * 
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      The number of elements in vector @vector{b}
+ * 
+ * @returns     Headroom of vector @vector{b} 
+ * 
+ * @see xs3_vect_ch_pair_s16_headroom
+ * @see xs3_vect_ch_pair_s32_headroom
+ * @see xs3_vect_s32_headroom
+ * @see xs3_vect_complex_s16_headroom
+ * @see xs3_vect_complex_s32_headroom
+ */
+headroom_t xs3_vect_s16_headroom(
+    const int16_t b[], 
+    const unsigned length);
 
 
 /**
- * \brief Compute headroom of `int16_t` array `v`
+ * @brief Compute the inverse of elements of a 16-bit vector.
  * 
- * \low_op{16, @f$ min(\ \ \ hr(v_0)\,\ hr(v_1)\,\ ...\,\ hr(v_\{N-1\})\ \ ) @f$ \n\tab where @f$hr(a)@f$ is the headroom of element @f$a@f$  }
+ * `a[]` and `b[]` represent the 16-bit mantissa vectors @vector{a} and @vector{b} respectively. This operation can be 
+ * performed safely in-place on `b[]`.
  * 
- * \requires_word_alignment{v}
+ * `length` is the number of elements in each of the vectors.
  * 
- * \param[in] v     Array of `int16_t`
- * \param[in] N     Number of elements in `v`
+ * `scale` is a scaling parameter used to maximize the precision of the result.
  * 
- * \return  Headroom of the array `v`
+ * @low_op{16, @f$
+ *      a_k \leftarrow \lfloor\frac{2^{scale}}{b_k}\rfloor      \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the resulting vector @vector{a}
+ * are the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = scale - b\_exp}.
+ * 
+ * The function xs3_vect_s16_inverse_prepare() can be used to obtain values for @math{a\_exp} and @math{scale}.
+ * 
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   scale       Scale factor applied to dividend when computing inverse
+ * 
+ * @returns     Headroom of output vector @vector{a}
+ * 
+ * @see xs3_vect_s16_inverse_prepare
  */
-headroom_t xs3_vect_s16_headroom(
-    const int16_t v[], 
-    const unsigned N);
-
-
-void xs3_vect_s16_inverse_prepare(
-    exponent_t* a_exp,
-    unsigned* scale,
-    const int16_t b[],
-    const exponent_t b_exp,
-    const unsigned length);
-
 void xs3_vect_s16_inverse(
     int16_t a[],
     const int16_t b[],
@@ -869,92 +1495,130 @@ void xs3_vect_s16_inverse(
     const unsigned scale);
 
 
-/** Find the maximum value in a 16-bit integer vector.
+/**
+ * @brief Obtain the output exponent and scaling parameter used by xs3_vect_s16_inverse().
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * This function is used in conjunction with xs3_vect_s16_inverse() to compute the inverse of elements of a 16-bit
+ * BFP vector.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * This function computes `a_exp` and `scale`.
  * 
+ * `a_exp` is the exponent associated with output mantissa vector @vector{a}, and must be chosen to avoid overflow in 
+ * the smallest element of the input vector, which when inverted becomes the largest output element. To maximize 
+ * precision, this function chooses `a_exp` to be the smallest exponent known to avoid saturation. The `a_exp` chosen
+ * by this function is derived from the exponent and smallest element of the input vector.
  * 
- * Conceptually, the operation performed is:
- *      result <- max( A[0], A[1], A[N-1] )
- *        where A[] is an integer vector of size N
+ * `scale` is a scaling parameter used by xs3_vect_s16_inverse() to achieve the chosen output exponent.
  * 
- * \param[in] a         Input vector
- * \param[in] length    Length of input vector
+ * `b[]` is the input mantissa vector @vector{b}.
  * 
- * \return  Maximum value of `a`
+ * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
+ * 
+ * `length` is the number of elements in @vector{b}.
+ * 
+ * @todo In lib_dsp, the inverse function has a floor, which prevents tiny values from completely dominating the output
+ *       behavior. Perhaps I should include that?
+ * 
+ * @param[out]  a_exp       Exponent of output vector @vector{a}
+ * @param[out]  scale       Scale factor to be applied when computing inverse
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   b_exp       Exponent of @vector{b}
+ * @param[in]   length      Number of elements in vector @vector{b}
+ * 
+ * @see xs3_vect_s16_inverse
  */
-int16_t xs3_vect_s16_max(
-    const int16_t a[], 
+void xs3_vect_s16_inverse_prepare(
+    exponent_t* a_exp,
+    unsigned* scale,
+    const int16_t b[],
+    const exponent_t b_exp,
     const unsigned length);
 
 
-/** Find the minimum value in a 16-bit integer vector.
+/**
+ * @brief Find the maximum value in a 16-bit vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * `b[]` represents the 16-bit vector @vector{b}. It must begin at a word-aligned address.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `length` is the number of elements in @vector{b}.
  * 
+ * @low_op{16, @f$ 
+ *      max\\{ x_0, x_1, ..., x_{length-1} \\}
+ * @f$ }
  * 
- * Conceptually, the operation performed is:
- *      result <- min( A[0], A[1], A[N-1] )
- *        where A[] is an integer vector of size N
+ * @par Block Floating-Point
  * 
- * \param[in] a         Input vector
- * \param[in] length    Length of input vector
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the returned value @math{a} is 
+ * the 16-bit mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
  * 
- * \return  Minimum value of `a`
+ * @param[in]   b           Input vector @vector{b}     
+ * @param[in]   length      Number of elements in @vector{b}
+ * 
+ * @returns     Maximum value from @vector{b}
+ */
+int16_t xs3_vect_s16_max(
+    const int16_t b[], 
+    const unsigned length);
+
+
+/**
+ * @brief Find the minimum value in a 16-bit vector.
+ * 
+ * `b[]` represents the 16-bit vector @vector{b}. It must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in @vector{b}.
+ * 
+ * @low_op{16, @f$ 
+ *      max\\{ x_0, x_1, ..., x_{length-1} \\}
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the returned value @math{a} is 
+ * the 16-bit mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * 
+ * @param[in]   b           Input vector @vector{b}     
+ * @param[in]   length      Number of elements in @vector{b}
+ * 
+ * @returns     Minimum value from @vector{b}
  */
 int16_t xs3_vect_s16_min(
     const int16_t a[], 
     const unsigned length);
 
 
-
 /**
- * @brief Calculate the exponent and output shift for `xs3_vect_s16_mul`.
+ * @brief Multiply two 16-bit vectors together element-wise.
  * 
- * @param[out] a_exp
- * @param[out] a_shr
- * @param[in]  b_exp
- * @param[in]  c_exp
- * @param[in]  b_hr
- * @param[in]  c_hr
- */
-void xs3_vect_s16_mul_prepare(
-    exponent_t* a_exp,
-    right_shift_t* a_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr);
-
-
-/**
- * \brief Multiply one `int16_t` vector by another.
+ * `a[]`, `b[]` and `c[]` represent the 16-bit vectors @vector{a}, @vector{b} and @vector{c} respectively. 
+ * Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
  * 
- * Multiply the `int16_t` vector `b` element-wise by the `int16_t` vector `c`, right-shift the 32-bit 
- * product by `a_shr` bits, and store the result in output vector `a`.
+ * `length` is the number of elements in each of the vectors.
  * 
- * The final result is saturated to 16-bit bounds.
+ * `a_shr` is an unsigned arithmetic right-shift applied to the 32-bit accumulators holding the penultimate results.
  * 
- * \low_op{16, @f$a_k \leftarrow \left(b_k \cdot c_k \right) \cdot 2^\{-a\_shr\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$
+ *      a_k' \leftarrow b_k \cdot c_k                               \\
+ *      a_k \leftarrow sat_{16}(round(a_k' \cdot 2^{-a\_shr}))      \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
  * 
- * \safe_in_place{a,b,c}
- * \requires_word_alignment{a,b,c}
+ * @par Block Floating-Point
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector 1
- * \param[in] c         Input vector 2
- * \param[in] length    Number of elements in `a`, `b` and `c`
- * \param[in] a_shr     Arithmetic right-shift applied to product of `b` and `c`
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + a\_shr}.
  * 
- * \return  Headroom of output vector `a`
+ * The function xs3_vect_s16_mul_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} based on the
+ * input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}. 
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input vector @vector{b}
+ * @param[in]  c        Input vector @vector{c}
+ * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]  a_shr    Right-shift appled to 32-bit products
+ * 
+ * @returns  Headroom of vector @vector{a}
  */
 //! [xs3_vect_s16_mul]
 headroom_t xs3_vect_s16_mul(
@@ -966,24 +1630,103 @@ headroom_t xs3_vect_s16_mul(
 //! [xs3_vect_s16_mul]
 
 
+/**
+ * @brief Obtain the output exponent and output shift used by xs3_vect_s16_mul().
+ * 
+ * This function is used in conjunction with xs3_vect_s16_mul() to perform an element-wise multiplication of two 16-bit
+ * BFP vectors.
+ * 
+ * This function computes `a_exp` and `a_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and must be chosen to be large enough to avoid 
+ * overflow when elements of @vector{a} are computed. To maximize precision, this function chooses `a_exp` to be the 
+ * smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this function is derived 
+ * from the exponents and headrooms of associated with the input vectors.
+ * 
+ * `a_shr` is an arithmetic right-shift applied by xs3_vect_complex_s16_mul() to the 32-bit products of input elements 
+ * to achieve the chosen output exponent `a_exp`.
+ * 
+ * `b_exp` and `c_exp` are the exponents associated with the input mantissa vectors @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If the headroom of @vector{b} or 
+ * @vector{c} is unknown, they can be obtained by calling xs3_vect_s16_headroom(). Alternatively, the value `0` can 
+ * always be safely used (but may result in reduced precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `a_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t a_exp;
+ *      right_shift_t a_shr;
+ *      xs3_vect_s16_mul_prepare(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr);
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      a_shr = a_shr + (desired_exp - a_exp);
+ *      a_exp = desired_exp;
+ * \endcode
+ * 
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `a_shr >= 0`
+ * 
+ * Be aware that using a smaller value than strictly necessary for `a_shr` can result in saturation, and using larger 
+ * values may result in unnecessary underflows or loss of precision.
+ * 
+ * @par Notes
+ * 
+ * * Using the outputs of this function, an output mantissa which would otherwise be `INT16_MIN` will instead saturate 
+ *   to `-INT16_MAX`. This is due to the symmetric saturation logic employed by the VPU and is a hardware feature. This 
+ *   is a corner case which is usually unlikely and results in 1 LSb of error when it occurs.
+ * 
+ * @param[out]  a_exp       Exponent of output elements of xs3_vect_s16_mul()
+ * @param[out]  a_shr       Right-shift supplied to xs3_vect_s16_mul()
+ * @param[in]   b_exp       Exponent associated with @vector{b}
+ * @param[in]   c_exp       Exponent associated with @vector{c}
+ * @param[in]   b_hr        Headroom of @vector{b}
+ * @param[in]   c_hr        Headroom of @vector{c}
+ * 
+ * @see xs3_vect_s16_mul
+ */
+void xs3_vect_s16_mul_prepare(
+    exponent_t* a_exp,
+    right_shift_t* a_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
+
+
 /** 
- * \brief Rectify the elements of an `int16_t` vector.
+ * @brief Rectify the elements of a 16-bit vector.
+ * 
+ * Rectification ensures that all outputs are non-negative, changing negative values to 0.
+ * 
+ * `a[]` and `b[]` represent the 16-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
  * 
  * Each output element `a[k]` is set to the value of the corresponding input element 
  * `b[k]` if it is positive, and `a[k]` is set to zero otherwise. 
  * 
- * \low_op{16, @f$a_k \leftarrow \begin\{cases\}b_k & b_k \gt 0 \\ 
- *                                  0 & b_k \leq 0\end\{cases\} 
- *                                  \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * \low_op{16, @f$
+ *      a_k \leftarrow \begin{cases}
+ *          b_k & b_k \gt 0             \\ 
+ *          0 & b_k \leq 0\end{cases}   \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
  * 
- * \safe_in_place{a,b}
- * \requires_word_alignment{a,b}
+ * @par Block Floating-Point
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector
- * \param[in] length    Number of elements in vectors `a` and `b`
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the output vector @vector{a} are
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
  * 
- * \return  Headroom of the output vector `a`
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input vector @vector{b}
+ * @param[in]  length   Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
  */
 headroom_t xs3_vect_s16_rect(
     int16_t a[],
@@ -991,121 +1734,261 @@ headroom_t xs3_vect_s16_rect(
     const unsigned length);
 
 
-
-void xs3_vect_s16_scale_prepare(
-    exponent_t* a_exp,
-    right_shift_t* sat,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation);
-
-
 /**
- * \brief Multiply one `int16_t` vector by a 16-bit scalar.
+ * @brief Multiply a 16-bit vector by a 16-bit scalar.
  * 
- * Multiply the `int16_t` vector `b`, arithmetically right-shifted `b_shr` bits, by `alpha`, 
- * and place the 32-bit result, arithmetically right-shifted another `14` bits, in output 
- * vector `a`.
+ * `a[]` and `b[]` represent the 16-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a
+ *  word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
- * If `b_shr` is negative, a left-shift will occur instead of a right-shift. Left-shifts are 
- * saturating operations which saturate to 16-bit bounds. The result of the final right-shift is also 
- * saturated to 16-bit bounds.
+ * `length` is the number of elements in each of the vectors.
  * 
- * \low_op{16, @f$a_k \leftarrow \left(\alpha \cdot b_k \cdot 2^\{-b\_shr\}\right)\cdot 2^\{-14\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * `c` is the 16-bit scalar @math{c} by which elements of @vector{b} are multiplied.
  * 
- * \safe_in_place{a,b}
- * \requires_word_alignment{a,b}
+ * `a_shr` is an unsigned arithmetic right-shift applied to the 32-bit accumulators holding the penultimate results.
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector 1
- * \param[in] length    Number of elements in `a` and `b`
- * \param[in] alpha     Scalar multiplier
- * \param[in] b_shr     Arithmetic right-shift applied to elements of `b`
+ * \low_op{16, @f$
+ *      a_k' \leftarrow b_k \cdot c                                 \\
+ *      a_k \leftarrow sat_{16}(round(a_k' \cdot 2^{-a\_shr}))      \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
  * 
- * \return  Headroom of output vector `a`
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the mantissa of
+ * floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are the mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + a\_shr}.
+ * 
+ * The function xs3_vect_s16_scale_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} based on 
+ * the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}. 
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input vector @vector{b}
+ * @param[in]  c        Input vector @vector{c}
+ * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]  a_shr    Right-shift appled to 32-bit products
+ * 
+ * @returns  Headroom of vector @vector{a}
  */
 headroom_t xs3_vect_s16_scale(
     int16_t a[],
     const int16_t b[],
     const unsigned length,
-    const int16_t alpha,
-    const right_shift_t b_shr);
-
-/** Set all elements of an `int16_t` array to the specified value.
- * 
- * \low_op{16, @f$data_k \leftarrow value\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
- * 
- * \requires_word_alignment{data}
- * 
- * \param[out] data     Array to set
- * \param[in] value     Value to set
- * \param[in] length    Number of elements in `data`
- */
-void xs3_vect_s16_set(
-    int16_t data[],
-    const int16_t value,
-    const unsigned length);
-
-
+    const int16_t c,
+    const right_shift_t a_shr);
 
 
 /**
- * \brief Perform a signed, saturating arithmetic left shift of an `int16_t` vector.
+ * @brief Obtain the output exponent and output shift used by xs3_vect_s16_scale().
  * 
- * \low_op{16, @f$a_k \leftarrow b_k \cdot 2^\{shl\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * This function is used in conjunction with xs3_vect_s16_scale() to perform multiplication of a 16-bit BFP vector 
+ * @math{\bar{b} \cdot 2^{b\_exp}} by a 16-bit scalar @math{c \cdot 2^{c\_exp}}. The result is another 16-bit BFP vector
+ * @math{\bar{a} \cdot 2^{a\_exp}}.
  * 
- * \par Performance
- * The performance of this function is specified as the number of thread-cycles between function
- * entrance and return (including instruction fetches).
- * \code
- *     if ( a == b )
- *         cycles = 3*(length >> 4) + K0;  //(TODO: K0 to be determined)
- *     else
- *         cycles = 4*(length >> 4) + K1   //(TODO: K1 to be determined)
+ * This function computes `a_exp` and `a_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and must be chosen to be large enough to avoid 
+ * overflow when elements of @vector{a} are computed. To maximize precision, this function chooses `a_exp` to be the 
+ * smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this function is derived 
+ * from the exponents and headrooms of associated with the inputs.
+ * 
+ * `a_shr` is an arithmetic right-shift applied by xs3_vect_complex_s16_scale() to the 32-bit products of input elements 
+ * to achieve the chosen output exponent `a_exp`.
+ * 
+ * `b_exp` and `c_exp` are the exponents associated with @vector{b} and @math{c} 
+ * respectively.
+ * 
+ * `b_hr` and `c_hr` are the headroom of @vector{b} and @math{c} respectively. If the headroom of @vector{b} or 
+ * @math{c} are unknown, they can be obtained by calling xs3_vect_s16_headroom(). Alternatively, the value `0` can 
+ * always be safely used (but may result in reduced precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `a_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t a_exp;
+ *      right_shift_t a_shr;
+ *      xs3_vect_s16_scale_prepare(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr);
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      a_shr = a_shr + (desired_exp - a_exp);
+ *      a_exp = desired_exp;
  * \endcode
  * 
- * \safe_in_place{a,b}
- * \requires_word_alignment{a,b}
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `a_shr >= 0`
  * 
- * \note\li With `shl < 0`,  for each  `(1<<(-shl)) < v[k] < 0`, underflows will result in `-1` rather than `0`.
+ * Be aware that using a smaller value than strictly necessary for `a_shr` can result in saturation, and using larger 
+ * values may result in unnecessary underflows or loss of precision.
  * 
- * \warning\li To avoid saturation, never use a `shl` value larger than the current headroom of `b`.
+ * @par Notes
  * 
- * \warning\li Unlike many operations, if the supplied value for `shl` is negative (i.e. performing an arithmetic
- *       right shift), the resulting value is truncated, rather than rounded. Rounding can be 
- *       accomplished by first adding `(1<<((-shl)-1))` to each element of the input vector if (and only 
- *       if) `shl` is negative.
+ * * Using the outputs of this function, an output mantissa which would otherwise be `INT16_MIN` will instead saturate 
+ *   to `-INT16_MAX`. This is due to the symmetric saturation logic employed by the VPU and is a hardware feature. This 
+ *   is a corner case which is usually unlikely and results in 1 LSb of error when it occurs.
  * 
- * \param[out] a         Output vector
- * \param[in] b         Input vector
- * \param[in] length    Number of elements in input (and output)
- * \param[in] shl       Number of bits to shift left
+ * @param[out]  a_exp       Exponent of output elements of xs3_vect_s16_scale()
+ * @param[out]  a_shr       Right-shift supplied to xs3_vect_s16_scale()
+ * @param[in]   b_exp       Exponent associated with @vector{b}
+ * @param[in]   c_exp       Exponent associated with @vector{c}
+ * @param[in]   b_hr        Headroom of @vector{b}
+ * @param[in]   c_hr        Headroom of @vector{c}
  * 
- * \return         The headroom of the output vector `a`
+ * @see xs3_vect_s16_scale
+ */
+void xs3_vect_s16_scale_prepare(
+    exponent_t* a_exp,
+    right_shift_t* a_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
+
+/** 
+ * @brief Set all elements of a 16-bit vector to the specified value.
+ * 
+ * `a[]` represents the 16-bit vector @vector{a}. It must begin at a word-aligned address.
+ * 
+ * `b` is the value elements of @vector{a} are set to.
+ * 
+ * `length` is the number of elements in `a[]`.
+ * 
+ * @low_op{16, @f$
+ *      a_k \leftarrow b                                    \\
+ *          \qquad\text{for }k\in 0\ ...\ (length-1)
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @math{b} is the mantissa of floating-point value @math{b \cdot 2^{b\_exp}}, then the output vector @vector{a} are
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input value @math{b}
+ * @param[in]  length   Number of elements in vector @vector{a}
+ */
+void xs3_vect_s16_set(
+    int16_t a[],
+    const int16_t b,
+    const unsigned length);
+
+
+/**
+ * @brief Left-shift the elements of a 16-bit vector by a specified number of bits.
+ * 
+ * `a[]` and `b[]` represent the 16-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in vectors @vector{a} and @vector{b}.
+ * 
+ * `b_shl` is the signed arithmetic left-shift applied to each element of @vector{b}. 
+ * 
+ * @low_op{16, @f$ 
+ *      a_k \leftarrow sat_{16}(\lfloor b_k \cdot 2^{b\_shl} \rfloor)       \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting vector 
+ * @vector{a} are the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{b\_shl}} and @math{a\_exp = b\_exp}.
+ * 
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shl       Arithmetic left-shift applied to elements of @vector{b}
+ * 
+ * @returns     Headroom of output vector @vector{a}
  */
 headroom_t xs3_vect_s16_shl(
     int16_t a[],
     const int16_t b[],
     const unsigned length,
-    const left_shift_t shl);
+    const left_shift_t b_shl);
 
 
+/**
+ * @brief Right-shift the elements of a 16-bit vector by a specified number of bits.
+ * 
+ * `a[]` and `b[]` represent the 16-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in vectors @vector{a} and @vector{b}.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}. 
+ * 
+ * @low_op{16, @f$ 
+ *      a_k \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)      \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting vector 
+ * @vector{a} are the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{-b\_shr}} and @math{a\_exp = b\_exp}.
+ * 
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shr       Arithmetic right-shift applied to elements of @vector{b}
+ * 
+ * @returns     Headroom of output vector @vector{a}
+ */
 headroom_t xs3_vect_s16_shr(
     int16_t a[],
     const int16_t b[],
     const unsigned length,
-    const right_shift_t shr);
+    const right_shift_t b_shr);
 
 
-
-void xs3_vect_s16_sqrt_prepare(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    const exponent_t b_exp,
-    const right_shift_t b_hr);
-
+/**
+ * @brief Compute the square roots of elements of a 16-bit vector.
+ * 
+ * `a[]` and `b[]` represent the 16-bit vectors @vector{a} and @vector{b} respectively. Each vector must begin at a 
+ * word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
+ * 
+ * `depth` is the number of most significant bits to calculate of each @math{a_k}. For example, a `depth` value of 8 
+ * will only compute the 8 most significant byte of the result, with the remaining byte as 0. The maximum value for this 
+ * parameter is `XS3_VECT_SQRT_S16_MAX_DEPTH` (31). The time cost of this operation is approximately proportional to the 
+ * number of bits computed.
+ * 
+ * @low_op{16, @f$ 
+ *      b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ *      a_k \leftarrow \begin{cases}
+ *          \sqrt{ b_k' } & b_k' >= 0                                       \\
+ *          0   &   otherwise\end{cases}                                    \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)                       \\
+ *          \qquad\text{ where } \sqrt{\cdot} \text{ computes the most significant } depth 
+ *                      \text{ bits of the square root.}
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the resulting vector @vector{a}
+ * are the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = (b\_exp + b\_shr - 14)/2}.
+ * 
+ * Note that because exponents must be integers, that means @math{b\_exp + b\_shr} **must be even**.
+ * 
+ * The function xs3_vect_s16_sqrt_prepare() can be used to obtain values for @math{a\_exp} and @math{b\_shr} based on 
+ * the input exponent @math{b\_exp} and headroom @math{b\_hr}.
+ * 
+ * @par Notes
+ * 
+ * * This function assumes roots are real. Negative input elements will result in corresponding outputs of 0.
+ * 
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_shr       Right-shift appled to @vector{b}
+ * @param[in]   depth       Number of bits of each output value to compute
+ * 
+ * @returns     Headroom of output vector @vector{a}
+ */
 headroom_t xs3_vect_s16_sqrt(
     int16_t a[],
     const int16_t b[],
@@ -1114,36 +1997,105 @@ headroom_t xs3_vect_s16_sqrt(
     const unsigned depth);
 
 
+/**
+ * @brief Obtain the output exponent and shift parameter used by xs3_vect_s16_sqrt().
+ * 
+ * This function is used in conjunction withx xs3_vect_s16_sqrt() to compute the square root of elements of a 16-bit
+ * BFP vector.
+ * 
+ * This function computes `a_exp` and `b_shr`.
+ * 
+ * `a_exp` is the exponent associated with output mantissa vector @vector{a}, and should be chosen to maximize the 
+ * precision of the results. To that end, this function chooses `a_exp` to be the smallest exponent known to avoid 
+ * saturation of the resulting mantissa vector @vector{a}. It is derived from the exponent and headroom of the input
+ * BFP vector.
+ * 
+ * `b_shr` is the shift parameter required by xs3_vect_s16_sqrt() to achieve the chosen output exponent `a_exp`.
+ * 
+ * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
+ * 
+ * `b_hr` is the headroom of @vector{b}. If it is unknown, it can be obtained using xs3_vect_s16_headroom(). 
+ * Alternatively, the value `0` can always be safely used (but may result in reduced precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t a_exp;
+ *      right_shift_t b_shr;
+ *      xs3_vect_s16_mul_prepare(&a_exp, &b_shr, b_exp, c_exp, b_hr, c_hr);
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      b_shr = b_shr + (desired_exp - a_exp);
+ *      a_exp = desired_exp;
+ * \endcode
+ * 
+ * When applying the above adjustment, the following condition should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `b_shr` can result in saturation, and using larger 
+ * values may result in unnecessary underflows or loss of precision.
+ * 
+ * Also, if a larger exponent is used than necessary, a larger `depth` parameter (see xs3_vect_s16_sqrt()) will be 
+ * required to achieve the same precision, as the results are computed bit by bit, starting with the most significant
+ * bit.
+ * 
+ * @param[out]  a_exp       Exponent of outputs of xs3_vect_s16_sqrt()
+ * @param[out]  b_shr       Right-shift to be applied to elements of @vector{b}
+ * @param[in]   b_exp       Exponent of vector{b}
+ * @param[in]   b_hr        Headroom of vector{b}
+ * 
+ * @see xs3_vect_s16_sqrt
+ */
+void xs3_vect_s16_sqrt_prepare(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const exponent_t b_exp,
+    const right_shift_t b_hr);
 
 
 /**
- * \brief Subtract one `int16_t` vector from another.
+ * @brief Subtract one 16-bit BFP vector from another.
  * 
- * Subtract the `int16_t` vector `c[]` from the `int16_t` vector `b[]`, placing the result in `a[]`. Each 
- * element of `b[]` or `c[]` has an arithmetic right shift of `b_shr` or `c_shr` bits (respectively) applied 
- * before the subtraction. Negative values of `b_shr` and `c_shr` will left-shift.
+ * `a[]`, `b[]` and `c[]` represent the 16-bit vectors @vector{a}, @vector{b} and @vector{c} respectively. Each must 
+ * begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
  * 
- * \low_op{16, @f$a_k \leftarrow b_k \cdot 2^\{-b\_shr\} - c_k \cdot 2^\{-c\_shr\}\qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * `length` is the number of elements in each of the vectors.
  * 
- * \safe_in_place{a,b,c}
- * \requires_word_alignment{a,b,c}
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
+ * respectively.
  * 
- * \warning \li Both shifts (if they are negative) and the addition are saturating operations, and will saturate to the
- *       symmetric 16-bit range  (see: TODO).
+ * @low_op{16, @f$ 
+ *      b_k' = sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)  \\
+ *      c_k' = sat_{16}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)  \\
+ *      a_k \leftarrow sat_{16}\!\left( b_k' - c_k' \right)     \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
  * 
- * \warning \li Where negative values underflow due to a right-shift, the resulting value is `-1`, rather than `0`. 
- *              (see: TODO)
+ * @par Block Floating-Point
  * 
- * \param[out] a        Output vector
- * \param[in] b         Input vector 1
- * \param[in] c         Input vector 2
- * \param[in] length    Number of elements in `a`, `b` and `c`
- * \param[in] b_shr     Arithmetic right-shift applied to elements of `b[]`
- * \param[in] c_shr     Arithmetic right-shift applied to elements of `c[]`
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}. 
  * 
- * \return  Headroom of output vector `a[]`
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
+ * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
+ * are associated with the same exponent.
  * 
- * \see bfp_s16_sub()
+ * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
+ * 
+ * @param[out]      a           Output vector @vector{a}
+ * @param[in]       b           Input vector @vector{b}
+ * @param[in]       c           Input vector @vector{c}
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       b_shr       Right-shift appled to @vector{b}
+ * @param[in]       c_shr       Right-shift appled to @vector{c}
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @see xs3_vect_add_sub_prepare
  */
 headroom_t xs3_vect_s16_sub(
     int16_t a[],
@@ -1155,25 +2107,25 @@ headroom_t xs3_vect_s16_sub(
 
 
 /**
- * \brief Sum the elements of an `int16_t` vector.
+ * @brief Get the sum of elements of a 16-bit vector.
  * 
- * Sums together the elements of the `int16_t` vector `b` and returns the result as an `int32_t`.
+ * `b[]` represents the 16-bit vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
- * \low_op{16, @f$ \sum_\{k=0\}^\{length-1\} b_k     @f$ }
+ * `length` is the number of elements in @vector{b}.
  * 
- * \requires_word_alignment{b}
+ * @low_op{16, @f$
+ *      a \leftarrow \sum_{k=0}^{length-1} b_k
+ * @f$ }
  * 
- * \warning If `length > 65536` it is possible for saturation to occur on the 32-bit accumulator. Saturating
- *          additions are *not* associative, and so no guarantees are made with respect to the correctness of
- *          the result unless it is known *a priori* that no partial sums of elements from `b` (taken in any 
- *          order) will saturate. If more than `65536` elements are to be summed, it is recommended that
- *          the user instead make multiple calls to `xs3_vect_s16_sum()`, adding together partial sums of 
- *          subsequences of `b` in user code.
+ * @par Block Floating-Point
  * 
- * \param[in] b         Input vector
- * \param[in] length    Number of elements in vector `b`
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the returned value @math{a} is 
+ * the 32-bit mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
  * 
- * \return  Sum of elements in `b`
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elements in @vector{b}
+ * 
+ * @returns The 32-bit sum @math{a}
  */
 int32_t xs3_vect_s16_sum(
     const int16_t b[],
@@ -1181,26 +2133,37 @@ int32_t xs3_vect_s16_sum(
 
     
 /**
- * \brief Convert an `int16_t` vector to an `int32_t` vector.
+ * @brief Convert a 16-bit vector to a 32-bit vector.
  * 
- * Each element of the output vector `a[k]` is set equal to the corresponding element of the
- * input vector `b[k]` left-shifted 8 bits.
+ * `a[]` represents the 32-bit output vector @vector{a}. 
  * 
- * (The 8-bit left-shift is due to the ideosyncrasies of the XS3 VPU. It turns out to be much more
- *   efficient to include a factor of 2^8)
+ * `b[]` represents the 16-bit input vector @vector{b}.
  * 
+ * Each vector must begin at a word-aligned address.
  * 
- * \low_op{32, @f$a_k \leftarrow b_k \cdot 2^\{8\} \qquad\text{ for }k\in 0\ ...\ (length-1)@f$ }
+ * `length` is the number of elements in each of the vectors.
  * 
- * \requires_word_alignment{a,b}
+ * @low_op{16, @f$
+ *      a_k \leftarrow b_k \cdot 2^{8}                  \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * @f$ }
  * 
- * \note \li This function does not return headroom of the resulting vector. The output vector
- *           will have 8 more bits of headroom than the input.
+ * @par Block Floating-Point
  * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the resulting vector @vector{a}
+ * are the 32-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}. If @math{a\_exp = b\_exp - 8}, then this
+ * operation has effectively not changed the values represented.
  * 
- * \param[out] a        Output vector
- * \param[in]  b        Input vector
- * \param[in]  length   Number of elements in vectors `a` and `b`
+ * @par Notes
+ * * The multiplication by @math{2^8} is an artifact of the VPU's behavior. It turns out to be significantly more
+ *   efficient to include the factor of @math{2^8}. If this is unwanted, xs3_vect_s32_shr() can be used with a `b_shr`
+ *   value of 8 to remove the scaling afterwards.
+ * * The headroom of output vector @vector{a} is not returned by this function. The headroom of the output is always
+ *   8 bits greater than the headroom of the input.
+ * 
+ * @param[out]  a           32-bit output vector @vector{a}
+ * @param[in]   b           16-bit input vector @vector{b}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
  */
 void xs3_vect_s16_to_s32(
     int32_t a[],

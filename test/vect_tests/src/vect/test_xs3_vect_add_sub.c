@@ -164,43 +164,33 @@ static void test_xs3_vect_add_sub_prepare()
         exponent_t a_exp;
         right_shift_t b_shr, c_shr;
 
-        for(unsigned sat = 0; sat <= 1; sat++){
+        int exp_mods[] = {0, 44, -534};
 
-            PRINTF("\t\tallow_sat = %u..\n", sat);
+        for( int m = 0; m < sizeof(exp_mods)/sizeof(int); m++){
 
-            int exp_mods[] = {0, 44, -534};
+            PRINTF("\t\t\texp_delta = %d\n", exp_mods[m]);
+    
 
-            for( int m = 0; m < sizeof(exp_mods)/sizeof(int); m++){
+            for(int sbc = 0; sbc <= 1; sbc++){
 
-                PRINTF("\t\t\texp_delta = %d\n", exp_mods[m]);
-        
+                PRINTF("\t\t\t\tswap b&c: %d\n", sbc);
 
-                for(int sbc = 0; sbc <= 1; sbc++){
-
-                    PRINTF("\t\t\t\tswap b&c: %d\n", sbc);
-
-                    if(sbc){
-                        xs3_vect_add_sub_prepare(&a_exp, &c_shr, &b_shr, 
-                                                    casse->c.exp + exp_mods[m], casse->b.exp + exp_mods[m], 
-                                                    casse->c.hr,  casse->b.hr, 
-                                                    sat);
-                    } else {
-                        xs3_vect_add_sub_prepare(&a_exp, &b_shr, &c_shr, 
-                                                    casse->b.exp + exp_mods[m], casse->c.exp + exp_mods[m], 
-                                                    casse->b.hr,  casse->c.hr, 
-                                                    sat);
-                    }
-
-                    int sat_risk = (casse->b.exp - casse->b.hr) == (casse->c.exp - casse->c.hr) && !sat;
-
-                    exponent_t expected_exp = casse->expected.exp + exp_mods[m] + sat_risk;
-
-                    TEST_ASSERT_EQUAL_MSG(expected_exp,   a_exp, casse->line);
-                    TEST_ASSERT_EQUAL_MSG(casse->expected.b_shr + sat_risk, b_shr, casse->line);
-                    TEST_ASSERT_EQUAL_MSG(casse->expected.c_shr + sat_risk, c_shr, casse->line);
+                if(sbc){
+                    xs3_vect_add_sub_prepare(&a_exp, &c_shr, &b_shr, 
+                                                casse->c.exp + exp_mods[m], casse->b.exp + exp_mods[m], 
+                                                casse->c.hr,  casse->b.hr);
+                } else {
+                    xs3_vect_add_sub_prepare(&a_exp, &b_shr, &c_shr, 
+                                                casse->b.exp + exp_mods[m], casse->c.exp + exp_mods[m], 
+                                                casse->b.hr,  casse->c.hr);
                 }
+
+                exponent_t expected_exp = casse->expected.exp + exp_mods[m];
+
+                TEST_ASSERT_EQUAL_MSG(expected_exp,   a_exp, casse->line);
+                TEST_ASSERT_EQUAL_MSG(casse->expected.b_shr, b_shr, casse->line);
+                TEST_ASSERT_EQUAL_MSG(casse->expected.c_shr, c_shr, casse->line);
             }
-            
         }
 
     }

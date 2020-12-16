@@ -47,8 +47,7 @@ void bfp_s32_add(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr,
-            b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->hr = xs3_vect_s32_add(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
@@ -68,8 +67,7 @@ void bfp_s32_sub(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b
-            ->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->hr = xs3_vect_s32_sub(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
@@ -161,9 +159,7 @@ int64_t bfp_s32_dot(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_s32_dot_prepare(a_exp, &b_shr, &c_shr, b->exp, c->exp, 
-                            b->hr, c->hr, b->length,
-                            XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_s32_dot_prepare(a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr, b->length);
 
     int64_t res = xs3_vect_s32_dot(b->data, c->data, b->length, b_shr, c_shr);
 

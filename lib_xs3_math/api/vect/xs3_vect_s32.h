@@ -18,19 +18,28 @@ extern "C" {
 
 
 /**
- * @brief Calculate the output exponent and input shifts to add or subtract two 16- or 32-bit BFP vectors.
+ * @brief Obtain the output exponent and input shifts to add or subtract two 16- or 32-bit BFP vectors.
  * 
- * When adding or subtracting two BFP vectors (which may have different exponents), the operand elements may 
- * need to be scaled by a power of 2 (i.e. bit-shifted) prior to the operation. This process can also be used
- * to avoid any overflow or saturation.
+ * The block floating-point functions in this library which add or subtract vectors are of the general form:
  * 
- * This function is used to calculate the output exponent and operand shift parameter values required to 
- * compute the element-wise sum @math{ \bar A = \bar B + \bar C } or difference @math{ \bar A = \bar B - \bar C } 
- * of two BFP vectors @math{\bar B} and @math{\bar C}.
+ * @math{ 
+ *      \bar{a} \cdot 2^{a\_exp} = \bar{b}\cdot 2^{b\_exp} \pm \bar{c}\cdot 2^{c\_exp} }
+ * }
  * 
+ * @vector{b} and @vector{c} are the input mantissa vectors with exponents @math{b\_exp} and @math{c\_exp}, which are 
+ * shared by each element of their respective vectors. @vector{a} is the output mantissa vector with exponent 
+ * @math{a\_exp}. Two additional properties, @math{b\_hr} and @math{c\_hr}, which are the 
+ * headroom of mantissa vectors @vector{b} and @vector{c} respectively, are required by this function.
  * 
- * Call this to compute the requierd parameters for:
- * The outputs of this function `b_shr` and `c_shr` can be used as the shift values for:
+ * In order to avoid any overflows in the output mantissas, the output exponent @math{a\_exp} must be chosen such that 
+ * the largest (in the sense of absolute value) possible output mantissa will fit into the allotted space (e.g. 32 bits
+ * for xs3_vect_s32_add()). Once @math{a\_exp} is chosen, the input bit-shifts @math{b\_shr} and @math{c\_shr} are 
+ * calculated to achieve that resulting exponent.
+ * 
+ * This function chooses @math{a\_exp} to be the minimum exponent known to avoid overflows, given the input exponents
+ * (@math{b\_exp} and @math{c\_exp}) and input headroom (@math{b\_hr} and @math{c\_hr}).
+ * 
+ * This function is used calculate the output exponent and input bit-shifts for each of the following functions:
  * * xs3_vect_s16_add()
  * * xs3_vect_s32_add()
  * * xs3_vect_s16_sub()
@@ -40,33 +49,38 @@ extern "C" {
  * * xs3_vect_complex_s16_sub()
  * * xs3_vect_complex_s32_sub()
  * 
- * The output `a_exp` is the exponent associated with the result computed by those functions.
+ * @par Adjusting Output Exponents
  * 
- * If a specific output exponent `desired_exp` is needed for the result, the `b_shr` and `c_shr` 
- * produced by this function can be adjusted according to the following:
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` and `c_shr` produced by this function can be adjusted according to the following:
  * \code{.c}
  *      exponent_t desired_exp = ...; // Value known a priori
  *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
  *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
  * \endcode
- * Note that using smaller values than strictly necessary for `b_shr` and `c_shr` can result in saturation, 
- * and using larger values may result in unnecessary underflows or loss of precision.
  * 
- * If @math{B_{hr}} or @math{C_{hr}} are unknown, they can be calculated using xs3_vect_s16_headroom() 
- * or xs3_vect_s32_headroom(), or the value `0` can be supplied, which will account for the worst case.
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * * `c_hr + c_shr >= 0`
  * 
- * The `allow_saturation` parameter, if `0`, specifies that this function should detect and avoid the possibility
- * that any element of the output vector @math{\bar A} may saturate. This is usually unnecessary. In the worst
- * case, saturation will cause 1 LSb of error.
+ * Be aware that using smaller values than strictly necessary for `b_shr` and `c_shr` can result in saturation, and 
+ * using larger values may result in unnecessary underflows or loss of precision.
  * 
- * @param[out] a_exp    Exponent @math{A_{exp}} of the result vector @math{\bar A}
- * @param[out] b_shr    Right-shift to be applied to vector @math{\bar B}
- * @param[out] c_shr    Right-shift to be applied to vector @math{\bar C}
- * @param[in]  b_exp    Exponent @math{B_{exp}} associated with @math{\bar B}
- * @param[in]  c_exp    Exponent @math{C_{exp}} associated with @math{\bar C}
- * @param[in]  b_hr     Headroom @math{B_{hr}} associated with @math{\bar B}
- * @param[in]  c_hr     Headroom @math{B_{hr}} associated with @math{\bar C}
- * @param[in]  allow_saturation  Whether to avoid corner-case saturation.
+ * @par Notes
+ * 
+ * * If @math{b\_hr} or @math{c\_hr} are unknown, they can be calculated using the appropriate headroom function 
+ * (e.g. xs3_vect_complex_s16_headroom() for complex 16-bit vectors) or the value `0` can always be safely used (but may 
+ * result in reduced precision).
+ *
+ * @param[out] a_exp    Output exponent associated with output mantissa vector @vector{a}
+ * @param[out] b_shr    Signed arithmetic right-shift to be applied to elements of @vector{b}. Used by the function 
+ *                      which computes the output mantissas @vector{a}
+ * @param[out] c_shr    Signed arithmetic right-shift to be applied to elements of @vector{c}. Used by the function 
+ *                      which computes the output mantissas @vector{a}
+ * @param[in]  b_exp    Exponent of BFP vector @vector{b}
+ * @param[in]  c_exp    Exponent of BFP vector @vector{c}
+ * @param[in]  b_hr     Headroom of BFP vector @vector{b} 
+ * @param[in]  c_hr     Headroom of BFP vector @vector{c}
  * 
  * @see xs3_vect_s16_add
  * @see xs3_vect_s32_add
@@ -84,8 +98,7 @@ void xs3_vect_add_sub_prepare(
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation);
+    const headroom_t c_hr);
 
 
 /**
@@ -146,9 +159,6 @@ headroom_t xs3_vect_ch_pair_s32_headroom(
  *      ChB\\{x_k\\} \leftarrow ch\_b \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
- * 
- * @par Word-alignment Required
- *      `x[]` must begin at a word-aligned (4 byte) address.
  * 
  * @param[out]  x           Output channel-pair vector @vector{x}
  * @param[in]   ch_b        Value to set channel A of elements of @vector{x} to
@@ -226,14 +236,6 @@ headroom_t xs3_vect_ch_pair_s32_shl(
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
  * 
- * @note This function saturates the output elements to the symmetric 32-bit range.
- * 
- * @par Safe In-place Computation
- *      This function may safely operate in-place on `b[]`.
- * 
- * @par Word-alignment Required
- *      `a[]` and `b[]` must each begin at a word-aligned (4 byte) address.
- * 
  * @param[out]  a           Complex output vector @vector{a}
  * @param[in]   b           Complex input vector @vector{b}
  * @param[in]   length      Number of elements in @vector{a} and @vector{b}
@@ -251,13 +253,54 @@ headroom_t xs3_vect_ch_pair_s32_shr(
 
 
 /**
- * @brief Obtain the shift params used by xs3_vect_complex_s32_mag() and xs3_vect_complex_s16_mag().
+ * @brief Obtain the output exponent and shift parameter used by xs3_vect_complex_s32_mag() and 
+ *        xs3_vect_complex_s16_mag().
  * 
- * @param[out]  a_exp               Exponent of output of xs3_vect_complex_s32_mag()
- * @param[out]  b_shr               Right-shift to be applied to elements of @vector{b}
- * @param[in]   b_exp               Exponent of @vector{b}
- * @param[in]   b_hr                Headroom of @vector{b}
- * @param[in]   allow_saturation    Whether xs3_vect_complex_s32_mag() is allowed to saturate
+ * Computing the magnitudes of elements of a complex block-floating point vector can be represented as 
+ * 
+ * @math{
+ *      a_k \cdot 2^{a\_exp} \leftarrow \left| b_k \cdot 2^{b\_exp} \right|
+ * }
+ * 
+ * where each @math{a\_k} is an element of @vector{a}, the output mantissa vector, and each @math{b_k} is an element of
+ * @vector{b}, the input mantissa vector, and @math{b\_exp} and @math{a\_exp} are the input and output exponents 
+ * respectively.
+ * 
+ * Using @math{b\_exp} and @math{b\_hr} (the headroom of mantissa vector @vector{b}) this function computes 
+ * @math{a\_exp}, as well as @math{b\_shr}, a parameter required by xs3_vect_complex_s32_mag(), which computes the 
+ * output mantissa vector @vector{a}.
+ * 
+ * To maximize precision, the output exponent @math{a\_exp} should be chosen such that the output vector @vector{a} has
+ * as little headroom as possible.
+ * 
+ * This function is used calculate the output exponent and input bit-shift for each of the following functions:
+ * * xs3_vect_complex_s32_mag()
+ * * xs3_vect_complex_s16_mag()
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following condition should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * 
+ * Using larger values than strictly necessary for `b_shr` may result in unnecessary underflows or loss of precision.
+ * 
+ * @par Notes
+ * 
+ * * If @math{b\_hr} is unknown, it can be calculated using the appropriate headroom function (e.g. 
+ * xs3_vect_complex_s32_headroom()) or the value `0` can always be safely used (but may result in reduced precision).
+ * 
+ * @param[out]  a_exp               Output exponent associated with output mantissa vector @vector{a}
+ * @param[out]  b_shr               Signed arithmetic right-shift to be applied to elements of @vector{b}. Used by the
+ *                                  function which computes the output mantissas @vector{a}
+ * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
  * 
  * @see xs3_vect_complex_s16_mag()
  * @see xs3_vect_complex_s32_mag()
@@ -266,8 +309,7 @@ void xs3_vect_complex_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,
-    const headroom_t b_hr,
-    const unsigned allow_saturation);
+    const headroom_t b_hr);
 
 
 /**
@@ -477,6 +519,54 @@ headroom_t xs3_vect_complex_s32_mag(
 
 
 /**
+ * @brief Obtain the output exponent and input shift used by xs3_vect_complex_s32_mag() and xs3_vect_complex_s16_mag().
+ * 
+ * This function is used in conjunction with xs3_vect_complex_s32_mag() to compute the magnitude of each element of a
+ * complex 32-bit BFP vector.
+ * 
+ * This function computes `a_exp` and `b_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and is be chosen to maximize precision when
+ * elements of @vector{a} are computed. The `a_exp` chosen by this function is derived from the exponent and headroom
+ * associated with the input vector.
+ * 
+ * `b_shr` is the shift parameter required by xs3_vect_complex_s32_mag() to achieve the chosen output exponent `a_exp`.
+ * 
+ * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
+ * 
+ * `b_hr` is the headroom of @vector{b}. If the headroom of @vector{b} is unknown it can be calculated using 
+ * xs3_vect_complex_s32_headroom(). Alternatively, the value `0` can always be safely used (but may result in reduced
+ * precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following condition should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * 
+ * Using larger values than strictly necessary for `b_shr` may result in unnecessary underflows or loss of precision.
+ * 
+ * @param[out]  a_exp               Output exponent associated with output mantissa vector @vector{a}
+ * @param[out]  b_shr               Signed arithmetic right-shift for @vector{b} used by xs3_vect_complex_s32_mag()
+ * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
+ * 
+ * @see xs3_vect_complex_s32_mag()
+ */
+void xs3_vect_complex_s32_mag_prepare(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const exponent_t b_exp,
+    const headroom_t b_hr);
+
+
+/**
  * @brief Multiply one complex 32-bit vector element-wise by another.
  * 
  * xs3_vect_complex_s32_mul() and xs3_vect_complex_s32_mul_prepare() together represent the following BFP
@@ -530,17 +620,61 @@ headroom_t xs3_vect_complex_s32_mul(
 
 
 /**
- * @brief Obtain the shift params used by xs3_vect_complex_s32_mul()
+ * @brief Obtain the output exponent and input shifts used by xs3_vect_complex_s32_mul() and 
+ * xs3_vect_complex_s32_conj_mul().
  * 
- * @param[out]  a_exp               Exponent of output of xs3_vect_complex_s32_mul()
- * @param[out]  b_shr               Right-shift to be applied to elements of @vector{b}
- * @param[out]  c_shr               Right-shift to be applied to elements of @vector{c}
- * @param[in]   b_exp               Exponent of @vector{b}
- * @param[in]   c_exp               Exponent of @vector{c}
- * @param[in]   b_hr                Headroom of @vector{b}
- * @param[in]   c_hr                Headroom of @vector{c}
- * @param[in]   allow_saturation    Whether xs3_vect_complex_s32_mul() is allowed to saturate
+ * This function is used in conjunction with xs3_vect_complex_s32_mul() to perform a complex element-wise multiplication
+ * of two complex 32-bit BFP vectors.
  * 
+ * This function computes `a_exp`, `b_shr` and `c_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and must be chosen to be large enough to avoid 
+ * overflow when elements of @vector{a} are computed. To maximize precision, this function chooses `a_exp` to be the 
+ * smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this function is derived 
+ * from the exponents and headrooms of associated with the input vectors.
+ * 
+ * `b_shr` and `c_shr` are the shift parameters required by xs3_vect_complex_s32_mul() to achieve the chosen output 
+ * exponent `a_exp`.
+ * 
+ * `b_exp` and `c_exp` are the exponents associated with the input mantissa vectors @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If the headroom of @vector{b} or 
+ * @vector{c} is unknown, they can be obtained by calling xs3_vect_complex_s32_headroom(). Alternatively, the value `0`
+ * can always be safely used (but may result in reduced precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` and `c_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * * `c_hr + c_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `b_shr` and `c_shr` can result in saturation, and 
+ * using larger values may result in unnecessary underflows or loss of precision.
+ * 
+ * @par Notes
+ * 
+ * * Using the outputs of this function, an output mantissa which would otherwise be `INT32_MIN` will instead saturate 
+ *   to `-INT32_MAX`. This is due to the symmetric saturation logic employed by the VPU and is a hardware feature. This 
+ *   is a corner case which is usually unlikely and results in 1 LSb of error when it occurs.
+ * 
+ * @param[out]  a_exp               Exponent associated with output mantissa vector @vector{a}
+ * @param[out]  b_shr               Signed arithmetic right-shift for @vector{b} used by xs3_vect_complex_s32_mul()
+ * @param[out]  c_shr               Signed arithmetic right-shift for @vector{c} used by xs3_vect_complex_s32_mul()
+ * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   c_exp               Exponent associated with input mantissa vector @vector{c}
+ * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
+ * @param[in]   c_hr                Headroom of input mantissa vector @vector{c}
+ * 
+ * @see xs3_vect_complex_s32_conj_mul
  * @see xs3_vect_complex_s32_mul
  */
 void xs3_vect_complex_s32_mul_prepare(
@@ -550,8 +684,7 @@ void xs3_vect_complex_s32_mul_prepare(
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation);
+    const headroom_t c_hr);
 
 
 /**
@@ -610,16 +743,58 @@ headroom_t xs3_vect_complex_s32_real_mul(
 
 
 /**
- * @brief Obtain the shift params used by xs3_vect_complex_s32_real_mul().
+ * @brief Obtain the output exponent and input shifts used by xs3_vect_complex_s32_real_mul().
  * 
- * @param[out]  a_exp               Exponent of output from xs3_vect_complex_s32_real_mul()
- * @param[out]  b_shr               Arithmetic right-shift to be applied to elements of vector @vector{b}
- * @param[out]  c_shr               Arithmetic right-shift to be applied to elements of vector @vector{c}
- * @param[in]   b_exp               Exponent of @vector{b}
- * @param[in]   c_exp               Exponent of @vector{c}
- * @param[in]   b_hr                Headroom of @vector{b}
- * @param[in]   c_hr                Headroom of @vector{c}
- * @param[in]   allow_saturation    Whether xs3_vect_complex_s32_real_mul() is allowed to saturate
+ * This function is used in conjunction with xs3_vect_complex_s32_real_mul() to perform a the element-wise 
+ * multiplication of complex 32-bit BFP vector by a real 32-bit BFP vector.
+ * 
+ * This function computes `a_exp`, `b_shr` and `c_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and must be chosen to be large enough to avoid 
+ * overflow when elements of @vector{a} are computed. To maximize precision, this function chooses `a_exp` to be the 
+ * smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this function is derived 
+ * from the exponents and headrooms of associated with the input vectors.
+ * 
+ * `b_shr` and `c_shr` are the shift parameters required by xs3_vect_complex_s32_mul() to achieve the chosen output 
+ * exponent `a_exp`.
+ * 
+ * `b_exp` and `c_exp` are the exponents associated with the input mantissa vectors @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If the headroom of @vector{b} or 
+ * @vector{c} is unknown, they can be obtained by calling xs3_vect_complex_s32_headroom(). Alternatively, the value `0`
+ * can always be safely used (but may result in reduced precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` and `c_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * * `c_hr + c_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `b_shr` and `c_shr` can result in saturation, and 
+ * using larger values may result in unnecessary underflows or loss of precision.
+ * 
+ * @par Notes
+ * 
+ * * Using the outputs of this function, an output mantissa which would otherwise be `INT32_MIN` will instead saturate 
+ *   to `-INT32_MAX`. This is due to the symmetric saturation logic employed by the VPU and is a hardware feature. This 
+ *   is a corner case which is usually unlikely and results in 1 LSb of error when it occurs.
+ * 
+ * @param[out]  a_exp               Output exponent associated with @vector{a}
+ * @param[out]  b_shr               Signed arithmetic right-shift for @vector{b} used by xs3_vect_complex_s32_real_mul()
+ * @param[out]  c_shr               Signed arithmetic right-shift for @vector{c} used by xs3_vect_complex_s32_real_mul()
+ * @param[in]   b_exp               Exponent associated with @vector{b}
+ * @param[in]   c_exp               Exponent associated with @vector{c}
+ * @param[in]   b_hr                Headroom of mantissa vector @vector{b}
+ * @param[in]   c_hr                Headroom of mantissa vector @vector{c}
  * 
  * @see xs3_vect_complex_s32_real_mul
  */
@@ -630,8 +805,7 @@ void xs3_vect_complex_s32_real_mul_prepare(
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation);
+    const headroom_t c_hr);
 
 
 /**
@@ -741,28 +915,69 @@ headroom_t xs3_vect_complex_s32_scale(
 
 
 /**
- * @brief Obtain shift params used by xs3_vect_complex_s32_scale()
+ * @brief Obtain the output exponent and input shifts used by xs3_vect_complex_s32_scale().
  * 
- * @param[out]  a_exp               Exponent of output from xs3_vect_complex_s32_scale()
- * @param[out]  b_shr               Arithmetic right-shift to be applied to elements of @vector{b}
- * @param[out]  alpha_shr           Arithmetic right-shift to be applied to @math{\alpha}
- * @param[in]   b_exp               Exponent of @vector{b}
- * @param[in]   alpha_exp           Exponent of @math{\alpha}
- * @param[in]   b_hr                Headroom of @vector{b}
- * @param[in]   alpha_hr            Headroom of @math{\alpha}
- * @param[in]   allow_saturation    Whether xs3_vect_complex_s32_scale() is allowed to saturate
+ * This function is used in conjunction with xs3_vect_complex_s32_scale() to perform a complex multiplication of a 
+ * complex 32-bit BFP vector by a complex 32-bit scalar.
+ * 
+ * This function computes `a_exp`, `b_shr` and `c_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and must be chosen to be large enough to avoid 
+ * overflow when elements of @vector{a} are computed. To maximize precision, this function chooses `a_exp` to be the 
+ * smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this function is derived 
+ * from the exponents and headrooms associated with the input vectors.
+ * 
+ * `b_shr` and `c_shr` are the shift parameters required by xs3_vect_complex_s32_mul() to achieve the chosen output 
+ * exponent `a_exp`.
+ * 
+ * `b_exp` and `c_exp` are the exponents associated with the input mantissa vectors @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If the headroom of @vector{b} or 
+ * @vector{c} is unknown, they can be obtained by calling xs3_vect_complex_s32_headroom(). Alternatively, the value `0`
+ * can always be safely used (but may result in reduced precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` and `c_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * * `c_hr + c_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `b_shr` and `c_shr` can result in saturation, and 
+ * using larger values may result in unnecessary underflows or loss of precision.
+ * 
+ * @par Notes
+ * 
+ * * Using the outputs of this function, an output mantissa which would otherwise be `INT32_MIN` will instead saturate 
+ *   to `-INT32_MAX`. This is due to the symmetric saturation logic employed by the VPU and is a hardware feature. This 
+ *   is a corner case which is usually unlikely and results in 1 LSb of error when it occurs.
+ * 
+ * @param[out]  a_exp               Exponent associated with output mantissa vector @vector{a}
+ * @param[out]  b_shr               Signed arithmetic right-shift for @vector{b} used by xs3_vect_complex_s32_scale()
+ * @param[out]  c_shr               Signed arithmetic right-shift for @vector{c} used by xs3_vect_complex_s32_scale()
+ * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   c_exp               Exponent associated with input mantissa vector @vector{c}
+ * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
+ * @param[in]   c_hr                Headroom of input mantissa vector @vector{c}
  * 
  * @see xs3_vect_complex_s32_scale
  */
 void xs3_vect_complex_s32_scale_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
-    right_shift_t* alpha_shr,
+    right_shift_t* c_shr,
     const exponent_t b_exp,
-    const exponent_t alpha_exp,
+    const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t alpha_hr,
-    const unsigned allow_saturation);
+    const headroom_t c_hr);
 
 
 /**
@@ -900,23 +1115,51 @@ headroom_t xs3_vect_complex_s32_squared_mag(
 
 
 /**
- * @brief Obtain the shift parameters used by xs3_vect_complex_s32_squared_mag.
+ * @brief Obtain the output exponent and input shift used by xs3_vect_complex_s32_squared_mag().
  * 
- * @param[out]  a_exp                   Exponent of output of xs3_vect_complex_s32_squared_mag()
- * @param[out]  b_shr                   Right-shift to be applied to elements of @vector{b}
- * @param[in]   b_exp                   Exponent of @vector{b}
- * @param[in]   b_hr                    Headroom of @vector{b}
- * @param[in]   allow_saturation        Indicates whether xs3_vect_complex_s32_squared_mag() should be allowed to 
- *                                      saturate
+ * This function is used in conjunction with xs3_vect_complex_s32_squared_mag() to compute the squared magnitude of each 
+ * element of a complex 32-bit BFP vector.
  * 
- * @see xs3_vect_complex_s32_squared_mag
+ * This function computes `a_exp` and `b_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and is be chosen to maximize precision when
+ * elements of @vector{a} are computed. The `a_exp` chosen by this function is derived from the exponent and headroom
+ * associated with the input vector.
+ * 
+ * `b_shr` is the shift parameter required by xs3_vect_complex_s32_mag() to achieve the chosen output exponent `a_exp`.
+ * 
+ * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
+ * 
+ * `b_hr` is the headroom of @vector{b}. If the headroom of @vector{b} is unknown it can be calculated using 
+ * xs3_vect_complex_s32_headroom(). Alternatively, the value `0` can always be safely used (but may result in reduced
+ * precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following condition should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * 
+ * Using larger values than strictly necessary for `b_shr` may result in unnecessary underflows or loss of precision.
+ * 
+ * @param[out]  a_exp               Output exponent associated with output mantissa vector @vector{a}
+ * @param[out]  b_shr               Signed arithmetic right-shift for @vector{b} used by xs3_vect_complex_s32_squared_mag()
+ * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
+ * 
+ * @see xs3_vect_complex_s32_squared_mag()
  */
 void xs3_vect_complex_s32_squared_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,
-    const headroom_t b_hr,
-    const unsigned allow_saturation);
+    const headroom_t b_hr);
 
 
 /**
@@ -1024,14 +1267,48 @@ void xs3_vect_complex_s32_sum(
 
 
 /**
- * @brief Obtain the shift parameters used by xs3_vect_complex_s32_sum().
+ * @brief Obtain the output exponent and input shift used by xs3_vect_complex_s32_sum().
  * 
- * @param[out]  a_exp                   Exponent of output from xs3_vect_complex_sum()
- * @param[out]  b_shr                   Right-shift to be applied to elements of @vector{b}
- * @param[in]   b_exp                   Exponent of @vector{b}
- * @param[in]   b_hr                    Headroom of @vector{b}
+ * This function is used in conjunction with xs3_vect_complex_s32_sum() to compute the sum of elements of a complex
+ * 32-bit BFP vector.
+ * 
+ * This function computes `a_exp` and `b_shr`.
+ * 
+ * `a_exp` is the exponent associated with the 64-bit mantissa @math{a} returned by xs3_vect_complex_s32_sum(), and must be 
+ * chosen to be large enough to avoid saturation when @math{a} is computed. To maximize precision, this function chooses
+ * `a_exp` to be the smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this 
+ * function is derived from the exponents and headrooms associated with the input vector.
+ * 
+ * `b_shr` is the shift parameter required by xs3_vect_complex_s32_sum() to achieve the chosen output exponent `a_exp`.
+ * 
+ * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
+ * 
+ * `b_hr` is the headroom of @vector{b}. If the headroom of @vector{b} is unknown it can be calculated using 
+ * xs3_vect_complex_s32_headroom(). Alternatively, the value `0` can always be safely used (but may result in reduced
+ * precision).
+ * 
+ * `length` is the number of elements in the input mantissa vector @vector{b}.
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `b_shr` can result in saturation, and using larger 
+ * values may result in unnecessary underflows or loss of precision.
+ * 
+ * @param[out]  a_exp                   Exponent associated with output mantissa @math{a}
+ * @param[out]  b_shr                   Signed arithmetic right-shift for @vector{b} used by xs3_vect_complex_s32_sum()
+ * @param[in]   b_exp                   Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   b_hr                    Headroom of input mantissa vector @vector{b}
  * @param[in]   length                  Number of elements in @vector{b}
- * @param[in]   allow_saturation        Indicates whether xs3_vect_complex_s32_sum() should be allowed to saturate
  * 
  * @see xs3_vect_complex_s32_sum
  */
@@ -1040,8 +1317,7 @@ void xs3_vect_complex_s32_sum_prepare(
     right_shift_t* b_shr,
     const exponent_t b_exp,
     const headroom_t b_hr,
-    const unsigned length,
-    const unsigned allow_saturation);
+    const unsigned length);
 
 
 /**
@@ -1130,16 +1406,9 @@ void xs3_vect_complex_s32_to_complex_s16(
 /** 
  * @brief Compute the element-wise absolute value of a 32-bit vector.
  * 
- * xs3_vect_s32_abs() represents the following BFP operation:
- * 
- * @math{ 
- *      a_k \cdot 2^{a\_exp} \leftarrow \left|b_k \cdot 2^{b\_exp}\right|       \\
- *          \qquad\text{with } a\_exp = b\_exp
- * }
- * 
  * @par Parameter Details
  * 
- * `a[]` and `b[]` represent teh 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a
+ * `a[]` and `b[]` represent the 32-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a
  * word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
  * `length` is the number of elements in each of the vectors.
@@ -1258,68 +1527,53 @@ headroom_t xs3_vect_s32_add(
 /**
  * @brief Obtain the array index of the maximum element of a 32-bit vector.
  * 
- * @par Parameter Details
+ * `b[]` represents the 32-bit input vector @vector{b}. It must begin at a word-aligned address.
  * 
- * `x[]` represents the 32-bit mantissa vector @vector{x}. It must begin at a word-aligned address.
- * 
- * `length` is the number of elements in @vector{x}.
+ * `length` is the number of elements in @vector{b}.
  * 
  * @low_op{32, @f$ 
- *      argmax_k\\{ x_k \\}     \\ 
+ *      a \leftarrow argmax_k\\{ b_k \\}     \\ 
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
  * 
- * @param[in]   x           Input vector @vector{x}
- * @param[in]   length      Number of elemetns in @vector{x}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elemetns in @vector{b}
  * 
- * @returns Index of the maximum element of mantissa vector @vector{x}. If there is a tie for the maximum value, the 
- * lowest tying index is returned.
+ * @returns @math{a}, the index of the maximum element of vector @vector{b}. If there is a tie for the maximum value, 
+ *          the lowest tying index is returned.
  */
 unsigned xs3_vect_s32_argmax(
-    const int32_t x[],
+    const int32_t b[],
     const unsigned length);
 
 
 /**
  * @brief Obtain the array index of the minimum element of a 32-bit vector.
  * 
- * @par Parameter Details
+ * `b[]` represents the 32-bit input vector @vector{b}. It must begin at a word-aligned address.
  * 
- * `x[]` represents the 32-bit mantissa vector @vector{x}. It must begin at a word-aligned address.
- * 
- * `length` is the number of elements in @vector{x}.
+ * `length` is the number of elements in @vector{b}.
  * 
  * @low_op{32, @f$ 
- *      argmin_k\\{ x_k \\}     \\ 
- *              \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ *      a \leftarrow argmin_k\\{ b_k \\}     \\ 
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
  * 
- * @param[in]   x           Input vector @vector{x}
- * @param[in]   length      Number of elements in @vector{x}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   length      Number of elemetns in @vector{b}
  * 
- * @returns Index of the minimum element of mantissa vector @vector{x}. If there is a tie for the minimum value, the 
- * lowest tying index is returned.
+ * @returns @math{a}, the index of the minimum element of vector @vector{b}. If there is a tie for the minimum value, 
+ *          the lowest tying index is returned.
  */
 unsigned xs3_vect_s32_argmin(
-    const int32_t x[],
+    const int32_t b[],
     const unsigned length);
 
 
 /**
  * @brief Clamp the elements of a 32-bit vector to a specified range.
  * 
- * xs3_vect_s32_clip() represents the following BFP operation:
- * 
- * @math{   a_k \cdot 2^{a\_exp} \leftarrow min\!\left( U, max\!\left( L, b_k \cdot 2^{b\_exp} \right)\right)   \\
- *              \qquad\text{ for }k\in 0\ ...\ (length-1)                               \\
- *              \qquad\text{ where } L = lower\_bound \cdot 2^{b\_exp+b\_shr},          \\
- *              \qquad\text{       } U = upper\_bound \cdot 2^{b\_exp+b\_shr},          \\
- *              \qquad\text{ and } a\_exp = b\_exp  
- * }
- * 
- * @par Parameter Details
- * 
- * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * `a[]` and `b[]` represent the 32-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a 
  * word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
  * `length` is the number of elements in each of the vectors.
@@ -1330,14 +1584,15 @@ unsigned xs3_vect_s32_argmin(
  * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b} _before_ being compared to the upper
  * and lower bounds.
  * 
+ * If @vector{b} are the mantissas for a BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the exponent @math{a\_exp} of
+ * the output BFP vector @math{\bar{a} \cdot 2^{a\_exp}} is given by @math{a\_exp = b\_exp + b\_shr}.
+ * 
  * @low_op{32, @f$
- *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
- *      a_k \leftarrow 
- *        \begin\{cases\}
- *          lower\_bound & b_k' \le lower\_bound     \\
- *          upper\_bound & b_k' \ge upper\_bound     \\
- *          b_k' & otherwise
- *        \end\{cases\}                                                 \\
+ *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor) \\
+ *      a_k \leftarrow \begin\{cases\}
+ *          lower\_bound & b_k' \le lower\_bound                        \\
+ *          upper\_bound & b_k' \ge upper\_bound                        \\
+ *          b_k' & otherwise \end\{cases\}                              \\
  *      \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
  * 
@@ -1346,7 +1601,7 @@ unsigned xs3_vect_s32_argmin(
  * @param[in]   length          Number of elements in vectors @vector{a} and @vector{b}
  * @param[in]   lower_bound     Lower bound of clipping range
  * @param[in]   upper_bound     Upper bound of clipping range
- * @param[in]   b_shr           Arithmetic right-shift applied to elements of `b`
+ * @param[in]   b_shr           Arithmetic right-shift applied to elements of @vector{b} prior to clipping
  * 
  * @returns  Headroom of output vector @vector{a}
  */
@@ -1428,17 +1683,54 @@ int64_t xs3_vect_s32_dot(
 
 
 /**
- * @brief Obtain the shift parameters used by xs3_vect_s32_dot().
+ * @brief Obtain the output exponent and input shift used by xs3_vect_s32_dot().
  * 
- * @param[out]  a_exp               Exponent of output of xs3_vect_s32_dot()
- * @param[out]  b_shr               Right-shift to be applied to elements of @vector{b}
- * @param[out]  c_shr               Right-shift to be applied to elements of @vector{c}
- * @param[in]   b_exp               Exponent of @vector{b}
- * @param[in]   c_exp               Exponent of @vector{c}
- * @param[in]   b_hr                Headroom of @vector{b}
- * @param[in]   c_hr                Headroom of @vector{c}
+ * This function is used in conjunction with xs3_vect_s32_dot() to compute the inner product of two 32-bit BFP vectors.
+ * 
+ * This function computes `a_exp`, `b_shr` and `c_shr`.
+ * 
+ * `a_exp` is the exponent associated with the 64-bit mantissa @math{a} returned by xs3_vect_s32_dot(), and must be 
+ * chosen to be large enough to avoid saturation when @math{a} is computed. To maximize precision, this function chooses
+ * `a_exp` to be the smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this 
+ * function is derived from the exponents and headrooms associated with the input vectors.
+ * 
+ * `b_shr` and `c_shr` are the shift parameters required by xs3_vect_s32_dot() to achieve the chosen output exponent 
+ * `a_exp`.
+ * 
+ * `b_exp` and `c_exp` are the exponents associated with the input mantissa vectors @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If either is unknown, they can be 
+ * obtained using xs3_vect_s32_headroom(). Alternatively, the value `0` can always be safely used (but may result in 
+ * reduced precision).
+ * 
+ * `length` is the number of elements in the input mantissa vectors @vector{b} and @vector{c}.
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` and `c_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * * `c_hr + c_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `b_shr` or `c_shr` can result in saturation, and using 
+ * larger values may result in unnecessary underflows or loss of precision.
+ * 
+ * @param[out]  a_exp               Exponent associated with output mantissa @math{a}
+ * @param[out]  b_shr               Signed arithmetic right-shift for @vector{b} used by xs3_vect_s32_dot()
+ * @param[out]  c_shr               Signed arithmetic right-shift for @vector{c} used by xs3_vect_s32_dot()
+ * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   c_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
+ * @param[in]   c_hr                Headroom of input mantissa vector @vector{b}
  * @param[in]   length              Number of elements in vectors @vector{b} and @vector{c}
- * @param[in]   allow_saturation    Whether xs3_vect_s32_dot() may saturate
  * 
  * @see xs3_vect_s32_dot
  */
@@ -1450,8 +1742,7 @@ void xs3_vect_s32_dot_prepare(
     const exponent_t c_exp,
     const headroom_t b_hr,
     const headroom_t c_hr,
-    const unsigned length,
-    const unsigned allow_saturation);
+    const unsigned length);
 
 
 /**
@@ -1512,7 +1803,41 @@ int64_t xs3_vect_s32_energy(
 
 
 /**
- * @brief Obtain the shift parameters used by xs3_vect_s32_energy().
+ * @brief Obtain the output exponent and input shift used by xs3_vect_s32_energy().
+ * 
+ * This function is used in conjunction with xs3_vect_s32_energy() to compute the inner product of a 32-bit BFP vector
+ * with itself.
+ * 
+ * This function computes `a_exp` and `b_shr`.
+ * 
+ * `a_exp` is the exponent associated with the 64-bit mantissa @math{a} returned by xs3_vect_s32_energy(), and must be 
+ * chosen to be large enough to avoid saturation when @math{a} is computed. To maximize precision, this function chooses
+ * `a_exp` to be the smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this 
+ * function is derived from the exponent and headroom associated with the input vector.
+ * 
+ * `b_shr` is the shift parameter required by xs3_vect_s32_energy() to achieve the chosen output exponent `a_exp`.
+ * 
+ * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
+ * 
+ * `b_hr` is the headroom of @vector{b}. If it is unknown, it can be obtained using xs3_vect_s32_headroom(). 
+ * Alternatively, the value `0` can always be safely used (but may result in reduced precision).
+ * 
+ * `length` is the number of elements in the input mantissa vector @vector{b}.
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following condition should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `b_shr` can result in saturation, and using larger 
+ * values may result in unnecessary underflows or loss of precision.
  * 
  * @param[out]  a_exp       Exponent of outputs of xs3_vect_s32_energy()
  * @param[out]  b_shr       Right-shift to be applied to elements of @vector{b}
@@ -1574,7 +1899,7 @@ headroom_t xs3_vect_s32_headroom(
  * 
  * @math{ a_k \cdot 2^{a\_exp} \leftarrow \frac{1}{b_k \cdot 2^{b\_exp}} }
  * 
- * xs3_vect_complex_s32_inverse_prepare() should be called first to compute the shift parameter @math{b\_shr} used
+ * xs3_vect_complex_s32_inverse_prepare() should be called first to compute the scaling parameter @math{scale} used
  * by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
  * mantissa vector @vector{a}.
  * 
@@ -1598,6 +1923,8 @@ headroom_t xs3_vect_s32_headroom(
  * @param[in]   scale       Scale factor applied to dividend when computing inverse
  * 
  * @returns     Headroom of output vector @vector{a}
+ * 
+ * @see xs3_vect_s32_inverse_prepare
  */
 headroom_t xs3_vect_s32_inverse(
     int32_t a[],
@@ -1607,10 +1934,28 @@ headroom_t xs3_vect_s32_inverse(
 
 
 /**
- * @brief Obtain the shift parameters used by xs3_vect_s32_inverse().
+ * @brief Obtain the output exponent and scale used by xs3_vect_s32_inverse().
  * 
- * @par Word-alignment Required
- *      `b[]` must begin at a word-aligned (4 byte) address.
+ * This function is used in conjunction with xs3_vect_s32_inverse() to compute the inverse of elements of a 32-bit
+ * BFP vector.
+ * 
+ * This function computes `a_exp` and `scale`.
+ * 
+ * `a_exp` is the exponent associated with output mantissa vector @vector{a}, and must be chosen to avoid overflow in 
+ * the smallest element of the input vector, which when inverted becomes the largest output element. To maximize 
+ * precision, this function chooses `a_exp` to be the smallest exponent known to avoid saturation. The `a_exp` chosen
+ * by this function is derived from the exponent and smallest element of the input vector.
+ * 
+ * `scale` is a scaling parameter used by xs3_vect_s32_inverse() to achieve the chosen output exponent.
+ * 
+ * `b[]` is the input mantissa vector @vector{b}.
+ * 
+ * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
+ * 
+ * `length` is the number of elements in @vector{b}.
+ * 
+ * @todo In lib_dsp, the inverse function has a floor, which prevents tiny values from completely dominating the output
+ *       behavior. Perhaps I should include that?
  * 
  * @param[out]  a_exp       Exponent of output vector @vector{a}
  * @param[out]  scale       Scale factor to be applied when computing inverse
@@ -1631,43 +1976,39 @@ void xs3_vect_s32_inverse_prepare(
 /**
  * @brief Find the maximum value in a 32-bit vector.
  * 
- * @par Parameter Details
+ * `b[]` represents the 32-bit vector @vector{b}. It must begin at a word-aligned address.
  * 
- * `x[]` represents the 32-bit mantissa vector @vector{x}. It must begin at a word-aligned address.
- * 
- * `length` is the number of elements in @vector{x}.
+ * `length` is the number of elements in @vector{b}.
  * 
  * @low_op{32, @f$ 
  *      max\\{ x_0, x_1, ..., x_{length-1} \\}
  * @f$ }
  * 
- * @param[in]   x           Input vector @vector{x}     
- * @param[in]   length      Number of elements in @vector{x}
+ * @param[in]   b           Input vector @vector{b}     
+ * @param[in]   length      Number of elements in @vector{b}
  * 
- * @returns     Maximum value from @vector{x}
+ * @returns     Maximum value from @vector{b}
  */
 int32_t xs3_vect_s32_max(
-    const int32_t x[],
+    const int32_t b[],
     const unsigned length);
 
 
 /**
  * @brief Find the minimum value in a 32-bit vector.
  * 
- * @par Parameter Details
+ * `b[]` represents the 32-bit vector @vector{b}. It must begin at a word-aligned address.
  * 
- * `x[]` represents the 32-bit mantissa vector @vector{x}. It must begin at a word-aligned address.
- * 
- * `length` is the number of elements in @vector{x}.
+ * `length` is the number of elements in @vector{b}.
  * 
  * @low_op{32, @f$ 
- *      min\\{ x_0, x_1, ..., x_{length-1} \\}
+ *      max\\{ x_0, x_1, ..., x_{length-1} \\}
  * @f$ }
  * 
- * @param[in]   x           Input vector @vector{x}     
- * @param[in]   length      Number of elements in @vector{x}
+ * @param[in]   b           Input vector @vector{b}     
+ * @param[in]   length      Number of elements in @vector{b}
  * 
- * @returns     Minimum value from @vector{x}
+ * @returns     Minimum value from @vector{b}
  */
 int32_t xs3_vect_s32_min(
     const int32_t x[],
@@ -1723,7 +2064,51 @@ headroom_t xs3_vect_s32_mul(
 
 
 /**
- * @brief Obtain the shift parameters used by xs3_vect_s32_mul().
+ * @brief Obtain the output exponent and input shifts used by xs3_vect_s32_mul().
+ * 
+ * This function is used in conjunction with xs3_vect_s32_mul() to perform an element-wise multiplication of two 32-bit
+ * BFP vectors.
+ * 
+ * This function computes `a_exp`, `b_shr`, `c_shr`.
+ * 
+ * `a_exp` is the exponent associated with mantissa vector @vector{a}, and must be chosen to be large enough to avoid 
+ * overflow when elements of @vector{a} are computed. To maximize precision, this function chooses `a_exp` to be the 
+ * smallest exponent known to avoid saturation (see exception below). The `a_exp` chosen by this function is derived 
+ * from the exponents and headrooms of associated with the input vectors.
+ * 
+ * `b_shr` and `c_shr` are the shift parameters required by xs3_vect_complex_s32_mul() to achieve the chosen output 
+ * exponent `a_exp`.
+ * 
+ * `b_exp` and `c_exp` are the exponents associated with the input mantissa vectors @vector{b} and @vector{c} 
+ * respectively.
+ * 
+ * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If the headroom of @vector{b} or 
+ * @vector{c} is unknown, they can be obtained by calling xs3_vect_s32_headroom(). Alternatively, the value `0` can 
+ * always be safely used (but may result in reduced precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` and `c_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following conditions should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * * `c_hr + c_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `b_shr` and `c_shr` can result in saturation, and 
+ * using larger values may result in unnecessary underflows or loss of precision.
+ * 
+ * @par Notes
+ * 
+ * * Using the outputs of this function, an output mantissa which would otherwise be `INT32_MIN` will instead saturate 
+ *   to `-INT32_MAX`. This is due to the symmetric saturation logic employed by the VPU and is a hardware feature. This 
+ *   is a corner case which is usually unlikely and results in 1 LSb of error when it occurs.
+ * 
  * 
  * @param[out]  a_exp       Exponent of output elements of xs3_vect_s32_mul()
  * @param[out]  b_shr       Right-shift to be applied to elements of @vector{b}
@@ -1875,17 +2260,23 @@ void xs3_vect_s32_set(
 /**
  * @brief Left-shift the elements of a 32-bit vector by a specified number of bits.
  * 
- * `a[]` and `b[]` represent the 32-bit integer vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * `a[]` and `b[]` represent the 32-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a 
  * word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
- * `length` is the number of elements in @vector{a} and @vector{b}.
+ * `length` is the number of elements in vectors @vector{a} and @vector{b}.
  * 
  * `b_shl` is the signed arithmetic left-shift applied to each element of @vector{b}. 
  * 
  * @low_op{32, @f$ 
- *      a_k \leftarrow sat_{32}(\lfloor b_k \cdot 2^{b\_shl} \rfloor)     \\
+ *      a_k \leftarrow sat_{32}(\lfloor b_k \cdot 2^{b\_shl} \rfloor)       \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting vector 
+ * @vector{a} are the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{b\_shl}} and @math{a\_exp = b\_exp}.
  * 
  * @param[out]  a           Output vector @vector{a}
  * @param[in]   b           Input vector @vector{b}
@@ -1900,16 +2291,14 @@ headroom_t xs3_vect_s32_shl(
     const unsigned length,
     const left_shift_t b_shl);
 
-    
+
 /**
  * @brief Right-shift the elements of a 32-bit vector by a specified number of bits.
  * 
- * @par Parameter Details
- * 
- * `a[]` and `b[]` represent the 32-bit integer vectors @vector{a} and @vector{b} respectively. Each must begin at a 
+ * `a[]` and `b[]` represent the 32-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a 
  * word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
- * `length` is the number of elements in @vector{a} and @vector{b}.
+ * `length` is the number of elements in vectors @vector{a} and @vector{b}.
  * 
  * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}. 
  * 
@@ -1917,6 +2306,12 @@ headroom_t xs3_vect_s32_shl(
  *      a_k \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)      \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting vector 
+ * @vector{a} are the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{-b\_shr}} and @math{a\_exp = b\_exp}.
  * 
  * @param[out]  a           Output vector @vector{a}
  * @param[in]   b           Input vector @vector{b}
@@ -1981,12 +2376,52 @@ headroom_t xs3_vect_s32_sqrt(
 
 
 /**
- * @brief Obtain the shift parameters used by xs3_vect_s32_sqrt().
+ * @brief Obtain the output exponent and shift parameter used by xs3_vect_s32_sqrt().
  * 
- * @param[out]  a_exp       Exponent of output elements from xs3_vect_s32_sqrt()
- * @param[out]  b_shr       Right-shift appled to @vector{b}
- * @param[in]   b_exp       Exponent of input vector @vector{b}
- * @param[in]   b_hr        Headroom of input vector @vector{b}
+ * This function is used in conjunction withx xs3_vect_s32_sqrt() to compute the square root of elements of a 32-bit
+ * BFP vector.
+ * 
+ * This function computes `a_exp` and `b_shr`.
+ * 
+ * `a_exp` is the exponent associated with output mantissa vector @vector{a}, and should be chosen to maximize the 
+ * precision of the results. To that end, this function chooses `a_exp` to be the smallest exponent known to avoid 
+ * saturation of the resulting mantissa vector @vector{a}. It is derived from the exponent and headroom of the input
+ * BFP vector.
+ * 
+ * `b_shr` is the shift parameter required by xs3_vect_s32_sqrt() to achieve the chosen output exponent `a_exp`.
+ * 
+ * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
+ * 
+ * `b_hr` is the headroom of @vector{b}. If it is unknown, it can be obtained using xs3_vect_s32_headroom(). 
+ * Alternatively, the value `0` can always be safely used (but may result in reduced precision).
+ * 
+ * @par Adjusting Output Exponents
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
+ * `b_shr` produced by this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t a_exp;
+ *      right_shift_t b_shr;
+ *      xs3_vect_s16_mul_prepare(&a_exp, &b_shr, b_exp, c_exp, b_hr, c_hr);
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      b_shr = b_shr + (desired_exp - a_exp);
+ *      a_exp = desired_exp;
+ * \endcode
+ * 
+ * When applying the above adjustment, the following condition should be maintained:
+ * * `b_hr + b_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `b_shr` can result in saturation, and using larger 
+ * values may result in unnecessary underflows or loss of precision.
+ * 
+ * Also, if a larger exponent is used than necessary, a larger `depth` parameter (see xs3_vect_s32_sqrt()) will be 
+ * required to achieve the same precision, as the results are computed bit by bit, starting with the most significant
+ * bit.
+ * 
+ * @param[out]  a_exp       Exponent of outputs of xs3_vect_s32_sqrt()
+ * @param[out]  b_shr       Right-shift to be applied to elements of @vector{b}
+ * @param[in]   b_exp       Exponent of vector{b}
+ * @param[in]   b_hr        Headroom of vector{b}
  * 
  * @see xs3_vect_s32_sqrt
  */

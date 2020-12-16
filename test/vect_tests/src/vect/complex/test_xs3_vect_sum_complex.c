@@ -53,46 +53,42 @@ void test_xs3_vect_complex_s32_sum_prepare()
             B[i].re = 0x40000000 >> b_hr;
             B[i].im = INT32_MIN >> b_hr;
         }
+ 
+        complex_s64_t A;
+        exponent_t a_exp;
+        right_shift_t b_shr;
 
+        // PRINTF("\n\t    allow_sat = %u\n", allow_sat);
+        // PRINTF("\t    b_length = %u\n", b_length);
+        // PRINTF("\t    b_exp = %d\n", b_exp);
+        // PRINTF("\t    b_hr = %d\n", b_hr);
 
-        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat++){
-            
-            complex_s64_t A;
-            exponent_t a_exp;
-            right_shift_t b_shr;
+        xs3_vect_complex_s32_sum_prepare(&a_exp, &b_shr, b_exp, b_hr, b_length);
 
-            // PRINTF("\n\t    allow_sat = %u\n", allow_sat);
-            // PRINTF("\t    b_length = %u\n", b_length);
-            // PRINTF("\t    b_exp = %d\n", b_exp);
-            // PRINTF("\t    b_hr = %d\n", b_hr);
+        TEST_ASSERT_EQUAL(b_exp + b_shr, a_exp);
 
-            xs3_vect_complex_s32_sum_prepare(&a_exp, &b_shr, b_exp, b_hr, b_length, allow_sat);
+        TEST_ASSERT_GREATER_OR_EQUAL(0, b_shr);
 
-            TEST_ASSERT_EQUAL(b_exp + b_shr, a_exp);
+        if(b_shr) some_shr = 1;
 
-            TEST_ASSERT_GREATER_OR_EQUAL(0, b_shr);
+        // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B[0].re, (uint32_t) B[0].re);
+        // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B[0].im, (uint32_t) B[0].im);
 
-            if(b_shr) some_shr = 1;
+        xs3_vect_complex_s32_sum(&A, B, b_length, b_shr);
 
-            // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B[0].re, (uint32_t) B[0].re);
-            // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B[0].im, (uint32_t) B[0].im);
+        // PRINTF("\t    A.re = %lld   (0x%08llX)\n", A.re, (uint64_t) A.re);
+        // PRINTF("\t    A.im = %lld   (0x%08llX)\n", A.im, (uint64_t) A.im);
+        // PRINTF("\t    a_exp = %d\n", a_exp);
+        // PRINTF("\t    b_shr  = %d\n", b_shr);
 
-            xs3_vect_complex_s32_sum(&A, B, b_length, b_shr);
+        complex_s64_t expected = {
+            (b_length * ((int64_t)B[0].re)) >> b_shr,
+            (b_length * ((int64_t)B[0].im)) >> b_shr };
 
-            // PRINTF("\t    A.re = %lld   (0x%08llX)\n", A.re, (uint64_t) A.re);
-            // PRINTF("\t    A.im = %lld   (0x%08llX)\n", A.im, (uint64_t) A.im);
-            // PRINTF("\t    a_exp = %d\n", a_exp);
-            // PRINTF("\t    b_shr  = %d\n", b_shr);
+        
+        TEST_ASSERT( expected.re == A.re );
+        TEST_ASSERT( expected.im == A.im );
 
-            complex_s64_t expected = {
-                (b_length * ((int64_t)B[0].re)) >> b_shr,
-                (b_length * ((int64_t)B[0].im)) >> b_shr };
-
-            
-            TEST_ASSERT( expected.re == A.re );
-            TEST_ASSERT( expected.im == A.im );
-
-        }
     }
 
     TEST_ASSERT_TRUE(some_shr);

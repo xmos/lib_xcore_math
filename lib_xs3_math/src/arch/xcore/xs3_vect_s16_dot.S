@@ -6,8 +6,7 @@
 int64_t xs3_vect_s16_dot(
     const int16_t b[],
     const int16_t c[],
-    const unsigned length,
-    const headroom_t bc_hr);
+    const unsigned length);
 */
 
 #include "asm_helper.h"

@@ -105,34 +105,16 @@ static void test_xs3_vect_complex_mag_prepare()
         complex_s32_t B = { 0, INT32_MIN >> b_hr };
         int32_t A_mag;
 
-        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat ++){
-            
-            exponent_t a_exp;
-            right_shift_t b_shr;
+        exponent_t a_exp;
+        right_shift_t b_shr;
 
-            // PRINTF("\n\t    allow_sat = %u\n", allow_sat);
-            // PRINTF("\t    b_exp = %d\n", b_exp);
-            // PRINTF("\t    b_hr = %d\n", b_hr);
+        xs3_vect_complex_mag_prepare(&a_exp, &b_shr, b_exp, b_hr);
 
-            xs3_vect_complex_mag_prepare(&a_exp, &b_shr, b_exp, b_hr, allow_sat);
+        xs3_vect_complex_s32_mag(&A_mag, &B, 1, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
 
-            // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B.re, (uint32_t) B.re);
-            // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B.im, (uint32_t) B.im);
-
-            xs3_vect_complex_s32_mag(&A_mag, &B, 1, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
-
-            // PRINTF("\t    A_mag = %ld   (0x%08lX)\n", A_mag, (uint32_t) A_mag);
-            // PRINTF("\t    a_exp = %d\n", a_exp);
-            // PRINTF("\t    b_shr  = %d\n", b_shr);
-
-            if(allow_sat){
-                TEST_ASSERT_INT32_WITHIN(1, INT32_MAX, A_mag);
-            } else {
-                TEST_ASSERT_INT32_WITHIN(1, 0x40000000, A_mag);
-            }
-            
-            TEST_ASSERT_TRUE(  ( fabs( ldexp(A_mag, a_exp) + ldexp( B.im, b_exp) ) / B.im ) <= 0.00001  );
-        }
+        TEST_ASSERT_INT32_WITHIN(1, INT32_MAX, A_mag);
+        
+        TEST_ASSERT_TRUE(  ( fabs( ldexp(A_mag, a_exp) + ldexp( B.im, b_exp) ) / B.im ) <= 0.00001  );
     }
 }
 #undef REPS

@@ -94,7 +94,7 @@ void test_xs3_vect_complex_s16_real_mul_prepare()
         right_shift_t sat;
 
         // Allow saturation
-        xs3_vect_complex_s16_real_mul_prepare(&A_exp, &sat, B_exp, C_exp, B_hr, C_hr, 1);
+        xs3_vect_complex_s16_real_mul_prepare(&A_exp, &sat, B_exp, C_exp, B_hr, C_hr);
 
         int32_t B = -0x8000 >> B_hr;
         int32_t C = -0x8000 >> C_hr;
@@ -114,22 +114,6 @@ void test_xs3_vect_complex_s16_real_mul_prepare()
 
             TEST_ASSERT( Rf == 0x8000 );
         }
-
-        // Disallow saturation
-        xs3_vect_complex_s16_real_mul_prepare(&A_exp, &sat, B_exp, C_exp, B_hr, C_hr, 0);
-
-        if(P <= 0x4000){
-            TEST_ASSERT_EQUAL(0, sat);
-            TEST_ASSERT_EQUAL(B_exp+C_exp, A_exp);
-        } else {
-            TEST_ASSERT_GREATER_THAN(0, sat);
-            
-            double Pf = ldexp(B, B_exp) * ldexp(C, C_exp);
-            double Rf = ldexp(P, -sat);
-
-            TEST_ASSERT( Rf == 0x4000 );
-        }
-
     }
 }
 #undef REPS

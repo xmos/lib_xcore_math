@@ -46,8 +46,7 @@ void bfp_complex_s32_add(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, 
-                             b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->length = b->length;
     a->hr = xs3_vect_complex_s32_add(a->data, b->data, c->data, b->length, b_shr, c_shr);
@@ -66,8 +65,7 @@ void bfp_complex_s32_sub(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, 
-                             b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->length = b->length;
     a->hr = xs3_vect_complex_s32_sub(a->data, b->data, c->data, b->length, b_shr, c_shr);
@@ -87,9 +85,7 @@ void bfp_complex_s32_real_mul(
     exponent_t a_exp;
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_complex_s32_real_mul_prepare(&a_exp, &b_shr, &c_shr,    
-                                         b->exp, c->exp, b->hr, c->hr, 
-                                         XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_s32_real_mul_prepare(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->length = b->length;
     a->exp = a_exp;
@@ -111,8 +107,7 @@ void bfp_complex_s32_mul(
     exponent_t a_exp;
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b->exp, c->exp, 
-                                                 b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->length = b->length;
     a->exp = a_exp;
@@ -133,9 +128,7 @@ void bfp_complex_s32_conj_mul(
     exponent_t a_exp;
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, 
-                                                 b->exp, c->exp, b->hr, c->hr,
-                                                 XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->length = b->length;
     a->exp = a_exp;
@@ -181,8 +174,7 @@ void bfp_complex_s32_scale(
     right_shift_t b_shr, alpha_shr;
     const headroom_t alpha_hr = HR_C32(alpha_mant);
 
-    xs3_vect_complex_s32_scale_prepare(&a->exp, &b_shr, &alpha_shr, b->exp, alpha_exp,
-                                                      b->hr, alpha_hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_s32_scale_prepare(&a->exp, &b_shr, &alpha_shr, b->exp, alpha_exp, b->hr, alpha_hr);
 
     const complex_s32_t c = { ASHR32(alpha_mant.re, alpha_shr), ASHR32(alpha_mant.im, alpha_shr) };
     
@@ -201,7 +193,7 @@ void bfp_complex_s32_squared_mag(
 
     right_shift_t b_shr;
 
-    xs3_vect_complex_s32_squared_mag_prepare(&a->exp, &b_shr, b->exp, b->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_s32_squared_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
 
     a->length = b->length;
     a->hr = xs3_vect_complex_s32_squared_mag(a->data, b->data, b->length, b_shr);
@@ -218,7 +210,7 @@ void bfp_complex_s32_mag(
 
     right_shift_t b_shr;
 
-    xs3_vect_complex_mag_prepare(&a->exp, &b_shr, b->exp, b->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
 
     a->length = b->length;
     a->hr = xs3_vect_complex_s32_mag(a->data, b->data, b->length, 
@@ -233,7 +225,7 @@ complex_s64_t bfp_complex_s32_sum(
     right_shift_t b_shr;
     complex_s64_t res;
 
-    xs3_vect_complex_s32_sum_prepare(a_exp, &b_shr, b->exp, b->hr, b->length, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_s32_sum_prepare(a_exp, &b_shr, b->exp, b->hr, b->length);
     xs3_vect_complex_s32_sum(&res, b->data, b->length, b_shr);
     return res;
 }

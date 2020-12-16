@@ -60,33 +60,30 @@ static void test_xs3_vect_s32_dot_prepare()
 
         double expected = B_length * (ldexp(B[0], B_exp) * ldexp(C[0], C_exp));
 
-        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat++){
-            exponent_t A_exp;
-            right_shift_t b_shr, c_shr;
+        exponent_t A_exp;
+        right_shift_t b_shr, c_shr;
 
-            xs3_vect_s32_dot_prepare(&A_exp, &b_shr, &c_shr, B_exp, C_exp, B_hr, C_hr, B_length, allow_sat);
+        xs3_vect_s32_dot_prepare(&A_exp, &b_shr, &c_shr, B_exp, C_exp, B_hr, C_hr, B_length);
 
-            int64_t result = xs3_vect_s32_dot(B, C, B_length, b_shr, c_shr);
+        int64_t result = xs3_vect_s32_dot(B, C, B_length, b_shr, c_shr);
 
-            // PRINTF("\t    allow_sat = %u\n", allow_sat);
-            // PRINTF("\t        B_length  = %u\n", B_length);
-            // PRINTF("\t        B_exp = %d\n", B_exp);
-            // PRINTF("\t        C_exp = %d\n", C_exp);
-            // PRINTF("\t        B_hr = %d     (-2^%d)\n", B_hr, 31-B_hr);
-            // PRINTF("\t        C_hr = %d     (-2^%d)\n", C_hr, 31-C_hr);
-            // PRINTF("\t        b_shr = %d\n", b_shr);
-            // PRINTF("\t        c_shr = %d\n", c_shr);
-            // PRINTF("\t            B[0] = %ld   (0x%08lX)\n", B[0], (uint32_t)B[0]);
-            // PRINTF("\t            C[0] = %ld   (0x%08lX)\n", C[0], (uint32_t)C[0]);
-            // PRINTF("\t        A_exp = %d\n", A_exp);
-            // PRINTF("\t            result = %lld    (0x%08llX)     (%e)\n", result, (uint64_t) result, ldexp(result, A_exp));
-            // PRINTF("\t            expected = %e\n", expected);
+        // PRINTF("\t        B_length  = %u\n", B_length);
+        // PRINTF("\t        B_exp = %d\n", B_exp);
+        // PRINTF("\t        C_exp = %d\n", C_exp);
+        // PRINTF("\t        B_hr = %d     (-2^%d)\n", B_hr, 31-B_hr);
+        // PRINTF("\t        C_hr = %d     (-2^%d)\n", C_hr, 31-C_hr);
+        // PRINTF("\t        b_shr = %d\n", b_shr);
+        // PRINTF("\t        c_shr = %d\n", c_shr);
+        // PRINTF("\t            B[0] = %ld   (0x%08lX)\n", B[0], (uint32_t)B[0]);
+        // PRINTF("\t            C[0] = %ld   (0x%08lX)\n", C[0], (uint32_t)C[0]);
+        // PRINTF("\t        A_exp = %d\n", A_exp);
+        // PRINTF("\t            result = %lld    (0x%08llX)     (%e)\n", result, (uint64_t) result, ldexp(result, A_exp));
+        // PRINTF("\t            expected = %e\n", expected);
 
 
-            double got = ldexp(result, A_exp);
+        double got = ldexp(result, A_exp);
 
-            TEST_ASSERT( fabs((expected-got)/expected) < ldexp(1, -25) );
-        }
+        TEST_ASSERT( fabs((expected-got)/expected) < ldexp(1, -25) );
     }
 }
 #undef MAX_LEN
@@ -127,10 +124,7 @@ static void test_xs3_vect_s16_dot()
             expected += ((int32_t)B[i]) * C[i];
         }
 
-        B_hr = xs3_vect_s16_headroom(B, len);
-        C_hr = xs3_vect_s16_headroom(C, len);
-
-        int64_t result = xs3_vect_s16_dot(B, C, len, B_hr + C_hr);
+        int64_t result = xs3_vect_s16_dot(B, C, len);
 
         // printf("============\n");
         // printf("Length: %u\n", len);

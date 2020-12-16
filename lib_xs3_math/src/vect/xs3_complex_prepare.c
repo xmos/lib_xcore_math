@@ -16,10 +16,9 @@ void xs3_vect_complex_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,
-    const headroom_t b_hr,
-    const unsigned allow_saturation)
+    const headroom_t b_hr)
 {
-    *b_shr = (allow_saturation? 0 : 1) - (int)b_hr;
+    *b_shr = -(int)b_hr;
     *a_exp = b_exp + *b_shr;
 }
 
@@ -37,8 +36,7 @@ void xs3_vect_complex_s16_real_mul_prepare(
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation)
+    const headroom_t c_hr)
 {
     /*
 
@@ -92,10 +90,6 @@ void xs3_vect_complex_s16_real_mul_prepare(
     */
 
     *sat = 15 - (b_hr + c_hr);
-
-    // Avoiding saturation is just a matter of shifting the 32-bit product one more bit.
-    if(!allow_saturation)
-        *sat += 1;
 
     // sat must be non-negative.
     if(*sat < 0)
@@ -155,8 +149,7 @@ void xs3_vect_complex_s16_squared_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* sat,
     const exponent_t b_exp,
-    const headroom_t b_hr,
-    const unsigned allow_saturation)
+    const headroom_t b_hr)
 {
     /*
         Operation is
@@ -164,23 +157,20 @@ void xs3_vect_complex_s16_squared_mag_prepare(
 
         Maximum result is obtained when  B.re = B.im = -0x8000 >> b_hr
 
-        And we want the result for that case to be 0x7FFF (0x8000 before saturation) when saturation is allowed,
-        and 0x4000 if saturation is not allowed.
+        And we want the result for that case to be 0x7FFF (0x8000 before saturation)
 
-            0x4000 << all_sat = ( (-0x8000 >> b_hr) * (-0x8000 >> b_hr) + (-0x8000 >> b_hr) * (-0x8000 >> b_hr) ) >> sat
-            2^14 * 2^all_sat = ( (-2*15 * 2^-b_hr) * (-2*15 * 2^-b_hr) + (-2*15 * 2^-b_hr) * (-2*15 * 2^-b_hr) )*2^-sat
-            2^(14+all_sat) = ( 2^(30-2*b_hr) + 2^(30-2*b_hr) ) * 2^-sat
-            2^(14+all_sat) = 2^1 * 2^(30-2*b_hr) * 2^-sat
-            2^(14+all_sat) = 2^(31-2*b_hr-sat)
-            14+all_sat = 31 - 2*b_hr - sat
-            sat = 31 - 2*b_hr - 14 - all_sat
-            sat = (17 - all_sat) - 2*b_hr
-            sat = (allow_saturation? 16 : 17) - 2*b_hr
-
-        But, sat has to be non-negative.
+            0x8000 = ( (-0x8000 >> b_hr) * (-0x8000 >> b_hr) + (-0x8000 >> b_hr) * (-0x8000 >> b_hr) ) >> sat
+            2^15 = ( (-2*15 * 2^-b_hr) * (-2*15 * 2^-b_hr) + (-2*15 * 2^-b_hr) * (-2*15 * 2^-b_hr) )*2^-sat
+            2^15 = ( 2^(30-2*b_hr) + 2^(30-2*b_hr) ) * 2^-sat
+            2^15 = 2^1 * 2^(30-2*b_hr) * 2^-sat
+            2^15 = 2^(31-2*b_hr-sat)
+            15 = 31 - 2*b_hr - sat
+            sat = 31 - 2*b_hr - 15
+            sat = (16) - 2*b_hr
+            sat = 16 - 2*b_hr
     */
 
-   *sat = MAX(0, (allow_saturation? 16 : 17) - 2*((int)b_hr));
+   *sat = MAX(0, 16 - 2*((int)b_hr));
 
    *a_exp = 2 * b_exp + *sat;
 }
@@ -200,27 +190,26 @@ void xs3_vect_complex_s32_real_mul_prepare(
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation)
+    const headroom_t c_hr)
 {
 
     /*
 
-        2^30 << allow_sat = ( -2^31 * 2^-b_hr * 2^-b_shr * -2^31 * 2^-c_hr * 2^-c_shr ) * 2^-30
-        2^(30+allow_sat) = ( 2^(31+31-b_hr-b_shr-c_hr-c_shr) ) * 2^-30
-        2^(30+allow_sat) = 2^(62-b_hr-b_shr-c_hr-c_shr) * 2^-30
-        2^(30+allow_sat) = 2^(32-b_hr-b_shr-c_hr-c_shr)
-        30+allow_sat = 32-b_hr-b_shr-c_hr-c_shr
+        2^31 = ( -2^31 * 2^-b_hr * 2^-b_shr * -2^31 * 2^-c_hr * 2^-c_shr ) * 2^-30
+        2^31 = ( 2^(31+31-b_hr-b_shr-c_hr-c_shr) ) * 2^-30
+        2^31 = 2^(62-b_hr-b_shr-c_hr-c_shr) * 2^-30
+        2^31 = 2^(32-b_hr-b_shr-c_hr-c_shr)
+        31 = 32-b_hr-b_shr-c_hr-c_shr
             total_hr = b_hr + c_hr
             total_shr = b_shr + b_shr
-        30+allow_sat = 32-total_hr-total_shr
-        total_shr = (2-allow_sat) - total_hr
-        total_shr = (allow_saturation? 1 : 2) - total_hr
+        31 = 32-total_hr-total_shr
+        total_shr = (2-1) - total_hr
+        total_shr = (1) - total_hr
 
     */
     headroom_t total_hr = b_hr + c_hr;
 
-    right_shift_t total_shr = (allow_saturation? 1 : 2) - total_hr;
+    right_shift_t total_shr = 1 - total_hr;
 
     if(b_hr <= c_hr)
         *b_shr = total_shr - (total_shr >> 1);
@@ -238,27 +227,25 @@ void xs3_vect_complex_s32_mul_prepare(
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation)
+    const headroom_t c_hr)
 {
     /*
 
-        2^30 << allow_sat = ( -2^31 * 2^-b_hr * 2^-b_shr * -2^31 * 2^-c_hr * 2^-c_shr 
+        2^31 = ( -2^31 * 2^-b_hr * 2^-b_shr * -2^31 * 2^-c_hr * 2^-c_shr 
                             + -2^31 * 2^-b_hr * 2^-b_shr * -2^31 * 2^-c_hr * 2^-c_shr ) * 2^-30
-        2^(30+allow_sat) = ( 2^(31+31-b_hr-b_shr-c_hr-c_shr) + 2^(31+31-b_hr-b_shr-c_hr-c_shr) ) * 2^-30
-        2^(30+allow_sat) = 2 * 2^(62-b_hr-b_shr-c_hr-c_shr) * 2^-30
-        2^(30+allow_sat) = 2^(33-b_hr-b_shr-c_hr-c_shr)
-        30+allow_sat = 33-b_hr-b_shr-c_hr-c_shr
+        2^(31) = ( 2^(31+31-b_hr-b_shr-c_hr-c_shr) + 2^(31+31-b_hr-b_shr-c_hr-c_shr) ) * 2^-30
+        2^(31) = 2 * 2^(62-b_hr-b_shr-c_hr-c_shr) * 2^-30
+        2^(31) = 2^(33-b_hr-b_shr-c_hr-c_shr)
+        31 = 33-b_hr-b_shr-c_hr-c_shr
             total_hr = b_hr + c_hr
             total_shr = b_shr + b_shr
-        30+allow_sat = 33-total_hr-total_shr
-        total_shr = (3-allow_sat) - total_hr
-        total_shr = (allow_saturation? 2 : 3) - total_hr
+        31 = 33-total_hr-total_shr
+        total_shr = (2) - total_hr
 
     */
     headroom_t total_hr = b_hr + c_hr;
 
-    right_shift_t total_shr = (allow_saturation? 2 : 3) - total_hr;
+    right_shift_t total_shr = 2 - total_hr;
 
     //  total_shr <= 3
     
@@ -279,12 +266,11 @@ void xs3_vect_complex_s32_mul_prepare(
 void xs3_vect_complex_s32_scale_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
-    right_shift_t* alpha_shr,
+    right_shift_t* c_shr,
     const exponent_t b_exp,
-    const exponent_t alpha_exp,
+    const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t alpha_hr,
-    const unsigned allow_saturation)
+    const headroom_t c_hr)
 {
     /*
         = (-2^31 * 2^(-b_hr-b_shr) * -2^31 * 2^(-c_hr) + 2^31 * 2^(-b_hr-b_shr) * 2^31 * 2^(-c_hr)) >> 30
@@ -296,22 +282,20 @@ void xs3_vect_complex_s32_scale_prepare(
         
         0 = 2-total_hr-b_shr
         b_shr = 2-total_hr
-
-        If saturation is not allowed, then 3-total_hr
     */
 
-    headroom_t total_hr = b_hr + alpha_hr;
-    *b_shr = (allow_saturation? 2 : 3) - total_hr;
-    *alpha_shr = 0;
+    headroom_t total_hr = b_hr + c_hr;
+    *b_shr = 2 - total_hr;
+    *c_shr = 0;
 
     // We can't left-shift B more than b_hr bits, so the
     // rest must come from alpha
     if( *b_shr < ((int)-b_hr) ){
-        *alpha_shr = *b_shr + b_hr;
+        *c_shr = *b_shr + b_hr;
         *b_shr = -b_hr;
     }
 
-    *a_exp = b_exp + alpha_exp + 30 + *b_shr + *alpha_shr;
+    *a_exp = b_exp + c_exp + 30 + *b_shr + *c_shr;
 }
 
 
@@ -319,8 +303,7 @@ void xs3_vect_complex_s32_squared_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
     const exponent_t b_exp,
-    const headroom_t b_hr,
-    const unsigned allow_saturation)
+    const headroom_t b_hr)
 {
     /*
         Operation is
@@ -328,28 +311,20 @@ void xs3_vect_complex_s32_squared_mag_prepare(
 
         Maximum result is obtained when  B.re = B.im = -0x80000000 >> b_hr = -2^31 * 2^-b_hr
 
-        And we want the result for that case to be 0x7FFFFFFF (0x80000000 before saturation) when saturation is allowed,
-        and 0x40000000 if saturation is not allowed.
+        And we want the result for that case to be 0x7FFFFFFF (0x80000000 before saturation).
 
-            0x40000000 << all_sat = ( (-2^31 * 2^-b_hr * 2^-b_shr) * (-2^31 * 2^-b_hr * 2^-b_shr) 
+            0x80000000 = ( (-2^31 * 2^-b_hr * 2^-b_shr) * (-2^31 * 2^-b_hr * 2^-b_shr) 
                                     + (-2^31 * 2^-b_hr * 2^-b_shr) * (-2^31 * 2^-b_hr * 2^-b_shr) ) >> 30
-            2^30 * 2^all_sat = ( 2^1 * 2^( 31 - b_hr - b_shr + 31 - b_hr - b_shr ) ) * 2^-30
-            2^(30+all_sat) = ( 2^( 63 - 2*b_hr - 2*b_shr ) * 2^-30
-            2^(30+all_sat) = 2^( 33 - 2*b_hr - 2*b_shr
-            30+all_sat = 33 - 2*b_hr - 2*b_shr
-            2*b_shr = 33 - 2*b_hr - 30 - all_sat
-            2*b_shr = (3 - all_sat) - 2*b_hr
-            b_shr = (3 - all_sat)/2 - b_hr
-            b_shr = (allow_saturation? 2 : 3) / 2 - b_hr
-
-            b_shr can only be an integer, and the equation above describes its _minimum_ value, so round up
-
-            b_shr = (allow_saturation? 1 : 2) - b_hr
-
-        But, sat has to be non-negative.
+            2^31 = ( 2^1 * 2^( 31 - b_hr - b_shr + 31 - b_hr - b_shr ) ) * 2^-30
+            2^31 = ( 2^( 63 - 2*b_hr - 2*b_shr ) * 2^-30
+            2^31 = 2^( 33 - 2*b_hr - 2*b_shr
+            31 = 33 - 2*b_hr - 2*b_shr
+            2*b_shr = 33 - 2*b_hr - 31
+            2*b_shr = 2 - 2*b_hr
+            b_shr = 1 - b_hr
     */
 
-    *b_shr = (allow_saturation? 1 : 2) - b_hr;
+    *b_shr = 1 - b_hr;
     *a_exp = 2*(b_exp + *b_shr) + 30;
 }
 
@@ -359,8 +334,7 @@ void xs3_vect_complex_s32_sum_prepare(
     right_shift_t* b_shr,
     const exponent_t b_exp,
     const headroom_t b_hr,
-    const unsigned length,
-    const unsigned allow_saturation)
+    const unsigned length)
 {
     // Adding together 2^N elements means the accumulator needs N bits of headroom to avoid saturation.
     // Accumulator is 40 bits, values are 32 bits, so the available accumulator headroom is 8+b_hr bits.

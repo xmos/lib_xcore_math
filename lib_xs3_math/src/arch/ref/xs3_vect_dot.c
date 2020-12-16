@@ -39,8 +39,7 @@ static int64_t mul_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 int64_t xs3_vect_s16_dot(
     const int16_t b[],
     const int16_t c[],
-    const unsigned length,
-    const headroom_t bc_hr)
+    const unsigned length)
 {
     int64_t acc = 0;
     for(int k = 0; k < length; k++){

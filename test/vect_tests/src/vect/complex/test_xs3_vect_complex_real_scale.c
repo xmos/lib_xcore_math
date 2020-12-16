@@ -56,36 +56,29 @@ static void test_xs3_vect_s16_scale_prepare()
         int16_t WORD_ALIGNED A_re;
         int16_t WORD_ALIGNED A_im;
 
-        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat ++){
+        exponent_t a_exp;
+        right_shift_t sat, c_shr;
 
-            exponent_t a_exp;
-            right_shift_t sat, c_shr;
+        xs3_vect_s16_scale_prepare(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr);
 
-            xs3_vect_s16_scale_prepare(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr, allow_sat);
+        xs3_vect_complex_s16_real_scale(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
 
-            xs3_vect_complex_s16_real_scale(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
+        const int32_t p = ((int32_t)B_re) * C;
+        int16_t expected = p;
 
-            const int32_t p = ((int32_t)B_re) * C;
-            int16_t expected = p;
+        if( p > VPU_INT16_MAX )
+            expected = VPU_INT16_MAX;
 
-            if( allow_sat ){
-                if( p > VPU_INT16_MAX )
-                    expected = VPU_INT16_MAX;
-            } else if( sat > 0 ){
-                expected = 0x4000;
-            }
+        TEST_ASSERT_EQUAL_HEX16(expected, A_re);
+        TEST_ASSERT_EQUAL_HEX16(expected, A_im);
 
-            TEST_ASSERT_EQUAL_HEX16(expected, A_re);
-            TEST_ASSERT_EQUAL_HEX16(expected, A_im);
+        // Make sure the exponent was chosen correctly
 
-            // Make sure the exponent was chosen correctly
+        double fp  = ldexp(B_re, b_exp) * ldexp(C, c_exp);
+        double fa  = ldexp(A_re, a_exp);
 
-            double fp  = ldexp(B_re, b_exp) * ldexp(C, c_exp);
-            double fa  = ldexp(A_re, a_exp);
-
-            // (A should be no more than 1 LSb off)
-            TEST_ASSERT( fabs(fp - fa) <= ldexp(1,a_exp) );
-        }
+        // (A should be no more than 1 LSb off)
+        TEST_ASSERT( fabs(fp - fa) <= ldexp(1,a_exp) );
         
     }
 }

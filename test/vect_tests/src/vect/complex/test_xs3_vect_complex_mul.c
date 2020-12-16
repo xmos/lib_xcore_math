@@ -97,7 +97,7 @@ static complex_s32_t mul_complex_s32(complex_s32_t b, complex_s32_t c, int b_shr
 
 
 
-#define REPS        IF_QUICK_TEST(100, 1000)
+#define REPS        1000
 void test_xs3_vect_complex_s16_mul_prepare()
 {
     PRINTF("%s...\n", __func__);
@@ -147,7 +147,7 @@ void test_xs3_vect_complex_s16_mul_prepare()
 
 
 
-#define REPS        IF_QUICK_TEST(100, 1000)
+#define REPS        1000
 static void test_xs3_vect_complex_s32_mul_prepare()
 {
     PRINTF("%s...\n", __func__);
@@ -170,30 +170,13 @@ static void test_xs3_vect_complex_s32_mul_prepare()
         complex_s32_t WORD_ALIGNED C = {((int32_t)-0x80000000) >> c_hr, ((int32_t)-0x80000000) >> c_hr};
         complex_s32_t WORD_ALIGNED A;
 
-        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat++){
+        xs3_vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
-            xs3_vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
+        xs3_vect_complex_s32_mul(&A, &B, &C, 1, b_shr, c_shr);
 
-            xs3_vect_complex_s32_mul(&A, &B, &C, 1, b_shr, c_shr);
-
-
-            if( allow_sat ){
-                TEST_ASSERT_EQUAL( INT32_MAX, A.im );
-                xs3_vect_complex_s32_mul(&A, &B, &C, 1, b_shr+1, c_shr);
-                TEST_ASSERT_EQUAL( 0x40000000, A.im );
-            } else {
-
-                TEST_ASSERT_EQUAL( 0x40000000, A.im );
-
-                double q = ldexp(B.re, b_exp) * ldexp(C.im, c_exp) 
-                         + ldexp(B.im, b_exp) * ldexp(C.re, c_exp);
-                double p = ldexp(A.im, a_exp);
-
-                TEST_ASSERT( q == p );
-                
-
-            }
-        }
+        TEST_ASSERT_EQUAL( INT32_MAX, A.im );
+        xs3_vect_complex_s32_mul(&A, &B, &C, 1, b_shr+1, c_shr);
+        TEST_ASSERT_EQUAL( 0x40000000, A.im );
     }
 }
 #undef REPS
@@ -304,7 +287,7 @@ static void test_xs3_vect_complex_s16_mul_basic()
 
 
 #define MAX_LEN     100
-#define REPS        IF_QUICK_TEST(100, 100)
+#define REPS        1000
 static void test_xs3_vect_complex_s16_mul_random()
 {
     PRINTF("%s...\n", __func__);
@@ -506,7 +489,7 @@ static void test_xs3_vect_complex_s32_mul_basic()
 
 
 #define MAX_LEN     100
-#define REPS        IF_QUICK_TEST(100, 100)
+#define REPS        1000
 static void test_xs3_vect_complex_s32_mul_random()
 {
     PRINTF("%s...\n", __func__);

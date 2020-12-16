@@ -95,48 +95,43 @@ static void test_xs3_vect_complex_s16_squared_mag_prepare()
         int16_t WORD_ALIGNED B_re = INT16_MIN >> b_hr;
         int16_t WORD_ALIGNED B_im = B_re;
         int16_t WORD_ALIGNED A_mag;
-
-        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat ++){
             
-            exponent_t a_exp;
-            right_shift_t sat;
+        exponent_t a_exp;
+        right_shift_t sat;
 
-            // PRINTF("\n\t    allow_sat = %u\n", allow_sat);
-            // PRINTF("\t    b_exp = %d\n", b_exp);
-            // PRINTF("\t    b_hr = %d\n", b_hr);
+        // PRINTF("\t    b_exp = %d\n", b_exp);
+        // PRINTF("\t    b_hr = %d\n", b_hr);
 
-            xs3_vect_complex_s16_squared_mag_prepare(&a_exp, &sat, b_exp, b_hr, allow_sat);
+        xs3_vect_complex_s16_squared_mag_prepare(&a_exp, &sat, b_exp, b_hr);
 
-            // PRINTF("\t    B_re = %d    (0x%04X)\n", B_re, (uint16_t) B_re);
-            // PRINTF("\t    B_im = %d    (0x%04X)\n", B_im, (uint16_t) B_im);
+        // PRINTF("\t    B_re = %d    (0x%04X)\n", B_re, (uint16_t) B_re);
+        // PRINTF("\t    B_im = %d    (0x%04X)\n", B_im, (uint16_t) B_im);
 
-            xs3_vect_complex_s16_squared_mag(&A_mag, &B_re, &B_im, 1, sat);
+        xs3_vect_complex_s16_squared_mag(&A_mag, &B_re, &B_im, 1, sat);
 
-            // PRINTF("\t    A_mag = %d   (0x%04X)\n", A_mag, (uint16_t) A_mag);
-            // PRINTF("\t    a_exp = %d\n", a_exp);
-            // PRINTF("\t    sat  = %d\n", sat);
+        // PRINTF("\t    A_mag = %d   (0x%04X)\n", A_mag, (uint16_t) A_mag);
+        // PRINTF("\t    a_exp = %d\n", a_exp);
+        // PRINTF("\t    sat  = %d\n", sat);
 
-            uint32_t acc = ((int32_t)B_re) * B_re + ((int32_t)B_im) * B_im;
+        uint32_t acc = ((int32_t)B_re) * B_re + ((int32_t)B_im) * B_im;
+        
+        // PRINTF("\t    acc  = %lu    (0x%08X)\n", acc, (unsigned) acc);
+
+        double q = ldexp(B_re, b_exp) * ldexp(B_re, b_exp) + ldexp(B_im, b_exp) * ldexp(B_im, b_exp);
+        double p = ldexp(A_mag, a_exp);
+
+        // The only time p != q is if A_mag saturated from 0x8000 to 0x7FFF
+        TEST_ASSERT_TRUE( (A_mag == 0x7FFF && 1) || (p == q) );
+
+        if( acc < 0x8000 ){
+            // Because sat cannot be negative, if the accumulator value would be less than 0x8000, the result is 
+            // just the direct squared magnitude.
             
-            // PRINTF("\t    acc  = %lu    (0x%08X)\n", acc, (unsigned) acc);
-
-            double q = ldexp(B_re, b_exp) * ldexp(B_re, b_exp) + ldexp(B_im, b_exp) * ldexp(B_im, b_exp);
-            double p = ldexp(A_mag, a_exp);
-
-            // The only time p != q is if A_mag saturated from 0x8000 to 0x7FFF
-            TEST_ASSERT_TRUE( (A_mag == 0x7FFF && allow_sat) || (p == q) );
-
-            if( acc < 0x8000 ){
-                // Because sat cannot be negative, if the accumulator value would be less than 0x8000, the result is 
-                // just the direct squared magnitude.
-                
-                TEST_ASSERT_EQUAL_HEX16(acc, A_mag);
-                TEST_ASSERT_EQUAL(2*b_exp, a_exp);
-            } else {
-                // Depends on whether saturation is allowed
-                TEST_ASSERT_EQUAL( allow_sat? 0x7FFF : 0x4000, A_mag );
-            }
-
+            TEST_ASSERT_EQUAL_HEX16(acc, A_mag);
+            TEST_ASSERT_EQUAL(2*b_exp, a_exp);
+        } else {
+            // Depends on whether saturation is allowed
+            TEST_ASSERT_EQUAL( 1? 0x7FFF : 0x4000, A_mag );
         }
         
     }
@@ -162,47 +157,36 @@ static void test_xs3_vect_complex_s32_squared_mag_prepare()
         complex_s32_t B = { INT32_MIN >> b_hr, INT32_MIN >> b_hr };
 
         int32_t A;
-
-        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat ++){
             
-            exponent_t a_exp;
-            right_shift_t b_shr;
+        exponent_t a_exp;
+        right_shift_t b_shr;
 
-            // PRINTF("\n\t    allow_sat = %u\n", allow_sat);
-            // PRINTF("\t    b_exp = %d\n", b_exp);
-            // PRINTF("\t    b_hr = %d\n", b_hr);
+        // PRINTF("\t    b_exp = %d\n", b_exp);
+        // PRINTF("\t    b_hr = %d\n", b_hr);
 
-            xs3_vect_complex_s32_squared_mag_prepare(&a_exp, &b_shr, b_exp, b_hr, allow_sat);
+        xs3_vect_complex_s32_squared_mag_prepare(&a_exp, &b_shr, b_exp, b_hr);
 
-            // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B.re, (uint32_t) B.re);
-            // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B.im, (uint32_t) B.im);
+        // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B.re, (uint32_t) B.re);
+        // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B.im, (uint32_t) B.im);
 
-            xs3_vect_complex_s32_squared_mag(&A, &B, 1, b_shr);
+        xs3_vect_complex_s32_squared_mag(&A, &B, 1, b_shr);
 
-            // PRINTF("\t    A = %ld   (0x%08lX)\n", A, (uint32_t) A);
-            // PRINTF("\t    a_exp = %d\n", a_exp);
-            // PRINTF("\t    b_shr  = %d\n", b_shr);
+        // PRINTF("\t    A = %ld   (0x%08lX)\n", A, (uint32_t) A);
+        // PRINTF("\t    a_exp = %d\n", a_exp);
+        // PRINTF("\t    b_shr  = %d\n", b_shr);
 
-            double q = ldexp(B.re, b_exp) * ldexp(B.re, b_exp) + ldexp(B.im, b_exp) * ldexp(B.im, b_exp);
-            double p = ldexp(A, a_exp);
+        double q = ldexp(B.re, b_exp) * ldexp(B.re, b_exp) + ldexp(B.im, b_exp) * ldexp(B.im, b_exp);
+        double p = ldexp(A, a_exp);
 
-            // The only time p != q is if A saturated from 0x80000000 to 0x7FFFFFFF
-            TEST_ASSERT_TRUE( (A == 0x7FFFFFFF && allow_sat) || (p == q) );
+        // The only time p != q is if A saturated from 0x80000000 to 0x7FFFFFFF
+        TEST_ASSERT_TRUE( (A == 0x7FFFFFFF && 1) || (p == q) );
 
-            if( allow_sat ){
+        TEST_ASSERT_EQUAL_INT32(0x7FFFFFFF, A);
 
-                TEST_ASSERT_EQUAL_INT32(0x7FFFFFFF, A);
+        //Increasing b_shr by 1 should divide the pre-saturation result by 4
+        xs3_vect_complex_s32_squared_mag(&A, &B, 1, b_shr+1);
 
-                //Increasing b_shr by 1 should divide the pre-saturation result by 4
-                xs3_vect_complex_s32_squared_mag(&A, &B, 1, b_shr+1);
-
-                TEST_ASSERT_EQUAL_INT32(0x20000000, A);
-            } else {
-                //when saturation is not allowed, b_shr is incremented, but incrementing it by 1
-                // shrinks the result by a factor of 4
-                TEST_ASSERT_EQUAL_INT32(0x20000000, A);
-            }
-        }
+        TEST_ASSERT_EQUAL_INT32(0x20000000, A);
     }
 }
 #undef REPS
