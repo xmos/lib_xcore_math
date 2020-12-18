@@ -32,7 +32,7 @@ void test_xs3_filter_fir_s16_case0()
     int16_t coefs[MAX_TAPS];
     int16_t state[MAX_TAPS];
 
-    xs3_fir_filter_s16_t filter;
+    xs3_filter_fir_s16_t filter;
 
     for(int i = 0; i < MAX_TAPS; i++)
         coefs[i] = 0x1;
@@ -72,7 +72,7 @@ void test_xs3_filter_fir_s16_case1()
     int16_t coefs[MAX_TAPS];
     int16_t state[MAX_TAPS];
 
-    xs3_fir_filter_s16_t filter;
+    xs3_filter_fir_s16_t filter;
 
     for(int i = 0; i < MAX_TAPS; i++)
         coefs[i] = i;
@@ -118,7 +118,7 @@ void test_xs3_filter_fir_s16_case2()
     int16_t coefs[MAX_TAPS];
     int16_t state[MAX_TAPS];
 
-    xs3_fir_filter_s16_t filter;
+    xs3_filter_fir_s16_t filter;
 
     for(int v = 0; v < REPS; v++){
 

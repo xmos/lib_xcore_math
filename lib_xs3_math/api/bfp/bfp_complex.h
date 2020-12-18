@@ -11,105 +11,150 @@ extern "C" {
 
 
 
-/** Count the leading sign bits of a 16-bit complex BFP vector.
+
+/** 
+ * @brief Get the headroom of a complex 16-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * The headroom of a complex vector is the number of bits that the real and imaginary parts of each of its elements can 
+ * be left-shifted without losing any information. It conveys information about the range of values that vector may 
+ * contain, which is useful for determining how best to preserve precision in potentially lossy block floating-point 
+ * operations.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * In a BFP context, headroom applies to mantissas only, not exponents.
  * 
+ * In particular, if the complex 16-bit mantissa vector @vector{x} has @math{N} bits of headroom, then for any element 
+ * @math{x_k} of @vector{x}
  * 
- * The number of leading sign bits of a sequence is the minimum of
- * that among its elements.
+ * @math{-2^{15-N} \le Re\\{x_k\\} \lt 2^{15-N}}
  * 
- * Updates ``a->hr``.
+ * and
+ * 
+ * @math{-2^{15-N} \le Im\\{x_k\\} \lt 2^{15-N}}
+ * 
+ * And for any element @math{X_k = x_k \cdot 2^{x\_exp}} of a complex BFP vector @vector{X}
+ * 
+ * @math{-2^{15 + x\_exp - N} \le Re\\{X_k\\} \lt 2^{15 + x\_exp - N} }
+ * 
+ * and
+ * 
+ * @math{-2^{15 + x\_exp - N} \le Im\\{X_k\\} \lt 2^{15 + x\_exp - N} }
+ * 
+ * This function determines the headroom of `b`, updates `b->hr` with that value, and then returns `b->hr`.
  *
- * \param a         input BFP vector
+ * @param   b         complex BFP vector to get the headroom of
  * 
- * \returns    Number of leading sign bits of ``a``. 
+ * @returns    Headroom of complex BFP vector `b` 
  */
 headroom_t bfp_complex_s16_headroom(
     bfp_complex_s16_t* a);
 
 
-/** Count the leading sign bits of a 32-bit complex BFP vector.
+/** 
+ * @brief Get the headroom of a complex 32-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * The headroom of a complex vector is the number of bits that the real and imaginary parts of each of its elements can 
+ * be left-shifted without losing any information. It conveys information about the range of values that vector may 
+ * contain, which is useful for determining how best to preserve precision in potentially lossy block floating-point 
+ * operations.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * In a BFP context, headroom applies to mantissas only, not exponents.
  * 
+ * In particular, if the complex 32-bit mantissa vector @vector{x} has @math{N} bits of headroom, then for any element 
+ * @math{x_k} of @vector{x}
  * 
- * The number of leading sign bits of a sequence is the minimum of
- * that among its elements.
+ * @math{-2^{31-N} \le Re\\{x_k\\} \lt 2^{31-N}}
+ * 
+ * and
+ * 
+ * @math{-2^{31-N} \le Im\\{x_k\\} \lt 2^{31-N}}
+ * 
+ * And for any element @math{X_k = x_k \cdot 2^{x\_exp}} of a complex BFP vector @vector{X}
+ * 
+ * @math{-2^{31 + x\_exp - N} \le Re\\{X_k\\} \lt 2^{31 + x\_exp - N} }
+ * 
+ * and
+ * 
+ * @math{-2^{31 + x\_exp - N} \le Im\\{X_k\\} \lt 2^{31 + x\_exp - N} }
+ * 
+ * This function determines the headroom of `b`, updates `b->hr` with that value, and then returns `b->hr`.
  *
- * Updates ``a->hr``.
+ * @param   b         complex BFP vector to get the headroom of
  * 
- * \param a         input BFP vector
- * 
- * \returns    Number of leading sign bits of ``a``. 
+ * @returns    Headroom of complex BFP vector `b` 
  */
 headroom_t bfp_complex_s32_headroom(
     bfp_complex_s32_t* a);
 
 
-
-/** Apply a left-shift to the elements of a complex 16-bit BFP vector.
+/** 
+ * @brief Apply a left-shift to the mantissas of a complex 16-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex mantissa of input BFP vector @vector{B} is left-shifted `b_shl` bits and stored in the corresponding 
+ * element of output BFP vector @vector{A}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * This operation can be used to add or remove headroom from a BFP vector.
  * 
+ * `b_shr` is the number of bits that the real and imaginary parts of each mantissa will be left-shifted. This shift is 
+ * signed and arithmetic, so negative values for `b_shl` will right-shift the mantissas.
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * 2^(shift)
- *        for each index i < length
- *        where A[] and B[] are complex BFP vectors
- *              shift is an integer
+ * `a` and `b` must have been initialized (see bfp_complex_s16_init()), and must be the same length.
  * 
- * This operation can be used to remove headroom from a BFP vector.
+ * This operation can be performed safely in-place on `b`.
  * 
- * The operation saturates to 16-bit bounds.
+ * Note that this operation bypasses the logic protecting the caller from saturation or underflows. Output values 
+ * saturate to the symmetric 16-bit range (@math{-2^{15} \lt \lt 2^{15}}). To avoid saturation, `b_shl` should be no
+ * greater than the headroom of `b` (`b->hr`).
  * 
- * \safe_in_place{a,b}
+ * @bfp_op{16, @f$
+ *      Re\\{a_k\\} \leftarrow sat_{16}( \lfloor Re\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
+ *      Im\\{a_k\\} \leftarrow sat_{16}( \lfloor Im\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}         \\
+ *          \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
+ *              \bar{B}\text{ and } \bar{A}\text{ respectively}
+ * @f$ }
  * 
- * \param a     Output BFP vector
- * \param b     Input BFP vector
- * \param shl   Number of bits to left shift
+ * @param[out] a        Complex output BFP vector @vector{A}
+ * @param[in]  b        Complex input BFP vector @vector{B}
+ * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
  */
 void bfp_complex_s16_shl(
     bfp_complex_s16_t* a,
     const bfp_complex_s16_t* b,
-    const left_shift_t shl);
-    
-/** Apply a left-shift to the elements of a complex 32-bit BFP vector.
+    const left_shift_t b_shl);
+
+
+/** 
+ * @brief Apply a left-shift to the mantissas of a complex 32-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex mantissa of input BFP vector @vector{B} is left-shifted `b_shl` bits and stored in the corresponding 
+ * element of output BFP vector @vector{A}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * This operation can be used to add or remove headroom from a BFP vector.
  * 
+ * `b_shr` is the number of bits that the real and imaginary parts of each mantissa will be left-shifted. This shift is 
+ * signed and arithmetic, so negative values for `b_shl` will right-shift the mantissas.
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * 2^(shift)
- *        for each index i < length
- *        where A[] and B[] are complex BFP vectors
- *              shift is an integer
+ * `a` and `b` must have been initialized (see bfp_complex_s32_init()), and must be the same length.
  * 
- * This operation can be used to remove headroom from a BFP vector.
+ * This operation can be performed safely in-place on `b`.
  * 
- * The operation saturates to 32-bit bounds.
+ * Note that this operation bypasses the logic protecting the caller from saturation or underflows. Output values 
+ * saturate to the symmetric 32-bit range (@math{-2^{31} \lt \lt 2^{31}}). To avoid saturation, `b_shl` should be no
+ * greater than the headroom of `b` (`b->hr`).
  * 
- * \safe_in_place{a,b}
+ * @bfp_op{32, @f$
+ *      Re\\{a_k\\} \leftarrow sat_{32}( \lfloor Re\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
+ *      Im\\{a_k\\} \leftarrow sat_{32}( \lfloor Im\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}         \\
+ *          \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
+ *              \bar{B}\text{ and } \bar{A}\text{ respectively}
+ * @f$ }
  * 
- * \param a     Output BFP vector
- * \param b     Input BFP vector
- * \param shl   Number of bits to left shift
+ * @param[out] a        Complex output BFP vector @vector{A}
+ * @param[in]  b        Complex input BFP vector @vector{B}
+ * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
  */
 void bfp_complex_s32_shl(
     bfp_complex_s32_t* a,
@@ -119,58 +164,54 @@ void bfp_complex_s32_shl(
 
 
 
-/** Multiply a 16-bit complex BFP vector by a 16-bit real BFP vector.
+/** 
+ * @brief Multiply a complex 16-bit BFP vector element-wise by a real 16-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
+ * @math{B_k} and @math{C_k}, the corresponding elements of complex input BFP vector @vector{B} and real input BFP 
+ * vector @vector{C} respectively.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a`, `b` and `c` must have been initialized (see bfp_complex_s16_init() and bfp_s16_init()), and must be the same 
+ * length.
  * 
+ * This operation can be performed safely in-place on `b`.
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * C[i]
- *        for each index i in B[]
- *        where A[] and B[] are complex vectors
- *              C[] is a real vector
+ * @bfp_op{16, @f$
+ *      A_k \leftarrow B_k \cdot C_k                    \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * @f$ }
  * 
- * This operation saturates to 16-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * It is safe to supply the same ``bfp_complex_s16_t*`` for ``a`` and ``b``.
- * 
- * \param a     Output BFP vector
- * \param b     Input complex BFP vector
- * \param c     Input real BFP vector
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input real BFP vector @vector{C}
  */
 void bfp_complex_s16_real_mul(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const bfp_s16_t* c);
 
-/** Multiply a 32-bit complex BFP vector by a 32-bit real BFP vector.
+/** 
+ * @brief Multiply a complex 32-bit BFP vector element-wise by a real 32-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
+ * @math{B_k} and @math{C_k}, the corresponding elements of complex input BFP vector @vector{B} and real input BFP 
+ * vector @vector{C} respectively.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a`, `b` and `c` must have been initialized (see bfp_complex_s32_init() and bfp_s32_init()), and must be the same 
+ * length.
  * 
+ * This operation can be performed safely in-place on `b`.
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * C[i]
- *        for each index i in B[]
- *        where A[] and B[] are complex vectors
- *              C[] is a real vector
+ * @bfp_op{32, @f$
+ *      A_k \leftarrow B_k \cdot C_k                    \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * @f$ }
  * 
- * This operation saturates to 32-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * It is safe to supply the same ``bfp_complex_s32_t*`` for ``a`` and ``b``.
- * 
- * \param a     Output BFP vector
- * \param b     Input complex BFP vector
- * \param c     Input real BFP vector
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input real BFP vector @vector{C}
  */
 void bfp_complex_s32_real_mul(
     bfp_complex_s32_t* a, 
@@ -179,28 +220,26 @@ void bfp_complex_s32_real_mul(
 
 
 
-/** Multiply a 16-bit complex BFP vector by another 16-bit complex BFP vector.
+/** 
+ * @brief Multiply one complex 16-bit BFP vector element-wise another.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
+ * @math{B_k} and @math{C_k}, the corresponding elements of complex input BFP vectors @vector{B} and @vector{C} 
+ * respectively.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a`, `b` and `c` must have been initialized (see bfp_complex_s16_init()), and must be the same length.
  * 
+ * This operation can be performed safely in-place on `b` or `c`.
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * C[i]
- *        for each index i in B[]
- *        where A[], B[] and C[] are complex vectors.
+ * @bfp_op{16, @f$
+ *      A_k \leftarrow B_k \cdot C_k                    \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * @f$ }
  * 
- * This operation saturates to 16-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * It is safe to supply the same ``bfp_complex_s16_t*`` for any of the inputs.
- * 
- * \param a     Output BFP vector
- * \param b     Input complex BFP vector 1
- * \param c     Input complex BFP vector 2
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input complex BFP vector @vector{C}
  */
 void bfp_complex_s16_mul(
     bfp_complex_s16_t* a, 
@@ -211,112 +250,101 @@ void bfp_complex_s16_mul(
 
 
 
-/** Multiply a 32-bit complex BFP vector by another 32-bit complex BFP vector.
+/** 
+ * @brief Multiply one complex 32-bit BFP vector element-wise by another.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
+ * @math{B_k} and @math{C_k}, the corresponding elements of complex input BFP vectors @vector{B} and @vector{C} 
+ * respectively.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a`, `b` and `c` must have been initialized (see bfp_complex_s32_init()), and must be the same length.
  * 
+ * This operation can be performed safely in-place on `b` or `c`.
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * C[i]
- *        for each index i in B[]
- *        where A[], B[] and C[] are complex vectors.
+ * @bfp_op{32, @f$
+ *      A_k \leftarrow B_k \cdot C_k                    \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * @f$ }
  * 
- * This operation saturates to 32-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * It is safe to supply the same ``bfp_complex_s32_t*`` for any of the inputs.
- * 
- * \param a     Output BFP vector
- * \param b     Input complex BFP vector 1
- * \param c     Input complex BFP vector 2
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input complex BFP vector @vector{C}
  */
 void bfp_complex_s32_mul(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
     const bfp_complex_s32_t* c);
 
-/** Conjugate multiply a 16-bit complex BFP vector by another 16-bit complex BFP vector.
+/** 
+ * @brief Multiply one complex 16-bit BFP vector element-wise by the complex conjugate of another.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
+ * @math{B_k}, the corresponding element of complex input BFP vectors @vector{B}, and @math{(C_k)^*}, the complex 
+ * conjugate of the corresponding element of complex input BFP vector @vector{C}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * @bfp_op{16, @f$
+ *      A_k \leftarrow B_k \cdot (C_k)^*                                                \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                                       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}  \\
+ *          \qquad\text{and } (C_k)^* \text{ is the complex conjugate of } C_k
+ * @f$ }
  * 
- * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * conjugate(C[i])
- *        for each index i in B[]
- *        where A[], B[] and C[] are complex vectors.
- * 
- * This operation saturates to 16-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * It is safe to supply the same ``bfp_complex_s16_t*`` for any of the inputs.
- * 
- * \param a     Output complex BFP vector
- * \param b     Input complex BFP vector 1
- * \param c     Input complex BFP vector 2
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input complex BFP vector @vector{C}
  */
 void bfp_complex_s16_conj_mul(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c);
 
-/** Conjugate multiply a 32-bit complex BFP vector by another 32-bit complex BFP vector.
+/** 
+ * @brief Multiply one complex 32-bit BFP vector element-wise by the complex conjugate of another.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
+ * @math{B_k}, the corresponding element of complex input BFP vectors @vector{B}, and @math{(C_k)^*}, the complex 
+ * conjugate of the corresponding element of complex input BFP vector @vector{C}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a`, `b` and `c` must have been initialized (see bfp_complex_s32_init()), and must be the same length.
  * 
+ * This operation can be performed safely in-place on `b` or `c`.
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- B[i] * conjugate(C[i])
- *        for each index i in B[]
- *        where A[], B[] and C[] are complex vectors.
+ * @bfp_op{32, @f$
+ *      A_k \leftarrow B_k \cdot (C_k)^*                                                \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                                       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}  \\
+ *          \qquad\text{and } (C_k)^* \text{ is the complex conjugate of } C_k
+ * @f$ }
  * 
- * This operation saturates to 32-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * It is safe to supply the same ``bfp_complex_s32_t*`` for any of the inputs.
- * 
- * \param a     Output complex BFP vector
- * \param b     Input complex BFP vector 1
- * \param c     Input complex BFP vector 2
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input complex BFP vector @vector{C}
  */
 void bfp_complex_s32_conj_mul(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
     const bfp_complex_s32_t* c);
 
-/** Multiply a 16-bit complex BFP vector by a 16-bit real scalar.
+/** 
+ * @brief Multiply a complex 16-bit BFP vector by a real scalar.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
+ * @math{B_k}, the corresponding element of complex input BFP vector @vector{B}, and real scalar 
+ * @math{\alpha\cdot 2^{\alpha\_exp}}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a` and `b` must have been initialized (see bfp_complex_s16_init()), and must be the same length.
  * 
+ * This operation can be performed safely in-place on `b`.
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[] * C
- *        where A[] and B[] are complex vectors
- *              C is a real scalar
+ * @bfp_op{16, @f$
+ *      \bar{A} \leftarrow \bar{B} \cdot \left( \alpha \cdot 2^{\alpha\_exp} \right)
+ * @f$ }
  * 
- * This operation saturates to 16-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * ``a`` and ``b`` may safely point to the same complex BFP vector.
- * 
- * \param a         Output complex BFP vector
- * \param b         Input complex BFP vector
- * \param c         Real scalar input
+ * @param[out] a            Output complex BFP vector @vector{A}
+ * @param[in]  b            Input complex BFP vector @vector{B}
+ * @param[in]  alpha_mant   Mantissa @math{a} of real scalar 
+ * @param[in]  alpha_exp    Exponent @math{\alpha\_exp} of real scalar
  */
 void bfp_complex_s16_real_scale(
     bfp_complex_s16_t* a, 
@@ -324,28 +352,25 @@ void bfp_complex_s16_real_scale(
     const int16_t alpha_mant,
     const exponent_t alpha_exp);
 
-/** Multiply a 32-bit complex BFP vector by a 32-bit real scalar.
+/** 
+ * @brief Multiply a complex 32-bit BFP vector by a real scalar.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
+ * @math{B_k}, the corresponding element of complex input BFP vector @vector{B}, and real scalar 
+ * @math{\alpha\cdot 2^{\alpha\_exp}}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a` and `b` must have been initialized (see bfp_complex_s32_init()), and must be the same length.
  * 
+ * This operation can be performed safely in-place on `b`.
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[] * C
- *        where A[] and B[] are complex vectors
- *              C is a real scalar
+ * @bfp_op{32, @f$
+ *      \bar{A} \leftarrow \bar{B} \cdot \left( \alpha \cdot 2^{\alpha\_exp} \right)
+ * @f$ }
  * 
- * This operation saturates to 32-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * ``a`` and ``b`` may safely point to the same complex BFP vector.
- * 
- * \param a         Output complex BFP vector
- * \param b         Input complex BFP vector
- * \param c         Real scalar input
+ * @param[out] a            Output complex BFP vector @vector{A}
+ * @param[in]  b            Input complex BFP vector @vector{B}
+ * @param[in]  alpha_mant   Mantissa @math{a} of real scalar 
+ * @param[in]  alpha_exp    Exponent @math{\alpha\_exp} of real scalar
  */
 void bfp_complex_s32_real_scale(
     bfp_complex_s32_t* a, 
@@ -353,28 +378,25 @@ void bfp_complex_s32_real_scale(
     const int32_t alpha_mant,
     const exponent_t alpha_exp);
 
-/** Multiply a 16-bit complex BFP vector by a 16-bit complex scalar.
+/** 
+ * @brief Multiply a complex 16-bit BFP vector by a complex scalar.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
+ * @math{B_k}, the corresponding element of complex input BFP vector @vector{B}, and complex scalar 
+ * @math{\alpha\cdot 2^{\alpha\_exp}}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a` and `b` must have been initialized (see bfp_complex_s16_init()), and must be the same length.
  * 
+ * This operation can be performed safely in-place on `b`.
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[] * C
- *        where A[] and B[] are a complex vectors
- *              C is a complex scalar
+ * @bfp_op{16, @f$
+ *      \bar{A} \leftarrow \bar{B} \cdot \left( \alpha \cdot 2^{\alpha\_exp} \right)
+ * @f$ }
  * 
- * This operation saturates to 16-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * ``a`` and ``b`` may safely point to the same complex BFP vector.
- * 
- * \param a         Output complex BFP vector
- * \param b         Input complex BFP vector
- * \param c         Complex scalar input
+ * @param[out] a            Output complex BFP vector @vector{A}
+ * @param[in]  b            Input complex BFP vector @vector{B}
+ * @param[in]  alpha_mant   Mantissa @math{a} of complex scalar 
+ * @param[in]  alpha_exp    Exponent @math{\alpha\_exp} of real scalar
  */
 void bfp_complex_s16_scale(
     bfp_complex_s16_t* a, 
@@ -382,28 +404,25 @@ void bfp_complex_s16_scale(
     const complex_s16_t alpha_mant,
     const exponent_t alpha_exp);
 
-/** Multiply a 32-bit complex BFP vector by a 32-bit complex scalar.
+/** 
+ * @brief Multiply a complex 32-bit BFP vector by a complex scalar.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
+ * @math{B_k}, the corresponding element of complex input BFP vector @vector{B}, and complex scalar 
+ * @math{\alpha\cdot 2^{\alpha\_exp}}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a` and `b` must have been initialized (see bfp_complex_s32_init()), and must be the same length.
  * 
+ * This operation can be performed safely in-place on `b`.
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[] * C
- *        where A[] and B[] are a complex vectors
- *              C is a complex scalar
+ * @bfp_op{32, @f$
+ *      \bar{A} \leftarrow \bar{B} \cdot \left( \alpha \cdot 2^{\alpha\_exp} \right)
+ * @f$ }
  * 
- * This operation saturates to 32-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * ``a`` and ``b`` may safely point to the same complex BFP vector.
- * 
- * \param a         Output complex BFP vector
- * \param b         Input complex BFP vector
- * \param c         Complex scalar input
+ * @param[out] a            Output complex BFP vector @vector{A}
+ * @param[in]  b            Input complex BFP vector @vector{B}
+ * @param[in]  alpha_mant   Mantissa @math{a} of complex scalar 
+ * @param[in]  alpha_exp    Exponent @math{\alpha\_exp} of real scalar
  */
 void bfp_complex_s32_scale(
     bfp_complex_s32_t* a, 
@@ -411,161 +430,146 @@ void bfp_complex_s32_scale(
     const complex_s32_t alpha_mant,
     const exponent_t alpha_exp);
 
-/** Add one 16-bit complex BFP vector to another element-wise.
+/** 
+ * @brief Add one complex 16-bit BFP vector to another.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the sum of @math{B_k} and 
+ * @math{C_k}, the corresponding elements of complex input BFP vectors @vector{B} and @vector{C} respectively.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a`, `b` and `c` must have been initialized (see bfp_complex_s16_init()), and must be the same length.
+ * 
+ * This operation can be performed safely in-place on `b` or `c`.
  * 
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[] + C[]
- *        where A[], B[] and C[] are complex vectors.
+ * @bfp_op{16, @f$
+ *      \bar{A} \leftarrow \bar{B} + \bar{C}
+ * @f$ }
  * 
- * This operation saturates to 16-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * Any of ``a``, ``b``, and ``c`` may safely point to the same complex BFP vector.
- * 
- * \param a         Output complex BFP vector
- * \param b         Input complex BFP vector 1
- * \param c         Input complex BFP vector 2
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input complex BFP vector @vector{C}
  */
 void bfp_complex_s16_add(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c);
 
-/** Add one 32-bit complex BFP vector to another element-wise.
+/** 
+ * @brief Add one complex 32-bit BFP vector to another.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the sum of @math{B_k} and 
+ * @math{C_k}, the corresponding elements of complex input BFP vectors @vector{B} and @vector{C} respectively.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a`, `b` and `c` must have been initialized (see bfp_complex_s32_init()), and must be the same length.
+ * 
+ * This operation can be performed safely in-place on `b` or `c`.
  * 
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[] + C[]
- *        where A[], B[] and C[] are complex vectors.
+ * @bfp_op{32, @f$
+ *      \bar{A} \leftarrow \bar{B} + \bar{C}
+ * @f$ }
  * 
- * This operation saturates to 32-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * Any of ``a``, ``b``, and ``c`` may safely point to the same complex BFP vector.
- * 
- * \param a         Output complex BFP vector
- * \param b         Input complex BFP vector 1
- * \param c         Input complex BFP vector 2
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input complex BFP vector @vector{C}
  */
 void bfp_complex_s32_add(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
     const bfp_complex_s32_t* c);
 
-/** Subtract one 16-bit complex BFP vector from another element-wise.
+/** 
+ * @brief Subtract one complex 16-bit BFP vector from another.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the difference between 
+ * @math{B_k} and @math{C_k}, the corresponding elements of complex input BFP vectors @vector{B} and @vector{C} 
+ * respectively.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a`, `b` and `c` must have been initialized (see bfp_complex_s16_init()), and must be the same length.
+ * 
+ * This operation can be performed safely in-place on `b` or `c`.
  * 
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[] - C[]
- *        where A[], B[] and C[] are complex vectors.
+ * @bfp_op{16, @f$
+ *      \bar{A} \leftarrow \bar{B} - \bar{C}
+ * @f$ }
  * 
- * This operation saturates to 16-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * Any of ``a``, ``b``, and ``c`` may safely point to the same complex BFP vector.
- * 
- * \param a         Output BFP vector
- * \param b         Input operand 1
- * \param c         Input operand 2
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input complex BFP vector @vector{C}
  */
 void bfp_complex_s16_sub(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c);
 
-/** Subtract one 32-bit complex BFP vector from another element-wise.
+/** 
+ * @brief Subtract one complex 32-bit BFP vector from another.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the difference between 
+ * @math{B_k} and @math{C_k}, the corresponding elements of complex input BFP vectors @vector{B} and @vector{C} 
+ * respectively.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a`, `b` and `c` must have been initialized (see bfp_complex_s32_init()), and must be the same length.
+ * 
+ * This operation can be performed safely in-place on `b` or `c`.
  * 
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[] - C[]
- *        where A[], B[] and C[] are complex vectors.
+ * @bfp_op{32, @f$
+ *      \bar{A} \leftarrow \bar{B} - \bar{C}
+ * @f$ }
  * 
- * This operation saturates to 32-bit bounds.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * Any of ``a``, ``b``, and ``c`` may safely point to the same complex BFP vector.
- * 
- * \param a         Output BFP vector
- * \param b         Input operand 1
- * \param c         Input operand 2
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input complex BFP vector @vector{C}
  */
 void bfp_complex_s32_sub(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c);
 
-/** Convert a 16-bit complex BFP vector to a 32-bit complex BFP vector.
+/** 
+ * @brief Convert a complex 16-bit BFP vector to a complex 32-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex 32-bit output element @math{A_k} of complex output BFP vector @vector{A} is set to the value of 
+ * @math{B_k}, the corresponding element of complex 16-bit input BFP vector @vector{B}, sign-extended to 32 bits.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a` and `b` must have been initialized (see bfp_complex_s32_init() and bfp_complex_s16_init()), and must be the 
+ * same length.
  * 
+ * @bfp_op{16, @f$
+ *      A_k \overset{32-bit}{\lomgleftarrow} B_k    \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)   \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}
+ * @f$ }
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[]
- *        where A[] is a 32-bit complex vector
- *              B[] is a 16-bit complex vector
- * 
- * No precision is lost in this operation.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * 
- * \param a         Output 32-bit complex BFP vector
- * \param b         Input 16-bit complex BFP vector
+ * @param[out] a     Output complex 32-bit BFP vector @vector{A}
+ * @param[in]  b     Input complex 16-bit BFP vector @vector{B}
  */
 void bfp_complex_s16_to_complex_s32(
     bfp_complex_s32_t* a, 
     const bfp_complex_s16_t* b);
 
-/** Convert a 32-bit complex BFP vector to a 16-bit complex BFP vector.
+/** 
+ * @brief Convert a complex 32-bit BFP vector to a complex 16-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each complex 16-bit output element @math{A_k} of complex output BFP vector @vector{A} is set to the value of 
+ * @math{B_k}, the corresponding element of complex 32-bit input BFP vector @vector{B}, with its bit-depth reduced to
+ * 16 bits.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a` and `b` must have been initialized (see bfp_complex_s16_init() and bfp_complex_s32_init()), and must be the 
+ * same length.
  * 
+ * This function preserves as much precision as possible.
  * 
- * Conceptually, the operation performed is:
- *      A[] <- B[]
- *        where A[] is a 16-bit complex vector
- *              B[] is a 32-bit complex vector
+ * @bfp_op{32, @f$
+ *      A_k \overset{16-bit}{\lomgleftarrow} B_k    \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)   \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}
+ * @f$ }
  * 
- * To preserve as much precision as possible, headroom is removed from ``b`` as the conversion occurs.
- * 
- * Each element's real and imaginary parts are rounded to their nearest representable 16-bit values.
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * 
- * \param a         Output 16-bit complex BFP vector
- * \param b         Input 32-bit complex BFP vector
+ * @param[out] a     Output complex 16-bit BFP vector @vector{A}
+ * @param[in]  b     Input complex 32-bit BFP vector @vector{B}
  */
 void bfp_complex_s32_to_complex_s16(
     bfp_complex_s16_t* a, 
@@ -573,25 +577,23 @@ void bfp_complex_s32_to_complex_s16(
 
     
 
-/** Compute the squared magnitude of each element of a 16-bit complex BFP vector.
+/** 
+ * @brief Get the squared magnitude of each element of a complex 16-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each element @math{A_k} of real output BFP vector @vector{A} is set to the squared magnitude of @math{B_k}, the 
+ * corresponding element of complex input BFP vector @vector{B}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a` and `b` must have been initialized (see bfp_s16_init() bfp_complex_s16_init()), and must be the same length.
  * 
+ * @bfp_op{16, @f$
+ *      A_k \leftarrow B_k \cdot (B_k)^*                                \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}     \\
+ *          \qquad\text{  and } (B_k)^* \text{ is the complex conjugate of } B_k
+ * @f$ }
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- ( (B[i].re)^2 + (B[i].im)^2 )
- *        for each index i of B[]
- *        where A[] is a real vector
- *              B[] is a complex vector
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * 
- * \param a     Output real BFP vector
- * \param b     Input complex BFP vector
+ * @param[out] a     Output real BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
  */
 void bfp_complex_s16_squared_mag(
     bfp_s16_t* a, 
@@ -599,118 +601,111 @@ void bfp_complex_s16_squared_mag(
 
     
 
-/** Compute the squared magnitude of each element of a 32-bit complex BFP vector.
+/** 
+ * @brief Get the squared magnitude of each element of a complex 32-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each element @math{A_k} of real output BFP vector @vector{A} is set to the squared magnitude of @math{B_k}, the 
+ * corresponding element of complex input BFP vector @vector{B}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a` and `b` must have been initialized (see bfp_s32_init() bfp_complex_s32_init()), and must be the same length.
  * 
+ * @bfp_op{32, @f$
+ *      A_k \leftarrow B_k \cdot (B_k)^*                                \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}     \\
+ *          \qquad\text{  and } (B_k)^* \text{ is the complex conjugate of } B_k
+ * @f$ }
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- ( (B[i].re)^2 + (B[i].im)^2 )
- *        for each index i of B[]
- *        where A[] is a real vector
- *              B[] is a complex vector
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * 
- * \param a     Output real BFP vector
- * \param b     Input complex BFP vector
+ * @param[out] a     Output real BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
  */
 void bfp_complex_s32_squared_mag(
     bfp_s32_t* a, 
     const bfp_complex_s32_t* b);
 
-/** Compute the magnitude of each element of a 16-bit complex BFP vector.
+/** 
+ * @brief Get the magnitude of each element of a complex 16-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each element @math{A_k} of real output BFP vector @vector{A} is set to the magnitude of @math{B_k}, the corresponding 
+ * element of complex input BFP vector @vector{B}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a` and `b` must have been initialized (see bfp_s16_init() bfp_complex_s16_init()), and must be the same length.
  * 
+ * @bfp_op{16, @f$
+ *      A_k \leftarrow  \left| B_k \right|                              \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}
+ * @f$ }
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- sqrt( (B[i].re)^2 + (B[i].im)^2 )
- *        for each index i of B[]
- *        where A[] is a real vector
- *              B[] is a complex vector
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * 
- * \param a     Output real BFP vector
- * \param b     Input complex BFP vector
+ * @param[out] a     Output real BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
  */
 void bfp_complex_s16_mag(
     bfp_s16_t* a, 
     const bfp_complex_s16_t* b);
 
-/** Compute the magnitude of each element of a 32-bit complex BFP vector.
+/** 
+ * @brief Get the magnitude of each element of a complex 32-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * Each element @math{A_k} of real output BFP vector @vector{A} is set to the magnitude of @math{B_k}, the corresponding 
+ * element of complex input BFP vector @vector{B}.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `a` and `b` must have been initialized (see bfp_s32_init() bfp_complex_s32_init()), and must be the same length.
  * 
+ * @bfp_op{32, @f$
+ *      A_k \leftarrow  \left| B_k \right|                              \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}
+ * @f$ }
  * 
- * Conceptually, the operation performed is:
- *      A[i] <- sqrt( (B[i].re)^2 + (B[i].im)^2 )
- *        for each index i of B[]
- *        where A[] is a real vector
- *              B[] is a complex vector
- * 
- * ``a->data`` must already be initialized to a valid memory buffer.
- * 
- * \param a     Output real BFP vector
- * \param b     Input complex BFP vector
+ * @param[out] a     Output real BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
  */
 void bfp_complex_s32_mag(
     bfp_s32_t* a, 
     const bfp_complex_s32_t* b);
 
-/** Sum the elements of a 16-bit complex BFP vector.
+/** 
+ * @brief Get the sum of elements of a complex 16-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * The mantissas of the elements of complex input BFP vector @vector{B} are summed. The 32-bit sum is returned.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `b` must have been initialized (see bfp_complex_s16_init()).
  * 
+ * @todo Return a complex 32-bit float instead.
  * 
- * Conceptually, the operation performed is:
- *      A <- sum{ B[i] }
- *        for each index i of B[]
- *        where A is a complex scalar
- *              B[] is a complex vector
+ * @bfp_op{16, @f$
+ *      a \leftarrow \sum_{k=0}^{N-1} b_k                               \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}
+ * @f$ }
  * 
- * \param b     Input complex BFP vector.
+ * @param[in]  b     Input complex BFP vector @vector{B}
  * 
- * \returns     Complex sum of vector elements.
+ * @returns     @math{a}, the complex 64-bit sum of @vector{B}'s elements
  */
 complex_s32_t bfp_complex_s16_sum(
     const bfp_complex_s16_t* b);
 
-/** Sum the elements of a 32-bit complex BFP vector.
+/** 
+ * @brief Get the sum of elements of a complex 32-bit BFP vector.
  * 
- * <BLOCKQUOTE><CODE style="color:red;">
- *  NOT YET IMPLEMENTED / NOT TESTED.
+ * The elements of complex input BFP vector @vector{B} are summed to get @math{a \cdot 2^{a\_exp}}. The exponent 
+ * @math{a\_exp} is output through `a_exp`, and the 64-bit mantissa is returned.
  * 
- *  See \ref api_status.
- * </CODE></BLOCKQUOTE>
+ * `b` must have been initialized (see bfp_complex_s32_init()).
  * 
+ * @todo Return a complex 64-bit float instead.
  * 
- * Conceptually, the operation performed is:
- *      A <- sum{ B[i] }
- *        for each index i of B[]
- *        where A is a complex scalar
- *              B[] is a complex vector
+ * @bfp_op{32, @f$
+ *      a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{N-1} B_k              \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}
+ * @f$ }
  * 
- * \param b     Input complex BFP vector.
+ * @param[in]  b     Input complex BFP vector @vector{B}
  * 
- * \returns     Complex sum of vector elements
+ * @returns     @math{a}, the complex 64-bit mantissa of the sum of @vector{B}'s elements
  */
 complex_s64_t bfp_complex_s32_sum( 
     exponent_t* a_exp,

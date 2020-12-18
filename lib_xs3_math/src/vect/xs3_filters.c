@@ -15,7 +15,7 @@ void xs3_push_sample_down_s16(
     const int16_t new_value);
 
 void xs3_filter_fir_s16_init(
-    xs3_fir_filter_s16_t* filter,
+    xs3_filter_fir_s16_t* filter,
     int16_t* sample_buffer,
     const unsigned tap_count,
     const int16_t* coefficients,
@@ -30,7 +30,7 @@ void xs3_filter_fir_s16_init(
 
 
 void xs3_filter_fir_s16_add_sample(
-    xs3_fir_filter_s16_t* filter,
+    xs3_filter_fir_s16_t* filter,
     const int16_t new_sample)
 {
     xs3_push_sample_up_s16(filter->state, filter->num_taps, new_sample); 
@@ -39,7 +39,7 @@ void xs3_filter_fir_s16_add_sample(
 
 
 void xs3_filter_fir_s32_init(
-    xs3_fir_filter_s32_t* filter,
+    xs3_filter_fir_s32_t* filter,
     int32_t* sample_buffer,
     const unsigned tap_count,
     const int32_t* coefficients,
@@ -55,7 +55,7 @@ void xs3_filter_fir_s32_init(
 
 
 void xs3_filter_fir_s32_add_sample(
-    xs3_fir_filter_s32_t* filter,
+    xs3_filter_fir_s32_t* filter,
     const int32_t new_sample)
 {
     filter->state[filter->head] = new_sample;

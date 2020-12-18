@@ -12,10 +12,10 @@ typedef struct {
     right_shift_t shift;
     int16_t* coef;
     int16_t* state;
-} xs3_fir_filter_s16_t;
+} xs3_filter_fir_s16_t;
 
 int16_t xs3_filter_fir_s16(
-    xs3_fir_filter_s16_t* filter,
+    xs3_filter_fir_s16_t* filter,
     const int16_t new_sample);
 */
 

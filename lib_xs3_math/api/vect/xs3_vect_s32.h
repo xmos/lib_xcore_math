@@ -107,28 +107,27 @@ void xs3_vect_add_sub_prepare(
  * The headroom of an N-bit integer is the number of bits that the integer's value may be left-shifted
  * without any information being lost. Equivalently, it is one less than the number of leading sign bits.
  * 
- * The headroom of a `ch_pair_s32_t` struct is the minimum of the headroom of each of its 32-bit fields,
+ * The headroom of a `ch_pair_s32_t` struct is the minimum of the headroom of each of its 16-bit fields,
  * `ch_a` and `ch_b`.
  * 
  * The headroom of a 32-bit channel-pair vector is the minimum of the headroom of each of its `ch_pair_s32_t`
  * elements.
  * 
- * This function efficiently traverses the elements of @vector{x} to determine its headroom.
+ * This function efficiently traverses the elements of @vector{b} to determine its headroom.
  * 
- * @par Parameter Details
+ * `b[]` represents a 32-bit channel-pair vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
- * `x[]` represents a 32-bit channel-pair vector @vector{x}. `x[]` must begin at a word-aligned address.
- * 
- * `length` is the number of elements in `x[]`.
+ * `length` is the number of elements in `b[]`.
  * 
  * @low_op{32, @f$
- *      min\!\\{ HR_{32}\left(x_0\right), HR_{32}\left(x_1\right), ..., HR_{32}\left(x_{length-1}\right) \\}
+ *      a \leftarrow min\!\\{ HR_{32}\left(x_0\right), HR_{32}\left(x_1\right), ..., 
+ *              HR_{32}\left(x_{length-1}\right) \\}
  * @f$ }
  * 
- * @param[in]   x       Input channel-pair vector @vector{x}
- * @param[in]   length  Number of elements in @vector{x}
+ * @param[in]   b       Input channel-pair vector @vector{b}
+ * @param[in]   length  Number of elements in @vector{b}
  * 
- * @returns     Headroom of vector @vector{x}
+ * @returns     @math{a}, the headroom of vector @vector{b}
  * 
  * @see xs3_vect_ch_pair_s16_headroom
  * @see xs3_vect_s16_headroom
@@ -142,28 +141,30 @@ headroom_t xs3_vect_ch_pair_s32_headroom(
 
 
 /**
- * @brief Set each element of a 32-bit channel-pair vector to a specified value.
+ * @brief Set all elements of a 32-bit channel-pair vector to the specified value.
  * 
- * Each `x[k].ch_a` is set to `ch_a`, and each `x[k].ch_b` is set to `ch_b` (for `0 < k <= length`).
- * 
- * @par Parameter Details
- * 
- * `x[]` represents a 32-bit vector @vector{x}. `x[]` must begin at a word-aligned address.
+ * `a[]` represents the 32-bit vector @vector{a}. It must begin at a word-aligned address.
  * 
  * `ch_a` and `ch_b` are respectively the channel A and channel B values to which each element will be set.
  * 
- * `length` is the number of elements in `x[]`.
+ * `length` is the number of elements in `a[]`.
  * 
  * @low_op{32, @f$ 
- *      ChA\\{x_k\\} \leftarrow ch\_a \\
- *      ChB\\{x_k\\} \leftarrow ch\_b \\
+ *      ChA\\{a_k\\} \leftarrow ch\_a \\
+ *      ChB\\{a_k\\} \leftarrow ch\_b \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
  * 
- * @param[out]  x           Output channel-pair vector @vector{x}
- * @param[in]   ch_b        Value to set channel A of elements of @vector{x} to
- * @param[in]   ch_a        Value to set channel B of elements of @vector{x} to
- * @param[in]   length      Number of elements in vector{x}
+ * @par Block Floating-Point
+ * 
+ * If `ch_a` and `ch_b` are channel A and channel B mantissas of a floating-point channel-pair with exponent 
+ * @math{b\_exp}, then the output channel-pair vector @vector{a} are the mantissas of BFP channel-pair vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * 
+ * @param[out]  a           Output channel-pair vector @vector{a}
+ * @param[in]   ch_b        Value to set channel A of elements of @vector{a} to
+ * @param[in]   ch_a        Value to set channel B of elements of @vector{a} to
+ * @param[in]   length      Number of elements in vector{a}
  * 
  * @see xs3_vect_ch_pair_s16_set
  * @see xs3_vect_s16_set
@@ -172,26 +173,21 @@ headroom_t xs3_vect_ch_pair_s32_headroom(
  * @see xs3_vect_complex_s32_set
  */
 void xs3_vect_ch_pair_s32_set(
-    ch_pair_s32_t x[],
+    ch_pair_s32_t a[],
     const int32_t ch_a,
     const int32_t ch_b,
     const unsigned length);
 
 
 /**
- * @brief Left-shift each element of a 32-bit channel-pair vector by a specified number of bits.
+ * @brief Left-shift the elements of a 32-bit channel-pair vector by a specified number of bits.
  * 
- * Left-shift each element of @vector{b} by @math{b\_shl} bits, placing the result in the corresponding
- * element of @vector{a}. This is equivalent to multiplying each element of @vector{b} by @math{2^{b\_shl}}.
+ * `a[]` and `b[]` represent the 32-bit channel-pair vectors @vector{a} and @vector{b} respectively. Each must begin 
+ * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
- * @par Parameter Details
+ * `length` is the number of elements in vectors @vector{a} and @vector{b}.
  * 
- * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a
- * word-aligned address. This operation can be performed safely in-place on `b[]`.
- * 
- * `length` is the number of elements in @vector{a} and @vector{b}.
- * 
- * `b_shl` is the signed arithmetic left-shift applied to each element of @vector{b}.
+ * `b_shl` is the signed arithmetic left-shift applied to each element of @vector{b}. 
  * 
  * @low_op{32, @f$ 
  *      ChA\\{a_k\\} \leftarrow sat_{32}(\lfloor ChA\\{b_k\\} \cdot {2^{b\_shl}} \rfloor) \\
@@ -199,10 +195,16 @@ void xs3_vect_ch_pair_s32_set(
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
  * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of a BFP channel-pair vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the mantissas of BFP channel-pair vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{b\_shl}} and @math{a\_exp = b\_exp}.
+ * 
  * @param[out]  a           Output channel-pair vector @vector{a}
  * @param[in]   b           Input channel-pair vector @vector{b}
  * @param[in]   length      Number of elements in @vector{a} and @vector{b}
- * @param[in]   b_shl       Number of bits @math{b\_shl} to left-shift the elements of @vector{b}
+ * @param[in]   b_shl       Arithmetic left-shift applied to elements of @vector{b}
  * 
  * @returns     Headroom of output vector @vector{a}
  * 
@@ -216,19 +218,14 @@ headroom_t xs3_vect_ch_pair_s32_shl(
 
 
 /**
- * @brief Right-shift each element of a 32-bit channel-pair vector by a specified number of bits.
+ * @brief Right-shift the elements of a 32-bit channel-pair vector by a specified number of bits.
  * 
- * Right-shift each element of @vector{b} by @math{b\_shr} bits, placing the result in the corresponding
- * element of @vector{a}. This is equivalent to dividing each element of @vector{b} by @math{2^{b\_shr}}.
+ * `a[]` and `b[]` represent the 32-bit channel-pair vectors @vector{a} and @vector{b} respectively. Each must begin 
+ * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
- * @par Parameter Details
+ * `length` is the number of elements in vectors @vector{a} and @vector{b}.
  * 
- * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a
- * word-aligned address. This operation can be performed safely in-place on `b[]`.
- * 
- * `length` is the number of elements in @vector{a} and @vector{b}.
- * 
- * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}. 
  * 
  * @low_op{32, @f$ 
  *      ChA\\{a_k\\} \leftarrow sat_{32}(\lfloor ChA\\{b_k\\} \cdot {2^{-b\_shr}} \rfloor) \\
@@ -236,14 +233,20 @@ headroom_t xs3_vect_ch_pair_s32_shl(
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
  * 
- * @param[out]  a           Complex output vector @vector{a}
- * @param[in]   b           Complex input vector @vector{b}
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of a BFP channel-pair vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the mantissas of BFP channel-pair vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{-b\_shr}} and @math{a\_exp = b\_exp}.
+ * 
+ * @param[out]  a           Output channel-pair vector @vector{a}
+ * @param[in]   b           Input channel-pair vector @vector{b}
  * @param[in]   length      Number of elements in @vector{a} and @vector{b}
- * @param[in]   b_shr       Number of bits @math{b\_shr} to right-shift the elements of @vector{b}
+ * @param[in]   b_shr       Arithmetic right-shift applied to elements of @vector{b}
  * 
  * @returns     Headroom of output vector @vector{a}
  * 
- * @see xs3_vect_ch_pair_s32_shl
+ * @see xs3_vect_ch_pair_s32_shr
  */
 headroom_t xs3_vect_ch_pair_s32_shr(
     ch_pair_s32_t a[],
@@ -313,18 +316,7 @@ void xs3_vect_complex_mag_prepare(
 
 
 /**
- * @brief Add together two complex 32-bit vectors element-wise.
- * 
- * xs3_vect_complex_s32_add() and xs3_vect_add_sub_prepare() together represent the following BFP operation: 
- * 
- * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
- *                                          + \left( \bar{c} \cdot 2^{c\_exp} \right) }
- * 
- * xs3_vect_add_sub_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
- * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
- * mantissa vector @vector{a}.
- * 
- * @par Parameter Details
+ * @brief Add one complex 32-bit vector to another.
  * 
  * `a[]`, `b[]` and `c[]` represent the complex 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c}  
  * respectively. Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or
@@ -343,9 +335,26 @@ void xs3_vect_complex_mag_prepare(
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
  * 
- * @param[out]      a           Complex output vector @vector{a}
- * @param[in]       b           Complex input vector @vector{b}
- * @param[in]       c           Complex input vector @vector{c}
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} and @vector{c} are the complex 32-bit mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the complex 32-bit mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}. 
+ * 
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
+ * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
+ * are associated with the same exponent.
+ * 
+ * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
+ * 
+ * @param[out]      a_real      Real part of complex output vector @vector{a}
+ * @param[out]      a_imag      Imaginary aprt of complex output vector @vector{a}
+ * @param[in]       b_real      Real part of complex input vector @vector{b}
+ * @param[in]       b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]       c_real      Real part of complex input vector @vector{c}
+ * @param[in]       c_imag      Imaginary part of complex input vector @vector{c} 
  * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
  * @param[in]       b_shr       Right-shift applied to @vector{b}
  * @param[in]       c_shr       Right-shift applied to @vector{c}
@@ -366,20 +375,6 @@ headroom_t xs3_vect_complex_s32_add(
 /**
  * @brief Multiply one complex 32-bit vector element-wise by the complex conjugate of another.
  * 
- * xs3_vect_complex_s32_conj_mul() and xs3_vect_complex_s32_mul_prepare() together represent the following BFP
- * operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) 
- *                                  \cdot \left( c_k \cdot 2^{c\_exp} \right)^*  \\
- *          \qquad\text{where } (\cdot)^* \text{ is the complex conjugate}
- * }
- * 
- * xs3_vect_complex_s32_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and
- * @math{c\_shr} used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute
- * the resulting mantissa vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} respectively. 
  * Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
  * 
@@ -398,12 +393,23 @@ headroom_t xs3_vect_complex_s32_add(
  *      \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
  * 
- * @param[out] a        Complex output vector @vector{a}
- * @param[in]  b        Complex input vector @vector{b}
- * @param[in]  c        Complex input vector @vector{c}
- * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}
- * @param[in]  b_shr    Right-shift appled to @vector{b}
- * @param[in]  c_shr    Right-shift appled to @vector{c}
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 32-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the 
+ * complex 32-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + a\_shr}.
+ * 
+ * The function xs3_vect_complex_s32_mul_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} 
+ * based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}. 
+ * 
+ * @param[out]      a_real      Real part of complex output vector @vector{a}
+ * @param[out]      a_imag      Imaginary aprt of complex output vector @vector{a}
+ * @param[in]       b_real      Real part of complex input vector @vector{b}
+ * @param[in]       b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]       c_real      Real part of complex input vector @vector{c}
+ * @param[in]       c_imag      Imaginary part of complex input vector @vector{c} 
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       a_shr       Right-shift applied to 32-bit intermediate results.
  * 
  * @return      Headroom of the output vector @vector{a}
  * 
@@ -432,8 +438,6 @@ headroom_t xs3_vect_complex_s32_conj_mul(
  * 
  * This function efficiently traverses the elements of @vector{x} to determine its headroom.
  * 
- * @par Parameter Details
- * 
  * `x[]` represents the complex 32-bit vector @vector{x}. `x[]` must begin at a word-aligned address.
  * 
  * `length` is the number of elements in `x[]`.
@@ -460,14 +464,6 @@ headroom_t xs3_vect_complex_s32_headroom(
 
 /**
  * @brief Compute the magnitude of each element of a complex 32-bit vector.
- * 
- * xs3_vect_complex_s32_mag() and xs3_vect_complex_mag_prepare() together represent the following BFP operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left| b_k \cdot 2^{b\_exp} \right|   \\
- *      \qquad\text{where } \left|\cdot\right| \text{ is the complex magnitude operator}
- * }
- * 
- * @par Parameter Details
  * 
  * `a[]` represents the real 32-bit output mantissa vector @vector{a}.
  * 
@@ -497,6 +493,15 @@ headroom_t xs3_vect_complex_s32_headroom(
  *      a_k \leftarrow \sqrt { {\left( Re\\{v_k\\} \right)}^2 + {\left( Im\\{v_k\\} \right)}^2 }
  *        \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 32-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the real 32-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{a\_exp = b\_exp + b\_shr}.
+ * 
+ * The function xs3_vect_complex_mag_prepare() can be used to obtain values for @math{a\_exp} and @math{b\_shr} based on 
+ * the input exponent @math{b\_exp} and headroom @math{b\_hr}.
  * 
  * @param[out]  a           Real output vector @vector{a}
  * @param[in]   b           Complex input vector @vector{b}
@@ -569,18 +574,6 @@ void xs3_vect_complex_s32_mag_prepare(
 /**
  * @brief Multiply one complex 32-bit vector element-wise by another.
  * 
- * xs3_vect_complex_s32_mul() and xs3_vect_complex_s32_mul_prepare() together represent the following BFP
- * operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) 
- *                                  \cdot \left( c_k \cdot 2^{c\_exp} \right) }
- * 
- * xs3_vect_complex_s32_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and
- * @math{c\_shr} used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute
- * the resulting mantissa vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} respectively. 
  * Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
  * 
@@ -598,6 +591,16 @@ void xs3_vect_complex_s32_mag_prepare(
  *                                  + Re\\{b_k'\\} \cdot Im\\{c_k'\\} \right) \cdot 2^{-30} \\
  *      \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 32-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the 
+ * complex 32-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + b\_shr + c\_shr}.
+ * 
+ * The function xs3_vect_complex_s32_mul_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
  * 
  * @param[out] a        Complex output vector @vector{a}
  * @param[in]  b        Complex input vector @vector{b}
@@ -690,18 +693,6 @@ void xs3_vect_complex_s32_mul_prepare(
 /**
  * @brief Multiply a complex 32-bit vector element-wise by a real 32-bit vector.
  * 
- * xs3_vect_complex_s32_real_mul() and xs3_vect_complex_s32_real_mul_prepare() together represent the following BFP
- * operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) 
- *                                  \cdot \left( c_k \cdot 2^{c\_exp} \right) }
- * 
- * xs3_vect_complex_s32_real_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and
- * @math{c\_shr} used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute
- * the resulting mantissa vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `a[]` and `b[]` represent the complex 32-bit mantissa vectors @vector{a} and @vector{b} respectively. 
  * 
  * `c[]` represents the real 32-bit mantissa vector @vector{c}.
@@ -721,6 +712,16 @@ void xs3_vect_complex_s32_mul_prepare(
  *      Im\\{a_k\\} \leftarrow \left( Im\\{b_k'\\} \cdot c_k' \right) \cdot 2^{-30} \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 32-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the 
+ * complex 32-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + b\_shr + c\_shr}.
+ * 
+ * The function xs3_vect_s32_real_mul_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}. 
  * 
  * @param[out] a        Complex output vector @vector{a}.
  * @param[in]  b        Complex input vector @vector{b}.
@@ -811,18 +812,6 @@ void xs3_vect_complex_s32_real_mul_prepare(
 /**
  * @brief Multiply a complex 32-bit vector by a real scalar.
  * 
- * xs3_vect_complex_s32_real_scale() and xs3_vect_complex_s32_real_mul_prepare() together represent the following 
- * BFP operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) \cdot \left( c \cdot 2^{c\_exp} \right) }
- * 
- * xs3_vect_complex_s32_real_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and
- * @math{c\_shr}, as well as the output exponent @math{a\_exp}. @math{b\_shr} is used by this function, and 
- * @math{c\_shr} is applied in user code prior to calling this function. This function is then used to compute the 
- * resulting mantissa vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `a[]` and `b[]` represent the complex 32-bit mantissa vectors @vector{a} and @vector{b} respectively. 
  * 
  * `c` represents the real 32-bit scale factor @math{c}.
@@ -839,6 +828,16 @@ void xs3_vect_complex_s32_real_mul_prepare(
  *      Im\\{a_k\\} \leftarrow Im\\{b_k'\\} \cdot c                         \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 16-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the 
+ * complex 16-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + b\_shr + c\_shr}.
+ * 
+ * The function xs3_vect_s16_real_mul_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}. 
  * 
  * @todo To make things simpler I should just have this function take `c_shr` as a parameter so that the user can't 
  *       accidentally apply it incorrectly.
@@ -862,18 +861,6 @@ headroom_t xs3_vect_complex_s32_real_scale(
 /**
  * @brief Multiply a complex 32-bit vector by a complex 32-bit scalar.
  * 
- * xs3_vect_complex_s32_scale() and xs3_vect_complex_s32_scale_prepare() together represent the following 
- * BFP operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow \left( b_k \cdot 2^{b\_exp} \right) \cdot \left( c \cdot 2^{c\_exp} \right) }
- * 
- * xs3_vect_complex_s32_scale_prepare() should be called first to compute the shift parameters @math{b\_shr} and
- * @math{c\_shr}, as well as the output exponent @math{a\_exp}. @math{b\_shr} is used by this function, and 
- * @math{c\_shr} is applied in user code prior to calling this function. This function is then used to compute the 
- * resulting mantissa vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `a[]` and `b[]` represent the complex 32-bit mantissa vectors @vector{a} and @vector{b} respectively. 
  * 
  * `c` represents the complex 32-bit scale factor @math{c}.
@@ -892,6 +879,16 @@ headroom_t xs3_vect_complex_s32_real_scale(
  *                                  + Im\\{v_k\\} \cdot Re\\{c\\} \right) \cdot 2^{-30}     \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 32-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the 
+ * complex 32-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + b\_shr + c\_shr}.
+ * 
+ * The function xs3_vect_complex_s32_mul_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}. 
  * 
  * @todo To make things simpler I should just have this function take `c_shr` as a parameter so that the user can't 
  *       accidentally apply it incorrectly.
@@ -983,36 +980,37 @@ void xs3_vect_complex_s32_scale_prepare(
 /**
  * @brief Set each element of a complex 32-bit vector to a specified value.
  * 
- * @par Parameter Details
+ * `a[]` represents a complex 32-bit vector @vector{a}. `a[]` must begin at a word-aligned address.
  * 
- * `x[]` represents a complex 32-bit vector @vector{x}. `x[]` must begin at a word-aligned address.
+ * `b_real` and `b_imag` are the real and imaginary parts to which each element will be set.
  * 
- * `real` and `imag` are the real and imaginary parts to which each element will be set.
- * 
- * `length` is the number of elements in `x[]`.
+ * `length` is the number of elements in `a[]`.
  * 
  * @low_op{32, @f$ 
- *      x_k \leftarrow  real + j\cdot imag              \\
+ *      a_k \leftarrow  b\_real + j\cdot b\_imag              \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)   \\
  *          \qquad\text{ where } j^2 = -1
  *  @f$ }
  * 
- * @param[out]  x           Complex output vector @vector{x}
- * @param[in]   real        Value to set real part of elements of @vector{x} to
- * @param[in]   imag        Value to set imaginary part of elements of @vector{x} to
- * @param[in]   length      Number of elements in @vector{x}
+ * @par Block Floating-Point
+ * 
+ * If @math{b} is the mantissa of floating-point value @math{b \cdot 2^{b\_exp}}, then the output vector @vector{a} are
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * 
+ * @param[out]  a           Complex output vector @vector{a}
+ * @param[in]   b_real      Value to set real part of elements of @vector{a} to
+ * @param[in]   b_imag      Value to set imaginary part of elements of @vector{a} to
+ * @param[in]   length      Number of elements in @vector{a}
  */
 void xs3_vect_complex_s32_set(
-    complex_s32_t x[],
-    const int32_t real,
-    const int32_t imag,
+    complex_s32_t a[],
+    const int32_t b_real,
+    const int32_t b_imag,
     const unsigned length);
 
 
 /**
  * @brief Left-shift each element of a complex 32-bit vector by a specified number of bits.
- * 
- * @par Parameter Details
  * 
  * `a[]` and `b[]` represent the complex 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin 
  * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
@@ -1026,6 +1024,12 @@ void xs3_vect_complex_s32_set(
  *      Im\\{a_k\\} \leftarrow sat_{32}(\lfloor Im\\{b_k\\} \cdot 2^{b\_shl} \rfloor)     \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 32-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the complex 32-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{b\_shl}} and @math{a\_exp = b\_exp}.
  * 
  * @param[out]  a           Complex output vector @vector{a}
  * @param[in]   b           Complex input vector @vector{b}
@@ -1044,8 +1048,6 @@ headroom_t xs3_vect_complex_s32_shl(
 /**
  * @brief Right-shift each element of a complex 32-bit vector by a specified number of bits.
  * 
- * @par Parameter Details
- * 
  * `a[]` and `b[]` represent the complex 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin 
  * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
@@ -1059,6 +1061,12 @@ headroom_t xs3_vect_complex_s32_shl(
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
  * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 32-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the complex 32-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{\bar{a} = \bar{b} \cdot 2^{-b\_shr}} and @math{a\_exp = b\_exp}.
+ * 
  * @param[out]  a           Complex output vector @vector{a}
  * @param[in]   b           Complex input vector @vector{b}
  * @param[in]   length      Number of elements in vector @vector{b}
@@ -1070,22 +1078,11 @@ headroom_t xs3_vect_complex_s32_shr(
     complex_s32_t a[],
     const complex_s32_t b[],
     const unsigned length,
-    const right_shift_t shr);
+    const right_shift_t b_shr);
 
 
 /**
  * @brief Computes the squared magnitudes of elements of a complex 32-bit vector.
- * 
- * xs3_vect_complex_s32_squared_mag() and xs3_vect_complex_s32_squared_mag_prepare() together represent the 
- * following BFP operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow  \left|b_k \cdot 2^{b\_exp} \right|^2   }
- * 
- * xs3_vect_complex_s32_squared_mag_prepare() should be called first to compute the shift parameter @math{b\_shr}
- * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
- * mantissa vector @vector{a}.
- * 
- * @par Parameter Details
  * 
  * `a[]` represents the complex 32-bit mantissa vector @vector{a}. `b[]` represents the real 32-bit mantissa vector
  * @vector{b}. Each must begin at a word-aligned address.
@@ -1099,6 +1096,15 @@ headroom_t xs3_vect_complex_s32_shr(
  *      a_k \leftarrow ((Re\\{b_k'\\})^2 + (Im\\{b_k'\\})^2)\cdot 2^{-30}   \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 32-bit mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, then the resulting 
+ * vector @vector{a} are the real 32-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
+ * @math{a\_exp = 2 \cdot (b\_exp + b\_shr)}.
+ * 
+ * The function xs3_vect_complex_s32_squared_mag_prepare() can be used to obtain values for @math{a\_exp} and 
+ * @math{b\_shr} based on the input exponent @math{b\_exp} and headroom @math{b\_hr}.
  * 
  * @param[out]  a           Complex output vector @vector{a}
  * @param[in]   b           Complex input vector @vector{b}
@@ -1165,17 +1171,6 @@ void xs3_vect_complex_s32_squared_mag_prepare(
 /**
  * @brief Subtract one complex 32-bit vector from another.
  * 
- * xs3_vect_complex_s32_sub() and xs3_vect_add_sub_prepare() together represent the following BFP operation: 
- * 
- * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
- *                                          - \left( \bar{c} \cdot 2^{c\_exp} \right) }
- * 
- * xs3_vect_add_sub_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
- * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
- * mantissa vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `a[]`, `b[]` and `c[]` represent the complex 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c}  
  * respectively. Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or
  * `c[]`.
@@ -1192,6 +1187,20 @@ void xs3_vect_complex_s32_squared_mag_prepare(
 *       Im\\{a_k\\} \leftarrow Im\\{b_k'\\} - Im\\{c_k'\\}                  \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} and @vector{c} are the complex 32-bit mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the complex 32-bit mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}. 
+ * 
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
+ * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
+ * are associated with the same exponent.
+ * 
+ * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
  * 
  * @param[out]      a           Complex output vector @vector{a}
  * @param[in]       b           Complex input vector @vector{b}
@@ -1216,16 +1225,6 @@ headroom_t xs3_vect_complex_s32_sub(
 /**
  * @brief Compute the sum of elements of a complex 32-bit vector.
  * 
- * xs3_vect_complex_s32_sum() and xs3_vect_complex_s32_sum_prepare() together represent the following BFP operation:
- * 
- * @math{ a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{length-1} \left( b_k \cdot 2^{b\_exp} \right) }
- * 
- * xs3_vect_complex_s32_sum_prepare() should be called first to compute the shift parameter @math{b\_shr} which is
- * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
- * mantissa.
- * 
- * @par Parameter Details
- * 
  * `a` is the complex 64-bit mantissa of the resulting sum.
  * 
  * `b[]` represents the complex 32-bit mantissa vector @vector{b}. `b[]` must begin at a word-aligned address.
@@ -1240,6 +1239,14 @@ headroom_t xs3_vect_complex_s32_sub(
  *      Re\\{a\\} \leftarrow \sum_{k=0}^{length-1} \left( Re\\{b_k'\\} \right)      \\
  *      Im\\{a\\} \leftarrow \sum_{k=0}^{length-1} \left( Im\\{b_k'\\} \right)      
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then @math{a} is the complex 64-bit 
+ * mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + b\_shr}.
+ * 
+ * The function xs3_vect_complex_s32_sum_prepare() can be used to obtain values for @math{a\_exp} and @math{b\_shr} 
+ * based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}.
  * 
  * @par Additional Details
  * 
@@ -1386,6 +1393,12 @@ void xs3_vect_complex_s32_tail_reverse(
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
  * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the complex 32-bit mantissas of a BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the resulting 
+ * vector @vector{a} are the complex 16-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where
+ * @math{a\_exp = b\_exp + b\_shr}.
+ * 
  * @param[out]  a_real      Real part of complex output vector @vector{a}.
  * @param[out]  a_imag      Imaginary part of complex output vector @vector{a}.
  * @param[in]   b           Complex input vector @vector{b}.
@@ -1406,8 +1419,6 @@ void xs3_vect_complex_s32_to_complex_s16(
 /** 
  * @brief Compute the element-wise absolute value of a 32-bit vector.
  * 
- * @par Parameter Details
- * 
  * `a[]` and `b[]` represent the 32-bit vectors @vector{a} and @vector{b} respectively. Each must begin at a
  * word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
@@ -1417,6 +1428,11 @@ void xs3_vect_complex_s32_to_complex_s16(
  *      a_k \leftarrow sat_{32}(\left| b_k \right|)         \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the output vector @vector{a} are
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
  * 
  * @param[out] a        Output vector @vector{a}
  * @param[in]  b        Input vector @vector{b}
@@ -1433,15 +1449,6 @@ headroom_t xs3_vect_s32_abs(
 /**
  * @brief Compute the sum of the absolute values of elements of a 32-bit vector.
  * 
- * xs3_vect_s32_abs_sum() represents the following BFP operation:
- * 
- * @math{   
- *      a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{length-1} \left| b_k \right| \cdot 2^{b\_exp}     \\
- *          \qquad\text{with } a\_exp = b\_exp
- * }
- * 
- * @par Parameter Details
- * 
  * `b[]` represents the 32-bit mantissa vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
  * `length` is the number of elements in @vector{b}.
@@ -1449,6 +1456,11 @@ headroom_t xs3_vect_s32_abs(
  * @low_op{32, @f$
  *      \sum_{k=0}^{length-1} sat_{32}(\left| b_k \right|)
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the returned value @math{a} is 
+ * the 64-bit mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
  * 
  * @par Additional Details
  * 
@@ -1478,17 +1490,6 @@ int64_t xs3_vect_s32_abs_sum(
 /**
  * @brief Add together two 32-bit vectors.
  * 
- * xs3_vect_s32_add() and xs3_vect_add_sub_prepare() together represent the following BFP operation: 
- * 
- * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
- *                                          + \left( \bar{c} \cdot 2^{c\_exp} \right) }
- * 
- * xs3_vect_add_sub_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
- * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
- * mantissa vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} respectively. 
  * Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
  * 
@@ -1503,6 +1504,20 @@ int64_t xs3_vect_s32_abs_sum(
  *      a_k \leftarrow sat_{32}\!\left( b_k' + c_k' \right)     \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}. 
+ * 
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
+ * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
+ * are associated with the same exponent.
+ * 
+ * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
  * 
  * @param[out]      a           Output vector @vector{a}
  * @param[in]       b           Input vector @vector{b}
@@ -1596,6 +1611,11 @@ unsigned xs3_vect_s32_argmin(
  *      \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
  * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the output vector @vector{a} are
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + b\_shr}.
+ * 
  * @param[out]  a               Output vector @vector{a}
  * @param[in]   b               Input vector @vector{b}
  * @param[in]   length          Number of elements in vectors @vector{a} and @vector{b}
@@ -1617,17 +1637,6 @@ headroom_t xs3_vect_s32_clip(
 /**
  * @brief Compute the inner product between two 32-bit vectors.
  * 
- * xs3_vect_s32_dot() and xs3_vect_s32_dot_prepare() together represent the following BFP operation:
- * 
- * @math{ a \cdot 2^{a\_exp} \leftarrow 
- *      \sum_{k=0}^{length-1} \left( (b_k \cdot 2^{b\_exp}) \cdot (c_k \cdot 2^{c\_exp}) \right) }
- * 
- * xs3_vect_s32_dot_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr}
- * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
- * mantissa vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{b} and @vector{c} respectively. Each must begin at a 
  * word-aligned address.
  * 
@@ -1642,6 +1651,19 @@ headroom_t xs3_vect_s32_clip(
  *      a \leftarrow \sum_{k=0}^{length-1}\left(round( b_k' \cdot c_k' \cdot 2^{-30} ) \right)   \\
  *      \qquad\text{where } a \text{ is returned}
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} and @vector{c} are the mantissas of the BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c}\cdot 2^{c\_exp}, then result @math{a} is the 64-bit mantissa of the result @math{a \cdot 2^{a\_exp}}, 
+ * where @math{a\_exp = b\_exp + c\_exp + b\_shr + c\_shr + 30}.
+ * 
+ * If needed, the bit-depth of @math{a} can then be reduced to 32 bits to get a new result 
+ * @math{a' \cdot 2^{a\_exp'}} where @math{a' = a \cdot 2^{-a\_shr}} and @math{a\_exp' = a\_exp + a\_shr}.
+ * 
+ * The function xs3_vect_s32_dot_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
  * 
  * @par Additional Details
  * 
@@ -1748,16 +1770,6 @@ void xs3_vect_s32_dot_prepare(
 /**
  * @brief Calculate the energy (sum of squares of elements) of a 32-bit vector.
  * 
- * xs3_vect_s32_energy() and xs3_vect_s32_energy_prepare() together represent the following BFP operation:
- * 
- * @math{ a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{length-1} \left( b_k \cdot 2^{b\_exp} \right)^2 }
- * 
- * xs3_vect_s32_energy_prepare() should be called first to compute the shift parameter @math{b\_shr} which is used
- * by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
- * mantissa @math{a}, which is returned.
- * 
- * @par Parameter Details
- * 
  * `b[]` represents the 32-bit mantissa vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
  * `length` is the number of elements in @vector{b}.
@@ -1768,6 +1780,16 @@ void xs3_vect_s32_dot_prepare(
  *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)                 \\
  *      a \leftarrow \sum_{k=0}^{length-1} round((b_k')^2 \cdot 2^{-30})
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of the BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then floating-point result is
+ * @math{a \cdot 2^{a\_exp}}, where the 64-bit mantissa @math{a} is returned by this function, and 
+ * @math{a\_exp = 30 + 2 \cdot (b\_exp + b\_shr) }.
+ * 
+ * The function xs3_vect_s32_energy_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
  * 
  * @par Additional Details
  * 
@@ -1865,8 +1887,6 @@ void xs3_vect_s32_energy_prepare(
  * 
  * This function efficiently traverses the elements of `a[]` to determine its headroom.
  * 
- * @par Parameter Details
- * 
  * `x[]` represents the 32-bit vector @vector{x}. `x[]` must begin at a word-aligned address.
  * 
  * `length` is the number of elements in `x[]`.
@@ -1895,16 +1915,6 @@ headroom_t xs3_vect_s32_headroom(
 /**
  * @brief Compute the inverse of elements of a 32-bit vector.
  * 
- * xs3_vect_s32_inverse() and xs3_vect_s32_inverse_prepare() together represent the following BFP operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow \frac{1}{b_k \cdot 2^{b\_exp}} }
- * 
- * xs3_vect_complex_s32_inverse_prepare() should be called first to compute the scaling parameter @math{scale} used
- * by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
- * mantissa vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each vectors must begin
  * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
@@ -1916,6 +1926,13 @@ headroom_t xs3_vect_s32_headroom(
  *      a_k \leftarrow \lfloor\frac{2^{scale}}{b_k}\rfloor      \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the resulting vector @vector{a}
+ * are the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = scale - b\_exp}.
+ * 
+ * The function xs3_vect_s32_inverse_prepare() can be used to obtain values for @math{a\_exp} and @math{scale}.
  * 
  * @param[out]  a           Output vector @vector{a}
  * @param[in]   b           Input vector @vector{b}
@@ -1984,6 +2001,11 @@ void xs3_vect_s32_inverse_prepare(
  *      max\\{ x_0, x_1, ..., x_{length-1} \\}
  * @f$ }
  * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the returned value @math{a} is 
+ * the 32-bit mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * 
  * @param[in]   b           Input vector @vector{b}     
  * @param[in]   length      Number of elements in @vector{b}
  * 
@@ -2005,6 +2027,11 @@ int32_t xs3_vect_s32_max(
  *      max\\{ x_0, x_1, ..., x_{length-1} \\}
  * @f$ }
  * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the returned value @math{a} is 
+ * the 32-bit mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * 
  * @param[in]   b           Input vector @vector{b}     
  * @param[in]   length      Number of elements in @vector{b}
  * 
@@ -2017,16 +2044,6 @@ int32_t xs3_vect_s32_min(
 
 /**
  * @brief Multiply one 32-bit vector element-wise by another.
- * 
- * xs3_vect_s32_mul() and xs3_s32_mul_prepare() together represent the following BFP operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow (b_k \cdot 2^{b\_exp}) \cdot (c_k \cdot 2^{c\_exp}) \cdot 2^{-30} }
- * 
- * xs3_vect_s32_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr}
- * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting
- * mantissa vector @vector{a}.
- * 
- * @par Parameter Details
  * 
  * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} respectively. 
  * Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or `c[]`.
@@ -2042,6 +2059,16 @@ int32_t xs3_vect_s32_min(
  *      a_k \leftarrow sat_{32}(round(b_k' \cdot c_k' \cdot 2^{-30}))       \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + b\_shr + c\_shr + 30}.
+ * 
+ * The function xs3_vect_s32_mul_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}. 
  * 
  * @param[out] a        Output vector @vector{a}
  * @param[in]  b        Input vector @vector{b}
@@ -2133,20 +2160,6 @@ void xs3_vect_s32_mul_prepare(
 /** 
  * @brief Rectify the elements of a 32-bit vector.
  * 
- * xs3_vect_s32_rect() represents the following BFP operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow 
- *          \begin{cases}
- *              b_k \cdot 2^{b\_exp} & b_k \cdot 2^{b\_exp} \gt 0 \\
- *              0 & otherwise
- *          \end{cases}     \\
- *       \qquad\text{where }a\_exp = b\_exp
- * }
- * 
- * The output exponent @math{a\_exp} 
- * 
- * @par Parameter Details
- * 
  * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a 
  * word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
@@ -2161,11 +2174,10 @@ void xs3_vect_s32_mul_prepare(
  *      \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
  * 
- * @par Safe In-place Computation
- *      This function may safely operate in-place on `b[]`.
+ * @par Block Floating-Point
  * 
- * @par Word-alignment Required
- *      `a[]` and `b[]` must each begin at a word-aligned (4 byte) address.
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the output vector @vector{a} are
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
  * 
  * @param[out]  a       Output vector @vector{a}
  * @param[in]   b       Input vector @vector{b}
@@ -2182,19 +2194,6 @@ headroom_t xs3_vect_s32_rect(
 /**
  * @brief Multiply a 32-bit vector by a scalar.
  * 
- * xs3_vect_s32_scale() and xs3_vect_s32_mul_prepare() together represent the following BFP operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow (b_k \cdot 2^{b\_exp}) \cdot (c \cdot 2^{c\_exp}) \cdot 2^{-30} }
- * 
- * xs3_vect_s32_mul_prepare() should be called first to compute the shift parameters @math{b\_shr} and 
- * @math{c\_shr}, as well as the output exponent @math{a\_exp}. @math{b\_shr} is used by this function and @math{c\_exp}
- * is applied to @math{c} in user code. This function is then used to compute the resulting mantissa vector @vector{a}.
- * 
- * @todo To mitigate the possibility of user error, this function should just take @math{c\_shr} directly as a parameter 
- * and apply the shift itself.
- * 
- * @par Parameter Details
- * 
  * `a[]` and `b[]`represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each must begin at a 
  * word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
@@ -2209,6 +2208,16 @@ headroom_t xs3_vect_s32_rect(
  *      a_k  \leftarrow sat_{32}(round(c \cdot b_k' \cdot 2^{-30}))         \\
  *           \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of a BFP vector @math{ \bar{b} \cdot 2^{b\_exp} } and @math{c} is the mantissa of
+ * floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are the mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + b\_shr + c\_shr + 30}.
+ * 
+ * The function xs3_vect_s32_scale_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}. 
  * 
  * @param[out]  a           Output vector @vector{a}
  * @param[in]   b           Input vector @vector{b}
@@ -2231,13 +2240,6 @@ headroom_t xs3_vect_s32_scale(
 /** 
  * @brief Set all elements of a 32-bit vector to the specified value.
  * 
- * xs3_vect_s32_set() represents the following BFP operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow b \cdot 2^{b\_exp}    \\
- *          \qquad\text{where } a\_exp = b\_exp }
- * 
- * @par Parameter Details
- * 
  * `a[]` represents the 32-bit output vector @vector{a}. `a[]` must begin at a word-aligned address.
  * 
  * `b` is the new value to set each element of @vector{a} to.
@@ -2246,6 +2248,11 @@ headroom_t xs3_vect_s32_scale(
  *      a_k \leftarrow b    \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @math{b} is the mantissa of floating-point value @math{b \cdot 2^{b\_exp}}, then the output vector @vector{a} are
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
  * 
  * @param[out]  a           Output vector @vector{a}
  * @param[in]   b           New value for the elements of @vector{a}
@@ -2330,16 +2337,6 @@ headroom_t xs3_vect_s32_shr(
 /**
  * @brief Compute the square root of elements of a 32-bit vector.
  * 
- * xs3_vect_s32_sqrt() and xs3_vect_s32_sqrt_prepare() together represent the following BFP operation:
- * 
- * @math{ a_k \cdot 2^{a\_exp} \leftarrow \sqrt{ b_k \cdot 2^{b\_exp}  }}
- * 
- * xs3_vect_s32_sqrt_prepare() should be called first to compute the shift parameter @math{b\_shr} which is used by
- * this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting mantissa
- * vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each vectors must begin
  * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
@@ -2358,6 +2355,16 @@ headroom_t xs3_vect_s32_shr(
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)                       \\
  *          \qquad\text{ where } sqrt() \text{ computes the first } depth \text{ bits of the square root.}
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the resulting vector @vector{a}
+ * are the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = (b\_exp + b\_shr - 30)/2}.
+ * 
+ * Note that because exponents must be integers, that means @math{b\_exp + b\_shr} **must be even**.
+ * 
+ * The function xs3_vect_s32_sqrt_prepare() can be used to obtain values for @math{a\_exp} and @math{b\_shr} based on 
+ * the input exponent @math{b\_exp} and headroom @math{b\_hr}.
  * 
  * @param[out]  a           Output vector @vector{a}
  * @param[in]   b           Input vector @vector{b}
@@ -2435,17 +2442,6 @@ void xs3_vect_s32_sqrt_prepare(
 /**
  * @brief Subtract one 32-bit vector from another.
  * 
- * xs3_vect_s32_sub() and xs3_vect_add_sub_prepare() together represent the following BFP operation: 
- * 
- * @math{ \bar{a} \cdot 2^{a\_exp} \leftarrow \left( \bar{b} \cdot 2^{b\_exp} \right) 
- *                                          - \left( \bar{c} \cdot 2^{c\_exp} \right) }
- * 
- * xs3_vect_add_sub_prepare() should be called first to compute the shift parameters @math{b\_shr} and @math{c\_shr} 
- * used by this function, as well as output exponent @math{a\_exp}. This function is then used to compute the resulting 
- * mantissa vector @vector{a}.
- * 
- * @par Parameter Details
- * 
  * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} 
  * respectively. Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or
  * `c[]`.
@@ -2461,6 +2457,20 @@ void xs3_vect_s32_sqrt_prepare(
  *      a_k \leftarrow sat_{32}\!\left( b_k' - c_k' \right)     \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
+ * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}. 
+ * 
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
+ * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
+ * are associated with the same exponent.
+ * 
+ * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
  * 
  * @param[out] a        Output vector @vector{a}
  * @param[in] b         Input vector @vector{b}
@@ -2485,14 +2495,6 @@ headroom_t xs3_vect_s32_sub(
 /**
  * @brief Sum the elements of a 32-bit vector.
  * 
- * xs3_vect_s32_sum() represents the following BFP operation:
- * 
- * @math{ a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{length-1} \left( b_k \cdot 2^{b\_exp} \right)   \\
- *          \qquad\text{where } a\_exp = b\_exp
- * }
- * 
- * @par Parameter Details
- * 
  * `b[]` represents the 32-bit mantissa vector @vector{b}. `b[]` must begin at a word-aligned address.
  * 
  * `length` is the number of elements in @vector{b}.
@@ -2500,6 +2502,11 @@ headroom_t xs3_vect_s32_sub(
  * \low_op{32, @f$ 
  *      a \leftarrow \sum_\{k=0\}^\{length-1\} b_k     
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the returned value @math{a} is 
+ * the 64-bit mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
  * 
  * @par Additional Details
  * 
@@ -2556,6 +2563,12 @@ int64_t xs3_vect_s32_sum(
  *      a_k \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)      \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * If @vector{b} are the 32-bit mantissas of a BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the resulting 
+ * vector @vector{a} are the 16-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where
+ * @math{a\_exp = b\_exp + b\_shr}.
  * 
  * @param[out]  a        Output vector @vector{a}
  * @param[in]   b        Input vector @vector{b}

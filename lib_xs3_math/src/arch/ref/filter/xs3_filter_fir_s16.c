@@ -35,7 +35,7 @@ void xs3_push_sample_down_s16(
 
 
 int16_t xs3_filter_fir_s16(
-    xs3_fir_filter_s16_t* filter,
+    xs3_filter_fir_s16_t* filter,
     const int16_t new_sample)
 {
     xs3_filter_fir_s16_add_sample(filter, new_sample);

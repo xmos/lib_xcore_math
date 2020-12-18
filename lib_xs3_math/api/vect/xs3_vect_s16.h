@@ -381,7 +381,7 @@ headroom_t xs3_vect_complex_s16_headroom(
  * vector @vector{a} are the real 16-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
  * @math{a\_exp = b\_exp + b\_shr}.
  * 
- * The function xs3_vect_complex_mag_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} based on 
+ * The function xs3_vect_complex_mag_prepare() can be used to obtain values for @math{a\_exp} and @math{b\_shr} based on 
  * the input exponent @math{b\_exp} and headroom @math{b\_hr}.
  * 
  * @param[out]  a           Real output vector @vector{a}
@@ -1313,8 +1313,7 @@ unsigned xs3_vect_s16_argmin(
  * @par Block Floating-Point
  * 
  * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the output vector @vector{a} are
- * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
- * @math{a\_exp = b\_exp + b\_shr}.
+ * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + b\_shr}.
  * 
  * @param[out]  a               Output vector @vector{a}
  * @param[in]   b               Input vector @vector{b}
