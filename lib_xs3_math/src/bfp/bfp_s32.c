@@ -24,7 +24,7 @@ void bfp_s32_shl(
     const bfp_s32_t* b,
     const left_shift_t shl)
 {
-#if XS3_BFP_DEBUG_CHECK_LENGTHS
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(a->length == b->length);
 #endif
     a->length = b->length;
@@ -38,11 +38,9 @@ void bfp_s32_add(
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == c->length);
     assert(b->length == a->length);
-#else
-    a->length = b->length;
 #endif
 
     right_shift_t b_shr, c_shr;
@@ -58,11 +56,9 @@ void bfp_s32_sub(
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == c->length);
     assert(b->length == a->length);
-#else
-    a->length = b->length;
 #endif
 
     right_shift_t b_shr, c_shr;
@@ -78,11 +74,9 @@ void bfp_s32_mul(
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == c->length);
     assert(b->length == a->length);
-#else
-    a->length = b->length;
 #endif
 
     right_shift_t b_shr, c_shr;
@@ -98,10 +92,8 @@ void bfp_s32_scale(
     const int32_t alpha_mant,
     const exponent_t alpha_exp)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
-#else
-    a->length = b->length;
 #endif
 
     right_shift_t b_shr, s_shr;
@@ -120,10 +112,8 @@ void bfp_s32_abs(
     bfp_s32_t* a,
     const bfp_s32_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
-#else
-    a->length = b->length;
 #endif
 
 #if !XS3_BFP_ALLOW_SATURATION
@@ -153,7 +143,7 @@ int64_t bfp_s32_dot(
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == c->length);
 #endif
 
@@ -174,10 +164,8 @@ void bfp_s32_clip(
     const int32_t upper_bound, 
     const int bound_exp)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
-#else 
-    a->length = b->length;
 #endif
 
     assert(lower_bound <= upper_bound);
@@ -245,10 +233,8 @@ void bfp_s32_rect(
     bfp_s32_t* a,
     const bfp_s32_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
-#else 
-    a->length = b->length;
 #endif
 
     a->exp = b->exp;
@@ -260,10 +246,8 @@ void bfp_s32_sqrt(
     bfp_s32_t* a,
     const bfp_s32_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
-#else 
-    a->length = b->length;
 #endif
 
     right_shift_t b_shr;
@@ -278,10 +262,8 @@ void bfp_s32_inverse(
     bfp_s32_t* a,
     const bfp_s32_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
-#else 
-    a->length = b->length;
 #endif
 
     unsigned scale;
@@ -380,10 +362,8 @@ void bfp_s32_to_s16(
     bfp_s16_t* a,
     const bfp_s32_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
-#else
-    a->length = b->length;
 #endif
     
     right_shift_t b_shr = 16 - b->hr;

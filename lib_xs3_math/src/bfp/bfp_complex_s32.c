@@ -24,11 +24,10 @@ void bfp_complex_s32_shl(
     const bfp_complex_s32_t* b,
     const left_shift_t shl)
 {
-#if XS3_BFP_DEBUG_CHECK_LENGTHS
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(a->length == b->length);
 #endif
 
-    a->length = b->length;
     a->exp = b->exp;
     a->hr = xs3_vect_s32_shl((int32_t*) a->data, (int32_t*) b->data, 2*b->length, shl);
 }
@@ -39,7 +38,7 @@ void bfp_complex_s32_add(
     const bfp_complex_s32_t* b, 
     const bfp_complex_s32_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length == c->length);
 #endif
@@ -48,7 +47,6 @@ void bfp_complex_s32_add(
 
     xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
-    a->length = b->length;
     a->hr = xs3_vect_complex_s32_add(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
@@ -58,7 +56,7 @@ void bfp_complex_s32_sub(
     const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length == c->length);
 #endif
@@ -67,7 +65,6 @@ void bfp_complex_s32_sub(
 
     xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
-    a->length = b->length;
     a->hr = xs3_vect_complex_s32_sub(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
@@ -77,7 +74,7 @@ void bfp_complex_s32_real_mul(
     const bfp_complex_s32_t* b, 
     const bfp_s32_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length == c->length);
 #endif
@@ -87,7 +84,6 @@ void bfp_complex_s32_real_mul(
 
     xs3_vect_complex_s32_real_mul_prepare(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
-    a->length = b->length;
     a->exp = a_exp;
 
     a->hr = xs3_vect_complex_s32_real_mul(a->data, b->data, c->data, b->length, b_shr, c_shr);
@@ -99,7 +95,7 @@ void bfp_complex_s32_mul(
     const bfp_complex_s32_t* b, 
     const bfp_complex_s32_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length == c->length);
 #endif
@@ -109,7 +105,6 @@ void bfp_complex_s32_mul(
 
     xs3_vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
-    a->length = b->length;
     a->exp = a_exp;
     a->hr = xs3_vect_complex_s32_mul(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
@@ -120,7 +115,7 @@ void bfp_complex_s32_conj_mul(
     const bfp_complex_s32_t* b, 
     const bfp_complex_s32_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length == c->length);
 #endif
@@ -130,7 +125,6 @@ void bfp_complex_s32_conj_mul(
 
     xs3_vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
-    a->length = b->length;
     a->exp = a_exp;
     a->hr = xs3_vect_complex_s32_conj_mul(a->data, b->data, c->data, 
                                                   b->length, b_shr, c_shr);
@@ -143,7 +137,7 @@ void bfp_complex_s32_real_scale(
     const int32_t alpha_mant,
     const exponent_t alpha_exp)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
@@ -156,7 +150,6 @@ void bfp_complex_s32_real_scale(
     xs3_vect_s32_mul_prepare(&a->exp, &b_shr, &s_shr, b->exp, alpha_exp, b->hr, s_hr);
     int32_t alpha = SIGNED_ASHR(alpha_mant, s_shr);
 
-    a->length = b->length;
     a->hr = xs3_vect_complex_s32_real_scale( a->data, b->data, alpha, b->length, b_shr);
 }
 
@@ -167,7 +160,7 @@ void bfp_complex_s32_scale(
     const complex_s32_t alpha_mant,
     const exponent_t alpha_exp)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
@@ -178,7 +171,6 @@ void bfp_complex_s32_scale(
 
     const complex_s32_t c = { ASHR32(alpha_mant.re, alpha_shr), ASHR32(alpha_mant.im, alpha_shr) };
     
-    a->length = b->length;
     a->hr = xs3_vect_complex_s32_scale(a->data, b->data, c.re, c.im, b->length, b_shr);
 }
 
@@ -187,7 +179,7 @@ void bfp_complex_s32_squared_mag(
     bfp_s32_t* a, 
     const bfp_complex_s32_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
@@ -195,7 +187,6 @@ void bfp_complex_s32_squared_mag(
 
     xs3_vect_complex_s32_squared_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
 
-    a->length = b->length;
     a->hr = xs3_vect_complex_s32_squared_mag(a->data, b->data, b->length, b_shr);
 }
 
@@ -204,7 +195,7 @@ void bfp_complex_s32_mag(
     bfp_s32_t* a, 
     const bfp_complex_s32_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
@@ -212,7 +203,6 @@ void bfp_complex_s32_mag(
 
     xs3_vect_complex_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
 
-    a->length = b->length;
     a->hr = xs3_vect_complex_s32_mag(a->data, b->data, b->length, 
                                      b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
 }
@@ -235,7 +225,7 @@ void bfp_complex_s32_to_complex_s16(
     bfp_complex_s16_t* a, 
     const bfp_complex_s32_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
@@ -243,7 +233,6 @@ void bfp_complex_s32_to_complex_s16(
 
     xs3_vect_complex_s32_to_complex_s16(a->real, a->imag, b->data, b->length, b_shr);
 
-    a->length = b->length;
     a->exp = b->exp + b_shr;
     a->hr = 0;
 }

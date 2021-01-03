@@ -30,11 +30,10 @@ void bfp_ch_pair_s16_shl(
     const bfp_ch_pair_s16_t* b,
     const left_shift_t shl)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    assert(b->length == a->length);
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(a->length == b->length);
 #endif
 
-    a->length = b->length;
     a->exp = b->exp;
     a->hr = xs3_vect_ch_pair_s16_shl(a->data, b->data, b->length, shl);
 }
@@ -45,11 +44,10 @@ void bfp_ch_pair_s32_shl(
     const bfp_ch_pair_s32_t* b,
     const left_shift_t shl)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    assert(b->length == a->length);
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(a->length == b->length);
 #endif
 
-    a->length = b->length;
     a->exp = b->exp;
     a->hr = xs3_vect_ch_pair_s32_shl(a->data, b->data, b->length, shl);
 }

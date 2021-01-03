@@ -25,11 +25,10 @@ void bfp_complex_s16_shl(
     const bfp_complex_s16_t* b,
     const left_shift_t shl)
 {
-#if XS3_BFP_DEBUG_CHECK_LENGTHS
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(a->length == b->length);
 #endif
 
-    a->length = b->length;
     a->exp = b->exp;
 
     const headroom_t re_hr = xs3_vect_s16_shl(a->real, b->real, b->length, shl);
@@ -43,7 +42,7 @@ void bfp_complex_s16_add(
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length == c->length);
 #endif
@@ -51,8 +50,6 @@ void bfp_complex_s16_add(
     right_shift_t b_shr, c_shr;
 
     xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
-
-    a->length = b->length;
     
     a->hr = xs3_vect_complex_s16_add(a->real, a->imag, b->real, b->imag, c->real, c->imag, 
                                      b->length, b_shr, c_shr);
@@ -64,7 +61,7 @@ void bfp_complex_s16_sub(
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length == c->length);
 #endif
@@ -72,8 +69,6 @@ void bfp_complex_s16_sub(
     right_shift_t b_shr, c_shr;
 
     xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
-
-    a->length = b->length;
     
     a->hr = xs3_vect_complex_s16_sub(a->real, a->imag, b->real, b->imag, c->real, c->imag,
                                      b->length, b_shr, c_shr);
@@ -85,7 +80,7 @@ void bfp_complex_s16_real_mul(
     const bfp_complex_s16_t* b, 
     const bfp_s16_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length == c->length);
 #endif
@@ -95,7 +90,6 @@ void bfp_complex_s16_real_mul(
 
     xs3_vect_complex_s16_real_mul_prepare(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr);
 
-    a->length = b->length;
     a->exp = a_exp;
     
     const headroom_t re_hr = xs3_vect_s16_mul(a->real, b->real, c->data, b->length, sat);
@@ -109,7 +103,7 @@ void bfp_complex_s16_mul(
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length == c->length);
 #endif
@@ -119,7 +113,6 @@ void bfp_complex_s16_mul(
 
     xs3_vect_complex_s16_mul_prepare(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
 
-    a->length = b->length;
     a->exp = a_exp;
     a->hr = xs3_vect_complex_s16_mul(a->real, a->imag, b->real, b->imag, c->real, c->imag, b->length, sat);
 }
@@ -130,7 +123,7 @@ void bfp_complex_s16_conj_mul(
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length == c->length);
 #endif
@@ -140,7 +133,6 @@ void bfp_complex_s16_conj_mul(
 
     xs3_vect_complex_s16_mul_prepare(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
 
-    a->length = b->length;
     a->exp = a_exp;
     a->hr = xs3_vect_complex_s16_conj_mul(a->real, a->imag, b->real, b->imag, c->real, c->imag, b->length, sat);
 }
@@ -152,7 +144,7 @@ void bfp_complex_s16_real_scale(
     const int16_t alpha_mant,
     const exponent_t alpha_exp)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
@@ -160,7 +152,7 @@ void bfp_complex_s16_real_scale(
     headroom_t s_hr = HR_S16(alpha_mant);
 
     xs3_vect_s16_scale_prepare(&a->exp, &sat, b->exp, alpha_exp, b->hr, s_hr);
-    a->length = b->length;
+
     a->hr = xs3_vect_complex_s16_real_scale(a->real, a->imag, b->real, b->imag, alpha_mant, b->length, sat);
 }
 
@@ -171,7 +163,7 @@ void bfp_complex_s16_scale(
     const complex_s16_t alpha_mant,
     const exponent_t alpha_exp)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
@@ -180,8 +172,6 @@ void bfp_complex_s16_scale(
     headroom_t alpha_hr = HR_C16(alpha_mant);
 
     xs3_vect_complex_s16_mul_prepare(&a->exp, &sat, b->exp, alpha_exp, b->hr, alpha_hr, XS3_BFP_ALLOW_SATURATION);
-
-    a->length = b->length;
 
     a->hr = xs3_vect_complex_s16_scale(a->real, a->imag, b->real, b->imag, 
                                                   alpha_mant.re, alpha_mant.im, 
@@ -193,7 +183,7 @@ void bfp_complex_s16_squared_mag(
     bfp_s16_t* a, 
     const bfp_complex_s16_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
@@ -201,7 +191,6 @@ void bfp_complex_s16_squared_mag(
 
     xs3_vect_complex_s16_squared_mag_prepare(&a->exp, &sat, b->exp, b->hr);
 
-    a->length = b->length;
     a->hr = xs3_vect_complex_s16_squared_mag(a->data, b->real, b->imag, b->length, sat);
 }
 
@@ -210,15 +199,13 @@ void bfp_complex_s16_mag(
     bfp_s16_t* a, 
     const bfp_complex_s16_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
     right_shift_t b_shr;
 
     xs3_vect_complex_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
-
-    a->length = b->length;
 
     a->hr = xs3_vect_complex_s16_mag(a->data, b->real, b->imag, b->length, 
                                      b_shr, (int16_t*) rot_table16, rot_table16_rows);
@@ -236,13 +223,12 @@ void bfp_complex_s16_to_complex_s32(
     bfp_complex_s32_t* a, 
     const bfp_complex_s16_t* b)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
     xs3_vect_complex_s16_to_complex_s32(a->data, b->real, b->imag, b->length);
-
-    a->length = b->length;
+    
     a->exp = b->exp;
     a->hr = b->hr + 16;
 }
