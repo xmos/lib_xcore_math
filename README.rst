@@ -14,22 +14,18 @@ This library is a work in progress and is likely to change significantly in the 
 Repository Structure
 --------------------
 
-* `<https://github.com/xmos/lib_xs3_math>`_ - The actual ``lib_xs3_math`` library directory.
+* `lib_xs3_math/ <https://github.com/xmos/lib_xs3_math>`_ - The actual ``lib_xs3_math`` library directory.
 
   * `api/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/>`_ - Headers containing the public API for ``lib_xs3_math``.
   * `doc/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/doc/>`_ - Library documentation source (for non-embedded documentation) and build directory.
   * `script/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/script/>`_ - Scripts used for source generation.
   * `src/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/>`_ - Library source code.
 
-    * `arch/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/arch/>`_ - Architecture specific (Assembly) source files.
-    * `high/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/high/>`_ - Source files for high-level API.
-    * `low/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/low/>`_- Source files for low-level API.
+    * `arch/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/arch/>`_ - Architecture specific (Assembly) source files (with generic C implementations).
+    * `bfp/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/bfp/>`_ - Source files for high-level BFP API.
+    * `vect/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/vect/>`_- Source files for low-level API.
 
 * `/test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/>`_ - Unit test projects for ``lib_xs3_math``.
-
-  * `fft_test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/fft_test/>`_ - FFT unit tests project.
-  * `shared/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/shared/>`_ - Some files shared by both unit test projects.
-  * `unit_test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/unit_test/>`_ - Vectorized arithmetic unit test project.
 
 
 Requirements
@@ -37,8 +33,12 @@ Requirements
 
 * xTIMEcomposer tools version 15.0.1 or later
 * The XMOS fork of the Unity unit test framework (for building unit tests)
+
+  * This is included as a sub-module when cloning this repository
+
+* GNU Make (for building the libary and unit tests)
 * Doxygen (for building documentation)
-* Python 3 (for auto-generation of source files)
+* Python 3 (for running source generation scripts, if necessary)
 
 
 API Structure
@@ -55,14 +55,13 @@ Here we're really only interested in the first of those.
 Two-Layer API
 *************
 
-``lib_xs3_math`` has a two-layer API. In this model the lower layer (the *low-level API*) acts as the workhorse of the library. It stays close to bare-metal and as such the API may not seem intuitive for those not intimately familiar with the XS3's VPU instruction set. By contrast, the upper layer (the *high-level API*) in this model is meant to be intuitive and easy to use, while relying on the low-level API to actually get the work done.
+``lib_xs3_math`` has a two-layer API. In this model the lower layer (the *low-level API*) acts as the workhorse of the library. It stays close to bare-metal and as such the API may not seem intuitive for anyone not intimately familiar with the XS3's VPU instruction set. By contrast, the upper layer (the *BFP API*) is meant to be intuitive and easy to use, while relying on the low-level API to actually get work done.
 
-The high-level API is a block floating-point (BFP) API for performing VPU-accelerated operations. In the high-level API each BFP vector is represented by a ``struct``. The structure representing a BFP vector carries information about the vector's data buffer and length as well as the vector's exponent and headroom. The high-level API functions manages the headroom and exponent of the BFP vectors to determine when and how to best utilize the low-level API to maintain as much arithmetic precision as possible in the data.
+The BFP API is a block floating-point API for performing VPU-accelerated operations. In the high-level API each BFP vector is represented by a ``struct`` (such as `bfp_s32_t` for 32-bit BFP vectors). The structure representing a BFP vector carries information about the vector's data buffer and length as well as the vector's exponent and headroom. The BFP functions manage the headroom and exponent of the BFP vectors to determine when and how to best utilize the low-level API to maintain as much arithmetic precision as possible in the data.
 
-The low-level API is implemented primarily in xCORE XS3 Assembly, although C implementations of each function exist. The low-level functions operate directly on arrays of data and require the caller to manage exponents and headroom, and ensure that saturation and underflow are avoided. Sometimes it may be useful to directly use the low-level API rather than the high-level API because the user may know properties of the data that the high-level API cannot simply assume. For example, when subtracting one vector from another, if the user happens to know that both vectors are strictly non-negative, an additional bit of precision may be retained in the result.
+The low-level API is implemented primarily in xCORE XS3 Assembly, although C implementations of each function exist. The low-level functions operate directly on arrays of data and require the caller to manage exponents and headroom (although in many cases helper functions exist to do this), and ensure that saturation and underflow are avoided. Sometimes it may be useful to directly use the low-level API rather than the high-level API because the user may know properties of the data that the high-level API cannot simply assume. For example, when subtracting one vector from another, if the user happens to know that both vectors are strictly non-negative, an additional bit of precision may be retained in the result.
 
-
-* Auto-generated source files
+All data vectors used by API functions used signed data.
 
 Example
 *******
@@ -77,19 +76,19 @@ Example
 
         // Initialize new BFP vector
         bfp_s32_init(&sum, 
-            (int32_t*) malloc(a->length * sizeof(int32_t)), // allocate space for data; assume malloc succeeds()
+            (int32_t*) malloc(a->length * sizeof(int32_t)), // allocate space for data; assume malloc() succeeds
             0,          // exponent of vector; doesn't matter because it will be over-written
             a->length,  // length of vector (in elements)
             0);         // Do not calculate headroom; doesn't matter because it will be over-written
 
         // Add together the vectors a and b element-wise. Place result in sum.
-        bfp_s32_add(&sum, &a, &b);
+        bfp_s32_add(&sum, a, b);
 
-        for(int i=0; i<a->length; i++)
+        for(int i=0; i < a->length; i++)
             printf("%d:\t%f + %f = %f\n", i, ldexp(a->data[i], a->exp), 
-                ldexp(b->data[i], b->exp), ldexp(sum->data[i], sum->exp));
+                ldexp(b->data[i], b->exp), ldexp(sum.data[i], sum.exp));
 
-        free(sum->data);
+        free(sum.data);
     }
 
 
@@ -107,32 +106,46 @@ To clone this repository and its submodules (Unity repo required for unit tests)
 Including lib_xs3_math in External Applications
 -----------------------------------------------
 
+``lib_xs3_math`` is intended to be compiled into a static library which is linked into your own application. Once the repository and its submodules have been cloned, ``make build`` can be run from the root of the cloned directory to build the ``lib_xs3_math`` static library and all unit tests.
+
+To build documentation, ``make docs`` can be run from that same directory.
+
+To use ``lib_xs3_math`` in your own xCore application, the static library ``lib_xs3_math.a`` (found at ``lib_xs3_math/lib/xcore/``) can then be linked into your application. The ``lib_xs3_math.a`` found at ``lib_xs3_math/lib/ref/`` uses the un-optimized implementations of the low-level functions. `/lib_xs3_math/api/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/>`_ should be added as an include directory to your own project.
+
+Then, from your source files, include ``bfp_math.h`` for the BFP API, or ``xs3_math.h`` for the low-level API only.
+
 To include ``lib_xs3_math`` in your application
 
 * add `/lib_xs3_math/api/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/>`_ as an include directory.
 * add the ``.c`` and ``.S`` files in `/lib_xs3_math/src <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math>`_ to your source.
 
-Some build-time configuration of the library is possible by using certain global defines. See `xs3_math_conf.h <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/xs3_math_conf.h>`_ and its associated documentation for more information.
+Some build-time configuration of the library is possible by using certain global defines. See `xs3_math_conf.h <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/xs3_math_conf.h>`_ and its associated documentation for more information. 
 
-The Make script used in the unit test apps auto-generates a couple source files (``xs3_fft_lut.c`` and ``xs3_fft_lut.h`` -- supports various max FFT sizes without wasting memory) in the build directory. If your project has no need to auto-generate those files (because you know your maximum FFT length), use `this Python script <https://github.com/xmos/lib_xs3_math/blob/develop/lib_xs3_math/script/gen_fft_table.py>`_ to generate them once and include them in your own project. Note that ``xs3_fft_lut.h`` needs to be in the include path for the ``lib_xs3_math`` source.
-
-From user code, ``lib_xs3_math`` API functions can be accessed by including `xs3_math.h <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/xs3_math.h>`_.
+If you prefer to use your own build system to build ``lib_xs3_math``, include all source files in `/lib_xs3_math/src/vect/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/vect/>`_ and `/lib_xs3_math/src/bfp/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/bfp/>`_, and all source files in *one subdirectory* of `/lib_xs3_math/src/arch/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/arch/>`_. If prototyping an algorithm on a host system, rather than on xCore, use `/lib_xs3_math/src/arch/ref/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/arch/ref/>`_, otherwise `/lib_xs3_math/src/arch/xcore/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/arch/xcore/>`_ should be compiled.
 
 Unit Tests
 ----------
 
-This project uses GNU Make to build the unit test applications. Both unit test projects currently target the xCORE.ai explorer board.
+This project uses GNU Make to build the unit test applications. Both unit test projects currently target the xCORE.ai explorer board. All unit tests are currently in the `/test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/>`_ directory:
 
-Arithmetic Unit Tests
-*********************
+* `/test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/>`_ - Unit test projects for ``lib_xs3_math``.
 
-This application runs unit tests for the various 16- and 32-bit vectorized arithmetic functions. This application is located at `/test/unit_test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/unit_test>`_.
+  * `bfp_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/bfp_tests/>`_ - High-level BFP API unit test project.
+  * `fft_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/fft_tests/>`_ - FFT-related unit tests project.
+  * `vect_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/vect_tests/>`_ - Low-level API unit test project.
+
+Low-level Unit Tests
+********************
+
+This application runs unit tests for the various 16- and 32-bit low-level vectorized arithmetic functions. This application is located at `/test/vect_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/vect_tests>`_.
+
+Move to test directory:
 
 ::
 
-    cd test/unit_test
+    cd test/vect_tests
 
-To build the application, use ``make``:
+Build the unit test application:
 
 ::
 
@@ -142,45 +155,60 @@ To run the unit tests on the explorer board (after ensuring that the hardware is
 
 ::
 
-    xrun --io bin/xcore/unit_test.xe
+    xrun --xscope bin/xcore/vect_tests.xcore.xe
 
 To run the unit tests in the software simulator:
 
 ::
 
-    xsim bin/xcore/unit_test.xe
+    xsim bin/xcore/vect_tests.xcore.xe
 
-Note that running the unit tests in the simulator may be *very* slow. To run more quickly (by reducing the number of iterations of certain pseudorandom tests), the ``QUICK_TEST=1`` option can be used:
+Note that running the unit tests in the simulator may be *very* slow.
 
-::
+BFP Unit Tests
+**************
 
-    make all QUICK_TEST=1
+This application runs unit tests for the various 16- and 32-bit BFP vectorized arithmetic functions. This application is located at `/test/bfp_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/bfp_tests>`_.
 
-Assembly implementations of low-level functions will be preferred for xCORE where they exist. All low-level API functions written in xCORE Assembly have pure C counterparts which (*should*) give identical results. When debugging a problem, it may sometimes be useful to use the C implementations instead. To avoid compiling the ``.S`` Assembly files in ``lib_xs3_math``, the ``NO_ASM=1`` option can be used:
-
-::
-
-    make all NO_ASM=1
-
-The unit tests can also be compiled to run on the host system by using the ``PLATFORM=x86`` option:
+Move to test directory:
 
 ::
 
-    make all PLATFORM=x86
+    cd test/bfp_tests
 
-which will leave a binary in ``bin/x86/``.
+Build the unit test application:
+
+::
+
+    make all
+
+To run the unit tests on the explorer board (after ensuring that the hardware is connected and drivers properly installed):
+
+::
+
+    xrun --xscope bin/xcore/bfp_tests.xcore.xe
+
+To run the unit tests in the software simulator:
+
+::
+
+    xsim bin/xcore/bfp_tests.xcore.xe
+
+Note that running the unit tests in the simulator may be *very* slow.
 
 
 FFT Unit Tests
 **************
 
-This application runs all unit tests associated with the behavior of the library's FFT. This application is located at `/test/fft_test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/>`_.
+This application runs all FFT-related unit tests. This application is located at `/test/fft_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/fft_tests>`_.
+
+Move to test directory:
 
 ::
 
-    cd test/fft_test
+    cd test/fft_tests
 
-To build the application, use ``make``:
+Build the unit test application:
 
 ::
 
@@ -190,50 +218,27 @@ To run the FFT unit tests on the explorer board (after ensuring that the hardwar
 
 ::
 
-    xrun --io bin/xcore/fft_test.xe
+    xrun --xscope bin/xcore/fft_tests.xcore.xe
 
-To run the FFT unit tests in the software simulator:
-
-::
-
-    xsim bin/xcore/fft_test.xe
-
-Note that running the FFT unit tests in the simulator may be *very* slow. To run more quickly (by reducing the number of iterations of certain pseudorandom tests), the ``QUICK_TEST=1`` option can be used:
+To run the unit tests in the software simulator:
 
 ::
 
-    make all QUICK_TEST=1
+    xsim bin/xcore/fft_tests.xcore.xe
 
-Assembly implementations of low-level functions will be preferred for xCORE where they exist. All low-level API functions written in xCORE Assembly have pure C counterparts which (*should*) give identical results. When debugging a problem, it may sometimes be useful to use the C implementations instead. To avoid compiling the ``.S`` Assembly files in ``lib_xs3_math``, the ``NO_ASM=1`` option can be used:
-
-::
-
-    make all NO_ASM=1
-
-The FFT unit tests can also be compiled to run on the host system by using the ``PLATFORM=x86`` option:
-
-::
-
-    make all PLATFORM=x86
-
-which will leave a binary in ``bin/x86/``.
-
+Note that running the unit tests in the simulator may be *very* slow.
 
 
 Building Documentation
 ----------------------
 
-This project currently uses Doxygen for library and API documentation. As such, a Doxygen install will be required to 
-build the documentation. The documentation has been written against Doxygen version 1.8; your mileage may vary with
-other versions.
+This project currently uses Doxygen for library and API documentation. API functions include embedded documentation with their declarations in their corresponding header files, however, MathJax is used to render equations, and as such, building the stand-alone HTML documentation is highly recommended. In addition, several non-embedded notes and guides are included in the stand-along documentation (these can also be found at `/lib_xs3_math/doc/src/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/doc/>`_ ).
 
-With Doxygen on your path, the documentation can be built either by invoking the ``docs`` Make target from either unit test application's directory.
+ To build the stand-alone documentation as HTML a Doxygen install will be required. The documentation has been written against Doxygen version 1.8; your mileage may vary with other versions.
 
-::
+With Doxygen on your path, the documentation can be built by invoking the ``docs`` Make target from any directory containing a ``Makefile``.
 
-    make docs
-
-Alternatively, by calling ``doxygen`` from within the `</lib_xs3_math/doc/` directory.
+Alternatively, the documentaiton can be built by calling ``doxygen`` from within the `/lib_xs3_math/doc/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/doc/>`_ directory.
 
 The documentation will be generated within the ``/lib_xs3_math/doc/build/`` directory. To view the HTML version of the documentation, open ``/lib_xs3_math/doc/build/html/index.html`` in a browser.
 
