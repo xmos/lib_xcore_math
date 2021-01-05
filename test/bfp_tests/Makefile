@@ -234,9 +234,9 @@ all: build
 
 compile: $(OBJECT_FILES)
 
-xcore: build_deps $(XCORE_APP_EXE_FILE)
+xcore: $(XCORE_APP_EXE_FILE)
 
-ref: build_deps $(CREF_APP_EXE_FILE)
+ref: $(CREF_APP_EXE_FILE)
 
 build: xcore ref
 
