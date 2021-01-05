@@ -60,6 +60,7 @@ $(OBJECT_FILES): OBJ_INCLUDES = $(strip $(foreach grp,$(call includes_combo_str,
 ###
 # make target for each component object file.
 $(OBJECT_FILES):
+	$(call mkdir_cmd,$@)
 	$(info [$(SELF_NAME)] Compiling $<)
 	@$(OBJ_COMPILER) $(OBJ_FLAGS) $(addprefix -I,$(OBJ_INCLUDES)) -o $@ -c $<
 

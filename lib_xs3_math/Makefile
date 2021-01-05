@@ -162,7 +162,7 @@ $(BUILD_DIR)/%.marker:
 ###
 # xcore optimized
 XCORE_LIB_FILE := $(LIB_DIR)/xcore/$(LIB_NAME).a
-XCORE_OBJECT_FILES := $(filter-out arch/ref/, $(OBJECT_FILES))
+XCORE_OBJECT_FILES := $(filter-out $(OBJ_DIR)/src/arch/ref/%, $(OBJECT_FILES))
 
 ifneq ($(VERBOSE),$(EMPTY_STR))
   $(info xcore-specific object files:)
@@ -176,7 +176,7 @@ $(XCORE_LIB_FILE): $(XCORE_OBJECT_FILES)
 # C reference
 CREF_LIB_FILE := $(LIB_DIR)/ref/$(LIB_NAME).a
 
-CREF_OBJECT_FILES := $(filter-out arch/xcore/, $(OBJECT_FILES))
+CREF_OBJECT_FILES := $(filter-out $(OBJ_DIR)/src/arch/xcore/%, $(OBJECT_FILES))
 
 ifneq ($(VERBOSE),$(EMPTY_STR))
   $(info C reference object files:)
