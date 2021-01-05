@@ -5,12 +5,13 @@
 #include "asm_helper.h"
 
 /*  
-headroom_t xs3_vect_s16_scale(
-    int16_t a[],
-    const int16_t b[],
-    const unsigned length,
-    const int16_t alpha,
-    const right_shift_t sat);
+
+    headroom_t xs3_vect_s16_scale(
+        int16_t a[],
+        const int16_t b[],
+        const unsigned length,
+        const int16_t c,
+        const right_shift_t a_shr);
 
 */
 
@@ -19,15 +20,15 @@ headroom_t xs3_vect_s16_scale(
 
 #define FUNCTION_NAME   xs3_vect_s16_scale
 
-#define STACK_SAT       (NSTACKWORDS+1)
+#define STACK_A_SHR         (NSTACKWORDS+1)
 
-#define STACK_VEC_SAT   (NSTACKWORDS-8)
-#define STACK_BYTEMASK  6
+#define STACK_VEC_A_SHR     (NSTACKWORDS-8)
+#define STACK_BYTEMASK      6
 
 #define a           r0 
 #define b           r1 
 #define len         r2
-#define alpha       r3
+#define c           r3
 #define _32         r4
 #define tail        r5
 
@@ -37,27 +38,27 @@ headroom_t xs3_vect_s16_scale(
 
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
 FUNCTION_NAME:
-    {   mov r11, alpha                          ;   dualentsp NSTACKWORDS                   }
+    {   mov r11, c                              ;   dualentsp NSTACKWORDS                   }
         std r4, r5, sp[1]
 
-        zip r11, alpha, 4
-        std alpha, alpha, sp[(STACK_VEC_SAT/2)+0]
-        std alpha, alpha, sp[(STACK_VEC_SAT/2)+1]
-        std alpha, alpha, sp[(STACK_VEC_SAT/2)+2]
-        std alpha, alpha, sp[(STACK_VEC_SAT/2)+3]
+        zip r11, c, 4
+        std c, c, sp[(STACK_VEC_A_SHR/2)+0]
+        std c, c, sp[(STACK_VEC_A_SHR/2)+1]
+        std c, c, sp[(STACK_VEC_A_SHR/2)+2]
+        std c, c, sp[(STACK_VEC_A_SHR/2)+3]
 
-#undef alpha
+#undef  c
 #define tmp     r3
 
         ldc r11, 0x100
-    {   ldaw r11, sp[STACK_VEC_SAT]             ;   vsetc r11                               }
-    {                                           ;   ldw tmp, sp[STACK_SAT]                  }
-    {   mov r11, tmp                             ;   vldc r11[0]                            }
+    {   ldaw r11, sp[STACK_VEC_A_SHR]           ;   vsetc r11                               }
+    {                                           ;   ldw tmp, sp[STACK_A_SHR]                }
+    {   mov r11, tmp                            ;   vldc r11[0]                             }
         zip r11, tmp, 4
-        std tmp, tmp, sp[(STACK_VEC_SAT/2)+0]
-        std tmp, tmp, sp[(STACK_VEC_SAT/2)+1]
-        std tmp, tmp, sp[(STACK_VEC_SAT/2)+2]
-        std tmp, tmp, sp[(STACK_VEC_SAT/2)+3]
+        std tmp, tmp, sp[(STACK_VEC_A_SHR/2)+0]
+        std tmp, tmp, sp[(STACK_VEC_A_SHR/2)+1]
+        std tmp, tmp, sp[(STACK_VEC_A_SHR/2)+2]
+        std tmp, tmp, sp[(STACK_VEC_A_SHR/2)+3]
 
 #undef tmp
 
@@ -65,7 +66,7 @@ FUNCTION_NAME:
     {   zext tail, 5                            ;   ldc _32, 32                             }
 
 
-    {   ldaw r11, sp[STACK_VEC_SAT]             ;   bf len, .L_loop_bot                     }
+    {   ldaw r11, sp[STACK_VEC_A_SHR]           ;   bf len, .L_loop_bot                     }
     {                                           ;   bu .L_loop_top                          }
 
 .align 16

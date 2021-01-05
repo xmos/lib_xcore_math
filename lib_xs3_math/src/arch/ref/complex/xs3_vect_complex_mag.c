@@ -5,7 +5,11 @@
 #include "xs3_math.h"
 #include "../../../vect/vpu_helper.h"
 
+#include "xs3_vpu_scalar_ops.h"
+#include "../../../vect/vpu_const_vects.h"
 
+
+#define negative_one_s16    (vpu_vec_neg_0x4000[0])
 
 
 headroom_t xs3_vect_complex_s16_mag(
@@ -19,31 +23,40 @@ headroom_t xs3_vect_complex_s16_mag(
 {
     for(int k = 0; k < length; k++){
         
-        complex_s32_t B = {
-            ASHR(16)(b_real[k], b_shr), 
-            ASHR(16)(b_imag[k], b_shr)
+        complex_s16_t B = {
+            vlashr16(b_real[k], b_shr),
+            vlashr16(b_imag[k], b_shr),
         };
 
-        B.re = (B.re >= 0)? B.re : -B.re;
-        B.im = (B.im >= 0)? B.im : -B.im;
+        B.re = vlmul16(vsign16(B.re), B.re);
+        B.im = vlmul16(vsign16(B.im), B.im);
 
         for(int iter = 0; iter < table_rows; iter++){
+            vpu_int16_acc_t acc;
 
-            complex_s32_t rot = {
+            complex_s16_t rot = {
                 rot_table[32 * iter],
                 rot_table[32 * iter + 16 ],
             };
 
-            int32_t q1 = B.re * rot.re;
-            int32_t q2 =-B.im * rot.im;
-            int32_t q3 = B.re * rot.im;
-            int32_t q4 = B.im * rot.re;
+            complex_s16_t new_B;
 
-            B.re = SAT(16)(ROUND_SHR(q1 + q2, 15));
-            B.im = SAT(16)(ROUND_SHR(q3 + q4, 15));
+            acc = 0;
 
-            B.re = (B.re >= 0)? B.re : -B.re;
-            B.im = (B.im >= 0)? B.im : -B.im;
+            acc = vlmacc16(acc, rot.im, vlmul16( negative_one_s16 , B.im));
+            acc = vlmacc16(acc, rot.re, B.re);
+            
+            new_B.re = vlsat16(acc, 15);
+
+            acc = 0;
+
+            acc = vlmacc16(acc, rot.im, B.re);
+            acc = vlmacc16(acc, rot.re, B.im);
+
+            new_B.im = vlsat16(acc, 15);
+
+            B.re = vlmul16(vsign16(new_B.re), new_B.re);
+            B.im = vlmul16(vsign16(new_B.im), new_B.im);
 
         }
 
@@ -67,13 +80,15 @@ headroom_t xs3_vect_complex_s32_mag(
 
     for(int k = 0; k < length; k++){
         
+        // Apply a right-shift to b[k]
         complex_s32_t B = {
-            ASHR(32)(b[k].re, b_shr), 
-            ASHR(32)(b[k].im, b_shr),
+            vlashr32(b[k].re, b_shr), 
+            vlashr32(b[k].im, b_shr),
         };
 
-        B.re = (B.re >= 0)? B.re : -B.re;
-        B.im = (B.im >= 0)? B.im : -B.im;
+        // Reflect B into the first quadrant
+        B.re = vlmul32(vsign32(B.re), B.re);
+        B.im = vlmul32(vsign32(B.im), B.im);
 
         for(int iter = 0; iter < table_rows; iter++){
 
@@ -82,26 +97,20 @@ headroom_t xs3_vect_complex_s32_mag(
                 rot_table[iter * 4].im
             };
 
-            // printf("%d:\t%ld + i*%ld\n", iter, rot.re, rot.im);
+            complex_s32_t new_B = {
+                vcmr32(B, rot),
+                vcmi32(B, rot),
+            };
 
-            int64_t q1 = ROUND_SHR( ((int64_t)B.re) * rot.re, 30 );
-            int64_t q2 = ROUND_SHR( ((int64_t)B.im) * rot.im, 30 );
-            int64_t q3 = ROUND_SHR( ((int64_t)B.re) * rot.im, 30 );
-            int64_t q4 = ROUND_SHR( ((int64_t)B.im) * rot.re, 30 );
-
-            B.re = SAT(32)(q1 - q2);
-            B.im = SAT(32)(q3 + q4);
-
-            B.re = (B.re >= 0)? B.re : -B.re;
-            B.im = (B.im >= 0)? B.im : -B.im;
-
+            B.re = vlmul32(vsign32(new_B.re), new_B.re);
+            B.im = vlmul32(vsign32(new_B.im), new_B.im);
         }
 
         a[k] = B.re;
 
     }
 
-    return xs3_vect_s32_headroom( (int32_t*) a, length);
+    return xs3_vect_s32_headroom( a, length);
 }
 
 
@@ -115,14 +124,16 @@ headroom_t xs3_vect_complex_s16_squared_mag(
     const int16_t b_real[],
     const int16_t b_imag[],
     const unsigned length,
-    const right_shift_t sat)
+    const right_shift_t a_shr)
 {
     for(int k = 0; k < length; k++){
-        
-        complex_s32_t B = { b_real[k], b_imag[k] };
 
-        int32_t acc = B.re*B.re + B.im*B.im;
-        a[k] = SAT(16)(ROUND_SHR(acc, sat));
+        vpu_int16_acc_t acc = 0;
+
+        acc = vlmacc16(acc, b_real[k], b_real[k]);
+        acc = vlmacc16(acc, b_imag[k], b_imag[k]);
+        
+        a[k] = vlsat16(acc, a_shr);
     }
 
     return xs3_vect_s16_headroom(a, length);
@@ -138,16 +149,13 @@ headroom_t xs3_vect_complex_s32_squared_mag(
 {
 
     for(int k = 0; k < length; k++){
-        
+
         complex_s32_t B = {
-            ASHR(32)(b[k].re, b_shr), 
-            ASHR(32)(b[k].im, b_shr),
+            vlashr32(b[k].re, b_shr),
+            vlashr32(b[k].im, b_shr),
         };
 
-        B.re = SAT(32)(ROUND_SHR(((int64_t)B.re)*B.re, 30));
-        B.im = SAT(32)(ROUND_SHR(((int64_t)B.im)*B.im, 30));
-
-        a[k] = B.re + B.im;
+        a[k] = vcmcr32(B, B);
     }
 
     return xs3_vect_s32_headroom(a, length);

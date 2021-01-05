@@ -136,7 +136,7 @@ static void test_xs3_vect_s32_sum_basic()
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
 
-    const unsigned start_case = 2;
+    const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
         PRINTF("\ttest vector %d..\n", v);

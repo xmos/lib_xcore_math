@@ -135,7 +135,7 @@ static void test_xs3_vect_complex_s16_conj_mul_basic()
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
 
-    const unsigned start_case = 4;
+    const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
         PRINTF("\ttest vector %d..\n", v);
@@ -312,7 +312,7 @@ static void test_xs3_vect_complex_s32_conj_mul_basic()
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
 
-    const unsigned start_case = 6;
+    const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
         PRINTF("\ttest vector %d..\n", v);

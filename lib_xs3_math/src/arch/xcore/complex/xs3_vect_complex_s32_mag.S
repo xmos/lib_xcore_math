@@ -60,6 +60,14 @@ FUNCTION_NAME:
     {   shl tail_bytes, tail_bytes, 2           ;   bf length, .L_outer_loop_bot            }
 
     .L_outer_loop_top:
+        //     vlashr b[0], b_shr
+        //     vstrpv vec_tmp[0], mask32
+        // {   add b, b, _32                           ;   vsign                                   }
+        // {                                           ;   vlmul vec_tmp[0]                        }
+        //     vstrpv vec_tmp[0], mask32
+        // {                                           ;   ldw r11, sp[STACK_ROT_TABLE]            }
+        // {                                           ;   ldw iter, sp[STACK_TABLE_ROWS]          }        
+
             vlashr b[0], b_shr
         {                                           ;   vsign                                   }
         {                                           ;   ldw r11, sp[STACK_ROT_TABLE]            }

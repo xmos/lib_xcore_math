@@ -62,7 +62,7 @@ static void test_xs3_vect_complex_s16_to_complex_s32_basic()
         test_case_t* casse = &casses[v];
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
-        complex_s32_t A[MAX_LEN];
+        complex_s32_t DWORD_ALIGNED A[MAX_LEN];
         struct {
             int16_t real[MAX_LEN];
             int16_t imag[MAX_LEN];
@@ -102,7 +102,7 @@ static void test_xs3_vect_complex_s16_to_complex_s32_random()
     PRINTF("%s...\n", __func__);
     unsigned seed = 778;
     
-    complex_s32_t A[MAX_LEN];
+    complex_s32_t DWORD_ALIGNED A[MAX_LEN];
     struct {
         int16_t real[MAX_LEN];
         int16_t imag[MAX_LEN];

@@ -11,97 +11,119 @@ extern "C" {
 
 
 /** 
- * Represents a complex number with a 64-bit real part and 64-bit imaginary part.
+ * @brief A complex number with a 64-bit real part and 64-bit imaginary part.
  */
 typedef struct {
-    int64_t re;
-    int64_t im;
+    int64_t re; ///< Real Part
+    int64_t im; ///< Imaginary Part
 } complex_s64_t;
 
 /** 
- * Represents a complex number with a 32-bit real part and 32-bit imaginary part.
+ * @brief A complex number with a 32-bit real part and 32-bit imaginary part.
  */
 typedef struct {
-    int32_t re;
-    int32_t im;
+    int32_t re; ///< Real Part
+    int32_t im; ///< Imaginary Part
 } complex_s32_t;
 
 /** 
- * Represents a complex number with a 16-bit real part and 16-bit imaginary part.
+ * @brief A complex number with a 16-bit real part and 16-bit imaginary part.
  */
 typedef struct {
-    int16_t re;
-    int16_t im;
+    int16_t re; ///< Real Part
+    int16_t im; ///< Imaginary Part
 } complex_s16_t;
 
 /**
- * Represents a complex floating-point number.
+ * @brief A complex number with a single-precision floating-point real part and a single-precision floating-point imaginary part.
  */
 typedef struct {
-    float re;
-    float im;
+    float re;   ///< Real Part
+    float im;   ///< Imaginary Part
 } complex_float_t;
 
 /**
- * Represents a complex double-precision floating-point number.
+ * @brief A complex number with a double-precision floating-point real part and a double-precision floating-point imaginary part.
  */
 typedef struct {
-    double re;
-    double im;
+    double re;  ///< Real Part
+    double im;  ///< Imaginary Part
 } complex_double_t;
 
 /** 
- * Represents a pair of 32-bit samples, each associated with a different channel.
+ * @brief A pair of 32-bit samples, associated with channels A and B.
  */
 typedef struct {
-    int32_t ch_a;
-    int32_t ch_b;
+    int32_t ch_a;   ///< Channel A
+    int32_t ch_b;   ///< Channel B
 } ch_pair_s32_t;
 
 /** 
- * Represents a pair of 16-bit samples, each associated with a different channel.
+ * @brief A pair of 16-bit samples, associated with channels A and B.
  */
 typedef struct {
-    int16_t ch_a;
-    int16_t ch_b;
+    int16_t ch_a;   ///< Channel A
+    int16_t ch_b;   ///< Channel B
 } ch_pair_s16_t;
 
-
+/**
+ * @brief A pair of single-precision floating-point samples, associated with channels A and B.
+ */
 typedef struct {
-    float ch_a;
-    float ch_b;
+    float ch_a; ///< Channel A
+    float ch_b; ///< Channel B
 } ch_pair_float_t;
 
+/**
+ * @brief A pair of double-precision floating-point samples, associated with channels A and B.
+ */
 typedef struct {
-    double ch_a;
-    double ch_b;
+    double ch_a;    ///< Channel A
+    double ch_b;    ///< Channel B
 } ch_pair_double_t;
 
 
 /**
- * Represents an exponent for a block floating-point vector
+ * @brief An exponent.
+ * 
+ * Many places in this API make use of integers representing the exponent associated with some floating-point value or 
+ * block floating-point vector.
+ * 
+ * For a floating-point value @math{x \cdot 2^p}, @math{p} is the exponent, and may usually be positive or negative.
  */
 typedef int exponent_t;
 
 /**
- * Represents the headroom in a signed or unsigned integer, or in
- * a block floating-point vector
+ * @brief Headroom of some integer or integer array.
+ * 
+ * Represents the headroom of a signed or unsigned integer, complex integer or channel pair, or the headroom of the 
+ * mantissa array of a block floating-point vector.
  */
 typedef unsigned headroom_t;
 
 /**
- * Represents a number of bits to arithmetically right-shift an integer.
+ * @brief A rightwards arithmetic bit-shift.
+ * 
+ * Represents a right bit-shift to be applied to an integer. May be signed or unsigned, depending on context. If signed,
+ * negative values represent leftward bit-shifts.
+ * 
+ * @see left_shift_t
  */
 typedef int right_shift_t;
 
 /**
- * Represents a number of bits to arithmetically left-shift an integer.
+ * @brief A leftwards arithmetic bit-shift.
+ * 
+ * Represents a left bit-shift to be applied to an integer. May be signed or unsigned, depending on context. If signed,
+ * negative values represent rightward bit-shifts.
+ * 
+ * @see right_shift_t
  */
 typedef int left_shift_t;
 
 
 /**
- * Represents a block floating-point vector of 32-bit elements.
+ * @brief A block floating-point vector of 32-bit elements.
  * 
  * Initialized with the ``bfp_s32_init()`` function.
  * 
@@ -125,8 +147,11 @@ typedef struct {
 } bfp_s32_t;
 //! [bfp_s32_t]
 
+// astew: The tags around these structs are so that they can be copied into the documentation. Unfortunately it appears
+//        to mess with the documentation in a way that I'm not sure how to fix.
+
 /**
- * Represents a block floating-point vector of 16-bit elements.
+ * @brief A block floating-point vector of 16-bit elements.
  * 
  * Initialized with the ``bfp_s16_init()`` function.
  * 
@@ -151,7 +176,7 @@ typedef struct {
 //! [bfp_s16_t]
 
 /**
- * Represents a block floating-point vector of complex 32-bit elements.
+ * @brief A block floating-point vector of complex 32-bit elements.
  * 
  * Initialized with the ``bfp_complex_s32_init()`` function.
  * 
@@ -177,7 +202,7 @@ typedef struct {
 //! [bfp_complex_s32_t]
 
 /**
- * Represents a block floating-point vector of complex 16-bit elements.
+ * @brief A block floating-point vector of complex 16-bit elements.
  * 
  * Initialized with the ``bfp_complex_s16_init()`` function.
  * 
@@ -205,7 +230,7 @@ typedef struct {
 //! [bfp_complex_s16_t]
 
 /**
- * Represents a block floating-point vector of 32-bit channel pairs.
+ * @brief A block floating-point vector of 32-bit channel pairs.
  * 
  * Initialized with the ``bfp_ch_pair_s32_init()`` function.
  * 
@@ -235,7 +260,7 @@ typedef struct {
 //! [bfp_ch_pair_s32_t]
 
 /**
- * Represents a block floating-point vector of 16-bit channel pairs.
+ * @brief A block floating-point vector of 16-bit channel pairs.
  * 
  * Initialized with the ``bfp_ch_pair_s16_init()`` function.
  * 

@@ -161,22 +161,13 @@ static void test_xs3_vect_complex_s32_squared_mag_prepare()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        // PRINTF("\t    b_exp = %d\n", b_exp);
-        // PRINTF("\t    b_hr = %d\n", b_hr);
-
         xs3_vect_complex_s32_squared_mag_prepare(&a_exp, &b_shr, b_exp, b_hr);
-
-        // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B.re, (uint32_t) B.re);
-        // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B.im, (uint32_t) B.im);
 
         xs3_vect_complex_s32_squared_mag(&A, &B, 1, b_shr);
 
-        // PRINTF("\t    A = %ld   (0x%08lX)\n", A, (uint32_t) A);
-        // PRINTF("\t    a_exp = %d\n", a_exp);
-        // PRINTF("\t    b_shr  = %d\n", b_shr);
-
         double q = ldexp(B.re, b_exp) * ldexp(B.re, b_exp) + ldexp(B.im, b_exp) * ldexp(B.im, b_exp);
         double p = ldexp(A, a_exp);
+
 
         // The only time p != q is if A saturated from 0x80000000 to 0x7FFFFFFF
         TEST_ASSERT_TRUE( (A == 0x7FFFFFFF && 1) || (p == q) );
@@ -389,10 +380,10 @@ static void test_xs3_vect_complex_s32_squared_mag_basic()
 
         for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
             unsigned len = lengths[l];
-            // printf("! %u\n", len);
+            
             headroom_t hr;
-            int32_t A[40];
-            complex_s32_t B[40];
+            int32_t DWORD_ALIGNED A[40];
+            complex_s32_t DWORD_ALIGNED B[40];
 
             for(int i = 0; i < len; i++){
                 A[i] = 0xCC;
@@ -429,8 +420,8 @@ static void test_xs3_vect_complex_s32_squared_mag_random()
 
     headroom_t hr;
     
-    int32_t A[MAX_LEN];
-    complex_s32_t B[MAX_LEN];
+    int32_t DWORD_ALIGNED A[MAX_LEN];
+    complex_s32_t DWORD_ALIGNED B[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
         unsigned rep_seed = seed;

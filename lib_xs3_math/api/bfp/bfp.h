@@ -9,6 +9,22 @@
 extern "C" {
 #endif
 
+
+
+/**
+ * @page bfp_vector_functions16 16-bit BFP Functions
+ * 
+ * Below is a listing of the block floating-point API functions provided by this library that operate on 16-bit data.
+ */
+
+/**
+ * @page bfp_vector_functions32 32-bit BFP Functions
+ * 
+ * Below is a listing of the block floating-point API functions provided by this library that operate on 32-bit data.
+ */
+
+
+
 /*
     Saturation Logic:
 

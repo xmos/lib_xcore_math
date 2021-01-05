@@ -141,7 +141,7 @@ static void test_xs3_vect_s16_dot()
 
 
 
-
+#define MAX_LEN     40
 static void test_xs3_vect_s32_dot_basic()
 {
     PRINTF("%s...\n", __func__);
@@ -158,8 +158,8 @@ static void test_xs3_vect_s32_dot_basic()
 
     test_case_t casses[] = {
         //  input{           b,           c },  shr{   b,    c },   len,        expected,       line
-        // {        {  0x00000000,  0x00000000 },     {   0,    0 },     1,      0x00000000,     __LINE__ },
-        // {        {  0x00000000,  0x00000000 },     {   0,    0 },     2,      0x00000000,     __LINE__ },
+        {        {  0x00000000,  0x00000000 },     {   0,    0 },     1,      0x00000000,     __LINE__ },
+        {        {  0x00000000,  0x00000000 },     {   0,    0 },     2,      0x00000000,     __LINE__ },
         {        {  0x00000000,  0x00000000 },     {   0,    0 },    16,      0x00000000,     __LINE__ },
         {        {  0x00000000,  0x00000000 },     {   0,    0 },    32,      0x00000000,     __LINE__ },
         {        {  0x00000000,  0x00000000 },     {   0,    0 },    40,      0x00000000,     __LINE__ },
@@ -191,8 +191,10 @@ static void test_xs3_vect_s32_dot_basic()
 
         unsigned len = casse->len;
 
-        int32_t WORD_ALIGNED B[40];
-        int32_t WORD_ALIGNED C[40];
+        TEST_ASSERT(len <= MAX_LEN);
+
+        int32_t WORD_ALIGNED B[MAX_LEN];
+        int32_t WORD_ALIGNED C[MAX_LEN];
         int64_t result;
 
         for(int i = 0; i < len; i++){
@@ -205,6 +207,7 @@ static void test_xs3_vect_s32_dot_basic()
         TEST_ASSERT_EQUAL_MSG(casse->expected, result, casse->line);
     }
 }
+#undef MAX_LEN
 
 
 

@@ -166,6 +166,8 @@ void test_xs3_filter_fir_s32_case3()
     int32_t coefs[MAX_TAPS];
     int32_t state[MAX_TAPS];
 
+    seed = 45763472;
+
     xs3_filter_fir_s32_t filter;
 
     for(int v = 0; v < REPS; v++){
@@ -191,21 +193,8 @@ void test_xs3_filter_fir_s32_case3()
 
             expected64 += MUL32(coefs[i], state[i]);
         }
-        
-        
-        if(1){
-            const int32_t upper = expected64 >> 32;
-            const int32_t lower = expected64;
-
-            headroom_t hr;
-
-            if (upper == 0 || upper == -1)
-                hr = 32 + HR_S32(lower);
-            else
-                hr = HR_S32(upper);
-            
-            filter.shift = 34 - hr; // Shift up or down to about 30 bits
-        }
+           
+        filter.shift = 34 - HR_S64(expected64); // Shift up or down to about 30 bits
 
         int32_t expected32;
 

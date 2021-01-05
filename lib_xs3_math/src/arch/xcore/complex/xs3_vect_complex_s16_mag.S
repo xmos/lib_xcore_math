@@ -7,8 +7,8 @@
 
 headroom_t xs3_vect_complex_s16_mag(
     int16_t a[],
-    const int16_t* b_real,
-    const int16_t* b_imag,
+    const int16_t b_real[],
+    const int16_t b_imag[],
     const unsigned length,
     const right_shift_t b_shr,
     const int16_t* rot_table,

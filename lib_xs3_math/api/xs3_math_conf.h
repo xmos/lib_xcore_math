@@ -8,9 +8,9 @@
 
 
 /**
- * \page compile_time_options Compile Time Options
+ * @page compile_time_options Compile Time Options
  * 
- * \par BFP Vector Length Checking
+ * @par BFP Vector Length Checking
  * 
  *     XS3_BFP_DEBUG_CHECK_LENGTHS
  * 
@@ -23,14 +23,19 @@
  * Defaults to false (`0`).
  */
 #ifndef XS3_BFP_DEBUG_CHECK_LENGTHS
+
+/**
+ * Indicates whether the BFP functions should check vector lengths for errors. See @ref compile_time_options for more
+ * details.
+ */
 #define XS3_BFP_DEBUG_CHECK_LENGTHS (0)
 #endif
 
 
 /**
- * \page compile_time_options Compile Time Options
+ * @page compile_time_options Compile Time Options
  * 
- * \par Allow Arithmetic Saturation
+ * @par Allow Arithmetic Saturation
  * 
  *     XS3_BFP_ALLOW_SATURATION
  * 
@@ -47,14 +52,18 @@
  * Defaults to false (`0`).
  */
 #ifndef XS3_BFP_ALLOW_SATURATION
+
+/**
+ * See @ref compile_time_options for details.
+ */
 #define XS3_BFP_ALLOW_SATURATION (0)
 #endif
 
 
 /**
- * \page compile_time_options Compile Time Options
+ * @page compile_time_options Compile Time Options
  * 
- * \par Disable Vector Tail Support
+ * @par Disable Vector Tail Support
  * 
  *     XS3_MATH_VECTOR_TAIL_SUPPORT
  * 
@@ -92,15 +101,19 @@
  * 
  */
  #ifndef XS3_MATH_VECTOR_TAIL_SUPPORT
+
+/**
+ * See @ref compile_time_options for details.
+ */
  #define XS3_MATH_VECTOR_TAIL_SUPPORT (1)
  #endif
 
 
 
 /**
- * \page compile_time_options Compile Time Options
+ * @page compile_time_options Compile Time Options
  * 
- * \par 16-bit BFP Square Root Depth
+ * @par 16-bit BFP Square Root Depth
  * 
  *     XS3_BFP_SQRT_DEPTH_S16
  * 
@@ -115,15 +128,19 @@
  * @see bfp_sqrt_s16
  */
 #ifndef XS3_BFP_SQRT_DEPTH_S16
+
+/**
+ * See @ref compile_time_options for details.
+ */
 #define XS3_BFP_SQRT_DEPTH_S16 (XS3_VECT_SQRT_S16_MAX_DEPTH)
 #endif
 
 
 
 /**
- * \page compile_time_options Compile Time Options
+ * @page compile_time_options Compile Time Options
  * 
- * \par 32-bit BFP Square Root Depth
+ * @par 32-bit BFP Square Root Depth
  * 
  *     XS3_BFP_SQRT_DEPTH_S32
  * 
@@ -138,6 +155,10 @@
  * @see bfp_sqrt_s32
  */
 #ifndef XS3_BFP_SQRT_DEPTH_S32
+
+/**
+ * See @ref compile_time_options for details.
+ */
 #define XS3_BFP_SQRT_DEPTH_S32 (XS3_VECT_SQRT_S32_MAX_DEPTH)
 #endif
 

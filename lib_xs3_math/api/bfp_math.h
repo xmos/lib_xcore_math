@@ -2,6 +2,13 @@
 #ifndef BFP_MATH_H_
 #define BFP_MATH_H_
 
+/**
+ * @file bfp_math.h
+ * 
+ * Include this file from a source file to access both the BFP API and low-level API, as well as the `lib_xs3_math` 
+ * types and configuration.
+ */
+
 #include "xs3_math.h"
 
 #include "bfp/bfp_init.h"

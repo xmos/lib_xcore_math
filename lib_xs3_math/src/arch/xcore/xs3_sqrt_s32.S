@@ -6,6 +6,7 @@
 
 .text
 .issue_mode dual
+.align 4
 
 /*  
 int32_t xs3_sqrt_s32( 

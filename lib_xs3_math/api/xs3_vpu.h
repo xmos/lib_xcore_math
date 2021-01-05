@@ -3,22 +3,42 @@
 #ifndef XS3_VPU_H_
 #define XS3_VPU_H_
 
+/**
+ * Width of the VPU vector registers in bits.
+ */
 #define XS3_VPU_VREG_WIDTH_BITS     (256)
+
+/**
+ * Width of the VPU vector registers in bytes.
+ */
 #define XS3_VPU_VREG_WIDTH_BYTES    (XS3_VPU_VREG_WIDTH_BITS  >> 3)
+
+/**
+ * Width of the VPU vector registers in words.
+ */
 #define XS3_VPU_VREG_WIDTH_WORDS    (XS3_VPU_VREG_WIDTH_BYTES >> 2)
 
+/**
+ * Data type (bits 11..8) values of vCTRL, the control register for the VPU.
+ */
 enum {
-    VEC_INT_32 = 0,
-    VEC_INT_16 = 1,
-    VEC_INT_8  = 2,
-    VEC_FLT_32 = 4,
-    VEC_FLT_16 = 5,
-    VEC_FLT_8  = 6,
+    /** Signed 32-bit Integers */
+    VSETCTRL_TYPE_INT32 = 0,
+    /** Signed 16-bit Integers */
+    VSETCTRL_TYPE_INT16 = 1,
+    /** Signed 8-bit Integers */
+    VSETCTRL_TYPE_INT8  = 2,
 };
 
+/**
+ * Shift type (bits 7..6) values of vCTRL, the control register for the VPU.
+ */
 enum {
+    /** Do not shift on VLADSB and VFT* */
     VEC_SH0 = 0,
+    /** Shift left on VLADSB and VFT* */
     VEC_SHL = 1,
+    /** Shift right on VLADSB and VFT* */
     VEC_SHR = 2,
 };
 
@@ -26,16 +46,24 @@ enum {
  * The saturation bounds for signed integers in each VPU operating mode.
  */
 enum {
+    /** The upper saturation bound for 8-bit elements */
     VPU_INT8_MAX =  0x7F,
+    /** The lower saturation bound for 8-bit elements */
     VPU_INT8_MIN = -0x7F,
 
+    /** The upper saturation bound for 16-bit elements */
     VPU_INT16_MAX =  0x7FFF,
+    /** The lower saturation bound for 16-bit elements */
     VPU_INT16_MIN = -0x7FFF,
 
+    /** The upper saturation bound for 32-bit elements and 32-bit accumulators */
     VPU_INT32_MAX =  0x7FFFFFFF,
+    /** The lower saturation bound for 32-bit elements and 32-bit accumulators */
     VPU_INT32_MIN = -0x7FFFFFFF,
 
+    /** The upper saturation bound for 40-bit accumulators */
     VPU_INT40_MAX =  0x7FFFFFFFFFLL,
+    /** The lower saturation bound for 40-bit accumulators */
     VPU_INT40_MIN = -0x7FFFFFFFFFLL,
 };
 

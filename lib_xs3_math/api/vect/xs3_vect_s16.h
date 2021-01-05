@@ -11,6 +11,12 @@ extern "C" {
 
 
 /**
+ * @page vector_functions16 16-bit Vector Functions
+ * 
+ * Below is a listing of the low-level API functions provided by this library that operate on 16-bit data.
+ */
+
+/**
  * Maximum bit-depth that can be calculated by xs3_vect_s16_sqrt().
  * 
  * @sa xs3_vect_s16_sqrt

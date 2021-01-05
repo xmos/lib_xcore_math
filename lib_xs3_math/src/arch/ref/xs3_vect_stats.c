@@ -12,7 +12,7 @@ int16_t xs3_vect_s16_max(
     const int16_t b[],
     const unsigned length)
 {
-    int16_t cur_max = -0x8000;
+    int16_t cur_max = INT16_MIN;
     for(int k = 0; k < length; k++)
         cur_max = MAX(cur_max, b[k]);
     return cur_max;
@@ -24,7 +24,7 @@ int32_t xs3_vect_s32_max(
     const int32_t b[],
     const unsigned length)
 {
-    int32_t cur_max = -0x80000000;
+    int32_t cur_max = INT32_MIN;
     for(int k = 0; k < length; k++){
         cur_max = MAX(cur_max, b[k]);
     }
@@ -37,7 +37,7 @@ int16_t xs3_vect_s16_min(
     const int16_t b[],
     const unsigned length)
 {
-    int16_t cur_min = -0x8000;
+    int16_t cur_min = INT16_MAX;
     for(int k = 0; k < length; k++)
         cur_min = MIN(cur_min, b[k]);
     return cur_min;
@@ -49,7 +49,7 @@ int32_t xs3_vect_s32_min(
     const int32_t b[],
     const unsigned length)
 {
-    int32_t cur_min = -0x80000000;
+    int32_t cur_min = INT32_MAX;
     for(int k = 0; k < length; k++){
         cur_min = MIN(cur_min, b[k]);
     }

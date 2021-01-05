@@ -2,6 +2,14 @@
 #ifndef XS3_MATH_H_
 #define XS3_MATH_H_
 
+
+/**
+ * @file xs3_math.h
+ * 
+ * Include this file from a source file to access the low-level API, as well as the `lib_xs3_math` types and 
+ * configuration. To access the block floating-point API, include `bfp_math.h` instead (it will include this).
+ */
+
 #include "xs3_math_conf.h"
 #include "xs3_math_types.h"
 

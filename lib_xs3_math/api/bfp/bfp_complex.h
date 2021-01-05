@@ -538,7 +538,7 @@ void bfp_complex_s32_sub(
  * same length.
  * 
  * @bfp_op{16, @f$
- *      A_k \overset{32-bit}{\lomgleftarrow} B_k    \\
+ *      A_k \overset{32-bit}{\longleftarrow} B_k    \\
  *          \qquad\text{for } k \in 0\ ...\ (N-1)   \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
@@ -563,7 +563,7 @@ void bfp_complex_s16_to_complex_s32(
  * This function preserves as much precision as possible.
  * 
  * @bfp_op{32, @f$
- *      A_k \overset{16-bit}{\lomgleftarrow} B_k    \\
+ *      A_k \overset{16-bit}{\longleftarrow} B_k    \\
  *          \qquad\text{for } k \in 0\ ...\ (N-1)   \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }

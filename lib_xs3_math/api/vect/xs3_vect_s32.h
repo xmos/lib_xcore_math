@@ -10,6 +10,12 @@ extern "C" {
 #endif
 
 /**
+ * @page vector_functions32 32-bit Vector Functions
+ * 
+ * Below is a listing of the low-level API functions provided by this library that operate on 32-bit data.
+ */
+
+/**
  * Maximum bit-depth that can be calculated by xs3_vect_s32_sqrt().
  * 
  * @see xs3_vect_s32_sqrt

@@ -102,8 +102,8 @@ static void test_xs3_vect_s16_to_s32_random()
     PRINTF("%s...\n", __func__);
     unsigned seed = 778;
     
-    int32_t A[MAX_LEN];
-    int16_t B[MAX_LEN];
+    int32_t DWORD_ALIGNED A[MAX_LEN];
+    int16_t DWORD_ALIGNED B[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
 
@@ -165,8 +165,8 @@ static void test_xs3_vect_s32_to_s16_basic()
         sprintf(buff, "(line %u)", casse->line);
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
-        int32_t WORD_ALIGNED B[MAX_LEN];
-        int16_t WORD_ALIGNED A[MAX_LEN];
+        int32_t DWORD_ALIGNED B[MAX_LEN];
+        int16_t DWORD_ALIGNED A[MAX_LEN];
 
         for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
             unsigned len = lengths[i];
