@@ -83,7 +83,7 @@ void test_xs3_vect_s16_abs_sum_basic()
 
 
 #define MAX_LEN     200
-#define REPS        IF_QUICK_TEST(10, 100)
+#define REPS        (100)
 void test_xs3_vect_s16_abs_sum_random()
 {
     PRINTF("%s...\n", __func__);
@@ -175,7 +175,7 @@ void test_xs3_vect_s32_abs_sum_basic()
 
 
 #define MAX_LEN     200
-#define REPS        IF_QUICK_TEST(10, 100)
+#define REPS        (100)
 void test_xs3_vect_s32_abs_sum_random()
 {
     PRINTF("%s...\n", __func__);

@@ -18,6 +18,7 @@ headroom_t xs3_vect_s16_clip(
 
 .text
 .issue_mode dual
+.align 4
 
 #define NSTACKVECS      (6)
 #define NSTACKWORDS     (8 + 8*(NSTACKVECS))

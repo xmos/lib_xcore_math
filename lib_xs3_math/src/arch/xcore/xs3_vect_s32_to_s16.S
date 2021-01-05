@@ -16,6 +16,7 @@ void xs3_vect_s32_to_s16(
 
 .text
 .issue_mode dual
+.align 4
 
 
 #define NSTACKWORDS     (4)

@@ -14,6 +14,7 @@ int64_t xs3_vect_s32_abs_sum(
 
 .text
 .issue_mode dual
+.align 4
 
 #define NSTACKVECS      (2)
 #define NSTACKWORDS     (8 + 8*NSTACKVECS)

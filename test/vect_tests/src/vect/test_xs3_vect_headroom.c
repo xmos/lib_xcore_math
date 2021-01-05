@@ -21,7 +21,7 @@ static unsigned seed = 2314567;
 #endif
 
 #define MAX_LEN     1024
-#define REPS        IF_QUICK_TEST(100,1000)
+#define REPS        (1000)
 
 
 static void test_xs3_vect_s16_headroom()

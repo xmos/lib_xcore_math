@@ -33,6 +33,7 @@ headroom_t xs3_vect_s32_scale(
 
 .text
 .issue_mode dual
+.align 4
 
 
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME

@@ -320,7 +320,9 @@ int32_t bfp_s16_rms(
     const int32_t len_inv = xs3_inverse_s32(&len_inv_exp, b->length);
     const int32_t mean_energy = xs3_mul_s32(&exp, energy32, len_inv, exp, len_inv_exp);
 
-    return xs3_sqrt_s32(a_exp, mean_energy, exp, XS3_BFP_SQRT_DEPTH_S32);
+    const int32_t rms = xs3_sqrt_s32(a_exp, mean_energy, exp, XS3_BFP_SQRT_DEPTH_S32);
+
+    return rms;
 }
 
 

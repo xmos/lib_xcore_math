@@ -17,7 +17,7 @@
 #endif
 
 
-#define REPS        IF_QUICK_TEST(100, 1000)
+#define REPS        1000
 #define MAX_LEN     40 
 
 
@@ -43,20 +43,14 @@ void test_bfp_complex_s16_real_mul()
     seed = 546457;
 
     struct {
-        int16_t real[MAX_LEN];
-        int16_t imag[MAX_LEN];
-    } A_data, B_data;
+        int16_t WORD_ALIGNED real[MAX_LEN];
+        int16_t WORD_ALIGNED imag[MAX_LEN];
+    } WORD_ALIGNED A_data, WORD_ALIGNED B_data;
 
-    int16_t C_data[MAX_LEN];
+    int16_t WORD_ALIGNED C_data[MAX_LEN];
 
     bfp_complex_s16_t A, B;
     bfp_s16_t C;
-
-    A.real = A_data.real;
-    A.imag = A_data.imag;
-    B.real = B_data.real;
-    B.imag = B_data.imag;
-    C.data = C_data;
 
     struct {
         double real[MAX_LEN];
@@ -70,15 +64,16 @@ void test_bfp_complex_s16_real_mul()
         int16_t imag[MAX_LEN];
     } expA;
 
-
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-        C.length = B.length;
+        bfp_complex_s16_init(&B, B_data.real, B_data.imag, 
+            pseudo_rand_int(&seed, -30, 30),
+            pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
-        B.exp = pseudo_rand_int(&seed, -30, 30);
-        C.exp = pseudo_rand_int(&seed, -30, 30);
+        bfp_s16_init(&C, C_data, pseudo_rand_int(&seed, -30, 30), B.length, 0);
+
+        bfp_complex_s16_init(&A, A_data.real, A_data.imag, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
         C.hr = pseudo_rand_uint(&seed, 0, 12);
@@ -132,9 +127,6 @@ void test_bfp_complex_s32_real_mul()
     bfp_complex_s32_t A, B;
     bfp_s32_t C;
 
-    A.data = A_data;
-    B.data = B_data;
-    C.data = C_data;
 
     struct {
         double real[MAX_LEN];
@@ -148,11 +140,13 @@ void test_bfp_complex_s32_real_mul()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
 
-        B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-        C.length = B.length;
+        bfp_complex_s32_init(&B, B_data, 
+            pseudo_rand_int(&seed, -30, 30),
+            pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
+        
+        bfp_complex_s32_init(&A, A_data, 0, B.length, 0);
 
-        B.exp = pseudo_rand_int(&seed, -30, 30);
-        C.exp = pseudo_rand_int(&seed, -30, 30);
+        bfp_s32_init(&C, C_data, pseudo_rand_int(&seed, -30, 30), B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
         C.hr = pseudo_rand_uint(&seed, 0, 28);

@@ -74,7 +74,7 @@ static complex_s32_t mul_complex_s32(
 
 
 
-#define REPS   IF_QUICK_TEST(100, 1000)
+#define REPS   (1000)
 void test_xs3_vect_complex_s16_real_mul_prepare()
 {
     PRINTF("%s...\n", __func__);
@@ -215,7 +215,7 @@ static void test_xs3_vect_complex_s16_real_mul_basic()
 
 
 #define MAX_LEN     100
-#define REPS        IF_QUICK_TEST(20, 100)
+#define REPS        (100)
 static void test_xs3_vect_complex_s16_real_mul_random()
 {
     PRINTF("%s...\n", __func__);
@@ -375,7 +375,7 @@ static void test_xs3_vect_complex_s32_real_mul_basic()
 
 
 #define MAX_LEN     100
-#define REPS        IF_QUICK_TEST(20, 100)
+#define REPS        (100)
 static void test_xs3_vect_complex_s32_real_mul_random()
 {
     PRINTF("%s...\n", __func__);

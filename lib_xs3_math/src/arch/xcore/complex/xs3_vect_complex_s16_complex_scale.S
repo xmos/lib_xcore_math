@@ -120,6 +120,7 @@ FUNCTION_NAME:
     dualentsp 0
 
 .issue_mode dual
+.align 4
 
     {   ldc _32, 32                             ;   ldw length, sp[STACK_LENGTH]            }
 #define vect_count  length

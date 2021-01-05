@@ -29,7 +29,7 @@ static char msg_buff[200];
 
 
 #define MAX_LEN     200
-#define REPS        IF_QUICK_TEST(10, 100)
+#define REPS        (100)
 void test_xs3_vect_s16_energy()
 {
     PRINTF("%s...\n", __func__);
@@ -91,7 +91,7 @@ void test_xs3_vect_s16_energy()
 
 
 #define MAX_LEN     200
-#define REPS        IF_QUICK_TEST(10, 100)
+#define REPS        (100)
 void test_xs3_vect_s32_energy()
 {
     PRINTF("%s...\n", __func__);

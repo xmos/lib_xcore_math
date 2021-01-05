@@ -6,6 +6,7 @@
 
 .text
 .issue_mode dual
+.align 4
 
 #if XS3_MATH_VECTOR_TAIL_SUPPORT
   #define NSTACKWORDS     (8)

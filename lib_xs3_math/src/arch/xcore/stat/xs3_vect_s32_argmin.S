@@ -16,6 +16,7 @@ unsigned xs3_vect_s32_argmin(
 
 .text
 .issue_mode dual
+.align 4
 
 #define NSTACKVECS      (3)
 #define NSTACKWORDS     (8 + 8*NSTACKVECS)

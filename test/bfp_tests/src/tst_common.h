@@ -21,12 +21,6 @@
 #define DEBUG_ON    0
 #endif
 
-#ifndef QUICK_TEST
-#define QUICK_TEST  0
-#endif
-
-#define IF_QUICK_TEST(X, Y)  ((QUICK_TEST)? X : Y)
-
 #define PRINTF(...)     do{if (DEBUG_ON) {printf(__VA_ARGS__);}} while(0)
 
 #define INT32_MAX_POS(HEADROOM)    (((int32_t)0x7FFFFFFF) >> ((int)(HEADROOM)))

@@ -18,7 +18,7 @@
 #endif
 
 
-#define REPS        IF_QUICK_TEST(100, 1000)
+#define REPS        (1000)
 #define MAX_LEN     1024
 
 static char msg_buff[200];

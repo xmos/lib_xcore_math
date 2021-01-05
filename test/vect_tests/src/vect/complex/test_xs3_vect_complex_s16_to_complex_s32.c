@@ -96,7 +96,7 @@ static void test_xs3_vect_complex_s16_to_complex_s32_basic()
 
 
 #define MAX_LEN     68
-#define REPS        IF_QUICK_TEST(10, 100)
+#define REPS        (100)
 static void test_xs3_vect_complex_s16_to_complex_s32_random()
 {
     PRINTF("%s...\n", __func__);

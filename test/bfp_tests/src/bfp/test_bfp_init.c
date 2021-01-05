@@ -17,8 +17,8 @@
 #endif
 
 
-#define REPS        IF_QUICK_TEST(10, 50)
-#define MAX_LEN     IF_QUICK_TEST(100, 300)
+#define REPS        (50)
+#define MAX_LEN     (300)
 
 
 

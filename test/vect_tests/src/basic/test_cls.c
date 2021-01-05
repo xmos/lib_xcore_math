@@ -23,7 +23,7 @@ static char msg_buff[200];
 #endif
 
 
-#define N        IF_QUICK_TEST(100, 1000)
+#define N        (1000)
 
 static void test_cls()
 {

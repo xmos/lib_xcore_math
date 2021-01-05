@@ -31,7 +31,7 @@ static char msg_buff[200];
 
 
 #define MAX_LEN     1024
-#define REPS        IF_QUICK_TEST(100, 1000)
+#define REPS        (1000)
 void test_xs3_vect_complex_s32_sum_prepare()
 {
     PRINTF("%s...\n", __func__);
@@ -159,7 +159,7 @@ void test_xs3_vect_complex_s16_sum_basic()
 
 
 #define MAX_LEN     200
-#define REPS        IF_QUICK_TEST(10, 100)
+#define REPS        (100)
 void test_xs3_vect_complex_s16_sum_random()
 {
     PRINTF("%s...\n", __func__);
@@ -256,7 +256,7 @@ void test_xs3_vect_complex_s32_sum_basic()
 
 
 #define MAX_LEN     1000
-#define REPS        IF_QUICK_TEST(10, 100)
+#define REPS        (100)
 void test_xs3_vect_complex_s32_sum_random()
 {
     PRINTF("%s...\n", __func__);

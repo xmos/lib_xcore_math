@@ -37,6 +37,7 @@ headroom_t xs3_vect_s32_mul(
 
 .text
 .issue_mode dual
+.align 4
 
 
 

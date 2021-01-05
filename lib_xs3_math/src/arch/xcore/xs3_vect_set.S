@@ -7,6 +7,7 @@
 
 .text
 .issue_mode dual
+.align 4
 
 #define NSTACKWORDS     10
 

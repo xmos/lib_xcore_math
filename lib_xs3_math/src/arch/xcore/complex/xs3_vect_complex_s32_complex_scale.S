@@ -102,6 +102,7 @@ FUNCTION_NAME:
     dualentsp 0
 
 .issue_mode dual
+.align 4
 
 
     // {                                           ;   bf tail_bytes, .L_done                  }

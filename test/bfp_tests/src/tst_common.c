@@ -239,10 +239,14 @@ void test_s16_from_double(
     unsigned length,
     exponent_t use_exp)
 {
+
     for(int i = 0; i < length; i++){
+
         int exp;
         double mant = frexp(d_in[i], &exp);
+
         mant = mant * ldexp(1, exp - use_exp);
+        
         d_out[i] = (int16_t) mant;
     }
 }

@@ -112,7 +112,7 @@ static void test_xs3_vect_complex_mag_prepare()
 
         xs3_vect_complex_s32_mag(&A_mag, &B, 1, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
 
-        TEST_ASSERT_INT32_WITHIN(1, INT32_MAX, A_mag);
+        TEST_ASSERT_INT32_WITHIN(1, 0x40000000, A_mag);
         
         TEST_ASSERT_TRUE(  ( fabs( ldexp(A_mag, a_exp) + ldexp( B.im, b_exp) ) / B.im ) <= 0.00001  );
     }

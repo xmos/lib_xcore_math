@@ -13,6 +13,7 @@ int64_t xs3_vect_s16_dot(
 
 .text
 .issue_mode dual
+.align 4
 
 #define NSTACKVECTS     (4)
 #define NSTACKWORDS     (2 + 8*NSTACKVECTS)
@@ -32,6 +33,7 @@ int64_t xs3_vect_s16_dot(
 #define _32         r5
 
 .issue_mode dual
+.align 4
 
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
 

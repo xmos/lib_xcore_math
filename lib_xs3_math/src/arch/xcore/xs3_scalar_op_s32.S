@@ -6,6 +6,7 @@
 
 .text
 .issue_mode dual
+.align 4
 
 #define CAT_(A, B)    A##B
 #define CAT(A, B)     CAT_(A,B)

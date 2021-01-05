@@ -18,7 +18,9 @@ void xs3_vect_complex_mag_prepare(
     const exponent_t b_exp,
     const headroom_t b_hr)
 {
-    *b_shr = -(int)b_hr;
+    // Needs 1 bit of headroom. For 16 bits, consider that complex mantissa values near (INT16_MAX + INT16_MAX*j) can't 
+    // be rotated to the real axis without going beyond the range of a 16-bit integer.
+    *b_shr = 1-(int)b_hr;
     *a_exp = b_exp + *b_shr;
 }
 

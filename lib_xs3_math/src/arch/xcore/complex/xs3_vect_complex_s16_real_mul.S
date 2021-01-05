@@ -112,6 +112,7 @@ FUNCTION_NAME:
     dualentsp 0
 
 .issue_mode dual
+.align 4
 
 .L_done:
         ldd r4, r5, sp[1]

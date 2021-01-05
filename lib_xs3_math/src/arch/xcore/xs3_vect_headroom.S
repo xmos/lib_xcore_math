@@ -13,6 +13,7 @@ headroom_t xs3_vect_s16_headroom(
 
 .text
 .issue_mode dual
+.align 4
 
 #define NSTACKWORDS     8
 
