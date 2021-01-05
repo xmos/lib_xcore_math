@@ -16,7 +16,7 @@
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
 
-#define LOOPS_LOG2 ((QUICK_TEST)? 4: 8)
+#define LOOPS_LOG2  (8)
 
 #define TESTING_FUNC_NAME "xs3_fft_mono_adjust"
 
@@ -103,7 +103,7 @@ void test_xs3_fft_mono_adjust_forward()
             TEST_ASSERT_CONVERSION(error);
 
             if(diff > worst_error) { worst_error = diff; }
-            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+2, diff, "Output delta is too large");
+            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+3, diff, "Output delta is too large");
         }
         
 #if PRINT_ERRORS

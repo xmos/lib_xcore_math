@@ -12,6 +12,7 @@ int main(int argc, char** argv)
 {
 
 #if WRITE_PERFORMANCE_INFO
+    printf("Writing performance info to: %s\n", PERFORMANCE_INFO_FILENAME);
     perf_file = fopen(PERFORMANCE_INFO_FILENAME, "w");
     fprintf(perf_file, "Function, Input Size, Worst Observed Error, Worst Observed Timing, Misc\n");
 #endif

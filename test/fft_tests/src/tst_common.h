@@ -15,14 +15,6 @@
 #define WORD_ALIGNED
 #endif
 
-#ifndef DEBUG_ON
-#define DEBUG_ON    0
-#endif
-
-#ifndef QUICK_TEST
-#define QUICK_TEST  0
-#endif
-
 #ifndef PRINT_FUNC_NAMES
 #define PRINT_FUNC_NAMES 1
 #endif

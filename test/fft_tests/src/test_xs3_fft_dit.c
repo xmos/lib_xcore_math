@@ -23,7 +23,7 @@
 
 #define MIN_FFT_N_LOG2  (2)
 
-#define LOOPS_LOG2 ((QUICK_TEST)? 4: 8)
+#define LOOPS_LOG2 8
 
 
 
