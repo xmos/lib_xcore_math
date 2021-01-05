@@ -274,7 +274,7 @@ ALIASES += operation{1}="@par Operation Performed:^^<BLOCKQUOTE><CODE>\1</CODE><
 
 ALIASES += low_op{2}="@par Operation Performed (\1-bit)^^\xrefitem vector_functions\1 \"\" \"\1-bit Vector Functions\" <BLOCKQUOTE style="margin-left:40px;display:inline-block">\2</BLOCKQUOTE>"
 
-ALIASES += bfp_op{2}="@par Operation Performed (\1-bit)^^\xrefitem bfp_vector_functions\1 \"\" \"\1-bit BFP Vector Functions\" <BLOCKQUOTE style="margin-left:40px;display:inline-block">\2</BLOCKQUOTE>"
+ALIASES += bfp_op{2}="@par Operation Performed (\1-bit)^^\xrefitem bfp_vector_functions\1 \"\" \"\1-bit BFP Functions\" <BLOCKQUOTE style="margin-left:40px;display:inline-block">\2</BLOCKQUOTE>"
 
 ALIASES += mycode{1}="\code\1\endcode"
 

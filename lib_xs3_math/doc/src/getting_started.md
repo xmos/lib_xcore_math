@@ -5,10 +5,10 @@
 
 ## Overview ##
 
-`lib_xs3_math` has a two layer API model. The upper layer, referred to as the _high-level API_ is a block floating-point 
-API in which many details of operations being performed are hidden from the user. The lower layer, called the _low-level 
-API_, stays much closer to the metal and requires that some care be taken to avoid conditions like arithmetic saturation
-or underflow. The high-level API calls the low-level API, which is where the bulk of the work is actually performed.
+`lib_xs3_math` has a two layer API model. The upper layer is a block floating-point (BFP) API in which many details of 
+operations being performed are hidden from the user. The lower layer, called the _low-level API_, stays much closer to 
+the metal and requires that some care be taken to avoid conditions like arithmetic saturation or underflow. The 
+BFP API calls the low-level API, which is where the bulk of the work is actually performed.
 
 @htmlonly
 <div style="text-align:center">
@@ -37,7 +37,7 @@ or underflow. The high-level API calls the low-level API, which is where the bul
     <text id="xs3-math-label" x="-40%" y="1%" >lib_xs3_math</text>
     <svg x="10%" width="90%" y="0%" height="40%" id="layer-high">
         <g class="layer"> 
-            <rect /> <text x="20%" y="50%">High-level API</text> </g>
+            <rect /> <text x="20%" y="50%">BFP API</text> </g>
         <svg class="layer-contents" x="55%" y="20%" width="40%" height="60%">
             <rect x="0%" y="0%" /> <rect x="10%" y="10%" /> <rect x="20%" y="20%" />
             <text y="30%">
@@ -343,10 +343,10 @@ operation without having to look at the mantissas.
 For this reason, the BFP vectors in `lib_xs3_math` carry a field which tracks their current headroom. The BFP functions
 in the high-level API use this property to make determinations about how best to preserve precision.
 
-### High-level API ###
+### BFP API ###
 
-In the high-level API the BFP vectors area buffer represented by C structures such as `bfp_s16_t`, `bfp_s32_t`, or 
-`bfp_complex_s32_t`. These objects contain a pointer to the dat carrying the content of the vector, as well 
+In the high-level API the BFP vectors C structures such as `bfp_s16_t`, `bfp_s32_t`, or `bfp_complex_s32_t`, backed by 
+a memory buffer. These objects contain a pointer to the data carrying the content (mantissas) of the vector, as well 
 as information about the length, headroom and exponent of the BFP vector.
 
 Below is the definition of `bfp_s32_t` from xs3_math_types.h.
@@ -355,7 +355,7 @@ Below is the definition of `bfp_s32_t` from xs3_math_types.h.
 
 The functions in @ref bfp_vector_functions32 take `bfp_s32_t` references as input and output parameters.
 
-Functions in the high-level API generally are prefixed with `bfp_`.
+Functions in the BFP API generally are prefixed with `bfp_`.
 
 #### Initializing BFP Vectors ####
 
