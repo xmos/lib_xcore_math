@@ -80,14 +80,14 @@ headroom_t xs3_vect_s32_scale(
     const int32_t b[],
     const unsigned length,
     const int32_t c,
-    const right_shift_t b_shr)
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
 {
+    int32_t C = vlashr32(c, c_shr);
 
     for(int k = 0; k < length; k++){
-        
-        int32_t B = ASHR(32)(b[k], b_shr);
-        int64_t P = ((int64_t)(B))*c;
-        a[k] = SAT(32)(ROUND_SHR(P, 30));
+        int32_t B = vlashr32(b[k], b_shr);
+        a[k] = vlmul32(B, C);
     }
 
     return xs3_vect_s32_headroom(a, length);

@@ -149,33 +149,15 @@ void test_bfp_complex_s32_scale_prepare()
         complex_s32_t WORD_ALIGNED C = {((int32_t)-0x80000000) >> c_hr, ((int32_t)-0x80000000) >> c_hr};
         complex_s32_t WORD_ALIGNED A;
 
-
         exponent_t a_exp;
         right_shift_t b_shr, c_shr;
 
-        // printf("!!!! b_exp = %d\n", b_exp);
-        // printf("!!!! c_exp = %d\n", c_exp);
-        // printf("!!!! b_hr = %d\n", b_hr);
-        // printf("!!!! c_hr = %d\n\n", c_hr);
-
         xs3_vect_complex_s32_scale_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
-        C.re = SIGNED_ASHR(C.re, c_shr);
-        C.im = SIGNED_ASHR(C.im, c_shr);
         c_exp += c_shr;
         c_hr += c_shr;
 
-        xs3_vect_complex_s32_scale(&A, &B, C.re, C.im, 1, b_shr);
-
-        
-        // printf("!!!! A.im = %ld   (0x%08X)\n", A.im, (unsigned) A.im);
-        // printf("!!!! a_exp = %d\n", a_exp);
-        // printf("!!!! b_exp = %d\n", b_exp);
-        // printf("!!!! c_exp = %d\n", c_exp);
-        // printf("!!!! b_hr = %d\n", b_hr);
-        // printf("!!!! c_hr = %d\n", c_hr);
-        // printf("!!!! b_shr = %d\n", b_shr);
-        // printf("!!!! c_shr = %d\n", c_shr);
+        xs3_vect_complex_s32_scale(&A, &B, C.re, C.im, 1, b_shr, c_shr);
 
         TEST_ASSERT_EQUAL_MSG(0x7FFFFFFF, A.im, "A is wrong (sat)", r);
 

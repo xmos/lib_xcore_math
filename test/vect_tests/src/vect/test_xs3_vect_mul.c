@@ -78,24 +78,11 @@ static int16_t scalar_mul_s16(int16_t b, int16_t c, right_shift_t sat)
 
 
 
-static int32_t scalar_mul_s32(int32_t b, int32_t alpha, int b_shr)
+static int32_t scalar_mul_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 {
-    int64_t bp = b;
-    int64_t cp = alpha;
-
-    bp = (b_shr >= 0)? bp >> b_shr : bp << (-b_shr);
-
-    bp = (bp >= VPU_INT32_MAX)? VPU_INT32_MAX : (bp <= VPU_INT32_MIN)? VPU_INT32_MIN : bp;
-    bp = ( (b_shr > 0) && (b < 0) && (-(1<<b_shr)) < b)? -1 : bp;
-    assert(b >= 0 || bp < 0);
-    
-    cp = (cp >= VPU_INT32_MAX)? VPU_INT32_MAX : (cp <= VPU_INT32_MIN)? VPU_INT32_MIN : cp;
-
-    int64_t a = (bp * cp + (1<<29)) >> (30);
-
-    a = (a >= VPU_INT32_MAX)? VPU_INT32_MAX : (a <= VPU_INT32_MIN)? VPU_INT32_MIN : a;
-
-    return (int32_t) a;
+    int32_t B = vlashr32(b, b_shr);
+    int32_t C = vlashr32(c, c_shr);
+    return vlmul32(B, C);
 }
 
 
@@ -704,42 +691,42 @@ static void test_xs3_vect_s32_scale_basic()
     PRINTF("%s...\n", __func__);
 
     typedef struct {
-        struct {    int32_t b;  int32_t alpha;  } value;
-        struct {    int b;    } shr;
+        struct {    int32_t b;       int32_t c;         } value;
+        struct {    right_shift_t b; right_shift_t c;   } shr;
         int32_t expected;
         unsigned line;
     } test_case_t;
 
     test_case_t casses[] = {
         // value{           b             c }   shr{   b    c }            exp        line num
-        {       {  0x00000000,   0x00000000 },     {  0 },      0x00000000,       __LINE__},
-        {       {  0x00010000,   0x00000000 },     {  0 },      0x00000000,       __LINE__},
-        {       {  0x00000000,   0x00010000 },     {  0 },      0x00000000,       __LINE__},
-        {       {  0x40000000,   0x40000000 },     {  0 },      0x40000000,       __LINE__},
-        {       { -0x40000000,   0x40000000 },     {  0 },     -0x40000000,       __LINE__},
-        {       { -0x40000000,  -0x40000000 },     {  0 },      0x40000000,       __LINE__},
-        {       {  0x40000000,   0x00010000 },     {  0 },      0x00010000,       __LINE__},
-        {       {  0x00010000,   0x40000000 },     {  0 },      0x00010000,       __LINE__},
-        {       {  0x40000000,   0x01230000 },     {  0 },      0x01230000,       __LINE__},
-        {       {  0x01230000,   0x40000000 },     {  0 },      0x01230000,       __LINE__},
-        {       {  0x00400000,   0x02000000 },     {  0 },      0x00020000,       __LINE__},
-        {       {  0x00400000,   0x01000000 },     {  0 },      0x00010000,       __LINE__},
-        {       {  0x00004000,   0x00010000 },     {  0 },      0x00000001,       __LINE__},
-        {       {  0x00004000,   0x00008000 },     {  0 },      0x00000001,       __LINE__},
-        {       {  0x00000400,   0x00000400 },     {  0 },      0x00000000,       __LINE__},
-        {       {  0x7f000000,   0x7f000000 },     {  0 },      0x7fffffff,       __LINE__},
-        {       {  0x7f000000,  -0x7f000000 },     {  0 },     -0x7fffffff,       __LINE__},
-        {       { -0x80000000,   0x40000000 },     {  0 },     -0x7fffffff,       __LINE__},
-        {       {  0x40000000,   0x40000000 },     {  1 },      0x20000000,       __LINE__},
-        {       {  0x40000000,   0x20000000 },     {  0 },      0x20000000,       __LINE__},
-        {       {  0x40000000,   0x20000000 },     {  1 },      0x10000000,       __LINE__},
-        {       {  0x40000000,   0x02000000 },     {  3 },      0x00400000,       __LINE__},
-        {       {  0x08000000,   0x40000000 },     { -1 },      0x10000000,       __LINE__},
-        {       {  0x08000000,   0x40000000 },     { -2 },      0x20000000,       __LINE__},
-        {       {  0x08000000,   0x40000000 },     { -3 },      0x40000000,       __LINE__},
-        {       {  0x08000000,   0x40000000 },     { -4 },      0x7fffffff,       __LINE__},
-        {       {  0x08000000,  -0x40000000 },     { -4 },     -0x7fffffff,       __LINE__},
-        {       {  0x08000000,   0x20000000 },     { -4 },      0x40000000,       __LINE__},
+        {       {  0x00000000,   0x00000000 },     {   0,   0 },      0x00000000,       __LINE__},
+        {       {  0x00010000,   0x00000000 },     {   0,   0 },      0x00000000,       __LINE__},
+        {       {  0x00000000,   0x00010000 },     {   0,   0 },      0x00000000,       __LINE__},
+        {       {  0x40000000,   0x40000000 },     {   0,   0 },      0x40000000,       __LINE__},
+        {       { -0x40000000,   0x40000000 },     {   0,   0 },     -0x40000000,       __LINE__},
+        {       { -0x40000000,  -0x40000000 },     {   0,   0 },      0x40000000,       __LINE__},
+        {       {  0x40000000,   0x00010000 },     {   0,   0 },      0x00010000,       __LINE__},
+        {       {  0x00010000,   0x40000000 },     {   0,   0 },      0x00010000,       __LINE__},
+        {       {  0x40000000,   0x01230000 },     {   0,   0 },      0x01230000,       __LINE__},
+        {       {  0x01230000,   0x40000000 },     {   0,   0 },      0x01230000,       __LINE__},
+        {       {  0x00400000,   0x02000000 },     {   0,   0 },      0x00020000,       __LINE__},
+        {       {  0x00400000,   0x01000000 },     {   0,   0 },      0x00010000,       __LINE__},
+        {       {  0x00004000,   0x00010000 },     {   0,   0 },      0x00000001,       __LINE__},
+        {       {  0x00004000,   0x00008000 },     {   0,   0 },      0x00000001,       __LINE__},
+        {       {  0x00000400,   0x00000400 },     {   0,   0 },      0x00000000,       __LINE__},
+        {       {  0x7f000000,   0x7f000000 },     {   0,   0 },      0x7fffffff,       __LINE__},
+        {       {  0x7f000000,  -0x7f000000 },     {   0,   0 },     -0x7fffffff,       __LINE__},
+        {       { -0x80000000,   0x40000000 },     {   0,   0 },     -0x7fffffff,       __LINE__},
+        {       {  0x40000000,   0x40000000 },     {   1,   0 },      0x20000000,       __LINE__},
+        {       {  0x40000000,   0x20000000 },     {   0,   0 },      0x20000000,       __LINE__},
+        {       {  0x40000000,   0x20000000 },     {   1,   0 },      0x10000000,       __LINE__},
+        {       {  0x40000000,   0x02000000 },     {   3,   0 },      0x00400000,       __LINE__},
+        {       {  0x08000000,   0x40000000 },     { - 1,   0 },      0x10000000,       __LINE__},
+        {       {  0x08000000,   0x40000000 },     { - 2,   0 },      0x20000000,       __LINE__},
+        {       {  0x08000000,   0x40000000 },     { - 3,   0 },      0x40000000,       __LINE__},
+        {       {  0x08000000,   0x40000000 },     { - 4,   0 },      0x7fffffff,       __LINE__},
+        {       {  0x08000000,  -0x40000000 },     { - 4,   0 },     -0x7fffffff,       __LINE__},
+        {       {  0x08000000,   0x20000000 },     { - 4,   0 },      0x40000000,       __LINE__},
     };
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
@@ -752,7 +739,8 @@ static void test_xs3_vect_s32_scale_basic()
         test_case_t* casse = &casses[v];
 
         //Verify mul_s32() is correct. It's used in other test cases.
-        TEST_ASSERT_EQUAL_MSG(casse->expected, scalar_mul_s32(casse->value.b, casse->value.alpha, casse->shr.b), casse->line);
+        TEST_ASSERT_EQUAL_MSG(casse->expected, scalar_mul_s32(casse->value.b, casse->value.c, 
+                                casse->shr.b, casse->shr.c), casse->line);
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
         
@@ -771,7 +759,7 @@ static void test_xs3_vect_s32_scale_basic()
                 B[i] = casse->value.b;
             }
 
-            hr = xs3_vect_s32_scale(A, B, len, casse->value.alpha, casse->shr.b);
+            hr = xs3_vect_s32_scale(A, B, len, casse->value.c, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
@@ -779,7 +767,7 @@ static void test_xs3_vect_s32_scale_basic()
             }
 
             memcpy(A, B, sizeof(A));
-            hr = xs3_vect_s32_scale(A, A, len, casse->value.alpha, casse->shr.b);
+            hr = xs3_vect_s32_scale(A, A, len, casse->value.c, casse->shr.b, casse->shr.c);
 
             for(int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
@@ -814,28 +802,27 @@ static void test_xs3_vect_s32_scale_random()
             B[i] = pseudo_rand_int32(&seed) >> shr;
         }
 
-        alpha = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 8);
+        int32_t c = pseudo_rand_int32(&seed);
 
-        int b_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
+        right_shift_t b_shr = pseudo_rand_uint(&seed, -2, 2);
+        right_shift_t c_shr = pseudo_rand_uint(&seed, 0, 8);
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) * %ld) >> 30     (A[i]=0x%08X; B[i]=0x%08X; alpha=0x%08X)";
 
-        hr = xs3_vect_s32_scale(A, B, len, alpha, b_shr);
+        hr = xs3_vect_s32_scale(A, B, len, c, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
-            int32_t expected = scalar_mul_s32(B[i], alpha, b_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, alpha, (unsigned)A[i], (unsigned)B[i],  (unsigned)alpha);
-            TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
+            int32_t expected = scalar_mul_s32(B[i], c, b_shr, c_shr);
+            TEST_ASSERT_EQUAL(expected, A[i]);
         }
         TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
         memcpy(A, B, sizeof(A[0])*len);
-        hr = xs3_vect_s32_scale(A, A, len, alpha, b_shr);
+        hr = xs3_vect_s32_scale(A, A, len, c, b_shr, c_shr);
 
         for(int i = 0; i < len; i++){
-            int32_t expected = scalar_mul_s32(B[i], alpha, b_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, alpha, (unsigned)A[i], (unsigned)B[i],  (unsigned)alpha);
-            TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
+            int32_t expected = scalar_mul_s32(B[i], c, b_shr, c_shr);
+            TEST_ASSERT_EQUAL(expected, A[i]);
         }
         TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
     }

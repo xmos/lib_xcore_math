@@ -4,6 +4,7 @@
 
 #include "xs3_math.h"
 #include "../../../vect/vpu_helper.h"
+#include "xs3_vpu_scalar_ops.h"
 
 
 ////////////////////////////////////////
@@ -257,21 +258,25 @@ headroom_t xs3_vect_complex_s32_scale(
     const int32_t c_real,
     const int32_t c_imag,
     const unsigned length,
-    const right_shift_t b_shr)
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
 {
+
+    const complex_s32_t C = {
+        vlashr32(c_real, c_shr),
+        vlashr32(c_imag, c_shr),
+    };
+
     for(int k = 0; k < length; k++){
         
         const complex_s32_t B = {
-            ASHR(32)(b[k].re, b_shr), 
-            ASHR(32)(b[k].im, b_shr),
+            vlashr32(b[k].re, b_shr),
+            vlashr32(b[k].im, b_shr),
         };
-        const int64_t q1 = ROUND_SHR( ((int64_t)B.re) * c_real, 30 );
-        const int64_t q2 = ROUND_SHR( ((int64_t)B.im) * c_imag, 30 );
-        const int64_t q3 = ROUND_SHR( ((int64_t)B.re) * c_imag, 30 );
-        const int64_t q4 = ROUND_SHR( ((int64_t)B.im) * c_real, 30 );
 
-        a[k].re = SAT(32)(q1 - q2);
-        a[k].im = SAT(32)(q3 + q4);
+        a[k].re = vcmr32( B, C );
+        a[k].im = vcmi32( B, C );
+
     }
 
     return xs3_vect_complex_s32_headroom(a, length);

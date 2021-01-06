@@ -826,7 +826,7 @@ void xs3_vect_complex_s32_real_mul_prepare(
  * 
  * `length` is the number of elements in each of the vectors.
  * 
- * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * `b_shr` and `c_shr` are the signed arithmetic right-shift applied to each element of @vector{b} and to @math{c}.
  * 
  * @low_op{32, @f$
  *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
@@ -853,6 +853,7 @@ void xs3_vect_complex_s32_real_mul_prepare(
  * @param[in]   c           Complex input vector @vector{c}
  * @param[in]   length      Number of elements in vectors @vector{a}, @vector{b}, and @vector{c}
  * @param[in]   b_shr       Right-shift applied to @vector{b}
+ * @param[in]   c_shr       Right-shift applied to @math{c}
  * 
  * @returns     Headroom of the output vector @vector{a}.
  */
@@ -861,7 +862,8 @@ headroom_t xs3_vect_complex_s32_real_scale(
     const complex_s32_t b[],
     const int32_t c,
     const unsigned length,
-    const right_shift_t b_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -875,7 +877,7 @@ headroom_t xs3_vect_complex_s32_real_scale(
  * 
  * `length` is the number of elements in each of the vectors.
  * 
- * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and to @math{c}.
  * 
  * @low_op{32, @f$ 
  *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)                     \\
@@ -905,6 +907,7 @@ headroom_t xs3_vect_complex_s32_real_scale(
  * @param[in]  c_imag   Imaginary part of @math{c}
  * @param[in]  length   Number of elements in vectors @vector{a} and @vector{b}.
  * @param[in]  b_shr    Right-shift appled to @vector{b}.
+ * @param[in]  c_shr    Right-shift applied to @math{c}.
  * 
  * @returns     Headroom of the output vector @vector{a}.
  */
@@ -914,7 +917,8 @@ headroom_t xs3_vect_complex_s32_scale(
     const int32_t c_real,
     const int32_t c_imag,
     const unsigned length,
-    const right_shift_t b_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -2207,7 +2211,7 @@ headroom_t xs3_vect_s32_rect(
  * 
  * `c` is the 32-bit scalar @math{c} by which each element of @vector{b} is multiplied.
  * 
- * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and to @math{c}.
  * 
  * \low_op{32, @f$
  *      b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
@@ -2230,6 +2234,7 @@ headroom_t xs3_vect_s32_rect(
  * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
  * @param[in]   c           Scalar to be multiplied by elements of @vector{b}
  * @param[in]   b_shr       Right-shift appled to @vector{b}
+ * @param[in]   c_shr       Right-shift applied to @math{c}
  * 
  * @returns  Headroom of output vector @vector{a}
  * 
@@ -2240,7 +2245,8 @@ headroom_t xs3_vect_s32_scale(
     const int32_t b[],
     const unsigned length,
     const int32_t c,
-    const right_shift_t b_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /** 

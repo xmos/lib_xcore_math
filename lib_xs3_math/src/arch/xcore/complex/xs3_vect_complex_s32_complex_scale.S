@@ -11,7 +11,8 @@ headroom_t xs3_vect_complex_s32_scale(
     const int32_t c_real,
     const int32_t c_imag,
     const unsigned length,
-    const right_shift_t b_shr);
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 */
 
@@ -34,6 +35,7 @@ headroom_t xs3_vect_complex_s32_scale(
 
 #define STACK_LENGTH    (NSTACKWORDS+1)
 #define STACK_B_SHR     (NSTACKWORDS+2)
+#define STACK_C_SHR     (NSTACKWORDS+3)
 
 #define STACK_VEC_TMP   (NSTACKWORDS-8)
 
@@ -49,10 +51,14 @@ FUNCTION_NAME:
     {   ldaw tmp_vec, sp[STACK_VEC_TMP]         ;   ldc r11, 0                              }
     {   ldc _32, 32                             ;   vsetc r11                               }
     
-    std c_imag, c_real, tmp_vec[0]
-    std c_imag, c_real, tmp_vec[1]
-    std c_imag, c_real, tmp_vec[2]
-    std c_imag, c_real, tmp_vec[3]
+        std c_imag, c_real, tmp_vec[0]
+        std c_imag, c_real, tmp_vec[1]
+        std c_imag, c_real, tmp_vec[2]
+        std c_imag, c_real, tmp_vec[3]
+
+    {   mkmsk c_imag, 32                        ;   ldw c_real, sp[STACK_C_SHR]             }
+        vlashr tmp_vec[0], c_real
+        vstrpv tmp_vec[0], c_imag
 
     {                                           ;   vldc tmp_vec[0]                         }
 

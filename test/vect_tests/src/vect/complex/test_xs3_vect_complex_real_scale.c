@@ -206,32 +206,27 @@ static void test_xs3_vect_complex_s32_real_scale()
         const headroom_t b_hr = pseudo_rand_uint(&seed, 0, 18);
         const headroom_t c_hr = pseudo_rand_uint(&seed, 0, 18);
 
-        int32_t C_orig = pseudo_rand_int32(&seed) >> c_hr;
+        int32_t C = pseudo_rand_int32(&seed) >> c_hr;
 
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
         xs3_vect_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
-        int32_t C = C_orig >> c_shr;
-
         for(int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> b_hr;
             B[i].im = pseudo_rand_int32(&seed) >> b_hr;
 
-            Af.real[i] = ldexp(B[i].re, b_exp) * ldexp(C_orig, c_exp);
-            Af.imag[i] = ldexp(B[i].im, b_exp) * ldexp(C_orig, c_exp);
+            Af.real[i] = ldexp(B[i].re, b_exp) * ldexp(C, c_exp);
+            Af.imag[i] = ldexp(B[i].im, b_exp) * ldexp(C, c_exp);
         }
 
-        headroom_t hr = xs3_vect_complex_s32_real_scale(&A[0], &B[0], C, length, b_shr);
+        headroom_t hr = xs3_vect_complex_s32_real_scale(&A[0], &B[0], C, length, b_shr, c_shr);
         
         TEST_ASSERT_EQUAL( xs3_vect_complex_s32_headroom(A, length), hr );
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, length, a_exp);
 
         for(int i = 0; i < length; i++){
-
-            // printf("((%ld >> %d) * (%ld >> %d)) >> 30 = ( %ld << %d)   // %ld\n", B[i].re, b_shr, C_orig, c_shr, A[i].re, a_exp, expA[i].re);
-
             TEST_ASSERT_INT32_WITHIN(2, expA[i].re, A[i].re);
             TEST_ASSERT_INT32_WITHIN(2, expA[i].im, A[i].im);
         }
