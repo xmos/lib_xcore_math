@@ -35,34 +35,6 @@
 /**
  * @page compile_time_options Compile Time Options
  * 
- * @par Allow Arithmetic Saturation
- * 
- *     XS3_BFP_ALLOW_SATURATION
- * 
- * Iff true, certain BFP operations may result in values that would have been `INT32_MIN`
- * saturating to `INT32_MIN+1` (for 32-bit BFP operations), or `INT16_MIN` values saturating
- * to `INT16_MIN+1` (for 16-bit operations).
- * 
- * This saturation can be prevented by forcing that there always be 1 bit of headroom in
- * a result (save for the case in which the result contains `INT*_MIN`), and thus comes at
- * the cost of one fewer possible bits of precision in results.
- * 
- * @note This option is going away in the near future.
- * 
- * Defaults to false (`0`).
- */
-#ifndef XS3_BFP_ALLOW_SATURATION
-
-/**
- * See @ref compile_time_options for details.
- */
-#define XS3_BFP_ALLOW_SATURATION (0)
-#endif
-
-
-/**
- * @page compile_time_options Compile Time Options
- * 
  * @par Disable Vector Tail Support
  * 
  *     XS3_MATH_VECTOR_TAIL_SUPPORT

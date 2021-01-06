@@ -116,16 +116,6 @@ void bfp_s16_abs(
     assert(b->length == a->length);
 #endif
 
-#if !XS3_BFP_ALLOW_SATURATION
-    if(b->hr == 0){
-        //shift down by one bit first
-        xs3_vect_s16_shl(a->data, b->data, b->length, -1);
-        a->exp = b->exp+1;
-        a->hr = b->hr+1;
-        b = a;
-    }
-#endif
-
     a->exp = b->exp;
     a->hr = xs3_vect_s16_abs(a->data, b->data, b->length);
 }
@@ -179,7 +169,7 @@ void bfp_s16_clip(
 
     // In case B, we shift the bounds right, and we lose some precision on them, but that's it.
     
-    exponent_t a_exp = b->exp;// - b->hr + XS3_BFP_ALLOW_SATURATION; //minimum b exponent
+    exponent_t a_exp = b->exp; //minimum b exponent
     
     right_shift_t bound_shr = a_exp - bound_exp;
     right_shift_t b_shr = a_exp - b->exp;

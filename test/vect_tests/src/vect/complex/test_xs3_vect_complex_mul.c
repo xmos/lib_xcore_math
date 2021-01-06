@@ -116,26 +116,23 @@ void test_xs3_vect_complex_s16_mul_prepare()
         exponent_t a_exp;
         right_shift_t a_shr;
 
-        for(unsigned allow_sat = 0; allow_sat <= 1; allow_sat++){
+        xs3_vect_complex_s16_mul_prepare(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr);
 
-            xs3_vect_complex_s16_mul_prepare(&a_exp, &a_shr, b_exp, c_exp, b_hr, c_hr, allow_sat);
+        TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(0, a_shr, "[Computed sat value is negative.]");
 
-            TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(0, a_shr, "[Computed sat value is negative.]");
+        complex_s64_t B = { -0x8000 >> b_hr, -0x8000 >> b_hr };
+        complex_s64_t C = { -0x8000 >> c_hr, -0x8000 >> c_hr };
 
-            complex_s64_t B = { -0x8000 >> b_hr, -0x8000 >> b_hr };
-            complex_s64_t C = { -0x8000 >> c_hr, -0x8000 >> c_hr };
+        int64_t P_im = B.re * C.im + B.im * C.re;
+        
+        TEST_ASSERT_EQUAL_MESSAGE(b_exp+c_exp+a_shr, a_exp, "[Computed a_exp is wrong]");
 
-            int64_t P_im = B.re * C.im + B.im * C.re;
-            
-            TEST_ASSERT_EQUAL_MESSAGE(b_exp+c_exp+a_shr, a_exp, "[Computed a_exp is wrong]");
-
-            if(P_im <= ((int64_t)0x4000)){
-                TEST_ASSERT_EQUAL_MESSAGE(0, a_shr, "[Computed sat is wrong]");
-            } else if(P_im == ((int32_t)0x8000)){
-                TEST_ASSERT_EQUAL_MESSAGE(1-allow_sat, a_shr, "[Computed sat is wrong]");
-            } else {
-                TEST_ASSERT( ldexp(P_im, -a_shr) == (allow_sat? 0x8000 : 0x4000) );
-            }
+        if(P_im <= ((int64_t)0x4000)){
+            TEST_ASSERT_EQUAL_MESSAGE(0, a_shr, "[Computed sat is wrong]");
+        } else if(P_im == ((int32_t)0x8000)){
+            TEST_ASSERT_EQUAL_MESSAGE(0, a_shr, "[Computed sat is wrong]");
+        } else {
+            TEST_ASSERT( ldexp(P_im, -a_shr) == 0x8000 );
         }
     }
 }

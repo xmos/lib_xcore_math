@@ -90,9 +90,6 @@ void xs3_vect_s16_mul_prepare(
         2^(30-total_hr)
         2^14 * 2^(16-total_hr)
         0x4000 * 2^(16-total_hr)
-
-        Don't need to worry about XS3_BFP_ALLOW_SATURATION, because
-        max negative value is -0x8000 * 0x7FFF
     */
     headroom_t total_hr = b_hr+c_hr;
     *a_shr = 16-total_hr;

@@ -57,13 +57,11 @@ static void test_bfp_s16_abs()
 
         TEST_ASSERT_EQUAL(B.length, B.length);
         TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
-
-        unsigned cc = (B.hr == 0)  && (!XS3_BFP_ALLOW_SATURATION);
         
-        TEST_ASSERT_EQUAL(B.exp+cc,  A.exp );
+        TEST_ASSERT_EQUAL(B.exp,  A.exp );
 
         for(int i = 0; i < A.length; i++){
-            int16_t expected = abs(B.data[i] >> cc);
+            int16_t expected = abs(B.data[i]);
             TEST_ASSERT_EQUAL(expected, A.data[i]);
         }
     }
@@ -93,13 +91,11 @@ static void test_bfp_s32_abs()
 
         TEST_ASSERT_EQUAL(B.length, B.length);
         TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
-
-        unsigned cc = (B.hr == 0)  && (!XS3_BFP_ALLOW_SATURATION);
         
-        TEST_ASSERT_EQUAL(B.exp+cc,  A.exp );
+        TEST_ASSERT_EQUAL(B.exp,  A.exp );
 
         for(int i = 0; i < A.length; i++){
-            int32_t expected = abs(B.data[i] >> cc);
+            int32_t expected = abs(B.data[i]);
             TEST_ASSERT_EQUAL(expected, A.data[i]);
         }
     }

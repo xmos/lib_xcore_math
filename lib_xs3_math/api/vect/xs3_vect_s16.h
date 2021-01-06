@@ -534,8 +534,7 @@ void xs3_vect_complex_s16_mul_prepare(
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation);
+    const headroom_t c_hr);
 
 
 /**

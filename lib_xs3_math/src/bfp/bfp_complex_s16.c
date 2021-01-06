@@ -111,7 +111,7 @@ void bfp_complex_s16_mul(
     exponent_t a_exp;
     right_shift_t sat;
 
-    xs3_vect_complex_s16_mul_prepare(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_s16_mul_prepare(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr);
 
     a->exp = a_exp;
     a->hr = xs3_vect_complex_s16_mul(a->real, a->imag, b->real, b->imag, c->real, c->imag, b->length, sat);
@@ -131,7 +131,7 @@ void bfp_complex_s16_conj_mul(
     exponent_t a_exp;
     right_shift_t sat;
 
-    xs3_vect_complex_s16_mul_prepare(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_s16_mul_prepare(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr);
 
     a->exp = a_exp;
     a->hr = xs3_vect_complex_s16_conj_mul(a->real, a->imag, b->real, b->imag, c->real, c->imag, b->length, sat);
@@ -171,7 +171,7 @@ void bfp_complex_s16_scale(
 
     headroom_t alpha_hr = HR_C16(alpha_mant);
 
-    xs3_vect_complex_s16_mul_prepare(&a->exp, &sat, b->exp, alpha_exp, b->hr, alpha_hr, XS3_BFP_ALLOW_SATURATION);
+    xs3_vect_complex_s16_mul_prepare(&a->exp, &sat, b->exp, alpha_exp, b->hr, alpha_hr);
 
     a->hr = xs3_vect_complex_s16_scale(a->real, a->imag, b->real, b->imag, 
                                                   alpha_mant.re, alpha_mant.im, 

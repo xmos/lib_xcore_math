@@ -109,8 +109,7 @@ void xs3_vect_complex_s16_mul_prepare(
     const exponent_t b_exp,
     const exponent_t c_exp,
     const headroom_t b_hr,
-    const headroom_t c_hr,
-    const unsigned allow_saturation)
+    const headroom_t c_hr)
 {
     /*
         B[] has b_hr headroom, and C[] has c_hr headroom, so suppose
@@ -129,20 +128,18 @@ void xs3_vect_complex_s16_mul_prepare(
 
             total_hr = b_hr + c_hr
 
-            0x4000 << all_sat = 2^(31-total_hr-sat)
-            2^14 * 2^(all_sat) = 2^(31-total_hr-sat)
-            2^(14+all_sat) = 2^(31-total_hr-sat)
-            14+all_sat = 31 - total_hr - sat
-            sat = 31 - 14 - total_hr - all_sat
-            sat = (17 - all_sat) - total_hr
-            sat = (allow_saturation? 16 : 17) - total_hr
+            0x8000 = 2^(31-total_hr-sat)
+            2^15 = 2^(31-total_hr-sat)
+            15 = 31 - total_hr - sat
+            sat = 31 - 15 - total_hr
+            sat = 16 - total_hr
             
     */
 
 
     headroom_t total_hr = b_hr+c_hr;
 
-    *sat = MAX(0, (int) ((allow_saturation? 16 : 17) - total_hr) );
+    *sat = MAX(0, (int) (16 - total_hr) );
 
     *a_exp = b_exp + c_exp + *sat;
 }
