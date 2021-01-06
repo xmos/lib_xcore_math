@@ -92,19 +92,18 @@ void bfp_s16_mul(
 void bfp_s16_scale(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
-    const int16_t alpha_mant,
-    const exponent_t alpha_exp)
+    const float_s16_t alpha)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
-    right_shift_t sat;
-    headroom_t s_hr = HR_S16(alpha_mant);
+    right_shift_t a_shr;
+    headroom_t alpha_hr = HR_S16(alpha.mant);
 
-    xs3_vect_s16_scale_prepare(&a->exp, &sat, b->exp, alpha_exp, b->hr, s_hr);
+    xs3_vect_s16_scale_prepare(&a->exp, &a_shr, b->exp, alpha.exp, b->hr, alpha_hr);
 
-    a->hr = xs3_vect_s16_scale(a->data, b->data, b->length, alpha_mant, sat);
+    a->hr = xs3_vect_s16_scale(a->data, b->data, b->length, alpha.mant, a_shr);
 }
 
 

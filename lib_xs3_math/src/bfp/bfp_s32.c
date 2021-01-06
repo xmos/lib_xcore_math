@@ -89,8 +89,7 @@ void bfp_s32_mul(
 void bfp_s32_scale(
     bfp_s32_t* a, 
     const bfp_s32_t* b,
-    const int32_t c_mant,
-    const exponent_t c_exp)
+    const float_s32_t c)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
@@ -98,11 +97,11 @@ void bfp_s32_scale(
 
     right_shift_t b_shr, c_shr;
 
-    headroom_t c_hr = HR_S32(c_mant);
+    headroom_t c_hr = HR_S32(c.mant);
 
-    xs3_vect_s32_mul_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp, b->hr, c_hr);
+    xs3_vect_s32_mul_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp, b->hr, c_hr);
 
-    a->hr = xs3_vect_s32_scale(a->data, b->data, b->length, c_mant, b_shr, c_shr);
+    a->hr = xs3_vect_s32_scale(a->data, b->data, b->length, c.mant, b_shr, c_shr);
 }
 
 

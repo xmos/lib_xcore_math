@@ -349,8 +349,7 @@ void bfp_complex_s32_conj_mul(
 void bfp_complex_s16_real_scale(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
-    const int16_t alpha_mant,
-    const exponent_t alpha_exp);
+    const float_s16_t alpha);
 
 /** 
  * @brief Multiply a complex 32-bit BFP vector by a real scalar.
@@ -375,8 +374,7 @@ void bfp_complex_s16_real_scale(
 void bfp_complex_s32_real_scale(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
-    const int32_t alpha_mant,
-    const exponent_t alpha_exp);
+    const float_s32_t alpha);
 
 /** 
  * @brief Multiply a complex 16-bit BFP vector by a complex scalar.
@@ -401,8 +399,7 @@ void bfp_complex_s32_real_scale(
 void bfp_complex_s16_scale(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
-    const complex_s16_t alpha_mant,
-    const exponent_t alpha_exp);
+    const float_complex_s16_t alpha);
 
 /** 
  * @brief Multiply a complex 32-bit BFP vector by a complex scalar.
@@ -427,8 +424,7 @@ void bfp_complex_s16_scale(
 void bfp_complex_s32_scale(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
-    const complex_s32_t alpha_mant,
-    const exponent_t alpha_exp);
+    const float_complex_s32_t alpha);
 
 /** 
  * @brief Add one complex 16-bit BFP vector to another.

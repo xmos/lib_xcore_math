@@ -65,26 +65,28 @@ void test_bfp_complex_s16_real_scale()
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
 
-        exponent_t c_exp = pseudo_rand_int(&seed, -100, 100);
         headroom_t c_hr = pseudo_rand_uint(&seed, 0, 12);
 
-        int16_t C = pseudo_rand_int16(&seed) >> c_hr;
+        float_s16_t C = {
+            pseudo_rand_int16(&seed) >> c_hr,
+            pseudo_rand_int(&seed, -100, 100),
+        };
 
-        while(HR_S16(C) != c_hr) C = pseudo_rand_int16(&seed) >> c_hr;
+        while(HR_S16(C.mant) != c_hr) C.mant = pseudo_rand_int16(&seed) >> c_hr;
 
-        TEST_ASSERT_EQUAL_MESSAGE(c_hr, HR_S16(C), "[C headroom is wrong]");
+        TEST_ASSERT_EQUAL_MESSAGE(c_hr, HR_S16(C.mant), "[C headroom is wrong]");
 
         for(int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
 
-            Af.real[i] = ldexp(B.real[i], B.exp) * ldexp(C, c_exp);
-            Af.imag[i] = ldexp(B.imag[i], B.exp) * ldexp(C, c_exp);
+            Af.real[i] = ldexp(B.real[i], B.exp) * ldexp(C.mant, C.exp);
+            Af.imag[i] = ldexp(B.imag[i], B.exp) * ldexp(C.mant, C.exp);
         }
 
         bfp_complex_s16_headroom(&B);
 
-        bfp_complex_s16_real_scale(&A, &B, C, c_exp);
+        bfp_complex_s16_real_scale(&A, &B, C);
 
         TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr, "[A.hr is wrong.]");
 
@@ -133,22 +135,24 @@ void test_bfp_complex_s32_real_scale()
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        const exponent_t c_exp = pseudo_rand_int(&seed, -100, 100);
         const headroom_t c_hr = pseudo_rand_uint(&seed, 0, 28);
 
-        int32_t C = pseudo_rand_int32(&seed) >> c_hr;
+        float_s32_t C = {
+            pseudo_rand_int32(&seed) >> c_hr,
+            pseudo_rand_int(&seed, -100, 100),
+        };
 
         for(int i = 0; i < B.length; i++){
             B.data[i].re = pseudo_rand_int32(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int32(&seed) >> B.hr;
 
-            Af.real[i] = ldexp(B.data[i].re, B.exp) * ldexp(C, c_exp);
-            Af.imag[i] = ldexp(B.data[i].im, B.exp) * ldexp(C, c_exp);
+            Af.real[i] = ldexp(B.data[i].re, B.exp) * ldexp(C.mant, C.exp);
+            Af.imag[i] = ldexp(B.data[i].im, B.exp) * ldexp(C.mant, C.exp);
         }
 
         bfp_complex_s32_headroom(&B);
-        
-        bfp_complex_s32_real_scale(&A, &B, C, c_exp);
+
+        bfp_complex_s32_real_scale(&A, &B, C);
         
         TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
         

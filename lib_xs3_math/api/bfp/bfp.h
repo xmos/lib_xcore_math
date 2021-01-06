@@ -343,8 +343,7 @@ void bfp_s32_mul(
 void bfp_s16_scale(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
-    const int16_t alpha_mant,
-    const exponent_t alpha_exp);
+    const float_s16_t alpha);
 
 
 /** 
@@ -371,8 +370,7 @@ void bfp_s16_scale(
 void bfp_s32_scale(
     bfp_s32_t* a, 
     const bfp_s32_t* b,
-    const int32_t alpha_mant,
-    const exponent_t alpha_exp);
+    const float_s32_t alpha);
 
 
 /** 

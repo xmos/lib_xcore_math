@@ -134,8 +134,7 @@ void bfp_complex_s32_conj_mul(
 void bfp_complex_s32_real_scale(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
-    const int32_t c,
-    const exponent_t c_exp)
+    const float_s32_t c)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
@@ -143,32 +142,30 @@ void bfp_complex_s32_real_scale(
 
     right_shift_t b_shr, c_shr;
 
-    headroom_t c_hr = HR_S32(c);
+    headroom_t c_hr = HR_S32(c.mant);
 
     //Uses same param logic as mul_vect_s32
-    xs3_vect_s32_mul_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp, b->hr, c_hr);
-    // int32_t alpha = SIGNED_ASHR(c, c_shr);
+    xs3_vect_s32_mul_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp, b->hr, c_hr);
 
-    a->hr = xs3_vect_complex_s32_real_scale( a->data, b->data, c, b->length, b_shr, c_shr);
+    a->hr = xs3_vect_complex_s32_real_scale( a->data, b->data, c.mant, b->length, b_shr, c_shr);
 }
 
 
 void bfp_complex_s32_scale(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
-    const complex_s32_t c,
-    const exponent_t c_exp)
+    const float_complex_s32_t c)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
 #endif
 
     right_shift_t b_shr, c_shr;
-    const headroom_t c_hr = HR_C32(c);
+    const headroom_t c_hr = HR_C32(c.mant);
 
-    xs3_vect_complex_s32_scale_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp, b->hr, c_hr);
+    xs3_vect_complex_s32_scale_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp, b->hr, c_hr);
     
-    a->hr = xs3_vect_complex_s32_scale(a->data, b->data, c.re, c.im, b->length, b_shr, c_shr);
+    a->hr = xs3_vect_complex_s32_scale(a->data, b->data, c.mant.re, c.mant.im, b->length, b_shr, c_shr);
 }
 
 

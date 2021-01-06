@@ -162,8 +162,10 @@ static void test_bfp_s16_scale()
         for(int i = 0; i < B.length; i++){
             Af[i] = Bf[i] * alpha_f;
         }
+
+        float_s16_t alpha = {alpha_mant, alpha_exp};
         
-        bfp_s16_scale(&A, &B, alpha_mant, alpha_exp);
+        bfp_s16_scale(&A, &B, alpha);
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -207,7 +209,9 @@ static void test_bfp_s32_scale()
             Af[i] = Bf[i] * alpha_f;
         }
 
-        bfp_s32_scale(&A, &B, alpha_mant, alpha_exp);
+        float_s32_t alpha = {alpha_mant, alpha_exp};
+
+        bfp_s32_scale(&A, &B, alpha);
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 

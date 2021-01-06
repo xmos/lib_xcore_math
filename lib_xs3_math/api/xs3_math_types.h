@@ -34,22 +34,6 @@ typedef struct {
     int16_t im; ///< Imaginary Part
 } complex_s16_t;
 
-/**
- * @brief A complex number with a single-precision floating-point real part and a single-precision floating-point imaginary part.
- */
-typedef struct {
-    float re;   ///< Real Part
-    float im;   ///< Imaginary Part
-} complex_float_t;
-
-/**
- * @brief A complex number with a double-precision floating-point real part and a double-precision floating-point imaginary part.
- */
-typedef struct {
-    double re;  ///< Real Part
-    double im;  ///< Imaginary Part
-} complex_double_t;
-
 /** 
  * @brief A pair of 32-bit samples, associated with channels A and B.
  */
@@ -65,22 +49,6 @@ typedef struct {
     int16_t ch_a;   ///< Channel A
     int16_t ch_b;   ///< Channel B
 } ch_pair_s16_t;
-
-/**
- * @brief A pair of single-precision floating-point samples, associated with channels A and B.
- */
-typedef struct {
-    float ch_a; ///< Channel A
-    float ch_b; ///< Channel B
-} ch_pair_float_t;
-
-/**
- * @brief A pair of double-precision floating-point samples, associated with channels A and B.
- */
-typedef struct {
-    double ch_a;    ///< Channel A
-    double ch_b;    ///< Channel B
-} ch_pair_double_t;
 
 
 /**
@@ -120,6 +88,29 @@ typedef int right_shift_t;
  * @see right_shift_t
  */
 typedef int left_shift_t;
+
+
+
+
+typedef struct {
+    int32_t mant;
+    exponent_t exp;
+} float_s32_t;
+
+typedef struct {
+    int16_t mant;
+    exponent_t exp;
+} float_s16_t;
+
+typedef struct {
+    complex_s32_t mant;
+    exponent_t exp;
+} float_complex_s32_t;
+
+typedef struct {
+    complex_s16_t mant;
+    exponent_t exp;
+} float_complex_s16_t;
 
 
 /**
@@ -289,6 +280,41 @@ typedef struct {
 } bfp_ch_pair_s16_t;
 //! [bfp_ch_pair_s16_t]
 
+
+// Some standard float types required by some of the unit tests. @todo This probably belongs elsewhere
+
+
+/**
+ * @brief A complex number with a single-precision floating-point real part and a single-precision floating-point imaginary part.
+ */
+typedef struct {
+    float re;   ///< Real Part
+    float im;   ///< Imaginary Part
+} complex_float_t;
+
+/**
+ * @brief A complex number with a double-precision floating-point real part and a double-precision floating-point imaginary part.
+ */
+typedef struct {
+    double re;  ///< Real Part
+    double im;  ///< Imaginary Part
+} complex_double_t;
+
+/**
+ * @brief A pair of single-precision floating-point samples, associated with channels A and B.
+ */
+typedef struct {
+    float ch_a; ///< Channel A
+    float ch_b; ///< Channel B
+} ch_pair_float_t;
+
+/**
+ * @brief A pair of double-precision floating-point samples, associated with channels A and B.
+ */
+typedef struct {
+    double ch_a;    ///< Channel A
+    double ch_b;    ///< Channel B
+} ch_pair_double_t;
 
 #ifdef __XC__
 }   //extern "C"
