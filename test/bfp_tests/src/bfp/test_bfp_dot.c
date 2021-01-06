@@ -65,21 +65,11 @@ static void test_bfp_s16_dot()
 
         bfp_s16_headroom(&B);
         bfp_s16_headroom(&C);
-
-        // printf("B.length = %u\n", B.length);
-        // printf("B.exp = %d\n", B.exp);
-        // printf("C.exp = %d\n", C.exp);
-
-        // printf("B.hr = %u\n", B.hr);
-        // printf("C.hr = %u\n", C.hr);
         
-        exponent_t a_exp;
-        int64_t result = bfp_s16_dot(&a_exp, &B, &C);
+        float_s64_t result = bfp_s16_dot(&B, &C);
 
-        double diff = expected-ldexp(result, a_exp);
+        double diff = expected-ldexp(result.mant, result.exp);
         double error = fabs(diff/expected);
-
-        // printf("@ %e    %e     %e     %e \n", expected, ldexp(result, a_exp), diff, error);
 
         double max_error = ldexp(1, ceil_log2(B.length) - 8 - (B.hr+C.hr));
 
@@ -161,20 +151,13 @@ static void test_bfp_s32_dot_A()
         B.hr = HR_S32(casse->b.value);
         C.hr = HR_S32(casse->c.value);
 
-        exponent_t a_exp;
+        float_s64_t result = bfp_s32_dot(&B, &C);
 
-        int64_t result = bfp_s32_dot(&a_exp, &B, &C);
-
-        right_shift_t shr = a_exp - casse->expected.exp;
+        right_shift_t shr = result.exp - casse->expected.exp;
 
         int64_t exp_mod = (shr >= 0)? (casse->expected.value >> shr) : (casse->expected.value << -shr);
 
-        // printf("!! %lld\n", result);
-        // printf("@@ %lld \t %lld\n", casse->expected.value, exp_mod);
-
-        // printf("!!\t%f\n", ldexp(result, a_exp));
-
-        TEST_ASSERT_EQUAL_MSG(exp_mod, result, "", casse->line);
+        TEST_ASSERT(exp_mod == result.mant);
     } 
 }
 
@@ -214,10 +197,9 @@ static void test_bfp_s32_dot_B()
         bfp_s32_headroom(&B);
         bfp_s32_headroom(&C);
         
-        exponent_t a_exp;
-        int64_t result = bfp_s32_dot(&a_exp, &B, &C);
+        float_s64_t result = bfp_s32_dot(&B, &C);
 
-        double diff = expected-ldexp(result, a_exp);
+        double diff = expected - ldexp(result.mant, result.exp);
         double error = fabs(diff/expected);
         TEST_ASSERT( error < ldexp(1,-20) );
     }

@@ -48,13 +48,17 @@ static void test_bfp_s16_abs_sum()
 
         bfp_s16_headroom(&B);
 
-        int32_t result = bfp_s16_abs_sum(&B);
+        float_s32_t result = bfp_s16_abs_sum(&B);
 
-        int32_t exp = 0;
+        float_s32_t expected = {
+            .mant = 0,
+            .exp = B.exp };
+
         for(int i = 0; i < B.length; i++)
-            exp += abs(B.data[i]);
+            expected.mant += abs(B.data[i]);
 
-        TEST_ASSERT_EQUAL(exp, result);
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT32(expected.mant, result.mant);
     }
 }
 
@@ -78,17 +82,21 @@ static void test_bfp_s32_abs_sum()
         
         int64_t sum = 0;
 
+        float_s64_t expected = {
+            .mant = 0,
+            .exp = B.exp };
+
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
-
-            sum += abs( B.data[i] );
+            expected.mant += abs( B.data[i] );
         }
 
         bfp_s32_headroom(&B);
 
-        int64_t result = bfp_s32_abs_sum(&B);
+        float_s64_t result = bfp_s32_abs_sum(&B);
 
-        TEST_ASSERT_EQUAL(sum, result);
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL(expected.mant, result.mant);
     }
 }
 

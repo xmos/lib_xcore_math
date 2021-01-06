@@ -48,22 +48,26 @@ void test_bfp_complex_s16_sum()
 
         B.hr = pseudo_rand_uint(&seed, 0, 15);
 
-        complex_s32_t expected = {0, 0};
+        float_complex_s32_t expected = {
+            {0, 0},
+            B.exp 
+        };
 
         for(int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
 
-            expected.re += B.real[i];
-            expected.im += B.imag[i];
+            expected.mant.re += B.real[i];
+            expected.mant.im += B.imag[i];
         }
 
         bfp_complex_s16_headroom(&B);
 
-        complex_s32_t result = bfp_complex_s16_sum(&B);
+        float_complex_s32_t result = bfp_complex_s16_sum(&B);
 
-        TEST_ASSERT_EQUAL_INT32(expected.re, result.re);
-        TEST_ASSERT_EQUAL_INT32(expected.im, result.im);
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT32(expected.mant.re, result.mant.re);
+        TEST_ASSERT_EQUAL_INT32(expected.mant.im, result.mant.im);
     }
 }
 
@@ -102,15 +106,13 @@ void test_bfp_complex_s32_sum()
             expected.im += ldexp(B.data[i].im, B.exp);
         }
 
-        exponent_t a_exp;
-
         bfp_complex_s32_headroom(&B);
 
-        complex_s64_t result = bfp_complex_s32_sum(&a_exp, &B);
+        float_complex_s64_t result = bfp_complex_s32_sum(&B);
 
-        TEST_ASSERT_GREATER_OR_EQUAL(B.exp, a_exp);
+        TEST_ASSERT_GREATER_OR_EQUAL(B.exp, result.exp);
 
-        complex_double_t fl = { ldexp(result.re, a_exp), ldexp(result.im, a_exp) };
+        complex_double_t fl = { ldexp(result.mant.re, result.exp), ldexp(result.mant.im, result.exp) };
 
         complex_double_t ds = { 
             fabs((expected.re - fl.re) / expected.re),

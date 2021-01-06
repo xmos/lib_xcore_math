@@ -51,17 +51,15 @@ static void test_bfp_s16_mean()
             sum += B.data[i];
         }
 
-        exponent_t a_exp;
-
         bfp_s16_headroom(&B);
 
-        int16_t result = bfp_s16_mean(&a_exp, &B);
+        float_s16_t result = bfp_s16_mean(&B);
 
         double meanf = ldexp(sum, B.exp) / B.length;
         
-        double diff = meanf - ldexp(result, a_exp);
+        double diff = meanf - ldexp(result.mant, result.exp);
 
-        TEST_ASSERT( fabs(diff) <= ldexp(1, a_exp) );
+        TEST_ASSERT( fabs(diff) <= ldexp(1, result.exp) );
     }
 }
 
@@ -93,13 +91,11 @@ static void test_bfp_s32_mean()
 
         bfp_s32_headroom(&B);
 
-        exponent_t a_exp;
-
-        int32_t result = bfp_s32_mean(&a_exp, &B);
+        float_s32_t result = bfp_s32_mean(&B);
         double meanf = ldexp(sum, B.exp) / B.length;
-        double diff = meanf - ldexp(result, a_exp);
+        double diff = meanf - ldexp(result.mant, result.exp);
 
-        TEST_ASSERT( fabs(diff) <= ldexp(1, a_exp) );
+        TEST_ASSERT( fabs(diff) <= ldexp(1, result.exp) );
     }
 }
 

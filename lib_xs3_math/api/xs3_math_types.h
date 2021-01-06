@@ -92,25 +92,102 @@ typedef int left_shift_t;
 
 
 
+/**
+ * @brief A floating-point scalar with a 16-bit mantissa.
+ * 
+ * Represents a (non-standard) floating-point value given by @math{ M \cdot 2^{x} }, where @math{M} is the 16-bit 
+ * mantissa `mant`, and @math{x} is the exponent `exp`.
+ * 
+ * To convert a `float_s16_t` to a standard IEEE754 single-precision floating-point value:
+ * 
+ * @code{.c}
+ *  float to_ieee_float(float_s16_t x) {
+ *      return ldexpf(x.mant, x.exp);
+ *  }
+ * @endcode
+ */
 typedef struct {
-    int32_t mant;
-    exponent_t exp;
-} float_s32_t;
-
-typedef struct {
-    int16_t mant;
-    exponent_t exp;
+    int16_t mant;       ///< 16-bit mantissa
+    exponent_t exp;     ///< exponent
 } float_s16_t;
 
+/**
+ * @brief A floating-point scalar with a 32-bit mantissa.
+ * 
+ * Represents a (non-standard) floating-point value given by @math{ M \cdot 2^{x} }, where @math{M} is the 32-bit 
+ * mantissa `mant`, and @math{x} is the exponent `exp`.
+ * 
+ * To convert a `float_s16_t` to a standard IEEE754 single-precision floating-point value (which may result in a loss of
+ * precision):
+ * 
+ * @code{.c}
+ *  float to_ieee_float(float_s32_t x) {
+ *      return ldexpf(x.mant, x.exp);
+ *  }
+ * @endcode
+ */
 typedef struct {
-    complex_s32_t mant;
-    exponent_t exp;
-} float_complex_s32_t;
+    int32_t mant;       ///< 32-bit mantissa
+    exponent_t exp;     ///< exponent
+} float_s32_t;
+
+/**
+ * @brief A floating-point scalar with a 64-bit mantissa.
+ * 
+ * Represents a (non-standard) floating-point value given by @math{ M \cdot 2^{x} }, where @math{M} is the 64-bit 
+ * mantissa `mant`, and @math{x} is the exponent `exp`.
+ * 
+ * To convert a `float_s64_t` to a standard IEEE754 double-precision floating-point value (which may result in a loss of
+ * precision):
+ * 
+ * @code{.c}
+ *  double to_ieee_float(float_s64_t x) {
+ *      return ldexp(x.mant, x.exp);
+ *  }
+ * @endcode
+ */
+typedef struct {
+    int64_t mant;       ///< 64-bit mantissa
+    exponent_t exp;     ///< exponent
+} float_s64_t;
+
+/**
+ * @brief A complex floating-point scalar with a complex 16-bit mantissa.
+ * 
+ * Represents a (non-standard) complex floating-point value given by @math{ A + j\cdot B \cdot 2^{x} }, where @math{A} 
+ * is `mant.re`, the 16-bit real part of the mantissa, @math{B} is `mant.im`, the 16-bit imaginary part of the mantissa,
+ * and @math{x} is the exponent `exp`.
+ */
+typedef struct {
+    complex_s16_t mant; ///< complex 16-bit mantissa
+    exponent_t exp;     ///< exponent
+} float_complex_s16_t;
+
+/**
+ * @brief A complex floating-point scalar with a complex 32-bit mantissa.
+ * 
+ * Represents a (non-standard) complex floating-point value given by @math{ A + j\cdot B \cdot 2^{x} }, where @math{A} 
+ * is `mant.re`, the 32-bit real part of the mantissa, @math{B} is `mant.im`, the 32-bit imaginary part of the mantissa,
+ * and @math{x} is the exponent `exp`.
+ */
 
 typedef struct {
-    complex_s16_t mant;
-    exponent_t exp;
-} float_complex_s16_t;
+    complex_s32_t mant; ///< complex 32-bit mantissa
+    exponent_t exp;     ///< exponent
+} float_complex_s32_t;
+
+/**
+ * @brief A complex floating-point scalar with a complex 64-bit mantissa.
+ * 
+ * Represents a (non-standard) complex floating-point value given by @math{ A + j\cdot B \cdot 2^{x} }, where @math{A} 
+ * is `mant.re`, the 64-bit real part of the mantissa, @math{B} is `mant.im`, the 64-bit imaginary part of the mantissa,
+ * and @math{x} is the exponent `exp`.
+ */
+
+typedef struct {
+    complex_s64_t mant; ///< complex 64-bit mantissa
+    exponent_t exp;     ///< exponent
+} float_complex_s64_t;
 
 
 /**

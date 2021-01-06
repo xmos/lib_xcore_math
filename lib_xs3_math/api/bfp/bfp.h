@@ -327,18 +327,18 @@ void bfp_s32_mul(
  * 
  * `a` and `b` must have been initialized (see bfp_s16_init()), and must be the same length.
  * 
+ * `alpha` represents the scalar @math{\alpha \cdot 2^{\alpha\_exp}}, where @math{\alpha} is `alpha.mant` and 
+ * @math{\alpha\_exp} is `alpha.exp`.
+ * 
  * This operation can be performed safely in-place on `b`.
  * 
  * @bfp_op{16, @f$
  *      \bar{A} \leftarrow \bar{B} \cdot \left(\alpha \cdot 2^{\alpha\_exp}\right)
  * @f$ }
  * 
- * @todo Change scalar input to just used a floating-point struct
- * 
- * @param[out] a             Output BFP vector @vector{A}
- * @param[in]  b             Input BFP vector @vector{B}
- * @param[in]  alpha_mant    Mantissa @math{\alpha} of input scalar
- * @param[in]  alpha_exp     Exponent @math{\alpha\_exp} of input scalar
+ * @param[out] a            Output BFP vector @vector{A}
+ * @param[in]  b            Input BFP vector @vector{B}
+ * @param[in]  alpha        Scalar by which @vector{B} is multiplied
  */
 void bfp_s16_scale(
     bfp_s16_t* a, 
@@ -354,18 +354,18 @@ void bfp_s16_scale(
  * 
  * `a` and `b` must have been initialized (see bfp_s32_init()), and must be the same length.
  * 
+ * `alpha` represents the scalar @math{\alpha \cdot 2^{\alpha\_exp}}, where @math{\alpha} is `alpha.mant` and 
+ * @math{\alpha\_exp} is `alpha.exp`.
+ * 
  * This operation can be performed safely in-place on `b`.
  * 
  * @bfp_op{32, @f$
  *      \bar{A} \leftarrow \bar{B} \cdot \left(\alpha \cdot 2^{\alpha\_exp}\right)
  * @f$ }
  * 
- * @todo Change scalar input to just used a floating-point struct
- * 
  * @param[out] a             Output BFP vector @vector{A}
  * @param[in]  b             Input BFP vector @vector{B}
- * @param[in]  alpha_mant    Mantissa @math{\alpha} of input scalar
- * @param[in]  alpha_exp     Exponent @math{\alpha\_exp} of input scalar
+ * @param[in]  alpha        Scalar by which @vector{B} is multiplied
  */
 void bfp_s32_scale(
     bfp_s32_t* a, 
@@ -424,56 +424,52 @@ void bfp_s32_abs(
 /** 
  * @brief Sum the elements of a 16-bit BFP vector.
  * 
- * Sum the 16-bit mantissas of elements of input BFP vector @vector{B} and return the 32-bit result.
+ * Sum the elements of input BFP vector @vector{B} to get a result @math{A = a \cdot 2^{a\_exp}}, which is returned. The
+ * returned value has a 32-bit mantissa.
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
- * The exponent associated with the returned sum is `b->exp`.
- * 
  * @bfp_op{16, @f$
- *      a \leftarrow \sum_{k=0}^{N-1} \left( b_k \right)            \\
+ *      A \leftarrow \sum_{k=0}^{N-1} \left( B_k \right)            \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
- * @todo Have this function return a 32-bit float struct instead.
- * 
  * @param[in] b         Input BFP vector @vector{B}
  * 
- * @returns  @math{a}, the sum of mantissas of @vector{B}
+ * @returns  @math{A}, the sum of elements of @vector{B}
  */
-int32_t bfp_s16_sum(
+float_s32_t bfp_s16_sum(
     const bfp_s16_t* b);
 
 
 /** 
  * @brief Sum the elements of a 32-bit BFP vector.
  * 
- * Sum the 32-bit mantissas of elements of input BFP vector @vector{B} and return the 64-bit result.
+ * Sum the elements of input BFP vector @vector{B} to get a result @math{A = a \cdot 2^{a\_exp}}, which is returned. The
+ * returned value has a 64-bit mantissa.
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
- * The exponent associated with the returned sum is `b->exp`.
- * 
  * @bfp_op{32, @f$
- *      a \leftarrow \sum_{k=0}^{N-1} \left( b_k \right)            \\
+ *      A \leftarrow \sum_{k=0}^{N-1} \left( B_k \right)            \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
- * @todo Have this function return a 32-bit float struct instead.
  * 
  * @param[in] b         Input BFP vector @vector{B}
  * 
- * @returns  @math{a}, the sum of mantissas of @vector{B}
+ * @returns  @math{A}, the sum of elements of @vector{B}
  */
-int64_t bfp_s32_sum(
+float_s64_t bfp_s32_sum(
     const bfp_s32_t* b);
 
 
 /** 
  * @brief Compute the inner product of two 16-bit BFP vectors.
  * 
- * Adds together the element-wise products of input BFP vectors @vector{B} and @vector{C} for a resulting 64-bit
- * mantissa @math{a} and an exponent @math{a\_exp}. The mantissa is returned. The exponent is output through `a_exp`.
+ * Adds together the element-wise products of input BFP vectors @vector{B} and @vector{C} for a result 
+ * @math{A = a \cdot 2^{a\_exp}}, where @math{a} is the 64-bit mantissa of the result and @math{a\_exp} is its 
+ * associated exponent. @math{A} is returned.
  * 
  * `b` and `c` must have been initialized (see bfp_s16_init()), and must be the same length.
  * 
@@ -482,16 +478,12 @@ int64_t bfp_s32_sum(
  *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
  * @f$ }
  * 
- * @todo Change this function to return a 64-bit float
- * 
- * @param[out] a_exp    Output exponent @math{a\_exp}
  * @param[in]  b        Input BFP vector @vector{B}
  * @param[in]  c        Input BFP vector @vector{C}
  * 
- * @returns     @math{a}, the 64-bit mantissa of the inner product.
+ * @returns     @math{A}, the inner product of vectors @vector{B} and @vector{C}
  */
-int64_t bfp_s16_dot(
-    exponent_t* a_exp,
+float_s64_t bfp_s16_dot(
     const bfp_s16_t* b, 
     const bfp_s16_t* c);
 
@@ -499,8 +491,9 @@ int64_t bfp_s16_dot(
 /** 
  * @brief Compute the inner product of two 32-bit BFP vectors.
  * 
- * Adds together the element-wise products of input BFP vectors @vector{B} and @vector{C} for a resulting 64-bit
- * mantissa @math{a} and an exponent @math{a\_exp}. The mantissa is returned. The exponent is output through `a_exp`.
+ * Adds together the element-wise products of input BFP vectors @vector{B} and @vector{C} for a result 
+ * @math{A = a \cdot 2^{a\_exp}}, where @math{a} is the 64-bit mantissa of the result and @math{a\_exp} is its 
+ * associated exponent. @math{A} is returned.
  * 
  * `b` and `c` must have been initialized (see bfp_s32_init()), and must be the same length.
  * 
@@ -509,16 +502,12 @@ int64_t bfp_s16_dot(
  *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
  * @f$ }
  * 
- * @todo Change this function to return a 64-bit float
- * 
- * @param[out] a_exp    Output exponent @math{a\_exp}
  * @param[in]  b        Input BFP vector @vector{B}
  * @param[in]  c        Input BFP vector @vector{C}
  * 
- * @returns     @math{a}, the 64-bit mantissa of the inner product.
+ * @returns     @math{A}, the inner product of vectors @vector{B} and @vector{C}
  */
-int64_t bfp_s32_dot(
-    exponent_t* a_exp,
+float_s64_t bfp_s32_dot(
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
 
@@ -803,295 +792,255 @@ void bfp_s32_inverse(
 /** 
  * @brief Sum the absolute values of elements of a 16-bit BFP vector.
  * 
- * Sum the absolute values of the 16-bit mantissas of elements of input BFP vector @vector{B} and return the 32-bit 
- * result.
+ * Sum the absolute values of elements of input BFP vector @vector{B} for a result @math{A = a \cdot 2^{a\_exp}}, where
+ * @math{a} is a 32-bit mantissa and @math{a\_exp} is its associated exponent. @math{A} is returned.
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
- * The exponent associated with the returned sum is `b->exp`.
- * 
  * @bfp_op{16, @f$
- *      a \leftarrow \sum_{k=0}^{N-1} \left| b_k \right|            \\
+ *      A \leftarrow \sum_{k=0}^{N-1} \left| A_k \right|            \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
- * @todo Have this function return a 32-bit float struct instead.
- * 
  * @param[in] b         Input BFP vector @vector{B}
  * 
- * @returns  @math{a}, the sum of absolute values of mantissas of @vector{B}
+ * @returns  @math{A}, the sum of absolute values of elements of @vector{B}
  */
-int32_t bfp_s16_abs_sum(
+float_s32_t bfp_s16_abs_sum(
     const bfp_s16_t* b);
 
 /** 
  * @brief Sum the absolute values of elements of a 32-bit BFP vector.
  * 
- * Sum the absolute values of the 32-bit mantissas of elements of input BFP vector @vector{B} and return the 64-bit 
- * result.
+ * Sum the absolute values of elements of input BFP vector @vector{B} for a result @math{A = a \cdot 2^{a\_exp}}, where
+ * @math{a} is a 64-bit mantissa and @math{a\_exp} is its associated exponent. @math{A} is returned.
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
- * The exponent associated with the returned sum is `b->exp`.
- * 
  * @bfp_op{32, @f$
- *      a \leftarrow \sum_{k=0}^{N-1} \left| b_k \right|            \\
+ *      A \leftarrow \sum_{k=0}^{N-1} \left| A_k \right|            \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
- * @todo Have this function return a 64-bit float struct instead.
- * 
  * @param[in] b         Input BFP vector @vector{B}
  * 
- * @returns  @math{a}, the sum of absolute values of mantissas of @vector{B}
+ * @returns  @math{A}, the sum of absolute values of elements of @vector{B}
  */
-int64_t bfp_s32_abs_sum(
+float_s64_t bfp_s32_abs_sum(
     const bfp_s32_t* b);
 
 
 /** 
  * @brief Get the mean value of a 16-bit BFP vector.
  * 
- * Computes @math{a \cdot 2^{a\_exp}}, the mean value of elements of input BFP vector @vector{B}. The exponent is output
- * through `a_exp`, and the 16-bit mantissa @math{a} is returned.
+ * Computes @math{A = a \cdot 2^{a\_exp}}, the mean value of elements of input BFP vector @vector{B}, where @math{a} is
+ * the 16-bit mantissa of the result, and @math{a\_exp} is its associated exponent. @math{A} is returned.
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
  * @bfp_op{16, @f$
- *      a \cdot 2^{a\_exp} \leftarrow \frac{1}{N} \sum_{k=0}^{N-1} \left( B_k \right)     \\
+ *      A \leftarrow \frac{1}{N} \sum_{k=0}^{N-1} \left( B_k \right)     \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
- * @todo Have this function return a 16-bit float struct instead.
- * 
- * @param[out] a_exp    Output exponent @math{a\_exp}
  * @param[in]  b        Input BFP vector @vector{B}
  * 
- * @returns  @math{a}, the mantissa of @vector{B}'s mean value.
+ * @returns  @math{A}, the mean value of @vector{B}'s elements
  */
-int16_t bfp_s16_mean(
-    exponent_t* a_exp,
+float_s16_t bfp_s16_mean(
     const bfp_s16_t* b);
 
 
 /** 
  * @brief Get the mean value of a 32-bit BFP vector.
  * 
- * Computes @math{a \cdot 2^{a\_exp}}, the mean value of elements of input BFP vector @vector{B}. The exponent is output
- * through `a_exp`, and the 32-bit mantissa @math{a} is returned.
+ * Computes @math{A = a \cdot 2^{a\_exp}}, the mean value of elements of input BFP vector @vector{B}, where @math{a} is
+ * the 32-bit mantissa of the result, and @math{a\_exp} is its associated exponent. @math{A} is returned.
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
  * @bfp_op{32, @f$
- *      a \cdot 2^{a\_exp} \leftarrow \frac{1}{N} \sum_{k=0}^{N-1} \left( B_k \right)     \\
+ *      A \leftarrow \frac{1}{N} \sum_{k=0}^{N-1} \left( B_k \right)     \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
- * @todo Have this function return a 32-bit float struct instead.
- * 
- * @param[out] a_exp    Output exponent @math{a\_exp}
  * @param[in]  b        Input BFP vector @vector{B}
  * 
- * @returns  @math{a}, the mantissa of @vector{B}'s mean value.
+ * @returns  @math{A}, the mean value of @vector{B}'s elements
  */
-int32_t bfp_s32_mean(
-    exponent_t* a_exp,
+float_s32_t bfp_s32_mean(
     const bfp_s32_t* b);
 
 
 /** 
  * @brief Get the energy (sum of squared of elements) of a 16-bit BFP vector.
  * 
- * Computes @math{a \cdot 2^{a\_exp}}, the sum of squares of elements of input BFP vector @vector{B}. The exponent is 
- * output through `a_exp`, and the 64-bit mantissa @math{a} is returned.
+ * Computes @math{A = a \cdot 2^{a\_exp}}, the sum of squares of elements of input BFP vector @vector{B}, where @math{a} 
+ * is the 64-bit mantissa of the result, and @math{a\_exp} is its associated exponent. @math{A} is returned.
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
  * @bfp_op{16, @f$
- *      a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{N-1} \left( B_k^2 \right)   \\
+ *      A \leftarrow \sum_{k=0}^{N-1} \left( B_k^2 \right)   \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
- * @todo Have this function return a 64-bit float struct instead.
- * 
- * @param[out] a_exp    Output exponent @math{a\_exp}
  * @param[in]  b        Input BFP vector @vector{B}
  * 
- * @returns  @math{a}, the mantissa of @vector{B}'s energy.
+ * @returns  @math{A}, @vector{B}'s energy
  */
-int64_t bfp_s16_energy(
-    exponent_t* a_exp,
+float_s64_t bfp_s16_energy(
     const bfp_s16_t* b);
 
 
 /** 
  * @brief Get the energy (sum of squared of elements) of a 32-bit BFP vector.
  * 
- * Computes @math{a \cdot 2^{a\_exp}}, the sum of squares of elements of input BFP vector @vector{B}. The exponent is 
- * output through `a_exp`, and the 64-bit mantissa @math{a} is returned.
+ * Computes @math{A = a \cdot 2^{a\_exp}}, the sum of squares of elements of input BFP vector @vector{B}, where @math{a} 
+ * is the 64-bit mantissa of the result, and @math{a\_exp} is its associated exponent. @math{A} is returned.
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
  * @bfp_op{32, @f$
- *      a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{N-1} \left( B_k^2 \right)   \\
+ *      A \leftarrow \sum_{k=0}^{N-1} \left( B_k^2 \right)   \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
- * @todo Have this function return a 64-bit float struct instead.
- * 
- * @param[out] a_exp    Output exponent @math{a\_exp}
  * @param[in]  b        Input BFP vector @vector{B}
  * 
- * @returns  @math{a}, the mantissa of @vector{B}'s energy.
+ * @returns  @math{A}, @vector{B}'s energy
  */
-int64_t bfp_s32_energy(
-    exponent_t* a_exp,
+float_s64_t bfp_s32_energy(
     const bfp_s32_t* b);
 
 
 /** 
  * @brief Get the RMS value of elements of a 16-bit BFP vector.
  * 
- * Computes @math{a \cdot 2^{a\_exp}}, the RMS value of elements of input BFP vector @vector{B}. The exponent is output 
- * through `a_exp`, and the 16-bit mantissa @math{a} is returned.
+ * Computes @math{A = a \cdot 2^{a\_exp}}, the RMS value of elements of input BFP vector @vector{B}, where @math{a} 
+ * is the 32-bit mantissa of the result, and @math{a\_exp} is its associated exponent. @math{A} is returned.
  * 
  * The RMS (root-mean-square) value of a vector is the square root of the sum of the squares of the vector's elements.
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
  * @bfp_op{16, @f$
- *      a \cdot 2^{a\_exp} \leftarrow \sqrt{\frac{1}{N}\sum_{k=0}^{N-1} \left( B_k^2 \right) }  \\
+ *      A \leftarrow \sqrt{\frac{1}{N}\sum_{k=0}^{N-1} \left( B_k^2 \right) }  \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
- * @todo Have this function return a 16-bit float struct instead.
- * 
- * @param[out] a_exp    Output exponent @math{a\_exp}
  * @param[in]  b        Input BFP vector @vector{B}
  * 
- * @returns  @math{a}, the mantissa of @vector{B}'s RMS value.
+ * @returns  @math{A}, the RMS value of @vector{B}'s elements
  */
-int32_t bfp_s16_rms(
-    exponent_t* a_exp,
+float_s32_t bfp_s16_rms(
     const bfp_s16_t* b);
 
 
 /** 
  * @brief Get the RMS value of elements of a 32-bit BFP vector.
  * 
- * Computes @math{a \cdot 2^{a\_exp}}, the RMS value of elements of input BFP vector @vector{B}. The exponent is output 
- * through `a_exp`, and the 32-bit mantissa @math{a} is returned.
+ * Computes @math{A = a \cdot 2^{a\_exp}}, the RMS value of elements of input BFP vector @vector{B}, where @math{a} 
+ * is the 32-bit mantissa of the result, and @math{a\_exp} is its associated exponent. @math{A} is returned.
  * 
  * The RMS (root-mean-square) value of a vector is the square root of the sum of the squares of the vector's elements.
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
  * @bfp_op{32, @f$
- *      a \cdot 2^{a\_exp} \leftarrow \sqrt{\frac{1}{N}\sum_{k=0}^{N-1} \left( B_k^2 \right) }  \\
+ *      A \leftarrow \sqrt{\frac{1}{N}\sum_{k=0}^{N-1} \left( B_k^2 \right) }  \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
- * @todo Have this function return a 32-bit float struct instead.
- * 
- * @param[out] a_exp    Output exponent @math{a\_exp}
  * @param[in]  b        Input BFP vector @vector{B}
  * 
- * @returns  @math{a}, the mantissa of @vector{B}'s RMS value.
+ * @returns  @math{A}, the RMS value of @vector{B}'s elements
  */
-int32_t bfp_s32_rms(
-    exponent_t* a_exp,
+float_s32_t bfp_s32_rms(
     const bfp_s32_t* b);
 
 
 /** 
  * @brief Get the maximum value of a 16-bit BFP vector.
  * 
- * Finds @math{a}, the maximum value among the mantissas of input BFP vector @vector{B}. @math{a} is returned by this 
+ * Finds @math{A}, the maximum value among elements of input BFP vector @vector{B}. @math{A} is returned by this 
  * function.
- * 
- * The exponent associated with @math{a} is `b->exp`.
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
  * @bfp_op{16, @f$
- *      a \leftarrow max\left(b_0\, b_1\, ...\, b_{N-1} \right)     \\
+ *      A \leftarrow max\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
  * @param[in] b     Input vector
  * 
- * @returns     @math{a}, the maximum mantissa value from @vector{B}
+ * @returns     @math{A}, the value of @vector{B}'s maximum element
  */
-int16_t bfp_s16_max(
+float_s16_t bfp_s16_max(
     const bfp_s16_t* b);
 
 
 /** 
  * @brief Get the maximum value of a 32-bit BFP vector.
  * 
- * Finds @math{a}, the maximum value among the mantissas of input BFP vector @vector{B}. @math{a} is returned by this 
+ * Finds @math{A}, the maximum value among elements of input BFP vector @vector{B}. @math{A} is returned by this 
  * function.
- * 
- * The exponent associated with @math{a} is `b->exp`.
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
  * @bfp_op{32, @f$
- *      a \leftarrow max\left(b_0\, b_1\, ...\, b_{N-1} \right)     \\
+ *      A \leftarrow max\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
  * @param[in] b     Input vector
  * 
- * @returns     @math{a}, the maximum mantissa value from @vector{B}
+ * @returns     @math{A}, the value of @vector{B}'s maximum element
  */
-int32_t bfp_s32_max(
+float_s32_t bfp_s32_max(
     const bfp_s32_t* b);
 
 
 /** 
  * @brief Get the minimum value of a 16-bit BFP vector.
  * 
- * Finds @math{a}, the minimum value among the mantissas of input BFP vector @vector{B}. @math{a} is returned by this 
+ * Finds @math{A}, the minimum value among elements of input BFP vector @vector{B}. @math{A} is returned by this 
  * function.
- * 
- * The exponent associated with @math{a} is `b->exp`.
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
  * @bfp_op{16, @f$
- *      a \leftarrow min\left(b_0\, b_1\, ...\, b_{N-1} \right)     \\
+ *      A \leftarrow min\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
  * @param[in] b     Input vector
  * 
- * @returns     @math{a}, the minimum mantissa value from @vector{B}
+ * @returns     @math{A}, the value of @vector{B}'s minimum element
  */
-int16_t bfp_s16_min(
+float_s16_t bfp_s16_min(
     const bfp_s16_t* b);
 
 
 /** 
  * @brief Get the minimum value of a 32-bit BFP vector.
  * 
- * Finds @math{a}, the minimum value among the mantissas of input BFP vector @vector{B}. @math{a} is returned by this 
+ * Finds @math{A}, the minimum value among elements of input BFP vector @vector{B}. @math{A} is returned by this 
  * function.
- * 
- * The exponent associated with @math{a} is `b->exp`.
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
  * @bfp_op{32, @f$
- *      a \leftarrow min\left(b_0\, b_1\, ...\, b_{N-1} \right)     \\
+ *      A \leftarrow min\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
  * @param[in] b     Input vector
  * 
- * @returns     @math{a}, the minimum mantissa value from @vector{B}
+ * @returns     @math{A}, the value of @vector{B}'s minimum element
  */
-int32_t bfp_s32_min(
+float_s32_t bfp_s32_min(
     const bfp_s32_t* b);
 
 

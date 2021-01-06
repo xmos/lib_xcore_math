@@ -120,15 +120,17 @@ void bfp_s16_abs(
 }
 
 
-int32_t bfp_s16_sum(
+float_s32_t bfp_s16_sum(
     const bfp_s16_t* b)
 {
-    return xs3_vect_s16_sum(b->data, b->length);
+    float_s32_t a;
+    a.mant = xs3_vect_s16_sum(b->data, b->length);
+    a.exp = b->exp;
+    return a;
 }
 
 
-int64_t bfp_s16_dot(
-    exponent_t* a_exp,
+float_s64_t bfp_s16_dot(
     const bfp_s16_t* b, 
     const bfp_s16_t* c)
 {
@@ -136,9 +138,10 @@ int64_t bfp_s16_dot(
     assert(b->length == c->length);
 #endif
 
-    *a_exp = b->exp + c->exp;
-
-    return xs3_vect_s16_dot(b->data, c->data, b->length);
+    float_s64_t a;
+    a.mant = xs3_vect_s16_dot(b->data, c->data, b->length);
+    a.exp = b->exp + c->exp;
+    return a;
 }
 
 
@@ -261,17 +264,21 @@ void bfp_s16_inverse(
 }
 
 
-int32_t bfp_s16_abs_sum(
+float_s32_t bfp_s16_abs_sum(
     const bfp_s16_t* b)
 {
-    return xs3_vect_s16_abs_sum(b->data, b->length);
+    float_s32_t a;
+    a.mant = xs3_vect_s16_abs_sum(b->data, b->length);
+    a.exp = b->exp;
+    return a;
 }
 
 
-int16_t bfp_s16_mean(
-    exponent_t* a_exp,
+float_s16_t bfp_s16_mean(
     const bfp_s16_t* b)
 {
+    float_s16_t a;
+
     int32_t sum = xs3_vect_s16_sum(b->data, b->length);
 
     headroom_t hr = HR_S32(sum) + 32;
@@ -282,50 +289,57 @@ int16_t bfp_s16_mean(
     if(shr > 0) 
         mean64 += 1 << (shr-1);
 
-    int16_t res = mean64 >> shr;
+    a.mant = mean64 >> shr;
+    a.exp = b->exp - hr + shr;
 
-    *a_exp = b->exp - hr + shr;
-
-    return res;
+    return a;
 }
 
 
-int64_t bfp_s16_energy(
-    exponent_t* a_exp,
+float_s64_t bfp_s16_energy(
     const bfp_s16_t* b)
 {
-    *a_exp = 2*b->exp;
-    return xs3_vect_s16_dot(b->data, b->data, b->length);
+    float_s64_t a;
+    a.exp = 2*b->exp;
+    a.mant = xs3_vect_s16_dot(b->data, b->data, b->length);
+    return a;
 }
 
 
-int32_t bfp_s16_rms(
-    exponent_t* a_exp,
+float_s32_t bfp_s16_rms(
     const bfp_s16_t* b)
 {
+    float_s32_t a;
+
     exponent_t exp, len_inv_exp;
-    const int64_t energy64 = bfp_s16_energy(&exp, b);
-    const int32_t energy32 = xs3_scalar_s64_to_s32(&exp, energy64, exp);
+    const float_s64_t energy64 = bfp_s16_energy(b);
+    const int32_t energy32 = xs3_scalar_s64_to_s32(&exp, energy64.mant, energy64.exp);
     const int32_t len_inv = xs3_inverse_s32(&len_inv_exp, b->length);
     const int32_t mean_energy = xs3_mul_s32(&exp, energy32, len_inv, exp, len_inv_exp);
 
-    const int32_t rms = xs3_sqrt_s32(a_exp, mean_energy, exp, XS3_BFP_SQRT_DEPTH_S32);
+    a.mant = xs3_sqrt_s32(&a.exp, mean_energy, exp, XS3_BFP_SQRT_DEPTH_S32);
 
-    return rms;
+    return a;
 }
 
 
-int16_t bfp_s16_max(
+float_s16_t bfp_s16_max(
     const bfp_s16_t* b)
 {
-    return xs3_vect_s16_max(b->data, b->length);
+    float_s16_t a;
+    a.mant = xs3_vect_s16_max(b->data, b->length);
+    a.exp = b->exp;
+    return a;
 }
 
 
-int16_t bfp_s16_min(
+float_s16_t bfp_s16_min(
     const bfp_s16_t* b)
 {
-    return xs3_vect_s16_min(b->data, b->length);
+    float_s16_t a;
+    a.mant = xs3_vect_s16_min(b->data, b->length);
+    a.exp = b->exp;
+    return a;
 }
 
 

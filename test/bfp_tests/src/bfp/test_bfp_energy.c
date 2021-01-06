@@ -52,12 +52,10 @@ static void test_bfp_s16_energy()
 
         bfp_s16_headroom(&B);
 
-        exponent_t a_exp;
-
-        int64_t result = bfp_s16_energy(&a_exp, &B);
+        float_s64_t result = bfp_s16_energy(&B);
 
         double expf = ldexp(sum64, 2*B.exp);
-        double resf = ldexp(result, a_exp);
+        double resf = ldexp(result.mant, result.exp);
 
         TEST_ASSERT(expf == resf);
     }
@@ -94,10 +92,9 @@ static void test_bfp_s32_energy_B()
 
         bfp_s32_headroom(&B);
         
-        exponent_t a_exp;
-        int64_t result = bfp_s32_energy(&a_exp, &B);
+        float_s64_t result = bfp_s32_energy(&B);
 
-        double diff = expected-ldexp(result, a_exp);
+        double diff = expected-ldexp(result.mant, result.exp);
         double error = fabs(diff/expected);
 
         TEST_ASSERT( error < ldexp(1,-20) );

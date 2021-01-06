@@ -43,13 +43,17 @@ static void test_bfp_s16_sum()
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, NULL, 0);
 
-        int32_t result = bfp_s16_sum(&B);
+        float_s32_t result = bfp_s16_sum(&B);
 
-        int32_t exp = 0;
+        float_s32_t expected = {
+            .mant = 0,
+            .exp = B.exp };
+
         for(int i = 0; i < B.length; i++)
-            exp += B.data[i];
+            expected.mant += B.data[i];
 
-        TEST_ASSERT_EQUAL(exp, result);
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT32(expected.mant, result.mant);
     }
 }
 
@@ -69,13 +73,17 @@ static void test_bfp_s32_sum()
 
         test_random_bfp_s32(&B, MAX_LEN, &seed, NULL, 0);
 
-        int64_t result = bfp_s32_sum(&B);
+        float_s64_t result = bfp_s32_sum(&B);
 
-        int64_t exp = 0;
+        float_s64_t expected = {
+            .mant = 0,
+            .exp = B.exp };
+            
         for(int i = 0; i < B.length; i++)
-            exp += B.data[i];
+            expected.mant += B.data[i];
 
-        TEST_ASSERT_EQUAL(exp, result);
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT(expected.mant == result.mant);
     }
 }
 

@@ -331,7 +331,8 @@ void bfp_complex_s32_conj_mul(
  * 
  * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
  * @math{B_k}, the corresponding element of complex input BFP vector @vector{B}, and real scalar 
- * @math{\alpha\cdot 2^{\alpha\_exp}}.
+ * @math{\alpha\cdot 2^{\alpha\_exp}}, where @math{\alpha} and @math{\alpha\_exp} are the mantissa and exponent 
+ * respectively of parameter `alpha`.
  * 
  * `a` and `b` must have been initialized (see bfp_complex_s16_init()), and must be the same length.
  * 
@@ -343,8 +344,7 @@ void bfp_complex_s32_conj_mul(
  * 
  * @param[out] a            Output complex BFP vector @vector{A}
  * @param[in]  b            Input complex BFP vector @vector{B}
- * @param[in]  alpha_mant   Mantissa @math{a} of real scalar 
- * @param[in]  alpha_exp    Exponent @math{\alpha\_exp} of real scalar
+ * @param[in]  alpha        Real scalar by which @vector{B} is multiplied
  */
 void bfp_complex_s16_real_scale(
     bfp_complex_s16_t* a, 
@@ -356,7 +356,8 @@ void bfp_complex_s16_real_scale(
  * 
  * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
  * @math{B_k}, the corresponding element of complex input BFP vector @vector{B}, and real scalar 
- * @math{\alpha\cdot 2^{\alpha\_exp}}.
+ * @math{\alpha\cdot 2^{\alpha\_exp}}, where @math{\alpha} and @math{\alpha\_exp} are the mantissa and exponent 
+ * respectively of parameter `alpha`.
  * 
  * `a` and `b` must have been initialized (see bfp_complex_s32_init()), and must be the same length.
  * 
@@ -368,8 +369,7 @@ void bfp_complex_s16_real_scale(
  * 
  * @param[out] a            Output complex BFP vector @vector{A}
  * @param[in]  b            Input complex BFP vector @vector{B}
- * @param[in]  alpha_mant   Mantissa @math{a} of real scalar 
- * @param[in]  alpha_exp    Exponent @math{\alpha\_exp} of real scalar
+ * @param[in]  alpha        Real scalar by which @vector{B} is multiplied
  */
 void bfp_complex_s32_real_scale(
     bfp_complex_s32_t* a, 
@@ -381,7 +381,8 @@ void bfp_complex_s32_real_scale(
  * 
  * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
  * @math{B_k}, the corresponding element of complex input BFP vector @vector{B}, and complex scalar 
- * @math{\alpha\cdot 2^{\alpha\_exp}}.
+ * @math{\alpha\cdot 2^{\alpha\_exp}}, where @math{\alpha} and @math{\alpha\_exp} are the complex mantissa and exponent 
+ * respectively of parameter `alpha`.
  * 
  * `a` and `b` must have been initialized (see bfp_complex_s16_init()), and must be the same length.
  * 
@@ -393,8 +394,7 @@ void bfp_complex_s32_real_scale(
  * 
  * @param[out] a            Output complex BFP vector @vector{A}
  * @param[in]  b            Input complex BFP vector @vector{B}
- * @param[in]  alpha_mant   Mantissa @math{a} of complex scalar 
- * @param[in]  alpha_exp    Exponent @math{\alpha\_exp} of real scalar
+ * @param[in]  alpha        Complex scalar by which @vector{B} is multiplied
  */
 void bfp_complex_s16_scale(
     bfp_complex_s16_t* a, 
@@ -406,7 +406,8 @@ void bfp_complex_s16_scale(
  * 
  * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the complex product of 
  * @math{B_k}, the corresponding element of complex input BFP vector @vector{B}, and complex scalar 
- * @math{\alpha\cdot 2^{\alpha\_exp}}.
+ * @math{\alpha\cdot 2^{\alpha\_exp}}, where @math{\alpha} and @math{\alpha\_exp} are the complex mantissa and exponent 
+ * respectively of parameter `alpha`.
  * 
  * `a` and `b` must have been initialized (see bfp_complex_s32_init()), and must be the same length.
  * 
@@ -418,8 +419,7 @@ void bfp_complex_s16_scale(
  * 
  * @param[out] a            Output complex BFP vector @vector{A}
  * @param[in]  b            Input complex BFP vector @vector{B}
- * @param[in]  alpha_mant   Mantissa @math{a} of complex scalar 
- * @param[in]  alpha_exp    Exponent @math{\alpha\_exp} of real scalar
+ * @param[in]  alpha        Complex scalar by which @vector{B} is multiplied
  */
 void bfp_complex_s32_scale(
     bfp_complex_s32_t* a, 
@@ -664,47 +664,43 @@ void bfp_complex_s32_mag(
 /** 
  * @brief Get the sum of elements of a complex 16-bit BFP vector.
  * 
- * The mantissas of the elements of complex input BFP vector @vector{B} are summed. The 32-bit sum is returned.
+ * The elements of complex input BFP vector @vector{B} are summed together. The result is a complex 32-bit 
+ * floating-point scalar @math{a}, which is returned.
  * 
  * `b` must have been initialized (see bfp_complex_s16_init()).
  * 
- * @todo Return a complex 32-bit float instead.
- * 
  * @bfp_op{16, @f$
- *      a \leftarrow \sum_{k=0}^{N-1} b_k                               \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ *      a \leftarrow \sum_{k=0}^{N-1} \left( b_k \cdot 2^{B\_exp} \right)   \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
  * @param[in]  b     Input complex BFP vector @vector{B}
  * 
- * @returns     @math{a}, the complex 64-bit sum of @vector{B}'s elements
+ * @returns     @math{a}, the sum of vector @vector{B}'s elements
  */
-complex_s32_t bfp_complex_s16_sum(
+float_complex_s32_t bfp_complex_s16_sum(
     const bfp_complex_s16_t* b);
 
 /** 
  * @brief Get the sum of elements of a complex 32-bit BFP vector.
  * 
- * The elements of complex input BFP vector @vector{B} are summed to get @math{a \cdot 2^{a\_exp}}. The exponent 
- * @math{a\_exp} is output through `a_exp`, and the 64-bit mantissa is returned.
+ * The elements of complex input BFP vector @vector{B} are summed together. The result is a complex 64-bit 
+ * floating-point scalar @math{a}, which is returned.
  * 
  * `b` must have been initialized (see bfp_complex_s32_init()).
  * 
- * @todo Return a complex 64-bit float instead.
- * 
  * @bfp_op{32, @f$
- *      a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{N-1} B_k              \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ *      a \leftarrow \sum_{k=0}^{N-1} \left( b_k \cdot 2^{B\_exp} \right)   \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
  * @f$ }
  * 
  * @param[in]  b     Input complex BFP vector @vector{B}
  * 
- * @returns     @math{a}, the complex 64-bit mantissa of the sum of @vector{B}'s elements
+ * @returns     @math{a}, the sum of vector @vector{B}'s elements
  */
-complex_s64_t bfp_complex_s32_sum( 
-    exponent_t* a_exp,
+float_complex_s64_t bfp_complex_s32_sum( 
     const bfp_complex_s32_t* b);
 
 

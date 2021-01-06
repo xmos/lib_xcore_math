@@ -210,10 +210,15 @@ void bfp_complex_s16_mag(
 }
 
 
-complex_s32_t bfp_complex_s16_sum(
+float_complex_s32_t bfp_complex_s16_sum(
     const bfp_complex_s16_t* b)
 {
-    return xs3_vect_complex_s16_sum(b->real, b->imag, b->length);
+    float_complex_s32_t a;
+
+    a.mant = xs3_vect_complex_s16_sum(b->real, b->imag, b->length);
+    a.exp = b->exp;
+
+    return a;
 }
 
 

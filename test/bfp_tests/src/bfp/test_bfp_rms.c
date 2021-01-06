@@ -52,9 +52,7 @@ static void test_bfp_s16_rms()
 
         bfp_s16_headroom(&B);
 
-        exponent_t a_exp;
-
-        int32_t result = bfp_s16_rms(&a_exp, &B);
+        float_s32_t result = bfp_s16_rms(&B);
 
         double energy = 0;
         for(int i = 0; i < B.length; i++){
@@ -65,30 +63,13 @@ static void test_bfp_s16_rms()
 
         const double expectedF = sqrt(mean_energy);
 
-        const exponent_t ideal_exponent = floor( log2(expectedF) ) - 30;
+        float_s32_t ideal_result = {
+            .mant = round( expectedF / ldexp(1,result.exp) ),
+            .exp = floor( log2(expectedF) ) - 30 };
 
-        // printf("B.length = %u\n", B.length);
-        // printf("B.exp = %d\n", B.exp);
-        // printf("B.hr = %u\n", B.hr);
 
-        // for(int i = 0; i < B.length; i++){
-        //     printf("  B.data[%d] = %d\n", i, B.data[i]);
-        // }
-        // printf("result = %ld\n", result);
-        // printf("a_exp = %d\n", a_exp);
-
-        // printf("energy = %e\n", energy);
-        // printf("mean_energy = %e\n", mean_energy);
-        // printf("expectedF = %e\n", expectedF);
-        // printf("ideal_exponent = %d\n", ideal_exponent);
-        // printf("ldexp(result, a_exp) = %e\n", ldexp(result, a_exp));
-
-        TEST_ASSERT_INT32_WITHIN(3, ideal_exponent, a_exp);
-        
-
-        const int32_t ideal_result = round( expectedF / ldexp(1,a_exp) );
-
-        TEST_ASSERT_INT32_WITHIN(3, ideal_result, result);
+        TEST_ASSERT_INT32_WITHIN(3, ideal_result.exp, result.exp);
+        TEST_ASSERT_INT32_WITHIN(3, ideal_result.mant, result.mant);
     }
 }
 
@@ -121,9 +102,7 @@ static void test_bfp_s32_rms()
 
         bfp_s32_headroom(&B);
 
-        exponent_t a_exp;
-
-        int32_t result = bfp_s32_rms(&a_exp, &B);
+        float_s32_t result = bfp_s32_rms(&B);
 
         double energy = 0;
         for(int i = 0; i < B.length; i++){
@@ -134,30 +113,12 @@ static void test_bfp_s32_rms()
 
         const double expectedF = sqrt(mean_energy);
 
-        const exponent_t ideal_exponent = floor( log2(expectedF) ) - 30;
+        float_s32_t ideal_result = {
+            .mant = round( expectedF / ldexp(1,result.exp) ),
+            .exp = floor( log2(expectedF) ) - 30 };
 
-        // printf("B.length = %u\n", B.length);
-        // printf("B.exp = %d\n", B.exp);
-        // printf("B.hr = %u\n", B.hr);
-
-        // for(int i = 0; i < B.length; i++){
-        //     printf("  B.data[%d] = %d\n", i, B.data[i]);
-        // }
-        // printf("result = %ld\n", result);
-        // printf("a_exp = %d\n", a_exp);
-
-        // printf("energy = %e\n", energy);
-        // printf("mean_energy = %e\n", mean_energy);
-        // printf("expectedF = %e\n", expectedF);
-        // printf("ideal_exponent = %d\n", ideal_exponent);
-        // printf("ldexp(result, a_exp) = %e\n", ldexp(result, a_exp));
-
-        TEST_ASSERT_INT32_WITHIN(3, ideal_exponent, a_exp);
-        
-
-        const int32_t ideal_result = round( expectedF / ldexp(1,a_exp) );
-
-        TEST_ASSERT_INT32_WITHIN(3, ideal_result, result);
+        TEST_ASSERT_INT32_WITHIN(3, ideal_result.exp, result.exp);
+        TEST_ASSERT_INT32_WITHIN(3, ideal_result.mant, result.mant);
     }
 }
 

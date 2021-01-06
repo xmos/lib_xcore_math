@@ -36,14 +36,22 @@ static void test_bfp_s16_max()
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -5, 5);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
-        int16_t exp = INT16_MIN;
+
+        float_s16_t expected = {
+            .mant = INT16_MIN,
+            .exp = B.exp,
+        };
+
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
-            exp = MAX(exp, B.data[i]);
+            expected.mant = MAX(expected.mant, B.data[i]);
         }
         bfp_s16_headroom(&B);
-        int16_t result = bfp_s16_max(&B);
-        TEST_ASSERT_EQUAL_INT16(exp, result);
+
+        float_s16_t result = bfp_s16_max(&B);
+
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT16(expected.mant, result.mant);
     }
 }
 
@@ -60,14 +68,22 @@ static void test_bfp_s32_max()
         bfp_s32_init(&B, dataB, pseudo_rand_int(&seed, -5, 5),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
         B.hr = pseudo_rand_uint(&seed, 0, 28);
-        int32_t exp = INT32_MIN;
+
+        float_s32_t expected = {
+            .mant = INT32_MIN,
+            .exp = B.exp,
+        };
+        
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
-            exp = MAX(exp, B.data[i]);
+            expected.mant = MAX(expected.mant, B.data[i]);
         }
         bfp_s32_headroom(&B);
-        int32_t result = bfp_s32_max(&B);
-        TEST_ASSERT_EQUAL_INT32(exp, result);
+
+        float_s32_t result = bfp_s32_max(&B);
+
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT32(expected.mant, result.mant);
     }
 }
 
@@ -91,14 +107,22 @@ static void test_bfp_s16_min()
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -5, 5);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
-        int16_t exp = INT16_MAX;
+        
+        float_s16_t expected = {
+            .mant = INT16_MAX,
+            .exp = B.exp,
+        };
+
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
-            exp = MIN(exp, B.data[i]);
+            expected.mant = MIN(expected.mant, B.data[i]);
         }
         bfp_s16_headroom(&B);
-        int16_t result = bfp_s16_min(&B);
-        TEST_ASSERT_EQUAL_INT16(exp, result);
+
+        float_s16_t result = bfp_s16_min(&B);
+
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT16(expected.mant, result.mant);
     }
 }
 
@@ -115,14 +139,22 @@ static void test_bfp_s32_min()
         bfp_s32_init(&B, dataB, pseudo_rand_int(&seed, -5, 5),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
         B.hr = pseudo_rand_uint(&seed, 0, 28);
-        int32_t exp = INT32_MAX;
+
+        float_s32_t expected = {
+            .mant = INT32_MAX,
+            .exp = B.exp,
+        };
+        
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
-            exp = MIN(exp, B.data[i]);
+            expected.mant = MIN(expected.mant, B.data[i]);
         }
         bfp_s32_headroom(&B);
-        int32_t result = bfp_s32_min(&B);
-        TEST_ASSERT_EQUAL_INT32(exp, result);
+
+        float_s32_t result = bfp_s32_min(&B);
+
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT32(expected.mant, result.mant);
     }
 }
 

@@ -202,16 +202,16 @@ void bfp_complex_s32_mag(
 }
 
 
-complex_s64_t bfp_complex_s32_sum( 
-    exponent_t* a_exp,
+float_complex_s64_t bfp_complex_s32_sum( 
     const bfp_complex_s32_t* b)
 {
     right_shift_t b_shr;
-    complex_s64_t res;
+    float_complex_s64_t a;
 
-    xs3_vect_complex_s32_sum_prepare(a_exp, &b_shr, b->exp, b->hr, b->length);
-    xs3_vect_complex_s32_sum(&res, b->data, b->length, b_shr);
-    return res;
+    xs3_vect_complex_s32_sum_prepare(&a.exp, &b_shr, b->exp, b->hr, b->length);
+    xs3_vect_complex_s32_sum(&a.mant, b->data, b->length, b_shr);
+
+    return a;
 }
 
 
