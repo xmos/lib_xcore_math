@@ -29,9 +29,9 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
     x->length = FFT_N/2;
 
     xs3_fft_index_bit_reversal(X->data, X->length);
-    xs3_fft_dit_forward(X->data, X->length, &X->hr, xs3_dit_fft_lut, &X->exp);
+    xs3_fft_dit_forward(X->data, X->length, &X->hr, &X->exp);
 
-    xs3_fft_mono_adjust(X->data, FFT_N, XS3_DIT_REAL_FFT_LUT(FFT_N), 0);
+    xs3_fft_mono_adjust(X->data, FFT_N, 0);
 
     return X;
 }
@@ -57,10 +57,10 @@ bfp_s32_t* bfp_fft_inverse_mono(
     X->exp = X->exp + X_shr;
     X->length = FFT_N;
 
-    xs3_fft_mono_adjust(X->data, FFT_N, XS3_DIT_REAL_FFT_LUT(FFT_N), 1);
+    xs3_fft_mono_adjust(X->data, FFT_N, 1);
 
     xs3_fft_index_bit_reversal(X->data, FFT_N/2);
-    xs3_fft_dit_inverse(X->data, FFT_N/2, &x->hr, xs3_dit_fft_lut, &x->exp);
+    xs3_fft_dit_inverse(X->data, FFT_N/2, &x->hr, &x->exp);
 
     return x;
 }
@@ -91,7 +91,7 @@ void bfp_fft_forward_complex(
     }
 
     xs3_fft_index_bit_reversal(samples->data, samples->length);
-    xs3_fft_dit_forward(samples->data, samples->length, &samples->hr, xs3_dit_fft_lut, &samples->exp);
+    xs3_fft_dit_forward(samples->data, samples->length, &samples->hr, &samples->exp);
 }
 
 
@@ -113,7 +113,7 @@ void bfp_fft_inverse_complex(
     }   
 
     xs3_fft_index_bit_reversal(spectrum->data, spectrum->length);
-    xs3_fft_dit_inverse(spectrum->data, spectrum->length, &spectrum->hr, xs3_dit_fft_lut, &spectrum->exp);
+    xs3_fft_dit_inverse(spectrum->data, spectrum->length, &spectrum->hr, &spectrum->exp);
 }
 
 
@@ -146,7 +146,7 @@ void bfp_fft_forward_stereo(
     if(input_shr)
         input->hr = xs3_vect_s32_shl((int32_t*) input->data,(int32_t*)  input->data, 2*input->length, -input_shr);
     xs3_fft_index_bit_reversal((complex_s32_t*) input->data, input->length);
-    xs3_fft_dit_forward((complex_s32_t*) input->data, input->length, &input->hr, xs3_dit_fft_lut, &input->exp); 
+    xs3_fft_dit_forward((complex_s32_t*) input->data, input->length, &input->hr, &input->exp); 
 
     a->data = (complex_s32_t*) &input->data[0];
     b->data = (complex_s32_t*) &input->data[input->length/2];
@@ -204,6 +204,6 @@ void  bfp_fft_inverse_stereo(
 
     xs3_fft_spectra_merge((complex_s32_t*) x->data, FFT_N);
     xs3_fft_index_bit_reversal((complex_s32_t*) x->data, FFT_N);
-    xs3_fft_dit_inverse((complex_s32_t*) x->data, FFT_N, &x->hr, xs3_dit_fft_lut, &x->exp);
+    xs3_fft_dit_inverse((complex_s32_t*) x->data, FFT_N, &x->hr, &x->exp);
     
 }

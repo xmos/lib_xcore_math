@@ -7,20 +7,18 @@
         complex_s32_t * x, 
         unsigned n, 
         headroom_t* hr, 
-        const complex_s32_t* twiddle_lut, 
         exponent_t* exp);
     
     void xs3_fft_dit_inverse (
         complex_s32_t* x, 
         unsigned n, 
         headroom_t* hr, 
-        const complex_s32_t* twiddle_lut, 
         exponent_t* exp);
 */
 
 #define NSTACKWORDS (32)
 
-#define STACK_EXP       (NSTACKWORDS+1)
+#define STACK_EXP       (8)
 
 #define x_p 			r0  //astew: Value is constant. Could be thrown on stack to free up a register.
 #define n 				r1 
@@ -49,11 +47,14 @@
 .align 4
 xs3_fft_dit_forward:
 
-    dualentsp NSTACKWORDS
-    std r4, hr_p, sp[0]
-    std r5, r6, sp[1]
-    std r7, r8, sp[2]
-    std r9, r10, sp[3]
+        dualentsp NSTACKWORDS
+        std r4, hr_p, sp[0]
+        std r5, r6, sp[1]
+        std r7, r8, sp[2]
+        std r9, r10, sp[3]
+    
+        ldaw r11, cp[xs3_dit_fft_lut]
+    {   mov twiddle_lut_p, r11                  ;   stw r3, sp[STACK_EXP]                   }
 
     {   ldc exp_modifier, 0                     ;   ldw r11, hr_p[0]                        }
     {   sub r11, r11, 1                         ;   bf r11, dit_fft_impl_0_bits_hr          }
@@ -159,11 +160,11 @@ dit_fft_done:
     {   add s, s, exp_modifier                  ;                                           }
     {                                           ;   stw s, r11[0]                           }
 
-    //restore the regs
-    ldd r5, r6, sp[1]
-    ldd r7, r8, sp[2]
-    ldd r9, r10, sp[3]
-    retsp NSTACKWORDS
+        //restore the regs
+        ldd r5, r6, sp[1]
+        ldd r7, r8, sp[2]
+        ldd r9, r10, sp[3]
+        retsp NSTACKWORDS
     
     .cc_bottom  xs3_fft_dit_forward.function
     .set	    xs3_fft_dit_forward.nstackwords,NSTACKWORDS
@@ -199,11 +200,14 @@ dit_fft_done:
 
 .align 4
 xs3_fft_dit_inverse:
-    dualentsp NSTACKWORDS
-    std r4, hr_p, sp[0]
-    std r5, r6, sp[1]
-    std r7, r8, sp[2]
-    std r9, r10, sp[3]
+        dualentsp NSTACKWORDS
+        std r4, hr_p, sp[0]
+        std r5, r6, sp[1]
+        std r7, r8, sp[2]
+        std r9, r10, sp[3]
+    
+        ldaw r11, cp[xs3_dit_fft_lut]
+    {   mov twiddle_lut_p, r11                  ;   stw r3, sp[STACK_EXP]                   }
 
     {   ldc exp_modifier, 0                     ;   ldw r11, hr_p[0]                        }
     {   sub r11, r11, 1                         ;   bf r11, dit_ifft_impl_0_bits_hr         }
@@ -292,11 +296,11 @@ dit_ifft_done:
     {   add s, s, exp_modifier                  ;                                           }
     {                                           ;   stw s, r11[0]                           }
 
-    //restore the regs
-    ldd r5, r6, sp[1]
-    ldd r7, r8, sp[2]
-    ldd r9, r10, sp[3]
-    retsp NSTACKWORDS   
+        //restore the regs
+        ldd r5, r6, sp[1]
+        ldd r7, r8, sp[2]
+        ldd r9, r10, sp[3]
+        retsp NSTACKWORDS   
     
     .cc_bottom  xs3_fft_dit_inverse.function
     .set	    xs3_fft_dit_inverse.nstackwords,NSTACKWORDS

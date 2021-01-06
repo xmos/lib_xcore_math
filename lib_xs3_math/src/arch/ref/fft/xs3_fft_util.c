@@ -2,6 +2,7 @@
 #include "xs3_math.h"
 #include "../../../vect/vpu_helper.h"
 #include "../../../vect/vpu_const_vects.h"
+#include "../../../vect/xs3_fft_lut.h"
 
 static unsigned bitrev(unsigned index, size_t bit_width)
 {
@@ -165,13 +166,14 @@ headroom_t xs3_fft_spectra_merge(
 void xs3_fft_mono_adjust(
     complex_s32_t x[],
     const unsigned FFT_N,
-    const complex_s32_t* W,
     const unsigned inverse)
 {
     // Assembly only supports FFT_N >= 16
     assert(FFT_N >= 16);
 
     const int VEC_ELMS = 4; //complex elements per vector
+
+    const complex_s32_t* W = XS3_DIT_REAL_FFT_LUT(FFT_N);
     
     // REMEMBER: The length of x[] is only FFT_N/2!
     complex_s32_t X0 = x[0];

@@ -198,5 +198,5 @@ void test_bfp_mag_vect_complex()
     SET_TEST_FILE();
 
     RUN_TEST(test_bfp_complex_s16_mag);
-    // RUN_TEST(test_bfp_complex_s32_mag);
+    RUN_TEST(test_bfp_complex_s32_mag);
 }

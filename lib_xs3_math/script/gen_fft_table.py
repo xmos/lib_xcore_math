@@ -170,6 +170,8 @@ def generate_DIT_FFT(N, header_file, source_file, args, M=8*4):
 
     source_file.write("};\n\n")
 
+    source_file.write(f"const uint32_t {table_name}_size = sizeof({table_name});\n\n")
+
     return table_name
 
 
@@ -254,6 +256,8 @@ def generate_DIF_FFT(N, header_file, source_file, args, M=8*4):
             source_file.write("\n\t")
 
     source_file.write("};\n\n")
+
+    source_file.write(f"const uint32_t {table_name}_size = sizeof({table_name});\n\n")
 
     return table_name
 

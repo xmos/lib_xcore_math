@@ -6,13 +6,14 @@
 void xs3_fft_mono_adjust(
     complex_s32_t* X,
     const unsigned N,
-    const complex_s32_t* W,
     const unsigned inverse);
 */
 
 
 #define FUNCTION_NAME   xs3_fft_mono_adjust
-#define NSTACKWORDS     (16+8*4)
+
+#define NSTACKVECTS     (4)
+#define NSTACKWORDS     (16 + 8*(NSTACKVECTS))
 
 #define STACK_VEC_TMP_A         (NSTACKWORDS-(8*1))
 #define STACK_VEC_TMP_B         (NSTACKWORDS-(8*2))
@@ -53,8 +54,14 @@ FUNCTION_NAME:
     {   std r6, r7, sp[2]                                                                   }
     {   std r8, r9, sp[1]                                                                   }
     {   ldc r11, 0                              ;   stw r10, sp[1]                          }
-    {                                           ;   stw r3, sp[STACK_INV]                   }
-    {   shr r3, N, 4                            ;   vsetc r11                               }
+    {   sub r4, N, 8                            ;   stw r2, sp[STACK_INV]                   }
+    {   shl r4, r4, 3                           ;   vsetc r11                               }
+
+    // W <-- &xs3_dit_fft_lut[N - 8]
+    // W <-- xs3_dit_fft_lut + ((N-8)<<3)
+        ldaw r11, cp[xs3_dit_fft_lut]
+    {   shr r3, N, 4                            ;   add W, r11, r4                          }
+    
     {   shr N, N, 1                             ;   stw X, sp[STACK_X]                      }
     // exception if N < 16. Don't bother using this with really short FFTs.
     {   ecallf r3                               ;   stw N, sp[STACK_N]                      }

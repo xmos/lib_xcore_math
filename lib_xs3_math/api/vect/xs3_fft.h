@@ -126,8 +126,8 @@ headroom_t xs3_fft_spectra_merge(
  *      exponent_t x_exp = ...;
  *      headroom_t hr = xs3_vect_s32_headroom(x, N);
  *      xs3_fft_index_bit_reversal(X, N);
- *      xs3_fft_dit_forward(X, N/2, &hr, xs3_dit_fft_lut, &x_exp);
- *      xs3_fft_mono_adjust(X, N, XS3_DIT_REAL_FFT_LUT(N), 0);
+ *      xs3_fft_dit_forward(X, N/2, &hr, &x_exp);
+ *      xs3_fft_mono_adjust(X, N, 0);
  * \endcode
  * 
  * To perform the @math{N}-point inverse DFT on the spectrum `X[n]` of a real signal `x[n]`:
@@ -136,9 +136,9 @@ headroom_t xs3_fft_spectra_merge(
  *      int32_t* x = (int32_t*)X;
  *      exponent_t X_exp = ...;
  *      headroom_t hr = xs3_vect_s32_headroom(x, N);
- *      xs3_fft_mono_adjust(X, N, XS3_DIT_REAL_FFT_LUT(N), 1);
+ *      xs3_fft_mono_adjust(X, N, 1);
  *      xs3_fft_index_bit_reversal(X, N);
- *      xs3_fft_dit_inverse(X, N/2, &hr, xs3_dit_fft_lut, &X_exp);
+ *      xs3_fft_dit_inverse(X, N/2, &hr, &X_exp);
  * \endcode
  * 
  * @note xs3_fft_dit_forward() and xs3_fft_dit_inverse() each require a certain amount of headroom to avoid overflows. 
@@ -149,20 +149,15 @@ headroom_t xs3_fft_spectra_merge(
  * `length` is size of the real DFT to be computed, _not_ the number of elements in `x[]` (or the size of the complex
  * DFT to actually be employed).
  * 
- * `W` is a pointer into the look-up table `xs3_dit_fft_lut`, which represents a portion of the DFT matrix. Use the
- * macro `XS3_DIT_REAL_FFT_LUT(length)` to get the correct address.  
- * 
  * `inverse` should be `1` if the inverse DFT is being computed, and `0` otherwise.
  * 
  * @param[in] x         The spectrum @math{X[f]} to be modified.
  * @param[in] length    The size of the DFT to be computed. Twice the length of `x` (in elements).
- * @param[in] W         Pointer into the DIT FFT look-up table.
  * @param[in] inverse   Flag indicating whether the inverse DFT is being computed.
  */
 void xs3_fft_mono_adjust(
     complex_s32_t x[],
     const unsigned length,
-    const complex_s32_t* W,
     const unsigned inverse);
 
 /**
@@ -192,14 +187,12 @@ void xs3_fft_mono_adjust(
  * @param[inout]  x     The `N`-element complex input vector to be transformed.
  * @param[in]     N     The size of the DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
- * @param[in]     W     The DIT FFT look-up table `xs3_dit_fft_lut`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
  */
 void xs3_fft_dit_forward (
     complex_s32_t x[], 
     const unsigned N, 
     headroom_t* hr, 
-    const complex_s32_t* W, 
     exponent_t* exp);
 
 /**
@@ -229,14 +222,12 @@ void xs3_fft_dit_forward (
  * @param[inout]  x     The `N`-element complex input vector to be transformed.
  * @param[in]     N     The size of the inverse DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
- * @param[in]     W     The DIT FFT look-up table `xs3_dit_fft_lut`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
  */
 void xs3_fft_dit_inverse (
     complex_s32_t x[], 
     const unsigned N, 
     headroom_t* hr, 
-    const complex_s32_t* W, 
     exponent_t* exp);
 
 /**
@@ -266,14 +257,12 @@ void xs3_fft_dit_inverse (
  * @param[inout]  x     The `N`-element complex input vector to be transformed.
  * @param[in]     N     The size of the DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
- * @param[in]     W     The DIF FFT look-up table `xs3_dif_fft_lut`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
  */
 void xs3_fft_dif_forward (
     complex_s32_t x[], 
     const unsigned N, 
     headroom_t* hr, 
-    const complex_s32_t* W, 
     exponent_t* exp);
 
 /**
@@ -303,14 +292,12 @@ void xs3_fft_dif_forward (
  * @param[inout]  x     The `N`-element complex input vector to be transformed.
  * @param[in]     N     The size of the inverse DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
- * @param[in]     W     The DIF FFT look-up table `xs3_dif_fft_lut`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
  */
 void xs3_fft_dif_inverse (
     complex_s32_t x[], 
     const unsigned N, 
     headroom_t* hr, 
-    const complex_s32_t* W, 
     exponent_t* exp);
 
 

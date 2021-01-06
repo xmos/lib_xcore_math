@@ -259,6 +259,9 @@ const complex_s32_t xs3_dit_fft_lut[1020] =
 	{ 1073741824,           0}, { 1073721611,    -6588356}, { 1073660973,   -13176464}, { 1073559913,   -19764076}, 
 	};
 
+    
+const uint32_t xs3_dit_fft_lut_size = sizeof(xs3_dit_fft_lut);
+
 const complex_s32_t xs3_dif_fft_lut[1020] = 
 	{
 	{ 1073418433,    26350943}, { 1073559913,    19764076}, { 1073660973,    13176464}, { 1073721611,     6588356}, 
@@ -518,3 +521,4 @@ const complex_s32_t xs3_dif_fft_lut[1020] =
 	{-1073741824,           0}, { -759250125,   759250125}, {          0,  1073741824}, {  759250125,   759250125}, 
 	};
 
+const uint32_t xs3_dif_fft_lut_size = sizeof(xs3_dif_fft_lut);

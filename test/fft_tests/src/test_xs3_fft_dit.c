@@ -67,7 +67,7 @@ void test_xs3_fft_dit_forward_complete()
             flt_fft_forward_double(A, FFT_N, sine_table);
 
             xs3_fft_index_bit_reversal(a, FFT_N);
-            xs3_fft_dit_forward(a, FFT_N, &headroom, xs3_dit_fft_lut, &exponent);
+            xs3_fft_dit_forward(a, FFT_N, &headroom, &exponent);
 
             unsigned diff = 0;
 
@@ -142,7 +142,7 @@ void test_xs3_fft_dit_inverse_complete()
             flt_fft_inverse_double(A, FFT_N, sine_table);
 
             xs3_fft_index_bit_reversal(a, FFT_N);
-            xs3_fft_dit_inverse(a, FFT_N, &headroom, xs3_dit_fft_lut, &exponent);
+            xs3_fft_dit_inverse(a, FFT_N, &headroom, &exponent);
 
             Fft_inverseTransform(real, imag, FFT_N);
 
@@ -221,7 +221,7 @@ void test_xs3_fft_dit_forward()
             flt_fft_forward_double(A, FFT_N, sine_table);
 
             unsigned ts1 = getTimestamp();
-            xs3_fft_dit_forward(a, FFT_N, &headroom, xs3_dit_fft_lut, &exponent);
+            xs3_fft_dit_forward(a, FFT_N, &headroom, &exponent);
             unsigned ts2 = getTimestamp();
 
             float timing = (ts2-ts1)/100.0;
@@ -287,7 +287,7 @@ void test_xs3_fft_dit_inverse()
             flt_fft_inverse_double(A, FFT_N, sine_table);
 
             unsigned ts1 = getTimestamp();
-            xs3_fft_dit_inverse(a, FFT_N, &headroom, xs3_dit_fft_lut, &exponent);
+            xs3_fft_dit_inverse(a, FFT_N, &headroom, &exponent);
             unsigned ts2 = getTimestamp();
 
             float timing = (ts2-ts1)/100.0;

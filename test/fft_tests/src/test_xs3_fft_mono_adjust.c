@@ -81,7 +81,7 @@ void test_xs3_fft_mono_adjust_forward()
             ref2[0].im = ref2[N/2].re;
 
             xs3_fft_index_bit_reversal((complex_s32_t*) a, N/2);
-            xs3_fft_dit_forward((complex_s32_t*) a, N/2, &headroom, xs3_dit_fft_lut, &exponent);
+            xs3_fft_dit_forward((complex_s32_t*) a, N/2, &headroom, &exponent);
 
             for(int i = 0; i < N/2; i++){
                 complex_s32_t aa = ((complex_s32_t*)a)[i];
@@ -93,7 +93,7 @@ void test_xs3_fft_mono_adjust_forward()
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+2, diff, "Test setup failed.");
 
             unsigned ts1 = getTimestamp();
-            xs3_fft_mono_adjust((complex_s32_t*) a, N, XS3_DIT_REAL_FFT_LUT(N), 0);
+            xs3_fft_mono_adjust((complex_s32_t*) a, N, 0);
             unsigned ts2 = getTimestamp();
 
             float timing = (ts2-ts1)/100.0;
@@ -159,10 +159,10 @@ void test_xs3_fft_mono_adjust_inverse()
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+2, diff, "Test setup failed.");
 
 
-            xs3_fft_mono_adjust(a, N, XS3_DIT_REAL_FFT_LUT(N), 0);
+            xs3_fft_mono_adjust(a, N, 0);
 
             unsigned ts1 = getTimestamp();
-            xs3_fft_mono_adjust(a, N, XS3_DIT_REAL_FFT_LUT(N), 1);
+            xs3_fft_mono_adjust(a, N, 1);
             unsigned ts2 = getTimestamp();
 
             float timing = (ts2-ts1)/100.0;

@@ -24,7 +24,7 @@
 #endif
 
 #ifndef TIME_FUNCS
-#define TIME_FUNCS 0
+#define TIME_FUNCS 1
 #endif
 
 #ifndef WRITE_PERFORMANCE_INFO

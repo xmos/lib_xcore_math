@@ -4,6 +4,7 @@
 
 #include "xs3_math.h"
 #include "../../../vect/vpu_helper.h"
+#include "../../../vect/xs3_fft_lut.h"
 
 //load 4 complex 32-bit values into a buffer
 static void load_vec(
@@ -77,10 +78,11 @@ void xs3_fft_dit_forward (
     complex_s32_t x[], 
     const unsigned N, 
     headroom_t* hr, 
-    const complex_s32_t* W, 
     exponent_t* exp)
 {
     const unsigned FFT_N_LOG2 = 31 - CLS_S32(N);
+
+    const complex_s32_t* W = xs3_dit_fft_lut;
 
     exponent_t exp_modifier = 0;
 
@@ -150,10 +152,11 @@ void xs3_fft_dit_inverse (
     complex_s32_t x[], 
     const unsigned N, 
     headroom_t* hr, 
-    const complex_s32_t* W, 
     exponent_t* exp)
 {
     const unsigned FFT_N_LOG2 = 31 - CLS_S32(N);
+
+    const complex_s32_t* W = xs3_dit_fft_lut;
 
     exponent_t exp_modifier = 0;
 

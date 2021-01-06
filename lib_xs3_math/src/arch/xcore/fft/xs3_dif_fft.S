@@ -7,21 +7,21 @@
         complex_s32_t * x, 
         unsigned n, 
         headroom_t* hr, 
-        const complex_s32_t* twiddle_lut, 
         exponent_t* exp);
     
     void xs3_fft_dif_inverse (
         complex_s32_t* x, 
         unsigned n, 
         headroom_t* hr, 
-        const complex_s32_t* twiddle_lut, 
         exponent_t* exp);
 */
 
 
 #define NSTACKWORDS (32)
 
-#define STACK_EXP       (NSTACKWORDS+1)
+#define STACK_HR        (0)
+#define STACK_N         (8)
+#define STACK_EXP       (9)
 
 #define x_p 			r0 
 #define n 				r1 
@@ -43,8 +43,6 @@
 .type	xs3_fft_dif_forward,@function
 .cc_top xs3_fft_dif_forward.function, xs3_fft_dif_forward
 
-
-
 .align 4
 xs3_fft_dif_forward:
 	{   dualentsp NSTACKWORDS                                                               }
@@ -52,6 +50,14 @@ xs3_fft_dif_forward:
 	{   std r5, r6, sp[1]                                                                   }
 	{   std r7, r8, sp[2]                                                                   }
 	{   std r9, r10, sp[3]                                                                  }
+    
+    {                                           ;   stw r3, sp[STACK_EXP]                   }
+        ldaw r11, cp[xs3_dif_fft_lut_size]
+    {   ldc r5, 32                              ;   ldw r4, r11[0]                          }
+        ldaw r11, cp[xs3_dif_fft_lut]
+    {   add twiddle_lut_p, r11, r4              ;   shl r4, n, 3                            }
+    {   add twiddle_lut_p, twiddle_lut_p, r5    ;                                           }
+    {   sub twiddle_lut_p, twiddle_lut_p, r4    ;                                           }
 
 dif_fft_impl_start:
 	{   ldc s, 31                               ;   ldw r11, hr_p[0]                        }
@@ -60,7 +66,7 @@ dif_fft_impl_start:
 	{   ldc _32, 32                             ;   ldw r11, r11[s]                         }
 	{   mov exp_modifier, r11                   ;   vsetc r11                               }
 
-	{   shr s, n, 3                             ;   stw n, sp[8]                            }
+	{   shr s, n, 3                             ;   stw n, sp[STACK_N]                      }
 	{   mov r11, x_p;                           ;   bf s, dif_fft_last_two_rounds_4_point   }
 
 	{   mul b, n, _32                                                                       } //astew: same as `shl b, n, 5`? Unnecessary instruction?
@@ -94,7 +100,7 @@ dif_fft_round_loop:
 	
 dif_fft_last_two_rounds:
 	{   nop /*TODO make this an align */                                                    }
-	{   mov r11, x_p                            ;   ldw n, sp[8]                            }
+	{   mov r11, x_p                            ;   ldw n, sp[STACK_N]                      }
 	{   shr j, n, 2                             ;                                           }	
 
 dif_fft_last_two_rounds_loop:
@@ -118,7 +124,7 @@ dif_fft_done:
 	{                                           ;   stw s, hr_p[0]                          }
 
 	//update the exponent
-	{                                           ;   ldw r11, sp[NSTACKWORDS+1]              }
+	{                                           ;   ldw r11, sp[STACK_EXP]                  }
 	{                                           ;   ldw s, r11[0]                           }
 	{   ashr exp_modifier, exp_modifier, 16                                                 }
 	{   add s, s, exp_modifier                  ;                                           }
@@ -164,6 +170,14 @@ xs3_fft_dif_inverse:
 	{   std r5, r6, sp[1]                                                                   }
 	{   std r7, r8, sp[2]                                                                   }
 	{   std r9, r10, sp[3]                                                                  }
+    
+    {                                           ;   stw r3, sp[STACK_EXP]                   }
+        ldaw r11, cp[xs3_dif_fft_lut_size]
+    {   ldc r5, 32                              ;   ldw r4, r11[0]                          }
+        ldaw r11, cp[xs3_dif_fft_lut]
+    {   add twiddle_lut_p, r11, r4              ;   shl r4, n, 3                            }
+    {   add twiddle_lut_p, twiddle_lut_p, r5    ;                                           }
+    {   sub twiddle_lut_p, twiddle_lut_p, r4    ;                                           }
 
 dif_ifft_impl_start:
 	{   ldc s, 31                               ;   ldw r11, hr_p[0]                        }
@@ -172,7 +186,7 @@ dif_ifft_impl_start:
 	{   ldc _32, 32                             ;   ldw r11, r11[s]                         }
 	{   mov exp_modifier, r11                   ;   vsetc r11                               }
 
-	{   shr s, n, 3                             ;   stw n, sp[8]                            }
+	{   shr s, n, 3                             ;   stw n, sp[STACK_N]                      }
 	{   mov r11, x_p;                           ;   bf s, dif_ifft_last_two_rounds_4_point  }
 
 	{   mul b, n, _32                                                                       } 
@@ -207,7 +221,7 @@ dif_ifft_round_loop:
 	
 dif_ifft_last_two_rounds:
 	{    nop /*TODO make this an align*/                                                    }
-	{   mov r11, x_p                            ;   ldw n, sp[8]                            }
+	{   mov r11, x_p                            ;   ldw n, sp[STACK_N]                      }
 	{   shr j, n, 2                             ;                                           }	
 
 dif_ifft_last_two_rounds_loop:
@@ -230,7 +244,7 @@ dif_ifft_done:
     {                                           ;   stw s, hr_p[0]                          }
 
 	//update the exponent
-	{                                           ;   ldw r11, sp[NSTACKWORDS+1]              }
+	{                                           ;   ldw r11, sp[STACK_EXP]                  }
 	{                                           ;   ldw s, r11[0]                           }
 	{   ashr exp_modifier, exp_modifier, 16                                                 }
 	{   sub exp_modifier, exp_modifier, 2                                                   }
