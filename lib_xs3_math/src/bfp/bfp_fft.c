@@ -13,7 +13,10 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
     bfp_s32_t* x)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    // @todo: Check that length is a power of 2
+    // Length must be 2^p where p is a non-negative integer
+    assert(x->length != 0);
+    // for a positive power of 2, subtracting 1 should increase its headroom.
+    assert(cls(x->length - 1) > cls(x->length)); 
 #endif
 
     bfp_complex_s32_t* X = (bfp_complex_s32_t*) x;
@@ -44,7 +47,8 @@ bfp_s32_t* bfp_fft_inverse_mono(
     bfp_complex_s32_t* X)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    // @todo: Check that length is a power of 2
+    assert(X->length != 0);
+    assert(cls(X->length - 1) > cls(X->length)); 
 #endif
 
     const unsigned FFT_N = 2*X->length;
@@ -80,7 +84,8 @@ void bfp_fft_forward_complex(
     bfp_complex_s32_t* samples)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    // @todo: Check that length is a power of 2
+    assert(samples->length != 0);
+    assert(cls(samples->length - 1) > cls(samples->length)); 
 #endif
 
     //The FFT implementation unfortunately requires 2 bits of headroom to avoid saturation.
@@ -102,7 +107,8 @@ void bfp_fft_inverse_complex(
     bfp_complex_s32_t* spectrum)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    // @todo: Check that length is a power of 2
+    assert(spectrum->length != 0);
+    assert(cls(spectrum->length - 1) > cls(spectrum->length)); 
 #endif
 
     //The FFT implementation unfortunately requires 2 bits of headroom to avoid saturation.
@@ -135,7 +141,8 @@ void bfp_fft_forward_stereo(
     bfp_ch_pair_s32_t* input)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    // @todo: Check that length is a power of 2
+    assert(input->length != 0);
+    assert(cls(input->length - 1) > cls(input->length)); 
 #endif
 
     //The FFT implementation unfortunately requires 2 bits of headroom to avoid saturation.
@@ -171,7 +178,9 @@ void  bfp_fft_inverse_stereo(
     const bfp_complex_s32_t* b)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    // @todo: Check that length is a power of 2
+    assert(x->length != 0);
+    assert(cls(x->length - 1) > cls(x->length)); 
+    
     assert(a->length == b->length);
     assert(b->data == &a->data[a->length]);
 #endif

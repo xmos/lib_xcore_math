@@ -14,6 +14,10 @@
 headroom_t bfp_s16_headroom(
     bfp_s16_t* a)
 {
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(a->length != 0);
+#endif
+
      a->hr = xs3_vect_s16_headroom(a->data, a->length);
 
      return a->hr;
@@ -27,6 +31,7 @@ void bfp_s16_shl(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(a->length == b->length);
+    assert(b->length != 0);
 #endif
 
     a->exp = b->exp;
@@ -42,6 +47,7 @@ void bfp_s16_add(
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == c->length);
     assert(b->length == a->length);
+    assert(b->length != 0);
 #endif
 
     right_shift_t b_shr, c_shr;
@@ -60,6 +66,7 @@ void bfp_s16_sub(
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == c->length);
     assert(b->length == a->length);
+    assert(b->length != 0);
 #endif
 
     right_shift_t b_shr, c_shr;
@@ -78,6 +85,7 @@ void bfp_s16_mul(
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == c->length);
     assert(b->length == a->length);
+    assert(b->length != 0);
 #endif
 
     right_shift_t a_shr;
@@ -96,6 +104,7 @@ void bfp_s16_scale(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
+    assert(b->length != 0);
 #endif
 
     right_shift_t a_shr;
@@ -113,6 +122,7 @@ void bfp_s16_abs(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
+    assert(b->length != 0);
 #endif
 
     a->exp = b->exp;
@@ -123,6 +133,10 @@ void bfp_s16_abs(
 float_s32_t bfp_s16_sum(
     const bfp_s16_t* b)
 {
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length != 0);
+#endif
+
     float_s32_t a;
     a.mant = xs3_vect_s16_sum(b->data, b->length);
     a.exp = b->exp;
@@ -136,6 +150,7 @@ float_s64_t bfp_s16_dot(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == c->length);
+    assert(b->length != 0);
 #endif
 
     float_s64_t a;
@@ -154,6 +169,7 @@ void bfp_s16_clip(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
+    assert(b->length != 0);
 #endif
 
     assert(lower_bound <= upper_bound);
@@ -223,6 +239,7 @@ void bfp_s16_rect(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
+    assert(b->length != 0);
 #endif
 
     a->exp = b->exp;
@@ -236,6 +253,7 @@ void bfp_s16_sqrt(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
+    assert(b->length != 0);
 #endif
 
     right_shift_t b_shr;
@@ -252,6 +270,7 @@ void bfp_s16_inverse(
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
+    assert(b->length != 0);
 #endif
 
     unsigned scale;
@@ -267,6 +286,10 @@ void bfp_s16_inverse(
 float_s32_t bfp_s16_abs_sum(
     const bfp_s16_t* b)
 {
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length != 0);
+#endif
+
     float_s32_t a;
     a.mant = xs3_vect_s16_abs_sum(b->data, b->length);
     a.exp = b->exp;
@@ -277,6 +300,10 @@ float_s32_t bfp_s16_abs_sum(
 float_s16_t bfp_s16_mean(
     const bfp_s16_t* b)
 {
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length != 0);
+#endif
+
     float_s16_t a;
 
     int32_t sum = xs3_vect_s16_sum(b->data, b->length);
@@ -299,6 +326,10 @@ float_s16_t bfp_s16_mean(
 float_s64_t bfp_s16_energy(
     const bfp_s16_t* b)
 {
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length != 0);
+#endif
+
     float_s64_t a;
     a.exp = 2*b->exp;
     a.mant = xs3_vect_s16_dot(b->data, b->data, b->length);
@@ -309,6 +340,10 @@ float_s64_t bfp_s16_energy(
 float_s32_t bfp_s16_rms(
     const bfp_s16_t* b)
 {
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length != 0);
+#endif
+
     float_s32_t a;
 
     exponent_t exp, len_inv_exp;
@@ -326,6 +361,10 @@ float_s32_t bfp_s16_rms(
 float_s16_t bfp_s16_max(
     const bfp_s16_t* b)
 {
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length != 0);
+#endif
+
     float_s16_t a;
     a.mant = xs3_vect_s16_max(b->data, b->length);
     a.exp = b->exp;
@@ -336,6 +375,10 @@ float_s16_t bfp_s16_max(
 float_s16_t bfp_s16_min(
     const bfp_s16_t* b)
 {
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length != 0);
+#endif
+
     float_s16_t a;
     a.mant = xs3_vect_s16_min(b->data, b->length);
     a.exp = b->exp;
@@ -346,6 +389,10 @@ float_s16_t bfp_s16_min(
 unsigned bfp_s16_argmax(
     const bfp_s16_t* b)
 {
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length != 0);
+#endif
+
     return xs3_vect_s16_argmax(b->data, b->length);
 }
 
@@ -353,6 +400,10 @@ unsigned bfp_s16_argmax(
 unsigned bfp_s16_argmin(
     const bfp_s16_t* b)
 {
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length != 0);
+#endif
+
     return xs3_vect_s16_argmin(b->data, b->length);
 }
 
@@ -363,6 +414,7 @@ void bfp_s16_to_s32(
 {    
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
+    assert(b->length != 0);
 #endif
 
     //TODO - figure out how to actually do this..

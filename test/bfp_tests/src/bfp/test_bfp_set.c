@@ -42,11 +42,11 @@ static void test_bfp_s16_set()
 
         memset(data, 0, sizeof(data));
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         bfp_s16_init(&A, data, 0, length, 0);
 
-        exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
         val = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
 
@@ -85,11 +85,11 @@ static void test_bfp_s32_set()
 
         memset(data, 0, sizeof(data));
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         bfp_s32_init(&A, data, 0, length, 0);
 
-        exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
         val = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
 
@@ -132,11 +132,11 @@ static void test_bfp_complex_s16_set()
         memset(real_data, 0, sizeof(real_data));
         memset(imag_data, 0, sizeof(imag_data));
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         bfp_complex_s16_init(&A, real_data, imag_data, 0, length, 0);
 
-        exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
         val.re = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
         val.im = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
@@ -181,11 +181,11 @@ static void test_bfp_complex_s32_set()
 
         memset(data, 0, sizeof(data));
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         bfp_complex_s32_init(&A, data, 0, length, 0);
 
-        exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
         val.re = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
         val.im = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
@@ -230,11 +230,11 @@ static void test_bfp_ch_pair_s16_set()
 
         memset(data, 0, sizeof(data));
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         bfp_ch_pair_s16_init(&A, data, 0, length, 0);
 
-        exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
         val.ch_a = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
         val.ch_b = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
@@ -279,11 +279,11 @@ static void test_bfp_ch_pair_s32_set()
 
         memset(data, 0, sizeof(data));
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         bfp_ch_pair_s32_init(&A, data, 0, length, 0);
 
-        exponent_t exponent = (pseudo_rand_uint32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
         val.ch_a = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
         val.ch_b = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);

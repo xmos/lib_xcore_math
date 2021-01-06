@@ -45,8 +45,9 @@ static void test_bfp_s16_sqrt()
     for(int v = 0; v < REPS; v++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
 
-        bfp_s16_init(&B, B_data, pseudo_rand_int(&seed, -30, 30),
-                                      pseudo_rand_uint(&seed, 0, MAX_LEN-1), 0);
+        bfp_s16_init(&B, B_data, 
+            pseudo_rand_int(&seed, -30, 30),
+            pseudo_rand_uint(&seed, 1, MAX_LEN-1), 0);
 
         bfp_s16_init(&A, A_data, 0, B.length, 0);
 
@@ -92,8 +93,9 @@ static void test_bfp_s32_sqrt()
     for(int v = 0; v < REPS; v++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
 
-        bfp_s32_init(&B, B_data, pseudo_rand_int(&seed, -30, 30),
-                                      pseudo_rand_uint(&seed, 0, MAX_LEN-1), 0);
+        bfp_s32_init(&B, B_data, 
+            pseudo_rand_int(&seed, -30, 30),
+            pseudo_rand_uint(&seed, 1, MAX_LEN-1), 0);
 
         bfp_s32_init(&A, A_data, 0, B.length, 0);
 

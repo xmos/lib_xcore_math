@@ -35,8 +35,8 @@ static void test_bfp_s16_headroom()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
         int shr = pseudo_rand_uint32(&seed) % 10;
 
         for(int i = 0; i < length; i++)
@@ -74,8 +74,8 @@ static void test_bfp_s32_headroom()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
         int shr = pseudo_rand_uint32(&seed) % 10;
 
         for(int i = 0; i < length; i++)
@@ -118,8 +118,8 @@ static void test_bfp_complex_s16_headroom()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
         int shr = pseudo_rand_uint32(&seed) % 10;
 
         for(int i = 0; i < length; i++){
@@ -166,8 +166,8 @@ static void test_bfp_complex_s32_headroom()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
         int shr = pseudo_rand_uint32(&seed) % 10;
 
         for(int i = 0; i < length; i++){
@@ -210,8 +210,8 @@ static void test_bfp_ch_pair_s16_headroom()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
         int shr = pseudo_rand_uint32(&seed) % 10;
 
         for(int i = 0; i < length; i++){
@@ -253,8 +253,8 @@ static void test_bfp_ch_pair_s32_headroom()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
         int shr = pseudo_rand_uint32(&seed) % 10;
 
         for(int i = 0; i < length; i++){

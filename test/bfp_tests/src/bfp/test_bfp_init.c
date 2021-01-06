@@ -35,11 +35,11 @@ static void test_bfp_s16_init()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
-        int shr = pseudo_rand_uint32(&seed) % 10;
+        int shr = pseudo_rand_uint(&seed, 0, 10);
 
         for(int i = 0; i < length; i++){
             data[i] = pseudo_rand_int16(&seed) >> shr;
@@ -78,11 +78,11 @@ static void test_bfp_s32_init()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
-        int shr = pseudo_rand_uint32(&seed) % 10;
+        int shr = pseudo_rand_uint(&seed, 0, 10);
 
         for(int i = 0; i < length; i++){
             data[i] = pseudo_rand_int32(&seed) >> shr;
@@ -124,11 +124,11 @@ static void test_bfp_complex_s16_init()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
-        int shr = pseudo_rand_uint32(&seed) % 10;
+        int shr = pseudo_rand_uint(&seed, 0, 10);
 
         for(int i = 0; i < length; i++){
             real_data[i] = pseudo_rand_int16(&seed) >> (shr + (pseudo_rand_uint32(&seed) % 4));
@@ -175,11 +175,11 @@ static void test_bfp_complex_s32_init()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
-        int shr = pseudo_rand_uint32(&seed) % 10;
+        int shr = pseudo_rand_uint(&seed, 0, 10);
 
         for(int i = 0; i < length; i++){
             data[i].re = pseudo_rand_int16(&seed) >> (shr + (pseudo_rand_uint32(&seed) % 7));
@@ -221,18 +221,18 @@ static void test_bfp_ch_pair_s16_init()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
-        int shr = pseudo_rand_uint32(&seed) % 10;
+        int shr = pseudo_rand_uint(&seed, 0, 10);
 
         for(int i = 0; i < length; i++){
             data[i].ch_a = pseudo_rand_int16(&seed) >> (shr + (pseudo_rand_uint32(&seed) % 4));
             data[i].ch_b = pseudo_rand_int16(&seed) >> (shr + (pseudo_rand_uint32(&seed) % 4));
         }
 
-        headroom_t exp_hr = xs3_vect_s16_headroom( (int16_t*)data, 2*length);
+        headroom_t exp_hr = xs3_vect_ch_pair_s16_headroom( data, length);
 
         bfp_ch_pair_s16_t A;
 
@@ -267,18 +267,18 @@ static void test_bfp_ch_pair_s32_init()
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep %d..\n", r);
 
-        unsigned length = pseudo_rand_uint32(&seed) % MAX_LEN;
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
-        exponent_t exponent = (pseudo_rand_int32(&seed) % 40) - 20;
+        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
-        int shr = pseudo_rand_uint32(&seed) % 10;
+        int shr = pseudo_rand_uint(&seed, 0, 10);
 
         for(int i = 0; i < length; i++){
             data[i].ch_a = pseudo_rand_int16(&seed) >> (shr + (pseudo_rand_uint32(&seed) % 7));
             data[i].ch_b = pseudo_rand_int16(&seed) >> (shr + (pseudo_rand_uint32(&seed) % 7));
         }
 
-        headroom_t exp_hr = xs3_vect_s32_headroom( (int32_t*)data, 2*length);
+        headroom_t exp_hr = xs3_vect_ch_pair_s32_headroom(data, length);
 
         bfp_ch_pair_s32_t A;
 
