@@ -4,6 +4,24 @@
 #include "../../vect/vpu_helper.h"
 
 
+#define SAT40(X)   ( ((X) > VPU_INT40_MAX)? VPU_INT40_MAX           \
+                 : ( ((X) < VPU_INT40_MIN)? VPU_INT40_MIN : (X) ) )
+
+
+
+#define ROUND_SHR8( X, SHIFT)    ((int8_t) (((SHIFT)==0)? (X) : ((((int16_t)(X))+(1<<((SHIFT)-1))) >> (SHIFT))))
+#define ROUND_SHR16(X, SHIFT)    ((int16_t)(((SHIFT)==0)? (X) : ((((int32_t)(X))+(1<<((SHIFT)-1))) >> (SHIFT))))
+#define ROUND_SHR32(X, SHIFT)    ((int32_t)(((SHIFT)==0)? (X) : ((((int64_t)(X))+(1<<((SHIFT)-1))) >> (SHIFT))))
+#define ROUND_SHR64(X, SHIFT)    ((int64_t)(((SHIFT)==0)? (X) : ((((int64_t)(X))+(1<<((SHIFT)-1))) >> (SHIFT))))
+
+static const int8_t  one_q6  = 0x40;
+static const int16_t one_q14 = 0x4000;
+static const int32_t one_q30 = 0x40000000;
+
+static const int8_t  neg_one_q6  = -0x40;
+static const int16_t neg_one_q14 = -0x4000;
+static const int32_t neg_one_q30 = -0x40000000;
+
 
 
 int8_t vladd8(
@@ -30,7 +48,7 @@ int8_t vlashr8(
 {
     if((shr <= -8) && (x != 0) )    return (x >= 0)? VPU_INT8_MAX : VPU_INT8_MIN;
     else if(shr < 0)                return SAT(8)(((int32_t)x) << (-shr));
-    else                            return x >> shr;
+    else                            return SAT(8)(x >> shr);
 }
 
 
@@ -44,7 +62,7 @@ int8_t vpos8(
 int8_t vsign8(
     const int8_t x)
 {
-    return (x >= 0)? 0x40 : -0x40;
+    return (x >= 0)? one_q6 : neg_one_q6;
 }
 
 
@@ -60,7 +78,7 @@ int8_t vlmul8(
     const int8_t y)
 {
     int32_t p = ((int32_t)x)*y;
-    p = ((p >> 5) + 1) >> 1;
+    p = ROUND_SHR32(p, 6);
     return SAT(8)(p);
 }
 
@@ -130,7 +148,7 @@ int16_t vlashr16(
 {
     if((shr <= -16) && (x != 0) )   return (x >= 0)? VPU_INT16_MAX : VPU_INT16_MIN;
     else if(shr < 0)                return SAT(16)(((int32_t)x) << (-shr));
-    else                            return x >> shr;
+    else                            return SAT(16)(x >> shr);
 }
 
 
@@ -144,7 +162,7 @@ int16_t vpos16(
 int16_t vsign16(
     const int16_t x)
 {
-    return (x >= 0)? 0x4000 : -0x4000;
+    return (x >= 0)? one_q14 : neg_one_q14;
 }
 
 
@@ -158,10 +176,7 @@ unsigned vdepth1_16(
 int8_t vdepth8_16(
     const int16_t x)
 {
-    int32_t s = (((int32_t)x) + 0x80);
-
-    s >>= 8;
-
+    int16_t s = ROUND_SHR16(x, 8);
     return SAT(8)(s);
 }
 
@@ -171,7 +186,7 @@ int16_t vlmul16(
     const int16_t y)
 {
     int32_t p = ((int32_t)x)*y;
-    p = ((p >> 13) + 1) >> 1;
+    p = ROUND_SHR32(p, 14);
     return SAT(16)(p);
 }
 
@@ -213,6 +228,17 @@ int16_t vlsat16(
     return SAT(16)(s);
 }
 
+vpu_int16_acc_t vadddr16(
+    const vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD])
+{
+    int64_t s = 0;
+
+    for(int k = 0; k < VPU_INT16_ACC_PERIOD; k++)
+        s += acc[k];
+
+    return SAT(32)(s);
+}
+
 
 
 
@@ -243,7 +269,7 @@ int32_t vlashr32(
 {
     if((shr <= -32) && (x != 0) )   return (x >= 0)? VPU_INT32_MAX : VPU_INT32_MIN;
     else if(shr < 0)                return SAT(32)(((int64_t)x) << (-shr));
-    else                            return x >> shr;
+    else                            return SAT(32)(x >> shr);
 }
 
 
@@ -257,7 +283,7 @@ int32_t vpos32(
 int32_t vsign32(
     const int32_t x)
 {
-    return (x >= 0)? 0x40000000 : -0x40000000;
+    return (x >= 0)? one_q30 : neg_one_q30;
 }
 
 
@@ -271,14 +297,16 @@ unsigned vdepth1_32(
 int8_t vdepth8_32(
     const int32_t x)
 {
-    return SAT(8)( (((int64_t)x)+(1<<23)) >> 24 );
+    const int32_t p = ROUND_SHR32(x, 24);
+    return SAT(8)(p);
 }
 
 
 int16_t vdepth16_32(
     const int32_t x)
 {
-    return SAT(16)( (((int64_t)x)+(1<<15)) >> 16 );
+    const int32_t p = ROUND_SHR32(x, 16);
+    return SAT(16)(p);
 }
 
 
@@ -287,7 +315,7 @@ int32_t vlmul32(
     const int32_t y)
 {
     int64_t p = ((int64_t)x)*y;
-    p = ((p >> 29) + 1) >> 1;
+    p = ROUND_SHR64(p, 30);
     return SAT(32)(p);
 }
 
@@ -298,17 +326,12 @@ vpu_int32_acc_t vlmacc32(
     const int32_t y)
 {
     int64_t p = (((int64_t)x)*y);
-    p = ((p >> 29) + 1) >> 1;
+    p = ROUND_SHR64(p, 30);
     
     vpu_int32_acc_t s = acc;
     s += p;
-
-    if(s >= VPU_INT40_MAX)
-        return VPU_INT40_MAX;
-    if(s <= VPU_INT40_MIN)
-        return VPU_INT40_MIN;
     
-    return s;
+    return SAT40(s);
 }
 
 
@@ -321,17 +344,11 @@ vpu_int32_acc_t vlmaccr32(
     for(int i = 0; i < VPU_INT32_EPV; i++){
         
         int64_t p = (((int64_t)x[i])*y[i]);
-        p = ((p >> 29) + 1) >> 1;
+        p = ROUND_SHR64(p, 30);
         s += p;
-
     }
 
-    if(s >= VPU_INT40_MAX)
-        s = VPU_INT40_MAX;
-    else if(s <= VPU_INT40_MIN)
-        s = VPU_INT40_MIN;
-    
-    return s;
+    return SAT40(s);
 }
 
 
@@ -355,8 +372,8 @@ int32_t vcmr32(
     int64_t a = ((int64_t)vD.re) * vC.re;
     int64_t b = ((int64_t)vD.im) * vC.im;
 
-    a = ((a >> 29) + 1) >> 1;
-    b = ((b >> 29) + 1) >> 1;
+    a = ROUND_SHR64(a, 30);
+    b = ROUND_SHR64(b, 30);
 
     a = a - b;
 
@@ -371,8 +388,8 @@ int32_t vcmi32(
     int64_t a = ((int64_t)vD.re) * vC.im;
     int64_t b = ((int64_t)vD.im) * vC.re;
 
-    a = ((a >> 29) + 1) >> 1;
-    b = ((b >> 29) + 1) >> 1;
+    a = ROUND_SHR64(a, 30);
+    b = ROUND_SHR64(b, 30);
 
     a = a + b;
 
@@ -387,8 +404,8 @@ int32_t vcmcr32(
     int64_t a = ((int64_t)vD.re) * vC.re;
     int64_t b = ((int64_t)vD.im) * vC.im;
 
-    a = ((a >> 29) + 1) >> 1;
-    b = ((b >> 29) + 1) >> 1;
+    a = ROUND_SHR64(a, 30);
+    b = ROUND_SHR64(b, 30);
 
     a = b + a;
 
@@ -403,8 +420,8 @@ int32_t vcmci32(
     int64_t a = ((int64_t)vD.re) * vC.im;
     int64_t b = ((int64_t)vD.im) * vC.re;
 
-    a = ((a >> 29) + 1) >> 1;
-    b = ((b >> 29) + 1) >> 1;
+    a = ROUND_SHR64(a, 30);
+    b = ROUND_SHR64(b, 30);
 
     a = b - a;
 

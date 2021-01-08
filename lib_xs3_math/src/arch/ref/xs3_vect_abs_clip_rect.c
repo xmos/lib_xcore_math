@@ -4,6 +4,7 @@
 
 #include "xs3_math.h"
 #include "../../vect/vpu_helper.h"
+#include "xs3_vpu_scalar_ops.h"
 
 
 
@@ -13,11 +14,8 @@ headroom_t xs3_vect_s16_abs(
     const int16_t b[],
     const unsigned length)
 {
-
-    for(int k = 0; k < length; k++){
-        int16_t B = SAT(16)(b[k]);
-        a[k] = (B >= 0)? B : -B;
-    }
+    for(int k = 0; k < length; k++)
+        a[k] = vlmul16(b[k], vsign16(b[k]));
 
     return xs3_vect_s16_headroom(a, length);
 }
@@ -29,11 +27,8 @@ headroom_t xs3_vect_s32_abs(
     const int32_t b[],
     const unsigned length)
 {
-
-    for(int k = 0; k < length; k++){
-        int32_t B = SAT(32)(b[k]);
-        a[k] = (B >= 0)? B : -B;
-    }
+    for(int k = 0; k < length; k++)
+        a[k] = vlmul32(b[k], vsign32(b[k]));
 
     return xs3_vect_s32_headroom(a, length);
 }
@@ -51,7 +46,7 @@ headroom_t xs3_vect_s16_clip(
     const right_shift_t b_shr)
 {
     for(int k = 0; k < length; k++){
-        int16_t B = ASHR(16)(b[k], b_shr);
+        const int16_t B = vlashr16(b[k], b_shr);
         a[k] = (B <= lower_bound)? lower_bound : (B >= upper_bound)? upper_bound : B;
     }
 
@@ -69,7 +64,7 @@ headroom_t xs3_vect_s32_clip(
     const right_shift_t b_shr)
 {
     for(int k = 0; k < length; k++){
-        int32_t B = ASHR(32)(b[k], b_shr);
+        const int32_t B = vlashr32(b[k], b_shr);
         a[k] = (B <= lower_bound)? lower_bound : (B >= upper_bound)? upper_bound : B;
     }
 
@@ -83,10 +78,9 @@ headroom_t xs3_vect_s16_rect(
     const int16_t b[],
     const unsigned length)
 {
-    for(int k = 0; k < length; k++){
-        int16_t B = b[k];
-        a[k] = (B >= 0)? B : 0;
-    }
+    for(int k = 0; k < length; k++)
+        a[k] = vpos16(b[k]);
+    
     return xs3_vect_s16_headroom(a, length);
 }
 
@@ -97,9 +91,8 @@ headroom_t xs3_vect_s32_rect(
     const int32_t b[],
     const unsigned length)
 {
-    for(int k = 0; k < length; k++){
-        int32_t B = b[k];
-        a[k] = (B >= 0)? B : 0;
-    }
+    for(int k = 0; k < length; k++)
+        a[k] = vpos32(b[k]);
+    
     return xs3_vect_s32_headroom(a, length);
 }

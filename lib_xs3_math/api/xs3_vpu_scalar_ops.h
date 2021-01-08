@@ -166,7 +166,11 @@ int16_t vlsat16(
     const vpu_int16_acc_t acc,
     const unsigned sat);
 
-
+/**
+ * Implements the logic of the VADDDR instruction in 16-bit mode.
+ */
+vpu_int16_acc_t vadddr16(
+    const vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD]);
 
 
 

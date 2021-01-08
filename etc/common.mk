@@ -37,8 +37,6 @@ rename_variables=$(eval $(foreach var,$(2),$(1)_$(var):=$($(var))$(newline)$(var
 # The optional third argument $(3) is the .mk file to be
 # loaded. If $(3) is not provided, ./etc/$(1).mk will be
 # loaded instead.
-# TODO: Make it so it looks for lib.mk file in the library path
-#		if it isn't in ./etc/
 define load_dependency_
 
   ifneq ($$(strip $(3)),)

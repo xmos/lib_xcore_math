@@ -27,14 +27,6 @@ extern "C" {
  */
 #define MIN(A,B) (((A) <= (B))? (A) : (B))
 
-/**
- * @brief Perform an arithmetic right-shift with a signed shift. i.e. negative values of `SHR` will left-shift.
- * 
- * @note Neither rounding nor saturation logic is applied.
- * 
- * @todo Is this necessary? It's only used in a couple places and probably shouldn't be.
- */ 
-#define SIGNED_ASHR(VAL, SHR)  (((SHR) >= 0)? ((VAL) >> (SHR)) : ((VAL) << (-(SHR))))
 
 /**
  * @brief Count leading sign bits of an `int16_t`.

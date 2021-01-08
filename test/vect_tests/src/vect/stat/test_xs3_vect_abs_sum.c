@@ -167,7 +167,11 @@ void test_xs3_vect_s32_abs_sum_basic()
             t = (t>=0)? t : -t;
             int64_t exp = t * len;
 
-            TEST_ASSERT_EQUAL_MSG(exp, result, casse->line);
+            if(exp != result){
+                printf("Expected %lld was %lld\n", exp, result);
+            }
+
+            TEST_ASSERT(exp == result);
         }
     }
 }

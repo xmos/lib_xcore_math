@@ -4,6 +4,7 @@
 
 #include "xs3_math.h"
 #include "../../vect/vpu_helper.h"
+#include "xs3_vpu_scalar_ops.h"
 
 
 
@@ -15,12 +16,13 @@ void xs3_vect_s32_to_s16(
     const unsigned length,
     const right_shift_t b_shr)
 {
+    //ASM uses VDEPTH16, which has an implicit 16-bit right-shift. To make it more intuitive, b_shr is specified so
+    // that the user doesn't have to care about that.
     const right_shift_t b_shr_mod = b_shr - 16;
 
     for(int k = 0; k < length; k++){
-        int64_t B = ASHR(32)(b[k], b_shr_mod);
-
-        a[k] = SAT(16)(ROUND_SHR(B, 16));
+        const int32_t B = vlashr32(b[k], b_shr_mod);
+        a[k] = vdepth16_32(B);
     }
 }
 

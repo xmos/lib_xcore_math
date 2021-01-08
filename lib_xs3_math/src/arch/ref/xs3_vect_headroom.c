@@ -28,7 +28,6 @@ headroom_t xs3_vect_s16_headroom(
         }
     }
     
-    //TODO: got to be a more efficient (platform-independent way to do this..)
     int16_t lval = v[ldex];
 
     for(int i = 14; i >= 0; i--){
@@ -70,7 +69,6 @@ headroom_t xs3_vect_s32_headroom(
         }
     }
     
-    //TODO: got to be a more efficient (platform-independent way to do this..)
     int32_t lval = v[ldex];
 
     for(int i = 30; i >= 0; i--){

@@ -4,8 +4,10 @@
 
 #include "xs3_math.h"
 #include "../../vect/vpu_helper.h"
+#include "xs3_vpu_scalar_ops.h"
 
 
+static const int32_t one_q30 = 0x40000000;
 
 
 int16_t xs3_vect_s16_max(
@@ -113,16 +115,15 @@ int32_t xs3_vect_s16_abs_sum(
     const int16_t b[],
     const unsigned length)
 {
-    int32_t acc = 0;
-    for(int k = 0; k < length; k++){
+    vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD] = {0};
 
-        int16_t p = b[k];
-        p = (p>=0)? p : -p;
-        p = (p>=0)? p : 0x7FFF; // because -(-0x8000) == -0x8000
-        acc += p;
-        acc = MAX(-0x7FFFFFFF, acc);
+    for(int k = 0; k < length; k++){
+        const int j = k % VPU_INT16_ACC_PERIOD;
+        int16_t B = vlmul16(b[k], vsign16(b[k]));
+        acc[j] = vlmacc16(acc[j], B, 1);
     }
-    return acc;
+
+    return vadddr16(acc);
 }
 
 
@@ -131,11 +132,21 @@ int64_t xs3_vect_s32_abs_sum(
     const int32_t b[],
     const unsigned length)
 {
-    int64_t acc = 0;
-    for(int k = 0; k < length; k++){
-        acc += (b[k] >= 0)? b[k] : -b[k];
+    vpu_int32_acc_t acc[VPU_INT32_ACC_PERIOD] = { 0 };
+
+    for(int k = 0; k < length; k++){ 
+        const int j = k % VPU_INT32_ACC_PERIOD;
+        acc[j] = vlmacc32(acc[j], b[k], vsign32(b[k]));
     }
-    return acc;
+
+    vpu_int32_acc_t total = 0;
+    for(int j = 0; j < VPU_INT32_ACC_PERIOD; j++)
+        total += acc[j];
+
+    // note: xcore assembly implementation adds together the 40-bit accumulators and doesn't attempt
+    //       to apply any saturation logic.
+
+    return total;
 }
 
 
@@ -145,14 +156,16 @@ int32_t xs3_vect_s16_energy(
     const unsigned length,
     const right_shift_t b_shr)
 {
-    int64_t acc = 0;
+
+    vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD] = {0};
+
     for(int k = 0; k < length; k++){
-        int32_t t = b[k];
-        t = (b_shr>=0)? (t>>b_shr) : (t<<-b_shr);
-        acc += t*t;
-        acc = MAX(-0x7FFFFFFF, MIN(0x7FFFFFFF, acc));
+        const int j = k % VPU_INT16_ACC_PERIOD;
+        const int16_t B = vlashr16(b[k], b_shr);
+        acc[j] = vlmacc16(acc[j], B, B);
     }
-    return (int32_t)acc;
+
+    return vadddr16(acc);
 }
 
 
@@ -161,13 +174,20 @@ int64_t xs3_vect_s32_energy(
     const unsigned length,
     const right_shift_t b_shr)
 {
-    int64_t acc = 0;
+    vpu_int32_acc_t acc[VPU_INT32_ACC_PERIOD] = {0};
+
     for(int k = 0; k < length; k++){
-        int64_t t = b[k];
-        t = (b_shr>=0)? (t>>b_shr) : (t<<-b_shr);
-        t = ((t*t)+(1<<29)) >> 30;
-        acc += t;
-        acc = MAX(-0x7FFFFFFFFFLL, MIN(0x7FFFFFFFFFLL, acc));
+        const int j = k % VPU_INT32_ACC_PERIOD;
+        const int32_t B = vlashr32(b[k], b_shr);
+        acc[j] = vlmacc32(acc[j], B, B);
     }
-    return acc;
+
+    vpu_int32_acc_t total = 0;
+    for(int j = 0; j < VPU_INT32_ACC_PERIOD; j++)
+        total += acc[j];
+
+    // note: xcore assembly implementation adds together the 40-bit accumulators and doesn't attempt
+    //       to apply any saturation logic.
+
+    return total;
 }

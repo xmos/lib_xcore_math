@@ -386,6 +386,39 @@ static void test_vlsat16()
 
 
 
+static void test_vadddr16()
+{
+    PRINTF("%s...\n", __func__);
+    seed = 778786;
+
+
+    for(int v = 0; v < REPS; v++){
+        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+
+        vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD];
+
+        int64_t total = 0;
+
+        for(int i = 0; i < VPU_INT16_ACC_PERIOD; i++){
+            acc[i] = i;//pseudo_rand_int16(&seed);
+            total += acc[i];
+        }
+
+
+        vpu_int16_acc_t expected = 
+            (total > VPU_INT32_MAX)? VPU_INT32_MAX
+          : (total < VPU_INT32_MIN)? VPU_INT32_MIN 
+          : total;
+
+
+        vpu_int16_acc_t result = vadddr16(acc);
+
+        TEST_ASSERT_EQUAL_INT32(expected, result);
+    }
+}
+
+
+
 
 
 void test_xs3_vpu_scalar_ops_s16()
@@ -403,4 +436,5 @@ void test_xs3_vpu_scalar_ops_s16()
     RUN_TEST(test_vlmacc16);
     RUN_TEST(test_vlmaccr16);
     RUN_TEST(test_vlsat16);
+    RUN_TEST(test_vadddr16);
 }

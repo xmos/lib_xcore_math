@@ -845,9 +845,6 @@ void xs3_vect_complex_s32_real_mul_prepare(
  * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
  * @math{c\_hr}. 
  * 
- * @todo To make things simpler I should just have this function take `c_shr` as a parameter so that the user can't 
- *       accidentally apply it incorrectly.
- * 
  * @param[out]  a           Complex output vector @vector{a}
  * @param[in]   b           Complex input vector @vector{b}
  * @param[in]   c           Complex input vector @vector{c}
@@ -897,9 +894,6 @@ headroom_t xs3_vect_complex_s32_real_scale(
  * The function xs3_vect_complex_s32_mul_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
  * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
  * @math{c\_hr}. 
- * 
- * @todo To make things simpler I should just have this function take `c_shr` as a parameter so that the user can't 
- *       accidentally apply it incorrectly.
  * 
  * @param[out] a        Complex output vector @vector{a}.
  * @param[in]  b        Complex input vector @vector{b}.

@@ -4,7 +4,7 @@
 
 #include "xs3_math.h"
 #include "../../vect/vpu_helper.h"
-
+#include "xs3_vpu_scalar_ops.h"
 
 
 
@@ -15,8 +15,7 @@ headroom_t xs3_vect_s16_shl(
     const int shl)
 {
     for(int i = 0; i < length; i++){
-        int16_t B = b[i];
-        a[i] = ASHR(16)(B, -shl);
+        a[i] = vlashr16(b[i], -shl);
     }
     return xs3_vect_s16_headroom(a, length);
 }
@@ -31,8 +30,7 @@ headroom_t xs3_vect_s32_shl(
     const int shl)
 {
     for(int i = 0; i < length; i++){
-        int32_t B = b[i];
-        a[i] = ASHR(32)(B, -shl);
+        a[i] = vlashr32(b[i], -shl);
     }
     return xs3_vect_s32_headroom(a, length);
 }

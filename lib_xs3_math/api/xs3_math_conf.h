@@ -18,8 +18,6 @@
  * constraints. Most often this simply ensures that, where BFP functions take multiple vectors as parameters, each of 
  * the vectors has the same length.
  * 
- * @todo Check for zero length vectors as well
- * 
  * Defaults to false (`0`).
  */
 #ifndef XS3_BFP_DEBUG_CHECK_LENGTHS

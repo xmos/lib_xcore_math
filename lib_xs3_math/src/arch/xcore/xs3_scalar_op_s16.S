@@ -445,6 +445,55 @@ FUNC_END
 
 
 
+
+
+/* *****************************************************
+
+int16_t vadddr16(
+    const vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD]);
+
+********************************************************/
+
+#define FUNCTION_NAME   vadddr16
+#define NSTACKWORDS     (12 + 8*2)
+FUNC_START
+FUNCTION_NAME:
+{   ldc r1, 8                               ;   dualentsp NSTACKWORDS                   }
+    std r4, r5, sp[1]
+    ldc r11, 0x100    
+{   ldaw r2, sp[4]                          ;   vsetc r11                               }
+{   ldaw r3, sp[12]                         ;   ldc r11, 0                              }
+
+.L_split_loop_top:
+    {                                           ;   ldw r4, r0[0]                           }
+    {   add r0, r0, 8                           ;   ldw r5, r0[1]                           }
+        zip r4, r5, 4
+    {   sub r1, r1, 1                           ;   stw r4, r3[0]                           }
+    {   add r3, r3, 4                           ;   stw r5, r2[0]                           }
+    {   add r2, r2, 4                           ;   bt r1, .L_split_loop_top                }
+
+{   ldaw r3, sp[12]                         ;   ldaw r11, sp[4]                         }
+{                                           ;   vldd r3[0]                              }
+{                                           ;   vldr r11[0]                             }
+{                                           ;   vadddr                                  }
+{                                           ;   vstd r2[0]                              }
+{                                           ;   ldw r4, r2[0]                           }
+{   shl r4, r4, 16                          ;   vstr r2[0]                              }
+{                                           ;   ldw r0, r2[0]                           }
+{   or r0, r0, r4                           ;                                           }
+
+    ldd r4, r5, sp[1]
+{                                           ;   retsp NSTACKWORDS                       }
+FUNC_END
+#undef NSTACKWORDS
+#undef FUNCTION_NAME
+
+
+
+
+
+
+
 #endif //!defined(XS3_MATH_NO_ASM)
 #endif //defined(__XS3A__)
 

@@ -60,6 +60,7 @@ FUNCTION_NAME:
 .L_loop_top:
         {   mov r11, b                              ;   vstr r11[0]                             }
         {                                           ;   vldr r11[0]                             }
+        // [2020-01-08] astew: Looking at this again, I'm not sure why the following VSTR is necessary..
         {   ldc r11, 32                             ;   vstr tmp[0]                             }
         {   add b, b, r11                           ;   vsign                                   }
         {                                           ;   vlmul tmp[0]                            }

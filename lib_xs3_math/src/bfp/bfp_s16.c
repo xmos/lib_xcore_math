@@ -417,7 +417,6 @@ void bfp_s16_to_s32(
     assert(b->length != 0);
 #endif
 
-    //TODO - figure out how to actually do this..
     const exponent_t a_exp = b->exp;
 
     a->exp = a_exp - 8;
