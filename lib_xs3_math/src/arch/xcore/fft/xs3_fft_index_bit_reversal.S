@@ -1,3 +1,5 @@
+// Copyright 2021 XMOS LIMITED. This Software is subject to the terms of the 
+// XMOS Public License: Version 1
 #if defined(__XS3A__)
 #ifndef XS3_MATH_NO_ASM
 

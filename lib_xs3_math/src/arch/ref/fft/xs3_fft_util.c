@@ -1,3 +1,5 @@
+// Copyright 2021 XMOS LIMITED. This Software is subject to the terms of the 
+// XMOS Public License: Version 1
 
 #include "xs3_math.h"
 #include "../../../vect/vpu_helper.h"

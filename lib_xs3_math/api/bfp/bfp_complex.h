@@ -1,3 +1,5 @@
+// Copyright 2021 XMOS LIMITED. This Software is subject to the terms of the 
+// XMOS Public License: Version 1
 
 #ifndef BFP_COMPLEX_H_
 #define BFP_COMPLEX_H_
