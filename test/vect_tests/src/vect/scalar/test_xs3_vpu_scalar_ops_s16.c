@@ -10,7 +10,7 @@
 
 #include "xs3_math.h"
 #include "xs3_vpu_scalar_ops.h"
-#include "xs3_vpu.h"
+#include "xs3_vpu_info.h"
 
 #include "../../tst_common.h"
 

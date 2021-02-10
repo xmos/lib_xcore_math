@@ -8,7 +8,7 @@
 #include <stdint.h>
 
 #include "xs3_math_types.h"
-#include "xs3_vpu.h"
+#include "xs3_vpu_info.h"
 
 /**
  * @file xs3_vpu_scalar_ops.h

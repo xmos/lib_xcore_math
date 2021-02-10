@@ -5,7 +5,7 @@
 #define VPU_HELPER_H_
 
 #include "xs3_math.h"
-#include "xs3_vpu.h"
+#include "xs3_vpu_info.h"
 
 
 /**

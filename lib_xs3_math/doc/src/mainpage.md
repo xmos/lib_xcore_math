@@ -36,4 +36,4 @@ The API is documented in the following API header files.
  vect/xs3_vect_s16.h    | 16-bit low-level arithmetic functions
  xs3_math_conf.h        | Compile-time configuration options
  xs3_util.h             | Various useful macros and scalar functions
- xs3_vpu.h              | Various macros and enums 
+ xs3_vpu_info.h         | Various macros and enums 
