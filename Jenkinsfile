@@ -28,7 +28,6 @@ pipeline {
             steps {
                 // clean auto default checkout
                 sh "rm -rf *"
-                sh "echo $HOME"
                 // clone
                 checkout([
                     $class: 'GitSCM',
