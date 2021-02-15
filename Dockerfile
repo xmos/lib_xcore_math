@@ -6,6 +6,8 @@ FROM continuumio/miniconda3:4.8.2
 #  - conda setup
 #  - xmos tools setup
 
+RUN mkdir /root/.ssh/
+
 # fix conda perms
 RUN chmod -R 777 /opt/conda \
     && mkdir -p /.conda \
