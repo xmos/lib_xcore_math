@@ -38,7 +38,7 @@ pipeline {
                                          url: 'git@github.com:xmos/lib_xs3_math']]
                 ])
                 // fetch dependencies
-                dir("${env.WORKSPACE}/lib_xs3_math/test") {
+                dir("${env.WORKSPACE}/test") {
                     sh "python fetch_dependencies.py"
                 }
                 // create venv
