@@ -50,9 +50,11 @@ pipeline {
                 sh "conda update --all -y -q -p lib_xs3_math_venv"
             }
         }
-        stage("Fetch dependencies") {
+        stage("Fetch test dependencies") {
             steps {
-                sh "cd test && python fetch_dependencies.py"
+                checkout scm
+                sh """. activate ./lib_xs3_math_venv &&
+                cd test && python fetch_dependencies.py"""
             }
         }
         stage("Build") {
