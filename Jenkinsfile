@@ -33,13 +33,7 @@ pipeline {
                     $class: 'GitSCM',
                     branches: scm.branches,
                     doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'SubmoduleOption',
-                                  threads: 8,
-                                  timeout: 20,
-                                  shallow: true,
-                                  parentCredentials: true,
-                                  recursiveSubmodules: true],
-                                 [$class: 'CleanCheckout']],
+                    extensions: [[$class: 'CleanCheckout']],
                     userRemoteConfigs: [[credentialsId: 'xmos-bot',
                                          url: 'git@github.com:xmos/lib_xs3_math']]
                 ])
@@ -61,7 +55,7 @@ pipeline {
                 // below is how we can activate the tools
                 sh """pushd /XMOS/tools/${params.TOOLS_VERSION}/XMOS/xTIMEcomposer/${params.TOOLS_VERSION} && . SetEnv && popd &&
                       . activate ./lib_xs3_math_venv &&
-                      cd test && make all"""
+                      cd test && python fetch_dependencies.py && cd test && make all"""
             }
         }
     }
