@@ -37,9 +37,13 @@ pipeline {
                     userRemoteConfigs: [[credentialsId: 'xmos-bot',
                                          url: 'git@github.com:xmos/lib_xs3_math']]
                 ])
+                // fetch dependencies
+                dir("${env.WORKSPACE}/test") {
+                    sh """python fetch_dependencies.py"""
+                }
                 // create venv
                 sh "conda env create -q -p lib_xs3_math_venv -f environment.yml"
-                // Install xmos tools version
+                // install xmos tools version
                 sh "/XMOS/get_tools.py " + params.TOOLS_VERSION
             }
         }
@@ -48,17 +52,6 @@ pipeline {
             when { expression { return params.UPDATE_ALL } }
             steps {
                 sh "conda update --all -y -q -p lib_xs3_math_venv"
-            }
-        }
-        stage("Fetch test dependencies") {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: scm.branches,
-                    userRemoteConfigs: [[credentialsId: 'xmos-bot']]
-                ])
-                sh """. activate ./lib_xs3_math_venv &&
-                cd test && python fetch_dependencies.py"""
             }
         }
         stage("Build") {
