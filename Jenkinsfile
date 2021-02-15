@@ -5,7 +5,8 @@ getApproval()
 pipeline {
     agent {
         dockerfile {
-            args "-v ~/.ssh:/root/.ssh:ro"
+            // args "-v /home/jenkins/.ssh:/root/.ssh:ro"
+            args ""
         }
     }
 
