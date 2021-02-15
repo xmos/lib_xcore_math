@@ -52,11 +52,13 @@ pipeline {
         }
         stage("Fetch test dependencies") {
             steps {
-                dir("${env.WORKSPACE}") {
-                    checkout scm
-                    sh """. activate ./lib_xs3_math_venv &&
-                    cd test && python fetch_dependencies.py"""
-                }
+                checkout([
+                    $class: 'GitSCM',
+                    branches: scm.branches,
+                    userRemoteConfigs: [[credentialsId: 'xmos-bot']
+                ])
+                sh """. activate ./lib_xs3_math_venv &&
+                cd test && python fetch_dependencies.py"""
             }
         }
         stage("Build") {
