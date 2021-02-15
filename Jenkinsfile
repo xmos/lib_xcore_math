@@ -50,12 +50,17 @@ pipeline {
                 sh "conda update --all -y -q -p lib_xs3_math_venv"
             }
         }
+        stage("Fetch dependencies") {
+            steps {
+                sh "cd test && python fetch_dependencies.py"
+            }
+        }
         stage("Build") {
             steps {
                 // below is how we can activate the tools
                 sh """pushd /XMOS/tools/${params.TOOLS_VERSION}/XMOS/xTIMEcomposer/${params.TOOLS_VERSION} && . SetEnv && popd &&
                       . activate ./lib_xs3_math_venv &&
-                      cd test && python fetch_dependencies.py && cd test && make all"""
+                      cd test && make all"""
             }
         }
     }
