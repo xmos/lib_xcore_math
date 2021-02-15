@@ -55,7 +55,7 @@ pipeline {
                 checkout([
                     $class: 'GitSCM',
                     branches: scm.branches,
-                    userRemoteConfigs: [[credentialsId: 'xmos-bot']
+                    userRemoteConfigs: [[credentialsId: 'xmos-bot']]
                 ])
                 sh """. activate ./lib_xs3_math_venv &&
                 cd test && python fetch_dependencies.py"""
