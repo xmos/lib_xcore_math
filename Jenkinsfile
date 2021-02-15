@@ -52,9 +52,11 @@ pipeline {
         }
         stage("Fetch test dependencies") {
             steps {
-                checkout scm
-                sh """. activate ./lib_xs3_math_venv &&
-                cd test && python fetch_dependencies.py"""
+                dir("${env.WORKSPACE}") {
+                    checkout scm
+                    sh """. activate ./lib_xs3_math_venv &&
+                    cd test && python fetch_dependencies.py"""
+                }
             }
         }
         stage("Build") {
