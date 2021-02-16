@@ -19,6 +19,9 @@ lib_xs3_math/lib/
 # MacOS cruft
 .DS_Store
 
-#misc cruft
+# misc cruft
 **/*.local.*
 **/*.local/
+
+# test cruft
+test/deps
