@@ -5,7 +5,8 @@ getApproval()
 pipeline {
     agent {
         dockerfile {
-            args "--user jenkins"
+            args ""
+            additionalBuildArgs "--build-arg USER=\$(whoami) --build-arg UID=\$(id -u) --build-arg GID=\$(id -g)"
         }
     }
 
