@@ -6,7 +6,7 @@ FROM continuumio/miniconda3:4.8.2
 #  - conda setup
 #  - xmos tools setup
 
-RUN mkdir /home/jenkins/.ssh
+RUN mkdir -p /home/jenkins/.ssh
 
 # fix conda perms
 RUN chmod -R 777 /opt/conda \
