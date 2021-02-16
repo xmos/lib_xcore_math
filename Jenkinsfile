@@ -5,7 +5,7 @@ getApproval()
 pipeline {
     agent {
         dockerfile {
-            args "-v /etc/passwd:/etc/passwd"
+            args "--user jenkins"
         }
     }
 
