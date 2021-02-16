@@ -5,8 +5,8 @@ getApproval()
 pipeline {
     agent {
         dockerfile {
-            args ""
-            additionalBuildArgs "--build-arg USER=\$(whoami) --build-arg UID=\$(id -u) --build-arg GID=\$(id -g)"
+            args "-v /etc/passwd:/etc/passwd -v /etc/group:/etc/group"
+            //additionalBuildArgs "--build-arg USER=\$(whoami) --build-arg UID=\$(id -u) --build-arg GID=\$(id -g)"
         }
     }
 
