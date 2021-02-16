@@ -17,7 +17,7 @@ include $(COMMON_MF)
 
 SELF_NAME = Unity
 
-SOURCE_FILE := ../../Unity/src/unity.c	
+SOURCE_FILE := ../../deps/Unity/src/unity.c	
 OBJECT_FILE := $(OBJ_DIR)/unity.c.o
 
 ifeq ($(strip $(PLATFORM)),$(strip xcore))

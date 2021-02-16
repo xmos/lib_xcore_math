@@ -24,4 +24,4 @@ lib_xs3_math/lib/
 **/*.local/
 
 # test cruft
-test/Unity
+test/deps

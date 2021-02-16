@@ -34,7 +34,7 @@ XSCOPE_CONFIG ?= config.xscope
 XS3_MATH_PATH := ../../lib_xs3_math
 XS3_MATH_FILE_NAME := lib_xs3_math.a
 
-UNITY_PATH := ./../Unity
+UNITY_PATH := ../deps/Unity
 
 BUILD_DIR := .build
 BIN_DIR := bin

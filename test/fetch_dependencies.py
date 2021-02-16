@@ -26,7 +26,8 @@ def read_repo_list():
     return repos
 
 
-base_dir = os.getcwd()
+base_dir = os.path.join(os.getcwd(), "deps")
+os.makedirs(base_dir, exist_ok=True)
 
 repos = read_repo_list()
 for name, url, ref in repos:
