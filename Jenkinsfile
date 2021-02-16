@@ -40,8 +40,8 @@ pipeline {
                 // fetch dependencies
                 sshagent (credentials: ['xmos-bot']) {
                     dir("${env.WORKSPACE}/test") {
-                        sh "git clone git@github.com:xmos/Unity.git"
-                        //sh "python fetch_dependencies.py"
+                        //sh "git clone git@github.com:xmos/Unity.git"
+                        sh "python fetch_dependencies.py"
                     }                
                 }
                 // create venv
