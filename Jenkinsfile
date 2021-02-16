@@ -38,8 +38,11 @@ pipeline {
                                          url: 'git@github.com:xmos/lib_xs3_math']]
                 ])
                 // fetch dependencies
-                dir("${env.WORKSPACE}/test") {
-                    sh "python fetch_dependencies.py"
+                sshagent (credentials: ['xmos-bot']) {
+                    dir("${env.WORKSPACE}/test") {
+                        sh "git clone git@github.com:xmos/Unity.git"
+                        //sh "python fetch_dependencies.py"
+                    }                
                 }
                 // create venv
                 sh "conda env create -q -p lib_xs3_math_venv -f environment.yml"
