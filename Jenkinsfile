@@ -5,8 +5,7 @@ getApproval()
 pipeline {
     agent {
         dockerfile {
-            args "-v /etc/passwd:/etc/passwd -v /etc/group:/etc/group -v /home/jenkins/.ssh:/home/jenkins/.ssh"
-            //additionalBuildArgs '--build-arg USER=$(whoami) --build-arg UID=$(id -u) --build-arg GID=$(id -g)'
+            args "-v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /home/jenkins/.ssh:/home/jenkins/.ssh:ro"
         }
     }
 
