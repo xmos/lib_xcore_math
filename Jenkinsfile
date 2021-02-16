@@ -5,7 +5,7 @@ getApproval()
 pipeline {
     agent {
         dockerfile {
-            args ""
+            args "-v /etc/passwd:/etc/passwd"
         }
     }
 
