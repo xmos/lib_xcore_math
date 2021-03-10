@@ -1,5 +1,5 @@
-# Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the
-# XMOS Public License: Version 1
+# Copyright 2020 XMOS LIMITED.
+# This Software is subject to the terms of the XMOS Public License: Version 1.
 import numpy as np
 
 Q30 = lambda x: np.int64(np.round(x * (2 ** 30)))
