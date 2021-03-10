@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public License: Version 1.
 
 #ifndef XS3_MATH_TYPES_H_
 #define XS3_MATH_TYPES_H_
