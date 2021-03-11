@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED.
-// This Software is subject to the terms of the XMOS Public License: Version 1.
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include "xs3_math.h"
 #include "vpu_const_vects.h"
