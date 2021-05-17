@@ -10,16 +10,17 @@ extern "C" {
 #endif
 
 
+
+#ifdef __xcore__
+
 unsigned getTimestamp();
 
-void xs3_fft_index_bit_reversal_double(
-    complex_double_t* a,
-    const unsigned length);
+#else
 
+// Stub for getTimestamp() when building for non-xcore (where we don't care about timing)
+static inline unsigned getTimestamp() { return 0; }
 
-
-
-
+#endif
 
 
 /*

@@ -7,14 +7,17 @@
 
 #include "bfp_math.h"
 #include "test_random.h"
+#include "pseudo_rand.h"
+#include "rand_frame.h"
 
 #define SET_TEST_FILE()     Unity.TestFile = __FILE__
 
 #ifdef __xcore__
-#define WORD_ALIGNED __attribute__((aligned (4)))
+#define WORD_ALIGNED  __attribute__((aligned (4)))
 #define DWORD_ALIGNED __attribute__((aligned (8)))
 #else
 #define WORD_ALIGNED
+#define DWORD_ALIGNED
 #endif
 
 #ifndef PRINT_FUNC_NAMES
@@ -61,56 +64,16 @@ static inline signed sext(int a, unsigned b){
 #endif //__XC__
 
 
-
 extern FILE* perf_file;
 
 void xs3_fft_index_bit_reversal_double(
     complex_double_t* a,
     const unsigned length);
-
-
-void test_double_from_s16(
-    double* d_out,
-    bfp_s16_t* d_in);
-void test_double_from_s32(
-    double* d_out,
-    bfp_s32_t* d_in);
-void test_double_from_complex_s16(
-    double* d_out_real,
-    double* d_out_imag,
-    bfp_complex_s16_t* d_in);
-void test_double_from_complex_s32(
-    double* d_out_real,
-    double* d_out_imag,
-    bfp_complex_s32_t* d_in);
-
-
-void test_s16_from_double(
-    int16_t* d_out,
-    double* d_in,
-    unsigned length,
-    exponent_t use_exp);
-
-void test_s32_from_double(
-    int32_t* d_out,
-    double* d_in,
-    unsigned length,
-    exponent_t use_exp);
-
-void test_complex_s16_from_double(
-    int16_t* d_out_real,
-    int16_t* d_out_imag,
-    double* d_in_real,
-    double* d_in_imag,
-    unsigned length,
-    exponent_t use_exp);
-
-void test_complex_s32_from_double(
-    complex_s32_t* d_out,
-    double* d_in_real,
-    double* d_in_imag,
-    unsigned length,
-    exponent_t use_exp);
+    
+void print_warns(
+    int start_case, 
+    unsigned test_c, 
+    unsigned test_asm);
 
 #if defined(__XC__) || defined(__CPLUSPLUS__)
 }   // extern "C"

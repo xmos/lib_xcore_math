@@ -289,7 +289,7 @@ static void test_xs3_vect_complex_s16_squared_mag_random()
 
     for(int v = 0; v < REPS; v++){
 
-        unsigned rep_seed = seed;
+        // unsigned rep_seed = seed;
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
@@ -426,7 +426,6 @@ static void test_xs3_vect_complex_s32_squared_mag_random()
     complex_s32_t DWORD_ALIGNED B[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
-        unsigned rep_seed = seed;
         // PRINTF("\trepetition % 3d..\t(seed: 0x%08X)\n", v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;

@@ -111,8 +111,6 @@ static void test_xs3_vect_s16_dot()
 
         const unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
-        const exponent_t B_exp = pseudo_rand_int(&seed, -30, 30);
-        const exponent_t C_exp = pseudo_rand_int(&seed, -30, 30);
 
         headroom_t B_hr = pseudo_rand_uint(&seed, 0, 15);
         headroom_t C_hr = pseudo_rand_uint(&seed, 0, 15);

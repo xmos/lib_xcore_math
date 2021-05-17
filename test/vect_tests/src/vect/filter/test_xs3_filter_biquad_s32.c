@@ -20,7 +20,6 @@
 #define DEBUG_ON    (1)
 #endif
 
-static unsigned seed = 4563453;
 static char msg_buff[200];
 
 

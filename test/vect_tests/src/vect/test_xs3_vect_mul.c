@@ -199,7 +199,7 @@ static void test_xs3_vect_s16_scale_prepare()
         int16_t WORD_ALIGNED A_im;
 
         exponent_t a_exp;
-        right_shift_t sat, c_shr;
+        right_shift_t sat;
 
         xs3_vect_s16_scale_prepare(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr);
 
@@ -791,7 +791,7 @@ static void test_xs3_vect_s32_scale_random()
     headroom_t hr;
     int32_t A[MAX_LEN];
     int32_t B[MAX_LEN];
-    int32_t alpha;
+    // int32_t alpha;
 
     for(int v = 0; v < REPS; v++){
 
@@ -809,7 +809,7 @@ static void test_xs3_vect_s32_scale_random()
         right_shift_t b_shr = pseudo_rand_uint(&seed, -2, 2);
         right_shift_t c_shr = pseudo_rand_uint(&seed, 0, 8);
         
-        const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) * %ld) >> 30     (A[i]=0x%08X; B[i]=0x%08X; alpha=0x%08X)";
+        // const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) * %ld) >> 30     (A[i]=0x%08X; B[i]=0x%08X; alpha=0x%08X)";
 
         hr = xs3_vect_s32_scale(A, B, len, c, b_shr, c_shr);
 

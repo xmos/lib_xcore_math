@@ -21,7 +21,6 @@
 #endif
 
 static unsigned seed = 0x47848653;
-static char msg_buff[200];
 
 
 

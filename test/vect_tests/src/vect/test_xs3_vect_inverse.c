@@ -17,7 +17,6 @@
 
 static unsigned seed = 2314567;
 
-static char msg_buff[200];
 
 
 #if DEBUG_ON || 0
@@ -245,9 +244,6 @@ static void test_xs3_vect_s32_inverse()
 
         xs3_vect_s32_inverse_prepare(&a_exp, &scale, B, b_exp, length);
 
-        headroom_t a_hr = xs3_vect_s32_inverse(A, B, length, scale);
-
-        // TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, length), a_hr);
 
         double expected_flt[MAX_LEN];
 

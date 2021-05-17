@@ -2,8 +2,6 @@
 // XMOS Public License: Version 1
 
 
-#include <xs1.h>
-#include <xclib.h>
 
 #include "xs3_math.h"
 #include "testing.h"

@@ -14,14 +14,7 @@
 
 #include "unity.h"
 
-static unsigned seed = 2314567;
-static char msg_buff[200];
 
-#define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
-    if((EXPECTED)!=(ACTUAL)) {                                        \
-      sprintf(msg_buff, "(test vector @ line %u)", (LINE_NUM));       \
-      TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
-    }} while(0)
 
 
 #if !defined(DEBUG_ON) || 0

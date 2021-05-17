@@ -90,7 +90,6 @@ void test_xs3_filter_fir_s32_case1()
 
         xs3_filter_fir_s32_init(&filter, state, N, coefs, 0);
 
-        int32_t exp = 0;
         for(int i = 0; i < N; i++){
             xs3_filter_fir_s32_add_sample(&filter, 0x40000000);
         }

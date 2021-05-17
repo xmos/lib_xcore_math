@@ -111,7 +111,7 @@ void test_xs3_vect_complex_s16_real_mul_prepare()
 
             TEST_ASSERT_GREATER_THAN(0, sat);
             
-            double Pf = ldexp(B, B_exp) * ldexp(C, C_exp);
+            // double Pf = ldexp(B, B_exp) * ldexp(C, C_exp);
             double Rf = ldexp(P, -sat);
 
             TEST_ASSERT( Rf == 0x8000 );
@@ -251,7 +251,7 @@ static void test_xs3_vect_complex_s16_real_mul_random()
                                       B.real, B.imag, 
                                       C, len, sat);
 
-        headroom_t hrre, hrim;
+        // headroom_t hrre, hrim;
 
         for(int i = 0; i < len; i++){
             complex_s16_t expected = mul_complex_s16(B.real[i], B.imag[i], C[i], sat);

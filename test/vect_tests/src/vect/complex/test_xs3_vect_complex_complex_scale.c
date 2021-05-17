@@ -405,7 +405,6 @@ static void test_xs3_vect_complex_s32_scale_random()
         
         hr = xs3_vect_complex_s32_scale(A, B, C.re, C.im, len, b_shr, c_shr);
 
-        headroom_t hrre, hrim;
 
         for(int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_s32(B[i], C, b_shr, c_shr);

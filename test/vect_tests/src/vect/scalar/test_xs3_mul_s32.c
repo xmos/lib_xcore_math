@@ -15,14 +15,8 @@
 #include "unity.h"
 
 static unsigned seed = 2314567;
-static char msg_buff[200];
 
 
-#define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
-    if((EXPECTED)!=(ACTUAL)) {                                        \
-      sprintf(msg_buff, "(test vector @ line %u)", (LINE_NUM));       \
-      TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
-    }} while(0)
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -60,19 +54,11 @@ static void test_xs3_mul_s32_A()
         
         double Bf = ldexp(B, b_exp);
         double Cf = ldexp(C, c_exp);
-        double Af = ldexp(A, a_exp);
 
         double Ef = Bf * Cf;
 
         int32_t expected = round( ldexp(Ef, -a_exp) );
 
-        // if( abs(expected - A) > 2){
-        //     printf("B = %ld << (%d)        ( %e )\n", B, b_exp, Bf);
-        //     printf("C = %ld << (%d)        ( %e )\n", C, c_exp, Cf);
-        //     printf("A = %ld << (%d)        ( %e )\n", A, a_exp, Af);
-
-        //     printf("Ef = %e\n", Ef);
-        // }
 
 
         TEST_ASSERT_INT32_WITHIN(2, expected, A);
