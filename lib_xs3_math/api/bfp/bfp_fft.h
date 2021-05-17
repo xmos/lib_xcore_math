@@ -1,16 +1,9 @@
 // Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
 // XMOS Public License: Version 1
 
-
-#ifndef BFP_FFT_H_
-#define BFP_FFT_H_
+#pragma once
 
 #include "xs3_math_types.h"
-
-#ifdef __XC__
-extern "C" {
-#endif
-
 
 
 /** 
@@ -68,6 +61,7 @@ extern "C" {
  * 
  * @return Address of input BFP vector `x`, cast as `bfp_complex_s32_t*`.
  */
+C_API
 bfp_complex_s32_t* bfp_fft_forward_mono(
     bfp_s32_t* x);
 
@@ -128,6 +122,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
  * 
  * @return Address of input BFP vector `x`, cast as `bfp_s32_t*`.
  */
+C_API
 bfp_s32_t* bfp_fft_inverse_mono(
     bfp_complex_s32_t* x);
 
@@ -173,6 +168,7 @@ bfp_s32_t* bfp_fft_inverse_mono(
  * 
  * @param[inout] x  The BFP vector @math{x[n]} to be DFTed.
  */
+C_API
 void bfp_fft_forward_complex(
     bfp_complex_s32_t* x);
 
@@ -216,6 +212,7 @@ void bfp_fft_forward_complex(
  * 
  * @param[inout] x  The BFP vector @math{x[n]} to be IDFTed.
  */
+C_API
 void bfp_fft_inverse_complex(
     bfp_complex_s32_t* x);
 
@@ -274,6 +271,7 @@ void bfp_fft_inverse_complex(
  * @param[out]  b   Output spectrum for channel B.
  * @param[in]   x   channel-pair BFP vector to be DFTed.
  */
+C_API
 void bfp_fft_forward_stereo(
     bfp_complex_s32_t* a,
     bfp_complex_s32_t* b,
@@ -334,14 +332,8 @@ void bfp_fft_forward_stereo(
  * @param[out]  a   Spectrum for channel A.
  * @param[in]   b   Spectrum for channel B.
  */
+C_API
 void  bfp_fft_inverse_stereo(
     bfp_ch_pair_s32_t* x,
     const bfp_complex_s32_t* a,
     const bfp_complex_s32_t* b);
-
-
-#ifdef __XC__
-}   //extern "C"
-#endif
-
-#endif //BFP_FFT_H_

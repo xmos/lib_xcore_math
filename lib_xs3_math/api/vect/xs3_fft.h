@@ -1,14 +1,7 @@
 // Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
 // XMOS Public License: Version 1
 
-#ifndef XS3_FFT_H_
-#define XS3_FFT_H_
-
-// #include "xs3_fft_lut.h"
-
-#ifdef __XC__
-extern "C" {
-#endif
+#pragma once
 
 
 /**
@@ -36,6 +29,7 @@ extern "C" {
  * @param[in] x         The vector to have its elements reordered.
  * @param[in] length    The length of `x` (element count).
  */
+C_API
 void xs3_fft_index_bit_reversal(
     complex_s32_t x[],
     const unsigned length);
@@ -81,6 +75,7 @@ void xs3_fft_index_bit_reversal(
  * 
  * @return The headroom of the result `x`
  */
+C_API
 headroom_t xs3_fft_spectra_split(
     complex_s32_t x[],
     const unsigned length);
@@ -107,6 +102,7 @@ headroom_t xs3_fft_spectra_split(
  * 
  * @return The headroom of the result `x`
  */
+C_API
 headroom_t xs3_fft_spectra_merge(
     complex_s32_t x[],
     const unsigned length);
@@ -157,6 +153,7 @@ headroom_t xs3_fft_spectra_merge(
  * @param[in] length    The size of the DFT to be computed. Twice the length of `x` (in elements).
  * @param[in] inverse   Flag indicating whether the inverse DFT is being computed.
  */
+C_API
 void xs3_fft_mono_adjust(
     complex_s32_t x[],
     const unsigned length,
@@ -191,6 +188,7 @@ void xs3_fft_mono_adjust(
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
  */
+C_API
 void xs3_fft_dit_forward (
     complex_s32_t x[], 
     const unsigned N, 
@@ -226,6 +224,7 @@ void xs3_fft_dit_forward (
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
  */
+C_API
 void xs3_fft_dit_inverse (
     complex_s32_t x[], 
     const unsigned N, 
@@ -261,6 +260,7 @@ void xs3_fft_dit_inverse (
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
  */
+C_API
 void xs3_fft_dif_forward (
     complex_s32_t x[], 
     const unsigned N, 
@@ -296,15 +296,10 @@ void xs3_fft_dif_forward (
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
  */
+C_API
 void xs3_fft_dif_inverse (
     complex_s32_t x[], 
     const unsigned N, 
     headroom_t* hr, 
     exponent_t* exp);
 
-
-#ifdef __XC__
-}   //extern "C"
-#endif
-
-#endif //XS3_FFT_H_

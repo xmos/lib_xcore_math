@@ -1,5 +1,6 @@
 // Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
 // XMOS Public License: Version 1
+
 #pragma once
 
 #include <stdint.h>
@@ -11,14 +12,6 @@
 #include "rand_frame.h"
 
 #define SET_TEST_FILE()     Unity.TestFile = __FILE__
-
-#ifdef __xcore__
-#define WORD_ALIGNED  __attribute__((aligned (4)))
-#define DWORD_ALIGNED __attribute__((aligned (8)))
-#else
-#define WORD_ALIGNED
-#define DWORD_ALIGNED
-#endif
 
 #ifndef PRINT_FUNC_NAMES
 #define PRINT_FUNC_NAMES 1
@@ -45,13 +38,11 @@
         TEST_ASSERT_FALSE_MESSAGE(V, qwe); }} while(0)
 
 
-#if defined(__XC__) || defined(__CPLUSPLUS__)
-extern "C" {
-#endif 
 
-#ifndef __XC__
+EXTERN_C
 static inline signed sext(int a, unsigned b){
-#ifdef __XS3A__
+
+#if !defined(__XC__) && defined(__XS3A__)
     asm("sext %0, %1": "=r"(a): "r"(b));
 #else
     unsigned mask = ~((1<<b)-1);
@@ -59,22 +50,20 @@ static inline signed sext(int a, unsigned b){
     unsigned p = a >= 0;
     a = p? (a & ~mask) : (a | mask);
 #endif
+
     return a;
 }
-#endif //__XC__
 
 
 extern FILE* perf_file;
 
+EXTERN_C
 void xs3_fft_index_bit_reversal_double(
     complex_double_t* a,
     const unsigned length);
     
+EXTERN_C
 void print_warns(
     int start_case, 
     unsigned test_c, 
     unsigned test_asm);
-
-#if defined(__XC__) || defined(__CPLUSPLUS__)
-}   // extern "C"
-#endif

@@ -1,15 +1,13 @@
 // Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
 // XMOS Public License: Version 1
-#ifndef XS3_VECT_S32_H_
-#define XS3_VECT_S32_H_
+
+#pragma once
 
 #include "xs3_math_conf.h"
 #include "xs3_math_types.h"
 #include "xs3_util.h"
 
-#ifdef __XC__
-extern "C" {
-#endif
+
 
 /**
  * @page vector_functions32 32-bit Vector Functions
@@ -99,6 +97,7 @@ extern "C" {
  * @see xs3_vect_complex_s16_sub
  * @see xs3_vect_complex_s32_sub
  */
+C_API
 void xs3_vect_add_sub_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -143,6 +142,7 @@ void xs3_vect_add_sub_prepare(
  * @see xs3_vect_complex_s16_headroom
  * @see xs3_vect_complex_s32_headroom
  */
+C_API
 headroom_t xs3_vect_ch_pair_s32_headroom(
     const ch_pair_s32_t x[],
     const unsigned length);
@@ -180,6 +180,7 @@ headroom_t xs3_vect_ch_pair_s32_headroom(
  * @see xs3_vect_complex_s16_set
  * @see xs3_vect_complex_s32_set
  */
+C_API
 void xs3_vect_ch_pair_s32_set(
     ch_pair_s32_t a[],
     const int32_t ch_a,
@@ -218,6 +219,7 @@ void xs3_vect_ch_pair_s32_set(
  * 
  * @see xs3_vect_ch_pair_s32_shr
  */
+C_API
 headroom_t xs3_vect_ch_pair_s32_shl(
     ch_pair_s32_t a[],
     const ch_pair_s32_t b[],
@@ -256,6 +258,7 @@ headroom_t xs3_vect_ch_pair_s32_shl(
  * 
  * @see xs3_vect_ch_pair_s32_shr
  */
+C_API
 headroom_t xs3_vect_ch_pair_s32_shr(
     ch_pair_s32_t a[],
     const ch_pair_s32_t b[],
@@ -316,6 +319,7 @@ headroom_t xs3_vect_ch_pair_s32_shr(
  * @see xs3_vect_complex_s16_mag()
  * @see xs3_vect_complex_s32_mag()
  */
+C_API
 void xs3_vect_complex_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -371,6 +375,7 @@ void xs3_vect_complex_mag_prepare(
  * 
  * @see xs3_vect_add_sub_prepare
  */
+C_API
 headroom_t xs3_vect_complex_s32_add(
     complex_s32_t a[],
     const complex_s32_t b[],
@@ -423,6 +428,7 @@ headroom_t xs3_vect_complex_s32_add(
  * 
  * @see xs3_vect_complex_s32_mul_prepare
  */
+C_API
 headroom_t xs3_vect_complex_s32_conj_mul(
     complex_s32_t a[],
     const complex_s32_t b[],
@@ -465,6 +471,7 @@ headroom_t xs3_vect_complex_s32_conj_mul(
  * @see xs3_vect_s32_headroom
  * @see xs3_vect_complex_s16_headroom
  */
+C_API
 headroom_t xs3_vect_complex_s32_headroom(
     const complex_s32_t x[], 
     const unsigned length);
@@ -522,6 +529,7 @@ headroom_t xs3_vect_complex_s32_headroom(
  * 
  * @see xs3_vect_complex_mag_prepare
  */
+C_API
 headroom_t xs3_vect_complex_s32_mag(
     int32_t a[],
     const complex_s32_t b[],
@@ -572,6 +580,7 @@ headroom_t xs3_vect_complex_s32_mag(
  * 
  * @see xs3_vect_complex_s32_mag()
  */
+C_API
 void xs3_vect_complex_s32_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -621,6 +630,7 @@ void xs3_vect_complex_s32_mag_prepare(
  * 
  * @see xs3_vect_complex_s32_mul_prepare
  */
+C_API
 headroom_t xs3_vect_complex_s32_mul(
     complex_s32_t a[],
     const complex_s32_t b[],
@@ -688,6 +698,7 @@ headroom_t xs3_vect_complex_s32_mul(
  * @see xs3_vect_complex_s32_conj_mul
  * @see xs3_vect_complex_s32_mul
  */
+C_API
 void xs3_vect_complex_s32_mul_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -742,6 +753,7 @@ void xs3_vect_complex_s32_mul_prepare(
  * 
  * @see xs3_vect_complex_s32_real_mul_prepare
  */
+C_API
 headroom_t xs3_vect_complex_s32_real_mul(
     complex_s32_t a[],
     const complex_s32_t b[],
@@ -807,6 +819,7 @@ headroom_t xs3_vect_complex_s32_real_mul(
  * 
  * @see xs3_vect_complex_s32_real_mul
  */
+C_API
 void xs3_vect_complex_s32_real_mul_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -856,6 +869,7 @@ void xs3_vect_complex_s32_real_mul_prepare(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  */
+C_API
 headroom_t xs3_vect_complex_s32_real_scale(
     complex_s32_t a[],
     const complex_s32_t b[],
@@ -907,6 +921,7 @@ headroom_t xs3_vect_complex_s32_real_scale(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  */
+C_API
 headroom_t xs3_vect_complex_s32_scale(
     complex_s32_t a[],
     const complex_s32_t b[],
@@ -973,6 +988,7 @@ headroom_t xs3_vect_complex_s32_scale(
  * 
  * @see xs3_vect_complex_s32_scale
  */
+C_API
 void xs3_vect_complex_s32_scale_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -1008,6 +1024,7 @@ void xs3_vect_complex_s32_scale_prepare(
  * @param[in]   b_imag      Value to set imaginary part of elements of @vector{a} to
  * @param[in]   length      Number of elements in @vector{a}
  */
+C_API
 void xs3_vect_complex_s32_set(
     complex_s32_t a[],
     const int32_t b_real,
@@ -1044,6 +1061,7 @@ void xs3_vect_complex_s32_set(
  * 
  * @returns     Headroom of the output vector @vector{a}
  */
+C_API
 headroom_t xs3_vect_complex_s32_shl(
     complex_s32_t a[],
     const complex_s32_t b[],
@@ -1080,6 +1098,7 @@ headroom_t xs3_vect_complex_s32_shl(
  * 
  * @returns     Headroom of the output vector @vector{a}
  */
+C_API
 headroom_t xs3_vect_complex_s32_shr(
     complex_s32_t a[],
     const complex_s32_t b[],
@@ -1119,6 +1138,7 @@ headroom_t xs3_vect_complex_s32_shr(
  * 
  * @see xs3_vect_complex_s32_squared_mag_prepare
  */
+C_API
 headroom_t xs3_vect_complex_s32_squared_mag(
     int32_t a[],
     const complex_s32_t b[],
@@ -1167,6 +1187,7 @@ headroom_t xs3_vect_complex_s32_squared_mag(
  * 
  * @see xs3_vect_complex_s32_squared_mag()
  */
+C_API
 void xs3_vect_complex_s32_squared_mag_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -1219,6 +1240,7 @@ void xs3_vect_complex_s32_squared_mag_prepare(
  * 
  * @see xs3_vect_add_sub_prepare
  */
+C_API
 headroom_t xs3_vect_complex_s32_sub(
     complex_s32_t a[], 
     const complex_s32_t b[],
@@ -1272,6 +1294,7 @@ headroom_t xs3_vect_complex_s32_sub(
  * 
  * @see xs3_vect_complex_s32_sum_prepare
  */
+C_API
 void xs3_vect_complex_s32_sum(
     complex_s64_t* a,
     const complex_s32_t b[],
@@ -1325,6 +1348,7 @@ void xs3_vect_complex_s32_sum(
  * 
  * @see xs3_vect_complex_s32_sum
  */
+C_API
 void xs3_vect_complex_s32_sum_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -1362,6 +1386,7 @@ void xs3_vect_complex_s32_sum_prepare(
  * @see bfp_fft_forward_mono
  * @see bfp_fft_inverse_mono
  */
+C_API
 void xs3_vect_complex_s32_tail_reverse(
     complex_s32_t x[],
     const unsigned length);
@@ -1414,6 +1439,7 @@ void xs3_vect_complex_s32_tail_reverse(
  * @see xs3_vect_s32_to_s16
  * @see xs3_vect_complex_s16_to_complex_s32
  */
+C_API
 void xs3_vect_complex_s32_to_complex_s16(
     int16_t a_real[],
     int16_t a_imag[],
@@ -1446,6 +1472,7 @@ void xs3_vect_complex_s32_to_complex_s16(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  */
+C_API
 headroom_t xs3_vect_s32_abs(
     int32_t a[],
     const int32_t b[],
@@ -1488,6 +1515,7 @@ headroom_t xs3_vect_s32_abs(
  * 
  * @returns The 64-bit sum @math{a}
  */
+C_API
 int64_t xs3_vect_s32_abs_sum(
     const int32_t b[],
     const unsigned length);
@@ -1536,6 +1564,7 @@ int64_t xs3_vect_s32_abs_sum(
  * 
  * @see xs3_vect_add_sub_prepare
  */
+C_API
 headroom_t xs3_vect_s32_add(
     int32_t a[],
     const int32_t b[],
@@ -1563,6 +1592,7 @@ headroom_t xs3_vect_s32_add(
  * @returns @math{a}, the index of the maximum element of vector @vector{b}. If there is a tie for the maximum value, 
  *          the lowest tying index is returned.
  */
+C_API
 unsigned xs3_vect_s32_argmax(
     const int32_t b[],
     const unsigned length);
@@ -1586,6 +1616,7 @@ unsigned xs3_vect_s32_argmax(
  * @returns @math{a}, the index of the minimum element of vector @vector{b}. If there is a tie for the minimum value, 
  *          the lowest tying index is returned.
  */
+C_API
 unsigned xs3_vect_s32_argmin(
     const int32_t b[],
     const unsigned length);
@@ -1631,6 +1662,7 @@ unsigned xs3_vect_s32_argmin(
  * 
  * @returns  Headroom of output vector @vector{a}
  */
+C_API
 headroom_t xs3_vect_s32_clip(
     int32_t a[],
     const int32_t b[],
@@ -1702,6 +1734,7 @@ headroom_t xs3_vect_s32_clip(
  * 
  * @returns The inner product of vectors @vector{b} and @vector{c}, scaled as indicated above.
  */
+C_API
 int64_t xs3_vect_s32_dot(
     const int32_t b[],
     const int32_t c[],
@@ -1762,6 +1795,7 @@ int64_t xs3_vect_s32_dot(
  * 
  * @see xs3_vect_s32_dot
  */
+C_API
 void xs3_vect_s32_dot_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -1824,6 +1858,7 @@ void xs3_vect_s32_dot_prepare(
  * 
  * @returns 64-bit mantissa of vector @vector{b}'s energy
  */
+C_API
 int64_t xs3_vect_s32_energy(
     const int32_t b[],
     const unsigned length,
@@ -1875,6 +1910,7 @@ int64_t xs3_vect_s32_energy(
  * 
  * @see xs3_vect_s32_energy
  */
+C_API
 void xs3_vect_s32_energy_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -1913,6 +1949,7 @@ void xs3_vect_s32_energy_prepare(
  * @see xs3_vect_complex_s16_headroom
  * @see xs3_vect_complex_s32_headroom
  */
+C_API
 headroom_t xs3_vect_s32_headroom(
     const int32_t x[],
     const unsigned length);
@@ -1949,6 +1986,7 @@ headroom_t xs3_vect_s32_headroom(
  * 
  * @see xs3_vect_s32_inverse_prepare
  */
+C_API
 headroom_t xs3_vect_s32_inverse(
     int32_t a[],
     const int32_t b[],
@@ -1988,6 +2026,7 @@ headroom_t xs3_vect_s32_inverse(
  * 
  * @see xs3_vect_s32_inverse
  */
+C_API
 void xs3_vect_s32_inverse_prepare(
     exponent_t* a_exp,
     unsigned* scale,
@@ -2017,6 +2056,7 @@ void xs3_vect_s32_inverse_prepare(
  * 
  * @returns     Maximum value from @vector{b}
  */
+C_API
 int32_t xs3_vect_s32_max(
     const int32_t b[],
     const unsigned length);
@@ -2043,6 +2083,7 @@ int32_t xs3_vect_s32_max(
  * 
  * @returns     Minimum value from @vector{b}
  */
+C_API
 int32_t xs3_vect_s32_min(
     const int32_t x[],
     const unsigned length);
@@ -2086,6 +2127,7 @@ int32_t xs3_vect_s32_min(
  * @returns  Headroom of vector @vector{a}
  */
 //! [xs3_vect_s32_mul]
+C_API
 headroom_t xs3_vect_s32_mul(
     int32_t a[],
     const int32_t b[],
@@ -2153,6 +2195,7 @@ headroom_t xs3_vect_s32_mul(
  * 
  * @see xs3_vect_s32_mul
  */
+C_API
 void xs3_vect_s32_mul_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -2191,6 +2234,7 @@ void xs3_vect_s32_mul_prepare(
  * 
  * @returns  Headroom of the output vector @vector{a}
  */
+C_API
 headroom_t xs3_vect_s32_rect(
     int32_t a[],
     const int32_t b[],
@@ -2236,6 +2280,7 @@ headroom_t xs3_vect_s32_rect(
  * 
  * @see xs3_vect_s32_mul_prepare
  */
+C_API
 headroom_t xs3_vect_s32_scale(
     int32_t a[],
     const int32_t b[],
@@ -2266,6 +2311,7 @@ headroom_t xs3_vect_s32_scale(
  * @param[in]   b           New value for the elements of @vector{a}
  * @param[in]   length      Number of elements in @vector{a}
  */
+C_API
 void xs3_vect_s32_set(
     int32_t a[],
     const int32_t b,
@@ -2300,6 +2346,7 @@ void xs3_vect_s32_set(
  * 
  * @returns     Headroom of output vector @vector{a}
  */
+C_API
 headroom_t xs3_vect_s32_shl(
     int32_t a[],
     const int32_t b[],
@@ -2335,6 +2382,7 @@ headroom_t xs3_vect_s32_shl(
  * 
  * @returns     Headroom of output vector @vector{a}
  */
+C_API
 headroom_t xs3_vect_s32_shr(
     int32_t a[],
     const int32_t b[],
@@ -2382,6 +2430,7 @@ headroom_t xs3_vect_s32_shr(
  * 
  * @returns     Headroom of output vector @vector{a}
  */
+C_API
 headroom_t xs3_vect_s32_sqrt(
     int32_t a[],
     const int32_t b[],
@@ -2440,6 +2489,7 @@ headroom_t xs3_vect_s32_sqrt(
  * 
  * @see xs3_vect_s32_sqrt
  */
+C_API
 void xs3_vect_s32_sqrt_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
@@ -2491,6 +2541,7 @@ void xs3_vect_s32_sqrt_prepare(
  * 
  * @see xs3_vect_add_sub_prepare
  */
+C_API
 headroom_t xs3_vect_s32_sub(
     int32_t a[],
     const int32_t b[],
@@ -2536,6 +2587,7 @@ headroom_t xs3_vect_s32_sub(
  * 
  * @returns  64-bit mantissa of the sum, @math{a}.
  */
+C_API
 int64_t xs3_vect_s32_sum(
     const int32_t b[],
     const unsigned length);
@@ -2585,17 +2637,9 @@ int64_t xs3_vect_s32_sum(
  * 
  * @see xs3_vect_s16_to_s32
  */
+C_API
 void xs3_vect_s32_to_s16(
     int16_t a[],
     const int32_t b[],
     const unsigned length,
     const right_shift_t b_shr);
-
-
-
-
-#ifdef __XC__
-}   //extern "C"
-#endif
-
-#endif //XS3_VECT_S32_H_

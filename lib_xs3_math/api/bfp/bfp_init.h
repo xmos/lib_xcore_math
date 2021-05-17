@@ -1,17 +1,13 @@
 // Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
 // XMOS Public License: Version 1
 
-#ifndef BFP_INIT_H_
-#define BFP_INIT_H_
+#pragma once
 
 #include <stdlib.h>
 #include <stdint.h>
 
 #include "xs3_math_types.h"
 
-#ifdef __XC__
-extern "C" {
-#endif
 
 /** 
  * @brief Initialize a 16-bit BFP vector.
@@ -33,6 +29,7 @@ extern "C" {
  * @param[in] length    Number of elements in the BFP vector
  * @param[in] calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
+C_API
 void bfp_s16_init(
     bfp_s16_t* a, 
     int16_t* data, 
@@ -60,6 +57,7 @@ void bfp_s16_init(
  * @param[in]  length    Number of elements in the BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
+C_API
 void bfp_s32_init(
     bfp_s32_t* a, 
     int32_t* data, 
@@ -94,6 +92,7 @@ void bfp_s32_init(
  * @param[in]  length    Number of elements in BFP vector
  * @param[in] calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
+C_API
 void bfp_complex_s16_init(
     bfp_complex_s16_t* a, 
     int16_t* real_data,
@@ -123,6 +122,7 @@ void bfp_complex_s16_init(
  * @param[in]  length    Number of elements in BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
+C_API
 void bfp_complex_s32_init(
     bfp_complex_s32_t* a, 
     complex_s32_t* data, 
@@ -152,6 +152,7 @@ void bfp_complex_s32_init(
  * @param[in]  length    Number of elements in BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
+C_API
 void bfp_ch_pair_s16_init(
     bfp_ch_pair_s16_t* a, 
     ch_pair_s16_t* data, 
@@ -182,6 +183,7 @@ void bfp_ch_pair_s16_init(
  * @param[in]  length    Number of elements in BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
  */
+C_API
 void bfp_ch_pair_s32_init(
     bfp_ch_pair_s32_t* a, 
     ch_pair_s32_t* data, 
@@ -203,6 +205,7 @@ void bfp_ch_pair_s32_init(
  * @param[in]  b         New value each mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
  */
+C_API
 void bfp_s16_set(
     bfp_s16_t* a,
     const int16_t b,
@@ -222,6 +225,7 @@ void bfp_s16_set(
  * @param[in]  b         New value each mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
  */
+C_API
 void bfp_s32_set(
     bfp_s32_t* a,
     const int32_t b,
@@ -241,6 +245,7 @@ void bfp_s32_set(
  * @param[in]  b         New value each complex mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
  */
+C_API
 void bfp_complex_s16_set(
     bfp_complex_s16_t* a,
     const complex_s16_t b,
@@ -260,6 +265,7 @@ void bfp_complex_s16_set(
  * @param[in]  b         New value each complex mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
  */
+C_API
 void bfp_complex_s32_set(
     bfp_complex_s32_t* a,
     const complex_s32_t b,
@@ -280,6 +286,7 @@ void bfp_complex_s32_set(
  * @param[in]  b         New value each channel-pair mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
  */
+C_API
 void bfp_ch_pair_s16_set(
     bfp_ch_pair_s16_t* a,
     const ch_pair_s16_t b,
@@ -300,15 +307,8 @@ void bfp_ch_pair_s16_set(
  * @param[in]  b         New value each channel-pair mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
  */
+C_API
 void bfp_ch_pair_s32_set(
     bfp_ch_pair_s32_t* a,
     const ch_pair_s32_t b,
     const exponent_t exp);
-
-    
-
-#ifdef __XC__
-}   //extern "C"
-#endif
-
-#endif //BFP_INIT_H_

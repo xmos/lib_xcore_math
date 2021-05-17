@@ -13,6 +13,7 @@
  */
 
 #include "xs3_math_conf.h"
+#include "xs3_api.h"
 #include "xs3_math_types.h"
 
 

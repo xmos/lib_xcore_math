@@ -1,9 +1,7 @@
 // Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
 // XMOS Public License: Version 1
 
-
-#ifndef XS3_UTIL_H_
-#define XS3_UTIL_H_
+#pragma once
 
 #include "xs3_math_types.h"
 
@@ -11,9 +9,6 @@
 #include <assert.h>
 #include <math.h>
 
-#ifdef __XC__
-extern "C" {
-#endif
 
 /**
  * @brief Takes the greater of arguments `A` and `B`, preferring `A` on equality.
@@ -108,10 +103,13 @@ static inline unsigned cls(
     const int32_t a)
 {
 #ifdef __XS3A__
+
     unsigned res;
     asm( "cls %0, %1" : "=r"(res) : "r"(a) );
     return res;
+
 #else
+
     if(a == 0 || a == -1)
         return 32;
     
@@ -143,6 +141,7 @@ static inline unsigned cls(
  * 
  * @returns     32-bit output mantissa
  */
+C_API
 int32_t xs3_scalar_s64_to_s32(
     exponent_t* a_exp,
     const int64_t b,
@@ -160,6 +159,7 @@ int32_t xs3_scalar_s64_to_s32(
  * 
  * @returns     16-bit output mantissa
  */
+C_API
 int16_t xs3_scalar_s32_to_s16(
     exponent_t* a_exp,
     const int32_t b,
@@ -181,6 +181,7 @@ int16_t xs3_scalar_s32_to_s16(
  * 
  * @returns     32-bit output mantissa
  */
+C_API
 int32_t xs3_scalar_s16_to_s32(
     exponent_t* a_exp,
     const int16_t b,
@@ -200,6 +201,7 @@ int32_t xs3_scalar_s16_to_s32(
  * 
  * @returns     
  */
+C_API
 int32_t xs3_sqrt_s32(
     exponent_t* a_exp,
     const int32_t B,
@@ -214,6 +216,7 @@ int32_t xs3_sqrt_s32(
  * 
  * @returns     
  */
+C_API
 int32_t xs3_inverse_s32(
     exponent_t* a_exp,
     const int32_t b);
@@ -229,6 +232,7 @@ int32_t xs3_inverse_s32(
  * 
  * @returns 
  */
+C_API
 int32_t xs3_mul_s32(
     exponent_t* a_exp,
     const int32_t b,
@@ -250,13 +254,7 @@ int32_t xs3_mul_s32(
 static inline unsigned ceil_log2(
     unsigned N)
 {
-    if(N == 0)
-        return 0;
-    
+    if(N == 0) return 0;
     return 32-cls(N-1);
 }
-#ifdef __XC__
-} // extern "C" 
-#endif
 
-#endif //XS3_UTIL_H_

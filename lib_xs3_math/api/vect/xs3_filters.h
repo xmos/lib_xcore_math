@@ -1,14 +1,9 @@
 // Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
 // XMOS Public License: Version 1
 
-#ifndef XS3_FILTERS_H_
-#define XS3_FILTERS_H_
+#pragma once
 
 #include "xs3_math_types.h"
-
-#ifdef __XC__
-extern "C" {
-#endif
 
 
 /**
@@ -203,6 +198,7 @@ extern "C" {
  * @see xs3_filter_fir_s32_add_sample()
  * @see xs3_filter_fir_s32()
  */
+C_API
 typedef struct {
     /**
      * The number of taps in the FIR filter.
@@ -253,6 +249,7 @@ typedef struct {
  * 
  * @see xs3_filter_fir_s32_t
  */
+C_API
 void xs3_filter_fir_s32_init(
     xs3_filter_fir_s32_t* filter,
     int32_t* sample_buffer,
@@ -273,6 +270,7 @@ void xs3_filter_fir_s32_init(
  * 
  * @see xs3_filter_fir_s32_t
  */
+C_API
 void xs3_filter_fir_s32_add_sample(
     xs3_filter_fir_s32_t* filter,
     const int32_t new_sample);
@@ -292,6 +290,7 @@ void xs3_filter_fir_s32_add_sample(
  * 
  * @see xs3_filter_fir_s32_t
  */
+C_API
 int32_t xs3_filter_fir_s32(
     xs3_filter_fir_s32_t* filter,
     const int32_t new_sample);
@@ -398,6 +397,7 @@ int32_t xs3_filter_fir_s32(
  * @see xs3_filter_fir_s16_add_sample()
  * @see xs3_filter_fir_s16()
  */
+C_API
 typedef struct {
     /**
      * The number of taps in the FIR filter.
@@ -431,6 +431,7 @@ typedef struct {
  * @param[in]  coefficients
  * @param[in]  shift
  */
+C_API
 void xs3_filter_fir_s16_init(
     xs3_filter_fir_s16_t* filter,
     int16_t* sample_buffer,
@@ -444,6 +445,7 @@ void xs3_filter_fir_s16_init(
  * @param[inout] filter
  * @param[in]    new_sample
  */
+C_API
 void xs3_filter_fir_s16_add_sample(
     xs3_filter_fir_s16_t* filter,
     const int16_t new_sample);
@@ -458,6 +460,7 @@ void xs3_filter_fir_s16_add_sample(
  * 
  * @returns     Next filtered output sample
  */
+C_API
 int16_t xs3_filter_fir_s16(
     xs3_filter_fir_s16_t* filter,
     const int16_t new_sample);
@@ -472,6 +475,7 @@ int16_t xs3_filter_fir_s16(
  * 
  * For longer cascades, an array of `xs3_biquad_filter_s32_t` structs can be used with xs3_filter_biquads_s32().
  */
+C_API
 typedef struct {
     /**
      * The number of biquad sections in this biquad filter block.
@@ -504,6 +508,7 @@ typedef struct {
  * 
  * @returns     Next filtered output sample
  */
+C_API
 int32_t xs3_filter_biquad_s32(
     xs3_biquad_filter_s32_t* filter,
     const int32_t new_sample);
@@ -518,15 +523,9 @@ int32_t xs3_filter_biquad_s32(
  * 
  * @returns     New filtered output sample
  */
+C_API
 int32_t xs3_filter_biquads_s32(
     xs3_biquad_filter_s32_t biquads[],
     const unsigned block_count,
     const int32_t new_sample);
 
-
-
-#ifdef __XC__
-}   //extern "C"
-#endif
-
-#endif //XS3_FILTERS_H_
