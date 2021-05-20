@@ -1,0 +1,18 @@
+VERSION = 0.1.0
+
+DEPENDENT_MODULES =
+
+MODULE_XCC_FLAGS = $(XCC_FLAGS)
+
+EXPORT_INCLUDE_DIRS = api api/vect api/bfp
+
+INCLUDE_DIRS = $(EXPORT_INCLUDE_DIRS)
+
+SOURCE_DIRS = src \
+              src/arch/xcore \
+              src/arch/xcore/complex \
+              src/arch/xcore/fft \
+              src/arch/xcore/filter \
+              src/arch/xcore/stat \
+              src/bfp \
+              src/vect
