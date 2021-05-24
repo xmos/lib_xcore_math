@@ -5,6 +5,10 @@
 #define XS3_MATH_H_
 
 
+#ifdef __XC__
+extern "C" { 
+#endif
+
 /**
  * @file xs3_math.h
  * 
@@ -25,5 +29,9 @@
 
 #include "xs3_vpu.h"
 
+
+#ifdef __XC__
+} // extern "C"
+#endif
 
 #endif //XS3_MATH_H_

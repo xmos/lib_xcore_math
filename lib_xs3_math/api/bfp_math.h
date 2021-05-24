@@ -4,6 +4,10 @@
 #ifndef BFP_MATH_H_
 #define BFP_MATH_H_
 
+#ifdef __XC__
+extern "C" { 
+#endif
+
 /**
  * @file bfp_math.h
  * 
@@ -19,5 +23,8 @@
 #include "bfp/bfp_ch_pair.h"
 #include "bfp/bfp_fft.h"
 
+#ifdef __XC__
+} // extern "C"
+#endif
 
 #endif //BFP_MATH_H_
