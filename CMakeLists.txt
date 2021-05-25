@@ -1,6 +1,24 @@
 cmake_minimum_required(VERSION 3.10)
 
+## Disable in-source build.
+if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+    message(FATAL_ERROR "In-source build is not allowed! Please specify a build folder.\n\tex:cmake -B build")
+endif()
+
 project(xmos-lib_xs3_math)
+
+## fetch dependencies
+include(FetchContent)
+
+FetchContent_Declare(
+  unity
+  GIT_REPOSITORY https://github.com/ThrowTheSwitch/Unity.git
+  GIT_TAG        v2.5.2
+  GIT_SHALLOW    TRUE
+  SOURCE_DIR     unity
+)
+FetchContent_Populate(unity)
+include(test/etc/Unity/CMakeLists.txt)
 
 ## Compile flags for C/C++ for all libs and apps (for all platforms)
 list(APPEND   COMPILE_FLAGS        -Os -g -MMD   )

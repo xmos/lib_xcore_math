@@ -1,8 +1,5 @@
 ## Just adds more subdirs to the cmake build.
 
-## Unity unit test library
-add_subdirectory( etc/Unity )
-
 ## Some simple local libraries used by unit test apps
 add_subdirectory( shared )
 
