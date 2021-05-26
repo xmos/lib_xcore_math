@@ -419,6 +419,63 @@ headroom_t xs3_vect_complex_s16_mag(
 
 
 /**
+ * @brief Multiply one complex 16-bit vector element-wise by another, and add the result to an accumulator.
+ * 
+ * `acc_real[]` and `acc_imag[]` together represent the complex 16-bit accumulator mantissa vector @vector{a}. 
+ * Each @math{Re\\{a_k\\}} is `acc_real[k]`, and each @math{Im\\{a_k\\}} is `acc_imag[k]`.
+ * 
+ * `b_real[]` and `b_imag[]` together represent the complex 16-bit input mantissa vector @vector{b}.
+ * Each @math{Re\\{b_k\\}} is `b_real[k]`, and each @math{Im\\{b_k\\}} is `b_imag[k]`.
+ * 
+ * `c_real[]` and `c_imag[]` together represent the complex 16-bit input mantissa vector @vector{c}.
+ * Each @math{Re\\{c_k\\}} is `c_real[k]`, and each @math{Im\\{c_k\\}} is `c_imag[k]`.
+ * 
+ * Each of the input vectors must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `a_shr` is the unsigned arithmetic right-shift applied to the 32-bit accumulators holding intermediate results.
+ * 
+ * @low_op{16, @f$ 
+ *      v_k = \leftarrow Re\\{b_k\\} \cdot Re\\{c_k\\}
+ *                     - Im\\{b_k\\} \cdot Im\\{c_k\\}                      \\
+ *      s_k = \leftarrow Im\\{b_k\\} \cdot Re\\{c_k\\}
+ *                     + Re\\{b_k\\} \cdot Im\\{c_k\\}                      \\
+ *      Re\\{a_k\\} \leftarrow sat_{16}( Re\\{a_k\\} + round( sat_{16}( v_k \cdot 2^{-a\_shr} ) ) ) \\
+ *      Im\\{a_k\\} \leftarrow sat_{16}( Re\\{a_k\\} + round( sat_{16}( s_k \cdot 2^{-a\_shr} ) ) ) \\
+ *          \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * @f$ }
+ * 
+ * @par Block Floating-Point
+ * 
+ * @TODO: BFP Description
+ * 
+ * @param[inout]    acc_real    Real part of complex accumulator @vector{a}
+ * @param[inout]    acc_imag    Imaginary aprt of complex accumulator @vector{a}
+ * @param[in]       b_real      Real part of complex input vector @vector{b}
+ * @param[in]       b_imag      Imaginary part of complex input vector @vector{b}
+ * @param[in]       c_real      Real part of complex input vector @vector{c}
+ * @param[in]       c_imag      Imaginary part of complex input vector @vector{c} 
+ * @param[in]       length      Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]       a_shr       Right-shift applied to 32-bit intermediate results.
+ * 
+ * @return      Headroom of the output vector @vector{a}
+ * 
+ * @see xs3_vect_complex_s16_mul_prepare
+ */
+C_API
+headroom_t xs3_vect_complex_s16_macc(
+    int16_t acc_real[],
+    int16_t acc_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const int16_t c_real[],
+    const int16_t c_imag[],
+    const unsigned length,
+    const right_shift_t a_shr);
+
+
+/**
  * @brief Multiply one complex 16-bit vector element-wise by another.
  * 
  * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}. 

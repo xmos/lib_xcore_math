@@ -113,6 +113,44 @@ void xs3_vect_s16_mul_prepare(
  *        to be adjusted for 16-bit... so maybe just create a second function?
  * 
  * ******************/
+void xs3_vect_s32_macc_alt_prepare(
+    exponent_t* new_acc_exp,
+    right_shift_t* acc_shr,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t acc_exp,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t acc_hr,
+    const headroom_t b_hr,
+    const headroom_t c_hr)
+{
+  *b_shr = 1-b_hr;
+  *c_shr = 2-c_hr; 
+
+  // exponent_t p_exp = b_exp + c_exp + *b_shr + *c_shr + 30;
+  exponent_t p_exp = b_exp + c_exp - b_hr - c_hr + 33;
+  exponent_t d_exp = acc_exp - acc_hr + 1;
+
+  *new_acc_exp = (d_exp > p_exp)? d_exp : p_exp;
+
+  *acc_shr = *new_acc_exp - acc_exp;
+
+  right_shift_t p_shr = *new_acc_exp - p_exp;
+
+  // p_shr needs to be split between b_shr and c_shr. (it can't be negative)
+  // if p_shr is odd, give b_shr the extra 1, because we gave c_shr 1 above.
+  *c_shr += (p_shr>>1);
+  *b_shr += p_shr - (p_shr>>1);
+}
+
+
+/* ******************
+ *  Note: this is the same for both 16 and 32 bits. Might warrant a renaming?
+ *        Used by at least 3 different functions. although the output a_exp needs
+ *        to be adjusted for 16-bit... so maybe just create a second function?
+ * 
+ * ******************/
 void xs3_vect_s32_mul_prepare(
     exponent_t* a_exp,
     right_shift_t* b_shr,
