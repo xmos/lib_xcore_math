@@ -43,5 +43,8 @@ int main(int argc, char** argv)
     CALL(test_bfp_max_min);
     CALL(test_bfp_inverse_vect);
 
+    CALL(test_bfp_macc);
+    CALL(test_bfp_macc_complex);
+
     return UNITY_END();
 }

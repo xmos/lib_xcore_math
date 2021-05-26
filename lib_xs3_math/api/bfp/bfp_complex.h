@@ -330,6 +330,30 @@ void bfp_complex_s32_conj_mul(
     const bfp_complex_s32_t* b, 
     const bfp_complex_s32_t* c);
 
+C_API
+void bfp_complex_s16_macc(
+    bfp_complex_s16_t* acc, 
+    const bfp_complex_s16_t* b, 
+    const bfp_complex_s16_t* c);
+
+C_API
+void bfp_complex_s32_macc(
+    bfp_complex_s32_t* acc, 
+    const bfp_complex_s32_t* b, 
+    const bfp_complex_s32_t* c);
+
+C_API
+void bfp_complex_s16_nmacc(
+    bfp_complex_s16_t* acc, 
+    const bfp_complex_s16_t* b, 
+    const bfp_complex_s16_t* c);
+
+C_API
+void bfp_complex_s32_nmacc(
+    bfp_complex_s32_t* acc, 
+    const bfp_complex_s32_t* b, 
+    const bfp_complex_s32_t* c);
+
 /** 
  * @brief Multiply a complex 16-bit BFP vector by a real scalar.
  * 

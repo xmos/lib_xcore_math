@@ -477,6 +477,40 @@ headroom_t xs3_vect_complex_s32_headroom(
     const unsigned length);
 
 
+C_API
+headroom_t xs3_vect_complex_s32_macc(
+    complex_s32_t acc[],
+    const complex_s32_t b[],
+    const complex_s32_t c[],
+    const unsigned length,
+    const right_shift_t acc_shr,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
+
+
+C_API
+headroom_t xs3_vect_complex_s32_nmacc(
+    complex_s32_t acc[],
+    const complex_s32_t b[],
+    const complex_s32_t c[],
+    const unsigned length,
+    const right_shift_t acc_shr,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
+    
+C_API
+void xs3_vect_complex_s32_macc_prepare(
+    exponent_t* new_acc_exp,
+    right_shift_t* acc_shr,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t acc_exp,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const exponent_t acc_hr,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
+
 /**
  * @brief Compute the magnitude of each element of a complex 32-bit vector.
  * 
@@ -537,7 +571,6 @@ headroom_t xs3_vect_complex_s32_mag(
     const right_shift_t b_shr,
     const complex_s32_t* rot_table,
     const unsigned table_rows);
-
 
 /**
  * @brief Obtain the output exponent and input shift used by xs3_vect_complex_s32_mag() and xs3_vect_complex_s16_mag().

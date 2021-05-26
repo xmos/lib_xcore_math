@@ -22,9 +22,13 @@ headroom_t xs3_vect_complex_s16_macc(
     const int16_t c_real[],
     const int16_t c_imag[],
     const unsigned length,
-    const right_shift_t sat)
+    const right_shift_t acc_shr,
+    const right_shift_t bc_sat)
 {
     for(int k = 0; k < length; k++){
+
+        acc_real[k] = vlashr16( acc_real[k], acc_shr );
+        acc_imag[k] = vlashr16( acc_imag[k], acc_shr );
         
         complex_s32_t B = {b_real[k], b_imag[k]};
         complex_s32_t C = {c_real[k], c_imag[k]};
@@ -34,8 +38,8 @@ headroom_t xs3_vect_complex_s16_macc(
             ((int64_t)B.re * C.im) + B.im * C.re,
         };
 
-        P.re = ROUND_SHR(P.re, sat);
-        P.im = ROUND_SHR(P.im, sat);
+        P.re = ROUND_SHR(P.re, bc_sat);
+        P.im = ROUND_SHR(P.im, bc_sat);
 
         acc_real[k] = vladd16( acc_real[k], SAT(16)(P.re));
         acc_imag[k] = vladd16( acc_imag[k], SAT(16)(P.im));
@@ -52,9 +56,13 @@ headroom_t xs3_vect_complex_s16_nmacc(
     const int16_t c_real[],
     const int16_t c_imag[],
     const unsigned length,
-    const right_shift_t sat)
+    const right_shift_t acc_shr,
+    const right_shift_t bc_sat)
 {
     for(int k = 0; k < length; k++){
+
+        acc_real[k] = vlashr16( acc_real[k], acc_shr );
+        acc_imag[k] = vlashr16( acc_imag[k], acc_shr );
         
         complex_s32_t B = {b_real[k], b_imag[k]};
         complex_s32_t C = {c_real[k], c_imag[k]};
@@ -64,8 +72,8 @@ headroom_t xs3_vect_complex_s16_nmacc(
             ((int64_t)B.re * C.im) + B.im * C.re,
         };
 
-        P.re = ROUND_SHR(P.re, sat);
-        P.im = ROUND_SHR(P.im, sat);
+        P.re = ROUND_SHR(P.re, bc_sat);
+        P.im = ROUND_SHR(P.im, bc_sat);
 
         acc_real[k] = vlsub16( acc_real[k], SAT(16)(P.re));
         acc_imag[k] = vlsub16( acc_imag[k], SAT(16)(P.im));
@@ -73,6 +81,7 @@ headroom_t xs3_vect_complex_s16_nmacc(
 
     return xs3_vect_complex_s16_headroom(acc_real, acc_imag, length);
 }
+
 
 
 
@@ -89,6 +98,7 @@ headroom_t xs3_vect_complex_s32_macc(
     const complex_s32_t b[],
     const complex_s32_t c[],
     const unsigned length,
+    const right_shift_t acc_shr,
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
@@ -108,8 +118,8 @@ headroom_t xs3_vect_complex_s32_macc(
         int64_t q3 = ROUND_SHR( ((int64_t)B.re) * C.im, 30 );
         int64_t q4 = ROUND_SHR( ((int64_t)B.im) * C.re, 30 );
 
-        acc[k].re = vladd32( acc[k].re, SAT(32)(q1 - q2) );
-        acc[k].im = vladd32( acc[k].im, SAT(32)(q3 + q4) );
+        acc[k].re = vladd32( vlashr32( acc[k].re, acc_shr ), SAT(32)(q1 - q2) );
+        acc[k].im = vladd32( vlashr32( acc[k].im, acc_shr ), SAT(32)(q3 + q4) );
     }
 
     return xs3_vect_complex_s32_headroom(acc, length);
@@ -120,6 +130,7 @@ headroom_t xs3_vect_complex_s32_nmacc(
     const complex_s32_t b[],
     const complex_s32_t c[],
     const unsigned length,
+    const right_shift_t acc_shr,
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
@@ -139,8 +150,8 @@ headroom_t xs3_vect_complex_s32_nmacc(
         int64_t q3 = ROUND_SHR( ((int64_t)B.re) * C.im, 30 );
         int64_t q4 = ROUND_SHR( ((int64_t)B.im) * C.re, 30 );
 
-        acc[k].re = vlsub32( acc[k].re, SAT(32)(q1 - q2) );
-        acc[k].im = vlsub32( acc[k].im, SAT(32)(q3 + q4) );
+        acc[k].re = vlsub32( vlashr32( acc[k].re, acc_shr ), SAT(32)(q1 - q2) );
+        acc[k].im = vlsub32( vlashr32( acc[k].im, acc_shr ), SAT(32)(q3 + q4) );
     }
 
     return xs3_vect_complex_s32_headroom(acc, length);

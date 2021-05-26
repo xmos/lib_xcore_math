@@ -12,6 +12,7 @@ headroom_t xs3_vect_complex_s32_nmacc(
     const complex_s32_t* b,
     const complex_s32_t* c,
     const unsigned length,
+    const right_shift_t acc_shr,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
@@ -22,7 +23,15 @@ headroom_t xs3_vect_complex_s32_nmacc(
 .align 4
 
 
-#define NSTACKWORDS     (6+8)
+#define NSTACKWORDS     (8+8)
+
+#define STACK_SHR_ACC   (NSTACKWORDS+1)
+#define STACK_SHR_B     (NSTACKWORDS+2)
+#define STACK_SHR_C     (NSTACKWORDS+3)
+
+#define STACK_VEC_TMP   (NSTACKWORDS-8)
+
+#define STACK_BYTEMASK  1
 
 #define acc         r0 
 #define b           r1 
@@ -32,15 +41,9 @@ headroom_t xs3_vect_complex_s32_nmacc(
 #define shr_c       r5
 #define tmp         r6
 #define tmp_vec     r7
+#define shr_acc     r8
 
 #define bytemask    len
-
-#define STACK_SHR_B     (NSTACKWORDS+1)
-#define STACK_SHR_C     (NSTACKWORDS+2)
-
-#define STACK_VEC_TMP   (NSTACKWORDS-8)
-
-#define STACK_BYTEMASK  1
 
 #define FUNCTION_NAME xs3_vect_complex_s32_nmacc
     
@@ -51,7 +54,9 @@ FUNCTION_NAME:
     dualentsp NSTACKWORDS
     std r4, r5, sp[1]
     std r6, r7, sp[2]
+    std r8, r9, sp[3]
 
+    {                                           ;   ldw shr_acc, sp[STACK_SHR_ACC]          }
     {   shl r11, len, 3                         ;   ldw shr_b, sp[STACK_SHR_B]              }
     {   ldc tmp, 32                             ;   ldw shr_c, sp[STACK_SHR_C]              }
     {   zext r11, 5                             ;   shr len, len, 2                         }
@@ -61,10 +66,12 @@ FUNCTION_NAME:
     {   sub len, len, 1                         ;   bf len, .L_loop_bot_s32                 }
 
 .L_loop_top_s32:
+        vlashr acc[0], shr_acc
+        vstrpv acc[0], r11
         vlashr b[0], shr_b
-	    vstrpv tmp_vec[0], r11
+	      vstrpv tmp_vec[0], r11
     {                                           ;   vldc tmp_vec[0]                         }
-	    vlashr c[0], shr_c
+	      vlashr c[0], shr_c
         vstrpv tmp_vec[0], r11
     {                                           ;   vldd tmp_vec[0]                         }
     {   add b, b, tmp                           ;   vcmr                                    }
@@ -78,6 +85,8 @@ FUNCTION_NAME:
     {                                           ;   bf len, .L_done_s32                     }
     {                                           ;   vclrdr                                  }
     {                                           ;   vstd tmp_vec[0]                         }
+        vlashr acc[0], shr_acc
+        vstrpv acc[0], bytemask
         vlashr b[0], shr_b
         vstrpv tmp_vec[0], bytemask
     {                                           ;   vldc tmp_vec[0]                         }
@@ -95,6 +104,7 @@ FUNCTION_NAME:
 .L_done_s32:
         ldd r4, r5, sp[1]
         ldd r6, r7, sp[2]
+        ldd r8, r9, sp[3]
 
     {   ldc r0, 31                              ;   vgetc r11                               }
     {   zext r11, 5                             ;                                           }

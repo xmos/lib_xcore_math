@@ -471,8 +471,32 @@ headroom_t xs3_vect_complex_s16_macc(
     const int16_t c_real[],
     const int16_t c_imag[],
     const unsigned length,
-    const right_shift_t a_shr);
+    const right_shift_t acc_shr,
+    const right_shift_t bc_sat);
 
+C_API
+headroom_t xs3_vect_complex_s16_nmacc(
+    int16_t acc_real[],
+    int16_t acc_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const int16_t c_real[],
+    const int16_t c_imag[],
+    const unsigned length,
+    const right_shift_t acc_shr,
+    const right_shift_t bc_sat);
+    
+C_API
+void xs3_vect_complex_s16_macc_prepare(
+    exponent_t* new_acc_exp,
+    right_shift_t* acc_shr,
+    right_shift_t* bc_shr,
+    const exponent_t acc_exp,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t acc_hr,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
 
 /**
  * @brief Multiply one complex 16-bit vector element-wise by another.

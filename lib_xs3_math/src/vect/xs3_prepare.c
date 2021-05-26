@@ -72,6 +72,49 @@ void xs3_vect_add_sub_prepare(
 ////////////////////////////////////////
 
 
+void xs3_vect_s16_macc_prepare(
+    exponent_t* new_acc_exp,
+    right_shift_t* acc_shr,
+    right_shift_t* bc_shr,
+    const exponent_t acc_exp,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t acc_hr,
+    const headroom_t b_hr,
+    const headroom_t c_hr)
+{
+
+  /*
+    Most extreme result is when  B = -2^(15-b_hr) and C = -2^(15-c_hr). We want their product, right-shifted
+    by bc_shr, to have 1 bit of headroom in an int16_t, which means 2^14.
+
+      2^14 = -2^(15-b_hr) * -2^(15-c_hr) * 2^-bc_shr
+           = 2^(15 - b_hr + 15 - c_hr - bc_shr)
+           = 2^(30 - (b_hr+c_hr) - bc_shr)
+
+      14 = 30 - (b_hr+c_hr) - bc_shr
+
+      bc_shr = 16 - (b_hr + c_hr)
+  */
+  const headroom_t bc_hr = b_hr + c_hr;
+
+  *bc_shr = 16 - bc_hr;
+
+  // The exponent associated with the right-shifted product of B and C
+  const exponent_t bc_exp = b_exp + c_exp - bc_hr + 16;
+
+  // The exponent that acc[] would have if it had exactly one bit of headroom.
+  // This way 
+  const exponent_t tmp_exp = acc_exp - acc_hr + 1;
+
+  // The new exponent should be whichever of those two exponents is greater.
+  *new_acc_exp = (bc_exp > tmp_exp)? bc_exp : tmp_exp;
+  
+  // Can compute the proper shifts now
+  *acc_shr = *new_acc_exp - acc_exp;
+  *bc_shr += *new_acc_exp - bc_exp;
+}
+
     
 /* ******************
  *
@@ -106,47 +149,6 @@ void xs3_vect_s16_mul_prepare(
 //      Params for 32-bit             //
 ////////////////////////////////////////
 
-void xs3_vect_s16_macc_prepare(
-    exponent_t* new_acc_exp,
-    right_shift_t* acc_shr,
-    right_shift_t* bc_shr,
-    const exponent_t acc_exp,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t acc_hr,
-    const headroom_t b_hr,
-    const headroom_t c_hr)
-{
-
-  /*
-        -0x8000 * 2^-b_hr * -0x8000 * 2^-c_hr
-      = -2^(15 - b_hr) * -2^(15 - c_hr)
-      = 2^(30 - (b_hr + c_hr) )
-
-      So that's at most 2^30, 0x40000000. Subtract 1 and we have 0x3FFFFFFF
-      which has 1 bit of headroom on a 32-bit int. We need 16 to fit it in 
-      an int16_t. But then one extra bit of HR, because we're going to add
-      it to something. So, our initial bc_shr will be 16 - (b_hr + c_hr)
-  */
-  const headroom_t bc_hr = b_hr + c_hr;
-
-  *bc_shr = 16 - bc_hr;
-
-  // The exponent associated with the right-shifted product of B and C
-  const exponent_t bc_exp = b_exp + c_exp - bc_hr + 16;
-
-  // The exponent that acc[] would have if it had exactly one bit of headroom.
-  // This way 
-  const exponent_t tmp_exp = acc_exp - acc_hr + 1;
-
-  // The new exponent should be whichever of those two exponents is greater.
-  *new_acc_exp = (bc_exp > tmp_exp)? bc_exp : tmp_exp;
-  
-  // Can compute the proper shifts now
-  *acc_shr = *new_acc_exp - acc_exp;
-  *bc_shr += *new_acc_exp - bc_exp;
-}
-
 void xs3_vect_s32_macc_prepare(
     exponent_t* new_acc_exp,
     right_shift_t* acc_shr,
@@ -159,11 +161,27 @@ void xs3_vect_s32_macc_prepare(
     const headroom_t b_hr,
     const headroom_t c_hr)
 {
+
+  /*
+    We want the product of B[] and C[] to end up with 1 bit of headroom in an int32_t. 1 bit of headroom in
+    an int32_t means a maximum of +/- 2^30.  Most extreme case is if B[] and C[] are -2^(31-b_hr) and -2^(31-c_hr)
+    respectively. So, let's solve for the b_shr+c_shr that makes this work. Also there's an implicit 30-bit
+    right-shift applied by the VPU when multiplying.
+                  
+      2^30 = -2^(31-b_hr-b_shr) * -2^(31-c_hr-c_shr) * 2^-30
+           = 2^(31-b_hr-b_shr) * 2^(31-c_hr-c_shr) * 2^-30
+           = 2^(62 - b_hr - c_hr - b_shr - c_shr - 30)
+      30 = 32 - b_hr - c_hr - b_shr - c_shr
+
+      --->  (b_shr+c_shr) = 2 - (b_hr + c_hr)
+  */
+
   *b_shr = 1-b_hr;
-  *c_shr = 2-c_hr; 
+  *c_shr = 1-c_hr; 
 
   // exponent_t p_exp = b_exp + c_exp + *b_shr + *c_shr + 30;
-  exponent_t p_exp = b_exp + c_exp - b_hr - c_hr + 33;
+  exponent_t p_exp = b_exp + c_exp - b_hr - c_hr + 32;
+  // d_exp is the exponent acc[] would have if it were shifted to have 1 bit of headroom
   exponent_t d_exp = acc_exp - acc_hr + 1;
 
   *new_acc_exp = (d_exp > p_exp)? d_exp : p_exp;
@@ -173,9 +191,8 @@ void xs3_vect_s32_macc_prepare(
   right_shift_t p_shr = *new_acc_exp - p_exp;
 
   // p_shr needs to be split between b_shr and c_shr. (it can't be negative)
-  // if p_shr is odd, give b_shr the extra 1, because we gave c_shr 1 above.
-  *c_shr += (p_shr>>1);
-  *b_shr += p_shr - (p_shr>>1);
+  *b_shr += (p_shr>>1);
+  *c_shr += p_shr - (p_shr>>1);
 }
 
 

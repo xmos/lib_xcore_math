@@ -443,7 +443,7 @@ void bfp_s16_macc(
 
     xs3_vect_s16_macc_prepare(&acc->exp, &acc_shr, &bc_shr, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
 
-    a->hr = xs3_vect_s16_macc(a->data, b->data, c->data, b->length, acc_shr, bc_shr);
+    acc->hr = xs3_vect_s16_macc(acc->data, b->data, c->data, b->length, acc_shr, bc_shr);
 }
 
 
@@ -462,5 +462,5 @@ void bfp_s16_nmacc(
 
     xs3_vect_s16_macc_prepare(&acc->exp, &acc_shr, &bc_shr, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
 
-    a->hr = xs3_vect_s16_nmacc(a->data, b->data, c->data, b->length, acc_shr, bc_shr);
+    acc->hr = xs3_vect_s16_nmacc(acc->data, b->data, c->data, b->length, acc_shr, bc_shr);
 }

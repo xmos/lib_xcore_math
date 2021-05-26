@@ -322,6 +322,70 @@ void bfp_s32_mul(
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
 
+/**
+ * Multiply-accumulate 
+ * 
+ * @bfp_op{16, @f$ 
+ *      A_k \leftarrow A_k + B_k \cdot C_k              \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * @f$ }
+ */
+C_API
+void bfp_s16_macc(
+    bfp_s16_t* acc, 
+    const bfp_s16_t* b, 
+    const bfp_s16_t* c);
+
+    
+
+/**
+ * Multiply-accumulate 
+ * 
+ * @bfp_op{32, @f$ 
+ *      A_k \leftarrow A_k + B_k \cdot C_k              \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * @f$ }
+ */
+C_API
+void bfp_s32_macc(
+    bfp_s32_t* acc, 
+    const bfp_s32_t* b, 
+    const bfp_s32_t* c);
+
+    
+/**
+ * Multiply-accumulate (negated)
+ * 
+ * @bfp_op{16, @f$ 
+ *      A_k \leftarrow A_k - B_k \cdot C_k              \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * @f$ }
+ */
+C_API
+void bfp_s16_nmacc(
+    bfp_s16_t* acc, 
+    const bfp_s16_t* b, 
+    const bfp_s16_t* c);
+
+    
+/**
+ * Multiply-accumulate (negated)
+ * 
+ * @bfp_op{32, @f$ 
+ *      A_k \leftarrow A_k - B_k \cdot C_k              \\
+ *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * @f$ }
+ */
+C_API
+void bfp_s32_nmacc(
+    bfp_s32_t* acc, 
+    const bfp_s32_t* b, 
+    const bfp_s32_t* c);
+
 
 /** 
  * @brief Multiply a 16-bit BFP vector by a scalar.

@@ -16,6 +16,7 @@ headroom_t xs3_vect_complex_s16_nmacc(
     const int16_t* c_real,
     const int16_t* c_imag,
     const unsigned length,
+    const right_shift_t acc_shr,
     const right_shift_t sat);
 
 */
@@ -31,7 +32,8 @@ headroom_t xs3_vect_complex_s16_nmacc(
 #define STACK_C_REAL    (NSTACKWORDS+1)
 #define STACK_C_IMAG    (NSTACKWORDS+2)
 #define STACK_LENGTH    (NSTACKWORDS+3)
-#define STACK_SAT       (NSTACKWORDS+4)
+#define STACK_ACC_SHR   (NSTACKWORDS+4)
+#define STACK_SAT       (NSTACKWORDS+5)
 
 #define STACK_VEC_TMP   (NSTACKWORDS-8)
 #define STACK_VEC_SAT   (NSTACKWORDS-16)
@@ -50,7 +52,7 @@ headroom_t xs3_vect_complex_s16_nmacc(
 #define vec_tmp     r7
 #define vec_sat     r8
 #define bytemask    r9
-
+#define acc_shr     r9
 
 
 /*
@@ -100,11 +102,19 @@ FUNCTION_NAME:
     {   shr len, bytemask, 4                    ;   ldw c_re, sp[STACK_C_REAL]              }
     {   zext bytemask, 4                        ;   ldw c_im, sp[STACK_C_IMAG]              }
     {   shl bytemask, bytemask, SIZEOF_LOG2_S16 ;   shl r11, r11, 3                         }
+    {                                           ;   stw bytemask, sp[STACK_BYTEMASK]        }
+    {                                           ;   ldw acc_shr, sp[STACK_ACC_SHR]          }
     {   ldaw vec_tmp, sp[STACK_VEC_TMP]         ;   vsetc r11                               }
         ldaw r11, cp[vpu_vec_neg_0x4000]
     {   mov r10, r11                            ;   bf len, .L_loop_bot                     }
 
     .L_loop_top:
+        {   mkmsk r11, 32                           ;                                           }
+            vlashr acc_re[0], acc_shr
+            vstrpv acc_re[0], r11
+            vlashr acc_im[0], acc_shr
+            vstrpv acc_im[0], r11
+        {   mov r11, r10                            ;                                           }
         {   sub len, len, 1                         ;   vldr r11[0]                             }
         {   mkmsk r11, 32                           ;   vlmul b_im[0]                           }
             vstrpv vec_tmp[0], r11
@@ -126,8 +136,16 @@ FUNCTION_NAME:
         {   mov r11, r10                            ;   bt len, .L_loop_top                     }
     .L_loop_bot:
 
+#undef bytemask
+#define bytemask len
+
+    {                                           ;   ldw bytemask, sp[STACK_BYTEMASK]        }
     {   mkmsk bytemask, bytemask                ;   bf bytemask, .L_done                    }   
 
+        vlashr acc_re[0], acc_shr
+        vstrpv acc_re[0], bytemask
+        vlashr acc_im[0], acc_shr
+        vstrpv acc_im[0], bytemask
     {                                           ;   vldr r11[0]                             }
     {   mkmsk r11, 32                           ;   vlmul b_im[0]                           }
         vstrpv vec_tmp[0], r11
