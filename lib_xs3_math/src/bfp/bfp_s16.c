@@ -425,3 +425,42 @@ void bfp_s16_to_s32(
     a->hr = b->hr + 8;
     xs3_vect_s16_to_s32(a->data, b->data, b->length);
 }
+
+
+
+void bfp_s16_macc(
+    bfp_s16_t* acc, 
+    const bfp_s16_t* b, 
+    const bfp_s16_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == c->length);
+    assert(b->length == acc->length);
+    assert(b->length != 0);
+#endif
+
+    right_shift_t acc_shr, bc_shr;
+
+    xs3_vect_s16_macc_prepare(&acc->exp, &acc_shr, &bc_shr, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
+
+    a->hr = xs3_vect_s16_macc(a->data, b->data, c->data, b->length, acc_shr, bc_shr);
+}
+
+
+void bfp_s16_nmacc(
+    bfp_s16_t* acc, 
+    const bfp_s16_t* b, 
+    const bfp_s16_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == c->length);
+    assert(b->length == acc->length);
+    assert(b->length != 0);
+#endif
+
+    right_shift_t acc_shr, bc_shr;
+
+    xs3_vect_s16_macc_prepare(&acc->exp, &acc_shr, &bc_shr, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
+
+    a->hr = xs3_vect_s16_nmacc(a->data, b->data, c->data, b->length, acc_shr, bc_shr);
+}

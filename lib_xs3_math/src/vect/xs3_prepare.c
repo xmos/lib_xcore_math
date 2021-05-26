@@ -106,14 +106,48 @@ void xs3_vect_s16_mul_prepare(
 //      Params for 32-bit             //
 ////////////////////////////////////////
 
+void xs3_vect_s16_macc_prepare(
+    exponent_t* new_acc_exp,
+    right_shift_t* acc_shr,
+    right_shift_t* bc_shr,
+    const exponent_t acc_exp,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t acc_hr,
+    const headroom_t b_hr,
+    const headroom_t c_hr)
+{
 
-/* ******************
- *  Note: this is the same for both 16 and 32 bits. Might warrant a renaming?
- *        Used by at least 3 different functions. although the output a_exp needs
- *        to be adjusted for 16-bit... so maybe just create a second function?
- * 
- * ******************/
-void xs3_vect_s32_macc_alt_prepare(
+  /*
+        -0x8000 * 2^-b_hr * -0x8000 * 2^-c_hr
+      = -2^(15 - b_hr) * -2^(15 - c_hr)
+      = 2^(30 - (b_hr + c_hr) )
+
+      So that's at most 2^30, 0x40000000. Subtract 1 and we have 0x3FFFFFFF
+      which has 1 bit of headroom on a 32-bit int. We need 16 to fit it in 
+      an int16_t. But then one extra bit of HR, because we're going to add
+      it to something. So, our initial bc_shr will be 16 - (b_hr + c_hr)
+  */
+  const headroom_t bc_hr = b_hr + c_hr;
+
+  *bc_shr = 16 - bc_hr;
+
+  // The exponent associated with the right-shifted product of B and C
+  const exponent_t bc_exp = b_exp + c_exp - bc_hr + 16;
+
+  // The exponent that acc[] would have if it had exactly one bit of headroom.
+  // This way 
+  const exponent_t tmp_exp = acc_exp - acc_hr + 1;
+
+  // The new exponent should be whichever of those two exponents is greater.
+  *new_acc_exp = (bc_exp > tmp_exp)? bc_exp : tmp_exp;
+  
+  // Can compute the proper shifts now
+  *acc_shr = *new_acc_exp - acc_exp;
+  *bc_shr += *new_acc_exp - bc_exp;
+}
+
+void xs3_vect_s32_macc_prepare(
     exponent_t* new_acc_exp,
     right_shift_t* acc_shr,
     right_shift_t* b_shr,

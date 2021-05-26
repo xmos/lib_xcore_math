@@ -9,9 +9,11 @@ set( XS3_MATH_PATH ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE )
 set( INCLUDE_DIRS     api           )
 
 ## Source files
-file( GLOB_RECURSE    C_SOURCES       src/*.c   )
+file( GLOB_RECURSE    C_SOURCES       "src/bfp/*.c" "src/vect/*.c"  )
 file( GLOB_RECURSE    CPP_SOURCES     src/*.cpp )
 file( GLOB_RECURSE    ASM_SOURCES     src/*.S   )
+
+file( GLOB_RECURSE    C_SOURCES_REF   "src/bfp/arch/ref/*.c" )
 
 
 ## Compile flags for all platforms
@@ -39,6 +41,9 @@ list( APPEND  SOURCES   ${CPP_SOURCES}  )
 
 unset(SOURCES_XCORE)
 list( APPEND  SOURCES_XCORE   ${ASM_SOURCES}  )
+
+unset(SOURCES_Linux)
+list( APPEND  SOURCES_Linux   ${C_SOURCES_REF}  )
 
 ## Combine platform-agnostic and platform-specific variables..
 list( APPEND  COMPILE_FLAGS  ${COMPILE_FLAGS_${CMAKE_SYSTEM_NAME}}  )

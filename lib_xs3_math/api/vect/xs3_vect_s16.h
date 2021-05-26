@@ -417,7 +417,6 @@ headroom_t xs3_vect_complex_s16_mag(
     const int16_t* rot_table,
     const unsigned table_rows);
 
-
 /**
  * @brief Multiply one complex 16-bit vector element-wise by another, and add the result to an accumulator.
  * 
@@ -1680,6 +1679,35 @@ int16_t xs3_vect_s16_min(
     const int16_t a[], 
     const unsigned length);
 
+C_API
+void xs3_vect_s16_macc_prepare(
+    exponent_t* new_acc_exp,
+    right_shift_t* acc_shr,
+    right_shift_t* bc_shr,
+    const exponent_t acc_exp,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t acc_hr,
+    const headroom_t b_hr,
+    const headroom_t c_hr);
+
+C_API
+headroom_t xs3_vect_s16_macc(
+    int16_t a[],
+    const int16_t b[],
+    const int16_t c[],
+    const unsigned length,
+    const right_shift_t acc_shr,
+    const right_shift_t bc_shr);
+
+C_API
+headroom_t xs3_vect_s16_nmacc(
+    int16_t a[],
+    const int16_t b[],
+    const int16_t c[],
+    const unsigned length,
+    const right_shift_t acc_shr,
+    const right_shift_t bc_shr);
 
 /**
  * @brief Multiply two 16-bit vectors together element-wise.

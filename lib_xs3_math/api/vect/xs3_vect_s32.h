@@ -2138,7 +2138,17 @@ headroom_t xs3_vect_s32_mul(
 //! [xs3_vect_s32_mul]
 
 C_API
-headroom_t xs3_vect_s32_macc_alt(
+headroom_t xs3_vect_s32_macc(
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c[],
+    const unsigned length,
+    const right_shift_t acc_shr,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
+
+C_API
+headroom_t xs3_vect_s32_nmacc(
     int32_t a[],
     const int32_t b[],
     const int32_t c[],
@@ -2215,7 +2225,7 @@ void xs3_vect_s32_mul_prepare(
     const headroom_t c_hr);
 
 C_API
-void xs3_vect_s32_macc_alt_prepare(
+void xs3_vect_s32_macc_prepare(
     exponent_t* new_acc_exp,
     right_shift_t* acc_shr,
     right_shift_t* b_shr,

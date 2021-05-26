@@ -52,6 +52,7 @@ headroom_t xs3_vect_s32_macc(
     const int32_t b[],
     const int32_t c[],
     const unsigned length,
+    const right_shift_t acc_shr,
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
@@ -71,6 +72,7 @@ headroom_t xs3_vect_s32_nmacc(
     const int32_t b[],
     const int32_t c[],
     const unsigned length,
+    const right_shift_t acc_shr,
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {

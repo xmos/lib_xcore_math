@@ -54,6 +54,7 @@ int main(int argc, char** argv)
     CALL(test_xs3_sqrt_vect);
     CALL(test_xs3_inverse_vect);
 
+    CALL(test_xs3_macc_vect);
 
     return UNITY_END();
 }
