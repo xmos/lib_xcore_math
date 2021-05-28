@@ -1,11 +1,15 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
 
 #include "xs3_math_conf.h"
 #include "xs3_math_types.h"
 #include "xs3_util.h"
+
+#ifdef __XC__
+extern "C" {
+#endif
 
 
 /**
@@ -2219,3 +2223,10 @@ void xs3_vect_s16_to_s32(
     int32_t a[],
     const int16_t b[],
     const unsigned length);
+
+
+
+#ifdef __XC__
+}   //extern "C"
+#endif
+

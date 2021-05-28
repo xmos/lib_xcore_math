@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #ifndef XS3_MATH_H_
 #define XS3_MATH_H_
@@ -27,7 +27,7 @@ extern "C" {
 #include "vect/xs3_filters.h"
 #include "xs3_util.h"
 
-#include "xs3_vpu.h"
+#include "xs3_vpu_info.h"
 
 
 #ifdef __XC__

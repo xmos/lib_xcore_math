@@ -130,6 +130,24 @@ This project uses GNU Make to build the unit test applications. Both unit test p
   * `fft_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/fft_tests/>`_ - FFT-related unit tests project.
   * `vect_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/vect_tests/>`_ - Low-level API unit test project.
 
+
+Fetching Dependencies
+*********************
+
+Run the following commands to fetch all dependencies that are required to build the unit tests.
+
+Move to test directory:
+
+::
+
+    cd test
+
+Fetch the dependencies:
+
+::
+
+    ./fetch_dependencies.py
+
 Low-level Unit Tests
 ********************
 
