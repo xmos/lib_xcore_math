@@ -62,7 +62,7 @@ pipeline {
                 // below is how we can activate the tools
                 sh """pushd /XMOS/tools/${params.TOOLS_VERSION}/XMOS/xTIMEcomposer/${params.TOOLS_VERSION} && . SetEnv && popd &&
                       . activate ./lib_xs3_math_venv &&
-                      && cmake -B build -DCMAKE_TOOLCHAIN_FILE=etc/xmos_toolchain.cmake && cmake --build build"""
+                      cmake -B build -DCMAKE_TOOLCHAIN_FILE=etc/xmos_toolchain.cmake && cmake --build build"""
             }
         }
     }
