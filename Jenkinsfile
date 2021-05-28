@@ -7,7 +7,7 @@ pipeline {
         dockerfile {
             filename 'Dockerfile'
             dir 'ci'
-            args ""
+            args "-v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /home/jenkins/.ssh:/home/jenkins/.ssh:ro"
         }
     }
 
@@ -34,13 +34,7 @@ pipeline {
                     $class: 'GitSCM',
                     branches: scm.branches,
                     doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'SubmoduleOption',
-                                  threads: 8,
-                                  timeout: 20,
-                                  shallow: true,
-                                  parentCredentials: true,
-                                  recursiveSubmodules: true],
-                                 [$class: 'CleanCheckout']],
+                    extensions: [[$class: 'CleanCheckout']],
                     userRemoteConfigs: [[credentialsId: 'xmos-bot',
                                          url: 'git@github.com:xmos/lib_xs3_math']]
                 ])
@@ -60,7 +54,7 @@ pipeline {
         stage("Build") {
             steps {
                 // below is how we can activate the tools
-                sh """pushd /XMOS/tools/${params.TOOLS_VERSION}/XMOS/xTIMEcomposer/${params.TOOLS_VERSION} && . SetEnv && popd &&
+                sh """. /XMOS/tools/${params.TOOLS_VERSION}/XMOS/XTC/${params.TOOLS_VERSION}/SetEnv &&
                       . activate ./lib_xs3_math_venv &&
                       cmake -B build -DCMAKE_TOOLCHAIN_FILE=etc/xmos_toolchain.cmake && cmake --build build"""
             }
