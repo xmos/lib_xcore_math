@@ -6,7 +6,7 @@ pipeline {
     agent {
         dockerfile {
             filename 'Dockerfile'
-            dir 'tools/ci'
+            dir 'ci'
             args ""
         }
     }
