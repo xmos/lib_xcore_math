@@ -81,7 +81,7 @@ static void test_xs3_vect_s16_shr_basic()
 
     const unsigned start_case = 0;
 
-    for(int v = 0; v < N_cases; v++){
+    for(int v = start_case; v < N_cases; v++){
         PRINTF("\ttest vector %d..\n", v);
         
         test_case_t* casse = &casses[v];
@@ -512,7 +512,7 @@ static void test_xs3_vect_s16_shl_basic()
 
     const unsigned start_case = 0;
 
-    for(int v = 0; v < N_cases; v++){
+    for(int v = start_case; v < N_cases; v++){
         PRINTF("\ttest vector %d..\n", v);
         
         test_case_t* casse = &casses[v];

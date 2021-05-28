@@ -1,17 +1,9 @@
 // Copyright 2020-2021 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
-#ifndef BFP_H_
-#define BFP_H_
+#pragma once
 
 #include "xs3_math_types.h"
-
-
-#ifdef __XC__
-extern "C" {
-#endif
-
-
 
 /**
  * @page bfp_vector_functions16 16-bit BFP Functions
@@ -66,6 +58,7 @@ extern "C" {
  * 
  * @returns    Headroom of BFP vector `b` 
  */
+C_API
 headroom_t bfp_s16_headroom(
     bfp_s16_t* a);
 
@@ -94,6 +87,7 @@ headroom_t bfp_s16_headroom(
  * 
  * @returns    Headroom of BFP vector `b` 
  */
+C_API
 headroom_t bfp_s32_headroom(
     bfp_s32_t* a);
 
@@ -129,6 +123,7 @@ headroom_t bfp_s32_headroom(
  * @param[in]  b        Input BFP vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
  */
+C_API
 void bfp_s16_shl(
     bfp_s16_t* a,
     const bfp_s16_t* b,
@@ -166,6 +161,7 @@ void bfp_s16_shl(
  * @param[in]  b        Input BFP vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
  */
+C_API
 void bfp_s32_shl(
     bfp_s32_t* a,
     const bfp_s32_t* b,
@@ -191,6 +187,7 @@ void bfp_s32_shl(
  * @param[in]  b     Input BFP vector @vector{B}
  * @param[in]  c     Input BFP vector @vector{C}
  */
+C_API
 void bfp_s16_add(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
@@ -214,6 +211,7 @@ void bfp_s16_add(
  * @param[in]  b     Input BFP vector @vector{B}
  * @param[in]  c     Input BFP vector @vector{C}
  */
+C_API
 void bfp_s32_add(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
@@ -239,6 +237,7 @@ void bfp_s32_add(
  * @param[in]  b     Input BFP vector @vector{B}
  * @param[in]  c     Input BFP vector @vector{C}
  */
+C_API
 void bfp_s16_sub(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
@@ -262,6 +261,7 @@ void bfp_s16_sub(
  * @param[in]  b     Input BFP vector @vector{B}
  * @param[in]  c     Input BFP vector @vector{C}
  */
+C_API
 void bfp_s32_sub(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
@@ -288,6 +288,7 @@ void bfp_s32_sub(
  * @param b     Input BFP vector @vector{B}
  * @param c     Input BFP vector @vector{C}
  */
+C_API
 void bfp_s16_mul(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
@@ -315,6 +316,7 @@ void bfp_s16_mul(
  * @param b     Input BFP vector @vector{B}
  * @param c     Input BFP vector @vector{C}
  */
+C_API
 void bfp_s32_mul(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
@@ -342,6 +344,7 @@ void bfp_s32_mul(
  * @param[in]  b            Input BFP vector @vector{B}
  * @param[in]  alpha        Scalar by which @vector{B} is multiplied
  */
+C_API
 void bfp_s16_scale(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
@@ -369,6 +372,7 @@ void bfp_s16_scale(
  * @param[in]  b             Input BFP vector @vector{B}
  * @param[in]  alpha        Scalar by which @vector{B} is multiplied
  */
+C_API
 void bfp_s32_scale(
     bfp_s32_t* a, 
     const bfp_s32_t* b,
@@ -394,6 +398,7 @@ void bfp_s32_scale(
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  */
+C_API
 void bfp_s16_abs(
     bfp_s16_t* a,
     const bfp_s16_t* b);
@@ -418,6 +423,7 @@ void bfp_s16_abs(
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  */
+C_API
 void bfp_s32_abs(
     bfp_s32_t* a,
     const bfp_s32_t* b);
@@ -440,6 +446,7 @@ void bfp_s32_abs(
  * 
  * @returns  @math{A}, the sum of elements of @vector{B}
  */
+C_API
 float_s32_t bfp_s16_sum(
     const bfp_s16_t* b);
 
@@ -462,6 +469,7 @@ float_s32_t bfp_s16_sum(
  * 
  * @returns  @math{A}, the sum of elements of @vector{B}
  */
+C_API
 float_s64_t bfp_s32_sum(
     const bfp_s32_t* b);
 
@@ -485,6 +493,7 @@ float_s64_t bfp_s32_sum(
  * 
  * @returns     @math{A}, the inner product of vectors @vector{B} and @vector{C}
  */
+C_API
 float_s64_t bfp_s16_dot(
     const bfp_s16_t* b, 
     const bfp_s16_t* c);
@@ -509,6 +518,7 @@ float_s64_t bfp_s16_dot(
  * 
  * @returns     @math{A}, the inner product of vectors @vector{B} and @vector{C}
  */
+C_API
 float_s64_t bfp_s32_dot(
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
@@ -541,6 +551,7 @@ float_s64_t bfp_s32_dot(
  * @param[in]  upper_bound   Mantissa of the upper clipping bound, @math{U}
  * @param[in]  bound_exp     Shared exponent of the clipping bounds
  */
+C_API
 void bfp_s16_clip(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
@@ -576,6 +587,7 @@ void bfp_s16_clip(
  * @param[in]  upper_bound   Mantissa of the upper clipping bound, @math{U}
  * @param[in]  bound_exp     Shared exponent of the clipping bounds
  */
+C_API
 void bfp_s32_clip(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
@@ -606,6 +618,7 @@ void bfp_s32_clip(
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  */
+C_API
 void bfp_s16_rect(
     bfp_s16_t* a,
     const bfp_s16_t* b);
@@ -633,6 +646,7 @@ void bfp_s16_rect(
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  */
+C_API
 void bfp_s32_rect(
     bfp_s32_t* a, 
     const bfp_s32_t* b);
@@ -656,6 +670,7 @@ void bfp_s32_rect(
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  **/
+C_API
 void bfp_s32_to_s16(
     bfp_s16_t* a,
     const bfp_s32_t* b);
@@ -677,6 +692,7 @@ void bfp_s32_to_s16(
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  **/
+C_API
 void bfp_s16_to_s32(
     bfp_s32_t* a,
     const bfp_s16_t* b);
@@ -708,6 +724,7 @@ void bfp_s16_to_s32(
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  */
+C_API
 void bfp_s16_sqrt(
     bfp_s16_t* a,
     const bfp_s16_t* b);
@@ -739,6 +756,7 @@ void bfp_s16_sqrt(
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  */
+C_API
 void bfp_s32_sqrt(
     bfp_s32_t* a,
     const bfp_s32_t* b);
@@ -763,6 +781,7 @@ void bfp_s32_sqrt(
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  */
+C_API
 void bfp_s16_inverse(
     bfp_s16_t* a,
     const bfp_s16_t* b);
@@ -787,6 +806,7 @@ void bfp_s16_inverse(
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  */
+C_API
 void bfp_s32_inverse(
     bfp_s32_t* a,
     const bfp_s32_t* b);
@@ -808,6 +828,7 @@ void bfp_s32_inverse(
  * 
  * @returns  @math{A}, the sum of absolute values of elements of @vector{B}
  */
+C_API
 float_s32_t bfp_s16_abs_sum(
     const bfp_s16_t* b);
 
@@ -828,6 +849,7 @@ float_s32_t bfp_s16_abs_sum(
  * 
  * @returns  @math{A}, the sum of absolute values of elements of @vector{B}
  */
+C_API
 float_s64_t bfp_s32_abs_sum(
     const bfp_s32_t* b);
 
@@ -849,6 +871,7 @@ float_s64_t bfp_s32_abs_sum(
  * 
  * @returns  @math{A}, the mean value of @vector{B}'s elements
  */
+C_API
 float_s16_t bfp_s16_mean(
     const bfp_s16_t* b);
 
@@ -870,6 +893,7 @@ float_s16_t bfp_s16_mean(
  * 
  * @returns  @math{A}, the mean value of @vector{B}'s elements
  */
+C_API
 float_s32_t bfp_s32_mean(
     const bfp_s32_t* b);
 
@@ -891,6 +915,7 @@ float_s32_t bfp_s32_mean(
  * 
  * @returns  @math{A}, @vector{B}'s energy
  */
+C_API
 float_s64_t bfp_s16_energy(
     const bfp_s16_t* b);
 
@@ -912,6 +937,7 @@ float_s64_t bfp_s16_energy(
  * 
  * @returns  @math{A}, @vector{B}'s energy
  */
+C_API
 float_s64_t bfp_s32_energy(
     const bfp_s32_t* b);
 
@@ -935,6 +961,7 @@ float_s64_t bfp_s32_energy(
  * 
  * @returns  @math{A}, the RMS value of @vector{B}'s elements
  */
+C_API
 float_s32_t bfp_s16_rms(
     const bfp_s16_t* b);
 
@@ -958,6 +985,7 @@ float_s32_t bfp_s16_rms(
  * 
  * @returns  @math{A}, the RMS value of @vector{B}'s elements
  */
+C_API
 float_s32_t bfp_s32_rms(
     const bfp_s32_t* b);
 
@@ -979,6 +1007,7 @@ float_s32_t bfp_s32_rms(
  * 
  * @returns     @math{A}, the value of @vector{B}'s maximum element
  */
+C_API
 float_s16_t bfp_s16_max(
     const bfp_s16_t* b);
 
@@ -1000,6 +1029,7 @@ float_s16_t bfp_s16_max(
  * 
  * @returns     @math{A}, the value of @vector{B}'s maximum element
  */
+C_API
 float_s32_t bfp_s32_max(
     const bfp_s32_t* b);
 
@@ -1021,6 +1051,7 @@ float_s32_t bfp_s32_max(
  * 
  * @returns     @math{A}, the value of @vector{B}'s minimum element
  */
+C_API
 float_s16_t bfp_s16_min(
     const bfp_s16_t* b);
 
@@ -1042,6 +1073,7 @@ float_s16_t bfp_s16_min(
  * 
  * @returns     @math{A}, the value of @vector{B}'s minimum element
  */
+C_API
 float_s32_t bfp_s32_min(
     const bfp_s32_t* b);
 
@@ -1068,6 +1100,7 @@ float_s32_t bfp_s32_min(
  * 
  * @returns     @math{a}, the index of the maximum value from @vector{B}
  */
+C_API
 unsigned bfp_s16_argmax(
     const bfp_s16_t* b);
 
@@ -1094,6 +1127,7 @@ unsigned bfp_s16_argmax(
  * 
  * @returns     @math{a}, the index of the maximum value from @vector{B}
  */
+C_API
 unsigned bfp_s32_argmax(
     const bfp_s32_t* b);
 
@@ -1120,6 +1154,7 @@ unsigned bfp_s32_argmax(
  * 
  * @returns     @math{a}, the index of the minimum value from @vector{B}
  */
+C_API
 unsigned bfp_s16_argmin(
     const bfp_s16_t* b);
 
@@ -1146,12 +1181,6 @@ unsigned bfp_s16_argmin(
  * 
  * @returns     @math{a}, the index of the minimum value from @vector{B}
  */
+C_API
 unsigned bfp_s32_argmin(
     const bfp_s32_t* b);
-
-
-#ifdef __XC__
-}   //extern "C"
-#endif
-
-#endif //BFP_H_

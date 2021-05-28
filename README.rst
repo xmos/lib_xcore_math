@@ -31,11 +31,7 @@ Repository Structure
 Requirements
 ------------
 
-* xTIMEcomposer tools version 15.0.1 or later
-* The XMOS fork of the Unity unit test framework (for building unit tests)
-
-  * This is included as a sub-module when cloning this repository
-
+* xTIMEcomposer tools version 15.0.6 or later
 * GNU Make (for building the libary and unit tests)
 * Doxygen (for building documentation)
 * Python 3 (for running source generation scripts, if necessary)
@@ -100,7 +96,7 @@ Clone the Repository
 
 To clone this repository and its submodules (Unity repo required for unit tests) use the following: ::
 
-    git clone --recurse-submodules git@github.com:xmos/lib_xs3_math 
+    git clone git@github.com:xmos/lib_xs3_math 
 
 
 Including lib_xs3_math in External Applications

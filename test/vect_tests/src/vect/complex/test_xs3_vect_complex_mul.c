@@ -519,7 +519,7 @@ static void test_xs3_vect_complex_s32_mul_random()
         
         hr = xs3_vect_complex_s32_mul(A, B, C, len, b_shr, c_shr);
 
-        headroom_t hrre, hrim;
+        // headroom_t hrre, hrim;
 
         for(int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_s32(B[i], C[i], b_shr, c_shr);

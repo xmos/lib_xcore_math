@@ -16,7 +16,6 @@
 
 static unsigned seed = 2314567;
 
-static char msg_buff[200];
 
 
 #if DEBUG_ON || 0

@@ -1,5 +1,6 @@
 // Copyright 2020-2021 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
+
 #pragma once
 
 #include <stdint.h>
@@ -7,15 +8,10 @@
 
 #include "bfp_math.h"
 #include "test_random.h"
+#include "pseudo_rand.h"
+#include "rand_frame.h"
 
 #define SET_TEST_FILE()     Unity.TestFile = __FILE__
-
-#ifdef __xcore__
-#define WORD_ALIGNED __attribute__((aligned (4)))
-#define DWORD_ALIGNED __attribute__((aligned (8)))
-#else
-#define WORD_ALIGNED
-#endif
 
 #ifndef PRINT_FUNC_NAMES
 #define PRINT_FUNC_NAMES 1
@@ -42,13 +38,11 @@
         TEST_ASSERT_FALSE_MESSAGE(V, qwe); }} while(0)
 
 
-#if defined(__XC__) || defined(__CPLUSPLUS__)
-extern "C" {
-#endif 
 
-#ifndef __XC__
+EXTERN_C
 static inline signed sext(int a, unsigned b){
-#ifdef __XS3A__
+
+#if !defined(__XC__) && defined(__XS3A__)
     asm("sext %0, %1": "=r"(a): "r"(b));
 #else
     unsigned mask = ~((1<<b)-1);
@@ -56,62 +50,20 @@ static inline signed sext(int a, unsigned b){
     unsigned p = a >= 0;
     a = p? (a & ~mask) : (a | mask);
 #endif
+
     return a;
 }
-#endif //__XC__
-
 
 
 extern FILE* perf_file;
 
+EXTERN_C
 void xs3_fft_index_bit_reversal_double(
     complex_double_t* a,
     const unsigned length);
-
-
-void test_double_from_s16(
-    double* d_out,
-    bfp_s16_t* d_in);
-void test_double_from_s32(
-    double* d_out,
-    bfp_s32_t* d_in);
-void test_double_from_complex_s16(
-    double* d_out_real,
-    double* d_out_imag,
-    bfp_complex_s16_t* d_in);
-void test_double_from_complex_s32(
-    double* d_out_real,
-    double* d_out_imag,
-    bfp_complex_s32_t* d_in);
-
-
-void test_s16_from_double(
-    int16_t* d_out,
-    double* d_in,
-    unsigned length,
-    exponent_t use_exp);
-
-void test_s32_from_double(
-    int32_t* d_out,
-    double* d_in,
-    unsigned length,
-    exponent_t use_exp);
-
-void test_complex_s16_from_double(
-    int16_t* d_out_real,
-    int16_t* d_out_imag,
-    double* d_in_real,
-    double* d_in_imag,
-    unsigned length,
-    exponent_t use_exp);
-
-void test_complex_s32_from_double(
-    complex_s32_t* d_out,
-    double* d_in_real,
-    double* d_in_imag,
-    unsigned length,
-    exponent_t use_exp);
-
-#if defined(__XC__) || defined(__CPLUSPLUS__)
-}   // extern "C"
-#endif
+    
+EXTERN_C
+void print_warns(
+    int start_case, 
+    unsigned test_c, 
+    unsigned test_asm);
