@@ -45,9 +45,6 @@ int main(int argc, char** argv)
     CALL(test_xs3_sum_complex);
     CALL(test_xs3_vect_complex_s32_to_complex_s16);
     CALL(test_xs3_vect_complex_s16_to_complex_s32);
-    CALL(test_xs3_filter_fir_s32);
-    CALL(test_xs3_push_sample_s16);
-    CALL(test_xs3_filter_biquad_s32);
     CALL(test_xs3_abs_sum);
     CALL(test_xs3_max_min);
     CALL(test_xs3_energy);

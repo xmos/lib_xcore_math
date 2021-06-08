@@ -177,6 +177,18 @@ As with ``vect_tests``, the ``fft_tests`` unit test application can be run with:
     xrun --xscope test/fft_tests/fft_tests.xe
 
 
+Filter Unit Tests
+*****************
+
+This application runs unit tests for 16- and 32-bit FIR filters and 32-bit Biquad filters. This application is located at `/test/filter_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/filter_tests>`_.
+
+As with ``vect_tests``, the ``filter_tests`` unit test application can be run with:
+
+::
+
+    xrun --xscope test/filter_tests/filter_tests.xe
+
+
 Building Documentation
 ----------------------
 
