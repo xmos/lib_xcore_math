@@ -6,7 +6,7 @@ pipeline {
     agent {
         dockerfile {
             filename 'Dockerfile'
-            dir 'tools/ci'
+            dir 'ci'
             args "-v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /home/jenkins/.ssh:/home/jenkins/.ssh:ro"
         }
     }
@@ -14,13 +14,12 @@ pipeline {
     parameters { // Available to modify on the job page within Jenkins if starting a build
         string( // use to try different tools versions
             name: 'TOOLS_VERSION',
-            defaultValue: '15.0.5',
-            description: 'The tools version to build with (check /projects/tools/ReleasesTools/)'
+            defaultValue: '15.0.6',
+            description: 'The tools version to build with'
         )
     }
 
     options { // plenty of things could go here
-        //buildDiscarder(logRotator(numToKeepStr: '10'))
         timestamps()
     }
 
@@ -39,15 +38,9 @@ pipeline {
                     userRemoteConfigs: [[credentialsId: 'xmos-bot',
                                          url: 'git@github.com:xmos/lib_xs3_math']]
                 ])
-                // fetch dependencies
-                sshagent (credentials: ['xmos-bot']) {
-                    dir("${env.WORKSPACE}/test") {
-                        sh "python fetch_dependencies.py"
-                    }
-                }
                 // create venv
-                sh "conda env create -q -p lib_xs3_math_venv -f tools/ci/environment.yml"
-                // install xmos tools version
+                sh "conda env create -q -p lib_xs3_math_venv -f ci/environment.yml"
+                // Install xmos tools version
                 sh "/XMOS/get_tools.py " + params.TOOLS_VERSION
             }
         }
@@ -63,7 +56,7 @@ pipeline {
                 // below is how we can activate the tools
                 sh """. /XMOS/tools/${params.TOOLS_VERSION}/XMOS/XTC/${params.TOOLS_VERSION}/SetEnv &&
                       . activate ./lib_xs3_math_venv &&
-                      cd test && make all"""
+                      cmake -B build -DCMAKE_TOOLCHAIN_FILE=etc/xmos_toolchain.cmake && cmake --build build"""
             }
         }
     }

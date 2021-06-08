@@ -1,20 +1,16 @@
 // Copyright 2020-2021 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
-#ifndef XS3_MATH_TYPES_H_
-#define XS3_MATH_TYPES_H_
+#pragma once
 
 #include <stdint.h>
 
-
-#ifdef __XC__
-extern "C" {
-#endif
-
+#include "xs3_api.h"
 
 /** 
  * @brief A complex number with a 64-bit real part and 64-bit imaginary part.
  */
+C_TYPE
 typedef struct {
     int64_t re; ///< Real Part
     int64_t im; ///< Imaginary Part
@@ -23,6 +19,7 @@ typedef struct {
 /** 
  * @brief A complex number with a 32-bit real part and 32-bit imaginary part.
  */
+C_TYPE
 typedef struct {
     int32_t re; ///< Real Part
     int32_t im; ///< Imaginary Part
@@ -31,6 +28,7 @@ typedef struct {
 /** 
  * @brief A complex number with a 16-bit real part and 16-bit imaginary part.
  */
+C_TYPE
 typedef struct {
     int16_t re; ///< Real Part
     int16_t im; ///< Imaginary Part
@@ -39,6 +37,7 @@ typedef struct {
 /** 
  * @brief A pair of 32-bit samples, associated with channels A and B.
  */
+C_TYPE
 typedef struct {
     int32_t ch_a;   ///< Channel A
     int32_t ch_b;   ///< Channel B
@@ -47,6 +46,7 @@ typedef struct {
 /** 
  * @brief A pair of 16-bit samples, associated with channels A and B.
  */
+C_TYPE
 typedef struct {
     int16_t ch_a;   ///< Channel A
     int16_t ch_b;   ///< Channel B
@@ -108,6 +108,7 @@ typedef int left_shift_t;
  *  }
  * @endcode
  */
+C_TYPE
 typedef struct {
     int16_t mant;       ///< 16-bit mantissa
     exponent_t exp;     ///< exponent
@@ -128,6 +129,7 @@ typedef struct {
  *  }
  * @endcode
  */
+C_TYPE
 typedef struct {
     int32_t mant;       ///< 32-bit mantissa
     exponent_t exp;     ///< exponent
@@ -148,6 +150,7 @@ typedef struct {
  *  }
  * @endcode
  */
+C_TYPE
 typedef struct {
     int64_t mant;       ///< 64-bit mantissa
     exponent_t exp;     ///< exponent
@@ -160,6 +163,7 @@ typedef struct {
  * is `mant.re`, the 16-bit real part of the mantissa, @math{B} is `mant.im`, the 16-bit imaginary part of the mantissa,
  * and @math{x} is the exponent `exp`.
  */
+C_TYPE
 typedef struct {
     complex_s16_t mant; ///< complex 16-bit mantissa
     exponent_t exp;     ///< exponent
@@ -172,7 +176,7 @@ typedef struct {
  * is `mant.re`, the 32-bit real part of the mantissa, @math{B} is `mant.im`, the 32-bit imaginary part of the mantissa,
  * and @math{x} is the exponent `exp`.
  */
-
+C_TYPE
 typedef struct {
     complex_s32_t mant; ///< complex 32-bit mantissa
     exponent_t exp;     ///< exponent
@@ -185,7 +189,7 @@ typedef struct {
  * is `mant.re`, the 64-bit real part of the mantissa, @math{B} is `mant.im`, the 64-bit imaginary part of the mantissa,
  * and @math{x} is the exponent `exp`.
  */
-
+C_TYPE
 typedef struct {
     complex_s64_t mant; ///< complex 64-bit mantissa
     exponent_t exp;     ///< exponent
@@ -205,6 +209,7 @@ typedef struct {
  * minimize precision loss as elements become small.
  */
 //! [bfp_s32_t]
+C_TYPE
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     int32_t* data;
@@ -233,6 +238,7 @@ typedef struct {
  * minimize precision loss as elements become small.
  */
 //! [bfp_s16_t]
+C_TYPE
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     int16_t* data;
@@ -259,6 +265,7 @@ typedef struct {
  * minimize precision loss as elements become small.
  */
 //! [bfp_complex_s32_t]
+C_TYPE
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     complex_s32_t* data;
@@ -285,6 +292,7 @@ typedef struct {
  * minimize precision loss as elements become small.
  */
 //! [bfp_complex_s16_t]
+C_TYPE
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     int16_t* real;
@@ -317,6 +325,7 @@ typedef struct {
  * minimize precision loss as elements become small.
  */
 //! [bfp_ch_pair_s32_t]
+C_TYPE
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     ch_pair_s32_t* data;
@@ -347,6 +356,7 @@ typedef struct {
  * minimize precision loss as elements become small.
  */
 //! [bfp_ch_pair_s16_t]
+C_TYPE
 typedef struct {
     /** Pointer to the underlying element buffer.*/
     ch_pair_s16_t* data;
@@ -366,6 +376,7 @@ typedef struct {
 /**
  * @brief A complex number with a single-precision floating-point real part and a single-precision floating-point imaginary part.
  */
+C_TYPE
 typedef struct {
     float re;   ///< Real Part
     float im;   ///< Imaginary Part
@@ -374,6 +385,7 @@ typedef struct {
 /**
  * @brief A complex number with a double-precision floating-point real part and a double-precision floating-point imaginary part.
  */
+C_TYPE
 typedef struct {
     double re;  ///< Real Part
     double im;  ///< Imaginary Part
@@ -382,6 +394,7 @@ typedef struct {
 /**
  * @brief A pair of single-precision floating-point samples, associated with channels A and B.
  */
+C_TYPE
 typedef struct {
     float ch_a; ///< Channel A
     float ch_b; ///< Channel B
@@ -390,13 +403,8 @@ typedef struct {
 /**
  * @brief A pair of double-precision floating-point samples, associated with channels A and B.
  */
+C_TYPE
 typedef struct {
     double ch_a;    ///< Channel A
     double ch_b;    ///< Channel B
 } ch_pair_double_t;
-
-#ifdef __XC__
-}   //extern "C"
-#endif
-
-#endif //XS3_MATH_TYPES_H_

@@ -1,17 +1,9 @@
 // Copyright 2020-2021 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
-#ifndef BFP_COMPLEX_H_
-#define BFP_COMPLEX_H_
+#pragma once
 
 #include "xs3_math_types.h"
-
-#ifdef __XC__
-extern "C" {
-#endif
-
-
-
 
 
 /** 
@@ -47,6 +39,7 @@ extern "C" {
  * 
  * @returns    Headroom of complex BFP vector `b` 
  */
+C_API
 headroom_t bfp_complex_s16_headroom(
     bfp_complex_s16_t* a);
 
@@ -84,6 +77,7 @@ headroom_t bfp_complex_s16_headroom(
  * 
  * @returns    Headroom of complex BFP vector `b` 
  */
+C_API
 headroom_t bfp_complex_s32_headroom(
     bfp_complex_s32_t* a);
 
@@ -120,6 +114,7 @@ headroom_t bfp_complex_s32_headroom(
  * @param[in]  b        Complex input BFP vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
  */
+C_API
 void bfp_complex_s16_shl(
     bfp_complex_s16_t* a,
     const bfp_complex_s16_t* b,
@@ -158,6 +153,7 @@ void bfp_complex_s16_shl(
  * @param[in]  b        Complex input BFP vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
  */
+C_API
 void bfp_complex_s32_shl(
     bfp_complex_s32_t* a,
     const bfp_complex_s32_t* b,
@@ -188,6 +184,7 @@ void bfp_complex_s32_shl(
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input real BFP vector @vector{C}
  */
+C_API
 void bfp_complex_s16_real_mul(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
@@ -215,6 +212,7 @@ void bfp_complex_s16_real_mul(
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input real BFP vector @vector{C}
  */
+C_API
 void bfp_complex_s32_real_mul(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
@@ -243,6 +241,7 @@ void bfp_complex_s32_real_mul(
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
  */
+C_API
 void bfp_complex_s16_mul(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
@@ -273,6 +272,7 @@ void bfp_complex_s16_mul(
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
  */
+C_API
 void bfp_complex_s32_mul(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
@@ -296,6 +296,7 @@ void bfp_complex_s32_mul(
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
  */
+C_API
 void bfp_complex_s16_conj_mul(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
@@ -323,6 +324,7 @@ void bfp_complex_s16_conj_mul(
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
  */
+C_API
 void bfp_complex_s32_conj_mul(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
@@ -348,6 +350,7 @@ void bfp_complex_s32_conj_mul(
  * @param[in]  b            Input complex BFP vector @vector{B}
  * @param[in]  alpha        Real scalar by which @vector{B} is multiplied
  */
+C_API
 void bfp_complex_s16_real_scale(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
@@ -373,6 +376,7 @@ void bfp_complex_s16_real_scale(
  * @param[in]  b            Input complex BFP vector @vector{B}
  * @param[in]  alpha        Real scalar by which @vector{B} is multiplied
  */
+C_API
 void bfp_complex_s32_real_scale(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
@@ -398,6 +402,7 @@ void bfp_complex_s32_real_scale(
  * @param[in]  b            Input complex BFP vector @vector{B}
  * @param[in]  alpha        Complex scalar by which @vector{B} is multiplied
  */
+C_API
 void bfp_complex_s16_scale(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
@@ -423,6 +428,7 @@ void bfp_complex_s16_scale(
  * @param[in]  b            Input complex BFP vector @vector{B}
  * @param[in]  alpha        Complex scalar by which @vector{B} is multiplied
  */
+C_API
 void bfp_complex_s32_scale(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
@@ -447,6 +453,7 @@ void bfp_complex_s32_scale(
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
  */
+C_API
 void bfp_complex_s16_add(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
@@ -471,6 +478,7 @@ void bfp_complex_s16_add(
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
  */
+C_API
 void bfp_complex_s32_add(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b, 
@@ -496,6 +504,7 @@ void bfp_complex_s32_add(
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
  */
+C_API
 void bfp_complex_s16_sub(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
@@ -521,6 +530,7 @@ void bfp_complex_s16_sub(
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
  */
+C_API
 void bfp_complex_s32_sub(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b,
@@ -544,6 +554,7 @@ void bfp_complex_s32_sub(
  * @param[out] a     Output complex 32-bit BFP vector @vector{A}
  * @param[in]  b     Input complex 16-bit BFP vector @vector{B}
  */
+C_API
 void bfp_complex_s16_to_complex_s32(
     bfp_complex_s32_t* a, 
     const bfp_complex_s16_t* b);
@@ -569,6 +580,7 @@ void bfp_complex_s16_to_complex_s32(
  * @param[out] a     Output complex 16-bit BFP vector @vector{A}
  * @param[in]  b     Input complex 32-bit BFP vector @vector{B}
  */
+C_API
 void bfp_complex_s32_to_complex_s16(
     bfp_complex_s16_t* a, 
     const bfp_complex_s32_t* b);
@@ -593,6 +605,7 @@ void bfp_complex_s32_to_complex_s16(
  * @param[out] a     Output real BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  */
+C_API
 void bfp_complex_s16_squared_mag(
     bfp_s16_t* a, 
     const bfp_complex_s16_t* b);
@@ -617,6 +630,7 @@ void bfp_complex_s16_squared_mag(
  * @param[out] a     Output real BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  */
+C_API
 void bfp_complex_s32_squared_mag(
     bfp_s32_t* a, 
     const bfp_complex_s32_t* b);
@@ -638,6 +652,7 @@ void bfp_complex_s32_squared_mag(
  * @param[out] a     Output real BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  */
+C_API
 void bfp_complex_s16_mag(
     bfp_s16_t* a, 
     const bfp_complex_s16_t* b);
@@ -659,6 +674,7 @@ void bfp_complex_s16_mag(
  * @param[out] a     Output real BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  */
+C_API
 void bfp_complex_s32_mag(
     bfp_s32_t* a, 
     const bfp_complex_s32_t* b);
@@ -681,6 +697,7 @@ void bfp_complex_s32_mag(
  * 
  * @returns     @math{a}, the sum of vector @vector{B}'s elements
  */
+C_API
 float_complex_s32_t bfp_complex_s16_sum(
     const bfp_complex_s16_t* b);
 
@@ -702,12 +719,6 @@ float_complex_s32_t bfp_complex_s16_sum(
  * 
  * @returns     @math{a}, the sum of vector @vector{B}'s elements
  */
+C_API
 float_complex_s64_t bfp_complex_s32_sum( 
     const bfp_complex_s32_t* b);
-
-
-#ifdef __XC__
-}   //extern "C"
-#endif
-
-#endif //BFP_COMPLEX_H_

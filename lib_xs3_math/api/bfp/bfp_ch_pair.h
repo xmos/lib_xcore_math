@@ -1,16 +1,9 @@
 // Copyright 2020-2021 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
-#ifndef BFP_CH_PAIR_H_
-#define BFP_CH_PAIR_H_
+#pragma once
 
 #include "xs3_math_types.h"
-
-
-#ifdef __XC__
-extern "C" {
-#endif
-
 
 
 /** 
@@ -38,6 +31,7 @@ extern "C" {
  * 
  * @returns    Headroom of BFP channel-pair vector `b` 
  */
+C_API
 headroom_t bfp_ch_pair_s16_headroom(
     bfp_ch_pair_s16_t* b);
 
@@ -68,6 +62,7 @@ headroom_t bfp_ch_pair_s16_headroom(
  * 
  * @returns    Headroom of BFP channel-pair vector `b` 
  */
+C_API
 headroom_t bfp_ch_pair_s32_headroom(
     bfp_ch_pair_s32_t* b);
 
@@ -104,6 +99,7 @@ headroom_t bfp_ch_pair_s32_headroom(
  * @param[in]  b        Input BFP channel-pair vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
  */
+C_API
 void bfp_ch_pair_s16_shl(
     bfp_ch_pair_s16_t* a,
     const bfp_ch_pair_s16_t* b,
@@ -142,13 +138,8 @@ void bfp_ch_pair_s16_shl(
  * @param[in]  b        Input BFP channel-pair vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
  */
+C_API
 void bfp_ch_pair_s32_shl(
     bfp_ch_pair_s32_t* a,
     const bfp_ch_pair_s32_t* b,
     const left_shift_t shl);
-
-#ifdef __XC__
-}   //extern "C"
-#endif
-
-#endif //BFP_CH_PAIR_H_

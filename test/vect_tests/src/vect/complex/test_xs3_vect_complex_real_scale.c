@@ -18,13 +18,7 @@
 
 
 static unsigned seed = 2314567;
-static char msg_buff[200];
 
-#define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
-    if((EXPECTED)!=(ACTUAL)) {                                        \
-      sprintf(msg_buff, "(test vector @ line %u)", (LINE_NUM));       \
-      TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
-    }} while(0)
 
 
 #if DEBUG_ON || 0
@@ -59,7 +53,7 @@ static void test_xs3_vect_s16_scale_prepare()
         int16_t WORD_ALIGNED A_im;
 
         exponent_t a_exp;
-        right_shift_t sat, c_shr;
+        right_shift_t sat;
 
         xs3_vect_s16_scale_prepare(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr);
 

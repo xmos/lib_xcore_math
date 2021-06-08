@@ -367,7 +367,7 @@ static void test_vlmaccr32()
         s = MIN(s, VPU_INT40_MAX);
         s = MAX(s, VPU_INT40_MIN);
 
-        vpu_int32_acc_t exp = s;
+        // vpu_int32_acc_t exp = s;
 
         vpu_int32_acc_t res = vlmaccr32(acc, x, y);
 

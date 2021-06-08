@@ -2,10 +2,11 @@
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 // XMOS Public License: Version 1
 
-#include "testing.h"
+extern "C" {
+  #include "testing.h"
+}
 
 #include <math.h>
-
 #include <stdio.h>
 
 timer tmr;

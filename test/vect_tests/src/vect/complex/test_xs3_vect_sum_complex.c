@@ -230,7 +230,6 @@ void test_xs3_vect_complex_s32_sum_basic()
         test_case_t* casse = &casses[v];
 
         complex_s32_t B[40];
-        int64_t result;
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
 

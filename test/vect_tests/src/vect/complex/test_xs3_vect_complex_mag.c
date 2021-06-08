@@ -354,7 +354,7 @@ static void test_xs3_vect_complex_s32_mag_basic()
             headroom_t hr;
             int32_t A[40];
             complex_s32_t B[40];
-            complex_s32_t C;
+            // complex_s32_t C;
 
             for(int i = 0; i < len; i++){
                 A[i] = 0xCC;
