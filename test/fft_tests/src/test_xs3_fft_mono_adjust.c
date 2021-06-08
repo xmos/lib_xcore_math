@@ -103,7 +103,7 @@ void test_xs3_fft_mono_adjust_forward()
             TEST_ASSERT_CONVERSION(error);
 
             if(diff > worst_error) { worst_error = diff; }
-            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+3, diff, "Output delta is too large");
+            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+4, diff, "Output delta is too large");
         }
         
 #if PRINT_ERRORS

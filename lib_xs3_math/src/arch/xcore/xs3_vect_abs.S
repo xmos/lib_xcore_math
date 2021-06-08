@@ -10,17 +10,8 @@
 .issue_mode dual
 .align 4
 
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
-  #define NSTACKWORDS     (8)
-#else
-  #define NSTACKWORDS     (0)
-#endif
-
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
-  #define STACK_TMP_VEC       (NSTACKWORDS-8)
-#endif
-
-
+#define NSTACKWORDS     (8)
+#define STACK_TMP_VEC       (NSTACKWORDS-8)
 
 #define a           r0
 #define b           r1
@@ -40,14 +31,9 @@ headroom_t xs3_vect_s16_abs(
 xs3_vect_s16_abs:
         dualentsp NSTACKWORDS
         ldc r11, 0x0100
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
     {   shl tail, len, SIZEOF_LOG2_S16          ;   shr len, len, EPV_LOG2_S16              }
     {   zext tail, 5                            ;   vsetc r11                               }
     {                                           ;   bu .L_apply_op                          }
-#else //XS3_MATH_VECTOR_TAIL_SUPPORT
-    {   shr len, len, EPV_LOG2_S16              ;   vsetc r11                               }
-    {                                           ;   bu .L_apply_op                          }
-#endif //XS3_MATH_VECTOR_TAIL_SUPPORT
 
 .L_func_end_s16:
 .cc_bottom xs3_vect_s16_abs.function
@@ -63,16 +49,10 @@ headroom_t xs3_vect_s32_abs(
 .cc_top xs3_vect_s32_abs.function,xs3_vect_s32_abs
 
 xs3_vect_s32_abs:
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
         dualentsp NSTACKWORDS
     {   ldc r11, 0                              ;   shl tail, len, SIZEOF_LOG2_S32          }
     {   shr len, len, EPV_LOG2_S32              ;   vsetc r11                               }
     {   zext tail, 5                            ;   bu .L_apply_op                          }
-#else //XS3_MATH_VECTOR_TAIL_SUPPORT
-    {   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
-    {   shr len, len, EPV_LOG2_S32              ;   vsetc r11                               }
-    {                                           ;   bu .L_apply_op                          }
-#endif //XS3_MATH_VECTOR_TAIL_SUPPORT
 
 .L_func_end_s32:
 .cc_bottom xs3_vect_s32_abs.function
@@ -103,9 +83,7 @@ xs3_vect_s32_abs:
 
 .L_apply_op:
 
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
     {   mkmsk tail, tail                        ;                                           }
-#endif //XS3_MATH_VECTOR_TAIL_SUPPORT
     {   mov r11, b                              ;   bf loop_count, .L_loop_bot              }
     {   ldc r1, 32                              ;   bu .L_loop_top                          }
 .align 16
@@ -116,8 +94,6 @@ xs3_vect_s32_abs:
         {   add a, a, r1                            ;   vstr a[0]                               }
         {   add r11, r11, r1                        ;   bt loop_count, .L_loop_top              }
 .L_loop_bot:
-
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
 
     {                                           ;   bf tail, .L_finish                      }
     {                                           ;   vclrdr                                  }
@@ -130,8 +106,6 @@ xs3_vect_s32_abs:
     {                                           ;   vldr r11[0]                             }
     {                                           ;   vstr r11[0]                             }
         vstrpv a[0], tail
-
-#endif //XS3_MATH_VECTOR_TAIL_SUPPORT
 
 .L_finish:
     {   ldc r0, 32                              ;   vgetc r11                               }
