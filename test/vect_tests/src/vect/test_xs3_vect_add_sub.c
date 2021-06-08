@@ -127,7 +127,7 @@ static int32_t sub_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 #define REPS        1000
 
 
-static void test_xs3_vect_add_sub_prepare()
+static void test_xs3_vect_s32_add_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -178,11 +178,11 @@ static void test_xs3_vect_add_sub_prepare()
                 PRINTF("\t\t\t\tswap b&c: %d\n", sbc);
 
                 if(sbc){
-                    xs3_vect_add_sub_prepare(&a_exp, &c_shr, &b_shr, 
+                    xs3_vect_s32_add_prepare(&a_exp, &c_shr, &b_shr, 
                                                 casse->c.exp + exp_mods[m], casse->b.exp + exp_mods[m], 
                                                 casse->c.hr,  casse->b.hr);
                 } else {
-                    xs3_vect_add_sub_prepare(&a_exp, &b_shr, &c_shr, 
+                    xs3_vect_s32_add_prepare(&a_exp, &b_shr, &c_shr, 
                                                 casse->b.exp + exp_mods[m], casse->c.exp + exp_mods[m], 
                                                 casse->b.hr,  casse->c.hr);
                 }
@@ -861,7 +861,7 @@ static void test_xs3_vect_s32_sub_random()
 void test_xs3_add_sub_vect()
 {
     SET_TEST_FILE();
-    RUN_TEST(test_xs3_vect_add_sub_prepare);
+    RUN_TEST(test_xs3_vect_s32_add_prepare);
     
     RUN_TEST(test_xs3_vect_s16_add_basic);
     RUN_TEST(test_xs3_vect_s16_add_random);

@@ -66,7 +66,7 @@ static void test_xs3_vect_complex_s16_add()
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
 
-        xs3_vect_add_sub_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_complex_s16_add_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         for(int i = 0; i < length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> b_hr;
@@ -128,7 +128,7 @@ static void test_xs3_vect_complex_s32_add()
 
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
-        xs3_vect_add_sub_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_complex_s32_add_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         for(int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> b_hr;
@@ -191,7 +191,7 @@ static void test_xs3_vect_complex_s16_sub()
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
 
-        xs3_vect_add_sub_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_complex_s16_sub_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         for(int i = 0; i < length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> b_hr;
@@ -256,7 +256,7 @@ static void test_xs3_vect_complex_s32_sub()
 
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
-        xs3_vect_add_sub_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_complex_s32_sub_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         for(int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> b_hr;

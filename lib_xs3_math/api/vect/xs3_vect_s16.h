@@ -222,7 +222,7 @@ headroom_t xs3_vect_ch_pair_s16_shr(
  * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
  * are associated with the same exponent.
  * 
- * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * The function xs3_vect_complex_s16_add_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
  * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
  * @math{c\_hr}.
  * 
@@ -238,7 +238,7 @@ headroom_t xs3_vect_ch_pair_s16_shr(
  * 
  * @returns     Headroom of output vector @vector{a}.
  * 
- * @see xs3_vect_add_sub_prepare
+ * @see xs3_vect_complex_s16_add_prepare
  */
 C_API
 headroom_t xs3_vect_complex_s16_add(
@@ -251,6 +251,9 @@ headroom_t xs3_vect_complex_s16_add(
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
+
+// xs3_vect_complex_s16_add() uses the same prepare logic as xs3_vect_s32_add()
+#define xs3_vect_complex_s16_add_prepare xs3_vect_s32_add_prepare
 
 
 /**
@@ -314,6 +317,9 @@ headroom_t xs3_vect_complex_s16_conj_mul(
     const int16_t c_imag[],
     const unsigned length,
     const right_shift_t a_shr);
+
+// xs3_vect_complex_s16_conj_mul() uses the same prepare logic as xs3_vect_complex_s16_mul()
+#define xs3_vect_complex_s16_conj_mul_prepare xs3_vect_complex_s16_mul_prepare
 
 /**
  * @brief Calculate the headroom of a complex 16-bit array.
@@ -396,7 +402,7 @@ headroom_t xs3_vect_complex_s16_headroom(
  * vector @vector{a} are the real 16-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where 
  * @math{a\_exp = b\_exp + b\_shr}.
  * 
- * The function xs3_vect_complex_mag_prepare() can be used to obtain values for @math{a\_exp} and @math{b\_shr} based on 
+ * The function xs3_vect_complex_s16_mag_prepare() can be used to obtain values for @math{a\_exp} and @math{b\_shr} based on 
  * the input exponent @math{b\_exp} and headroom @math{b\_hr}.
  * 
  * @param[out]  a           Real output vector @vector{a}
@@ -409,7 +415,7 @@ headroom_t xs3_vect_complex_s16_headroom(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  * 
- * @see xs3_vect_complex_mag_prepare
+ * @see xs3_vect_complex_s16_mag_prepare
  */
 C_API
 headroom_t xs3_vect_complex_s16_mag(
@@ -420,6 +426,9 @@ headroom_t xs3_vect_complex_s16_mag(
     const right_shift_t b_shr,
     const int16_t* rot_table,
     const unsigned table_rows);
+
+// xs3_vect_complex_s16_mag() uses the same prepare logic as xs3_vect_complex_s32_mag()
+#define xs3_vect_complex_s16_mag_prepare xs3_vect_complex_s32_mag_prepare
 
 
 /**
@@ -703,7 +712,7 @@ void xs3_vect_complex_s16_real_mul_prepare(
  * complex 16-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
  * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + a\_shr}.
  * 
- * The function xs3_vect_s16_real_mul_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} based 
+ * The function xs3_vect_complex_s16_real_scale_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} based 
  * on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}. 
  * 
  * @param[out]      a_real      Real part of complex output vector @vector{a}
@@ -725,6 +734,9 @@ headroom_t xs3_vect_complex_s16_real_scale(
     const int16_t c,
     const unsigned length,
     const right_shift_t a_shr);
+
+// xs3_vect_complex_s16_real_scale() uses the same prepare logic as xs3_vect_s32_scale()
+#define xs3_vect_complex_s16_real_scale_prepare xs3_vect_s16_scale_prepare
 
 
 /**
@@ -761,7 +773,7 @@ headroom_t xs3_vect_complex_s16_real_scale(
  * complex 16-bit mantissa of floating-point value @math{c \cdot 2^{c\_exp}, then the resulting vector @vector{a} are 
  * the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp + c\_exp + a\_shr}.
  * 
- * The function xs3_vect_complex_s16_mul_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} 
+ * The function xs3_vect_complex_s16_scale_prepare() can be used to obtain values for @math{a\_exp} and @math{a\_shr} 
  * based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}. 
  * 
  * @param[out]      a_real      Real part of complex output vector @vector{a}
@@ -785,6 +797,9 @@ headroom_t xs3_vect_complex_s16_scale(
     const int16_t c_imag,
     const unsigned length,
     const right_shift_t a_shr);
+
+// xs3_vect_complex_s16_scale() uses the same prepare logic as xs3_vect_complex_s32_mul()
+#define xs3_vect_complex_s16_scale_prepare xs3_vect_complex_s16_mul_prepare
 
 
 /**
@@ -1056,7 +1071,7 @@ void xs3_vect_complex_s16_squared_mag_prepare(
  * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
  * are associated with the same exponent.
  * 
- * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * The function xs3_vect_complex_s16_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
  * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
  * @math{c\_hr}.
  * 
@@ -1072,7 +1087,7 @@ void xs3_vect_complex_s16_squared_mag_prepare(
  * 
  * @returns     Headroom of output vector @vector{a}.
  * 
- * @see xs3_vect_add_sub_prepare
+ * @see xs3_vect_complex_s16_sub_prepare
  */
 C_API
 headroom_t xs3_vect_complex_s16_sub(
@@ -1085,6 +1100,9 @@ headroom_t xs3_vect_complex_s16_sub(
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
+
+// xs3_vect_complex_s16_sub() uses the same prepare logic as xs3_vect_s32_add()
+#define xs3_vect_complex_s16_sub_prepare xs3_vect_s32_add_prepare
 
 
 /**
@@ -1245,7 +1263,7 @@ int32_t xs3_vect_s16_abs_sum(
  * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
  * are associated with the same exponent.
  * 
- * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * The function xs3_vect_s16_add_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
  * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
  * @math{c\_hr}.
  * 
@@ -1258,7 +1276,7 @@ int32_t xs3_vect_s16_abs_sum(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  * 
- * @see xs3_vect_add_sub_prepare
+ * @see xs3_vect_s16_add_prepare
  */
 C_API
 headroom_t xs3_vect_s16_add(
@@ -1268,6 +1286,9 @@ headroom_t xs3_vect_s16_add(
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
+
+// xs3_vect_s16_add() uses the same prepare logic as xs3_vect_s32_add()
+#define xs3_vect_s16_add_prepare xs3_vect_s32_add_prepare
 
 
 /**
@@ -1367,6 +1388,49 @@ headroom_t xs3_vect_s16_clip(
     const int16_t upper_bound,
     const right_shift_t b_shr);
 
+
+/**
+ * @brief Obtain the output exponent, input shift and modified bounds used by xs3_vect_s16_clip().
+ * 
+ * This function is used in conjunction with xs3_vect_s16_clip() to bound the elements of a 32-bit BFP vector to a
+ * specified range.
+ * 
+ * This function computes `a_exp`, `b_shr`, `lower_bound` and `upper_bound`.
+ * 
+ * `a_exp` is the exponent associated with the 16-bit mantissa vector @vector{a} computed by xs3_vect_s32_clip().
+ * 
+ * `b_shr` is the shift parameter required by xs3_vect_s16_clip() to achieve the output exponent `a_exp`.
+ * 
+ * `lower_bound` and `upper_bound` are the 16-bit mantissas which indicate the lower and upper clipping bounds
+ * respectively. The values are modified by this function, and the resulting values should be passed along to
+ * xs3_vect_s16_clip().
+ * 
+ * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
+ * 
+ * `bound_exp` is the exponent associated with the bound mantissas `lower_bound` and `upper_bound` respectively.
+ * 
+ * `b_hr` is the headroom of @vector{b}. If unknown, it can be obtained using xs3_vect_s16_headroom(). Alternatively, 
+ * the value `0` can always be safely used (but may result in reduced precision).
+ * 
+ * @param[out]    a_exp               Exponent associated with output mantissa vector @vector{a}
+ * @param[out]    b_shr               Signed arithmetic right-shift for @vector{b} used by xs3_vect_s32_clip()
+ * @param[inout]  lower_bound         Lower bound of clipping range
+ * @param[inout]  upper_bound         Upper bound of clipping range
+ * @param[in]     b_exp               Exponent associated with input mantissa vector @vector{b}
+ * @param[in]     bound_exp           Exponent associated with clipping bounds `lower_bound` and `upper_bound`
+ * @param[in]     b_hr                Headroom of input mantissa vector @vector{b}
+ * 
+ * @see xs3_vect_s16_clip
+ */
+C_API
+void xs3_vect_s16_clip_prepare(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    int16_t* lower_bound,
+    int16_t* upper_bound,
+    const exponent_t b_exp,
+    const exponent_t bound_exp,
+    const headroom_t b_hr);
 
 /**
  * @brief Compute the inner product of two 16-bit vectors.
@@ -2133,7 +2197,7 @@ void xs3_vect_s16_sqrt_prepare(
  * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
  * are associated with the same exponent.
  * 
- * The function xs3_vect_add_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
+ * The function xs3_vect_s16_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
  * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
  * @math{c\_hr}.
  * 
@@ -2146,7 +2210,7 @@ void xs3_vect_s16_sqrt_prepare(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  * 
- * @see xs3_vect_add_sub_prepare
+ * @see xs3_vect_s16_sub_prepare
  */
 C_API
 headroom_t xs3_vect_s16_sub(
@@ -2156,6 +2220,9 @@ headroom_t xs3_vect_s16_sub(
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
+
+// xs3_vect_s16_sub() uses the same prepare logic as xs3_vect_s32_add()
+#define xs3_vect_s16_sub_prepare xs3_vect_s32_add_prepare
 
 
 /**

@@ -92,7 +92,7 @@ static int32_t mag_complex_s32(complex_s32_t b, right_shift_t b_shr)
 
 
 #define REPS        1000
-static void test_xs3_vect_complex_mag_prepare()
+static void test_xs3_vect_complex_s32_mag_prepare()
 {
     PRINTF("%s...\n", __func__);
 
@@ -110,7 +110,7 @@ static void test_xs3_vect_complex_mag_prepare()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_vect_complex_mag_prepare(&a_exp, &b_shr, b_exp, b_hr);
+        xs3_vect_complex_s32_mag_prepare(&a_exp, &b_shr, b_exp, b_hr);
 
         xs3_vect_complex_s32_mag(&A_mag, &B, 1, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
 
@@ -454,7 +454,7 @@ void test_xs3_mag_vect_complex()
 {
     SET_TEST_FILE();
 
-    RUN_TEST(test_xs3_vect_complex_mag_prepare);
+    RUN_TEST(test_xs3_vect_complex_s32_mag_prepare);
 
     RUN_TEST(test_xs3_vect_complex_s16_mag_basic);
     RUN_TEST(test_xs3_vect_complex_s16_mag_random);
