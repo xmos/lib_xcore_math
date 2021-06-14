@@ -11,7 +11,6 @@
 #include <stdio.h>
 
 
-
     
 headroom_t bfp_s16_headroom(
     bfp_s16_t* a)

@@ -1523,6 +1523,46 @@ int32_t xs3_vect_s16_energy(
 
 
 /**
+ * @brief Extract an 8-bit vector containing the most significant byte of a 16-bit vector.
+ * 
+ * This is a utility function used, for example, in optimizing mixed-width products. The
+ * most significant byte of each element is extracted (without rounding or saturation) and
+ * inserted into the output vector.
+ * 
+ * @param[out]  a     8-bit output vector @vector{a}
+ * @param[in]   b     16-bit input vector @vector{b}
+ * @param[in]   len   The number of elements in @vector{a} and @vector{b}
+ * 
+ * @see xs3_vect_s16_extract_low_byte
+ */
+C_API
+void xs3_vect_s16_extract_high_byte(
+    int8_t a[],
+    const int16_t b[],
+    const unsigned len);
+
+
+/**
+ * @brief Extract an 8-bit vector containing the least significant byte of a 16-bit vector.
+ * 
+ * This is a utility function used, for example, in optimizing mixed-width products. The
+ * least significant byte of each element is extracted (without rounding or saturation) and
+ * inserted into the output vector.
+ * 
+ * @param[out]  a     8-bit output vector @vector{a}
+ * @param[in]   b     16-bit input vector @vector{b}
+ * @param[in]   len   The number of elements in @vector{a} and @vector{b}
+ * 
+ * @see xs3_vect_s16_extract_high_byte
+ */
+C_API
+void xs3_vect_s16_extract_low_byte(
+    int8_t a[],
+    const int16_t b[],
+    const unsigned len);
+
+
+/**
  * @brief Calculate the headroom of a 16-bit vector.
  * 
  * The headroom of an N-bit integer is the number of bits that the integer's value may be left-shifted

@@ -32,6 +32,10 @@ const int16_t vpu_vec_0x4000[16]     = VEC_S16( 0x4000);
 const int16_t vpu_vec_neg_0x4000[16] = VEC_S16(-0x4000);
 const int16_t vpu_vec_0x8000[16]     = VEC_S16(-0x8000);
 const int16_t vpu_vec_0x7FFF[16]     = VEC_S16(0x7FFF);
+const int16_t vpu_vec_0x007F[16]     = VEC_S16(0x007F);
+const int16_t vpu_vec_0x0100[16]     = VEC_S16(0x0100);
 
 const int8_t vpu_vec_0x01[32] = VEC_S8(0x01);
 const int8_t vpu_vec_0x40[32] = VEC_S8(0x40);
+const int8_t vpu_vec_0x80[32] = VEC_S8(0x80);
+const int8_t vpu_vec_0xC1[32] = VEC_S8(0xC1);
