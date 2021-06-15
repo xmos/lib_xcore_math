@@ -13,9 +13,6 @@ void bfp_s32_example();
 
 int main(int argc, char** argv)
 {
-  printf("# Example App: bfp_math\n");
-  printf("# Purpose: To demonstrate, through example, how the arithmetic functions of "
-         "lib_xs3_math's block floating-point API may be used.\n\n");
 
   // Seed the random number generator, using a constant for reproducibility
   srand(RAND_SEED);
