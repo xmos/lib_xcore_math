@@ -66,10 +66,6 @@ void bfp_s32_example()
   printf("###################################\n");
   printf("### 32-bit block floating-point ###\n");
   printf("###################################\n\n");
-
-
-
-  // Before using any of the BFP functions, we need to allocate space they we'll use.
   
   // Let's use 3 BFP vectors, A, B and C for this example. For real 32-bit BFP vectors, we use the type bfp_s32_t.
   bfp_s32_t A, B, C;
