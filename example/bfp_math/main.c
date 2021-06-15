@@ -203,7 +203,7 @@ void bfp_s32_example()
       .mant = 0xBADDA7E5, //mantissa
       .exp = -23          //exponent
     };
-    printf("C[k] <-- C[k] * %0.07f\n", ldexp(alpha.mant, alpha.exp));
+    printf("# C[k] <-- C[k] * %0.07f\n", ldexp(alpha.mant, alpha.exp));
     PRINT( bfp_s32_scale(&C, &C, alpha) );
     PRINT_VECT(C);
     printf("# ----------------- #\n\n");
@@ -214,7 +214,7 @@ void bfp_s32_example()
 
   // Inner product of vectors B and C
   {
-    printf("alpha <-- sum{ B[k] * C[k] }  (inner product)\n");
+    printf("# alpha <-- sum{ B[k] * C[k] }  (inner product)\n");
     PRINT( float_s64_t alpha = bfp_s32_dot(&B, &C) );
     PRINT_SCALAR(alpha);
     printf("# ----------------- #\n\n");
@@ -223,7 +223,7 @@ void bfp_s32_example()
 
   // Maximum element of a BFP vector
   {
-    printf("alpha <-- max{ B[0], B[1], ... B[LENGTH-1] }\n");
+    printf("# alpha <-- max{ B[0], B[1], ... B[LENGTH-1] }\n");
     PRINT( float_s32_t alpha = bfp_s32_max(&B) );
     PRINT_SCALAR(alpha);
     printf("# ----------------- #\n\n");
@@ -232,7 +232,7 @@ void bfp_s32_example()
 
   // Mean value of a BFP vector
   {
-    printf("alpha <-- mean{ A[0], A[1], ..., A[LENGTH-1] }\n");
+    printf("# alpha <-- mean{ A[0], A[1], ..., A[LENGTH-1] }\n");
     PRINT( float_s32_t alpha = bfp_s32_mean(&A) );
     PRINT_SCALAR(alpha);
     printf("# ----------------- #\n\n");
