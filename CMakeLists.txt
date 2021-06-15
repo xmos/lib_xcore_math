@@ -47,3 +47,4 @@ add_compile_options( ${COMPILE_FLAGS} )
 
 add_subdirectory( lib_xs3_math )
 add_subdirectory( test )
+add_subdirectory( example )
