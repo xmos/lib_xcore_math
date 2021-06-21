@@ -1,5 +1,5 @@
 ## App name
-set( APP_NAME  bfp_math )
+set( APP_NAME  vect_demo )
 
 ## Depends on libraries
 list( APPEND  DEP_LIBS        lib_xs3_math )
@@ -8,7 +8,7 @@ list( APPEND  DEP_LIBS_XCORE  ""  )
 list( APPEND  DEP_LIBS_Linux  m   )
 
 ## Sources
-file( GLOB_RECURSE SOURCES_C  main.c )
+file( GLOB_RECURSE SOURCES_C  main.c vect_s32_example.c vect_complex_s16_example.c )
 
 # set( XSCOPE_CONFIG config.xscope )
 get_filename_component(XSCOPE_CONFIG config.xscope ABSOLUTE)

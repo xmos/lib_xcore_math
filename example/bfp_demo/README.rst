@@ -1,4 +1,4 @@
-Example App: bfp_math
+Example App: bfp_demo
 =====================
 
 The purpose of this application is to demonstrate, through example, how the arithmetic functions of ``lib_xs3_math``'s block floating-point API may be used.
@@ -11,9 +11,9 @@ The example only demonstrates the real 32-bit arithmetic BFP functions (that is,
 Building
 ********
 
-After configuring the CMake project, the following commands can be used to build and run this example application using the XCORE-AI-EXPLORER board as a target:
+After configuring the CMake project, the following commands can be used (from the build directory) to build and run this example application using the XCORE-AI-EXPLORER board as a target:
 
 ::
 
-    make bfp_math
-    xrun --xscope example/bfp_math/bfp_math.xe
+    make bfp_demo
+    xrun --xscope example/bfp_demo/bfp_demo.xe
