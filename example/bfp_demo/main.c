@@ -32,8 +32,11 @@ int main(int argc, char** argv)
 // Prints a BFP vector both in its mantissa-exponent form and as a floating point vector. Also prints headroom.
 static void print_vector(
     const bfp_s32_t* vect, 
-    const char* name)
+    const char* name,
+    const unsigned line_num)
 {
+  printf("=== From line #%u ===\n", line_num);
+
   // First, the raw mantissas
   printf("%s = [", name);
   for(int k = 0; k < vect->length; k++)
@@ -41,18 +44,17 @@ static void print_vector(
   printf("] * 2**(%d)\n", vect->exp);
 
   // Next, the float equivalent
-  printf("# %s_float = [", name);
+  printf("%s_float = [", name);
   for(int k = 0; k < vect->length; k++)
     printf("%0.07f, ", ldexp(vect->data[k], vect->exp));
   printf("]\n");
 
   // And the headroom
-  printf("# %s headroom: %u\n\n", name, vect->hr);
+  printf("%s headroom: %u\n\n", name, vect->hr);
 }
 
-#define PRINT_VECT(X)     print_vector(&X, #X)
+#define PRINT_VECT(X)     print_vector(&X, #X, __LINE__)
 #define PRINT_SCALAR(X)   printf("%s = %0.07f\n\n", #X, ldexp(X.mant, X.exp))
-#define PRINT(X)          printf("#   %s;\n", #X); X
 
 
 // The length (in elements) of our BFP vectors. We're using a small length to keep the text output relatively tidy.
@@ -84,9 +86,9 @@ void bfp_s32_example()
   //    - The length of the vector, in elements
   //    - a boolean indicating whether or not the headroom should be immediately calculated.
   printf("Initializing BFP vectors A, B and C\n");
-  PRINT( bfp_s32_init(&A, buffer_A, -31, LENGTH, 0) );
-  PRINT( bfp_s32_init(&B, buffer_B, -31, LENGTH, 0) );
-  PRINT( bfp_s32_init(&C, buffer_C, -31, LENGTH, 0) );
+  bfp_s32_init(&A, buffer_A, -31, LENGTH, 0);
+  bfp_s32_init(&B, buffer_B, -31, LENGTH, 0);
+  bfp_s32_init(&C, buffer_C, -31, LENGTH, 0);
   
   // Above we specified an initial exponent of -31. For a signed 32-bit value, which can hold integers between
   // (and including) -(2^31) and (2^31)-1, an exponent of -31 means the representable range is -1.0 to 1.0, 
@@ -106,36 +108,36 @@ void bfp_s32_example()
 
   // Last thing before we print out the initial values of vectors B and C will be to force a recalculation of their 
   // headroom with this random data. A call to bfp_s32_headroom() accomplishes this.
-  printf("\n# Updating headroom of vectors B and C.\n");
-  PRINT( bfp_s32_headroom(&B) );
-  PRINT( bfp_s32_headroom(&C) );
+  printf("\nUpdating headroom of vectors B and C.\n");
+  bfp_s32_headroom(&B);
+  bfp_s32_headroom(&C);
 
   // Now print out the initial values for B and C.
   {
-    printf("# Initial values for BFP vectors B and C:\n");
+    printf("Initial values for BFP vectors B and C:\n");
     PRINT_VECT(B);
     PRINT_VECT(C);
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
 
 
   // Let's start by applying a right-shift to the values of B using bfp_s32_shl() (with a negative shift). This isn't 
   // necessary for the calls that follow, we can at least watch what happens to the mantissas, exponent and headroom.
   {
-    printf("# A[k] <-- B[k] >> 10\n");
-    PRINT( bfp_s32_shl(&A, &B, -10) );
+    printf("A[k] <-- B[k] >> 10\n");
+    bfp_s32_shl(&A, &B, -10);
     PRINT_VECT(A);
     // Applying a -10 bit left-shift effectively divides the vector by a factor of 1024. It's worth pointing out that
     // because we're doing this in block floating-point, it would have been (nearly) equivalent to simply reduce the
     // exponent of B by 10.
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
   
 
   // Now let's try adding together vectors B and C element-wise.
   {
-    printf("# A[k] <-- B[k] + C[k]\n");
-    PRINT( bfp_s32_add(&A, &B, &C) );
+    printf("A[k] <-- B[k] + C[k]\n");
+    bfp_s32_add(&A, &B, &C);
     PRINT_VECT(A);
 
     // Note that the above call to bfp_s32_add() takes 3 arguments. The first is the BFP vector into which the result
@@ -144,7 +146,7 @@ void bfp_s32_example()
     // of the output vector will be clobbered.
     // Most BFP functions in this library are very similar, with the first (non-const) bfp_s32_t* being the output vector
     // and the subsequent bfp_s32_t pointers being the input vectors.
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
 
   
@@ -152,22 +154,22 @@ void bfp_s32_example()
   // of B around (e.g. it's needed for a subsequent stage), we may be able to forego the memory cost of a third 
   // vector (A) just for the output by updating B in-place.
   {
-    printf("# B[k] <-- B[k] + C[k]\n");
-    PRINT( bfp_s32_add(&B, &B, &C) );
+    printf("B[k] <-- B[k] + C[k]\n");
+    bfp_s32_add(&B, &B, &C);
     PRINT_VECT(B);
 
     // Except where explicitly stated otherwise, the element-wise BFP functions in this library (which take a 
     // pointer to an output vector) can safely update one or the other of the input vectors in-place.
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
   
   
   // Element-wise multiplication works just like addition:
   {
-    printf("# A[k] <-- B[k] * C[k]\n");
-    PRINT( bfp_s32_mul(&A, &B, &C) );
+    printf("A[k] <-- B[k] * C[k]\n");
+    bfp_s32_mul(&A, &B, &C);
     PRINT_VECT(A);
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
   
 
@@ -177,19 +179,19 @@ void bfp_s32_example()
 
   // Rectify a vector so that all elements are non-negative
   {
-    printf("# B[k] <-- max{ A[k], 0 }\n");
-    PRINT( bfp_s32_rect(&B, &A) );
+    printf("B[k] <-- max{ A[k], 0 }\n");
+    bfp_s32_rect(&B, &A);
     PRINT_VECT(B);
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
 
 
   // Take the square root of each element of a vector
   {
-    printf("# A[k] <-- sqrt(B[k])\n");
-    PRINT( bfp_s32_sqrt(&A, &B) );
+    printf("A[k] <-- sqrt(B[k])\n");
+    bfp_s32_sqrt(&A, &B);
     PRINT_VECT(A);
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
 
 
@@ -199,10 +201,10 @@ void bfp_s32_example()
       .mant = 0xBADDA7E5, //mantissa
       .exp = -23          //exponent
     };
-    printf("# C[k] <-- C[k] * %0.07f\n", ldexp(alpha.mant, alpha.exp));
-    PRINT( bfp_s32_scale(&C, &C, alpha) );
+    printf("C[k] <-- C[k] * %0.07f\n", ldexp(alpha.mant, alpha.exp));
+    bfp_s32_scale(&C, &C, alpha);
     PRINT_VECT(C);
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
 
 
@@ -210,28 +212,28 @@ void bfp_s32_example()
 
   // Inner product of vectors B and C
   {
-    printf("# alpha <-- sum{ B[k] * C[k] }  (inner product)\n");
-    PRINT( float_s64_t alpha = bfp_s32_dot(&B, &C) );
+    printf("alpha <-- sum{ B[k] * C[k] }  (inner product)\n");
+    float_s64_t alpha = bfp_s32_dot(&B, &C);
     PRINT_SCALAR(alpha);
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
   
 
   // Maximum element of a BFP vector
   {
-    printf("# alpha <-- max{ B[0], B[1], ... B[LENGTH-1] }\n");
-    PRINT( float_s32_t alpha = bfp_s32_max(&B) );
+    printf("alpha <-- max{ B[0], B[1], ... B[LENGTH-1] }\n");
+    float_s32_t alpha = bfp_s32_max(&B);
     PRINT_SCALAR(alpha);
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
 
 
   // Mean value of a BFP vector
   {
-    printf("# alpha <-- mean{ A[0], A[1], ..., A[LENGTH-1] }\n");
-    PRINT( float_s32_t alpha = bfp_s32_mean(&A) );
+    printf("alpha <-- mean{ A[0], A[1], ..., A[LENGTH-1] }\n");
+    float_s32_t alpha = bfp_s32_mean(&A);
     PRINT_SCALAR(alpha);
-    printf("# ----------------- #\n\n");
+    printf("\n\n");
   }
 
   

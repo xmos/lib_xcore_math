@@ -117,6 +117,7 @@ void fft_mono_example()
 
 #define UNPACK_SPECTRUM_MONO    1
 
+  // Unpack the mono spectrum
   if(UNPACK_SPECTRUM_MONO) {
     // Move Nyquist component's real part to the correct index
     X->data[X->length].re = X->data[0].im;
@@ -137,6 +138,13 @@ void fft_mono_example()
     printf("(%0.04f + %0.04fj), ", ldexp(X->data[k].re, X->exp), ldexp(X->data[k].im, X->exp) );
   printf("]\n\n");
 
+  ///////////////////////////////
+  // ...
+  // Here you are free to do any required frequency-domain processing of the signal.
+  // ...
+  ///////////////////////////////
+
+  // Re-pack the mono spectrum
   if(UNPACK_SPECTRUM_MONO) {
     // Update length of spectrum vector
     X->length--;
@@ -310,6 +318,12 @@ void fft_stereo_example()
     printf("(%0.04f + %0.04fj), ", ldexp(ChB.data[k].re, ChB.exp), ldexp(ChB.data[k].im, ChB.exp) );
   printf("]\n\n");
 
+  ///////////////////////////////
+  // ...
+  // Here you are free to do any required frequency-domain processing of the signal.
+  // ...
+  ///////////////////////////////
+
   
   // Repack the spectra
   if(UNPACK_SPECTRA_STEREO) {
@@ -441,6 +455,12 @@ void fft_complex_example()
   for(int k = 0; k < X->length; k++)
     printf("(%0.04f + %0.04fj), ", ldexp(X->data[k].re, X->exp), ldexp(X->data[k].im, X->exp) );
   printf("]\n\n");
+
+  ///////////////////////////////
+  // ...
+  // Here you are free to do any required frequency-domain processing of the signal.
+  // ...
+  ///////////////////////////////
 
   // Apply the inverse FFT
   bfp_fft_inverse_complex(X);

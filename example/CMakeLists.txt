@@ -5,3 +5,4 @@
 add_subdirectory( bfp_demo )
 add_subdirectory( vect_demo )
 add_subdirectory( fft_demo )
+add_subdirectory( filter_demo )
