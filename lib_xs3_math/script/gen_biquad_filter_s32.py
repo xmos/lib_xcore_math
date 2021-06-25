@@ -2,63 +2,78 @@
 # This Software is subject to the terms of the XMOS Public Licence: Version 1.
 import numpy as np
 import argparse
-import os.path
-import re
+import io
+
+import xs3_math_script as xms
 
 def main():
   
   parser = argparse.ArgumentParser()
 
   parser.add_argument("filter_name",
-                      type=filter_name_type,
-                      help="Name of the generated filter. This name will be used to invoke the filter from user code.")
+                      type=xms.filter_id,
+                      help=
+"""Name of the generated filter. 
+This name will be used to initialize and invoke the filter from user code.""")
 
   parser.add_argument("filter_coefficients",
-                      type=existing_file,
-                      help="File containing the filter coefficients. (Separated by whitespace and/or commas)")
+                      type=xms.biquad_sections_file,
+                      help=
+"""File containing the filter coefficients. 
 
-  parser.add_argument("--filter-prefix",
-                      type=filter_name_type,
-                      default="filter_",
-                      help="Prefix used for filenames, functions and variables related to this filter. (default: 'filter_')")
+This is the path to a CSV file which contains the floating-point coefficients for the biquad sections.  Each line of
+the CSV file stores the coefficients for one biquad section, with the first biquad section beginning on the first line.
 
+Each line must contain 5 command-separated coefficients, which are the coefficients b[0], b[1], b[2], -a[1], -a[2], in
+that order.
+""")
+
+  parser.add_argument("--sections",
+                      type=int,
+                      default=-1,
+                      help=
+"""The number of biquad filter sections.
+
+Default behavior is to derive this value from the number of rows found in the filter coefficients CSV file. If this
+option is used, this script will verify that the number of sections found in the file matches the number specified
+here.
+""")
 
   args = parser.parse_args()
-  run(args)
 
-def run(args):
-  
-  coefs = load_coefficients_from_file(args.filter_coefficients)
+  if args.sections == -1:
+    args.sections = args.filter_coefficients.shape[1]
 
-  coefs_q30 = find_filter_parameters(coefs, args)
+  if args.sections != args.filter_coefficients.shape[1]:
+    raise Exception(f"Loaded section count ({args.filter_coefficients.shape[1]}) doesn't match specified section count ({args.sections}).")
 
-  write_header_file(args)
-  write_source_file(coefs_q30, args)
+  print(f"Filter section count: {args.sections}")
+
+  coefs_q30 = convert_filter_coefficients(args)
+
+  header_text = generate_header(args)
+  source_text = generate_source(coefs_q30, args)
+
+  with open(f"{args.filter_name}.h", "w+") as header_file:
+    header_file.write(header_text.getvalue())
+
+  with open(f"{args.filter_name}.c", "w+") as source_file:
+    source_file.write(source_text.getvalue())
 
 
-
-def find_filter_parameters(coefs, args):
-
-  assert(len(coefs) % 5 == 0)
-  N_sections = len(coefs) // 5
-  coefs = coefs.reshape((5,N_sections))
-  coefs = coefs * 2**30
+### Convert filter coefficients to Q2.30
+def convert_filter_coefficients(args):
+  coefs = args.filter_coefficients * 2**30
   return np.round(coefs).astype(np.int32)
 
-def load_coefficients_from_file(fpath):
-  with open(fpath) as file:
-    lines = file.readlines()
-    lines = " ".join(lines)
-    lines = lines.replace(",", " ")
-    coefs = lines.split()
-    coefs = [float(x) for x in coefs]
-    return np.array(coefs)
-    
 
-def write_header_file(args):
-  filter = f"{args.filter_prefix}{args.filter_name}"
-  with open(f"{filter}.h", "w+") as header_file:
-    header_file.write(
+### Generate C header file code using filter parameters
+def generate_header(args):
+  filter = args.filter_name
+
+  header_text = io.StringIO()
+
+  header_text.write(
 f"""#pragma once
 
 #include "xs3_math.h"
@@ -68,15 +83,18 @@ C_API
 int32_t {filter}(int32_t new_sample);
 """)
 
-def write_source_file(coefs, args):
-  filter = f"{args.filter_prefix}{args.filter_name}"
+  return header_text
+
+### Generate C source file code using filter parameters
+def generate_source(coefs, args):
+  filter = args.filter_name
+
+  source_text = io.StringIO()
 
   N_sections = coefs.shape[1]
   N_blocks = (N_sections+7)//8
 
-  with open(f"{filter}.c", "w+") as source_file:
-
-    source_file.write(
+  source_text.write(
 f"""
 #include "{filter}.h"
 
@@ -84,13 +102,13 @@ xs3_biquad_filter_s32_t _{filter}[{N_blocks}] = {all_biquad_blocks(coefs)};
 
 int32_t {filter}(int32_t new_sample)
 {{
-  return xs3_filter_biquads_s32(&_{filter}, new_sample);
+  return xs3_filter_biquads_s32(_{filter}, {N_blocks}, new_sample);
 }}
 """)
 
-filter_name_pattern = re.compile(r"^[A-Za-z_][A-Za-z0-9_]+$")
+  return source_text
 
-
+###
 def all_biquad_blocks(block_coefs: np.ndarray):
   N_sections = block_coefs.shape[1]
   N_blocks = (N_sections+7) // 8
@@ -102,7 +120,7 @@ def all_biquad_blocks(block_coefs: np.ndarray):
   return f"{{\n {blocks_str}  }}"
 
 
-
+###
 def biquad_block_to_str(block_coefs: np.ndarray):
   N_sections = block_coefs.shape[1]
   block_coefs = np.concatenate([block_coefs, np.zeros(shape=(5,8-N_sections),dtype=np.int32)], axis=1)
@@ -114,25 +132,14 @@ def biquad_block_to_str(block_coefs: np.ndarray):
   }}"""
   
 
+###
 def array_to_string(arr, val_fmtr=str):
     if len(arr.shape) == 1:
         return f"{{{', '.join([val_fmtr(x) for x in arr])}}}"
     else:
-        return (
-            "{\n"
-            + ",\n".join([array_to_string(arr[i], val_fmtr) for i in range(arr.shape[0])])
-            + "}"
-        )
+        return "{\n" + ",\n".join([array_to_string(arr[i], val_fmtr) for i in range(arr.shape[0])]) + "}"
 
-def filter_name_type(fname):
-  if filter_name_pattern.match(fname) is None: 
-    raise ""
-  return fname
 
-def existing_file(fpath):
-  if not os.path.isfile(fpath):
-    raise ""
-  return fpath
-
+### Execute script's main() function ###
 if __name__ == "__main__":
     main()

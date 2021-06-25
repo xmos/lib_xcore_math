@@ -2,52 +2,94 @@
 # This Software is subject to the terms of the XMOS Public Licence: Version 1.
 import numpy as np
 import argparse
-import os.path
-import re
+import io
+
+import xs3_math_script as xms
 
 def main():
   
   parser = argparse.ArgumentParser()
 
   parser.add_argument("filter_name",
-                      type=filter_name_type,
-                      help="Name of the generated filter. This name will be used to initialize and invoke the filter from user code.")
+                      type=xms.filter_id,
+                      help=
+"""Name of the generated filter. 
+This name will be used to initialize and invoke the filter from user code.""")
 
   parser.add_argument("filter_coefficients",
-                      type=existing_file,
-                      help="File containing the filter coefficients. (Separated by whitespace and/or commas")
+                      type=xms.fir_coefs_file,
+                      help=
+"""File containing the filter coefficients. 
 
-  parser.add_argument("--filter-prefix",
-                      type=filter_name_type,
-                      default="filter_",
-                      help="Prefix used for filenames, functions and variables related to this filter. (default: 'filter_')")
+This is the path to a file which contains the floating-point coefficients for the filter to be created as plain text.
+The order of the coefficients is b[0], b[1], ... b[N_taps-1]. Coefficients may be separated by whitespace and/or 
+commas. N_taps, if not explicitly specified, will be derived from the number of coefficients found here.""")
+
+  parser.add_argument("--taps",
+                      type=int,
+                      default=-1,
+                      help=
+"""The number of filter taps.
+
+Default behavior is to derive this value from the number of coefficients found in the filter coefficients file. If this
+option is used, this script will verify that the number of coefficients found in the file matches the number specified
+here.
+""")
 
   parser.add_argument("--input-headroom",
                       type=int,
                       default=0,
-                      help="Minimum number of redundant sign bits known a priori to be present in the 32-bit input signal to be filtered.")
+                      help=
+"""Guaranteed headroom of input signal. (Default: 0)
+
+The filter coefficients are calculated to maximize precision without saturating the internal accumulators. If the input
+signal going into the filter is known a priori to always have some minimum amount of headroom, this information can be
+used to help improve the precision of the filter.
+
+Specifically, this field is the minimum number of _redundant_ sign bits known to be present in the 16-bit input signal 
+to be filtered. If unknown, no headroom will be assumed.
+""")
 
   parser.add_argument("--output-headroom",
                       type=int,
                       default=0,
-                      help="Minimum number of redundant sign bits that the output should have.")
+                      help=
+"""Guaranteed headroom of output signal. (Default: 0)
+
+In some cases it is desirable to ensure a certain number of bits of headroom of the output signal from a filter. This
+option can be used to achieve this. Note that this is the _minimum_ (i.e. worst-case) number of headroom bits; for some
+filters there may in practice usually be more.
+
+Note also that the number of significant bits in the output signal is directly decreased by this option.
+""")
 
   args = parser.parse_args()
-  run(args)
 
-def run(args):
-  
-  coefs = load_coefficients_from_file(args.filter_coefficients)
+  if args.taps == -1:
+    args.taps = args.filter_coefficients.shape[0]
 
-  mantissas, shift, exponent = find_filter_parameters(coefs, args)
+  if args.taps != args.filter_coefficients.shape[0]:
+    raise Exception(f"Loaded coefficient count ({args.filter_coefficients.shape[0]}) doesn't match specified tap count ({args.taps}).")
 
-  write_header_file(len(mantissas), args)
-  write_source_file(mantissas, shift, exponent, args)
+  print(f"Filter tap count: {args.taps}")
+
+  mse = find_filter_parameters(args)
+
+  header_text = generate_header(args)
+  source_text = generate_source(*mse, args)
+
+  with open(f"{args.filter_name}.h", "w+") as header_file:
+    header_file.write(header_text.getvalue())
+
+  with open(f"{args.filter_name}.c", "w+") as source_file:
+    source_file.write(source_text.getvalue())
 
 
 
-def find_filter_parameters(coefs, args):
-  N_taps = len(coefs)
+### Convert user's floating-point filter coefficients to the parameters
+### required for xs3_filter_fir_s32_t
+def find_filter_parameters(args):
+  coefs = args.filter_coefficients
 
   # Find least-headroom 32-bit BFP representation of coefs
   largest_coef = np.max(np.abs(coefs))
@@ -81,6 +123,8 @@ def find_filter_parameters(coefs, args):
 
   return scaled_coefs.astype(np.int32), int(shift), int(exponent)
 
+# Compute maximum possible dot-product of coefficients with an input signal (taking
+# input headroom into account)
 def max_dot_product(coefs, input_hr):
   max_pos_input = ((2**31)-1)>>input_hr
   max_neg_input = (-(2**31))>>input_hr
@@ -89,25 +133,17 @@ def max_dot_product(coefs, input_hr):
   dot_prod = np.sum([np.round( (x*y) * 2**-30 ) for x,y in zip(coefs, inputs)])
   return dot_prod
 
-def load_coefficients_from_file(fpath):
-  with open(fpath) as file:
-    lines = file.readlines()
-    lines = " ".join(lines)
-    lines = lines.replace(",", " ")
-    coefs = lines.split()
-    coefs = [float(x) for x in coefs]
-    return np.array(coefs)
     
-
-def write_header_file(N_taps, args):
-  filter = f"{args.filter_prefix}{args.filter_name}"
-  with open(f"{filter}.h", "w+") as header_file:
-    header_file.write(f"""
+### Generate C header file code using filter parameters ###
+def generate_header(args):
+  filter = args.filter_name
+  header_text = io.StringIO()
+  header_text.write(f"""
 #pragma once
 #include "xs3_math.h"
 
 // Number of filter coefficients 
-#define TAP_COUNT_{filter}\t({N_taps})
+#define TAP_COUNT_{filter}\t({args.taps})
 
 // Exponent associated with filter outputs
 extern const exponent_t {filter}_exp;
@@ -124,20 +160,17 @@ void {filter}_add_sample(int32_t new_sample);
 C_API
 int32_t {filter}(int32_t new_sample);
     """)
+  return header_text
 
-def write_source_file(coefs, shift, exponent, args):
-  filter = f"{args.filter_prefix}{args.filter_name}"
-  N_taps = len(coefs)
 
-  coef_string = ""
-  for i in range(N_taps):
-    coef_string += f"{hex(coefs[i])}, "
-    if (i % 8 == 7) and (i != N_taps-1):
-        coef_string += "\n\t"
+### Generate C source file code using filter parameters ###
+def generate_source(coefs, shift, exponent, args):
+  filter = args.filter_name
+  coef_string = xms.array_to_str(coefs)
 
-  with open(f"{filter}.c", "w+") as source_file:
+  source_text = io.StringIO()
 
-    source_file.write(f"""
+  source_text.write(f"""
 #include "{filter}.h"
 
 const right_shift_t {filter}_shift = {shift};
@@ -166,19 +199,9 @@ int32_t {filter}(int32_t new_sample)
   return xs3_filter_fir_s32(&_{filter}, new_sample);
 }}
 """)
+  return source_text
 
 
-filter_name_pattern = re.compile(r"^[A-Za-z_][A-Za-z0-9_]+$")
-
-def filter_name_type(fname):
-  if filter_name_pattern.match(fname) is None: 
-    raise ""
-  return fname
-
-def existing_file(fpath):
-  if not os.path.isfile(fpath):
-    raise ""
-  return fpath
-
+### Execute script's main() function ###
 if __name__ == "__main__":
     main()
