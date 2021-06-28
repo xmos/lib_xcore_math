@@ -38,6 +38,34 @@ list( APPEND  LINKER_FLAGS_XCORE  ${XSCOPE_CONFIG}        )
 unset(LINKER_FLAGS_Linux)
 list( APPEND  LINKER_FLAGS_Linux  ""                      )
 
+#########
+
+# Run the python scripts for filter generation. This is just to ensure that the script runs
+# correctly and produces code that compiles correctly.
+
+list( APPEND SOURCES_C  ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.c
+                        ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.c
+                        ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.c )
+
+add_custom_target(
+  generate_filter_fir_s32
+  COMMAND python ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_fir_filter_s32.py test_fir_s32 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/coefs.txt
+  BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.c
+  COMMENT "Generating test_fir_s32 from script" )
+
+  
+add_custom_target(
+  generate_filter_fir_s16
+  COMMAND python ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_fir_filter_s16.py test_fir_s16 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/coefs.txt
+  BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.c
+  COMMENT "Generating test_fir_s16 from script" )
+
+  
+add_custom_target(
+  generate_filter_biquad_s32
+  COMMAND python ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_biquad_filter_s32.py test_biquad_s32 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/biquad_coefs.csv
+  BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.c
+  COMMENT "Generating test_biquad_s32 from script" )
 
 #########
 
@@ -50,6 +78,8 @@ list( APPEND  COMPILE_FLAGS ${COMPILE_FLAGS_${CMAKE_SYSTEM_NAME}} )
 list( APPEND  LINKER_FLAGS ${LINKER_FLAGS_${CMAKE_SYSTEM_NAME}} )
 
 list( APPEND  DEP_LIBS ${DEP_LIBS_${CMAKE_SYSTEM_NAME}} )
+
+#########
 
 add_executable( ${APP_NAME} ${SOURCES} )
 
@@ -66,3 +96,7 @@ set_target_properties( ${APP_NAME} PROPERTIES LINK_FLAGS "${LINKER_FLAGS_STR}" )
 if ( XCORE )
   set_target_properties( ${APP_NAME} PROPERTIES   SUFFIX ".xe" )
 endif()
+
+add_dependencies( ${APP_NAME} generate_filter_fir_s32
+                              generate_filter_fir_s16
+                              generate_filter_biquad_s32 )

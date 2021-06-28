@@ -3,6 +3,8 @@
 import numpy as np
 import argparse
 import io
+import os.path
+import os
 
 import xs3_math_script as xms
 
@@ -36,6 +38,14 @@ option is used, this script will verify that the number of coefficients found in
 here.
 """)
 
+  parser.add_argument("--out-dir",
+                      type=str,
+                      default=".",
+                      help=
+"""
+(optional) Output directory into which generated files are placed.
+""")
+
   parser.add_argument("--input-headroom",
                       type=int,
                       default=0,
@@ -63,8 +73,27 @@ filters there may in practice usually be more.
 Note also that the number of significant bits in the output signal is directly decreased by this option.
 """)
 
-  args = parser.parse_args()
+  args = extra_process_args(parser.parse_args())
 
+  mse = find_filter_parameters(args)
+
+  header_text = generate_header(args)
+  source_text = generate_source(*mse, args)
+
+  dir = os.path.dirname(args.header_fpath)
+  if not os.path.exists(dir):
+    os.makedirs(dir)
+
+  with open(args.header_fpath, "w+") as header_file:
+    header_file.write(header_text.getvalue())
+
+  with open(args.source_fpath, "w+") as source_file:
+    source_file.write(source_text.getvalue())
+
+### Process some extra stuff to put in args
+def extra_process_args(args):
+
+  #Filter tap count
   if args.taps == -1:
     args.taps = args.filter_coefficients.shape[0]
 
@@ -73,17 +102,17 @@ Note also that the number of significant bits in the output signal is directly d
 
   print(f"Filter tap count: {args.taps}")
 
-  mse = find_filter_parameters(args)
+  # header and source filenames
+  args.header_filename = f"{args.filter_name}.h"
+  args.source_filename = f"{args.filter_name}.c"
+  args.header_fpath = os.path.join(args.out_dir, args.header_filename)
+  args.source_fpath = os.path.join(args.out_dir, args.source_filename)
 
-  header_text = generate_header(args)
-  source_text = generate_source(*mse, args)
+  print(f"Files to be written:")
+  print(f"  {args.header_fpath}")
+  print(f"  {args.source_fpath}")
 
-  with open(f"{args.filter_name}.h", "w+") as header_file:
-    header_file.write(header_text.getvalue())
-
-  with open(f"{args.filter_name}.c", "w+") as source_file:
-    source_file.write(source_text.getvalue())
-
+  return args
 
 
 ### Convert user's floating-point filter coefficients to the parameters

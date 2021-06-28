@@ -3,6 +3,7 @@
 import numpy as np
 import argparse
 import io
+import os
 
 import xs3_math_script as xms
 
@@ -39,7 +40,33 @@ option is used, this script will verify that the number of sections found in the
 here.
 """)
 
-  args = parser.parse_args()
+  parser.add_argument("--out-dir",
+                      type=str,
+                      default=".",
+                      help=
+"""
+(optional) Output directory into which generated files are placed.
+""")
+
+  args = extra_process_args(parser.parse_args())
+
+  coefs_q30 = convert_filter_coefficients(args)
+
+  header_text = generate_header(args)
+  source_text = generate_source(coefs_q30, args)
+
+  dir = os.path.dirname(args.header_fpath)
+  if not os.path.exists(dir):
+    os.makedirs(dir)
+
+  with open(args.header_fpath, "w+") as header_file:
+    header_file.write(header_text.getvalue())
+
+  with open(args.source_fpath, "w+") as source_file:
+    source_file.write(source_text.getvalue())
+
+### Process some extra stuff to put in args
+def extra_process_args(args):
 
   if args.sections == -1:
     args.sections = args.filter_coefficients.shape[1]
@@ -49,16 +76,17 @@ here.
 
   print(f"Filter section count: {args.sections}")
 
-  coefs_q30 = convert_filter_coefficients(args)
+  # header and source filenames
+  args.header_filename = f"{args.filter_name}.h"
+  args.source_filename = f"{args.filter_name}.c"
+  args.header_fpath = os.path.join(args.out_dir, args.header_filename)
+  args.source_fpath = os.path.join(args.out_dir, args.source_filename)
 
-  header_text = generate_header(args)
-  source_text = generate_source(coefs_q30, args)
+  print(f"Files to be written:")
+  print(f"  {args.header_fpath}")
+  print(f"  {args.source_fpath}")
 
-  with open(f"{args.filter_name}.h", "w+") as header_file:
-    header_file.write(header_text.getvalue())
-
-  with open(f"{args.filter_name}.c", "w+") as source_file:
-    source_file.write(source_text.getvalue())
+  return args
 
 
 ### Convert filter coefficients to Q2.30
