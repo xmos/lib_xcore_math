@@ -24,7 +24,7 @@ unset(COMPILE_FLAGS_XCORE)
 list( APPEND  COMPILE_FLAGS_XCORE   "" )
 
 unset(COMPILE_FLAGS_Linux)
-list( APPEND  COMPILE_FLAGS_XCORE   "" )
+list( APPEND  COMPILE_FLAGS_Linux   "" )
 
 ## Linker flags
 unset(LINKER_FLAGS)

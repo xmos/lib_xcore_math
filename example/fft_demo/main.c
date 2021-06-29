@@ -119,13 +119,7 @@ void fft_mono_example()
 
   // Unpack the mono spectrum
   if(UNPACK_SPECTRUM_MONO) {
-    // Move Nyquist component's real part to the correct index
-    X->data[X->length].re = X->data[0].im;
-    // Zero out the imaginary part of the DC and Nyquist components
-    X->data[0].im = 0;
-    X->data[X->length].im = 0;
-    // Update length of spectrum vector
-    X->length++;
+    bfp_fft_unpack_mono(X);
   }
 
   // Print out the buffer address and vector length of X, the frequency-domain signal
@@ -146,10 +140,7 @@ void fft_mono_example()
 
   // Re-pack the mono spectrum
   if(UNPACK_SPECTRUM_MONO) {
-    // Update length of spectrum vector
-    X->length--;
-    // Move Nyquist component's real part to DC imaginary part
-    X->data[0].im = X->data[X->length].re;
+    bfp_fft_pack_mono(X);
   }
 
   // Apply the inverse FFT.
@@ -280,23 +271,7 @@ void fft_stereo_example()
 
   // Unpack the spectra
   if(UNPACK_SPECTRA_STEREO) {
-    // determine new start address for ChB
-    complex_s32_t* new_ChB = &ChB.data[1];
-    // Move all of ChB's spectrum over one element
-    memmove(new_ChB, ChB.data, sizeof(complex_s32_t) * ChB.length);
-    // Update address of ChB data
-    ChB.data = new_ChB;
-    // Change length of both spectra
-    ChA.length++;
-    ChB.length++;
-    // Unpack Nyquist element
-    ChA.data[ChA.length-1].re = ChA.data[0].im;
-    ChB.data[ChB.length-1].re = ChB.data[0].im;
-    // Zero out imag parts of DC and Nyquist
-    ChA.data[0].im = 0;
-    ChB.data[0].im = 0;
-    ChA.data[ChA.length-1].im = 0;
-    ChB.data[ChB.length-1].im = 0;
+    bfp_fft_unpack_stereo(&ChA, &ChB);
   }
 
 
@@ -327,19 +302,7 @@ void fft_stereo_example()
   
   // Repack the spectra
   if(UNPACK_SPECTRA_STEREO) {
-    // Re-pack Nyquist elements
-    ChA.data[0].im = ChA.data[ChA.length-1].re;
-    ChB.data[0].im = ChB.data[ChB.length-1].re;
-    // Change length of both spectra
-    ChA.length--;
-    ChB.length--;
-    // determine new start address for ChB
-    complex_s32_t* new_ChB = &ChB.data[-1];
-    // Move all of ChB's spectrum over one element
-    memmove(new_ChB, ChB.data, sizeof(complex_s32_t) * ChB.length);
-    // Update address of ChB data
-    ChB.data = new_ChB;
-    // (no need to zero-out (or un-zero-out?) anything to repack)
+    bfp_fft_pack_stereo(&ChA, &ChB);
   }
 
   // Apply the inverse FFT.

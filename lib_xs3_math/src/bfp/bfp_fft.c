@@ -21,120 +21,141 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
     assert(cls(x->length - 1) > cls(x->length)); 
 #endif
 
+    // The returned BFP vector is just a recasting of the input vector
     bfp_complex_s32_t* X = (bfp_complex_s32_t*) x;
 
     const unsigned FFT_N = x->length;
 
+    // xs3_fft_dit_forward() requires (at least) two bits of headroom in the 
+    // mantissa vector
     right_shift_t x_shr = 2 - x->hr;
-
     xs3_vect_s32_shl(x->data, x->data, x->length, -x_shr);
 
+    // Correct the BFP vector's parameters
     x->hr  = x->hr  + x_shr;
     x->exp = x->exp + x_shr;
-    x->length = FFT_N/2;
 
+    // NOTE: A real, mono FFT of length FFT_N is implemented using an FFT with
+    //       length FFT_N/2 because it is more efficient in compute and memory.
+    x->length = FFT_N/2; 
+
+    // The low-level FFT functions require the elements of the input vector to be jumbled
+    // such that the new index of each element is a bit-reversal (ignoring endianness!) of 
+    // the index of its original position, considering only the least significant 
+    // log2(FFT_N) bits of the original index.
+    // For example, 
+    //    (int32_t) 0x22 (34) in binary: 00000000 00000000 00000000 00100010
+    //  For 256-point FFT,  0x22 =  0b00100010 -->  0b01000100 = 0x44
+    //  For 512-point FFT,  0x22 = 0b000100010 --> 0b010001000 = 0x88
     xs3_fft_index_bit_reversal(X->data, X->length);
+
+    // Do the actual FFT
     xs3_fft_dit_forward(X->data, X->length, &X->hr, &X->exp);
 
+    // Apply the adjustment required for a mono, real FFT (because we implemented it
+    // using a half-length FFT)
     xs3_fft_mono_adjust(X->data, FFT_N, 0);
 
     return X;
 }
 
 
-
-
-
 bfp_s32_t* bfp_fft_inverse_mono(
     bfp_complex_s32_t* X)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+    // Length must be 2^p where p is a non-negative integer
     assert(X->length != 0);
+    // for a positive power of 2, subtracting 1 should increase its headroom.
     assert(cls(X->length - 1) > cls(X->length)); 
 #endif
 
+    // Because the real, mono FFT only includes half a period of the spectrum,
+    // the FFT length is twice the vector length
     const unsigned FFT_N = 2*X->length;
+
+    // The returned BFP vector is just a recasting of the input vector
     bfp_s32_t* x = (bfp_s32_t*)X;
     
+    // xs3_fft_dit_inverse() requires (at least) two bits of headroom in the 
+    // mantissa vector
     right_shift_t X_shr = 2 - X->hr;
     xs3_vect_s32_shl((int32_t*) X->data, (int32_t*) X->data, FFT_N, -X_shr);
     
+    // Correct the BFP vector's parameters based on the shift done
     X->hr  = X->hr  + X_shr;
     X->exp = X->exp + X_shr;
+
+    // NOTE: A real, mono inverse FFT of length FFT_N is implemented using an FFT with
+    //       length FFT_N/2 because it is more efficient in compute and memory
     X->length = FFT_N;
 
+    // Apply the adjustment required for a mono, real inverse FFT (because it is implemented
+    // using a half-length FFT)
     xs3_fft_mono_adjust(X->data, FFT_N, 1);
 
+    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by 
+    // xs3_fft_dit_inverse(). (See comment above in bfp_fft_forward_mono())
     xs3_fft_index_bit_reversal(X->data, FFT_N/2);
+
+    // Do the actual IFFT
     xs3_fft_dit_inverse(X->data, FFT_N/2, &x->hr, &x->exp);
 
     return x;
 }
 
 
-
-
-
-
-
-
-
-
-
-
 void bfp_fft_forward_complex(
     bfp_complex_s32_t* samples)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+    // Length must be 2^p where p is a non-negative integer
     assert(samples->length != 0);
+    // for a positive power of 2, subtracting 1 should increase its headroom.
     assert(cls(samples->length - 1) > cls(samples->length)); 
 #endif
 
-    //The FFT implementation unfortunately requires 2 bits of headroom to avoid saturation.
+    //The FFT implementation requires 2 bits of headroom to ensure no saturation occurs
     if(samples->hr < 2){
         left_shift_t shl = samples->hr - 2;
-        samples->hr = xs3_vect_s32_shl((int32_t*) samples->data,(int32_t*)  samples->data, 2*samples->length, shl);
+        samples->hr = xs3_vect_s32_shl((int32_t*) samples->data,(int32_t*)  samples->data, 
+                                       2*samples->length, shl);
         samples->exp -= shl;
     }
 
+    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by 
+    // xs3_fft_dit_forward(). (See comment above in bfp_fft_forward_mono())
     xs3_fft_index_bit_reversal(samples->data, samples->length);
+
+    // Do the actual FFT
     xs3_fft_dit_forward(samples->data, samples->length, &samples->hr, &samples->exp);
 }
-
-
-
 
 
 void bfp_fft_inverse_complex(
     bfp_complex_s32_t* spectrum)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+    // Length must be 2^p where p is a non-negative integer
     assert(spectrum->length != 0);
+    // for a positive power of 2, subtracting 1 should increase its headroom.
     assert(cls(spectrum->length - 1) > cls(spectrum->length)); 
 #endif
 
-    //The FFT implementation unfortunately requires 2 bits of headroom to avoid saturation.
+    //The FFT implementation requires 2 bits of headroom to ensure no saturation occurs
     if(spectrum->hr < 2){
         left_shift_t shl = spectrum->hr - 2;
         spectrum->hr = xs3_vect_s32_shl((int32_t*) spectrum->data,(int32_t*)  spectrum->data, 2*spectrum->length, shl);
         spectrum->exp -= shl;
     }   
 
+    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by 
+    // xs3_fft_dit_forward(). (See comment above in bfp_fft_forward_mono())
     xs3_fft_index_bit_reversal(spectrum->data, spectrum->length);
+    
+    // Do the actual IFFT
     xs3_fft_dit_inverse(spectrum->data, spectrum->length, &spectrum->hr, &spectrum->exp);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 void bfp_fft_forward_stereo(
@@ -143,35 +164,55 @@ void bfp_fft_forward_stereo(
     bfp_ch_pair_s32_t* input)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+    // Length must be 2^p where p is a non-negative integer
     assert(input->length != 0);
+    // for a positive power of 2, subtracting 1 should increase its headroom.
     assert(cls(input->length - 1) > cls(input->length)); 
 #endif
 
-    //The FFT implementation unfortunately requires 2 bits of headroom to avoid saturation.
+    //The FFT implementation requires 2 bits of headroom to ensure no saturation occurs
     right_shift_t input_shr = 2 - input->hr;
     input->hr += input_shr;
     input->exp += input_shr;
     
     if(input_shr)
-        input->hr = xs3_vect_s32_shl((int32_t*) input->data,(int32_t*)  input->data, 2*input->length, -input_shr);
+        input->hr = xs3_vect_s32_shl((int32_t*) input->data,(int32_t*)  input->data, 
+                                     2*input->length, -input_shr);
+
+    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by 
+    // xs3_fft_dit_forward(). (See comment above in bfp_fft_forward_mono())
     xs3_fft_index_bit_reversal((complex_s32_t*) input->data, input->length);
+
+    // Do the actual FFT
     xs3_fft_dit_forward((complex_s32_t*) input->data, input->length, &input->hr, &input->exp); 
 
+    // Each of the two output vectors store only a half-period of their respective spectra
+    // (because they are the spectra of real signals). The second half of the input vector's
+    // mantissa buffer will be used to store the output spectrum for channel B. The user should
+    // take care to keep track of which spectrum is which, because bfp_fft_inverse_stereo() will
+    // require them to be presented in the correct order.
     a->data = (complex_s32_t*) &input->data[0];
     b->data = (complex_s32_t*) &input->data[input->length/2];
+
+    // The stereo FFT assumes the input channels are purely real, and implements the DFT by 
+    // packing the Channel B's time-domain signal into the imaginary part of a complex
+    // input vector (note: The bfp_ch_pair_s32_t type does this naturally because the 
+    // mantissas are stored in an array of ch_pair_s32_t). The resulting complex spectrum
+    // contains a half-period of each of the two channels' spectra, but in a jumbled up
+    // form. This function un-jumbles them.
     a->hr = xs3_fft_spectra_split(a->data, input->length);
 
-    //a and b might actually have different headroom, but the function can only compute them together. In any case, it
-    // will be the lesser of the two
+    //a and b might actually have different headroom, but the xs3_fft_spectra_split() only
+    // computes the headroom of the entire FFT_N-element complex spectrum, which is the same
+    // as the minimum of the headroom of the two spectra. If a user needs a more accurate
+    // count of each spectrum's headroom, bfp_complex_s32_headroom() should be called on 
+    // each output BFP vector.
     b->hr = a->hr;
 
+    // Correct the exponents and lengths (as only a half-period of their spectra were computed)
     a->length = b->length = input->length / 2;
     a->exp = b->exp = input->exp;
 }
-
-
-
-
 
 
 void  bfp_fft_inverse_stereo(
@@ -180,18 +221,25 @@ void  bfp_fft_inverse_stereo(
     const bfp_complex_s32_t* b)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
-    assert(x->length != 0);
-    assert(cls(x->length - 1) > cls(x->length)); 
-    
+    // The two input vectors must be the same length
     assert(a->length == b->length);
+    // The mantissa buffers for both input vectors must be adjacent in memory
     assert(b->data == &a->data[a->length]);
+
+    // Length must be 2^p where p is a non-negative integer
+    assert(a->length != 0);
+    // for a positive power of 2, subtracting 1 should increase its headroom.
+    assert(cls(a->length - 1) > cls(a->length)); 
 #endif
 
-    //@todo: if b and c don't point to the same data as a, flag error or copy b and c to a first.
-
+    // a and b store only a half-period of their respective spectra, so the FFT length is twice
+    // the length of a or b (which must have the same length)
     const unsigned FFT_N = 2*a->length;
 
-    //b and c need to be given the same exponent for this to make sense.
+    // a and b need to be given the same exponent for the result of the FFT to make sense,
+    // because the time-domain output vector (type bfp_ch_pair_s32_t) can only store a single
+    // exponent for both channels. Additionally, 2 bits of headroom are required by 
+    // xs3_fft_dit_inverse()
     right_shift_t a_shr = 2 - a->hr;
     right_shift_t b_shr = 2 - b->hr;
 
@@ -209,12 +257,92 @@ void  bfp_fft_inverse_stereo(
     if(a_shr) xs3_vect_s32_shl((int32_t*)a->data, (int32_t*) a->data, FFT_N, -a_shr);
     if(b_shr) xs3_vect_s32_shl((int32_t*)b->data, (int32_t*) b->data, FFT_N, -b_shr);
 
+    // Channel A's spectrum points to the beginning of the time-domain buffer
     x->data = (ch_pair_s32_t*) a->data;
-    x->length = a->length;
+    x->length = 2 * a->length;
     x->hr = MIN(a->hr + a_shr, b->hr + b_shr);
 
+    // Because the real, stereo IFFT is implemented using a complex FFT, the two channels'
+    // spectra have to be jumbled together in a particular way prior to applying the IFFT
     xs3_fft_spectra_merge((complex_s32_t*) x->data, FFT_N);
+
+    // Do the actual IFFT
     xs3_fft_index_bit_reversal((complex_s32_t*) x->data, FFT_N);
+
+    // Undo the bit-reversed indexing
     xs3_fft_dit_inverse((complex_s32_t*) x->data, FFT_N, &x->hr, &x->exp);
     
+}
+
+
+void bfp_fft_unpack_mono(
+  bfp_complex_s32_t* x)
+{
+  // Move Nyquist component's real part to the correct index
+  x->data[x->length].re = x->data[0].im;
+  // Zero out the imaginary part of the DC and Nyquist components
+  x->data[0].im = 0;
+  x->data[x->length].im = 0;
+  // Update length of spectrum vector
+  x->length++;
+}
+
+void bfp_fft_pack_mono(
+  bfp_complex_s32_t* x)
+{
+  // Update length of spectrum vector
+  x->length--;
+  // Move Nyquist component's real part to DC imaginary part
+  x->data[0].im = x->data[x->length].re;
+}
+
+void bfp_fft_unpack_stereo(
+  bfp_complex_s32_t* x1,
+  bfp_complex_s32_t* x2)
+{
+#if DEBUG
+  // For this to work correctly, the mantissa buffers for x1 and x2 must be adjacent
+  // and x1 and x2 must be the same length.
+  assert( x1->length == x2->length);
+  assert( ((unsigned)&x2->data) == (((unsigned)&x1->data) + (sizeof(dsp_complex_t) * x1->length)) );
+
+  // Ideally we'd also be able to check the length of the underlying buffer that both
+  // x1 and x2 are using (to make sure that extra space is available to unpack into),
+  // but we don't have a way to do that.
+#endif // DEBUG
+
+  //determine new start address for the second channel
+  complex_s32_t* new_x2 = &x2->data[1];
+  // Move all of ChB's spectrum over one element
+  memmove(new_x2, x2->data, sizeof(complex_s32_t) * x2->length);
+  // Update address of x2 data
+  x2->data = new_x2;
+  //Change length of both spectra
+  x1->length++;
+  x2->length++;
+  // Unpack Nyquist component
+  x1->data[x1->length-1].re = x1->data[0].im;
+  x2->data[x2->length-1].re = x2->data[0].im;
+  // Zero out imag parts of both DC and Nyquist
+  x1->data[0].im = x2->data[0].im = 0;
+  x1->data[x1->length-1].im = x2->data[x2->length-1].im = 0;
+}
+
+void bfp_fft_pack_stereo(
+  bfp_complex_s32_t* x1,
+  bfp_complex_s32_t* x2)
+{
+  // Re-pack Nyquist elements
+  x1->data[0].im = x1->data[x1->length-1].re;
+  x2->data[0].im = x2->data[x2->length-1].re;
+  // Change length of both spectra
+  x1->length--;
+  x2->length--;
+  // determine new start address for ChB
+  complex_s32_t* new_ChB = &x2->data[-1];
+  // Move all of ChB's spectrum over one element
+  memmove(new_ChB, x2->data, sizeof(complex_s32_t) * x2->length);
+  // Update address of ChB data
+  x2->data = new_ChB;
+  // (no need to zero-out (or un-zero-out?) anything to repack)
 }

@@ -21,11 +21,8 @@ void bfp_s16_init(
     a->length = length;
     a->exp = exp;
 
-    if(calc_hr){
-        bfp_s16_headroom(a);
-    } else {
-        a->hr = 0;
-    }
+    if(calc_hr) bfp_s16_headroom(a);
+    else        a->hr = 0;
 }
 
 
@@ -41,11 +38,8 @@ void bfp_s32_init(
     a->length = length;
     a->exp = exp;
 
-    if(calc_hr){
-        bfp_s32_headroom(a);
-    } else {
-        a->hr = 0;
-    }
+    if(calc_hr) bfp_s32_headroom(a);
+    else        a->hr = 0;
 }
 
 
@@ -62,11 +56,8 @@ void bfp_complex_s16_init(
     a->length = length;
     a->exp = exp;
 
-    if(calc_hr){
-        bfp_complex_s16_headroom(a);
-    } else {
-        a->hr = 0;
-    }
+    if(calc_hr) bfp_complex_s16_headroom(a);
+    else        a->hr = 0;
 }
 
 
@@ -81,11 +72,8 @@ void bfp_complex_s32_init(
     a->length = length;
     a->exp = exp;
 
-    if(calc_hr){
-        bfp_complex_s32_headroom(a);
-    } else {
-        a->hr = 0;
-    }
+    if(calc_hr) bfp_complex_s32_headroom(a);
+    else        a->hr = 0;
 }
 
 
@@ -102,11 +90,8 @@ void bfp_ch_pair_s16_init(
     a->length = length;
     a->exp = exp;
 
-    if(calc_hr){
-        bfp_ch_pair_s16_headroom(a);
-    } else {
-        a->hr = 0;
-    }
+    if(calc_hr) bfp_ch_pair_s16_headroom(a);
+    else        a->hr = 0;
 }
 
 
@@ -122,11 +107,8 @@ void bfp_ch_pair_s32_init(
     a->length = length;
     a->exp = exp;
 
-    if(calc_hr){
-        bfp_ch_pair_s32_headroom(a);
-    } else {
-        a->hr = 0;
-    }
+    if(calc_hr) bfp_ch_pair_s32_headroom(a);
+    else        a->hr = 0;
 }
 
 

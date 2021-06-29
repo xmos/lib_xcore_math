@@ -302,4 +302,3 @@ void xs3_fft_dif_inverse (
     const unsigned N, 
     headroom_t* hr, 
     exponent_t* exp);
-
