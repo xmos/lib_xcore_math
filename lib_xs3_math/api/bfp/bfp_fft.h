@@ -266,6 +266,10 @@ void bfp_fft_inverse_complex(
  * 
  * @note When performing a DFT on a pair of channels, bfp_fft_forward_stereo() is more efficient than using 
  *       bfp_fft_forward_mono() twice.
+ * 
+ * @warning If you intend to apply an IFFT to BFP vectors `a` and `b` you must keep track of both
+ *          vectors (and keep track of which is which), because bfp_fft_inverse_stereo() requires
+ *          that the mantissa buffer of vector `b` directly follows that of `a`.
  *  
  * @param[out]  a   Output spectrum for channel A.
  * @param[out]  b   Output spectrum for channel B.
