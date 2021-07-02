@@ -210,7 +210,7 @@ void  bfp_fft_inverse_stereo(
     if(b_shr) xs3_vect_s32_shl((int32_t*)b->data, (int32_t*) b->data, FFT_N, -b_shr);
 
     x->data = (ch_pair_s32_t*) a->data;
-    x->length = a->length;
+    x->length = 2 * a->length;
     x->hr = MIN(a->hr + a_shr, b->hr + b_shr);
 
     xs3_fft_spectra_merge((complex_s32_t*) x->data, FFT_N);
