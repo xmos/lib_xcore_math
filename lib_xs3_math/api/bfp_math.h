@@ -1,0 +1,30 @@
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
+
+#ifndef BFP_MATH_H_
+#define BFP_MATH_H_
+
+#ifdef __XC__
+extern "C" { 
+#endif
+
+/**
+ * @file bfp_math.h
+ * 
+ * Include this file from a source file to access both the BFP API and low-level API, as well as the `lib_xs3_math` 
+ * types and configuration.
+ */
+
+#include "xs3_math.h"
+
+#include "bfp/bfp_init.h"
+#include "bfp/bfp.h"
+#include "bfp/bfp_complex.h"
+#include "bfp/bfp_ch_pair.h"
+#include "bfp/bfp_fft.h"
+
+#ifdef __XC__
+} // extern "C"
+#endif
+
+#endif //BFP_MATH_H_
