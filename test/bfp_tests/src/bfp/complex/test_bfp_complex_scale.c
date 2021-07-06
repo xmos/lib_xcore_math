@@ -11,7 +11,17 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_complex_scale) {
+  RUN_TEST_CASE(bfp_complex_scale, bfp_complex_s16_scale);
+  RUN_TEST_CASE(bfp_complex_scale, bfp_complex_s32_scale);
+}
+
+TEST_GROUP(bfp_complex_scale);
+TEST_SETUP(bfp_complex_scale) {}
+TEST_TEAR_DOWN(bfp_complex_scale) {}
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -40,7 +50,7 @@ static char msg_buff[200];
 
 
 
-void test_bfp_complex_s16_scale()
+TEST(bfp_complex_scale, bfp_complex_s16_scale)
 {
     PRINTF("%s...\n", __func__);
 
@@ -134,7 +144,7 @@ void test_bfp_complex_s16_scale()
 
 
 
-void test_bfp_complex_s32_scale_prepare()
+TEST(bfp_complex_scale, bfp_complex_s32_scale_prepare)
 {
     PRINTF("%s...\n", __func__);
 
@@ -171,7 +181,7 @@ void test_bfp_complex_s32_scale_prepare()
 
 
 
-void test_bfp_complex_s32_scale()
+TEST(bfp_complex_scale, bfp_complex_s32_scale)
 {
     PRINTF("%s...\n", __func__);
 
@@ -252,15 +262,4 @@ void test_bfp_complex_s32_scale()
             TEST_ASSERT_INT32_WITHIN(2, expA[i].im, A.data[i].im);
         }
     }
-}
-
-
-
-
-void test_bfp_complex_scal_mul_vect_complex()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_s16_scale);
-    RUN_TEST(test_bfp_complex_s32_scale_prepare);
-    RUN_TEST(test_bfp_complex_s32_scale);
 }

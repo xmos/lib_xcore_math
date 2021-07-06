@@ -196,6 +196,28 @@ typedef struct {
 } float_complex_s64_t;
 
 
+C_TYPE
+typedef enum {
+  /** 
+   * Indicates that BFP vector's mantissa buffer(s) were allocated dynamically 
+   * 
+   * This flag lets the bfp_*_dealloc() functions know whether the mantissa vector must
+   * be free()ed.
+  */
+  BFP_FLAG_DYNAMIC  =  (1 << 0),
+
+  /** 
+   * (bfp_complex_s32_t only) Indicates that a vector is the spectrum of channel B (the second
+   * channel) when bfp_fft_forward_stereo() is used.
+   * 
+   * Vectors with this flag set will not have their `data` free()ed by bfp_*_dealloc().
+   * 
+   * This is also used as a safety check when `bfp_fft_inverse_stereo()` is used.
+   */
+  BFP_FLAG_CHAN_B   =  (1 << 1),
+} bfp_flags_e;
+
+
 /**
  * @brief A block floating-point vector of 32-bit elements.
  * 
@@ -219,6 +241,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_s32_t;
 //! [bfp_s32_t]
 
@@ -248,6 +272,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_s16_t;
 //! [bfp_s16_t]
 
@@ -275,6 +301,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_complex_s32_t;
 //! [bfp_complex_s32_t]
 
@@ -304,6 +332,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_complex_s16_t;
 //! [bfp_complex_s16_t]
 
@@ -335,6 +365,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_ch_pair_s32_t;
 //! [bfp_ch_pair_s32_t]
 
@@ -366,6 +398,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_ch_pair_s16_t;
 //! [bfp_ch_pair_s16_t]
 

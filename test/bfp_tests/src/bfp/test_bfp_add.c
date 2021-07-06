@@ -11,7 +11,18 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_add) {
+  RUN_TEST_CASE(bfp_add, bfp_s16_add);
+  RUN_TEST_CASE(bfp_add, bfp_s32_add);
+}
+
+TEST_GROUP(bfp_add);
+TEST_SETUP(bfp_add) {}
+TEST_TEAR_DOWN(bfp_add) {}
+
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -36,7 +47,7 @@ static char msg_buff[200];
 
 
 
-static void test_bfp_s16_add()
+TEST(bfp_add, bfp_s16_add)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -81,12 +92,7 @@ static void test_bfp_s16_add()
 
 
 
-
-
-
-
-
-static void test_bfp_s32_add()
+TEST(bfp_add, bfp_s32_add)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -133,108 +139,3 @@ static void test_bfp_s32_add()
 
 
 
-static void test_bfp_s16_sub()
-{
-    PRINTF("%s...\t(random vectors)\n", __func__);
-
-    seed = 8788764;
-
-    int16_t dataA[MAX_LEN];
-    int16_t dataB[MAX_LEN];
-    int16_t dataC[MAX_LEN];
-    int16_t expA[MAX_LEN];
-    bfp_s16_t A, B, C;
-
-    A.data = dataA;
-    B.data = dataB;
-    C.data = dataC;
-
-    double Af[MAX_LEN];
-    double Bf[MAX_LEN];
-    double Cf[MAX_LEN];
-
-    for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
-
-        test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
-        test_random_bfp_s16(&C, MAX_LEN, &seed, &A, B.length);
-
-        test_double_from_s16(Bf, &B);
-        test_double_from_s16(Cf, &C);
-
-        for(int i = 0; i < B.length; i++){
-            Af[i] = Bf[i] - Cf[i];
-        }
-
-        bfp_s16_sub(&A, &B, &C);
-
-        test_s16_from_double(expA, Af, MAX_LEN, A.exp);
-
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
-        }
-    }
-}
-
-
-
-
-
-static void test_bfp_s32_sub()
-{
-    PRINTF("%s...\t(random vectors)\n", __func__);
-
-    seed = 8788764;
-
-    int32_t dataA[MAX_LEN];
-    int32_t dataB[MAX_LEN];
-    int32_t dataC[MAX_LEN];
-    int32_t expA[MAX_LEN];
-    bfp_s32_t A, B, C;
-
-    A.data = dataA;
-    B.data = dataB;
-    C.data = dataC;
-
-    double Af[MAX_LEN];
-    double Bf[MAX_LEN];
-    double Cf[MAX_LEN];
-
-    for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
-
-        test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
-        test_random_bfp_s32(&C, MAX_LEN, &seed, &A, B.length);
-
-        test_double_from_s32(Bf, &B);
-        test_double_from_s32(Cf, &C);
-
-        for(int i = 0; i < B.length; i++){
-            Af[i] = Bf[i] - Cf[i];
-        }
-
-        bfp_s32_sub(&A, &B, &C);
-
-        test_s32_from_double(expA, Af, MAX_LEN, A.exp);
-
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT32_WITHIN(1, expA[i], A.data[i]);
-        }
-    }
-}
-
-
-
-
-
-void test_bfp_add_sub_vect()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_s16_add);
-    RUN_TEST(test_bfp_s32_add);
-    
-    
-    RUN_TEST(test_bfp_s16_sub);
-    RUN_TEST(test_bfp_s32_sub);
-}

@@ -11,7 +11,17 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_clip) {
+  RUN_TEST_CASE(bfp_clip, bfp_s16_clip);
+  RUN_TEST_CASE(bfp_clip, bfp_s32_clip);
+}
+TEST_GROUP(bfp_clip);
+TEST_SETUP(bfp_clip) {}
+TEST_TEAR_DOWN(bfp_clip) {}
+
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -34,78 +44,8 @@ static char msg_buff[200];
 
 
 
-
-
-
-
-static void test_bfp_s16_abs()
-{
-    PRINTF("%s...\t(random vectors)\n", __func__);
-
-    seed = 0x436EBC94;
-
-    int16_t dataA[MAX_LEN];
-    int16_t dataB[MAX_LEN];
-    bfp_s16_t A, B;
-
-    A.data = dataA;
-    B.data = dataB;
-
-    for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
-
-        test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
-        bfp_s16_abs(&A, &B);
-
-        TEST_ASSERT_EQUAL(B.length, B.length);
-        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
-        
-        TEST_ASSERT_EQUAL(B.exp,  A.exp );
-
-        for(int i = 0; i < A.length; i++){
-            int16_t expected = abs(B.data[i]);
-            TEST_ASSERT_EQUAL(expected, A.data[i]);
-        }
-    }
-}
-
-
-
-
-static void test_bfp_s32_abs()
-{
-    PRINTF("%s...\t(random vectors)\n", __func__);
-
-    seed = 453856;
-
-    int32_t dataA[MAX_LEN];
-    int32_t dataB[MAX_LEN];
-    bfp_s32_t A, B;
-
-    A.data = dataA;
-    B.data = dataB;
-
-    for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
-
-        test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
-        bfp_s32_abs(&A, &B);
-
-        TEST_ASSERT_EQUAL(B.length, B.length);
-        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
-        
-        TEST_ASSERT_EQUAL(B.exp,  A.exp );
-
-        for(int i = 0; i < A.length; i++){
-            int32_t expected = abs(B.data[i]);
-            TEST_ASSERT_EQUAL(expected, A.data[i]);
-        }
-    }
-}
-
-
-
-static void test_bfp_s16_clip()
+TEST(bfp_clip, bfp_s16_clip)
+// static void test_bfp_s16_clip()
 {
     PRINTF("%s...\n", __func__);
 
@@ -153,7 +93,8 @@ static void test_bfp_s16_clip()
     }
 }
 
-static void test_bfp_s32_clip()
+TEST(bfp_clip, bfp_s32_clip)
+// static void test_bfp_s32_clip()
 {
     PRINTF("%s...\n", __func__);
 
@@ -199,87 +140,4 @@ static void test_bfp_s32_clip()
             TEST_ASSERT_LESS_OR_EQUAL_INT32(upper64, A.data[i]);
         }
     }
-}
-
-
-
-static void test_bfp_s16_rect()
-{
-    PRINTF("%s...\n", __func__);
-
-    seed = 9676;
-
-    int16_t dataA[MAX_LEN];
-    int16_t dataB[MAX_LEN];
-    bfp_s16_t A, B;
-
-    A.data = dataA;
-    B.data = dataB;
-
-    for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
-
-        test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
-        bfp_s16_rect(&A, &B);
-
-        TEST_ASSERT_EQUAL(B.length, B.length);
-        TEST_ASSERT_EQUAL(B.exp, A.exp);
-        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
-
-        for(int i = 0; i < A.length; i++){
-            int16_t expected = (B.data[i] < 0)? 0 : B.data[i];
-            TEST_ASSERT_EQUAL(expected, A.data[i]);
-        }
-    }
-}
-
-
-
-
-static void test_bfp_s32_rect()
-{
-    PRINTF("%s...\n", __func__);
-
-    seed = 34573;
-
-    int32_t dataA[MAX_LEN];
-    int32_t dataB[MAX_LEN];
-    bfp_s32_t A, B;
-
-    A.data = dataA;
-    B.data = dataB;
-
-    for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
-
-        test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
-        bfp_s32_rect(&A, &B);
-
-        TEST_ASSERT_EQUAL(B.length, B.length);
-        TEST_ASSERT_EQUAL(B.exp, A.exp);
-        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
-
-        for(int i = 0; i < A.length; i++){
-            int32_t expected = (B.data[i] < 0)? 0 : B.data[i];
-            TEST_ASSERT_EQUAL(expected, A.data[i]);
-        }
-    }
-}
-
-
-
-
-
-void test_bfp_abs_clip_rect_vect()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_s16_abs);
-    RUN_TEST(test_bfp_s32_abs);
-
-    RUN_TEST(test_bfp_s16_clip);
-    RUN_TEST(test_bfp_s32_clip);
-
-    RUN_TEST(test_bfp_s16_rect);
-    RUN_TEST(test_bfp_s32_rect);
 }

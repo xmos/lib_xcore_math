@@ -20,6 +20,7 @@ void bfp_s16_init(
     a->data = data;
     a->length = length;
     a->exp = exp;
+    a->flags = 0;
 
     if(calc_hr) bfp_s16_headroom(a);
     else        a->hr = 0;
@@ -37,6 +38,7 @@ void bfp_s32_init(
     a->data = data;
     a->length = length;
     a->exp = exp;
+    a->flags = 0;
 
     if(calc_hr) bfp_s32_headroom(a);
     else        a->hr = 0;
@@ -55,6 +57,7 @@ void bfp_complex_s16_init(
     a->imag = imag_data;
     a->length = length;
     a->exp = exp;
+    a->flags = 0;
 
     if(calc_hr) bfp_complex_s16_headroom(a);
     else        a->hr = 0;
@@ -71,6 +74,7 @@ void bfp_complex_s32_init(
     a->data = data;
     a->length = length;
     a->exp = exp;
+    a->flags = 0;
 
     if(calc_hr) bfp_complex_s32_headroom(a);
     else        a->hr = 0;
@@ -89,6 +93,7 @@ void bfp_ch_pair_s16_init(
     a->data = data;
     a->length = length;
     a->exp = exp;
+    a->flags = 0;
 
     if(calc_hr) bfp_ch_pair_s16_headroom(a);
     else        a->hr = 0;
@@ -106,6 +111,7 @@ void bfp_ch_pair_s32_init(
     a->data = data;
     a->length = length;
     a->exp = exp;
+    a->flags = 0;
 
     if(calc_hr) bfp_ch_pair_s32_headroom(a);
     else        a->hr = 0;
@@ -132,6 +138,7 @@ void bfp_s32_set(
 {
     a->exp = exp;
     a->hr = HR_S32(value);
+    a->flags = 0;
 
     xs3_vect_s32_set(a->data, value, a->length);
 }
@@ -145,6 +152,7 @@ void bfp_complex_s16_set(
 {
     a->exp = exp;
     a->hr = HR_C16(value);
+    a->flags = 0;
 
     xs3_vect_s16_set( a->real, value.re, a->length );
     xs3_vect_s16_set( a->imag, value.im, a->length );
@@ -159,6 +167,7 @@ void bfp_complex_s32_set(
 {
     a->exp = exp;
     a->hr = HR_C32(value);
+    a->flags = 0;
 
     xs3_vect_complex_s32_set( a->data, value.re, value.im, a->length);
 }
@@ -172,6 +181,7 @@ void bfp_ch_pair_s16_set(
 {
     a->exp = exp;
     a->hr = HR_C16(*((complex_s16_t*)&value));
+    a->flags = 0;
 
     const int32_t x = value.ch_b << 16;
     const int32_t y = value.ch_a & 0xFFFF;
@@ -188,6 +198,7 @@ void bfp_ch_pair_s32_set(
 {
     a->exp = exp;
     a->hr = HR_C32(*((complex_s32_t*)&value));
+    a->flags = 0;
 
     xs3_vect_complex_s32_set( (complex_s32_t*) a->data, value.ch_a, value.ch_b, a->length);
 }

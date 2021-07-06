@@ -11,7 +11,22 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_init) {
+  RUN_TEST_CASE(bfp_init, bfp_s32_init);
+  RUN_TEST_CASE(bfp_init, bfp_s16_init);
+  RUN_TEST_CASE(bfp_init, bfp_complex_s32_init);
+  RUN_TEST_CASE(bfp_init, bfp_complex_s16_init);
+  RUN_TEST_CASE(bfp_init, bfp_ch_pair_s32_init);
+  RUN_TEST_CASE(bfp_init, bfp_ch_pair_s16_init);
+}
+
+TEST_GROUP(bfp_init);
+TEST_SETUP(bfp_init) {}
+TEST_TEAR_DOWN(bfp_init) {}
+
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -25,8 +40,7 @@
 
 
 
-
-static void test_bfp_s16_init()
+TEST(bfp_init, bfp_s16_init) 
 {
     PRINTF("%s...\n", __func__);
 
@@ -68,8 +82,7 @@ static void test_bfp_s16_init()
 }
 
 
-
-static void test_bfp_s32_init()
+TEST(bfp_init, bfp_s32_init) 
 {
     PRINTF("%s...\n", __func__);
 
@@ -113,8 +126,7 @@ static void test_bfp_s32_init()
 
 
 
-
-static void test_bfp_complex_s16_init()
+TEST(bfp_init, bfp_complex_s16_init) 
 {
     PRINTF("%s...\n", __func__);
 
@@ -165,8 +177,7 @@ static void test_bfp_complex_s16_init()
 
 
 
-
-static void test_bfp_complex_s32_init()
+TEST(bfp_init, bfp_complex_s32_init) 
 {
     PRINTF("%s...\n", __func__);
 
@@ -211,8 +222,7 @@ static void test_bfp_complex_s32_init()
 
 
 
-
-static void test_bfp_ch_pair_s16_init()
+TEST(bfp_init, bfp_ch_pair_s16_init) 
 {
     PRINTF("%s...\n", __func__);
 
@@ -257,8 +267,7 @@ static void test_bfp_ch_pair_s16_init()
 
 
 
-
-static void test_bfp_ch_pair_s32_init()
+TEST(bfp_init, bfp_ch_pair_s32_init) 
 {
     PRINTF("%s...\n", __func__);
 
@@ -300,17 +309,3 @@ static void test_bfp_ch_pair_s32_init()
     }
 }
 
-
-
-
-void test_bfp_init_vect()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_s16_init);
-    RUN_TEST(test_bfp_s32_init);
-    RUN_TEST(test_bfp_complex_s16_init);
-    RUN_TEST(test_bfp_complex_s32_init);
-    RUN_TEST(test_bfp_ch_pair_s16_init);
-    RUN_TEST(test_bfp_ch_pair_s32_init);
-}

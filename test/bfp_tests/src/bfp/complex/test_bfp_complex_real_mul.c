@@ -11,7 +11,17 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_complex_real_mul) {
+  RUN_TEST_CASE(bfp_complex_real_mul, bfp_complex_s16_real_mul);
+  RUN_TEST_CASE(bfp_complex_real_mul, bfp_complex_s32_real_mul);
+}
+
+TEST_GROUP(bfp_complex_real_mul);
+TEST_SETUP(bfp_complex_real_mul) {}
+TEST_TEAR_DOWN(bfp_complex_real_mul) {}
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -38,7 +48,7 @@ static char msg_buff[200];
 
 
 
-void test_bfp_complex_s16_real_mul()
+TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
 {
     PRINTF("%s...\n", __func__);
 
@@ -116,7 +126,7 @@ void test_bfp_complex_s16_real_mul()
 
 
 
-void test_bfp_complex_s32_real_mul()
+TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
 {
     PRINTF("%s...\n", __func__);
 
@@ -186,13 +196,3 @@ void test_bfp_complex_s32_real_mul()
     }
 }
 
-
-
-
-
-void test_bfp_mul_vect_complex()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_s16_real_mul);
-    RUN_TEST(test_bfp_complex_s32_real_mul);
-}

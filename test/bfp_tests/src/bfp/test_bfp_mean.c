@@ -11,7 +11,17 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_mean) {
+  RUN_TEST_CASE(bfp_mean, bfp_s16_mean);
+  RUN_TEST_CASE(bfp_mean, bfp_s32_mean);
+}
+
+TEST_GROUP(bfp_mean);
+TEST_SETUP(bfp_mean) {}
+TEST_TEAR_DOWN(bfp_mean) {}
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -26,7 +36,7 @@
 static unsigned seed = 666;
 
 
-static void test_bfp_s16_mean()
+TEST(bfp_mean, bfp_s16_mean)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -65,7 +75,7 @@ static void test_bfp_s16_mean()
     }
 }
 
-static void test_bfp_s32_mean()
+TEST(bfp_mean, bfp_s32_mean)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -99,14 +109,4 @@ static void test_bfp_s32_mean()
 
         TEST_ASSERT( fabs(diff) <= ldexp(1, result.exp) );
     }
-}
-
-
-
-
-void test_bfp_mean()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_s16_mean);
-    RUN_TEST(test_bfp_s32_mean);
 }

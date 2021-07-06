@@ -11,7 +11,23 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_shl) {
+  RUN_TEST_CASE(bfp_shl, bfp_s16_shl);
+  RUN_TEST_CASE(bfp_shl, bfp_s32_shl);
+  RUN_TEST_CASE(bfp_shl, bfp_complex_s16_shl);
+  RUN_TEST_CASE(bfp_shl, bfp_complex_s32_shl);
+  RUN_TEST_CASE(bfp_shl, bfp_complex_s16_shl_2);
+  RUN_TEST_CASE(bfp_shl, bfp_complex_s32_shl_2);
+  RUN_TEST_CASE(bfp_shl, bfp_ch_pair_s16_shl);
+  RUN_TEST_CASE(bfp_shl, bfp_ch_pair_s32_shl);
+}
+
+TEST_GROUP(bfp_shl);
+TEST_SETUP(bfp_shl) {}
+TEST_TEAR_DOWN(bfp_shl) {}
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -28,7 +44,7 @@ static unsigned seed = 54346;
 
 
 
-static void test_bfp_s16_shl()
+TEST(bfp_shl, bfp_s16_shl)
 {
     PRINTF("%s...\n", __func__);
 
@@ -84,7 +100,7 @@ static void test_bfp_s16_shl()
 
 
 
-static void test_bfp_s32_shl()
+TEST(bfp_shl, bfp_s32_shl)
 {
     PRINTF("%s...\n", __func__);
 
@@ -144,7 +160,7 @@ static void test_bfp_s32_shl()
 
 
 
-static void test_bfp_ch_pair_s16_shl()
+TEST(bfp_shl, bfp_ch_pair_s16_shl)
 {
     PRINTF("%s...\n", __func__);
 
@@ -206,7 +222,7 @@ static void test_bfp_ch_pair_s16_shl()
 
 
 
-static void test_bfp_ch_pair_s32_shl()
+TEST(bfp_shl, bfp_ch_pair_s32_shl)
 {
     PRINTF("%s...\n", __func__);
 
@@ -271,7 +287,7 @@ static void test_bfp_ch_pair_s32_shl()
 
 
 
-void test_bfp_complex_s16_shl()
+TEST(bfp_shl, bfp_complex_s16_shl)
 {
     PRINTF("%s...\n", __func__);
 
@@ -317,7 +333,7 @@ void test_bfp_complex_s16_shl()
 
 
 
-void test_bfp_complex_s32_shl()
+TEST(bfp_shl, bfp_complex_s32_shl)
 {
     PRINTF("%s...\n", __func__);
 
@@ -362,7 +378,7 @@ void test_bfp_complex_s32_shl()
 
 
 
-static void test_bfp_complex_s16_shl_2()
+TEST(bfp_shl, bfp_complex_s16_shl_2)
 {
     PRINTF("%s...\n", __func__);
 
@@ -433,7 +449,7 @@ static void test_bfp_complex_s16_shl_2()
 
 
 
-static void test_bfp_complex_s32_shl_2()
+TEST(bfp_shl, bfp_complex_s32_shl_2)
 {
     PRINTF("%s...\n", __func__);
 
@@ -491,20 +507,3 @@ static void test_bfp_complex_s32_shl_2()
     }
 }
 
-
-void test_bfp_shl_vect()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_s16_shl);
-    RUN_TEST(test_bfp_s32_shl);
-    
-    RUN_TEST(test_bfp_ch_pair_s16_shl);
-    RUN_TEST(test_bfp_ch_pair_s32_shl);
-
-    RUN_TEST(test_bfp_complex_s16_shl);
-    RUN_TEST(test_bfp_complex_s32_shl);
-    
-    RUN_TEST(test_bfp_complex_s16_shl_2);
-    RUN_TEST(test_bfp_complex_s32_shl_2);
-}

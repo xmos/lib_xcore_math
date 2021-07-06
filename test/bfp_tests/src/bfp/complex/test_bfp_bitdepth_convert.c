@@ -11,7 +11,17 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_complex_depth_convert) {
+  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16);
+  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s16_to_complex_s32);
+}
+
+TEST_GROUP(bfp_complex_depth_convert);
+TEST_SETUP(bfp_complex_depth_convert) {}
+TEST_TEAR_DOWN(bfp_complex_depth_convert) {}
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -35,7 +45,7 @@ static char msg_buff[200];
     }} while(0)
 
 
-void test_bfp_complex_s32_to_complex_s16_case0()
+TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16)
 {
     PRINTF("%s...\n", __func__);
 
@@ -88,7 +98,7 @@ void test_bfp_complex_s32_to_complex_s16_case0()
 
 
 
-void test_bfp_complex_s32_to_complex_s16_case1()
+TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16_2)
 {
     PRINTF("%s...\n", __func__);
 
@@ -189,7 +199,7 @@ void test_bfp_complex_s32_to_complex_s16_case1()
 
 
 
-void test_bfp_complex_s16_to_complex_s32()
+TEST(bfp_complex_depth_convert, bfp_complex_s16_to_complex_s32)
 {
     PRINTF("%s...\n", __func__);
 
@@ -261,16 +271,4 @@ void test_bfp_complex_s16_to_complex_s32()
         TEST_ASSERT_EQUAL_INT32_ARRAY((int32_t*) &expected, (int32_t*) A.data, 2*A.length);
 
     }
-}
-
-
-
-
-
-void test_bfp_complex_bitdepth_convert()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_s32_to_complex_s16_case0);
-    RUN_TEST(test_bfp_complex_s32_to_complex_s16_case1);
-    RUN_TEST(test_bfp_complex_s16_to_complex_s32);
 }

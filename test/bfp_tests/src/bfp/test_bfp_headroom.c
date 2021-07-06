@@ -11,7 +11,21 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_headroom) {
+  RUN_TEST_CASE(bfp_headroom, bfp_s32_headroom);
+  RUN_TEST_CASE(bfp_headroom, bfp_s16_headroom);
+  RUN_TEST_CASE(bfp_headroom, bfp_complex_s32_headroom);
+  RUN_TEST_CASE(bfp_headroom, bfp_complex_s16_headroom);
+  RUN_TEST_CASE(bfp_headroom, bfp_ch_pair_s32_headroom);
+  RUN_TEST_CASE(bfp_headroom, bfp_ch_pair_s16_headroom);
+}
+
+TEST_GROUP(bfp_headroom);
+TEST_SETUP(bfp_headroom) {}
+TEST_TEAR_DOWN(bfp_headroom) {}
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -26,7 +40,7 @@
 
 
 
-static void test_bfp_s16_headroom()
+TEST(bfp_headroom, bfp_s16_headroom)
 {
     PRINTF("%s...\n", __func__);
 
@@ -65,7 +79,7 @@ static void test_bfp_s16_headroom()
 
 
 
-static void test_bfp_s32_headroom()
+TEST(bfp_headroom, bfp_s32_headroom)
 {
     PRINTF("%s...\n", __func__);
 
@@ -108,7 +122,7 @@ static void test_bfp_s32_headroom()
 
 
 
-static void test_bfp_complex_s16_headroom()
+TEST(bfp_headroom, bfp_complex_s16_headroom)
 {
     PRINTF("%s...\n", __func__);
 
@@ -157,7 +171,7 @@ static void test_bfp_complex_s16_headroom()
 
 
 
-static void test_bfp_complex_s32_headroom()
+TEST(bfp_headroom, bfp_complex_s32_headroom)
 {
     PRINTF("%s...\n", __func__);
 
@@ -201,7 +215,7 @@ static void test_bfp_complex_s32_headroom()
 
 
 
-static void test_bfp_ch_pair_s16_headroom()
+TEST(bfp_headroom, bfp_ch_pair_s16_headroom)
 {
     PRINTF("%s...\n", __func__);
 
@@ -244,7 +258,7 @@ static void test_bfp_ch_pair_s16_headroom()
 
 
 
-static void test_bfp_ch_pair_s32_headroom()
+TEST(bfp_headroom, bfp_ch_pair_s32_headroom)
 {
     PRINTF("%s...\n", __func__);
 
@@ -286,18 +300,3 @@ static void test_bfp_ch_pair_s32_headroom()
 
 
 
-
-
-void test_bfp_headroom_vect()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_s16_headroom);
-    RUN_TEST(test_bfp_s32_headroom);
-    
-    RUN_TEST(test_bfp_complex_s16_headroom);
-    RUN_TEST(test_bfp_complex_s32_headroom);
-    
-    RUN_TEST(test_bfp_ch_pair_s16_headroom);
-    RUN_TEST(test_bfp_ch_pair_s32_headroom);
-}

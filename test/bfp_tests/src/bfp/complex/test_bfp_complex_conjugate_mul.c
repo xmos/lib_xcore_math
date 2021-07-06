@@ -11,7 +11,17 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_complex_conj_mul) {
+  RUN_TEST_CASE(bfp_complex_conj_mul, bfp_complex_s16_conj_mul);
+  RUN_TEST_CASE(bfp_complex_conj_mul, bfp_complex_s32_conj_mul);
+}
+
+TEST_GROUP(bfp_complex_conj_mul);
+TEST_SETUP(bfp_complex_conj_mul) {}
+TEST_TEAR_DOWN(bfp_complex_conj_mul) {}
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -36,7 +46,7 @@ static char msg_buff[200];
 
 
 
-static void test_bfp_complex_s16_conj_mul()
+TEST(bfp_complex_conj_mul, bfp_complex_s16_conj_mul)
 {
     PRINTF("%s...\n", __func__);
 
@@ -107,7 +117,7 @@ static void test_bfp_complex_s16_conj_mul()
 
 
 
-static void test_bfp_complex_s32_conj_mul()
+TEST(bfp_complex_conj_mul, bfp_complex_s32_conj_mul)
 {
     PRINTF("%s...\n", __func__);
 
@@ -161,13 +171,3 @@ static void test_bfp_complex_s32_conj_mul()
     }
 }
 
-
-
-
-void test_bfp_complex_conj_mul_vect_complex()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_s16_conj_mul);
-
-    RUN_TEST(test_bfp_complex_s32_conj_mul);
-}

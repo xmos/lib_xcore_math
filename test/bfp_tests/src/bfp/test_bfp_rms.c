@@ -11,7 +11,18 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_rms) {
+  RUN_TEST_CASE(bfp_rms, bfp_s16_rms);
+  RUN_TEST_CASE(bfp_rms, bfp_s32_rms);
+}
+
+TEST_GROUP(bfp_rms);
+TEST_SETUP(bfp_rms) {}
+TEST_TEAR_DOWN(bfp_rms) {}
+
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -26,7 +37,7 @@
 static unsigned seed;
 
 
-static void test_bfp_s16_rms()
+TEST(bfp_rms, bfp_s16_rms)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -76,7 +87,7 @@ static void test_bfp_s16_rms()
 }
 
 
-static void test_bfp_s32_rms()
+TEST(bfp_rms, bfp_s32_rms)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -124,15 +135,3 @@ static void test_bfp_s32_rms()
     }
 }
 
-
-
-
-
-
-
-void test_bfp_rms()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_s16_rms);
-    RUN_TEST(test_bfp_s32_rms);
-}

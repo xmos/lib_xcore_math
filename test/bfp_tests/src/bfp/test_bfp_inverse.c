@@ -13,7 +13,18 @@
 #include "../tst_common.h"
 #include "xs3_vpu_scalar_ops.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_inverse) {
+  RUN_TEST_CASE(bfp_inverse, bfp_s16_inverse);
+  RUN_TEST_CASE(bfp_inverse, bfp_s32_inverse);
+}
+
+TEST_GROUP(bfp_inverse);
+TEST_SETUP(bfp_inverse) {}
+TEST_TEAR_DOWN(bfp_inverse) {}
+
 
 static unsigned seed = 2314567;
 
@@ -32,7 +43,7 @@ static char msg_buff[200];
 
 
 
-static void test_bfp_s16_inverse()
+TEST(bfp_inverse, bfp_s16_inverse)
 {
 
     PRINTF("%s...\n", __func__);
@@ -80,7 +91,7 @@ static void test_bfp_s16_inverse()
 
 
 
-static void test_bfp_s32_inverse()
+TEST(bfp_inverse, bfp_s32_inverse)
 {
     PRINTF("%s...\n", __func__);
     seed = 47685;
@@ -123,16 +134,4 @@ static void test_bfp_s32_inverse()
             TEST_ASSERT_INT32_WITHIN(2, expected[i], A.data[i]);
         }
     }
-}
-
-
-
-
-void test_bfp_inverse_vect()
-{
-    SET_TEST_FILE();
-    
-    RUN_TEST(test_bfp_s16_inverse);
-    RUN_TEST(test_bfp_s32_inverse);
-
 }

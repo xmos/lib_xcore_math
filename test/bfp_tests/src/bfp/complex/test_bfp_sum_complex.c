@@ -11,7 +11,17 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_complex_sum) {
+  RUN_TEST_CASE(bfp_complex_sum, bfp_complex_s16_sum);
+  RUN_TEST_CASE(bfp_complex_sum, bfp_complex_s32_sum);
+}
+
+TEST_GROUP(bfp_complex_sum);
+TEST_SETUP(bfp_complex_sum) {}
+TEST_TEAR_DOWN(bfp_complex_sum) {}
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -29,7 +39,7 @@ static unsigned seed = 666;
 
 
 
-void test_bfp_complex_s16_sum()
+TEST(bfp_complex_sum, bfp_complex_s16_sum)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -77,7 +87,7 @@ void test_bfp_complex_s16_sum()
 
 
 
-void test_bfp_complex_s32_sum()
+TEST(bfp_complex_sum, bfp_complex_s32_sum)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -123,14 +133,4 @@ void test_bfp_complex_s32_sum()
         TEST_ASSERT(ds.re <= ldexp(1, -20));
         TEST_ASSERT(ds.im <= ldexp(1, -20));
     }
-}
-
-
-
-
-void test_bfp_sum_complex()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_s16_sum);
-    RUN_TEST(test_bfp_complex_s32_sum);
 }

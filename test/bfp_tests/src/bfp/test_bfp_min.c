@@ -14,14 +14,14 @@
 #include "unity_fixture.h"
 
 
-TEST_GROUP_RUNNER(bfp_energy) {
-  RUN_TEST_CASE(bfp_energy, bfp_s16_energy);
-  RUN_TEST_CASE(bfp_energy, bfp_s32_energy);
+TEST_GROUP_RUNNER(bfp_min) {
+  RUN_TEST_CASE(bfp_min, bfp_s16_min);
+  RUN_TEST_CASE(bfp_min, bfp_s32_min);
 }
+TEST_GROUP(bfp_min);
+TEST_SETUP(bfp_min) {}
+TEST_TEAR_DOWN(bfp_min) {}
 
-TEST_GROUP(bfp_energy);
-TEST_SETUP(bfp_energy) {}
-TEST_TEAR_DOWN(bfp_energy) {}
 
 
 #if DEBUG_ON || 0
@@ -37,80 +37,68 @@ TEST_TEAR_DOWN(bfp_energy) {}
 static unsigned seed = 666;
 
 
-TEST(bfp_energy, bfp_s16_energy)
+
+TEST(bfp_min, bfp_s16_min)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
-
     seed = 8566;
-
     int16_t dataB[MAX_LEN];
     bfp_s16_t B;
-
     B.data = dataB;
-
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
-
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -5, 5);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
-
-        int64_t sum64 = 0;
+        
+        float_s16_t expected = {
+            .mant = INT16_MAX,
+            .exp = B.exp,
+        };
 
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
-
-            sum64 += ((int32_t)B.data[i]) * B.data[i];
+            expected.mant = MIN(expected.mant, B.data[i]);
         }
-
         bfp_s16_headroom(&B);
 
-        float_s64_t result = bfp_s16_energy(&B);
+        float_s16_t result = bfp_s16_min(&B);
 
-        double expf = ldexp(sum64, 2*B.exp);
-        double resf = ldexp(result.mant, result.exp);
-
-        TEST_ASSERT(expf == resf);
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT16(expected.mant, result.mant);
     }
 }
 
 
 
-TEST(bfp_energy, bfp_s32_energy)
+TEST(bfp_min, bfp_s32_min)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
-
     unsigned seed = 0x648E34A3;
-
     int32_t dataB[MAX_LEN];
     bfp_s32_t B;
-
-    B.data = dataB;
-
     for(int r = 0; r < REPS; r++){
         PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
-
         bfp_s32_init(&B, dataB, pseudo_rand_int(&seed, -5, 5),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
-
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        double expected = 0;
-
+        float_s32_t expected = {
+            .mant = INT32_MAX,
+            .exp = B.exp,
+        };
+        
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
-
-            expected += pow(ldexp(B.data[i], B.exp), 2);
+            expected.mant = MIN(expected.mant, B.data[i]);
         }
-
         bfp_s32_headroom(&B);
-        
-        float_s64_t result = bfp_s32_energy(&B);
 
-        double diff = expected-ldexp(result.mant, result.exp);
-        double error = fabs(diff/expected);
+        float_s32_t result = bfp_s32_min(&B);
 
-        TEST_ASSERT( error < ldexp(1,-20) );
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT32(expected.mant, result.mant);
     }
 }
+
 

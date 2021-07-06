@@ -11,7 +11,17 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_sum) {
+  RUN_TEST_CASE(bfp_sum, bfp_s16_sum);
+  RUN_TEST_CASE(bfp_sum, bfp_s32_sum);
+}
+
+TEST_GROUP(bfp_sum);
+TEST_SETUP(bfp_sum) {}
+TEST_TEAR_DOWN(bfp_sum) {}
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -29,7 +39,7 @@ static unsigned seed = 666;
 
 
 
-static void test_bfp_s16_sum()
+TEST(bfp_sum, bfp_s16_sum)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -59,7 +69,7 @@ static void test_bfp_s16_sum()
     }
 }
 
-static void test_bfp_s32_sum()
+TEST(bfp_sum, bfp_s32_sum)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -87,14 +97,4 @@ static void test_bfp_s32_sum()
         TEST_ASSERT_EQUAL(expected.exp, result.exp);
         TEST_ASSERT(expected.mant == result.mant);
     }
-}
-
-
-
-
-void test_bfp_sum()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_s16_sum);
-    RUN_TEST(test_bfp_s32_sum);
 }

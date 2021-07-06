@@ -12,7 +12,18 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_dot) {
+  RUN_TEST_CASE(bfp_dot, bfp_s16_dot);
+  RUN_TEST_CASE(bfp_dot, bfp_s32_dot);
+  RUN_TEST_CASE(bfp_dot, bfp_s32_dot_2);
+}
+
+TEST_GROUP(bfp_dot);
+TEST_SETUP(bfp_dot) {}
+TEST_TEAR_DOWN(bfp_dot) {}
 
 #if DEBUG_ON || 0
 #undef DEBUG_ON
@@ -32,7 +43,7 @@ static char msg_buff[200];
     }} while(0)
 
 
-static void test_bfp_s16_dot()
+TEST(bfp_dot, bfp_s16_dot)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -83,7 +94,7 @@ static void test_bfp_s16_dot()
 
 
 
-static void test_bfp_s32_dot_A()
+TEST(bfp_dot, bfp_s32_dot)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -163,7 +174,7 @@ static void test_bfp_s32_dot_A()
     } 
 }
 
-static void test_bfp_s32_dot_B()
+TEST(bfp_dot, bfp_s32_dot_2)
 {
     PRINTF("%s...\t(random vectors)\n", __func__);
 
@@ -207,14 +218,3 @@ static void test_bfp_s32_dot_B()
     }
 }
 
-
-
-
-void test_bfp_dot()
-{
-    SET_TEST_FILE();
-    
-    RUN_TEST(test_bfp_s16_dot);
-    RUN_TEST(test_bfp_s32_dot_A);
-    RUN_TEST(test_bfp_s32_dot_B);
-}
