@@ -13,6 +13,7 @@ list( APPEND  DEP_LIBS
     ${DEP_LIBS_${CMAKE_SYSTEM_NAME}}
 )
 
+list( APPEND  DEP_LIBS ${DEP_LIBS_${CMAKE_SYSTEM_NAME}} )
 
 ## Sources
 file( GLOB_RECURSE SOURCES_C  src/*.c )
@@ -42,19 +43,17 @@ unset(LINKER_FLAGS)
 list( APPEND  LINKER_FLAGS  "" )
 
 unset(LINKER_FLAGS_XCORE)
-list( APPEND  LINKER_FLAGS_XCORE  "-target=${XCORE_TARGET}" )
-list( APPEND  LINKER_FLAGS_XCORE  "-report"                 )
+list( APPEND  LINKER_FLAGS_XCORE  "-target=${XCORE_TARGET}"     )
+list( APPEND  LINKER_FLAGS_XCORE  "-report"                     )
 list( APPEND  LINKER_FLAGS_XCORE  "-fcmdline-buffer-bytes=1024" )
-list( APPEND  LINKER_FLAGS_XCORE  "${XSCOPE_CONFIG}"        )
+list( APPEND  LINKER_FLAGS_XCORE  "${XSCOPE_CONFIG}"            )
 
 unset(LINKER_FLAGS_Linux)
-list( APPEND  LINKER_FLAGS_Linux  ""                      )
+list( APPEND  LINKER_FLAGS_Linux  ""                            )
  
 list( APPEND  LINKER_FLAGS ${LINKER_FLAGS_${CMAKE_SYSTEM_NAME}} )
 
 #########
-
-
 
 add_executable( ${APP_NAME} ${SOURCES} )
 
@@ -66,8 +65,6 @@ target_compile_options( ${APP_NAME} PRIVATE ${COMPILE_FLAGS} )
 
 #(because otherwise the set_target_properties command fails)
 string(REPLACE ";" " " LINKER_FLAGS_STR "${LINKER_FLAGS}")
-
-
 set_target_properties( ${APP_NAME} PROPERTIES LINK_FLAGS "${LINKER_FLAGS_STR}" )
 
 if ( XCORE )

@@ -11,7 +11,6 @@
 #include <stdint.h>
 
 
-
 unsigned flt_bitrev(
     const unsigned index, 
     const size_t bit_width)

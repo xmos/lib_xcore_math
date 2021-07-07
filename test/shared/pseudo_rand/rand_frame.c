@@ -186,8 +186,6 @@ void test_random_bfp_ch_pair_s32(
 }
 
 
-
-
 void test_double_from_s16(
     double* d_out,
     bfp_s16_t* d_in)

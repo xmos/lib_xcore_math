@@ -1,6 +1,5 @@
 
 
-
 function( add_unity_to_target  target_name )
 
   set( UNITY_PATH ${CMAKE_BINARY_DIR}/unity )

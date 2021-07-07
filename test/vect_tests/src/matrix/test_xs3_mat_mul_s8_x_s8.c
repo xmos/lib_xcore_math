@@ -11,10 +11,19 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+TEST_GROUP_RUNNER(xs3_mat_mul_s8_x_s8_yield_s32) {
+  RUN_TEST_CASE(xs3_mat_mul_s8_x_s8_yield_s32, xs3_mat_mul_s8_x_s8_yield_s32);
+}
+
+TEST_GROUP(xs3_mat_mul_s8_x_s8_yield_s32);
+TEST_SETUP(xs3_mat_mul_s8_x_s8_yield_s32) {}
+TEST_TEAR_DOWN(xs3_mat_mul_s8_x_s8_yield_s32) {}
 
 
-static unsigned seed = 546745;
+static char detail_buff[200];
+
 
 #define MAX_OUT_GROUPS  (6)
 #define MAX_IN_GROUPS   (6)
@@ -23,11 +32,9 @@ static unsigned seed = 546745;
 #define MAX_ROWS        (MAX_OUT_GROUPS * VPU_INT8_ACC_PERIOD)
 #define MAX_COLS        (MAX_IN_GROUPS * VPU_INT8_EPV)
 
-static void test_xs3_mat_mul_s8_x_s8_yield_s32()
+TEST(xs3_mat_mul_s8_x_s8_yield_s32, xs3_mat_mul_s8_x_s8_yield_s32)
 {
-    printf("%s...\n", __func__);
-
-    seed = 567555;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     xs3_split_acc_s32_t WORD_ALIGNED accumulators[MAX_OUT_GROUPS];
     int8_t WORD_ALIGNED matrix[MAX_ROWS*MAX_COLS];
@@ -46,7 +53,8 @@ static void test_xs3_mat_mul_s8_x_s8_yield_s32()
         const unsigned rows = out_groups * VPU_INT8_ACC_PERIOD;
         const unsigned cols = in_groups * VPU_INT8_EPV;
 
-        printf("\trep % 3d...\t(seed: 0x%08X) (rows, cols: %u, %u)\n", v, seed, rows, cols);
+        sprintf(detail_buff, "( rep: %d; seed: 0x%08X; rows: %u; cols: %u )", v, seed, rows, cols);
+        UNITY_SET_DETAIL(detail_buff);
 
         for(int row = 0; row < rows; row++){
           for(int col = 0; col < cols; col++){
@@ -59,18 +67,6 @@ static void test_xs3_mat_mul_s8_x_s8_yield_s32()
           vector[col] = pseudo_rand_int8(&seed);
 
         memset(accumulators, 0xFF, sizeof(accumulators));
-
-        
-        // printf("matrix = [ ");
-        // for(int col = 0; col < cols; col++)
-        //   printf("%d, ", matrix[col]);
-        // printf("]\n");
-
-        // printf("vector = [ ");
-        // for(int col = 0; col < cols; col++)
-        //   printf("%d, ", vector[col]);
-        // printf("]\n");
-
 
         xs3_mat_mul_s8_x_s8_yield_s32(accumulators, matrix, vector, rows, cols);
 
@@ -96,12 +92,3 @@ static void test_xs3_mat_mul_s8_x_s8_yield_s32()
     }
 }
 
-
-
-void test_xs3_mat_mul_s8_x_s8()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_mat_mul_s8_x_s8_yield_s32);
-
-}

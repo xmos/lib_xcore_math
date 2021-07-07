@@ -12,7 +12,18 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(xs3_vect_bitdepth_convert) {
+  RUN_TEST_CASE(xs3_vect_bitdepth_convert, xs3_vect_s16_to_s32_basic);
+  RUN_TEST_CASE(xs3_vect_bitdepth_convert, xs3_vect_s16_to_s32_random);
+  RUN_TEST_CASE(xs3_vect_bitdepth_convert, xs3_vect_s32_to_s16_basic);
+}
+
+TEST_GROUP(xs3_vect_bitdepth_convert);
+TEST_SETUP(xs3_vect_bitdepth_convert) {}
+TEST_TEAR_DOWN(xs3_vect_bitdepth_convert) {}
 
 static char msg_buff[200];
 
@@ -23,22 +34,13 @@ static char msg_buff[200];
     }} while(0)
 
 
-#if !defined(DEBUG_ON) || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
-
 #define MAX_LEN     256
 #define REPS        1000
 
 
-
-
-static void test_xs3_vect_s16_to_s32_basic()
+TEST(xs3_vect_bitdepth_convert, xs3_vect_s16_to_s32_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         int16_t input;
@@ -65,7 +67,7 @@ static void test_xs3_vect_s16_to_s32_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -75,7 +77,6 @@ static void test_xs3_vect_s16_to_s32_basic()
 
         for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
             unsigned len = lengths[i];
-            PRINTF("\tlength %u..\n", len);
 
             for(int i = 0; i < MAX_LEN; i++){
                 B[i] = i < len? casse->input : 0xBBBB;
@@ -94,21 +95,18 @@ static void test_xs3_vect_s16_to_s32_basic()
 }
 
 
-
-
-
-
-static void test_xs3_vect_s16_to_s32_random()
+TEST(xs3_vect_bitdepth_convert, xs3_vect_s16_to_s32_random)
 {
-    PRINTF("%s...\n", __func__);
-    unsigned seed = 778;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
     
     int32_t DWORD_ALIGNED A[MAX_LEN];
     int16_t DWORD_ALIGNED B[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition %d..\n", v);
+        setExtraInfo_R(v);
 
         const unsigned len = pseudo_rand_uint32(&seed) % MAX_LEN;
 
@@ -128,10 +126,9 @@ static void test_xs3_vect_s16_to_s32_random()
 }
 
 
-
-static void test_xs3_vect_s32_to_s16_basic()
+TEST(xs3_vect_bitdepth_convert, xs3_vect_s32_to_s16_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         int32_t input;
@@ -160,7 +157,7 @@ static void test_xs3_vect_s32_to_s16_basic()
     const unsigned start_case = 0;
     char buff[100];
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
         sprintf(buff, "(line %u)", casse->line);
@@ -171,7 +168,6 @@ static void test_xs3_vect_s32_to_s16_basic()
 
         for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
             unsigned len = lengths[i];
-            PRINTF("\tlength %u..\n", len);
 
             for(int i = 0; i < MAX_LEN; i++){
                 B[i] = casse->input;
@@ -193,15 +189,3 @@ static void test_xs3_vect_s32_to_s16_basic()
     }
 }
 
-
-
-
-void test_xs3_bitdepth_convert()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_s16_to_s32_basic);
-    RUN_TEST(test_xs3_vect_s16_to_s32_random);
-
-    RUN_TEST(test_xs3_vect_s32_to_s16_basic);
-}

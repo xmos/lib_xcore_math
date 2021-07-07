@@ -18,7 +18,6 @@ FetchContent_Declare(
   SOURCE_DIR     unity
 )
 FetchContent_Populate(unity)
-include(test/etc/Unity/CMakeLists.txt)
 
 ## Compile flags for C/C++ for all libs and apps (for all platforms)
 list(APPEND   COMPILE_FLAGS        -Os -g -MMD   )

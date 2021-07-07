@@ -1,13 +1,9 @@
 // Copyright 2020-2021 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
-
 #include <stdio.h>
 
-#include "unity.h"
 #include "unity_fixture.h"
-
-// #define CALL(F)     do { void F(); F(); } while(0)
 
 int main(int argc, const char* argv[])
 {
@@ -55,7 +51,6 @@ int main(int argc, const char* argv[])
     
     RUN_TEST_GROUP(bfp_depth_convert);
     RUN_TEST_GROUP(bfp_complex_depth_convert);
-
 
     return UNITY_END();
 }

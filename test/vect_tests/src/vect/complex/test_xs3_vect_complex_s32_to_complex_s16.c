@@ -12,20 +12,24 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
 
+TEST_GROUP_RUNNER(xs3_vect_complex_s32_to_complex_s16) {
+  RUN_TEST_CASE(xs3_vect_complex_s32_to_complex_s16, xs3_vect_complex_s32_to_complex_s16_basic);
+}
 
+TEST_GROUP(xs3_vect_complex_s32_to_complex_s16);
+TEST_SETUP(xs3_vect_complex_s32_to_complex_s16) {}
+TEST_TEAR_DOWN(xs3_vect_complex_s32_to_complex_s16) {}
 
-#if !defined(DEBUG_ON) || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
 #define MAX_LEN 50
-static void test_xs3_vect_complex_s32_to_complex_s16_basic()
+
+
+TEST(xs3_vect_complex_s32_to_complex_s16, xs3_vect_complex_s32_to_complex_s16_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         complex_s32_t b;
@@ -66,7 +70,7 @@ static void test_xs3_vect_complex_s32_to_complex_s16_basic()
     const unsigned start_case = 0;
     char buff[100];
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
         sprintf(buff, "(line %u)", casse->line);
@@ -80,7 +84,6 @@ static void test_xs3_vect_complex_s32_to_complex_s16_basic()
 
         for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
             unsigned len = lengths[i];
-            PRINTF("\tlength %u..\n", len);
 
             for(int i = 0; i < MAX_LEN; i++){
                 B[i] = casse->b;
@@ -103,11 +106,3 @@ static void test_xs3_vect_complex_s32_to_complex_s16_basic()
 }
 #undef MAC_LEN
 
-
-void test_xs3_vect_complex_s32_to_complex_s16()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_complex_s32_to_complex_s16_basic);
-
-}

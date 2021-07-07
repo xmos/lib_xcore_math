@@ -22,29 +22,19 @@ TEST_GROUP(bfp_max);
 TEST_SETUP(bfp_max) {}
 TEST_TEAR_DOWN(bfp_max) {}
 
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
 #define REPS        1000
 #define MAX_LEN     1024 
 
 
-static unsigned seed = 666;
-
-
 TEST(bfp_max, bfp_s16_max)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
-    seed = 8566;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     int16_t dataB[MAX_LEN];
     bfp_s16_t B;
     B.data = dataB;
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -5, 5);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
@@ -68,15 +58,14 @@ TEST(bfp_max, bfp_s16_max)
 }
 
 
-
 TEST(bfp_max, bfp_s32_max)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
-    unsigned seed = 0x648E34A3;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     int32_t dataB[MAX_LEN];
     bfp_s32_t B;
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
         bfp_s32_init(&B, dataB, pseudo_rand_int(&seed, -5, 5),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
         B.hr = pseudo_rand_uint(&seed, 0, 28);

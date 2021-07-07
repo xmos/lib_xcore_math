@@ -79,7 +79,6 @@ void test_double_from_complex_s32(
     bfp_complex_s32_t* d_in);
 
 
-
 EXTERN_C
 void test_s16_from_double(
     int16_t* d_out,

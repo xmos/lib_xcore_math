@@ -11,22 +11,27 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
 
-static unsigned seed = 56745686;
+TEST_GROUP_RUNNER(xs3_vect_extract) {
+  RUN_TEST_CASE(xs3_vect_extract, xs3_vect_s16_extract_high_byte);
+  RUN_TEST_CASE(xs3_vect_extract, xs3_vect_s16_extract_low_byte);
+}
+
+TEST_GROUP(xs3_vect_extract);
+TEST_SETUP(xs3_vect_extract) {}
+TEST_TEAR_DOWN(xs3_vect_extract) {}
+
 
 #define MAX_LEN     1023
 #define REPS        (1000)
 
 
-
-
-static void test_xs3_vect_s16_extract_high_byte()
+TEST(xs3_vect_extract, xs3_vect_s16_extract_high_byte)
 {
-    printf("%s...\n", __func__);
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
-    seed = 57245;
 
     int8_t WORD_ALIGNED A[MAX_LEN];
     int16_t WORD_ALIGNED B[MAX_LEN];
@@ -35,7 +40,7 @@ static void test_xs3_vect_s16_extract_high_byte()
 
         unsigned length = (v < 48)? v :  pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
-        // printf("\trep % 3d...\t(seed: 0x%08X) (length: %u)\n", v, seed, length);
+        setExtraInfo_RSL(v, seed, length);
 
         for(int k = 0; k < length; k++)
           B[k] = pseudo_rand_int16(&seed);
@@ -71,11 +76,11 @@ static void test_xs3_vect_s16_extract_high_byte()
     }
 }
 
-static void test_xs3_vect_s16_extract_low_byte()
-{
-    printf("%s...\n", __func__);
 
-    seed = 767877;
+TEST(xs3_vect_extract, xs3_vect_s16_extract_low_byte)
+{
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int8_t WORD_ALIGNED A[MAX_LEN];
     int16_t WORD_ALIGNED B[MAX_LEN];
@@ -84,7 +89,7 @@ static void test_xs3_vect_s16_extract_low_byte()
 
         unsigned length = (v < 48)? v :  pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
-        // printf("\trep % 3d...\t(seed: 0x%08X) (length: %u)\n", v, seed, length);
+        setExtraInfo_RSL(v, seed, length);
 
         for(int k = 0; k < length; k++)
           B[k] = pseudo_rand_int16(&seed);
@@ -119,13 +124,3 @@ static void test_xs3_vect_s16_extract_low_byte()
     }
 }
 
-
-
-void test_xs3_vect_s16_extract()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_s16_extract_high_byte);
-    RUN_TEST(test_xs3_vect_s16_extract_low_byte);
-
-}

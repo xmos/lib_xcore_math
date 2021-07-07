@@ -13,17 +13,19 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
+TEST_GROUP_RUNNER(xs3_push_sample) {
+  RUN_TEST_CASE(xs3_push_sample, xs3_push_sample_down_s16);
+  RUN_TEST_CASE(xs3_push_sample, xs3_push_sample_up_s16);
+}
 
-static unsigned seed = 0x47848653;
+TEST_GROUP(xs3_push_sample);
+TEST_SETUP(xs3_push_sample) {}
+TEST_TEAR_DOWN(xs3_push_sample) {}
 
 
-
+static char msg_buff[200];
 
 
 void xs3_push_sample_down_s16(
@@ -39,19 +41,19 @@ void xs3_push_sample_up_s16(
 
 #define MAX_LEN     100
 #define REPS        1000
-void test_xs3_push_sample_down_s16_case0()
+TEST(xs3_push_sample, xs3_push_sample_down_s16)
 {
-    PRINTF("%s...\n", __func__);
-    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
     int16_t buff[MAX_LEN];
     int16_t buff_exp[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
-
+        unsigned old_seed = seed;
         unsigned length = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
-        // length = 29;
 
-        PRINTF("\trep %d.. (%u)\n", v, length);
+        sprintf(msg_buff, "( rep: %d; seed: 0x%08X; length: %u )", v, old_seed, length);
+        UNITY_SET_DETAIL(msg_buff);
 
         for(int i = 0; i < length; i++){
             buff[i] = pseudo_rand_int16(&seed);
@@ -61,10 +63,6 @@ void test_xs3_push_sample_down_s16_case0()
         int16_t new_sample = pseudo_rand_int16(&seed);
 
         buff_exp[length-1] = new_sample;
-
-        // for(int i = 0; i < length; i++){
-        //     printf("[%d\t%d]\n", buff[i], buff_exp[i]);
-        // }
 
         xs3_push_sample_down_s16(buff, length, new_sample);
 
@@ -77,19 +75,17 @@ void test_xs3_push_sample_down_s16_case0()
 #undef REPS
 
 
-
-
 #define MAX_LEN     1000
-void test_xs3_push_sample_up_s16_case0()
+TEST(xs3_push_sample, xs3_push_sample_up_s16)
 {
-    PRINTF("%s...\n", __func__);
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int16_t buff[MAX_LEN];
     int16_t buff_exp[MAX_LEN];
 
     for(unsigned length = 1; length <= MAX_LEN; length++){
-
-        PRINTF("\tlength %u..\n", length);
+        sprintf(msg_buff, "( Length: %u )", length);
+        UNITY_SET_DETAIL(msg_buff);
 
         for(int i = 0; i < length; i++){
             buff[i] = pseudo_rand_int16(&seed);
@@ -97,19 +93,9 @@ void test_xs3_push_sample_up_s16_case0()
         }
 
         int16_t new_sample = pseudo_rand_int16(&seed);
-
         buff_exp[0] = new_sample;
 
-        // for(int i = 0; i < length; i++){
-        //     printf("[%d\t%d]\n", buff[i], buff_exp[i]);
-        // }
-
         xs3_push_sample_up_s16(buff,  length, new_sample);
-
-        // for(int i = 0; i < length; i++){
-        //     printf("! [%d\t%d]\n", buff[i], buff_exp[i]);
-        // }
-        // printf("\n\n");
 
         for(int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL(buff_exp[i], buff[i]);
@@ -117,16 +103,3 @@ void test_xs3_push_sample_up_s16_case0()
     }
 }
 #undef MAX_LEN
-
-
-
-
-
-void test_xs3_push_sample_s16()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_push_sample_down_s16_case0);
-    RUN_TEST(test_xs3_push_sample_up_s16_case0);
-
-}

@@ -22,18 +22,9 @@ TEST_GROUP(bfp_rect);
 TEST_SETUP(bfp_rect) {}
 TEST_TEAR_DOWN(bfp_rect) {}
 
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
 #define REPS        1000
 #define MAX_LEN     256
 
-
-static unsigned seed = 666;
 static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
@@ -43,13 +34,11 @@ static char msg_buff[200];
     }} while(0)
 
 
-
 TEST(bfp_rect, bfp_s16_rect)
-// static void test_bfp_s16_rect()
 {
-    PRINTF("%s...\n", __func__);
 
-    seed = 9676;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataA[MAX_LEN];
     int16_t dataB[MAX_LEN];
@@ -59,7 +48,7 @@ TEST(bfp_rect, bfp_s16_rect)
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
         bfp_s16_rect(&A, &B);
@@ -76,14 +65,11 @@ TEST(bfp_rect, bfp_s16_rect)
 }
 
 
-
-
 TEST(bfp_rect, bfp_s32_rect)
-// static void test_bfp_s32_rect()
 {
-    PRINTF("%s...\n", __func__);
 
-    seed = 34573;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataA[MAX_LEN];
     int32_t dataB[MAX_LEN];
@@ -93,7 +79,7 @@ TEST(bfp_rect, bfp_s32_rect)
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
         bfp_s32_rect(&A, &B);

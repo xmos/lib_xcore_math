@@ -38,7 +38,6 @@
         TEST_ASSERT_FALSE_MESSAGE(V, qwe); }} while(0)
 
 
-
 EXTERN_C
 static inline signed sext(int a, unsigned b){
 
@@ -62,8 +61,3 @@ void xs3_fft_index_bit_reversal_double(
     complex_double_t* a,
     const unsigned length);
     
-EXTERN_C
-void print_warns(
-    int start_case, 
-    unsigned test_c, 
-    unsigned test_asm);

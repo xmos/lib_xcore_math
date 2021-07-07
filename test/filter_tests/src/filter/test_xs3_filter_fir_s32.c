@@ -13,28 +13,29 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
+TEST_GROUP_RUNNER(xs3_filter_fir_s32) {
+  RUN_TEST_CASE(xs3_filter_fir_s32, case0);
+  RUN_TEST_CASE(xs3_filter_fir_s32, case1);
+  RUN_TEST_CASE(xs3_filter_fir_s32, case2);
+  RUN_TEST_CASE(xs3_filter_fir_s32, case3);
+}
 
-static unsigned seed = 0x47848653;
+TEST_GROUP(xs3_filter_fir_s32);
+TEST_SETUP(xs3_filter_fir_s32) {}
+TEST_TEAR_DOWN(xs3_filter_fir_s32) {}
+
 static char msg_buff[200];
-
 
 #define MUL32(X, Y)     (((((int64_t)(X)) * (Y)) + (1<<29)) >> 30)
 
 
-
-
-
 #define MAX_TAPS    100
-void test_xs3_filter_fir_s32_case0()
+TEST(xs3_filter_fir_s32, case0)
 {
-    PRINTF("%s...\n", __func__);
-    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
     int32_t coefs[MAX_TAPS];
     int32_t state[MAX_TAPS];
 
@@ -44,7 +45,8 @@ void test_xs3_filter_fir_s32_case0()
         coefs[i] = 0x40000000; // All coefficients have weight 1.0
 
     for(int N = 1; N < MAX_TAPS; N++){
-        PRINTF("\ttap count: %d\n", N);
+        sprintf(msg_buff, "( Tap Count: %d )", N);
+        UNITY_SET_DETAIL(msg_buff);
 
         memset(state, 0, sizeof(state));
 
@@ -57,7 +59,6 @@ void test_xs3_filter_fir_s32_case0()
         }
 
         for(int i = 0; i < 20; i++){
-            // PRINTF("\t\tsamp.. %d\n", i);
 
             exp += N;  // old sample (i) leaves as new sample (N+i) comes in.
 
@@ -71,10 +72,10 @@ void test_xs3_filter_fir_s32_case0()
 
 
 #define MAX_TAPS    100
-void test_xs3_filter_fir_s32_case1()
+TEST(xs3_filter_fir_s32, case1)
 {
-    PRINTF("%s...\n", __func__);
-    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
     int32_t coefs[MAX_TAPS];
     int32_t state[MAX_TAPS];
 
@@ -84,7 +85,8 @@ void test_xs3_filter_fir_s32_case1()
         coefs[i] = i;
 
     for(int N = 1; N < MAX_TAPS; N++){
-        PRINTF("\ttap count: %d\n", N);
+        sprintf(msg_buff, "( Tap Count: %d )", N);
+        UNITY_SET_DETAIL(msg_buff);
 
         memset(state, 0, sizeof(state));
 
@@ -109,9 +111,9 @@ void test_xs3_filter_fir_s32_case1()
 
 // Tests whether the logic for summing up the accumulators works correctly.
 #define TAPS    32
-void test_xs3_filter_fir_s32_case2()
+TEST(xs3_filter_fir_s32, case2)
 {
-    PRINTF("%s...\n", __func__);
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int32_t coefs[TAPS];
     int32_t state[TAPS];
@@ -160,14 +162,12 @@ void test_xs3_filter_fir_s32_case2()
 */
 #define MAX_TAPS    128
 #define REPS        500
-void test_xs3_filter_fir_s32_case3()
+TEST(xs3_filter_fir_s32, case3)
 {
-    PRINTF("%s...\n", __func__);
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int32_t coefs[MAX_TAPS];
     int32_t state[MAX_TAPS];
-
-    seed = 45763472;
 
     xs3_filter_fir_s32_t filter;
 
@@ -178,7 +178,8 @@ void test_xs3_filter_fir_s32_case3()
         // Number of filter taps
         unsigned N = (pseudo_rand_uint32(&seed) % MAX_TAPS) + 1;
 
-        PRINTF("\trep %d... (%u taps)\t(seed: 0x%08X)\n", v, N, old_seed);
+        sprintf(msg_buff, "( rep: %d; Tap Count: %u; seed: 0x%08X )", v, N, (unsigned)old_seed);
+        UNITY_SET_DETAIL(msg_buff);
 
         xs3_filter_fir_s32_init(&filter, state, N, coefs, 0);
 
@@ -207,21 +208,6 @@ void test_xs3_filter_fir_s32_case3()
 
         // Apply the filter
         int32_t res = xs3_filter_fir_s32(&filter, state[0]);
-        
-        if(expected32 != res){
-            sprintf(msg_buff, "(rep %d;   %u taps;   seed 0x%08X)", v, N, old_seed);
-
-            PRINTF("======================\n");
-            PRINTF("N = %u\n", N);
-            PRINTF("expected64 = %lld\t(0x%016llX)\n", expected64, (uint64_t)expected64);
-            PRINTF("filter.shift = %d\n", filter.shift);
-            PRINTF("expected32 = %ld\t(0x%08X)\n", expected32, (unsigned)expected32);
-
-            // for(int i = 0; i < N; i++){
-            //     PRINTF("\tstate[%d]: % 12ld\tcoefs[%d]: % 12ld\n", i, state[i], i, coefs[i]);
-            // }
-            PRINTF("======================\n");
-        }
 
         TEST_ASSERT_EQUAL_MESSAGE(expected32, res, msg_buff);
     }
@@ -229,17 +215,3 @@ void test_xs3_filter_fir_s32_case3()
 }
 #undef MAX_TAPS
 #undef REPS
-
-
-
-
-void test_xs3_filter_fir_s32()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_filter_fir_s32_case0);
-    RUN_TEST(test_xs3_filter_fir_s32_case1);
-    RUN_TEST(test_xs3_filter_fir_s32_case2);
-    RUN_TEST(test_xs3_filter_fir_s32_case3);
-
-}

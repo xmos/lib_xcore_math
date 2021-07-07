@@ -23,17 +23,8 @@ TEST_GROUP(bfp_complex_real_mul);
 TEST_SETUP(bfp_complex_real_mul) {}
 TEST_TEAR_DOWN(bfp_complex_real_mul) {}
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
 #define REPS        1000
 #define MAX_LEN     40 
-
-
-static unsigned seed = 666;
 
 
 static char msg_buff[200];
@@ -45,14 +36,9 @@ static char msg_buff[200];
     }} while(0)
 
 
-
-
-
 TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 546457;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     struct {
         int16_t WORD_ALIGNED real[MAX_LEN];
@@ -77,7 +63,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
     } expA;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         bfp_complex_s16_init(&B, B_data.real, B_data.imag, 
             pseudo_rand_int(&seed, -30, 30),
@@ -123,14 +109,9 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
 }
 
 
-
-
-
 TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 546457;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s32_t A_data[MAX_LEN], B_data[MAX_LEN];
 
@@ -150,7 +131,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
     complex_s32_t expected[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         bfp_complex_s32_init(&B, B_data, 
             pseudo_rand_int(&seed, -30, 30),

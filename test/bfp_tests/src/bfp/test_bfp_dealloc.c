@@ -33,14 +33,6 @@ TEST_GROUP_RUNNER(bfp_dealloc) {
 }
 
 
-static char detail_buff[100];
-static void setExtraInfo(int rep, unsigned seed, unsigned length)
-{
-  sprintf(detail_buff, "( rep: %d; seed: 0x%08X; length: %u )", rep, seed, length);
-  UNITY_SET_DETAIL(detail_buff);
-}
-
-
 TEST_GROUP(bfp_dealloc);
 TEST_SETUP(bfp_dealloc) {}
 TEST_TEAR_DOWN(bfp_dealloc) {}
@@ -50,15 +42,14 @@ TEST_TEAR_DOWN(bfp_dealloc) {}
 #define MAX_LEN     (300)
 
 
-
 TEST(bfp_dealloc, bfp_s32_dealloc) 
 {
-  unsigned seed = 3555554;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_s32_t vec = bfp_s32_alloc( length );
 
@@ -76,12 +67,12 @@ TEST(bfp_dealloc, bfp_s32_dealloc)
 
 TEST(bfp_dealloc, bfp_s16_dealloc) 
 {
-  unsigned seed = 4567222;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_s16_t vec = bfp_s16_alloc( length );
 
@@ -98,15 +89,14 @@ TEST(bfp_dealloc, bfp_s16_dealloc)
 }
 
 
-
 TEST(bfp_dealloc, bfp_complex_s32_dealloc) 
 {
-  unsigned seed = 3887664;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_complex_s32_t vec = bfp_complex_s32_alloc( length );
 
@@ -123,15 +113,14 @@ TEST(bfp_dealloc, bfp_complex_s32_dealloc)
 }
 
 
-
 TEST(bfp_dealloc, bfp_complex_s16_dealloc) 
 {
-  unsigned seed = 73737377;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_complex_s16_t vec = bfp_complex_s16_alloc( length );
 
@@ -149,15 +138,14 @@ TEST(bfp_dealloc, bfp_complex_s16_dealloc)
 }
 
 
-
 TEST(bfp_dealloc, bfp_ch_pair_s32_dealloc) 
 {
-  unsigned seed = 455677;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_ch_pair_s32_t vec = bfp_ch_pair_s32_alloc( length );
 
@@ -174,15 +162,14 @@ TEST(bfp_dealloc, bfp_ch_pair_s32_dealloc)
 }
 
 
-
 TEST(bfp_dealloc, bfp_ch_pair_s16_dealloc) 
 {
-  unsigned seed = 468874547;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_ch_pair_s16_t vec = bfp_ch_pair_s16_alloc( length );
 
@@ -199,18 +186,9 @@ TEST(bfp_dealloc, bfp_ch_pair_s16_dealloc)
 }
 
 
-
-
-
-
-
-
-
-
-
 TEST(bfp_dealloc, bfp_s32_dealloc_static) 
 {
-  unsigned seed = 4673454;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   int32_t WORD_ALIGNED buff[MAX_LEN];
   bfp_s32_t vec;
@@ -218,7 +196,7 @@ TEST(bfp_dealloc, bfp_s32_dealloc_static)
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
       
       bfp_s32_init(&vec, buff, 0, length, 0);
 
@@ -238,11 +216,9 @@ TEST(bfp_dealloc, bfp_s32_dealloc_static)
 }
 
 
-
-
 TEST(bfp_dealloc, bfp_s16_dealloc_static) 
 {
-  unsigned seed = 465734543;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   int16_t WORD_ALIGNED buff[MAX_LEN];
   bfp_s16_t vec;
@@ -250,7 +226,7 @@ TEST(bfp_dealloc, bfp_s16_dealloc_static)
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
       
       bfp_s16_init(&vec, buff, 0, length, 0);
 
@@ -270,11 +246,9 @@ TEST(bfp_dealloc, bfp_s16_dealloc_static)
 }
 
 
-
-
 TEST(bfp_dealloc, bfp_complex_s32_dealloc_static) 
 {
-  unsigned seed = 46734542;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   complex_s32_t WORD_ALIGNED buff[MAX_LEN];
   bfp_complex_s32_t vec;
@@ -282,7 +256,7 @@ TEST(bfp_dealloc, bfp_complex_s32_dealloc_static)
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
       
       bfp_complex_s32_init(&vec, buff, 0, length, 0);
 
@@ -302,11 +276,9 @@ TEST(bfp_dealloc, bfp_complex_s32_dealloc_static)
 }
 
 
-
-
 TEST(bfp_dealloc, bfp_complex_s16_dealloc_static) 
 {
-  unsigned seed = 46734541;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   int16_t WORD_ALIGNED real_buff[MAX_LEN];
   int16_t WORD_ALIGNED imag_buff[MAX_LEN];
@@ -315,7 +287,7 @@ TEST(bfp_dealloc, bfp_complex_s16_dealloc_static)
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
       
       bfp_complex_s16_init(&vec, real_buff, imag_buff, 0, length, 0);
 
@@ -336,11 +308,9 @@ TEST(bfp_dealloc, bfp_complex_s16_dealloc_static)
 }
 
 
-
-
 TEST(bfp_dealloc, bfp_ch_pair_s32_dealloc_static) 
 {
-  unsigned seed = 45454;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   ch_pair_s32_t WORD_ALIGNED buff[MAX_LEN];
   bfp_ch_pair_s32_t vec;
@@ -348,7 +318,7 @@ TEST(bfp_dealloc, bfp_ch_pair_s32_dealloc_static)
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
       
       bfp_ch_pair_s32_init(&vec, buff, 0, length, 0);
 
@@ -368,11 +338,9 @@ TEST(bfp_dealloc, bfp_ch_pair_s32_dealloc_static)
 }
 
 
-
-
 TEST(bfp_dealloc, bfp_ch_pair_s16_dealloc_static) 
 {
-  unsigned seed = 3344566;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   ch_pair_s16_t WORD_ALIGNED buff[MAX_LEN];
   bfp_ch_pair_s16_t vec;
@@ -380,7 +348,7 @@ TEST(bfp_dealloc, bfp_ch_pair_s16_dealloc_static)
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
       
       bfp_ch_pair_s16_init(&vec, buff, 0, length, 0);
 
@@ -400,23 +368,14 @@ TEST(bfp_dealloc, bfp_ch_pair_s16_dealloc_static)
 }
 
 
-
-
-
-
-
-
-
-
-
 TEST(bfp_dealloc, bfp_complex_s32_dealloc_chan_b) 
 {
-  unsigned seed = 6666345;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_complex_s32_t vec = bfp_complex_s32_alloc( length );
 

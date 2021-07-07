@@ -14,8 +14,6 @@ EXTERN_C uint64_t pseudo_rand_uint64(unsigned *r);
 EXTERN_C void pseudo_rand_bytes(unsigned *r, char* buffer, unsigned size);
 
 
-
-
 EXTERN_C
 void rand_vect_s16(
     int16_t output[],
@@ -46,7 +44,6 @@ void rand_vect_complex_s32(
     const unsigned length,
     const unsigned headroom,
     unsigned* seed);
-
 
 
 EXTERN_C

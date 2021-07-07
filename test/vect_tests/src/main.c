@@ -4,57 +4,62 @@
 
 #include <stdio.h>
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#define CALL(F)     do { void F(); F(); } while(0)
-
-int main(int argc, char** argv)
+int main(int argc, const char* argv[])
 {
-    UNITY_BEGIN();
+    UnityGetCommandLineOptions(argc, argv);
+    UnityBegin(argv[0]);
 
-    CALL(test_CLS_funcs);
-    CALL(test_HR_funcs);
-    CALL(test_xs3_vpu_scalar_ops_s8);
-    CALL(test_xs3_vpu_scalar_ops_s16);
-    CALL(test_xs3_vpu_scalar_ops_s32);
-    CALL(test_xs3_sqrt_s32);
-    CALL(test_xs3_inverse_s32);
-    CALL(test_xs3_mul_s32);
+    RUN_TEST_GROUP(CLS_macro);
+    RUN_TEST_GROUP(HR_macro);
+    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s8);
+    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s16);
+    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s32);
+    RUN_TEST_GROUP(xs3_sqrt_s32);
+    RUN_TEST_GROUP(xs3_inverse_s32);
+    RUN_TEST_GROUP(xs3_mul_s32);
 
+    RUN_TEST_GROUP(xs3_vect_set);
+    RUN_TEST_GROUP(xs3_vect_headroom);
+    RUN_TEST_GROUP(xs3_vect_shr);
+    RUN_TEST_GROUP(xs3_vect_shl);
+    RUN_TEST_GROUP(xs3_vect_add);
+    RUN_TEST_GROUP(xs3_vect_sub);
+    RUN_TEST_GROUP(xs3_vect_mul);
+    RUN_TEST_GROUP(xs3_vect_abs);
+    RUN_TEST_GROUP(xs3_vect_clip);
+    RUN_TEST_GROUP(xs3_vect_rect);
+    RUN_TEST_GROUP(xs3_vect_sum);
+    RUN_TEST_GROUP(xs3_vect_dot);
 
+    RUN_TEST_GROUP(xs3_vect_complex_add);
+    RUN_TEST_GROUP(xs3_vect_complex_sub);
+    RUN_TEST_GROUP(xs3_vect_complex_real_mul);
+    RUN_TEST_GROUP(xs3_vect_complex_mul);
+    RUN_TEST_GROUP(xs3_vect_complex_conj_mul);
+    RUN_TEST_GROUP(xs3_vect_complex_scale);
+    RUN_TEST_GROUP(xs3_vect_complex_real_scale);
+    RUN_TEST_GROUP(xs3_vect_complex_squared_mag);
+    RUN_TEST_GROUP(xs3_vect_complex_mag);
+    RUN_TEST_GROUP(xs3_vect_complex_sum);
+    RUN_TEST_GROUP(xs3_vect_abs_sum);
+    RUN_TEST_GROUP(xs3_vect_max);
+    RUN_TEST_GROUP(xs3_vect_min);
+    RUN_TEST_GROUP(xs3_vect_argmax);
+    RUN_TEST_GROUP(xs3_vect_argmin);
+    RUN_TEST_GROUP(xs3_vect_energy);
+    RUN_TEST_GROUP(xs3_vect_sqrt);
+    RUN_TEST_GROUP(xs3_vect_inverse);
 
-    CALL(test_xs3_set_vect);
-    CALL(test_xs3_headroom_vect);
-    CALL(test_xs3_shr_shl_vect);
-    CALL(test_xs3_add_sub_vect);
-    CALL(test_xs3_mul_vect);
-    CALL(test_xs3_abs_clip_rect_vect);
-    CALL(test_xs3_sum);
-    CALL(test_xs3_dot);
-    CALL(test_xs3_bitdepth_convert);
-    CALL(test_xs3_add_sub_vect_complex);
-    CALL(test_xs3_mul_vect_complex);
-    CALL(test_xs3_complex_mul_vect_complex);
-    CALL(test_xs3_complex_conj_mul_vect_complex);
-    CALL(test_xs3_complex_scal_mul_vect_complex);
-    CALL(test_xs3_scalar_mul_vect_complex);
-    CALL(test_xs3_squared_mag_vect_complex);
-    CALL(test_xs3_mag_vect_complex);
-    CALL(test_xs3_sum_complex);
-    CALL(test_xs3_vect_complex_s32_to_complex_s16);
-    CALL(test_xs3_vect_complex_s16_to_complex_s32);
-    CALL(test_xs3_abs_sum);
-    CALL(test_xs3_max_min);
-    CALL(test_xs3_energy);
-    CALL(test_xs3_sqrt_vect);
-    CALL(test_xs3_inverse_vect);
+    RUN_TEST_GROUP(xs3_vect_bitdepth_convert);
+    RUN_TEST_GROUP(xs3_vect_complex_s32_to_complex_s16);
+    RUN_TEST_GROUP(xs3_vect_complex_s16_to_complex_s32);
 
-    CALL(test_xs3_vect_s16_extract);
-
-    CALL(test_xs3_mat_mul_s8_x_s8);
-    CALL(test_xs3_mat_mul_s8_x_s16);
-
-    CALL(test_xs3_vect_s8_boolean);
+    RUN_TEST_GROUP(xs3_vect_extract);
+    RUN_TEST_GROUP(xs3_mat_mul_s8_x_s8_yield_s32);
+    RUN_TEST_GROUP(xs3_mat_mul_s8_x_s16_yield_s32);
+    RUN_TEST_GROUP(xs3_vect_boolean);
 
     return UNITY_END();
 }

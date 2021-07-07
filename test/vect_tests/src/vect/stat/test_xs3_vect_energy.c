@@ -12,24 +12,27 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 2314567;
+TEST_GROUP_RUNNER(xs3_vect_energy) {
+  RUN_TEST_CASE(xs3_vect_energy, xs3_vect_s16_energy);
+  RUN_TEST_CASE(xs3_vect_energy, xs3_vect_s32_energy);
+}
 
-
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
+TEST_GROUP(xs3_vect_energy);
+TEST_SETUP(xs3_vect_energy) {}
+TEST_TEAR_DOWN(xs3_vect_energy) {}
 
 
 #define MAX_LEN     200
 #define REPS        (100)
-void test_xs3_vect_s16_energy()
+
+
+TEST(xs3_vect_energy, xs3_vect_s16_energy)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 343446;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int32_t result;
     int16_t B[MAX_LEN];
@@ -37,7 +40,7 @@ void test_xs3_vect_s16_energy()
     for(int v = 0; v < REPS; v++){
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
-        PRINTF("\trepetition %d.. (seed: 0x%08X; len: %u)\n", v, seed, len);
+        setExtraInfo_RSL(v, seed, len);
 
         // Max possible value is  
 
@@ -83,15 +86,14 @@ void test_xs3_vect_s16_energy()
 #undef REPS
 
 
-
-
-
 #define MAX_LEN     200
 #define REPS        (100)
-void test_xs3_vect_s32_energy()
+
+TEST(xs3_vect_energy, xs3_vect_s32_energy)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 346332123;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int64_t result;
     int32_t B[MAX_LEN];
@@ -101,7 +103,7 @@ void test_xs3_vect_s32_energy()
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         // len = 1;
 
-        PRINTF("\trepetition %d.. (seed: 0x%08X; len: %u)\n", v, seed, len);
+        setExtraInfo_RSL(v, seed, len);
 
         // Max possible value is  
 
@@ -149,12 +151,3 @@ void test_xs3_vect_s32_energy()
 #undef MAX_LEN
 #undef REPS
 
-
-
-void test_xs3_energy()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_s16_energy);
-    RUN_TEST(test_xs3_vect_s32_energy);
-}

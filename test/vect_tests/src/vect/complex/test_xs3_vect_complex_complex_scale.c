@@ -13,10 +13,20 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+TEST_GROUP_RUNNER(xs3_vect_complex_scale) {
+  RUN_TEST_CASE(xs3_vect_complex_scale, xs3_vect_complex_s32_scale_random);
+  RUN_TEST_CASE(xs3_vect_complex_scale, xs3_vect_complex_s32_scale_basic);
+  RUN_TEST_CASE(xs3_vect_complex_scale, xs3_vect_complex_s16_scale_random);
+  RUN_TEST_CASE(xs3_vect_complex_scale, xs3_vect_complex_s16_scale_basic);
+}
+
+TEST_GROUP(xs3_vect_complex_scale);
+TEST_SETUP(xs3_vect_complex_scale) {}
+TEST_TEAR_DOWN(xs3_vect_complex_scale) {}
 
 
-static unsigned seed = 2314567;
 static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
@@ -24,12 +34,6 @@ static char msg_buff[200];
       sprintf(msg_buff, "(test vector @ line %u)", (LINE_NUM));       \
       TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
     }} while(0)
-
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
 
 static complex_s16_t mul_complex_s16(int16_t b_re, int16_t b_im, 
@@ -93,22 +97,9 @@ static complex_s32_t mul_complex_s32(complex_s32_t b, complex_s32_t c, int b_shr
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-static void test_xs3_vect_complex_s16_scale_basic()
+TEST(xs3_vect_complex_scale, xs3_vect_complex_s16_scale_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         struct {    complex_s16_t b;  
@@ -139,7 +130,7 @@ static void test_xs3_vect_complex_s16_scale_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -202,14 +193,14 @@ static void test_xs3_vect_complex_s16_scale_basic()
 }
 
 
-
-
 #define MAX_LEN     100
 #define REPS        (100)
-static void test_xs3_vect_complex_s16_scale_random()
+
+TEST(xs3_vect_complex_scale, xs3_vect_complex_s16_scale_random)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 0xAD24398D;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     headroom_t hr;
     
@@ -222,7 +213,7 @@ static void test_xs3_vect_complex_s16_scale_random()
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
@@ -273,17 +264,9 @@ static void test_xs3_vect_complex_s16_scale_random()
 #undef REPS
 
 
-
-
-
-
-
-
-
-
-static void test_xs3_vect_complex_s32_scale_basic()
+TEST(xs3_vect_complex_scale, xs3_vect_complex_s32_scale_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         struct {    complex_s32_t b;  
@@ -313,7 +296,7 @@ static void test_xs3_vect_complex_s32_scale_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -367,17 +350,14 @@ static void test_xs3_vect_complex_s32_scale_basic()
 }
 
 
-
-
-
-
-
 #define MAX_LEN     100
 #define REPS        (100)
-static void test_xs3_vect_complex_s32_scale_random()
+
+TEST(xs3_vect_complex_scale, xs3_vect_complex_s32_scale_random)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 0xAD04D98D;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     headroom_t hr;
     
@@ -387,7 +367,7 @@ static void test_xs3_vect_complex_s32_scale_random()
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
 
@@ -427,15 +407,3 @@ static void test_xs3_vect_complex_s32_scale_random()
 #undef MAX_LEN
 #undef REPS
 
-
-
-void test_xs3_complex_scal_mul_vect_complex()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_complex_s16_scale_basic);
-    RUN_TEST(test_xs3_vect_complex_s16_scale_random);
-
-    RUN_TEST(test_xs3_vect_complex_s32_scale_basic);
-    RUN_TEST(test_xs3_vect_complex_s32_scale_random);
-}

@@ -23,24 +23,16 @@ TEST_GROUP(bfp_abs_sum);
 TEST_SETUP(bfp_abs_sum) {}
 TEST_TEAR_DOWN(bfp_abs_sum) {}
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
 
 #define REPS        1000
 #define MAX_LEN     1024 
 
 
-static unsigned seed = 666;
-
-
 TEST(bfp_abs_sum, bfp_s16_abs_sum)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 67765974;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataB[MAX_LEN];
     bfp_s16_t B;
@@ -48,7 +40,7 @@ TEST(bfp_abs_sum, bfp_s16_abs_sum)
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -100, 100);
@@ -76,9 +68,9 @@ TEST(bfp_abs_sum, bfp_s16_abs_sum)
 
 TEST(bfp_abs_sum, bfp_s32_abs_sum)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 8789;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataB[MAX_LEN];
     bfp_s32_t B;
@@ -86,7 +78,7 @@ TEST(bfp_abs_sum, bfp_s32_abs_sum)
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -100, 100);

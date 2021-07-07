@@ -29,26 +29,13 @@ TEST_GROUP(bfp_shl);
 TEST_SETUP(bfp_shl) {}
 TEST_TEAR_DOWN(bfp_shl) {}
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
 #define REPS        (1000)
 #define MAX_LEN     1024
 
 
-static unsigned seed = 54346;
-
-
-
-
 TEST(bfp_shl, bfp_s16_shl)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 0x038D7C77;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataA[MAX_LEN];
     int16_t dataB[MAX_LEN];
@@ -58,7 +45,7 @@ TEST(bfp_shl, bfp_s16_shl)
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
 
@@ -99,12 +86,9 @@ TEST(bfp_shl, bfp_s16_shl)
 }
 
 
-
 TEST(bfp_shl, bfp_s32_shl)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 373456;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataA[MAX_LEN];
     int32_t dataB[MAX_LEN];
@@ -114,7 +98,7 @@ TEST(bfp_shl, bfp_s32_shl)
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
 
@@ -155,16 +139,9 @@ TEST(bfp_shl, bfp_s32_shl)
 }
 
 
-
-
-
-
-
 TEST(bfp_shl, bfp_ch_pair_s16_shl)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 23335;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     ch_pair_s16_t dataA[MAX_LEN];
     ch_pair_s16_t dataB[MAX_LEN];
@@ -174,7 +151,7 @@ TEST(bfp_shl, bfp_ch_pair_s16_shl)
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_ch_pair_s16(&B, MAX_LEN, &seed, &A, 0);
 
@@ -219,14 +196,9 @@ TEST(bfp_shl, bfp_ch_pair_s16_shl)
 }
 
 
-
-
-
 TEST(bfp_shl, bfp_ch_pair_s32_shl)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 7775533;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     ch_pair_s32_t dataA[MAX_LEN];
     ch_pair_s32_t dataB[MAX_LEN];
@@ -236,7 +208,7 @@ TEST(bfp_shl, bfp_ch_pair_s32_shl)
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_ch_pair_s32(&B, MAX_LEN, &seed, &A, 0);
 
@@ -281,17 +253,9 @@ TEST(bfp_shl, bfp_ch_pair_s32_shl)
 }
 
 
-
-
-
-
-
-
 TEST(bfp_shl, bfp_complex_s16_shl)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 546457;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     struct {
         int16_t real[MAX_LEN];
@@ -301,7 +265,7 @@ TEST(bfp_shl, bfp_complex_s16_shl)
     bfp_complex_s16_t A, B;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp    = pseudo_rand_int(&seed, -30, 30);
@@ -331,19 +295,15 @@ TEST(bfp_shl, bfp_complex_s16_shl)
 }
 
 
-
-
 TEST(bfp_shl, bfp_complex_s32_shl)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 546457;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s32_t A_data[MAX_LEN], B_data[MAX_LEN];
     bfp_complex_s32_t A, B;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp    = pseudo_rand_int( &seed, -30, 30);
@@ -375,14 +335,9 @@ TEST(bfp_shl, bfp_complex_s32_shl)
 }
 
 
-
-
-
 TEST(bfp_shl, bfp_complex_s16_shl_2)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 66777245;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t realA[MAX_LEN];
     int16_t imagA[MAX_LEN];
@@ -399,7 +354,7 @@ TEST(bfp_shl, bfp_complex_s16_shl_2)
     B_copy.imag = imagB_copy;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_complex_s16(&B, MAX_LEN, &seed, &A, 0);
 
@@ -446,14 +401,9 @@ TEST(bfp_shl, bfp_complex_s16_shl_2)
 }
 
 
-
-
-
 TEST(bfp_shl, bfp_complex_s32_shl_2)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 85678488;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s32_t dataA[MAX_LEN];
     complex_s32_t dataB[MAX_LEN];
@@ -463,7 +413,7 @@ TEST(bfp_shl, bfp_complex_s32_shl_2)
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_complex_s32(&B, MAX_LEN, &seed, &A, 0);
 

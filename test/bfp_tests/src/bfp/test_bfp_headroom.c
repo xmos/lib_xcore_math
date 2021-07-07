@@ -27,29 +27,20 @@ TEST_GROUP(bfp_headroom);
 TEST_SETUP(bfp_headroom) {}
 TEST_TEAR_DOWN(bfp_headroom) {}
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
 #define REPS        (1000)
 #define MAX_LEN     1024
 
 
-
-
-
 TEST(bfp_headroom, bfp_s16_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 769234;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int16_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -78,17 +69,16 @@ TEST(bfp_headroom, bfp_s16_headroom)
 }
 
 
-
 TEST(bfp_headroom, bfp_s32_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 56785;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -117,22 +107,17 @@ TEST(bfp_headroom, bfp_s32_headroom)
 }
 
 
-
-
-
-
-
 TEST(bfp_headroom, bfp_complex_s16_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 7685699;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int16_t WORD_ALIGNED real[MAX_LEN];
     int16_t WORD_ALIGNED imag[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -168,19 +153,16 @@ TEST(bfp_headroom, bfp_complex_s16_headroom)
 }
 
 
-
-
-
 TEST(bfp_headroom, bfp_complex_s32_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 54322;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     complex_s32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -211,20 +193,16 @@ TEST(bfp_headroom, bfp_complex_s32_headroom)
 }
 
 
-
-
-
-
 TEST(bfp_headroom, bfp_ch_pair_s16_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 456488;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     ch_pair_s16_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -255,19 +233,16 @@ TEST(bfp_headroom, bfp_ch_pair_s16_headroom)
 }
 
 
-
-
-
 TEST(bfp_headroom, bfp_ch_pair_s32_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 344;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     ch_pair_s32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -296,7 +271,5 @@ TEST(bfp_headroom, bfp_ch_pair_s32_headroom)
         TEST_ASSERT_EQUAL(exp_hr, got_hr);
     }
 }
-
-
 
 

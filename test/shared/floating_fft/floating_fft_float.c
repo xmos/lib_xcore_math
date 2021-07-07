@@ -11,7 +11,6 @@
 #include <stdint.h>
 
 
-
 void flt_bit_reverse_indexes_float(
     complex_float_t a[],
     const unsigned length)
@@ -155,7 +154,6 @@ void flt_fft_inverse_float (
 }
 
 
-
 void flt_fft_split_spectrum_float( 
     complex_float_t pts[], 
     const unsigned N)
@@ -188,7 +186,6 @@ void flt_fft_split_spectrum_float(
         pts[  N - i] = a;
     }
 }
-
 
 
 void flt_fft_merge_spectra_float(

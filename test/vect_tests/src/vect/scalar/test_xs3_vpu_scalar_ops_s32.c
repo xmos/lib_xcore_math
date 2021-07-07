@@ -14,24 +14,40 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 2314567;
+TEST_GROUP_RUNNER(xs3_vpu_scalar_ops_s32) {
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vladd32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vlsub32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vlashr32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vpos32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vsign32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vdepth1_32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vdepth8_32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vdepth16_32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vlmul32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vlmacc32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vlmaccr32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vlsat32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vcmr32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vcmi32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vcmcr32);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s32, vcmci32);
+}
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
+TEST_GROUP(xs3_vpu_scalar_ops_s32);
+TEST_SETUP(xs3_vpu_scalar_ops_s32) {}
+TEST_TEAR_DOWN(xs3_vpu_scalar_ops_s32) {}
+
 
 #define REPS        (1000)
 
 
-
-
-static void test_vladd32()
+TEST(xs3_vpu_scalar_ops_s32, vladd32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 12345;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT32(              0, vladd32(       0,      0));
     TEST_ASSERT_EQUAL_INT32(              1, vladd32(       1,      0));
@@ -44,7 +60,7 @@ static void test_vladd32()
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         int32_t x = pseudo_rand_int32(&seed);
         int32_t y = pseudo_rand_int32(&seed);
@@ -56,10 +72,10 @@ static void test_vladd32()
         int32_t res = vladd32(x, y);
 
         if(exp != res){
-            PRINTF("x = %ld\n", x);
-            PRINTF("y = %ld\n", y);
-            PRINTF("exp = %lld\n", exp);
-            PRINTF("res = %ld\n", res);
+            printf("x = %ld\n", x);
+            printf("y = %ld\n", y);
+            printf("exp = %lld\n", exp);
+            printf("res = %ld\n", res);
         }
 
         TEST_ASSERT_EQUAL_INT32((int32_t)exp, res);
@@ -67,10 +83,11 @@ static void test_vladd32()
 }
 
 
-static void test_vlsub32()
+TEST(xs3_vpu_scalar_ops_s32, vlsub32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 12345;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT32(              0, vlsub32(       0,      0));
     TEST_ASSERT_EQUAL_INT32(              1, vlsub32(       1,      0));
@@ -83,7 +100,7 @@ static void test_vlsub32()
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         int32_t x = pseudo_rand_int32(&seed);
         int32_t y = pseudo_rand_int32(&seed);
@@ -99,10 +116,11 @@ static void test_vlsub32()
 }
 
 
-static void test_vlashr32()
+TEST(xs3_vpu_scalar_ops_s32, vlashr32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 12345;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT32(             0, vlashr32(     0,      0));
     TEST_ASSERT_EQUAL_INT32(             1, vlashr32(     1,      0));
@@ -134,7 +152,7 @@ static void test_vlashr32()
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         int32_t x = pseudo_rand_int32(&seed);
         right_shift_t shr = pseudo_rand_int(&seed, -18, 18);
@@ -153,9 +171,9 @@ static void test_vlashr32()
 }
 
 
-static void test_vpos32()
+TEST(xs3_vpu_scalar_ops_s32, vpos32)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     for(int64_t k = 0; k < INT32_MAX; k+= (UINT32_MAX/10001))
         TEST_ASSERT_EQUAL_INT32( k, vpos32( (int32_t) k));
@@ -166,9 +184,9 @@ static void test_vpos32()
 }
 
 
-static void test_vsign32()
+TEST(xs3_vpu_scalar_ops_s32, vsign32)
 {
-    PRINTF("%s...\n", __func__);
+    
 
 
     for(int64_t k = 0; k < INT32_MAX; k+=(UINT32_MAX/10001))
@@ -180,9 +198,9 @@ static void test_vsign32()
 }
 
 
-static void test_vdepth1_32()
+TEST(xs3_vpu_scalar_ops_s32, vdepth1_32)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     for(int64_t k = 0; k < INT32_MAX; k+=(UINT32_MAX/10001))
         TEST_ASSERT_EQUAL_INT( 0, vdepth1_32( (int32_t) k));
@@ -193,9 +211,9 @@ static void test_vdepth1_32()
 }
 
 
-static void test_vdepth8_32()
+TEST(xs3_vpu_scalar_ops_s32, vdepth8_32)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     TEST_ASSERT_EQUAL_INT8(      0, vdepth8_32(            0));
     TEST_ASSERT_EQUAL_INT8(      0, vdepth8_32(       0x7FFFFF));
@@ -225,9 +243,9 @@ static void test_vdepth8_32()
 }
 
 
-static void test_vdepth16_32()
+TEST(xs3_vpu_scalar_ops_s32, vdepth16_32)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     TEST_ASSERT_EQUAL_INT8(        0, vdepth16_32(            0));
     TEST_ASSERT_EQUAL_INT8(        0, vdepth16_32(       0x7FFF));
@@ -257,10 +275,11 @@ static void test_vdepth16_32()
 }
 
 
-static void test_vlmul32()
+TEST(xs3_vpu_scalar_ops_s32, vlmul32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 34563;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT32(             0, vlmul32(           0,            0));
     TEST_ASSERT_EQUAL_INT32(             1, vlmul32(           1,   0x40000000));
@@ -275,7 +294,7 @@ static void test_vlmul32()
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         int32_t x = pseudo_rand_int32(&seed);
         int32_t y = pseudo_rand_int32(&seed);
@@ -294,11 +313,11 @@ static void test_vlmul32()
 }
 
 
-
-static void test_vlmacc32()
+TEST(xs3_vpu_scalar_ops_s32, vlmacc32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 778786;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT32(             0, vlmacc32(           0,     0,   0 * 0x40000000) ); 
     TEST_ASSERT_EQUAL_INT32(           100, vlmacc32(         100,     0,   0 * 0x40000000) ); 
@@ -309,7 +328,7 @@ static void test_vlmacc32()
     TEST_ASSERT_EQUAL_INT32( VPU_INT40_MAX, vlmacc32(  0x7FFFFFFFFF,     1,       0x40000000) ); 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         vpu_int32_acc_t acc = pseudo_rand_int64(&seed) >> 24;
         int32_t x = pseudo_rand_int32(&seed);
@@ -339,15 +358,14 @@ static void test_vlmacc32()
 }
 
 
-
-static void test_vlmaccr32()
+TEST(xs3_vpu_scalar_ops_s32, vlmaccr32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 778786;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         vpu_int32_acc_t acc = pseudo_rand_int64(&seed) >> 24;
         int32_t x[VPU_INT32_EPV];
@@ -390,11 +408,11 @@ static void test_vlmaccr32()
 }
 
 
-
-static void test_vlsat32()
+TEST(xs3_vpu_scalar_ops_s32, vlsat32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 6457;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT32(            0, vlsat32(            0,      0));
     TEST_ASSERT_EQUAL_INT32(            1, vlsat32(            1,      0));
@@ -408,7 +426,7 @@ static void test_vlsat32()
 
 
     for(int v = 0; v < REPS/40; v++){
-            PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+            setExtraInfo_RS(v, seed);
 
             for(headroom_t hr = 0; hr < 40; hr++){
 
@@ -443,14 +461,14 @@ static void test_vlsat32()
 }
 
 
-static void test_vcmr32()
+TEST(xs3_vpu_scalar_ops_s32, vcmr32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 34563;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         complex_s32_t x;
         complex_s32_t y;
@@ -476,14 +494,14 @@ static void test_vcmr32()
 }
 
 
-static void test_vcmi32()
+TEST(xs3_vpu_scalar_ops_s32, vcmi32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 34563;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         complex_s32_t x;
         complex_s32_t y;
@@ -509,14 +527,14 @@ static void test_vcmi32()
 }
 
 
-static void test_vcmcr32()
+TEST(xs3_vpu_scalar_ops_s32, vcmcr32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 34563;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         complex_s32_t x;
         complex_s32_t y;
@@ -542,14 +560,14 @@ static void test_vcmcr32()
 }
 
 
-static void test_vcmci32()
+TEST(xs3_vpu_scalar_ops_s32, vcmci32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 34563;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         complex_s32_t x;
         complex_s32_t y;
@@ -574,28 +592,3 @@ static void test_vcmci32()
     }
 }
 
-
-
-
-
-void test_xs3_vpu_scalar_ops_s32()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_vladd32);
-    RUN_TEST(test_vlsub32);
-    RUN_TEST(test_vlashr32);
-    RUN_TEST(test_vpos32);
-    RUN_TEST(test_vsign32);
-    RUN_TEST(test_vdepth1_32);
-    RUN_TEST(test_vdepth8_32);
-    RUN_TEST(test_vdepth16_32);
-    RUN_TEST(test_vlmul32);
-    RUN_TEST(test_vlmacc32);
-    RUN_TEST(test_vlmaccr32);
-    RUN_TEST(test_vlsat32);
-    RUN_TEST(test_vcmr32);
-    RUN_TEST(test_vcmi32);
-    RUN_TEST(test_vcmcr32);
-    RUN_TEST(test_vcmci32);
-}

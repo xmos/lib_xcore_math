@@ -28,27 +28,18 @@ TEST_SETUP(bfp_alloc) {}
 TEST_TEAR_DOWN(bfp_alloc) {}
 
 
-static char detail_buff[100];
-static void setExtraInfo(int rep, unsigned seed, unsigned length)
-{
-  sprintf(detail_buff, "( rep: %d; seed: 0x%08X; length: %u )", rep, seed, length);
-  UNITY_SET_DETAIL(detail_buff);
-}
-
-
-
 #define REPS        (50)
 #define MAX_LEN     (300)
 
 TEST(bfp_alloc, bfp_s32_alloc) 
 {
 
-  unsigned seed = 35753;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_s32_t vec = bfp_s32_alloc( length );
 
@@ -70,16 +61,15 @@ TEST(bfp_alloc, bfp_s32_alloc)
 }
 
 
-
 TEST(bfp_alloc, bfp_s16_alloc) 
 {
 
-  unsigned seed = 457322;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_s16_t vec = bfp_s16_alloc( length );
 
@@ -99,18 +89,15 @@ TEST(bfp_alloc, bfp_s16_alloc)
 }
 
 
-
-
-
 TEST(bfp_alloc, bfp_complex_s32_alloc) 
 {
 
-  unsigned seed = 786777;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_complex_s32_t vec = bfp_complex_s32_alloc( length );
 
@@ -130,18 +117,15 @@ TEST(bfp_alloc, bfp_complex_s32_alloc)
 }
 
 
-
-
-
 TEST(bfp_alloc, bfp_complex_s16_alloc) 
 {
 
-  unsigned seed = 77645222;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_complex_s16_t vec = bfp_complex_s16_alloc( length );
 
@@ -166,18 +150,15 @@ TEST(bfp_alloc, bfp_complex_s16_alloc)
 }
 
 
-
-
-
 TEST(bfp_alloc, bfp_ch_pair_s32_alloc) 
 {
 
-  unsigned seed = 37437373;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_ch_pair_s32_t vec = bfp_ch_pair_s32_alloc( length );
 
@@ -199,18 +180,15 @@ TEST(bfp_alloc, bfp_ch_pair_s32_alloc)
 }
 
 
-
-
-
 TEST(bfp_alloc, bfp_ch_pair_s16_alloc) 
 {
 
-  unsigned seed = 998886766;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   for(int r = 0; r < REPS; r++){
 
       unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-      setExtraInfo(r, seed, length);
+      setExtraInfo_RSL(r, seed, length);
 
       bfp_ch_pair_s16_t vec = bfp_ch_pair_s16_alloc( length );
 

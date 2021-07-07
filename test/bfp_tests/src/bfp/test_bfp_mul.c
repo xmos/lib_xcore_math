@@ -23,18 +23,8 @@ TEST_GROUP(bfp_mul);
 TEST_SETUP(bfp_mul) {}
 TEST_TEAR_DOWN(bfp_mul) {}
 
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
 #define REPS        1000
 #define MAX_LEN     256
-
-
-static unsigned seed = 666;
 
 
 static char msg_buff[200];
@@ -46,13 +36,11 @@ static char msg_buff[200];
     }} while(0)
 
 
-
-
 TEST(bfp_mul, bfp_s16_mul)
 {
-    PRINTF("%s...\n", __func__);
 
-    seed = 0x58E99770;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataA[MAX_LEN];
     int16_t dataB[MAX_LEN];
@@ -69,7 +57,7 @@ TEST(bfp_mul, bfp_s16_mul)
     double Cf[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
         test_random_bfp_s16(&C, MAX_LEN, &seed, &A, B.length);
@@ -86,7 +74,6 @@ TEST(bfp_mul, bfp_s16_mul)
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
         for(int i = 0; i < A.length; i++){
-            // PRINTF("! %08X\t%08X\n", (unsigned) expA[i], (unsigned) A.data[i]);
             TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
         }
     }
@@ -95,9 +82,9 @@ TEST(bfp_mul, bfp_s16_mul)
 
 TEST(bfp_mul, bfp_s32_mul)
 {
-    PRINTF("%s...\n", __func__);
 
-    seed = 1123441;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataA[MAX_LEN];
     int32_t dataB[MAX_LEN];
@@ -114,7 +101,7 @@ TEST(bfp_mul, bfp_s32_mul)
     double Cf[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
         test_random_bfp_s32(&C, MAX_LEN, &seed, &A, B.length);
@@ -137,7 +124,6 @@ TEST(bfp_mul, bfp_s32_mul)
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
         for(int i = 0; i < A.length; i++){
-            // PRINTF("! %08X\t%08X\n", (unsigned) expA[i], (unsigned) A.data[i]);
             TEST_ASSERT_INT32_WITHIN(1, expA[i], A.data[i]);
         }
     }

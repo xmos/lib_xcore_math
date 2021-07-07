@@ -23,18 +23,9 @@ TEST_GROUP(bfp_add);
 TEST_SETUP(bfp_add) {}
 TEST_TEAR_DOWN(bfp_add) {}
 
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
 #define REPS        1000
 #define MAX_LEN     18  //Smaller lengths mean larger variance w.r.t. individual element headroom
 
-
-static unsigned seed = 666;
 static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
@@ -44,14 +35,11 @@ static char msg_buff[200];
     }} while(0)
 
 
-
-
-
 TEST(bfp_add, bfp_s16_add)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 8788764;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataA[MAX_LEN];
     int16_t dataB[MAX_LEN];
@@ -68,7 +56,7 @@ TEST(bfp_add, bfp_s16_add)
     double Cf[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
         test_random_bfp_s16(&C, MAX_LEN, &seed, &A, B.length);
@@ -91,12 +79,11 @@ TEST(bfp_add, bfp_s16_add)
 }
 
 
-
 TEST(bfp_add, bfp_s32_add)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 23452342;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataA[MAX_LEN];
     int32_t dataB[MAX_LEN];
@@ -113,7 +100,7 @@ TEST(bfp_add, bfp_s32_add)
     double Cf[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
         test_random_bfp_s32(&C, MAX_LEN, &seed, &A, B.length);
@@ -134,8 +121,5 @@ TEST(bfp_add, bfp_s32_add)
         }
     }
 }
-
-
-
 
 

@@ -27,29 +27,20 @@ TEST_GROUP(bfp_init);
 TEST_SETUP(bfp_init) {}
 TEST_TEAR_DOWN(bfp_init) {}
 
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
 #define REPS        (50)
 #define MAX_LEN     (300)
 
 
-
-
 TEST(bfp_init, bfp_s16_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 3724523;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int16_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -84,14 +75,14 @@ TEST(bfp_init, bfp_s16_init)
 
 TEST(bfp_init, bfp_s32_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 2342;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -124,19 +115,17 @@ TEST(bfp_init, bfp_s32_init)
 }
 
 
-
-
 TEST(bfp_init, bfp_complex_s16_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 233345;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int16_t WORD_ALIGNED real_data[MAX_LEN];
     int16_t WORD_ALIGNED imag_data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -175,18 +164,16 @@ TEST(bfp_init, bfp_complex_s16_init)
 }
 
 
-
-
 TEST(bfp_init, bfp_complex_s32_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 7646785;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     complex_s32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -220,18 +207,16 @@ TEST(bfp_init, bfp_complex_s32_init)
 }
 
 
-
-
 TEST(bfp_init, bfp_ch_pair_s16_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 2344;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     ch_pair_s16_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -265,18 +250,16 @@ TEST(bfp_init, bfp_ch_pair_s16_init)
 }
 
 
-
-
 TEST(bfp_init, bfp_ch_pair_s32_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 33456;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     ch_pair_s32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 

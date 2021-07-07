@@ -13,25 +13,31 @@
 #include "../tst_common.h"
 #include "xs3_vpu_scalar_ops.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 2314567;
+
+TEST_GROUP_RUNNER(xs3_vect_sqrt) {
+  RUN_TEST_CASE(xs3_vect_sqrt, xs3_vect_s32_sqrt_prepare);
+  RUN_TEST_CASE(xs3_vect_sqrt, xs3_vect_s16_sqrt_prepare);
+  RUN_TEST_CASE(xs3_vect_sqrt, xs3_vect_s16_sqrt_A);
+  RUN_TEST_CASE(xs3_vect_sqrt, xs3_vect_s16_sqrt_B);
+  RUN_TEST_CASE(xs3_vect_sqrt, xs3_vect_s32_sqrt_A);
+  RUN_TEST_CASE(xs3_vect_sqrt, xs3_vect_s32_sqrt_B);
+}
+
+TEST_GROUP(xs3_vect_sqrt);
+TEST_SETUP(xs3_vect_sqrt) {}
+TEST_TEAR_DOWN(xs3_vect_sqrt) {}
+
 
 static char msg_buff[200];
-
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
 
 #define MAX_LEN     100
 #define REPS        1000
 
 
-
-static void test_xs3_vect_s32_sqrt_prepare()
+TEST(xs3_vect_sqrt, xs3_vect_s32_sqrt_prepare)
 {
 
     typedef struct {
@@ -90,7 +96,8 @@ static void test_xs3_vect_s32_sqrt_prepare()
 
 }
 
-static void test_xs3_vect_s16_sqrt_prepare()
+
+TEST(xs3_vect_sqrt, xs3_vect_s16_sqrt_prepare)
 {
 
     typedef struct {
@@ -150,20 +157,19 @@ static void test_xs3_vect_s16_sqrt_prepare()
 }
 
 
-
-
-static void test_xs3_vect_s16_sqrt_A()
+TEST(xs3_vect_sqrt, xs3_vect_s16_sqrt_A)
 {
 
-    PRINTF("%s...\n", __func__);
-    seed = 567456;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int16_t WORD_ALIGNED B[MAX_LEN];
     int16_t WORD_ALIGNED A[MAX_LEN];
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN-1);
 
@@ -202,12 +208,12 @@ static void test_xs3_vect_s16_sqrt_A()
 }
 
 
-
-static void test_xs3_vect_s16_sqrt_B()
+TEST(xs3_vect_sqrt, xs3_vect_s16_sqrt_B)
 {
 
-    PRINTF("%s...\n", __func__);
-    seed = 435634;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     const unsigned length = 10;
 
@@ -217,7 +223,7 @@ static void test_xs3_vect_s16_sqrt_B()
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 12);
@@ -254,20 +260,19 @@ static void test_xs3_vect_s16_sqrt_B()
 }
 
 
-
-
-static void test_xs3_vect_s32_sqrt_A()
+TEST(xs3_vect_sqrt, xs3_vect_s32_sqrt_A)
 {
 
-    PRINTF("%s...\n", __func__);
-    seed = 0x3F18828D;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int32_t B[MAX_LEN];
     int32_t A[MAX_LEN];
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN-1);
 
@@ -306,12 +311,12 @@ static void test_xs3_vect_s32_sqrt_A()
 }
 
 
-
-static void test_xs3_vect_s32_sqrt_B()
+TEST(xs3_vect_sqrt, xs3_vect_s32_sqrt_B)
 {
 
-    PRINTF("%s...\n", __func__);
-    seed = 435634;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     const unsigned length = 10;
 
@@ -321,7 +326,7 @@ static void test_xs3_vect_s32_sqrt_B()
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
@@ -357,19 +362,3 @@ static void test_xs3_vect_s32_sqrt_B()
     }
 }
 
-
-
-
-
-void test_xs3_sqrt_vect()
-{
-    SET_TEST_FILE();
-    
-    RUN_TEST(test_xs3_vect_s16_sqrt_prepare);
-    RUN_TEST(test_xs3_vect_s32_sqrt_prepare);
-    RUN_TEST(test_xs3_vect_s16_sqrt_A);
-    RUN_TEST(test_xs3_vect_s16_sqrt_B);
-    RUN_TEST(test_xs3_vect_s32_sqrt_A);
-    RUN_TEST(test_xs3_vect_s32_sqrt_B);
-
-}
