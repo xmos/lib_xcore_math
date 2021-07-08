@@ -95,18 +95,18 @@ TEST(xs3_mat_mul_s8_x_s16_yield_s32, xs3_mat_mul_s8_x_s16_yield_s32)
       unsigned opt_start, opt_end;
       unsigned ref_start, ref_end;
 
-      opt_start = getTimestamp();
+      // opt_start = getTimestamp();
       xs3_mat_mul_s8_x_s16_yield_s32(output, matrix, vector, rows, cols, scratch);
-      opt_end = getTimestamp();
-      ref_start = getTimestamp();
+      // opt_end = getTimestamp();
+      // ref_start = getTimestamp();
       xs3_mat_mul_s8_x_s16_yield_s32_ref(output_ref, matrix, vector, rows, cols);
-      ref_end = getTimestamp();
+      // ref_end = getTimestamp();
 
-      unsigned opt_ns = 10 * (opt_end - opt_start);
-      unsigned ref_ns = 10 * (ref_end - ref_start);
-      float ratio = (ref_ns + 0.0f) / opt_ns;
+      // unsigned opt_ns = 10 * (opt_end - opt_start);
+      // unsigned ref_ns = 10 * (ref_end - ref_start);
+      // float ratio = (ref_ns + 0.0f) / opt_ns;
 
-      max_ratio = (ratio > max_ratio)? ratio : max_ratio;
+      // max_ratio = (ratio > max_ratio)? ratio : max_ratio;
 
       // printf("%d x %d:  %0.02f\n", rows, cols, ratio);
 

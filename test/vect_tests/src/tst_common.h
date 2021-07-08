@@ -9,6 +9,7 @@
 #include "pseudo_rand.h"
 #include "rand_frame.h"
 #include "testing.h"
+#include "tst_asserts.h"
 
 
 #define INT32_MAX_POS(HEADROOM)    (((int32_t)0x7FFFFFFF) >> ((int)(HEADROOM)))

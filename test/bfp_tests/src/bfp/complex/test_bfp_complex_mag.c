@@ -55,7 +55,7 @@ TEST(bfp_complex_mag, bfp_complex_s16_mag)
 
 
     for(int r = 0; r < REPS; r++){
-        setExtraInfo_RS(r, seed);
+        unsigned old_seed = seed;
 
         bfp_complex_s16_init(&B, B_data.real, B_data.imag,
             pseudo_rand_int(&seed, -100, 100),
@@ -64,6 +64,8 @@ TEST(bfp_complex_mag, bfp_complex_s16_mag)
         bfp_s16_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
+
+        setExtraInfo_RSL(r, old_seed, B.length);
 
         for(int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
@@ -81,9 +83,12 @@ TEST(bfp_complex_mag, bfp_complex_s16_mag)
 
         test_s16_from_double(expA, Af, A.length, A.exp);
 
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT16_WITHIN(7, expA[i], A.data[i]);
-        }
+        XTEST_ASSERT_VECT_S16_WITHIN(8, expA, A.data, A.length,
+            "Expected: %d <-- mag( %d + %dj )\n"
+            "Actual: %d\n"
+            "B.hr = %u\n"
+            "A.hr = %u\n",
+            expA[i], B.real[i], B.imag[i], A.data[i], B.hr, A.hr);
 
         
     }

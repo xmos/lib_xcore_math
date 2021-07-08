@@ -12,7 +12,7 @@
 #include "xs3_vpu_scalar_ops.h"
 #include "xs3_vpu_info.h"
 
-#include "../../tst_common.h"
+#include "../tst_common.h"
 
 #include "unity_fixture.h"
 

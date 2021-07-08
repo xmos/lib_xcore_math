@@ -13,6 +13,9 @@
 #include "../tst_common.h"
 #include "unity_fixture.h"
 
+TEST_GROUP(xs3_vect_mul);
+TEST_SETUP(xs3_vect_mul) {}
+TEST_TEAR_DOWN(xs3_vect_mul) {}
 
 TEST_GROUP_RUNNER(xs3_vect_mul) {
   RUN_TEST_CASE(xs3_vect_mul, xs3_vect_s16_mul_prepare);
@@ -23,9 +26,6 @@ TEST_GROUP_RUNNER(xs3_vect_mul) {
   RUN_TEST_CASE(xs3_vect_mul, xs3_vect_s32_mul_random);
 }
 
-TEST_GROUP(xs3_vect_mul);
-TEST_SETUP(xs3_vect_mul) {}
-TEST_TEAR_DOWN(xs3_vect_mul) {}
 
 
 static char msg_buff[200];
@@ -37,6 +37,11 @@ static char msg_buff[200];
     }} while(0)
 
 
+/**
+ * This is a VLMACC-based multiply, which means the right-shift
+ * is applied using VLSAT rather than VLASHR. (VLASHR doesn't apply
+ * the rounding logic used by VLSAT)
+ */
 static int16_t mul_s16(int16_t b, int16_t c, int a_shr)
 {
     int32_t A = ((int32_t)b)*c;
@@ -46,12 +51,8 @@ static int16_t mul_s16(int16_t b, int16_t c, int a_shr)
     a = a >> a_shr;
     a = (a >= VPU_INT16_MAX)? VPU_INT16_MAX : (a <= VPU_INT16_MIN)? VPU_INT16_MIN : a;
 
-    if(A < 0 && a == 0)
-        a = -1;
-
     return (int16_t) a;
 }
-
 
 static int32_t mul_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 {
@@ -83,8 +84,6 @@ static int32_t mul_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 
 TEST(xs3_vect_mul, xs3_vect_s16_mul_prepare)
 {
-    
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -119,8 +118,6 @@ TEST(xs3_vect_mul, xs3_vect_s16_mul_prepare)
 
 TEST(xs3_vect_mul, xs3_vect_s32_mul_prepare)
 {
-    
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -157,8 +154,6 @@ TEST(xs3_vect_mul, xs3_vect_s32_mul_prepare)
 
 TEST(xs3_vect_mul, xs3_vect_s16_mul_basic)
 {
-    
-
     typedef struct {
         struct {    int16_t b;  int16_t c;  } value;
         right_shift_t a_shr;
@@ -240,20 +235,23 @@ TEST(xs3_vect_mul, xs3_vect_s16_mul_basic)
 
 TEST(xs3_vect_mul, xs3_vect_s16_mul_random)
 {
-    
     unsigned seed = SEED_FROM_FUNC_NAME();
-
+    seed = 0xC18211F2;
 
     headroom_t hr;
     int16_t A[MAX_LEN];
     int16_t B[MAX_LEN];
     int16_t C[MAX_LEN];
 
+    int16_t expected[MAX_LEN];
+
+    const char debug_fmt[] = "Expected: %d <-- (%d * %d) >> %d \nActual: %d\n";
+
     for(int v = 0; v < REPS; v++){
-
-        setExtraInfo_R(v);
-
+        unsigned old_seed = seed;
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
+        
+        setExtraInfo_RSL(v, old_seed, len);
         
         for(int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
@@ -262,31 +260,35 @@ TEST(xs3_vect_mul, xs3_vect_s16_mul_random)
         }
 
         int a_shr = (pseudo_rand_uint32(&seed) % 5);
+
+        // Determine expected outputs
+        for(int i = 0; i < len; i++)
+          expected[i] = mul_s16(B[i], C[i], a_shr);
         
+        
+        // A <-- B * C
         hr = xs3_vect_s16_mul(A, B, C, len, a_shr);
 
-        for(int i = 0; i < len; i++){
-            int16_t expected = mul_s16(B[i], C[i], a_shr);
-            TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
-        }
+        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len, 
+            debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
         TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
+        // A <-- B
+        // A <-- A * C
         memcpy(A, B, sizeof(A[0])*len);
         hr = xs3_vect_s16_mul(A, A, C, len, a_shr);
 
-        for(int i = 0; i < len; i++){
-            int16_t expected = mul_s16(B[i], C[i], a_shr);
-            TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
-        }
+        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len, 
+            debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
         TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
+        // A <-- C
+        // A <-- B * A
         memcpy(A, C, sizeof(A[0])*len);
         hr = xs3_vect_s16_mul(A, B, A, len, a_shr);
 
-        for(int i = 0; i < len; i++){
-            int16_t expected = mul_s16(B[i], C[i], a_shr);
-            TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
-        }
+        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len, 
+            debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
         TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A, len), hr);
         
     }
@@ -295,8 +297,6 @@ TEST(xs3_vect_mul, xs3_vect_s16_mul_random)
 
 TEST(xs3_vect_mul, xs3_vect_s32_mul_basic)
 {
-    
-
     typedef struct {
         struct {    int32_t b;  int32_t c;  } value;
         struct {    int b;      int c;      } shr;
@@ -394,20 +394,22 @@ TEST(xs3_vect_mul, xs3_vect_s32_mul_basic)
 
 TEST(xs3_vect_mul, xs3_vect_s32_mul_random)
 {
-    
     unsigned seed = SEED_FROM_FUNC_NAME();
-
 
     headroom_t hr;
     int32_t A[MAX_LEN];
     int32_t B[MAX_LEN];
     int32_t C[MAX_LEN];
 
+    int32_t expected[MAX_LEN];
+
+    const char debug_fmt[] = "Expected: %ld <-- (%ld >> %d) * (%ld >> %d) \nActual: %ld\n";
+
     for(int v = 0; v < REPS; v++){
-
-        setExtraInfo_R(v);
-
+        unsigned old_seed = seed;
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
+
+        setExtraInfo_RSL(v, old_seed, len);
         
         for(int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
@@ -418,35 +420,35 @@ TEST(xs3_vect_mul, xs3_vect_s32_mul_random)
         int b_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
         int c_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
         
-        const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) * (%ld >> %d)) >> 30     (A[i]=0x%08X; B[i]=0x%08X; C[i]=0x%08X)";
 
+        // Determine expected outputs
+        for(int i = 0; i < len; i++)
+          expected[i] = mul_s32(B[i], C[i], b_shr, c_shr);
+        
+
+        // A <-- B * C
         hr = xs3_vect_s32_mul(A, B, C, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
-            int32_t expected = mul_s32(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i], (unsigned)B[i],  (unsigned)C[i]);
-            TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
-        }
+        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
+            debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
         TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
+        // A <-- B
+        // A <-- A * C
         memcpy(A, B, sizeof(A[0])*len);
         hr = xs3_vect_s32_mul(A, A, C, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
-            int32_t expected = mul_s32(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
-            TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
-        }
+        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
+            debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
         TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
+        // A <-- C
+        // A <-- B * A
         memcpy(A, C, sizeof(A[0])*len);
         hr = xs3_vect_s32_mul(A, B, A, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
-            int32_t expected = mul_s32(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
-            TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
-        }
+        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
+            debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
         TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A, len), hr);
         
     }

@@ -28,7 +28,7 @@ TEST_SETUP(xs3_vect_complex_real_scale) {}
 TEST_TEAR_DOWN(xs3_vect_complex_real_scale) {}
 
 
-#define REPS        1000
+#define REPS        200
 #define MAX_LEN     256
 
 

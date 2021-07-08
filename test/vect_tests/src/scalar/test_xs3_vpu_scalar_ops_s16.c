@@ -12,7 +12,7 @@
 #include "xs3_vpu_scalar_ops.h"
 #include "xs3_vpu_info.h"
 
-#include "../../tst_common.h"
+#include "../tst_common.h"
 
 #include "unity_fixture.h"
 
@@ -124,6 +124,8 @@ TEST(xs3_vpu_scalar_ops_s16, vlashr16)
     TEST_ASSERT_EQUAL_INT16(            -1, vlashr16(    -2,      2));
     TEST_ASSERT_EQUAL_INT16(            -1, vlashr16(    -2,      3));
     TEST_ASSERT_EQUAL_INT16(            -4, vlashr16(    -2,     -1));
+    TEST_ASSERT_EQUAL_INT16(            -1, vlashr16(    -8,      3));
+    TEST_ASSERT_EQUAL_INT16(            -1, vlashr16(    -8,      4)); // Note[0]
     
     TEST_ASSERT_EQUAL_INT16(             5, vlashr16(    10,      1));
     TEST_ASSERT_EQUAL_INT16(             2, vlashr16(    10,      2));
@@ -138,6 +140,9 @@ TEST(xs3_vpu_scalar_ops_s16, vlashr16)
 
     TEST_ASSERT_EQUAL_INT16( VPU_INT16_MAX, vlashr16(     1,     -15));
     TEST_ASSERT_EQUAL_INT16( VPU_INT16_MIN, vlashr16(    -1,     -15));
+
+    // Notes:
+    // [0] - This is different from vlsat16(-8, 4), which results in 0
 
 
     for(int v = 0; v < REPS; v++){
@@ -365,6 +370,11 @@ TEST(xs3_vpu_scalar_ops_s16, vlsat16)
     TEST_ASSERT_EQUAL_INT16(         0x0B, vlsat16(   0x0A800000,     24));
     TEST_ASSERT_EQUAL_INT16(        -0x0A, vlsat16(  -0x0A800000,     24));
     TEST_ASSERT_EQUAL_INT16(        -0x0B, vlsat16(  -0x0A800001,     24));
+    TEST_ASSERT_EQUAL_INT16(           -1, vlsat16(           -8,      3));
+    TEST_ASSERT_EQUAL_INT16(            0, vlsat16(           -8,      4)); // Note[0] 
+
+    // Notes:
+    // [0] - This is different than vlashr(-8,4) which results in -1
 
 
     for(int v = 0; v < REPS; v++){

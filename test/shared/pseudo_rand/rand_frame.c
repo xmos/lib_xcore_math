@@ -239,6 +239,8 @@ void test_s16_from_double(
         double mant = frexp(d_in[i], &exp);
         mant = mant * ldexp(1, exp - use_exp);
         d_out[i] = (int16_t) mant;
+        if(mant > 0 && d_out[i] == INT16_MIN)
+          d_out[i] = INT16_MAX;
     }
 }
 
@@ -253,6 +255,8 @@ void test_s32_from_double(
         double mant = frexp(d_in[i], &exp);
         mant = mant * ldexp(1, exp - use_exp);
         d_out[i] = (int32_t) mant;
+        if(mant > 0 && d_out[i] == INT32_MIN)
+          d_out[i] = INT32_MAX;
     }
 }
 

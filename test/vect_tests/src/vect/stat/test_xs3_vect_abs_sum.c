@@ -79,9 +79,9 @@ TEST(xs3_vect_abs_sum, xs3_vect_s16_abs_sum_basic)
 
             result = xs3_vect_s16_abs_sum(B, len);
 
-            int16_t t = casse->b;
+            int32_t t = casse->b;
             t = (t>=0)? t : -t;
-            t = (t>=0)? t : 0x7FFF; // because -1*(-0x8000) = -0x8000
+            // t = (t>=0)? t : 0x7FFF; // because -1*(-0x8000) = -0x8000
             int32_t exp = t * len;
 
             TEST_ASSERT_EQUAL_MSG(exp, result, casse->line);
@@ -91,7 +91,7 @@ TEST(xs3_vect_abs_sum, xs3_vect_s16_abs_sum_basic)
 
 
 #define MAX_LEN     200
-#define REPS        (100)
+#define REPS        (1000)
 
 TEST(xs3_vect_abs_sum, xs3_vect_s16_abs_sum_random)
 {
@@ -121,8 +121,7 @@ TEST(xs3_vect_abs_sum, xs3_vect_s16_abs_sum_random)
             exp += b;
         }
 
-        TEST_ASSERT_EQUAL(exp, result);
-        
+        TEST_ASSERT_EQUAL_MESSAGE(exp, result, "");
     }
 }
 #undef MAX_LEN

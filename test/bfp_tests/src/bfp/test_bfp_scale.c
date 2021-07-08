@@ -27,19 +27,8 @@ TEST_TEAR_DOWN(bfp_scale) {}
 #define MAX_LEN     256
 
 
-static char msg_buff[200];
-
-#define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
-    if((EXPECTED)!=(ACTUAL)) {                                                  \
-      sprintf(msg_buff, "%s (test vector @ line %u)", (EXTRA), (LINE_NUM));     \
-      TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);                \
-    }} while(0)
-
-
 TEST(bfp_scale, bfp_s16_scale)
 {
-
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t WORD_ALIGNED dataA[MAX_LEN];
@@ -54,7 +43,7 @@ TEST(bfp_scale, bfp_s16_scale)
     double Bf[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        setExtraInfo_RS(r, seed);
+        unsigned old_seed = seed;
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
         int16_t alpha_mant = pseudo_rand_int16(&seed);
@@ -62,6 +51,8 @@ TEST(bfp_scale, bfp_s16_scale)
 
         test_double_from_s16(Bf, &B);
         double alpha_f = ldexp(alpha_mant, alpha_exp);
+      
+        setExtraInfo_RSL(r, old_seed, B.length);
 
         for(int i = 0; i < B.length; i++){
             Af[i] = Bf[i] * alpha_f;
@@ -73,9 +64,10 @@ TEST(bfp_scale, bfp_s16_scale)
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
-        }
+        XTEST_ASSERT_VECT_S16_WITHIN(1, expA, A.data, A.length,
+            "Expected: %d  <-- %d * 2^(%d)  * %d * 2^(%d) \nActual: %d * 2^(%d)\n",
+            expA[i], B.data[i], B.exp, alpha.mant, alpha.exp, A.data[i], A.exp);
+
     }
 }
 
@@ -117,9 +109,9 @@ TEST(bfp_scale, bfp_s32_scale)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT32_WITHIN(1, expA[i], A.data[i]);
-        }
+        XTEST_ASSERT_VECT_S32_WITHIN(1, expA, A.data, A.length,
+            "Expected: %ld  <-- %ld * 2^(%d)  * %ld * 2^(%d) \nActual: %ld * 2^(%d)\n",
+            expA[i], B.data[i], B.exp, alpha.mant, alpha.exp, A.data[i], A.exp);
     }
 }
 

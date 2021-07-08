@@ -17,6 +17,7 @@
 
 TEST_GROUP_RUNNER(xs3_vect_clip) {
   RUN_TEST_CASE(xs3_vect_clip, xs3_vect_s16_clip_basic);
+  RUN_TEST_CASE(xs3_vect_clip, xs3_vect_s32_clip_basic);
 }
 
 TEST_GROUP(xs3_vect_clip);

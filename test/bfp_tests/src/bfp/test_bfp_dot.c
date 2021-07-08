@@ -28,19 +28,9 @@ TEST_TEAR_DOWN(bfp_dot) {}
 #define REPS        (1000)
 #define MAX_LEN     1024
 
-static char msg_buff[200];
-
-#define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
-    if((EXPECTED)!=(ACTUAL)) {                                                  \
-      sprintf(msg_buff, "%s (line %u)", (EXTRA), (LINE_NUM));                   \
-      TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);                \
-    }} while(0)
-
 
 TEST(bfp_dot, bfp_s16_dot)
 {
-
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataB[MAX_LEN];
@@ -87,8 +77,6 @@ TEST(bfp_dot, bfp_s16_dot)
 
 TEST(bfp_dot, bfp_s32_dot)
 {
-
-
     int32_t dataB[MAX_LEN];
     int32_t dataC[MAX_LEN];
     bfp_s32_t B, C;
@@ -166,9 +154,8 @@ TEST(bfp_dot, bfp_s32_dot)
 
 TEST(bfp_dot, bfp_s32_dot_2)
 {
-
-
     unsigned seed = SEED_FROM_FUNC_NAME();
+    seed = 0x1AC68E1C;
 
     int32_t dataB[MAX_LEN];
     int32_t dataC[MAX_LEN];
@@ -178,7 +165,7 @@ TEST(bfp_dot, bfp_s32_dot_2)
     C.data = dataC;
 
     for(int r = 0; r < REPS; r++){
-        setExtraInfo_RS(r, seed);
+        unsigned old_seed = seed;
 
         bfp_s32_init(&B, dataB, pseudo_rand_int(&seed, -100, 100),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
@@ -187,6 +174,8 @@ TEST(bfp_dot, bfp_s32_dot_2)
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
         C.hr = pseudo_rand_uint(&seed, 0, 28);
+        
+        setExtraInfo_RSL(r, old_seed, B.length);
 
         double expected = 0;
 
@@ -204,7 +193,12 @@ TEST(bfp_dot, bfp_s32_dot_2)
 
         double diff = expected - ldexp(result.mant, result.exp);
         double error = fabs(diff/expected);
-        TEST_ASSERT( error < ldexp(1,-20) );
+        double thresh = ldexp(1, -19);
+        XTEST_ASSERT( error < thresh, 
+          "\n%e not less than %e\n"
+          "B.hr = %u\n"
+          "C.hr = %u\n", 
+          error, thresh, B.hr, C.hr );
     }
 }
 

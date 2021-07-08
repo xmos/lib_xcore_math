@@ -10,6 +10,8 @@
 #include "rand_frame.h"
 #include "testing.h"
 
+#include "tst_asserts.h"
+
 
 EXTERN_C
 void setExtraInfo_R(

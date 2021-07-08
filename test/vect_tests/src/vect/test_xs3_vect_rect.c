@@ -16,6 +16,7 @@
 
 TEST_GROUP_RUNNER(xs3_vect_rect) {
   RUN_TEST_CASE(xs3_vect_rect, xs3_vect_s16_rect);
+  RUN_TEST_CASE(xs3_vect_rect, xs3_vect_s32_rect);
 }
 
 TEST_GROUP(xs3_vect_rect);
