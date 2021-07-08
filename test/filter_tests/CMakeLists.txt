@@ -55,33 +55,38 @@ list( APPEND  LINKER_FLAGS ${LINKER_FLAGS_${CMAKE_SYSTEM_NAME}} )
 
 #########
 
-# Run the python scripts for filter generation. This is just to ensure that the script runs
-# correctly and produces code that compiles correctly.
+find_package( Python3 COMPONENTS Interpreter )
 
-list( APPEND SOURCES_C  ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.c
-                        ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.c
-                        ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.c )
+if ( ${Python3_FOUND} )
 
-add_custom_target(
-  generate_filter_fir_s32
-  COMMAND python ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_fir_filter_s32.py test_fir_s32 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/coefs.txt
-  BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.c
-  COMMENT "Generating test_fir_s32 from script" )
+  # Run the python scripts for filter generation. This is just to ensure that the script runs
+  # correctly and produces code that compiles correctly.
 
-  
-add_custom_target(
-  generate_filter_fir_s16
-  COMMAND python ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_fir_filter_s16.py test_fir_s16 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/coefs.txt
-  BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.c
-  COMMENT "Generating test_fir_s16 from script" )
+  list( APPEND SOURCES_C  ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.c
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.c
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.c )
 
-  
-add_custom_target(
-  generate_filter_biquad_s32
-  COMMAND python ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_biquad_filter_s32.py test_biquad_s32 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/biquad_coefs.csv
-  BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.c
-  COMMENT "Generating test_biquad_s32 from script" )
+  add_custom_target(
+    generate_filter_fir_s32
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_fir_filter_s32.py test_fir_s32 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/coefs.txt
+    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.c
+    COMMENT "Generating test_fir_s32 from script" )
 
+    
+  add_custom_target(
+    generate_filter_fir_s16
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_fir_filter_s16.py test_fir_s16 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/coefs.txt
+    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.c
+    COMMENT "Generating test_fir_s16 from script" )
+
+    
+  add_custom_target(
+    generate_filter_biquad_s32
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_biquad_filter_s32.py test_biquad_s32 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/biquad_coefs.csv
+    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.c
+    COMMENT "Generating test_biquad_s32 from script" )
+
+endif()
 #########
 
 add_executable( ${APP_NAME} ${SOURCES} )
@@ -105,6 +110,10 @@ endif()
 
 add_unity_to_target( ${APP_NAME} CONFIG)
 
-add_dependencies( ${APP_NAME} generate_filter_fir_s32
-                              generate_filter_fir_s16
-                              generate_filter_biquad_s32 )
+if ( ${Python3_FOUND} )
+
+  add_dependencies( ${APP_NAME} generate_filter_fir_s32
+                                generate_filter_fir_s16
+                                generate_filter_biquad_s32 )
+
+endif()

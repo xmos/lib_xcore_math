@@ -107,9 +107,7 @@ TEST(xs3_vpu_scalar_ops_s16, vlsub16)
 
 TEST(xs3_vpu_scalar_ops_s16, vlashr16)
 {
-    
     unsigned seed = SEED_FROM_FUNC_NAME();
-
 
     TEST_ASSERT_EQUAL_INT16(             0, vlashr16(     0,      0));
     TEST_ASSERT_EQUAL_INT16(             1, vlashr16(     1,      0));
@@ -140,6 +138,7 @@ TEST(xs3_vpu_scalar_ops_s16, vlashr16)
 
     TEST_ASSERT_EQUAL_INT16( VPU_INT16_MAX, vlashr16(     1,     -15));
     TEST_ASSERT_EQUAL_INT16( VPU_INT16_MIN, vlashr16(    -1,     -15));
+    TEST_ASSERT_EQUAL_INT16(             0, vlashr16(  9698,      38));
 
     // Notes:
     // [0] - This is different from vlsat16(-8, 4), which results in 0

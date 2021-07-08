@@ -47,7 +47,9 @@ static int16_t mul_s16(int16_t b, int16_t c, int a_shr)
     int32_t A = ((int32_t)b)*c;
     int32_t a = A;
 
-    a = a + (1 << (a_shr-1));
+    if(a_shr != 0)
+      a = a + (1 << (a_shr-1));
+      
     a = a >> a_shr;
     a = (a >= VPU_INT16_MAX)? VPU_INT16_MAX : (a <= VPU_INT16_MIN)? VPU_INT16_MIN : a;
 

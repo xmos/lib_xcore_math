@@ -5,6 +5,36 @@
 
 #include <stdint.h>
 
+#define XTEST_ASSERT_S16_EQUAL(EXPECTED, ACTUAL, FMT, ...)                  \
+  do {                                                                      \
+    if(((int16_t)(EXPECTED)) != ((int16_t)(ACTUAL))) {                      \
+      printf("\n" FMT, __VA_ARGS__ );                                       \
+    }                                                                       \
+    TEST_ASSERT_EQUAL_INT16_MESSAGE((EXPECTED), (ACTUAL),"");               \
+  } while(0)
+
+
+
+#define XTEST_ASSERT_S32_EQUAL(EXPECTED, ACTUAL, FMT, ...)                  \
+  do {                                                                      \
+    if(((int32_t)(EXPECTED)) != ((int32_t)(ACTUAL))) {                      \
+      printf(FMT, __VA_ARGS__ );                                            \
+    }                                                                       \
+    TEST_ASSERT_EQUAL_INT32_MESSAGE((EXPECTED), (ACTUAL), "");              \
+  } while(0)
+
+
+
+#define XTEST_ASSERT_S64_EQUAL(EXPECTED, ACTUAL, FMT, ...)                  \
+  do {                                                                      \
+    if(((int64_t)(EXPECTED)) != ((int64_t)(ACTUAL))) {                      \
+      printf(FMT, __VA_ARGS__ );                                            \
+    }                                                                       \
+    TEST_ASSERT_EQUAL_INT64_MESSAGE((EXPECTED), (ACTUAL), "");              \
+  } while(0)
+
+
+
 #define XTEST_ASSERT_VECT_S16_EQUAL(EXPECTED, ACTUAL, LEN, FMT, ...)        \
   do {                                                                      \
     for(int i = 0; i < (LEN); i++) {                                        \

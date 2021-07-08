@@ -63,7 +63,8 @@ TEST(xs3_filter_fir_s32, case0)
             exp += N;  // old sample (i) leaves as new sample (N+i) comes in.
 
             int32_t res = xs3_filter_fir_s32(&filter, N+i);
-            TEST_ASSERT_EQUAL(exp, res);
+
+            TEST_ASSERT_EQUAL_INT32_MESSAGE(exp, res, "");
         }
 
     }

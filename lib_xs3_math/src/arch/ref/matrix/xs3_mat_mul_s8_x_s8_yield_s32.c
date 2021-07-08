@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #include "xs3_math.h"
-#include "../../vect/vpu_helper.h"
+#include "../../../vect/vpu_helper.h"
 #include "xs3_vpu_scalar_ops.h"
 
 
@@ -26,7 +26,7 @@ void xs3_mat_mul_s8_x_s8_yield_s32 (
     const int8_t matrix[],
     const int8_t input_vect[],
     const unsigned M_rows,
-    const unsigned N_cols);
+    const unsigned N_cols)
 {
   const int acc_groups = M_rows >> VPU_INT8_ACC_PERIOD_LOG2;
 

@@ -31,6 +31,6 @@ function( add_unity_to_target  target_name )
   endif()
 
   string(REPLACE ";" " " UNITY_FLAGS "${UNITY_FLAGS}")
-  set_source_files_properties( ${UNITY_SOURCES} PROPERTIES  COMPILE_FLAGS  ${UNITY_FLAGS} )
+  set_source_files_properties( ${UNITY_SOURCES} PROPERTIES  COMPILE_FLAGS  "${UNITY_FLAGS}" )
 
 endfunction()

@@ -197,12 +197,13 @@ TEST(xs3_vect_sum, xs3_vect_s32_sum_random)
 
         result = xs3_vect_s32_sum(B, len);
 
-        int32_t exp = 0;
+        int64_t exp = 0;
         for(int i = 0; i < len; i++){
             exp += B[i];
         }
 
-        TEST_ASSERT_EQUAL(exp, result);
+        XTEST_ASSERT_S64_EQUAL(exp, result, 
+            "length: %u", len);
         
     }
 }

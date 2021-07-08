@@ -84,7 +84,10 @@ TEST(xs3_vect_abs_sum, xs3_vect_s16_abs_sum_basic)
             // t = (t>=0)? t : 0x7FFF; // because -1*(-0x8000) = -0x8000
             int32_t exp = t * len;
 
-            TEST_ASSERT_EQUAL_MSG(exp, result, casse->line);
+            XTEST_ASSERT_S32_EQUAL(exp, result,
+                "Case @ line %u\n"
+                "length: %u\n",
+                casse->line, len);
         }
     }
 }
@@ -209,14 +212,15 @@ TEST(xs3_vect_abs_sum, xs3_vect_s32_abs_sum_random)
 
         result = xs3_vect_s32_abs_sum(B, len);
 
-        int32_t exp = 0;
+        int64_t exp = 0;
         for(int i = 0; i < len; i++){
             int64_t b = B[i];
             b = (b>=0)? b : -b;
             exp += b;
         }
 
-        TEST_ASSERT_EQUAL(exp, result);
+        XTEST_ASSERT_S64_EQUAL(exp, result, 
+            "length: %u", len);
         
     }
 }

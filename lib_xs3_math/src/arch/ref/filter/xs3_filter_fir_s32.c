@@ -33,7 +33,8 @@ int32_t xs3_filter_fir_s32(
 
 
     if(filter->shift >= 0){
-        acc += (1 << (filter->shift-1));
+        if(filter->shift != 0)
+            acc += (1 << (filter->shift-1));
         acc = acc >> filter->shift;
     } else {
         acc = acc << (-filter->shift);

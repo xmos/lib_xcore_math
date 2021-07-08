@@ -13,7 +13,6 @@
 
 #include "unity_fixture.h"
 
-
 TEST_GROUP_RUNNER(bfp_alloc) {
   RUN_TEST_CASE(bfp_alloc, bfp_s16_alloc);
   RUN_TEST_CASE(bfp_alloc, bfp_s32_alloc);
@@ -51,8 +50,12 @@ TEST(bfp_alloc, bfp_s32_alloc)
       TEST_ASSERT_NOT_NULL( vec.data );
       // Length is correct
       TEST_ASSERT_EQUAL( length, vec.length );
-      // d-word-aligned
+
+#if __xcore__
+      // d-word-aligned (xcore only)
       TEST_ASSERT_EQUAL(0, ((unsigned)vec.data) % 8);
+#endif
+
       // Flags are correct
       TEST_ASSERT_EQUAL( BFP_FLAG_DYNAMIC, vec.flags );
 
@@ -81,8 +84,12 @@ TEST(bfp_alloc, bfp_s16_alloc)
       TEST_ASSERT_NOT_NULL( vec.data );
       // Length is correct
       TEST_ASSERT_EQUAL( length, vec.length );
-      // d-word-aligned
+
+#if __xcore__
+      // d-word-aligned (xcore only)
       TEST_ASSERT_EQUAL(0, ((unsigned)vec.data) % 8);
+#endif
+
       // Flags are correct
       TEST_ASSERT_EQUAL( BFP_FLAG_DYNAMIC, vec.flags );
   }
@@ -109,8 +116,12 @@ TEST(bfp_alloc, bfp_complex_s32_alloc)
       TEST_ASSERT_NOT_NULL( vec.data );
       // Length is correct
       TEST_ASSERT_EQUAL( length, vec.length );
-      // d-word-aligned
+      
+#if __xcore__
+      // d-word-aligned (xcore only)
       TEST_ASSERT_EQUAL(0, ((unsigned)vec.data) % 8);
+#endif
+
       // Flags are correct
       TEST_ASSERT_EQUAL( BFP_FLAG_DYNAMIC, vec.flags );
   }
@@ -135,15 +146,23 @@ TEST(bfp_alloc, bfp_complex_s16_alloc)
         
       // Allocation succeeded
       TEST_ASSERT_NOT_NULL( vec.real );
-      // imag should always be word-aligned.
+      
+#if __xcore__
+      // imag should always be word-aligned. (xcore only)
       TEST_ASSERT_EQUAL_MESSAGE(0, ((unsigned)vec.imag) % 4, "imag not word-aligned");
       // imag should be real offset by length elements, rounded up to the nearest word-aligned address
       int16_t* exp_imag = &vec.real[length + ((length & 1)? 1 : 0)];
       TEST_ASSERT_POINTERS_EQUAL(exp_imag, vec.imag);
+#endif
+
       // Length is correct
       TEST_ASSERT_EQUAL( length, vec.length );
-      // d-word-aligned
+      
+#if __xcore__
+      // d-word-aligned (xcore only)
       TEST_ASSERT_EQUAL(0, ((unsigned)vec.real) % 8);
+#endif
+
       // Flags are correct
       TEST_ASSERT_EQUAL( BFP_FLAG_DYNAMIC, vec.flags );
   }
@@ -170,8 +189,12 @@ TEST(bfp_alloc, bfp_ch_pair_s32_alloc)
       TEST_ASSERT_NOT_NULL( vec.data );
       // Length is correct
       TEST_ASSERT_EQUAL( length, vec.length );
-      // d-word-aligned
+      
+#if __xcore__
+      // d-word-aligned (xcore only)
       TEST_ASSERT_EQUAL(0, ((unsigned)vec.data) % 8);
+#endif
+
       // Flags are correct
       TEST_ASSERT_EQUAL( BFP_FLAG_DYNAMIC, vec.flags );
       
@@ -200,8 +223,12 @@ TEST(bfp_alloc, bfp_ch_pair_s16_alloc)
       TEST_ASSERT_NOT_NULL( vec.data );
       // Length is correct
       TEST_ASSERT_EQUAL( length, vec.length );
-      // d-word-aligned
+      
+#if __xcore__
+      // d-word-aligned (xcore only)
       TEST_ASSERT_EQUAL(0, ((unsigned)vec.data) % 8);
+#endif
+
       // Flags are correct
       TEST_ASSERT_EQUAL( BFP_FLAG_DYNAMIC, vec.flags );
   }

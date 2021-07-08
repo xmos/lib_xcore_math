@@ -37,8 +37,6 @@ static char msg_buff[200];
 
 TEST(bfp_add, bfp_s16_add)
 {
-
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataA[MAX_LEN];
@@ -56,10 +54,12 @@ TEST(bfp_add, bfp_s16_add)
     double Cf[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        setExtraInfo_RS(r, seed);
+        const unsigned old_seed = seed;
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
         test_random_bfp_s16(&C, MAX_LEN, &seed, &A, B.length);
+
+        setExtraInfo_RSL(r, old_seed, B.length);
 
         test_double_from_s16(Bf, &B);
         test_double_from_s16(Cf, &C);
@@ -72,17 +72,19 @@ TEST(bfp_add, bfp_s16_add)
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
-        }
+        XTEST_ASSERT_VECT_S16_WITHIN(1, expA, A.data, A.length,
+            "B.hr = %u\n"
+            "C.hr = %u\n"
+            "Expected: %d * 2^%d <-- (%d * 2^%d) + (%d * 2^%d)\n"
+            "Actual: %d * 2^%d\n", 
+            B.hr, C.hr, expA[i], A.exp, B.data[i], B.exp, 
+            C.data[i], C.exp, A.data[i], A.exp);
     }
 }
 
 
 TEST(bfp_add, bfp_s32_add)
 {
-
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataA[MAX_LEN];
