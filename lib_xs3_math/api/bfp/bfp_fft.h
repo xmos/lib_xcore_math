@@ -266,6 +266,10 @@ void bfp_fft_inverse_complex(
  * 
  * @note When performing a DFT on a pair of channels, bfp_fft_forward_stereo() is more efficient than using 
  *       bfp_fft_forward_mono() twice.
+ * 
+ * @warning If you intend to apply an IFFT to BFP vectors `a` and `b` you must keep track of both
+ *          vectors (and keep track of which is which), because bfp_fft_inverse_stereo() requires
+ *          that the mantissa buffer of vector `b` directly follows that of `a`.
  *  
  * @param[out]  a   Output spectrum for channel A.
  * @param[out]  b   Output spectrum for channel B.
@@ -337,3 +341,113 @@ void  bfp_fft_inverse_stereo(
     bfp_ch_pair_s32_t* x,
     const bfp_complex_s32_t* a,
     const bfp_complex_s32_t* b);
+
+/**
+ * @brief Unpack the spectrum resulting from bfp_fft_forward_mono().
+ * 
+ * The DFT of a real signal is periodic with period FFT_N (the FFT length) and has a complex
+ * conjugate symmetry about index 0. These two properties guarantee that the imaginary part of
+ * both the DC component (index 0) and the Nyquist component (index FFT_N/2) of the spectrum
+ * are zero. To compute the forward FFT in-place, bfp_fft_forward_mono() packs the real part 
+ * of the Nyquist rate component of the output spectrum into the imaginary part of the DC
+ * component.
+ * 
+ * This may be undesirable when operating on the signal's complex spectrum. Use this function
+ * to unpack the Nyquist component. This function will also adjust the BFP vector's length to
+ * reflect this unpacking.
+ * 
+ * NOTE: If you intend to unpack the spectrum using this function, the buffer for the time-domain
+ *       BFP vector must have length `FFT_N+2`, rather than `FFT_N` (`int32_t` elements), but
+ *       these should NOT be reflected in the time-domain BFP vector's `length` field.
+ * 
+ * @f$
+ *    Re\{x_{N/2}\} \leftarrow  Im\{x_0\}     \\
+ *    Im\{x_0\} \leftarrow 0                  \\
+ *    Im\{x_{N/2}\} \leftarrow 0              \\
+ *    x.length \leftarrow x.length + 1
+ * @f$
+ * 
+ * NOTE: Before bfp_fft_inverse_mono() may be applied, bfp_fft_pack_mono() must be called, as the
+ *       inverse FFT expects the data to be packed.
+ * 
+ * @param[inout]  x  The spectrum to be unpacked
+ * 
+ * @see bfp_fft_forward_mono
+ * @see bfp_fft_pack_mono
+ */
+C_API
+void bfp_fft_unpack_mono(
+    bfp_complex_s32_t* x);
+
+
+/**
+ * @brief Unpack the spectrum resulting from bfp_fft_forward_stereo().
+ * 
+ * The DFT of a real signal is periodic with period FFT_N (the FFT length) and has a complex
+ * conjugate symmetry about index 0. These two properties guarantee that the imaginary part of
+ * both the DC component (index 0) and the Nyquist component (index FFT_N/2) of the spectrum
+ * are zero. To compute the forward FFT in-place, bfp_fft_forward_stereo() packs the real part 
+ * of the Nyquist rate component of the output spectra into the imaginary part of the DC
+ * component.
+ * 
+ * This may be undesirable when operating on the signal's complex spectrum. Use this function
+ * to unpack the Nyquist component. This function will also adjust the BFP vectors' length to
+ * reflect this unpacking.
+ * 
+ * NOTE: If you intend to unpack the spectrum using this function, the buffer for the time-domain
+ *       BFP vector must have length `FFT_N+2`, rather than `FFT_N` (`ch_pair_s32_t` elements), but
+ *       these should NOT be reflected in the time-domain BFP vector's `length` field.
+ * 
+ * @f$
+ *    Re\{x_{N/2}\} \leftarrow  Im\{x_0\}     \\
+ *    Im\{x_0\} \leftarrow 0                  \\
+ *    Im\{x_{N/2}\} \leftarrow 0              \\
+ *    x.length \leftarrow x.length + 1
+ * @f$
+ * 
+ * NOTE: Before bfp_fft_inverse_stereo() may be applied, bfp_fft_pack_stereo() must be called, 
+ *       as the inverse FFT expects the data to be packed.
+ * 
+ * @param[inout]  x  The spectrum to be unpacked
+ * 
+ * @see bfp_fft_forward_stereo
+ * @see bfp_fft_pack_stereo
+ */
+C_API
+void bfp_fft_unpack_stereo(
+    bfp_complex_s32_t* x1,
+    bfp_complex_s32_t* x2);
+
+
+/**
+ * @brief Pack the spectrum resulting from bfp_fft_unpack_mono().
+ * 
+ * This function applies the reverse process of bfp_fft_unpack_mono(), to prepare it for an
+ * inverse FFT using bfp_fft_inverse_mono().
+ * 
+ * @param[inout]  x   The spectrum to be packed
+ * 
+ * @see bfp_fft_inverse_mono
+ * @see bfp_fft_unpack_mono
+ */
+C_API
+void bfp_fft_pack_mono(
+    bfp_complex_s32_t* x);
+
+
+/**
+ * @brief Pack the spectrum resulting from bfp_fft_unpack_stereo().
+ * 
+ * This function applies the reverse process of bfp_fft_unpack_stereo(), to prepare it for an
+ * inverse FFT using bfp_fft_inverse_stereo().
+ * 
+ * @param[inout]  x1   The first channel of the spectrum to be packed
+ * @param[inout]  x2   The second channel of the spectrum to be packed
+ * 
+ * @see bfp_fft_inverse_stereo
+ * @see bfp_fft_unpack_stereo
+ */
+C_API
+void bfp_fft_pack_stereo(
+    bfp_complex_s32_t* x1,
+    bfp_complex_s32_t* x2);

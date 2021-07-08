@@ -6,7 +6,8 @@
 
 #include "unity.h"
 #include "tst_common.h"
-#include "test_cases.h"
+
+#define CALL(F)     do { void F(); F(); } while(0)
 
 FILE* perf_file = NULL;
 
@@ -21,12 +22,13 @@ int main(int argc, char** argv)
 
     UNITY_BEGIN();
 
-    test_xs3_fft_helpers();
-    test_xs3_fft_mono_adjust();
-    test_xs3_fft_dit();
-    test_xs3_fft_dif();
+    CALL(test_xs3_fft_helpers);
+    CALL(test_xs3_fft_mono_adjust);
+    CALL(test_xs3_fft_dit);
+    CALL(test_xs3_fft_dif);
 
-    test_bfp_fft();
+    CALL(test_bfp_fft);
+    CALL(test_bfp_fft_pack_unpack);
 
 #if WRITE_PERFORMANCE_INFO
     fclose(perf_file);

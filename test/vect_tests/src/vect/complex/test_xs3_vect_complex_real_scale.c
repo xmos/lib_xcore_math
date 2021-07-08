@@ -55,7 +55,7 @@ static void test_xs3_vect_s16_scale_prepare()
         exponent_t a_exp;
         right_shift_t sat;
 
-        xs3_vect_s16_scale_prepare(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_complex_s16_real_scale_prepare(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr);
 
         xs3_vect_complex_s16_real_scale(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
 
@@ -206,7 +206,7 @@ static void test_xs3_vect_complex_s32_real_scale()
 
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
-        xs3_vect_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_complex_s32_real_scale_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         for(int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> b_hr;

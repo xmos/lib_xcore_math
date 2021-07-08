@@ -11,7 +11,6 @@
 #include <stdio.h>
 
 
-
     
 headroom_t bfp_s16_headroom(
     bfp_s16_t* a)
@@ -54,7 +53,7 @@ void bfp_s16_add(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
+    xs3_vect_s16_add_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->hr = xs3_vect_s16_add(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
@@ -73,7 +72,7 @@ void bfp_s16_sub(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
+    xs3_vect_s16_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->hr = xs3_vect_s16_sub(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
@@ -176,40 +175,13 @@ void bfp_s16_clip(
 
     assert(lower_bound <= upper_bound);
 
-    // Suppose we say a->exp = b->exp. Then, we have to shift the bounds so that
-    //  they match b->exp. So, bound_shr = b->exp - bound_exp. Two possibilities:
-    //  A) bound_shr is negative (gets larger)
-    //  B) bound_shr is non-negative (gets smaller (or stays same)
+    exponent_t a_exp;
+    right_shift_t b_shr;
 
-    // In case A, we shift the bound left. If upper_bound is positive and saturates, then of course all elements of b
-    //  were already less than the upper bound. Likewise, if lower_bound is negative and saturates, then all elements of
-    //  b were greater than the lower bound. If upper is negative and saturates or lower is positive and saturates, then
-    //  we just set all of the elements of the output to upper or lower (accordingly), since nothing could possible be
-    //  within the range specified.
+    int16_t lb = lower_bound;
+    int16_t ub = upper_bound;
 
-    // In case B, we shift the bounds right, and we lose some precision on them, but that's it.
-    
-    exponent_t a_exp = b->exp; //minimum b exponent
-    
-    right_shift_t bound_shr = a_exp - bound_exp;
-    right_shift_t b_shr = a_exp - b->exp;
-
-    int16_t lb;
-    int16_t ub;
-
-    if(bound_shr < 0){
-        int32_t ub32 = ((int32_t)upper_bound) << (-bound_shr);
-        int32_t lb32 = ((int32_t)lower_bound) << (-bound_shr);
-
-        ub = (ub32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (ub32 <= VPU_INT16_MIN)? VPU_INT16_MIN : ub32;
-        lb = (lb32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (lb32 <= VPU_INT16_MIN)? VPU_INT16_MIN : lb32;
-    } else {
-        // TODO: Should force upper_bound to round downwards to enforce the guarantee that no output can be larger than 
-        // upper bound?
-        ub = upper_bound >> bound_shr;
-        // And lower bound upwards?
-        lb = (lower_bound + ((1<<bound_shr)-1)) >> bound_shr;
-    }
+    xs3_vect_s16_clip_prepare(&a_exp, &b_shr, &lb, &ub, b->exp, bound_exp, b->hr);
 
     if(ub == VPU_INT16_MIN){
         /* upper bound must be smaller than any element of b, so set everything to that */

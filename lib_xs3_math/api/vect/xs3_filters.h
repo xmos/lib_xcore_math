@@ -238,14 +238,14 @@ typedef struct {
  * `sample_buffer` and `coefficients` must be at least `4 * tap_count` bytes long, and aligned to a 4-byte (word) 
  * boundary.
  * 
- * See `xs3_filter_fir_s32_t` for more information about FIR filters and their operation.
+ * See `xs3_filter_fir_s32_t` for more information about 32-bit FIR filters and their operation.
  * 
  * @param[out] filter           Filter struct to be initialized
  * @param[in]  sample_buffer    Buffer used by the filter to contain state information. Must be at least `tap_count` 
  *                              elements long
  * @param[in]  tap_count        Order of the FIR filter; number of filter taps
  * @param[in]  coefficients     Array containing filter coefficients.
- * @param[in]  shift            Unsigned arithmetic right-shift applied to accumulator to get filter output sample.
+ * @param[in]  shift            Unsigned arithmetic right-shift applied to accumulator to get filter output sample
  * 
  * @see xs3_filter_fir_s32_t
  */
@@ -423,13 +423,24 @@ typedef struct {
 } xs3_filter_fir_s16_t;
 
 /**
- * @brief
+ * @brief Initialize a 16-bit FIR filter.
  * 
- * @param[out] filter
- * @param[in]  sample_buffer
- * @param[in]  tap_count
- * @param[in]  coefficients
- * @param[in]  shift
+ * Before xs3_filter_fir_s16() or xs3_filter_fir_s16_add_sample() can be used on a filter it must be initialized with
+ * a call to this function.
+ * 
+ * `sample_buffer` and `coefficients` must be at least `2 * tap_count` bytes long, and aligned to a 4-byte (word)
+ * boundary.
+ * 
+ * See `xs3_filter_fir_s16_t` for more information about 16-bit FIR filters and their operation.
+ * 
+ * @param[out] filter           Filter struct to be initialized
+ * @param[in]  sample_buffer    Buffer used by the filter to contain state information. Must be at least `tap_count`
+ *                              elements long
+ * @param[in]  tap_count        Order of the FIR filter; number of filter taps
+ * @param[in]  coefficients     Array containing filter coefficients
+ * @param[in]  shift            Unsigned arithmetic right-shift applied to accumulator to get filter output sample
+ * 
+ * @see xs3_filter_fir_s16_t
  */
 C_API
 void xs3_filter_fir_s16_init(
@@ -440,10 +451,16 @@ void xs3_filter_fir_s16_init(
     const right_shift_t shift);
 
 /**
- * @brief
+ * @brief Add a new input sample to a 16-bit FIR filter without processing an output sample.
  * 
- * @param[inout] filter
- * @param[in]    new_sample
+ * This function adds a new input sample to `filter`'s state without computing a new output sample.
+ * 
+ * See `xs3_filter_fir_s16_t` for more information about FIR filters and their operation.
+ * 
+ * @param[inout] filter         Filter struct to have the sample added
+ * @param[in]    new_sample     Sample to be added to `filter`'s history
+ * 
+ * @see xs3_filter_fir_s16_t
  */
 C_API
 void xs3_filter_fir_s16_add_sample(
@@ -451,14 +468,19 @@ void xs3_filter_fir_s16_add_sample(
     const int16_t new_sample);
     
 /**
- * @brief
+ * This function implements a Finite Impulse Response (FIR) filter. 
+ * 
+ * The new input sample `new_sample` is added to this filter's state, and a new output sample is computed and returned
+ * as specified in `xs3_filter_fir_s16_t`.
  * 
  * With a large number of filter taps, this function takes approximately 3 thread cycles per 16 filter taps.
  * 
- * @param[inout] filter
- * @param[in]    new_sample
+ * @param[inout]    filter          Filter to be processed
+ * @param[in]       new_sample      New input sample to be processed by `filter`
  * 
  * @returns     Next filtered output sample
+ * 
+ * @see xs3_filter_fir_s16_t
  */
 C_API
 int16_t xs3_filter_fir_s16(
@@ -501,12 +523,21 @@ typedef struct {
 } xs3_biquad_filter_s32_t;
 
 /**
- * @brief 
+ * This function implements a 32-bit Biquad filter. 
  * 
- * @param[inout] filter
- * @param[in]    new_sample
+ * The new input sample `new_sample` is added to this filter's state, and a new output sample is computed and returned
+ * as specified in `xs3_biquad_filter_s32_t`.
+ * 
+ * This function processes a single filter block containing (up to) 8 biquad filter sections. For biquad filters
+ * containing 2 or more filter blocks (more than 8 biquad filter sections), see xs3_filter_biquads_s32().
+ * 
+ * @param[inout]    filter          Filter to be processed
+ * @param[in]       new_sample      New input sample to be processed by `filter`
  * 
  * @returns     Next filtered output sample
+ * 
+ * @see xs3_biquad_filter_s32_t
+ * @see xs3_filter_biquads_s32
  */
 C_API
 int32_t xs3_filter_biquad_s32(
@@ -515,13 +546,21 @@ int32_t xs3_filter_biquad_s32(
 
 
 /**
- * @brief 
+ * This function implements a 32-bit Biquad filter. 
  * 
- * @param[inout] biquads
- * @param[in]    block_count
- * @param[in]    new_sample
+ * The new input sample `new_sample` is added to this filter's state, and a new output sample is computed and returned
+ * as specified in `xs3_biquad_filter_s32_t`.
  * 
- * @returns     New filtered output sample
+ * This function processes one or more filter blocks, with each block containing up to 8 biquad filter sections.
+ * 
+ * @param[inout]    biquads         Filter blocks to be processed
+ * @param[in]       block_count     Number of filter blocks in `biquads`
+ * @param[in]       new_sample      New input sample to be processed by `filter`
+ * 
+ * @returns     Next filtered output sample
+ * 
+ * @see xs3_biquad_filter_s32_t
+ * @see xs3_filter_biquad_s32
  */
 C_API
 int32_t xs3_filter_biquads_s32(

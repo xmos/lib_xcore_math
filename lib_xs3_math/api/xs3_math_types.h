@@ -408,3 +408,20 @@ typedef struct {
     double ch_a;    ///< Channel A
     double ch_b;    ///< Channel B
 } ch_pair_double_t;
+
+/**
+ * @brief Holds a set of sixteen 32-bit accumulators in the XS3 VPU's internal format.
+ * 
+ * The XS3 VPU stores 32-bit accumulators with the most significant 16-bits stored in one 256-bit vector register (called vD),
+ * and the least significant 16-bit stored in another 256-bit register (called vR). This struct reflects that internal format,
+ * and is occasionally used to store intermediate results.
+ * 
+ * @note `vR` is unsigned. This reflects the fact that a signed 16-bit integer `0xSTUVWXYZ` is always exactly 
+ * `0x0000WXYZ` larger than `0xSTUV0000`.  To combine the upper and lower 16-bits of an accumulator, use 
+ * `(((int32_t)vD[k]) << 16) + vR[k]`.
+ */
+C_TYPE
+typedef struct {
+  int16_t vD[16];
+  uint16_t vR[16];
+} xs3_split_acc_s32_t;

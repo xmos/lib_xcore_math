@@ -10,24 +10,6 @@
 
 
 ////////////////////////////////////////
-//  Shared params (16- and 32-bit)    //
-////////////////////////////////////////
-
-
-void xs3_vect_complex_mag_prepare(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    const exponent_t b_exp,
-    const headroom_t b_hr)
-{
-    // Needs 1 bit of headroom. For 16 bits, consider that complex mantissa values near (INT16_MAX + INT16_MAX*j) can't 
-    // be rotated to the real axis without going beyond the range of a 16-bit integer.
-    *b_shr = 1-(int)b_hr;
-    *a_exp = b_exp + *b_shr;
-}
-
-
-////////////////////////////////////////
 //      Params for 16-bit             //
 ////////////////////////////////////////
 
@@ -182,6 +164,18 @@ void xs3_vect_complex_s16_squared_mag_prepare(
 ////////////////////////////////////////
 
 
+
+void xs3_vect_complex_s32_mag_prepare(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const exponent_t b_exp,
+    const headroom_t b_hr)
+{
+    // Needs 1 bit of headroom. For 16 bits, consider that complex mantissa values near (INT16_MAX + INT16_MAX*j) can't 
+    // be rotated to the real axis without going beyond the range of a 16-bit integer.
+    *b_shr = 1-(int)b_hr;
+    *a_exp = b_exp + *b_shr;
+}
 
 
 void xs3_vect_complex_s32_real_mul_prepare(
