@@ -13,17 +13,18 @@ list( APPEND  DEP_LIBS_Linux  m   )
 file( GLOB_RECURSE SOURCES_C  src/*.c )
 file( GLOB_RECURSE SOURCES_XC src/*.xc )
 
-set( XSCOPE_CONFIG config.xscope )
+# set( XSCOPE_CONFIG config.xscope )
+get_filename_component(XSCOPE_CONFIG config.xscope ABSOLUTE)
 
 ## Compile flags
 unset(COMPILE_FLAGS)
 list( APPEND  COMPILE_FLAGS   -Wno-unused-variable )
 
 unset(COMPILE_FLAGS_XCORE)
-list( APPEND  COMPILE_FLAGS_XCORE    )
+list( APPEND  COMPILE_FLAGS_XCORE   "" )
 
 unset(COMPILE_FLAGS_Linux)
-list( APPEND  COMPILE_FLAGS_XCORE   "" )
+list( APPEND  COMPILE_FLAGS_Linux   "" )
 
 ## Linker flags
 unset(LINKER_FLAGS)
@@ -32,6 +33,7 @@ list( APPEND  LINKER_FLAGS  "" )
 unset(LINKER_FLAGS_XCORE)
 list( APPEND  LINKER_FLAGS_XCORE  -target=${XCORE_TARGET} )
 list( APPEND  LINKER_FLAGS_XCORE  -report                 )
+list( APPEND  LINKER_FLAGS_XCORE  ${XSCOPE_CONFIG}        )
 
 unset(LINKER_FLAGS_Linux)
 list( APPEND  LINKER_FLAGS_Linux  ""                      )
@@ -41,7 +43,6 @@ list( APPEND  LINKER_FLAGS_Linux  ""                      )
 
 list( APPEND  SOURCES         ${SOURCES_C}     )
 list( APPEND  SOURCES_XCORE   ${SOURCES_XC}    )
-list( APPEND  SOURCES_XCORE   ${XSCOPE_CONFIG} )
 list( APPEND  SOURCES   ${SOURCES_${CMAKE_SYSTEM_NAME}} )
 
 list( APPEND  COMPILE_FLAGS ${COMPILE_FLAGS_${CMAKE_SYSTEM_NAME}} )

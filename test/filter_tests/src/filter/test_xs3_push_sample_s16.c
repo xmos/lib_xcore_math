@@ -11,7 +11,7 @@
 
 #include "../src/vect/vpu_helper.h"
 
-#include "../../tst_common.h"
+#include "../tst_common.h"
 
 #include "unity.h"
 

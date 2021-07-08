@@ -10,62 +10,6 @@
 
 
 
-////////////////////////////////////////
-//  Shared params (16- and 32-bit)    //
-////////////////////////////////////////
-
-
-
-/*            
-    A = B + C
-
-    Bf[] = B[] * 2^(B.exp)
-    Cf[] = C[] * 2^(C.exp)
-
-    Worst case scenario is: (B.exp - B.hr) == (C.exp - C.hr), and where B.hr and C.hr
-    are due to a negative power of 2, and where corresponding elements in the two vectors
-    cause that. In other words:
-
-    min(Bf[]) = min(Cf[]) = -(2^(16-X.hr+1))
-    Then min(Bf[] + Cf[]) = 2*min(Bf[]) = -(2^(16-X.hr+2)), which is also a negative
-    power of 2, and which will saturate if we remove all the headroom from B[] and C[]
-
-    So, if worst case result is -(2^(16-X.hr+2)), which has to be -0x4000, because the
-    value -0x8000 would saturate to -0x8001, then the output exponent will have to be
-    A.exp = (B.exp - B.hr) + 2
-
-    However, if (B.exp-B.hr) != (C.exp-C.hr), then min(Bf[]+Cf[]) is strictly greater
-    than  -(2^(16-X.hr+2)), and A.exp can be  (B.exp - B.hr) + 1
-
-*/
-
-
-    
-/* ******************
- *
- * 
- * ******************/
-void xs3_vect_add_sub_prepare(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    right_shift_t* c_shr,
-    const exponent_t b_exp,
-    const exponent_t c_exp,
-    const headroom_t b_hr,
-    const headroom_t c_hr)
-{
-    const exponent_t b_min_exp = b_exp - b_hr;
-    const exponent_t c_min_exp = c_exp - c_hr;
-
-    *a_exp = MAX(b_min_exp, c_min_exp) + 1;
-
-    *b_shr = *a_exp - b_exp;
-    *c_shr = *a_exp - c_exp;
-}
-
-    
-
-
 
 ////////////////////////////////////////
 //      Params for 16-bit             //
@@ -100,6 +44,62 @@ void xs3_vect_s16_mul_prepare(
     *a_exp = (b_exp+c_exp)+*a_shr;
 }
 
+void xs3_vect_s16_clip_prepare(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    int16_t* lower_bound,
+    int16_t* upper_bound,
+    const exponent_t b_exp,
+    const exponent_t bound_exp,
+    const headroom_t b_hr)
+{
+
+    // Suppose we say a->exp = b->exp. Then, we have to shift the bounds so that
+    //  they match b->exp. So, bound_shr = b->exp - bound_exp. Two possibilities:
+    //  A) bound_shr is negative (gets larger)
+    //  B) bound_shr is non-negative (gets smaller (or stays same)
+
+    // In case A, we shift the bound left. If upper_bound is positive and saturates, then of course all elements of b
+    //  were already less than the upper bound. Likewise, if lower_bound is negative and saturates, then all elements of
+    //  b were greater than the lower bound. If upper is negative and saturates or lower is positive and saturates, then
+    //  we just set all of the elements of the output to upper or lower (accordingly), since nothing could possible be
+    //  within the range specified.
+
+    // In case B, we shift the bounds right, and we lose some precision on them, but that's it.
+    
+    *a_exp = b_exp; //minimum b exponent
+    
+    right_shift_t bound_shr = *a_exp - bound_exp;
+    *b_shr = *a_exp - b_exp;
+
+    int16_t lb;
+    int16_t ub;
+
+    if(bound_shr < 0){
+        int32_t ub32 = ((int32_t)*upper_bound) << (-bound_shr);
+        int32_t lb32 = ((int32_t)*lower_bound) << (-bound_shr);
+
+        ub = (ub32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (ub32 <= VPU_INT16_MIN)? VPU_INT16_MIN : ub32;
+        lb = (lb32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (lb32 <= VPU_INT16_MIN)? VPU_INT16_MIN : lb32;
+    } else {
+        // TODO: Should force upper_bound to round downwards to enforce the guarantee that no output can be larger than 
+        // upper bound?
+        ub = *upper_bound >> bound_shr;
+        // And lower bound upwards?
+        lb = (*lower_bound + ((1<<bound_shr)-1)) >> bound_shr;
+    }
+
+    if(ub == VPU_INT16_MIN){
+        /* upper bound must be smaller than any element of b, so set everything to that */
+        *a_exp = bound_exp;
+    } else if(lb == VPU_INT16_MAX){
+        /* lower bound must be larger than any element of b, so set everything to that */
+        *a_exp = bound_exp;
+    }
+
+    *lower_bound = lb;
+    *upper_bound = ub;
+}
 
 
 ////////////////////////////////////////
@@ -291,6 +291,55 @@ void xs3_vect_s16_inverse_prepare(
     *a_exp = shr - b_exp - 30;
 }
 
+
+
+
+/*            
+    A = B + C
+
+    Bf[] = B[] * 2^(B.exp)
+    Cf[] = C[] * 2^(C.exp)
+
+    Worst case scenario is: (B.exp - B.hr) == (C.exp - C.hr), and where B.hr and C.hr
+    are due to a negative power of 2, and where corresponding elements in the two vectors
+    cause that. In other words:
+
+    min(Bf[]) = min(Cf[]) = -(2^(16-X.hr+1))
+    Then min(Bf[] + Cf[]) = 2*min(Bf[]) = -(2^(16-X.hr+2)), which is also a negative
+    power of 2, and which will saturate if we remove all the headroom from B[] and C[]
+
+    So, if worst case result is -(2^(16-X.hr+2)), which has to be -0x4000, because the
+    value -0x8000 would saturate to -0x8001, then the output exponent will have to be
+    A.exp = (B.exp - B.hr) + 2
+
+    However, if (B.exp-B.hr) != (C.exp-C.hr), then min(Bf[]+Cf[]) is strictly greater
+    than  -(2^(16-X.hr+2)), and A.exp can be  (B.exp - B.hr) + 1
+
+*/
+
+
+    
+/* ******************
+ *
+ * 
+ * ******************/
+void xs3_vect_s32_add_prepare(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr)
+{
+    const exponent_t b_min_exp = b_exp - b_hr;
+    const exponent_t c_min_exp = c_exp - c_hr;
+
+    *a_exp = MAX(b_min_exp, c_min_exp) + 1;
+
+    *b_shr = *a_exp - b_exp;
+    *c_shr = *a_exp - c_exp;
+}
 
 
     
@@ -499,4 +548,62 @@ void xs3_vect_s32_energy_prepare(
     *b_shr = MAX(*b_shr, -((int)b_hr));
 
     *a_exp = 2*(b_exp + *b_shr) + 30;
+}
+
+
+void xs3_vect_s32_clip_prepare(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    int32_t* lower_bound,
+    int32_t* upper_bound,
+    const exponent_t b_exp,
+    const exponent_t bound_exp,
+    const headroom_t b_hr)
+{
+
+    // Suppose we say a->exp = b->exp. Then, we have to shift the bounds so that
+    //  they match b->exp. So, bound_shr = b->exp - bound_exp. Two possibilities:
+    //  A) bound_shr is negative (gets larger)
+    //  B) bound_shr is non-negative (gets smaller (or stays same)
+
+    // In case A, we shift the bound left. If upper_bound is positive and saturates, then of course all elements of b
+    //  were already less than the upper bound. Likewise, if lower_bound is negative and saturates, then all elements of
+    //  b were greater than the lower bound. If upper is negative and saturates or lower is positive and saturates, then
+    //  we just set all of the elements of the output to upper or lower (accordingly), since nothing could possible be
+    //  within the range specified.
+
+    // In case B, we shift the bounds right, and we lose some precision on them, but that's it.
+    
+    *a_exp = b_exp;//minimum b exponent
+    
+    right_shift_t bound_shr = *a_exp - bound_exp;
+    *b_shr = *a_exp - b_exp;
+
+    int32_t lb;
+    int32_t ub;
+
+    if(bound_shr < 0){
+        int64_t ub64 = ((int64_t)*upper_bound) << (-bound_shr);
+        int64_t lb64 = ((int64_t)*lower_bound) << (-bound_shr);
+
+        ub = (ub64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (ub64 <= VPU_INT32_MIN)? VPU_INT32_MIN : ub64;
+        lb = (lb64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (lb64 <= VPU_INT32_MIN)? VPU_INT32_MIN : lb64;
+    } else {
+        // TODO: Should force upper_bound to round downwards to enforce the guarantee that no output can be larger than 
+        // upper bound?
+        ub = *upper_bound >> bound_shr;
+        // And lower bound upwards?
+        lb = (*lower_bound + ((1<<bound_shr)-1)) >> bound_shr;
+    }
+
+    if(ub == VPU_INT32_MIN){
+        /* upper bound must be smaller than any element of b, so set everything to that */
+        *a_exp = bound_exp;
+    } else if(lb == VPU_INT32_MAX){
+        /* lower bound must be larger than any element of b, so set everything to that */
+        *a_exp = bound_exp;
+    }
+
+    *upper_bound = ub;
+    *lower_bound = lb;
 }

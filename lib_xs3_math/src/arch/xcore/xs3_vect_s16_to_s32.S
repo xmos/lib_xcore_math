@@ -17,11 +17,7 @@ headroom_t xs3_vect_s16_to_s32(
 .issue_mode dual
 .align 4
 
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
-  #define NSTACKWORDS     (2)
-#else
-  #define NSTACKWORDS     (0)
-#endif
+#define NSTACKWORDS     (2)
 
 #define FUNCTION_NAME   xs3_vect_s16_to_s32
 
@@ -40,15 +36,11 @@ FUNCTION_NAME:
         ldc r11, 0x0200
     {   ldap r11, .L_vlmacc_consts_A            ;   vsetc r11                               }
 
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
         std r4, r5, sp[0]
     {   shl tail, len, SIZEOF_LOG2_S32          ;                                           }
     {   shr len, len, EPV_LOG2_S32              ;   zext tail, 5                            }
     {   mkmsk tail, tail                        ;   bf len, .L_loop_bot                     }
     {                                           ;   bu .L_loop_top                          }
-#else // XS3_MATH_VECTOR_TAIL_SUPPORT
-    {   shr len, len, EPV_LOG2_S32              ;   bu .L_loop_top                          }
-#endif // XS3_MATH_VECTOR_TAIL_SUPPORT
 
 .align 16
 
@@ -88,7 +80,6 @@ FUNCTION_NAME:
         {   add a, a, _16                           ;   bt len, .L_loop_top                     }
 .L_loop_bot:
 
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
     {   ldc _16, 16                             ;   bf tail, .L_finish                      }
     {                                           ;   vclrdr                                  }
     {                                           ;   vldc b[0]                               }
@@ -96,7 +87,6 @@ FUNCTION_NAME:
     {   add r11, r11, _16                       ;   vlmacc r11[0]                           }
     {                                           ;   vlmacc r11[0]                           }
     vstrpv a[0], tail
-#endif // XS3_MATH_VECTOR_TAIL_SUPPORT
 
 .L_finish:
         ldd r4, r5, sp[0]

@@ -3,7 +3,6 @@
 
 #pragma once
 
-
 #if defined(__cplusplus)
 #  define EXTERN_C extern "C"
 #else

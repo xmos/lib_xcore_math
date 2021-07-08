@@ -228,6 +228,8 @@ void test_bfp_fft_forward_stereo()
 
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
             TEST_ASSERT_CONVERSION(error);
+            TEST_ASSERT_EQUAL(FFT_N/2, z1.length);
+            TEST_ASSERT_EQUAL(FFT_N/2, z2.length);
         }
         
 #if PRINT_ERRORS
@@ -307,6 +309,7 @@ void test_bfp_fft_inverse_stereo()
             if(diff > worst_error) worst_error = diff;
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
             TEST_ASSERT_CONVERSION(error);
+            TEST_ASSERT_EQUAL(FFT_N, AB.length);
         }
         
 #if PRINT_ERRORS
@@ -386,6 +389,7 @@ void test_bfp_fft_forward_mono()
             if(diff > worst_error) worst_error = diff;
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
             TEST_ASSERT_CONVERSION(error);
+            TEST_ASSERT_EQUAL(FFT_N/2, A_fft->length);
         }
         
 #if PRINT_ERRORS
@@ -472,6 +476,7 @@ void test_bfp_fft_inverse_mono()
             if(diff > worst_error) worst_error = diff;
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
             TEST_ASSERT_CONVERSION(error);
+            TEST_ASSERT_EQUAL(FFT_N, A->length);
         }
         
 #if PRINT_ERRORS
