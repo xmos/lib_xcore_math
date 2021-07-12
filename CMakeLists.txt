@@ -7,6 +7,9 @@ endif()
 
 project(xmos-lib_xs3_math)
 
+set(BUILD_TESTS    ON CACHE BOOL "Include unit tests as CMake targets." )
+set(BUILD_EXAMPLES ON CACHE BOOL "Include examples as CMake targets."   )
+
 ## fetch dependencies
 include(FetchContent)
 
@@ -45,5 +48,11 @@ add_compile_options( ${COMPILE_FLAGS} )
 ## Add libs and apps
 
 add_subdirectory( lib_xs3_math )
-add_subdirectory( test )
-add_subdirectory( example )
+
+if ( ${BUILD_TESTS} )
+  add_subdirectory( test )
+endif()
+
+if ( ${BUILD_EXAMPLES} )
+  add_subdirectory( example )
+endif()
