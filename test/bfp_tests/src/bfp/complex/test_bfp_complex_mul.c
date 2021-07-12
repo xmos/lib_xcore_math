@@ -11,20 +11,20 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
+TEST_GROUP_RUNNER(bfp_complex_mul) {
+  RUN_TEST_CASE(bfp_complex_mul, bfp_complex_s16_mul);
+  RUN_TEST_CASE(bfp_complex_mul, bfp_complex_s32_mul);
+}
+
+TEST_GROUP(bfp_complex_mul);
+TEST_SETUP(bfp_complex_mul) {}
+TEST_TEAR_DOWN(bfp_complex_mul) {}
 
 #define REPS        (100)
 #define MAX_LEN     40 
-
-
-static unsigned seed = 666;
-
 
 static char msg_buff[200];
 
@@ -35,22 +35,9 @@ static char msg_buff[200];
     }} while(0)
 
 
-
-
-
-
-
-
-
-
-
-
-
-void test_bfp_complex_s16_mul()
+TEST(bfp_complex_mul, bfp_complex_s16_mul)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 546457;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     struct {
         int16_t real[MAX_LEN];
@@ -78,7 +65,7 @@ void test_bfp_complex_s16_mul()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_complex_s16(&B, MAX_LEN, &seed, &A, 0);
         // B.length = 1;
@@ -104,15 +91,9 @@ void test_bfp_complex_s16_mul()
 }
 
 
-
-
-
-
-void test_bfp_complex_s32_mul()
+TEST(bfp_complex_mul, bfp_complex_s32_mul)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 576883;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s32_t dataA[MAX_LEN];
     complex_s32_t dataB[MAX_LEN];
@@ -130,7 +111,7 @@ void test_bfp_complex_s32_mul()
     } Af, Bf, Cf;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         test_random_bfp_complex_s32(&B, MAX_LEN, &seed, &A, 0);
         test_random_bfp_complex_s32(&C, MAX_LEN, &seed, &A, B.length);
@@ -160,14 +141,4 @@ void test_bfp_complex_s32_mul()
             TEST_ASSERT_INT32_WITHIN(1, expA[i].im, A.data[i].im);
         }
     }
-}
-
-
-
-
-void test_bfp_complex_mul_vect_complex()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_s16_mul);
-    RUN_TEST(test_bfp_complex_s32_mul);
 }

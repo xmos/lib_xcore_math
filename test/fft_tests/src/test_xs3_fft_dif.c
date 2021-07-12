@@ -1,15 +1,26 @@
 // Copyright 2020-2021 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
-
-
 #include "xs3_math.h"
 #include "testing.h"
 #include "floating_fft.h"
 #include "tst_common.h"
 #include "fft.h"
-#include "unity.h"
+#include "unity_fixture.h"
 #include "../src/vect/xs3_fft_lut.h"
+
+
+TEST_GROUP_RUNNER(xs3_fft_dif) {
+  RUN_TEST_CASE(xs3_fft_dif, xs3_fft_dif_forward);
+  RUN_TEST_CASE(xs3_fft_dif, xs3_fft_dif_inverse);
+  RUN_TEST_CASE(xs3_fft_dif, xs3_fft_dif_forward_complete);
+  RUN_TEST_CASE(xs3_fft_dif, xs3_fft_dif_inverse_complete);
+}
+
+TEST_GROUP(xs3_fft_dif);
+TEST_SETUP(xs3_fft_dif) {}
+TEST_TEAR_DOWN(xs3_fft_dif) {}
+
 
 #define MAX_PROC_FRAME_LENGTH_LOG2 (MAX_DIF_FFT_LOG2)
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
@@ -25,9 +36,7 @@
 #define LOOPS_LOG2 8
 
 
-
-
-void test_xs3_fft_dif_forward_complete()
+TEST(xs3_fft_dif, xs3_fft_dif_forward_complete)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -97,14 +106,7 @@ void test_xs3_fft_dif_forward_complete()
 }
 
 
-
-
-
-
-
-
-
-void test_xs3_fft_dif_inverse_complete()
+TEST(xs3_fft_dif, xs3_fft_dif_inverse_complete)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -181,17 +183,7 @@ void test_xs3_fft_dif_inverse_complete()
 }
 
 
-
-
-
-
-
-
-
-
-
-
-void test_xs3_fft_dif_forward()
+TEST(xs3_fft_dif, xs3_fft_dif_forward)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -251,14 +243,7 @@ void test_xs3_fft_dif_forward()
 }
 
 
-
-
-
-
-
-
-
-void test_xs3_fft_dif_inverse()
+TEST(xs3_fft_dif, xs3_fft_dif_inverse)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -314,18 +299,4 @@ void test_xs3_fft_dif_inverse()
         fprintf(perf_file, "%s, %u,, %0.02f,\n", &(__func__[5]), FFT_N, worst_timing);
 #endif
     }
-}
-
-
-
-
-
-void test_xs3_fft_dif()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_fft_dif_forward_complete);
-    RUN_TEST(test_xs3_fft_dif_inverse_complete);
-    RUN_TEST(test_xs3_fft_dif_forward);
-    RUN_TEST(test_xs3_fft_dif_inverse);
 }

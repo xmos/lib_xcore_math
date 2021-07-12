@@ -11,32 +11,38 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
 
-static unsigned seed = 2314567;
+TEST_GROUP_RUNNER(xs3_vect_set) {
+  RUN_TEST_CASE(xs3_vect_set, xs3_vect_s16_set);
+  RUN_TEST_CASE(xs3_vect_set, xs3_vect_s32_set);
+  RUN_TEST_CASE(xs3_vect_set, xs3_vect_complex_s16_set);
+  RUN_TEST_CASE(xs3_vect_set, xs3_vect_complex_s32_set);
+  RUN_TEST_CASE(xs3_vect_set, xs3_vect_ch_pair_s16_set);
+  RUN_TEST_CASE(xs3_vect_set, xs3_vect_ch_pair_s32_set);
+}
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
+TEST_GROUP(xs3_vect_set);
+TEST_SETUP(xs3_vect_set) {}
+TEST_TEAR_DOWN(xs3_vect_set) {}
+
 
 #define MAX_LEN     1024
 #define REPS        (1000)
 
 
-
-
-static void test_xs3_vect_s16_set()
+TEST(xs3_vect_set, xs3_vect_s16_set)
 {
-    PRINTF("%s...\n", __func__);
+    
 
-    seed = 0x5F0BE930;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int16_t WORD_ALIGNED A[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         
@@ -55,16 +61,17 @@ static void test_xs3_vect_s16_set()
 }
 
 
-static void test_xs3_vect_s32_set()
+TEST(xs3_vect_set, xs3_vect_s32_set)
 {
-    PRINTF("%s...\n", __func__);
+    
 
-    seed = 45674;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int32_t WORD_ALIGNED A[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         
@@ -83,20 +90,18 @@ static void test_xs3_vect_s32_set()
 }
 
 
-
-
-
-static void test_xs3_vect_complex_s16_set()
+TEST(xs3_vect_set, xs3_vect_complex_s16_set)
 {
-    PRINTF("%s...\n", __func__);
+    
 
-    seed = 6567888;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int16_t WORD_ALIGNED A_real[MAX_LEN];
     int16_t WORD_ALIGNED A_imag[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         
@@ -121,19 +126,17 @@ static void test_xs3_vect_complex_s16_set()
 }
 
 
-
-
-
-static void test_xs3_vect_complex_s32_set()
+TEST(xs3_vect_set, xs3_vect_complex_s32_set)
 {
-    PRINTF("%s...\n", __func__);
+    
 
-    seed = 73734;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     complex_s32_t WORD_ALIGNED A[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         
@@ -157,20 +160,17 @@ static void test_xs3_vect_complex_s32_set()
 }
 
 
-
-
-
-
-static void test_xs3_vect_ch_pair_s16_set()
+TEST(xs3_vect_set, xs3_vect_ch_pair_s16_set)
 {
-    PRINTF("%s...\n", __func__);
+    
 
-    seed = 8808;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     ch_pair_s16_t WORD_ALIGNED A[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         
@@ -194,20 +194,17 @@ static void test_xs3_vect_ch_pair_s16_set()
 }
 
 
-
-
-
-
-static void test_xs3_vect_ch_pair_s32_set()
+TEST(xs3_vect_set, xs3_vect_ch_pair_s32_set)
 {
-    PRINTF("%s...\n", __func__);
+    
 
-    seed = 456678;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     ch_pair_s32_t WORD_ALIGNED A[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         
@@ -230,15 +227,3 @@ static void test_xs3_vect_ch_pair_s32_set()
     }
 }
 
-
-void test_xs3_set_vect()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_s16_set);
-    RUN_TEST(test_xs3_vect_s32_set);
-    RUN_TEST(test_xs3_vect_complex_s16_set);
-    RUN_TEST(test_xs3_vect_complex_s32_set);
-    RUN_TEST(test_xs3_vect_ch_pair_s16_set);
-    RUN_TEST(test_xs3_vect_ch_pair_s32_set);
-}

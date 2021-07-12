@@ -2,13 +2,26 @@
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
-
 #include "bfp_math.h"
 #include "testing.h"
 #include "floating_fft.h"
 #include "tst_common.h"
 #include "fft.h"
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(bfp_fft) {
+  RUN_TEST_CASE(bfp_fft, bfp_fft_forward_complex);
+  RUN_TEST_CASE(bfp_fft, bfp_fft_inverse_complex);
+  RUN_TEST_CASE(bfp_fft, bfp_fft_forward_stereo);
+  RUN_TEST_CASE(bfp_fft, bfp_fft_inverse_stereo);
+  RUN_TEST_CASE(bfp_fft, bfp_fft_forward_mono);
+  RUN_TEST_CASE(bfp_fft, bfp_fft_inverse_mono);
+}
+
+TEST_GROUP(bfp_fft);
+TEST_SETUP(bfp_fft) {}
+TEST_TEAR_DOWN(bfp_fft) {}
 
 
 #define MAX_PROC_FRAME_LENGTH_LOG2 10
@@ -23,7 +36,7 @@
 #define LOOPS_LOG2  (8)
 
 
-void test_bfp_fft_forward_complex()
+TEST(bfp_fft, bfp_fft_forward_complex)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -94,9 +107,7 @@ void test_bfp_fft_forward_complex()
 }
 
 
-
-
-void test_bfp_fft_inverse_complex()
+TEST(bfp_fft, bfp_fft_inverse_complex)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -167,8 +178,7 @@ void test_bfp_fft_inverse_complex()
 }
 
 
-
-void test_bfp_fft_forward_stereo()
+TEST(bfp_fft, bfp_fft_forward_stereo)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -247,9 +257,7 @@ void test_bfp_fft_forward_stereo()
 }
 
 
-
-
-void test_bfp_fft_inverse_stereo()
+TEST(bfp_fft, bfp_fft_inverse_stereo)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -327,13 +335,7 @@ void test_bfp_fft_inverse_stereo()
 }
 
 
-
-
-
-
-
-
-void test_bfp_fft_forward_mono()
+TEST(bfp_fft, bfp_fft_forward_mono)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -407,9 +409,7 @@ void test_bfp_fft_forward_mono()
 }
 
 
-
-
-void test_bfp_fft_inverse_mono()
+TEST(bfp_fft, bfp_fft_inverse_mono)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -491,19 +491,4 @@ void test_bfp_fft_inverse_mono()
         fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), FFT_N, worst_error, worst_timing);
 #endif
     }
-}
-
-void test_bfp_fft()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_fft_forward_complex);
-    RUN_TEST(test_bfp_fft_inverse_complex);
-    
-    RUN_TEST(test_bfp_fft_forward_stereo);
-    RUN_TEST(test_bfp_fft_inverse_stereo);
-    
-    RUN_TEST(test_bfp_fft_forward_mono);
-    RUN_TEST(test_bfp_fft_inverse_mono);
-
 }

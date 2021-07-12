@@ -13,10 +13,23 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
 
-static unsigned seed = 2314567;
+TEST_GROUP_RUNNER(xs3_vect_complex_mul) {
+  RUN_TEST_CASE(xs3_vect_complex_mul, xs3_vect_complex_s16_mul_prepare)
+  RUN_TEST_CASE(xs3_vect_complex_mul, xs3_vect_complex_s32_mul_prepare);
+  RUN_TEST_CASE(xs3_vect_complex_mul, xs3_vect_complex_s16_mul_basic);
+  RUN_TEST_CASE(xs3_vect_complex_mul, xs3_vect_complex_s16_mul_random);
+  RUN_TEST_CASE(xs3_vect_complex_mul, xs3_vect_complex_s32_mul_basic);
+  RUN_TEST_CASE(xs3_vect_complex_mul, xs3_vect_complex_s32_mul_random);
+}
+
+TEST_GROUP(xs3_vect_complex_mul);
+TEST_SETUP(xs3_vect_complex_mul) {}
+TEST_TEAR_DOWN(xs3_vect_complex_mul) {}
+
+
 static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
@@ -24,12 +37,6 @@ static char msg_buff[200];
       sprintf(msg_buff, "(test vector @ line %u)", (LINE_NUM));       \
       TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
     }} while(0)
-
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
 
 static complex_s16_t mul_complex_s16(int16_t b_re, int16_t b_im, 
@@ -93,21 +100,16 @@ static complex_s32_t mul_complex_s32(complex_s32_t b, complex_s32_t c, int b_shr
 }
 
 
-
-
-
-
-
-
 #define REPS        1000
-void test_xs3_vect_complex_s16_mul_prepare()
+TEST(xs3_vect_complex_mul, xs3_vect_complex_s16_mul_prepare)
 {
-    PRINTF("%s...\n", __func__);
+    
 
-    seed = 0x7871AFB8;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
         
         exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 14);
@@ -141,20 +143,18 @@ void test_xs3_vect_complex_s16_mul_prepare()
 #undef REPS
 
 
-
-
-
-
-
 #define REPS        1000
-static void test_xs3_vect_complex_s32_mul_prepare()
-{
-    PRINTF("%s...\n", __func__);
 
-    seed = 656576;
+
+TEST(xs3_vect_complex_mul, xs3_vect_complex_s32_mul_prepare)
+{
+    
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
         
         exponent_t b_exp = ((int32_t)(pseudo_rand_uint32(&seed) % 60)) - 30;
         headroom_t b_hr  = pseudo_rand_uint32(&seed) % 31;
@@ -181,10 +181,9 @@ static void test_xs3_vect_complex_s32_mul_prepare()
 #undef REPS
 
 
-
-static void test_xs3_vect_complex_s16_mul_basic()
+TEST(xs3_vect_complex_mul, xs3_vect_complex_s16_mul_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         struct {    complex_s16_t b;  
@@ -215,7 +214,7 @@ static void test_xs3_vect_complex_s16_mul_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -281,16 +280,14 @@ static void test_xs3_vect_complex_s16_mul_basic()
 }
 
 
-
-
-
-
 #define MAX_LEN     100
 #define REPS        1000
-static void test_xs3_vect_complex_s16_mul_random()
+
+TEST(xs3_vect_complex_mul, xs3_vect_complex_s16_mul_random)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 0xAD04D98D;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     headroom_t hr;
     
@@ -301,7 +298,7 @@ static void test_xs3_vect_complex_s16_mul_random()
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
@@ -354,17 +351,9 @@ static void test_xs3_vect_complex_s16_mul_random()
 #undef REPS
 
 
-
-
-
-
-
-
-
-
-static void test_xs3_vect_complex_s32_mul_basic()
+TEST(xs3_vect_complex_mul, xs3_vect_complex_s32_mul_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         struct {    complex_s32_t b;  
@@ -421,7 +410,7 @@ static void test_xs3_vect_complex_s32_mul_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -482,17 +471,14 @@ static void test_xs3_vect_complex_s32_mul_basic()
 }
 
 
-
-
-
-
-
 #define MAX_LEN     100
 #define REPS        1000
-static void test_xs3_vect_complex_s32_mul_random()
+
+TEST(xs3_vect_complex_mul, xs3_vect_complex_s32_mul_random)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 0xAD04D98D;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     headroom_t hr;
     
@@ -502,7 +488,7 @@ static void test_xs3_vect_complex_s32_mul_random()
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
@@ -554,17 +540,3 @@ static void test_xs3_vect_complex_s32_mul_random()
 #undef MAX_LEN
 #undef REPS
 
-
-
-void test_xs3_complex_mul_vect_complex()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_xs3_vect_complex_s16_mul_prepare);
-    RUN_TEST(test_xs3_vect_complex_s32_mul_prepare);
-
-    RUN_TEST(test_xs3_vect_complex_s16_mul_basic);
-    RUN_TEST(test_xs3_vect_complex_s16_mul_random);
-
-    RUN_TEST(test_xs3_vect_complex_s32_mul_basic);
-    RUN_TEST(test_xs3_vect_complex_s32_mul_random);
-}

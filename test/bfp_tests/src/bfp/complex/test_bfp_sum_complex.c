@@ -11,29 +11,25 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
+TEST_GROUP_RUNNER(bfp_complex_sum) {
+  RUN_TEST_CASE(bfp_complex_sum, bfp_complex_s16_sum);
+  RUN_TEST_CASE(bfp_complex_sum, bfp_complex_s32_sum);
+}
+
+TEST_GROUP(bfp_complex_sum);
+TEST_SETUP(bfp_complex_sum) {}
+TEST_TEAR_DOWN(bfp_complex_sum) {}
 
 #define REPS        (100)
 #define MAX_LEN     1024 
 
 
-static unsigned seed = 666;
-
-
-
-
-
-void test_bfp_complex_s16_sum()
+TEST(bfp_complex_sum, bfp_complex_s16_sum)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
-
-    seed = 67765974;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t WORD_ALIGNED B_real[MAX_LEN];
     int16_t WORD_ALIGNED B_imag[MAX_LEN];
@@ -42,7 +38,7 @@ void test_bfp_complex_s16_sum()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         bfp_complex_s16_init(&B, B_real, B_imag, 
             pseudo_rand_int(&seed, -100, 100),
@@ -74,14 +70,9 @@ void test_bfp_complex_s16_sum()
 }
 
 
-
-
-
-void test_bfp_complex_s32_sum()
+TEST(bfp_complex_sum, bfp_complex_s32_sum)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
-
-    seed = 67765974;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s32_t B_data[MAX_LEN];
     
@@ -89,7 +80,7 @@ void test_bfp_complex_s32_sum()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         bfp_complex_s32_init(&B, B_data, pseudo_rand_int(&seed, -100, 100),
             pseudo_rand_uint(&seed, 0, MAX_LEN+1), 0);
@@ -123,14 +114,4 @@ void test_bfp_complex_s32_sum()
         TEST_ASSERT(ds.re <= ldexp(1, -20));
         TEST_ASSERT(ds.im <= ldexp(1, -20));
     }
-}
-
-
-
-
-void test_bfp_sum_complex()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_s16_sum);
-    RUN_TEST(test_bfp_complex_s32_sum);
 }

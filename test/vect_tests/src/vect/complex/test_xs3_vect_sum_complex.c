@@ -13,9 +13,21 @@
 #include "../../tst_common.h"
 #include "../src/vect/vpu_helper.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 234523;
+TEST_GROUP_RUNNER(xs3_vect_complex_sum) {
+  RUN_TEST_CASE(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_prepare);
+  RUN_TEST_CASE(xs3_vect_complex_sum, xs3_vect_complex_s16_sum_basic);
+  RUN_TEST_CASE(xs3_vect_complex_sum, xs3_vect_complex_s16_sum_random);
+  RUN_TEST_CASE(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_basic);
+  RUN_TEST_CASE(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_random);
+}
+
+TEST_GROUP(xs3_vect_complex_sum);
+TEST_SETUP(xs3_vect_complex_sum) {}
+TEST_TEAR_DOWN(xs3_vect_complex_sum) {}
+
+
 static char msg_buff[200];
 
 
@@ -25,27 +37,24 @@ static char msg_buff[200];
       TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
     }} while(0)
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
 
 #define MAX_LEN     1024
 #define REPS        (1000)
-void test_xs3_vect_complex_s32_sum_prepare()
-{
-    PRINTF("%s...\n", __func__);
 
-    seed = 34677;
+
+TEST(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_prepare)
+{
+    
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
     
     complex_s32_t B[MAX_LEN];
 
     unsigned some_shr = 0;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
         
         exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 20);
@@ -60,11 +69,6 @@ void test_xs3_vect_complex_s32_sum_prepare()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        // PRINTF("\n\t    allow_sat = %u\n", allow_sat);
-        // PRINTF("\t    b_length = %u\n", b_length);
-        // PRINTF("\t    b_exp = %d\n", b_exp);
-        // PRINTF("\t    b_hr = %d\n", b_hr);
-
         xs3_vect_complex_s32_sum_prepare(&a_exp, &b_shr, b_exp, b_hr, b_length);
 
         TEST_ASSERT_EQUAL(b_exp + b_shr, a_exp);
@@ -73,15 +77,7 @@ void test_xs3_vect_complex_s32_sum_prepare()
 
         if(b_shr) some_shr = 1;
 
-        // PRINTF("\t    B.re = %ld    (0x%08lX)\n", B[0].re, (uint32_t) B[0].re);
-        // PRINTF("\t    B.im = %ld    (0x%08lX)\n", B[0].im, (uint32_t) B[0].im);
-
         xs3_vect_complex_s32_sum(&A, B, b_length, b_shr);
-
-        // PRINTF("\t    A.re = %lld   (0x%08llX)\n", A.re, (uint64_t) A.re);
-        // PRINTF("\t    A.im = %lld   (0x%08llX)\n", A.im, (uint64_t) A.im);
-        // PRINTF("\t    a_exp = %d\n", a_exp);
-        // PRINTF("\t    b_shr  = %d\n", b_shr);
 
         complex_s64_t expected = {
             (b_length * ((int64_t)B[0].re)) >> b_shr,
@@ -100,10 +96,9 @@ void test_xs3_vect_complex_s32_sum_prepare()
 #undef MAX_LEN
 
 
-
-void test_xs3_vect_complex_s16_sum_basic()
+TEST(xs3_vect_complex_sum, xs3_vect_complex_s16_sum_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         complex_s16_t b;
@@ -125,7 +120,7 @@ void test_xs3_vect_complex_s16_sum_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -140,7 +135,6 @@ void test_xs3_vect_complex_s16_sum_basic()
         for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
 
             unsigned len = lengths[l];
-            PRINTF("\tlength %u..\n", len);
 
             for(int i = 0; i < len; i++){
                 B.real[i] = casse->b.re;
@@ -162,10 +156,12 @@ void test_xs3_vect_complex_s16_sum_basic()
 
 #define MAX_LEN     200
 #define REPS        (100)
-void test_xs3_vect_complex_s16_sum_random()
+
+TEST(xs3_vect_complex_sum, xs3_vect_complex_s16_sum_random)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 12355;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     complex_s32_t result;
     struct {
@@ -175,7 +171,7 @@ void test_xs3_vect_complex_s16_sum_random()
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
     
@@ -199,10 +195,9 @@ void test_xs3_vect_complex_s16_sum_random()
 #undef REPS
 
 
-
-void test_xs3_vect_complex_s32_sum_basic()
+TEST(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         complex_s32_t b;
@@ -225,7 +220,7 @@ void test_xs3_vect_complex_s32_sum_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -235,7 +230,6 @@ void test_xs3_vect_complex_s32_sum_basic()
 
         for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
             unsigned len = lengths[l];
-            PRINTF("\tlength %u..\n", len);
 
             for(int i = 0; i < len; i++){
                 B[i] = casse->b;
@@ -255,20 +249,21 @@ void test_xs3_vect_complex_s32_sum_basic()
 }
 
 
-
 #define MAX_LEN     1000
 #define REPS        (100)
-void test_xs3_vect_complex_s32_sum_random()
+
+TEST(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_random)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 346332123;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     complex_s64_t result;
     complex_s32_t B[MAX_LEN];
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
@@ -333,17 +328,3 @@ void test_xs3_vect_complex_s32_sum_random()
 #undef MAX_LEN
 #undef REPS
 
-
-
-void test_xs3_sum_complex()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_complex_s32_sum_prepare);
-
-    RUN_TEST(test_xs3_vect_complex_s16_sum_basic);
-    RUN_TEST(test_xs3_vect_complex_s16_sum_random);
-
-    RUN_TEST(test_xs3_vect_complex_s32_sum_basic);
-    RUN_TEST(test_xs3_vect_complex_s32_sum_random);
-}

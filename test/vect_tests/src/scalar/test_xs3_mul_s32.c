@@ -10,32 +10,30 @@
 
 #include "xs3_math.h"
 
-#include "../../tst_common.h"
+#include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 2314567;
+TEST_GROUP_RUNNER(xs3_mul_s32) {
+  RUN_TEST_CASE(xs3_mul_s32, xs3_mul_s32);
+}
 
-
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
+TEST_GROUP(xs3_mul_s32);
+TEST_SETUP(xs3_mul_s32) {}
+TEST_TEAR_DOWN(xs3_mul_s32) {}
 
 
 #define REPS        1000
 
-static void test_xs3_mul_s32_A()
+TEST(xs3_mul_s32, xs3_mul_s32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 0x92B7BD9A;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
     
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         const exponent_t b_exp = pseudo_rand_int(&seed, -100, 100);
         const exponent_t c_exp = pseudo_rand_int(&seed, -100, 100);
@@ -60,20 +58,8 @@ static void test_xs3_mul_s32_A()
         int32_t expected = round( ldexp(Ef, -a_exp) );
 
 
-
         TEST_ASSERT_INT32_WITHIN(2, expected, A);
 
     }
 }
 
-
-
-
-
-
-void test_xs3_mul_s32()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_mul_s32_A);
-}

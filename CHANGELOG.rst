@@ -1,8 +1,8 @@
 lib_xs3_math change log
 =======================
 
-CURRENT
--------
+1.1.0 (UPCOMING)
+----------------
 
 
 Bugfixes

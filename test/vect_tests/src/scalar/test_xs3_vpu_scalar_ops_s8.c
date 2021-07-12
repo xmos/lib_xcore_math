@@ -12,26 +12,36 @@
 #include "xs3_vpu_scalar_ops.h"
 #include "xs3_vpu_info.h"
 
-#include "../../tst_common.h"
+#include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 2314567;
+TEST_GROUP_RUNNER(xs3_vpu_scalar_ops_s8) {
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s8, vladd8);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s8, vlsub8);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s8, vlashr8);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s8, vpos8);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s8, vsign8);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s8, vdepth1_8);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s8, vlmul8);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s8, vlmacc8);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s8, vlmaccr8);
+  RUN_TEST_CASE(xs3_vpu_scalar_ops_s8, vlsat8);
+}
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
+TEST_GROUP(xs3_vpu_scalar_ops_s8);
+TEST_SETUP(xs3_vpu_scalar_ops_s8) {}
+TEST_TEAR_DOWN(xs3_vpu_scalar_ops_s8) {}
+
 
 #define REPS        (1000)
 
 
-
-
-static void test_vladd8()
+TEST(xs3_vpu_scalar_ops_s8, vladd8)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 12345;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT8(            0, vladd8(     0,      0));
     TEST_ASSERT_EQUAL_INT8(            1, vladd8(     1,      0));
@@ -44,7 +54,7 @@ static void test_vladd8()
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         int8_t x = pseudo_rand_int8(&seed);
         int8_t y = pseudo_rand_int8(&seed);
@@ -60,10 +70,11 @@ static void test_vladd8()
 }
 
 
-static void test_vlsub8()
+TEST(xs3_vpu_scalar_ops_s8, vlsub8)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 12345;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT8(            0, vlsub8(     0,      0));
     TEST_ASSERT_EQUAL_INT8(            1, vlsub8(     1,      0));
@@ -76,7 +87,7 @@ static void test_vlsub8()
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         int8_t x = pseudo_rand_int8(&seed);
         int8_t y = pseudo_rand_int8(&seed);
@@ -92,10 +103,11 @@ static void test_vlsub8()
 }
 
 
-static void test_vlashr8()
+TEST(xs3_vpu_scalar_ops_s8, vlashr8)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 12345;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT8(            0, vlashr8(     0,      0));
     TEST_ASSERT_EQUAL_INT8(            1, vlashr8(     1,      0));
@@ -126,7 +138,7 @@ static void test_vlashr8()
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         int8_t x = pseudo_rand_int8(&seed);
         right_shift_t shr = pseudo_rand_int(&seed, -10, 10);
@@ -142,9 +154,9 @@ static void test_vlashr8()
 }
 
 
-static void test_vpos8()
+TEST(xs3_vpu_scalar_ops_s8, vpos8)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     for(int k = 0; k < INT8_MAX; k++)
         TEST_ASSERT_EQUAL_INT8( k, vpos8( (int8_t) k));
@@ -155,9 +167,9 @@ static void test_vpos8()
 }
 
 
-static void test_vsign8()
+TEST(xs3_vpu_scalar_ops_s8, vsign8)
 {
-    PRINTF("%s...\n", __func__);
+    
 
 
     for(int k = 0; k < INT8_MAX; k++)
@@ -169,9 +181,9 @@ static void test_vsign8()
 }
 
 
-static void test_vdepth1_8()
+TEST(xs3_vpu_scalar_ops_s8, vdepth1_8)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     for(int k = 0; k < INT8_MAX; k++)
         TEST_ASSERT_EQUAL_INT( 0, vdepth1_8( (int8_t) k));
@@ -182,10 +194,11 @@ static void test_vdepth1_8()
 }
 
 
-static void test_vlmul8()
+TEST(xs3_vpu_scalar_ops_s8, vlmul8)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 34563;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT8(            0, vlmul8(     0,      0));
     TEST_ASSERT_EQUAL_INT8(            1, vlmul8(     1,   0x40));
@@ -197,7 +210,7 @@ static void test_vlmul8()
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         int8_t x = pseudo_rand_int8(&seed);
         int8_t y = pseudo_rand_int8(&seed);
@@ -215,11 +228,11 @@ static void test_vlmul8()
 }
 
 
-
-static void test_vlmacc8()
+TEST(xs3_vpu_scalar_ops_s8, vlmacc8)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 778786;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT32(             0, vlmacc8(              0,     0,     0) ); 
     TEST_ASSERT_EQUAL_INT32(           100, vlmacc8(            100,     0,     0) ); 
@@ -230,7 +243,7 @@ static void test_vlmacc8()
     TEST_ASSERT_EQUAL_INT32( VPU_INT32_MAX, vlmacc8(  VPU_INT32_MAX,     1,     1) ); 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         int32_t acc = pseudo_rand_int32(&seed);
         int8_t x = pseudo_rand_int8(&seed);
@@ -249,15 +262,14 @@ static void test_vlmacc8()
 }
 
 
-
-static void test_vlmaccr8()
+TEST(xs3_vpu_scalar_ops_s8, vlmaccr8)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 778786;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         int32_t acc = pseudo_rand_int32(&seed);
         int8_t x[VPU_INT8_EPV];
@@ -282,11 +294,11 @@ static void test_vlmaccr8()
 }
 
 
-
-static void test_vlsat8()
+TEST(xs3_vpu_scalar_ops_s8, vlsat8)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 6457;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     TEST_ASSERT_EQUAL_INT8(            0, vlsat8(            0,      0));
     TEST_ASSERT_EQUAL_INT8(            1, vlsat8(            1,      0));
@@ -300,7 +312,7 @@ static void test_vlsat8()
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         headroom_t hr = pseudo_rand_uint(&seed, 0, 32);        
         int32_t acc = pseudo_rand_int32(&seed) >> hr;
@@ -330,22 +342,3 @@ static void test_vlsat8()
     }
 }
 
-
-
-
-
-void test_xs3_vpu_scalar_ops_s8()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_vladd8);
-    RUN_TEST(test_vlsub8);
-    RUN_TEST(test_vlashr8);
-    RUN_TEST(test_vpos8);
-    RUN_TEST(test_vsign8);
-    RUN_TEST(test_vdepth1_8);
-    RUN_TEST(test_vlmul8);
-    RUN_TEST(test_vlmacc8);
-    RUN_TEST(test_vlmaccr8);
-    RUN_TEST(test_vlsat8);
-}

@@ -212,6 +212,9 @@ void bfp_fft_forward_stereo(
     // Correct the exponents and lengths (as only a half-period of their spectra were computed)
     a->length = b->length = input->length / 2;
     a->exp = b->exp = input->exp;
+
+    a->flags = input->flags;
+    b->flags = input->flags | BFP_FLAG_CHAN_B;
 }
 
 
@@ -229,8 +232,14 @@ void  bfp_fft_inverse_stereo(
     // Length must be 2^p where p is a non-negative integer
     assert(a->length != 0);
     // for a positive power of 2, subtracting 1 should increase its headroom.
-    assert(cls(a->length - 1) > cls(a->length)); 
+    assert(cls(a->length - 1) > cls(a->length));
 #endif
+
+#if (DEBUG)
+    // a must be a first channel and b must be a second channel
+    assert(!(a->flags & BFP_FLAG_CHAN_B));
+    assert(b->flags & BFP_FLAG_CHAN_B);
+#endif //DEBUG
 
     // a and b store only a half-period of their respective spectra, so the FFT length is twice
     // the length of a or b (which must have the same length)
@@ -272,6 +281,7 @@ void  bfp_fft_inverse_stereo(
     // Undo the bit-reversed indexing
     xs3_fft_dit_inverse((complex_s32_t*) x->data, FFT_N, &x->hr, &x->exp);
     
+    x->flags = a->flags;
 }
 
 

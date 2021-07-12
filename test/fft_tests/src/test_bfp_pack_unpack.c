@@ -2,25 +2,33 @@
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
-
 #include "bfp_math.h"
 #include "testing.h"
 #include "tst_common.h"
-#include "unity.h"
+#include "unity_fixture.h"
 
 #include <string.h>
 
 
+TEST_GROUP_RUNNER(bfp_fft_packing) {
+  RUN_TEST_CASE(bfp_fft_packing, bfp_fft_mono_unpack_pack);
+  RUN_TEST_CASE(bfp_fft_packing, bfp_fft_stereo_unpack_pack);
+}
+
+TEST_GROUP(bfp_fft_packing);
+TEST_SETUP(bfp_fft_packing) {}
+TEST_TEAR_DOWN(bfp_fft_packing) {}
+
 #define FFT_N   (512)
 #define REPS    (30)
 
-static void test_bfp_fft_mono_unpack_pack()
+TEST(bfp_fft_packing, bfp_fft_mono_unpack_pack)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
 #endif
 
-  unsigned seed = 2343454;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   complex_s32_t buffer[FFT_N/2+1];
   complex_s32_t buffer2[FFT_N/2];
@@ -58,13 +66,13 @@ static void test_bfp_fft_mono_unpack_pack()
 }
 
 
-static void test_bfp_fft_stereo_unpack_pack()
+TEST(bfp_fft_packing, bfp_fft_stereo_unpack_pack)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
 #endif
 
-  unsigned seed = 677856;
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
   ch_pair_s32_t DWORD_ALIGNED buffAB[FFT_N + 2];
   complex_s32_t DWORD_ALIGNED orig_specA[FFT_N/2], DWORD_ALIGNED orig_specB[FFT_N/2];
@@ -123,12 +131,3 @@ static void test_bfp_fft_stereo_unpack_pack()
 }
 
 
-
-void test_bfp_fft_pack_unpack()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_fft_mono_unpack_pack);
-    RUN_TEST(test_bfp_fft_stereo_unpack_pack);
-
-}

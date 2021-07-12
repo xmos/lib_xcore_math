@@ -11,26 +11,27 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
+TEST_GROUP_RUNNER(bfp_mean) {
+  RUN_TEST_CASE(bfp_mean, bfp_s16_mean);
+  RUN_TEST_CASE(bfp_mean, bfp_s32_mean);
+}
+
+TEST_GROUP(bfp_mean);
+TEST_SETUP(bfp_mean) {}
+TEST_TEAR_DOWN(bfp_mean) {}
 
 #define REPS        1000
 #define MAX_LEN     1024 
 
 
-static unsigned seed = 666;
-
-
-static void test_bfp_s16_mean()
+TEST(bfp_mean, bfp_s16_mean)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 0xE3AEA12B;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataB[MAX_LEN];
     bfp_s16_t B;
@@ -38,7 +39,7 @@ static void test_bfp_s16_mean()
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -100, 100);
@@ -65,11 +66,11 @@ static void test_bfp_s16_mean()
     }
 }
 
-static void test_bfp_s32_mean()
+TEST(bfp_mean, bfp_s32_mean)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 44;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataB[MAX_LEN];
     bfp_s32_t B;
@@ -77,7 +78,7 @@ static void test_bfp_s32_mean()
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -100, 100);
@@ -99,14 +100,4 @@ static void test_bfp_s32_mean()
 
         TEST_ASSERT( fabs(diff) <= ldexp(1, result.exp) );
     }
-}
-
-
-
-
-void test_bfp_mean()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_s16_mean);
-    RUN_TEST(test_bfp_s32_mean);
 }

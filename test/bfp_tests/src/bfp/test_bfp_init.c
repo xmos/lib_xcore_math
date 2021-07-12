@@ -11,31 +11,36 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
+TEST_GROUP_RUNNER(bfp_init) {
+  RUN_TEST_CASE(bfp_init, bfp_s32_init);
+  RUN_TEST_CASE(bfp_init, bfp_s16_init);
+  RUN_TEST_CASE(bfp_init, bfp_complex_s32_init);
+  RUN_TEST_CASE(bfp_init, bfp_complex_s16_init);
+  RUN_TEST_CASE(bfp_init, bfp_ch_pair_s32_init);
+  RUN_TEST_CASE(bfp_init, bfp_ch_pair_s16_init);
+}
+
+TEST_GROUP(bfp_init);
+TEST_SETUP(bfp_init) {}
+TEST_TEAR_DOWN(bfp_init) {}
 
 #define REPS        (50)
 #define MAX_LEN     (300)
 
 
-
-
-
-static void test_bfp_s16_init()
+TEST(bfp_init, bfp_s16_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 3724523;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int16_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -68,17 +73,16 @@ static void test_bfp_s16_init()
 }
 
 
-
-static void test_bfp_s32_init()
+TEST(bfp_init, bfp_s32_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 2342;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -111,20 +115,17 @@ static void test_bfp_s32_init()
 }
 
 
-
-
-
-static void test_bfp_complex_s16_init()
+TEST(bfp_init, bfp_complex_s16_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 233345;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int16_t WORD_ALIGNED real_data[MAX_LEN];
     int16_t WORD_ALIGNED imag_data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -163,19 +164,16 @@ static void test_bfp_complex_s16_init()
 }
 
 
-
-
-
-static void test_bfp_complex_s32_init()
+TEST(bfp_init, bfp_complex_s32_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 7646785;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     complex_s32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -209,19 +207,16 @@ static void test_bfp_complex_s32_init()
 }
 
 
-
-
-
-static void test_bfp_ch_pair_s16_init()
+TEST(bfp_init, bfp_ch_pair_s16_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 2344;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     ch_pair_s16_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -255,19 +250,16 @@ static void test_bfp_ch_pair_s16_init()
 }
 
 
-
-
-
-static void test_bfp_ch_pair_s32_init()
+TEST(bfp_init, bfp_ch_pair_s32_init) 
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 33456;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     ch_pair_s32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -300,17 +292,3 @@ static void test_bfp_ch_pair_s32_init()
     }
 }
 
-
-
-
-void test_bfp_init_vect()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_s16_init);
-    RUN_TEST(test_bfp_s32_init);
-    RUN_TEST(test_bfp_complex_s16_init);
-    RUN_TEST(test_bfp_complex_s32_init);
-    RUN_TEST(test_bfp_ch_pair_s16_init);
-    RUN_TEST(test_bfp_ch_pair_s32_init);
-}

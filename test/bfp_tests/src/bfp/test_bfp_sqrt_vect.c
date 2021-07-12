@@ -13,30 +13,24 @@
 #include "../tst_common.h"
 #include "xs3_vpu_scalar_ops.h"
 
-#include "unity.h"
-
-static unsigned seed = 2314567;
-
-static char msg_buff[200];
+#include "unity_fixture.h"
 
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
+TEST_GROUP_RUNNER(bfp_sqrt) {
+  RUN_TEST_CASE(bfp_sqrt, bfp_s16_sqrt);
+  RUN_TEST_CASE(bfp_sqrt, bfp_s32_sqrt);
+}
 
+TEST_GROUP(bfp_sqrt);
+TEST_SETUP(bfp_sqrt) {}
+TEST_TEAR_DOWN(bfp_sqrt) {}
 
 #define MAX_LEN     100
 #define REPS        1000
 
-
-
-
-static void test_bfp_s16_sqrt()
+TEST(bfp_sqrt, bfp_s16_sqrt)
 {
-
-    PRINTF("%s...\n", __func__);
-    seed = 11;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
 
     int16_t WORD_ALIGNED A_data[MAX_LEN];
@@ -45,7 +39,7 @@ static void test_bfp_s16_sqrt()
     bfp_s16_t A, B;
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         bfp_s16_init(&B, B_data, 
             pseudo_rand_int(&seed, -30, 30),
@@ -81,11 +75,9 @@ static void test_bfp_s16_sqrt()
 }
 
 
-static void test_bfp_s32_sqrt()
+TEST(bfp_sqrt, bfp_s32_sqrt)
 {
-
-    PRINTF("%s...\n", __func__);
-    seed = 3452;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t A_data[MAX_LEN];
     int32_t B_data[MAX_LEN];
@@ -93,7 +85,7 @@ static void test_bfp_s32_sqrt()
     bfp_s32_t A, B;
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         bfp_s32_init(&B, B_data, 
             pseudo_rand_int(&seed, -30, 30),
@@ -124,17 +116,4 @@ static void test_bfp_s32_sqrt()
             TEST_ASSERT(  fabs(diff) <= ldexp(2, A.exp) );
         }
     }
-}
-
-
-
-
-
-void test_bfp_sqrt_vect()
-{
-    SET_TEST_FILE();
-    
-    RUN_TEST(test_bfp_s16_sqrt);
-    RUN_TEST(test_bfp_s32_sqrt);
-
 }

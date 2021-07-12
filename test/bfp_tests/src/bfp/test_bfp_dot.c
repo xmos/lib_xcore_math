@@ -12,31 +12,26 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
+TEST_GROUP_RUNNER(bfp_dot) {
+  RUN_TEST_CASE(bfp_dot, bfp_s16_dot);
+  RUN_TEST_CASE(bfp_dot, bfp_s32_dot);
+  RUN_TEST_CASE(bfp_dot, bfp_s32_dot_2);
+}
+
+TEST_GROUP(bfp_dot);
+TEST_SETUP(bfp_dot) {}
+TEST_TEAR_DOWN(bfp_dot) {}
 
 #define REPS        (1000)
 #define MAX_LEN     1024
 
-static char msg_buff[200];
 
-#define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
-    if((EXPECTED)!=(ACTUAL)) {                                                  \
-      sprintf(msg_buff, "%s (line %u)", (EXTRA), (LINE_NUM));                   \
-      TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);                \
-    }} while(0)
-
-
-static void test_bfp_s16_dot()
+TEST(bfp_dot, bfp_s16_dot)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
-
-    unsigned seed = 0x7C385C55;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataB[MAX_LEN];
     int16_t dataC[MAX_LEN];
@@ -46,7 +41,7 @@ static void test_bfp_s16_dot()
     C.data = dataC;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         bfp_s16_init(&B, dataB, pseudo_rand_int(&seed, -100, 100),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
@@ -80,14 +75,8 @@ static void test_bfp_s16_dot()
 }
 
 
-
-
-
-static void test_bfp_s32_dot_A()
+TEST(bfp_dot, bfp_s32_dot)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
-
-
     int32_t dataB[MAX_LEN];
     int32_t dataC[MAX_LEN];
     bfp_s32_t B, C;
@@ -137,7 +126,7 @@ static void test_bfp_s32_dot_A()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
 
         test_case_t* casse = &casses[v];
 
@@ -163,11 +152,10 @@ static void test_bfp_s32_dot_A()
     } 
 }
 
-static void test_bfp_s32_dot_B()
+TEST(bfp_dot, bfp_s32_dot_2)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
-
-    unsigned seed = 34563;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+    seed = 0x1AC68E1C;
 
     int32_t dataB[MAX_LEN];
     int32_t dataC[MAX_LEN];
@@ -177,7 +165,7 @@ static void test_bfp_s32_dot_B()
     C.data = dataC;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        unsigned old_seed = seed;
 
         bfp_s32_init(&B, dataB, pseudo_rand_int(&seed, -100, 100),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
@@ -186,6 +174,8 @@ static void test_bfp_s32_dot_B()
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
         C.hr = pseudo_rand_uint(&seed, 0, 28);
+        
+        setExtraInfo_RSL(r, old_seed, B.length);
 
         double expected = 0;
 
@@ -203,18 +193,12 @@ static void test_bfp_s32_dot_B()
 
         double diff = expected - ldexp(result.mant, result.exp);
         double error = fabs(diff/expected);
-        TEST_ASSERT( error < ldexp(1,-20) );
+        double thresh = ldexp(1, -19);
+        XTEST_ASSERT( error < thresh, 
+          "\n%e not less than %e\n"
+          "B.hr = %u\n"
+          "C.hr = %u\n", 
+          error, thresh, B.hr, C.hr );
     }
 }
 
-
-
-
-void test_bfp_dot()
-{
-    SET_TEST_FILE();
-    
-    RUN_TEST(test_bfp_s16_dot);
-    RUN_TEST(test_bfp_s32_dot_A);
-    RUN_TEST(test_bfp_s32_dot_B);
-}

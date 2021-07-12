@@ -1216,7 +1216,7 @@ headroom_t xs3_vect_s16_abs(
  * `length` is the number of elements in @vector{b}.
  * 
  * @low_op{16, @f$
- *      a \leftarrow \sum_{k=0}^{length-1} sat_{16}(\left| b_k \right|)
+ *      a \leftarrow \sum_{k=0}^{length-1} \left| b_k \right|
  * @f$ }
  * 
  * @par Block Floating-Point

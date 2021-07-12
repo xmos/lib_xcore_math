@@ -25,10 +25,12 @@ int32_t xs3_vect_s16_abs_sum(
 #define STACK_VEC_TMP       (NSTACKWORDS-8)
 #define STACK_VEC_VR        (NSTACKWORDS-16)
 
-#define b           r0      // ![0x%08X]
-#define N           r1      // ![%d]
-#define tail        r2      // ![%d]
-#define tmp         r3      // ![%d]
+#define b           r0 
+#define N           r1 
+#define tail        r2 
+#define tmp         r3
+#define neg_1       r4
+#define pos_2       r5
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
@@ -43,33 +45,40 @@ FUNCTION_NAME:
     {   shl tail, N, SIZEOF_LOG2_S16            ;   vsetc r11                               }
     {   zext tail, 5                            ;   vclrdr                                  }
     {   shr N, N, EPV_LOG2_S16                  ;   mkmsk tail, tail                        }
-        ldaw r11, cp[vpu_vec_0x0001]
-    {   shl tmp, N, 5                           ;   vldc r11[0]                             }
+        ldaw r11, cp[vpu_vec_0x0002]
+    {   mov pos_2, r11                          ;                                           }
+        ldaw r11, cp[vpu_vec_neg_1]
+    {   mov neg_1, r11                          ;   vldc r11[0]                             }
+    {   shl tmp, N, 5                           ;                                           }
     {   add r11, b, tmp                         ;   bf tail, .L_tail_dealt_with             }
 
     {   ldaw tmp, sp[STACK_VEC_TMP]             ;   vldr r11[0]                             }
-    {                                           ;   vstr tmp[0]                             }
-    {                                           ;   vsign                                   }
-    {                                           ;   vlmul tmp[0]                            }
     {                                           ;   vstd tmp[0]                             }
         vstrpv tmp[0], tail
-    {                                           ;   vclrdr                                  }
+    {   ldaw r11, sp[STACK_VEC_VR]              ;   vclrdr                                  }
+    {                                           ;   vlmacc tmp[0]                           }
+    {   mov r11, tmp                            ;   vstr r11[0]                             }
+    {                                           ;   vldr r11[0]                             }
+    {                                           ;   vpos                                    }
+    {   ldaw r11, sp[STACK_VEC_VR]              ;   vstr r11[0]                             }
+    {                                           ;   vldr r11[0]                             }
+    {                                           ;   vldc pos_2[0]                           }
     {                                           ;   vlmacc tmp[0]                           }
 
 .L_tail_dealt_with:
     {   ldaw tmp, sp[STACK_VEC_TMP]             ;                                           }
     {   ldaw r11, sp[STACK_VEC_VR]              ;   bf N, .L_loop_bot                       }
 .L_loop_top:
-        {   mov r11, b                              ;   vstr r11[0]                             }
-        {                                           ;   vldr r11[0]                             }
-        // [2020-01-08] astew: Looking at this again, I'm not sure why the following VSTR is necessary..
-        {   ldc r11, 32                             ;   vstr tmp[0]                             }
-        {   add b, b, r11                           ;   vsign                                   }
-        {                                           ;   vlmul tmp[0]                            }
-        {   ldaw r11, sp[STACK_VEC_VR]              ;   vstr tmp[0]                             }
-        {                                           ;   vldr r11[0]                             }
-        {   sub N, N, 1                             ;   vlmacc tmp[0]                           }
-        {                                           ;   bt N, .L_loop_top                       }
+        {                                             ;   vldc neg_1[0]                           }
+        {                                             ;   vlmacc b[0]                             }
+        {   mov r11, b                                ;   vstr r11[0]                             }
+        {   ldc r11, 32                               ;   vldr r11[0]                             }
+        {   add b, b, r11                             ;   vpos                                    }
+        {   ldaw r11, sp[STACK_VEC_VR]                ;   vstr tmp[0]                             }
+        {                                             ;   vldr r11[0]                             }
+        {                                             ;   vldc pos_2[0]                           }
+        {   sub N, N, 1                               ;   vlmacc tmp[0]                           }
+        {                                             ;   bt N, .L_loop_top                       }
 .L_loop_bot:
 
 

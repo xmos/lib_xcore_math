@@ -15,8 +15,6 @@ int pseudo_rand(int* state)
 }
 
 
-
-
 int8_t  pseudo_rand_int8(unsigned *r){
     pseudo_rand((int*)r);
     return (int8_t)*r;
@@ -83,8 +81,6 @@ uint32_t pseudo_rand_uint(
     uint32_t d = pseudo_rand_uint32(r) % delta;
     return min + d;
 }
-
-
 
 
 void pseudo_rand_bytes(unsigned *r, char* buffer, unsigned size){

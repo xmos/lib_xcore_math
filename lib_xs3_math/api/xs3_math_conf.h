@@ -87,4 +87,26 @@
 
 
 
+/**
+ * 
+ */
+#ifndef XS3_MALLOC
+
+/**
+ * 
+ */
+#define XS3_MALLOC  malloc
+#endif
+
+/**
+ * 
+ */
+#ifndef XS3_FREE
+
+/**
+ * 
+ */
+#define XS3_FREE    free
+#endif
+
 #endif //XS3_MATH_CONF_H_

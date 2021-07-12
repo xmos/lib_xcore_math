@@ -11,8 +11,6 @@
 #include <stdint.h>
 
 
-
-
 void flt_bit_reverse_indexes_double(
     complex_double_t a[],
     const unsigned length)
@@ -28,7 +26,6 @@ void flt_bit_reverse_indexes_double(
         a[rev] = tmp;
     }
 }
-
 
 
 void flt_make_sine_table_double(

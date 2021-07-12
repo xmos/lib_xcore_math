@@ -13,29 +13,27 @@
 
 #include "testing.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
+TEST_GROUP_RUNNER(bfp_depth_convert) {
+  RUN_TEST_CASE(bfp_depth_convert, bfp_s32_to_s16);
+  RUN_TEST_CASE(bfp_depth_convert, bfp_s16_to_s32);
+}
+
+TEST_GROUP(bfp_depth_convert);
+TEST_SETUP(bfp_depth_convert) {}
+TEST_TEAR_DOWN(bfp_depth_convert) {}
 
 #define REPS        (1000)
 #define MAX_LEN     256  //Smaller lengths mean larger variance w.r.t. individual element headroom
 
 
-static unsigned seed = 666;
-
-
-
-
-
-static void test_bfp_s32_to_s16_()
+TEST(bfp_depth_convert, bfp_s32_to_s16) 
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 54516;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t WORD_ALIGNED dataA[MAX_LEN];
     int32_t WORD_ALIGNED dataB[MAX_LEN];
@@ -46,7 +44,7 @@ static void test_bfp_s32_to_s16_()
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         bfp_s32_init(&B, dataB, 
             pseudo_rand_int(&seed, -50, 50),
@@ -84,11 +82,40 @@ static void test_bfp_s32_to_s16_()
 }
 
 
+#undef MAX_LEN
+#define MAX_LEN     18  //Smaller lengths mean larger variance w.r.t. individual element headroom
 
 
-void test_bfp_s32_to_s16()
+TEST(bfp_depth_convert, bfp_s16_to_s32) 
 {
-    SET_TEST_FILE();
 
-    RUN_TEST(test_bfp_s32_to_s16_);
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
+    int32_t dataA[MAX_LEN];
+    int16_t dataB[MAX_LEN];
+    bfp_s32_t A;
+    bfp_s16_t B;
+
+    A.data = dataA;
+    B.data = dataB;
+
+    for(int r = 0; r < REPS; r++){
+        setExtraInfo_RS(r, seed);
+
+        test_random_bfp_s16(&B, MAX_LEN, &seed, NULL, 0);
+        A.length = B.length;
+
+        bfp_s16_to_s32(&A, &B);
+
+        TEST_ASSERT_EQUAL(B.length, A.length);
+        TEST_ASSERT_EQUAL(B.hr + 8, A.hr);
+        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
+        
+        TEST_ASSERT_EQUAL(B.exp-8, A.exp);
+
+        for(int i = 0; i < A.length; i++){
+            TEST_ASSERT_EQUAL(((int32_t)B.data[i]) << 8, A.data[i]);
+        }
+    }
 }

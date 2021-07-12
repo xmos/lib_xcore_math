@@ -44,7 +44,7 @@ void fft_mono_example()
     This function demonstrates how apply the forward and inverse FFT to a single channel of
     real data.  This is accomplished using the bfp_fft_forward_mono() and bfp_fft_inverse_mono()
     functions respectively.
-
+ 
     bfp_s32_t         --bfp_fft_forward_mono()--> bfp_complex_s32_t
     bfp_complex_s32_t --bfp_fft_inverse_mono()--> bfp_s32_t
   */

@@ -11,19 +11,20 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
+TEST_GROUP_RUNNER(bfp_complex_depth_convert) {
+  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16);
+  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s16_to_complex_s32);
+}
+
+TEST_GROUP(bfp_complex_depth_convert);
+TEST_SETUP(bfp_complex_depth_convert) {}
+TEST_TEAR_DOWN(bfp_complex_depth_convert) {}
 
 #define REPS        (1000)
 #define MAX_LEN     40 
-
-
-static unsigned seed = 666;
 
 
 static char msg_buff[200];
@@ -35,11 +36,9 @@ static char msg_buff[200];
     }} while(0)
 
 
-void test_bfp_complex_s32_to_complex_s16_case0()
+TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 546457;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t A_real[MAX_LEN];
     int16_t A_imag[MAX_LEN];
@@ -87,12 +86,9 @@ void test_bfp_complex_s32_to_complex_s16_case0()
 }
 
 
-
-void test_bfp_complex_s32_to_complex_s16_case1()
+TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16_2)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 0x70B304CF;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t A_real[MAX_LEN];
     int16_t A_imag[MAX_LEN];
@@ -108,7 +104,7 @@ void test_bfp_complex_s32_to_complex_s16_case1()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         
         bfp_complex_s32_init(&B, B_data, pseudo_rand_int(&seed, -30, 30),
@@ -145,40 +141,17 @@ void test_bfp_complex_s32_to_complex_s16_case1()
             if(expected.real[i] == ((int16_t)-0x8000))  expected.real[i] = (int16_t) -0x7FFF;
             if(expected.imag[i] == ((int16_t)-0x8000))  expected.imag[i] = (int16_t) -0x7FFF;
         }
-
-        // PRINTF("\t    B.length = %u\n", B.length);
-        // PRINTF("\t    B.exp = %d\n", B.exp);
-        // PRINTF("\t    B.hr = %u\n", B.hr);
-
-        // for(int i = 0; i < B.length; i++){
-        //     PRINTF("\t        B.data[% 3d].re = % 15ld  (0x%08lX)\n", i, B.data[i].re, (uint32_t) B.data[i].re);
-        //     PRINTF("\t        B.data[% 3d].im = % 15ld  (0x%08lX)\n", i, B.data[i].im, (uint32_t) B.data[i].im);
-        // }
         
         TEST_ASSERT_EQUAL(B.hr, xs3_vect_complex_s32_headroom(B.data, B.length));
 
         bfp_complex_s32_to_complex_s16(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, A.length);
-        
-        // PRINTF("\t    A.length = %u\n", A.length);
-        // PRINTF("\t    A.exp = %d\n", A.exp);
-        // PRINTF("\t    A.hr = %u\n", A.hr);
-
-        // for(int i = 0; i < A.length; i++){
-        //     PRINTF("\t        A.real[% 3d] = % 15d  (0x%04X)\n", i, A.real[i], (uint16_t) A.real[i]);
-        //     PRINTF("\t        A.imag[% 3d] = % 15d  (0x%04X)\n", i, A.imag[i], (uint16_t) A.imag[i]);
-        // }
 
         TEST_ASSERT_EQUAL(xs3_vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr);
         TEST_ASSERT_EQUAL(0, A.hr);
         
         TEST_ASSERT(ldexp(A.real[0], A.exp) == ldexp(B.data[0].re, B.exp)   );
-        
-        // for(int i = 0; i < A.length; i++){
-        //     PRINTF("\t        expected.real[% 3d] = % 15d  (0x%04X)\n", i, expected.real[i], (uint16_t) expected.real[i]);
-        //     PRINTF("\t        expected.imag[% 3d] = % 15d  (0x%04X)\n", i, expected.imag[i], (uint16_t) expected.imag[i]);
-        // }
 
         TEST_ASSERT_EQUAL_INT16_ARRAY_MESSAGE(expected.real, A.real, A.length, "REAL");
         TEST_ASSERT_EQUAL_INT16_ARRAY_MESSAGE(expected.imag, A.imag, A.length, "IMAG");
@@ -186,16 +159,11 @@ void test_bfp_complex_s32_to_complex_s16_case1()
 }
 
 
-
-
-
-void test_bfp_complex_s16_to_complex_s32()
+TEST(bfp_complex_depth_convert, bfp_complex_s16_to_complex_s32)
 {
-    PRINTF("%s...\n", __func__);
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
-    seed = 546457;
-
-    complex_s32_t A_data[MAX_LEN];
+    complex_s32_t DWORD_ALIGNED A_data[MAX_LEN];
     complex_s32_t expected[MAX_LEN];
 
     struct {
@@ -212,7 +180,7 @@ void test_bfp_complex_s16_to_complex_s32()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -30, 30);
@@ -232,27 +200,9 @@ void test_bfp_complex_s16_to_complex_s32()
             expected[i].im = ((int32_t) B.imag[i]);
         }
 
-        // PRINTF("\t    B.length = %u\n", B.length);
-        // PRINTF("\t    B.exp = %d\n", B.exp);
-        // PRINTF("\t    B.hr = %u\n", B.hr);
-
-        // for(int i = 0; i < B.length; i++){
-        //     PRINTF("\t        B.real[% 3d] = % 7d  (0x%04X)\n", i, B.real[i], (uint16_t) B.real[i]);
-        //     PRINTF("\t        B.imag[% 3d] = % 7d  (0x%04X)\n", i, B.imag[i], (uint16_t) B.imag[i]);
-        // }
-
         TEST_ASSERT_EQUAL_MESSAGE(B.hr, xs3_vect_complex_s16_headroom(B.real, B.imag, B.length), "[Input headroom is wrong]");
 
         bfp_complex_s16_to_complex_s32(&A, &B);
-
-        // PRINTF("\t    A.length = %u\n", A.length);
-        // PRINTF("\t    A.exp = %d\n", A.exp);
-        // PRINTF("\t    A.hr = %u\n", A.hr);
-
-        // for(int i = 0; i < A.length; i++){
-        //     PRINTF("\t        A.data[% 3d].re = % 15ld  (0x%08lX)\n", i, A.data[i].re, (uint32_t) A.data[i].re);
-        //     PRINTF("\t        A.data[% 3d].im = % 15ld  (0x%08lX)\n", i, A.data[i].im, (uint32_t) A.data[i].im);
-        // }
 
         TEST_ASSERT_EQUAL_MESSAGE(B.exp, A.exp, "[Output exponent is wrong]");
         
@@ -261,16 +211,4 @@ void test_bfp_complex_s16_to_complex_s32()
         TEST_ASSERT_EQUAL_INT32_ARRAY((int32_t*) &expected, (int32_t*) A.data, 2*A.length);
 
     }
-}
-
-
-
-
-
-void test_bfp_complex_bitdepth_convert()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_s32_to_complex_s16_case0);
-    RUN_TEST(test_bfp_complex_s32_to_complex_s16_case1);
-    RUN_TEST(test_bfp_complex_s16_to_complex_s32);
 }

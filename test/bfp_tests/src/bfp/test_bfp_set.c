@@ -11,26 +11,29 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
+TEST_GROUP_RUNNER(bfp_set) {
+  RUN_TEST_CASE(bfp_set, bfp_s32_set);
+  RUN_TEST_CASE(bfp_set, bfp_s16_set);
+  RUN_TEST_CASE(bfp_set, bfp_complex_s32_set);
+  RUN_TEST_CASE(bfp_set, bfp_complex_s16_set);
+  RUN_TEST_CASE(bfp_set, bfp_ch_pair_s32_set);
+  RUN_TEST_CASE(bfp_set, bfp_ch_pair_s16_set);
+}
+
+TEST_GROUP(bfp_set);
+TEST_SETUP(bfp_set) {}
+TEST_TEAR_DOWN(bfp_set) {}
 
 #define REPS        (50)
 #define MAX_LEN     (300)
 
 
-
-
-
-static void test_bfp_s16_set()
+TEST(bfp_set, bfp_s16_set) 
 {
-    PRINTF("%s...\n", __func__);
-
-    unsigned seed = 363477;
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     bfp_s16_t A;
 
@@ -40,7 +43,7 @@ static void test_bfp_s16_set()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         memset(data, 0, sizeof(data));
 
@@ -51,8 +54,6 @@ static void test_bfp_s16_set()
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
         val = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
-
-        // PRINTF("\t\t(length, exp, val) = (%u, %d, %d)\n", length, exponent, val);
 
         bfp_s16_set(&A, val, exponent);
 
@@ -69,11 +70,9 @@ static void test_bfp_s16_set()
     }
 }
 
-static void test_bfp_s32_set()
+TEST(bfp_set, bfp_s32_set) 
 {
-    PRINTF("%s...\n", __func__);
-
-    unsigned seed = 232356;
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     bfp_s32_t A;
 
@@ -83,7 +82,7 @@ static void test_bfp_s32_set()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         memset(data, 0, sizeof(data));
 
@@ -94,8 +93,6 @@ static void test_bfp_s32_set()
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
 
         val = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
-
-        // PRINTF("\t\t(length, exp, val) = (%u, %d, %d)\n", length, exponent, val);
 
         bfp_s32_set(&A, val, exponent);
 
@@ -112,13 +109,9 @@ static void test_bfp_s32_set()
 }
 
 
-
-
-static void test_bfp_complex_s16_set()
+TEST(bfp_set, bfp_complex_s16_set) 
 {
-    PRINTF("%s...\n", __func__);
-
-    unsigned seed = 546777;
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     bfp_complex_s16_t A;
 
@@ -129,7 +122,7 @@ static void test_bfp_complex_s16_set()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         memset(real_data, 0, sizeof(real_data));
         memset(imag_data, 0, sizeof(imag_data));
@@ -163,13 +156,9 @@ static void test_bfp_complex_s16_set()
 }
 
 
-
-
-static void test_bfp_complex_s32_set()
+TEST(bfp_set, bfp_complex_s32_set) 
 {
-    PRINTF("%s...\n", __func__);
-
-    unsigned seed = 232356;
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     bfp_complex_s32_t A;
 
@@ -179,7 +168,7 @@ static void test_bfp_complex_s32_set()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         memset(data, 0, sizeof(data));
 
@@ -212,13 +201,9 @@ static void test_bfp_complex_s32_set()
 }
 
 
-
-
-static void test_bfp_ch_pair_s16_set()
+TEST(bfp_set, bfp_ch_pair_s16_set) 
 {
-    PRINTF("%s...\n", __func__);
-
-    unsigned seed = 64568;
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     bfp_ch_pair_s16_t A;
 
@@ -228,7 +213,7 @@ static void test_bfp_ch_pair_s16_set()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         memset(data, 0, sizeof(data));
 
@@ -261,13 +246,9 @@ static void test_bfp_ch_pair_s16_set()
 }
 
 
-
-
-static void test_bfp_ch_pair_s32_set()
+TEST(bfp_set, bfp_ch_pair_s32_set) 
 {
-    PRINTF("%s...\n", __func__);
-
-    unsigned seed = 64568;
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     bfp_ch_pair_s32_t A;
 
@@ -277,7 +258,7 @@ static void test_bfp_ch_pair_s32_set()
 
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         memset(data, 0, sizeof(data));
 
@@ -310,18 +291,3 @@ static void test_bfp_ch_pair_s32_set()
 }
 
 
-
-
-
-
-void test_bfp_set_vect()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_s16_set);
-    RUN_TEST(test_bfp_s32_set);
-    RUN_TEST(test_bfp_complex_s16_set);
-    RUN_TEST(test_bfp_complex_s32_set);
-    RUN_TEST(test_bfp_ch_pair_s16_set);
-    RUN_TEST(test_bfp_ch_pair_s32_set);
-}
