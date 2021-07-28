@@ -5,11 +5,19 @@
 
 #include "xs3_math_types.h"
 
+/**
+ * @defgroup xs3_filter_func  `lib_xs3_math` Filter Functions
+ * @defgroup xs3_filter_type  `lib_xs3_math` Filter Types
+ */
+
 
 /**
  * @brief 32-bit Discrete-Time Finite Impulse Response (FIR) Filter
  * 
+ * @todo Move most of this information out to higher-level documentation
+ * 
  * @par Filter Model
+ * @parblock
  * 
  * This struct represents an N-tap 32-bit discrete-time FIR Filter.
  * 
@@ -48,21 +56,23 @@
  * Below is a more detailed description of the operations performed (not including the saturation logic applied by the
  * accumulators).
  * 
- * @f$
+ * @f[
  * 
- *      y[t] = sat_{32} \left(
+ * &    y[t] = sat_{32} \left(
  *               round \left( 
  *                 \left(
  *                   \sum_{k=0}^{N-1} round(x[t-k] \cdot b[k] \cdot 2^{-30}) 
  *                 \right) \cdot 2^{-shift}
  *               \right)
  *             \right)                                                          \\
- *          \qquad\text{where } sat_{32}() \text{ saturates to } \pm(2^{31}-1)  \\
- *          \qquad\text{  and } round() \text{ rounds to the nearest integer, with ties rounding towards } +\!\infty
+ * &        \qquad\text{where } sat_{32}() \text{ saturates to } \pm(2^{31}-1)  \\
+ * &        \qquad\text{  and } round() \text{ rounds to the nearest integer, with ties rounding towards } +\!\infty
  * 
- * @f$
+ * @f]
+ * @endparblock
  * 
  * @par Operations
+ * @parblock
  * 
  * **Initialize**: A `xs3_filter_fir_s32_t` filter is initialized with a call to xs3_filter_fir_s32_init(). The caller 
  * supplies information about the filter, including the number of taps and pointers the coefficients and a state buffer. 
@@ -74,8 +84,10 @@
  * samples, without incurring the cost of computing an output with each added sample.
  * 
  * **Process Sample**: To process a new input sample and produce a new output sample, use xs3_filter_fir_s32().  
+ * @endparblock
  * 
  * @par Fields
+ * @parblock
  * 
  * After initialization via xs3_filter_fir_s32_init(), the contents of the `xs3_filter_fir_s32_t` struct are considered
  * to be opaque, and may change between major versions. In general, user code should not need to access its members.
@@ -98,8 +110,10 @@
  * `state` is a pointer to a buffer (supplied by the user at initialization) containing the state data -- a history of
  * the `num_taps` most recent input samples. `state` is used in a circular fashion with `head` indicating the index at
  * which the next sample will be inserted.
+ * @endparblock
  * 
  * @par Performance
+ * @parblock
  * 
  * More work remains to fully characterize the time performance of this FIR filter, but asymptotically (i.e. with a 
  * large number of filter taps) processing a new input sample to produce a new output sample takes approximately 3 
@@ -107,6 +121,7 @@
  * 
  * That assumes that both the coefficients (pointed to by `coef`) and state buffer (pointed to by `state`) are stored
  * directly in SRAM.
+ * @endparblock
  * 
  * @todo If the function takes `S * num_taps + V` thread cycles, what is `V`?
  * @todo When there are fewer than `M` taps, it is more efficient to just use a C implementation of an FIR filter. What
@@ -115,6 +130,7 @@
  * 
  * 
  * @par Coefficient Scaling
+ * @parblock
  * 
  * Suppose you're starting with a floating-point FIR filter model with coefficients `B[k]` which operates on a sequence 
  * of 32-bit integer input samples `x[t]` to get a result `Y[t]` where
@@ -139,10 +155,12 @@
  * The details of this depend on various details, such as your filter's gain and the statistics of the sequence `x[t]`
  * (e.g. any headroom `x[t]` is known _a priori_ to have).
  * 
+ * @endparblock
  * @todo Perhaps a python script that converts user's floating-point coefficients into coefficients for this filter 
  *       would be a good idea.
  * 
  * @par Usage Example
+ * @parblock
  * 
  * \code{.c}
  *      //// A simple 256-tap averaging filter
@@ -181,8 +199,10 @@
  * @math{ 256 \cdot (2^{29} \cdot -2^{31} \cdot 2^{-30}) = -2^{38} }, well below the saturation limit of the 
  * accumulator. After `shift` is applied, that becomes @math{-2^{38} \cdot 2^{-7} = -2^{31}}. Finally, the 32-bit 
  * symmetric saturation logic is applied, making the final output value @math{-2^{31}+1}.
+ * @endparblock
  * 
  * @par Notes
+ * @parblock
  * 
  * 1. `state` is a circular buffer, and so the index of `x[t]` within `state` changes with each input sample. The 
  *    `state` field of this struct is considered to be opaque -- its exact usage may change between versions.
@@ -192,11 +212,13 @@
  *    throughout the sum. This saturation is a hard non-linearity and is _not_ associative. The details of exactly 
  *    when each tap is accumulated and into which accumulator are complicated and subject to change. It is best to 
  *    construct a filter such that no ordering of the taps will saturate the accumulators.
+ * @endparblock
  * 
+ * @see xs3_filter_fir_s32_init, 
+ *      xs3_filter_fir_s32_add_sample, 
+ *      xs3_filter_fir_s32
  * 
- * @see xs3_filter_fir_s32_init()
- * @see xs3_filter_fir_s32_add_sample()
- * @see xs3_filter_fir_s32()
+ * @ingroup xs3_filter_type
  */
 C_API
 typedef struct {
@@ -248,6 +270,8 @@ typedef struct {
  * @param[in]  shift            Unsigned arithmetic right-shift applied to accumulator to get filter output sample
  * 
  * @see xs3_filter_fir_s32_t
+ * 
+ * @ingroup xs3_filter_func
  */
 C_API
 void xs3_filter_fir_s32_init(
@@ -269,6 +293,8 @@ void xs3_filter_fir_s32_init(
  * @param[in]    new_sample     Sample to be added to `filter`'s history
  * 
  * @see xs3_filter_fir_s32_t
+ * 
+ * @ingroup xs3_filter_func
  */
 C_API
 void xs3_filter_fir_s32_add_sample(
@@ -300,6 +326,7 @@ int32_t xs3_filter_fir_s32(
  * @brief 16-bit Discrete-Time Finite Impulse Response (FIR) Filter
  * 
  * @par Filter Model
+ * @parblock
  * 
  * This struct represents an N-tap 16-bit discrete-time FIR Filter.
  * 
@@ -333,21 +360,21 @@ int32_t xs3_filter_fir_s32(
  * Below is a more detailed description of the operations performed (not including the saturation logic applied by the
  * accumulators).
  * 
- * @f$
- * 
- *      y[t] = sat_{16} \left(
+ * @f[
+ * &    y[t] = sat_{16} \left(
  *               round \left( 
  *                 \left(
  *                   \sum_{k=0}^{N-1} round(x[t-k] \cdot b[k]) 
  *                 \right) \cdot 2^{-shift}
  *               \right)
  *             \right)                                                          \\
- *          \qquad\text{where } sat_{32}() \text{ saturates to } \pm(2^{15}-1)  \\
- *          \qquad\text{  and } round() \text{ rounds to the nearest integer, with ties rounding towards } +\!\infty
- * 
- * @f$
+ * &        \qquad\text{where } sat_{32}() \text{ saturates to } \pm(2^{15}-1)  \\
+ * &        \qquad\text{  and } round() \text{ rounds to the nearest integer, with ties rounding towards } +\!\infty
+ * @f]
+ * @endparblock
  * 
  * @par Operations
+ * @parblock
  * 
  * **Initialize**: A `xs3_filter_fir_s16_t` filter is initialized with a call to xs3_filter_fir_s16_init(). The caller 
  * supplies information about the filter, including the number of taps and pointers the coefficients and a state buffer. 
@@ -360,8 +387,10 @@ int32_t xs3_filter_fir_s32(
  * without incurring the cost of computing an output with each added sample.
  * 
  * **Process Sample**: To process a new input sample and produce a new output sample, use xs3_filter_fir_s16().
+ * @endparblock
  * 
  * @par Fields
+ * @parblock
  * 
  * After initialization via xs3_filter_fir_s16_init(), the contents of the `xs3_filter_fir_s16_t` struct are considered
  * to be opaque, and may change between major versions. In general, user code should not need to access its members.
@@ -381,21 +410,29 @@ int32_t xs3_filter_fir_s32(
  * 
  * `state` is a pointer to a buffer (supplied by the user at initialization) containing the state data -- a history of
  * the `num_taps` most recent input samples. `state` must begin at a word-aligned address.
+ * @endparblock
  * 
  * 
  * @par Coefficient Scaling
+ * @parblock
  * 
  * @todo Perhaps a python script that converts user's floating-point coefficients into coefficients for this filter 
  *       would be a good idea.
+ * @endparblock
  * 
  * @par Usage Example
+ * @parblock
  * 
  * @todo
  * 
+ * @endparblock
  * 
- * @see xs3_filter_fir_s16_init()
- * @see xs3_filter_fir_s16_add_sample()
- * @see xs3_filter_fir_s16()
+ * 
+ * @see xs3_filter_fir_s16_init, 
+ *      xs3_filter_fir_s16_add_sample,
+ *      xs3_filter_fir_s16
+ * 
+ * @ingroup xs3_filter_type
  */
 C_API
 typedef struct {
@@ -441,6 +478,8 @@ typedef struct {
  * @param[in]  shift            Unsigned arithmetic right-shift applied to accumulator to get filter output sample
  * 
  * @see xs3_filter_fir_s16_t
+ * 
+ * @ingroup xs3_filter_func
  */
 C_API
 void xs3_filter_fir_s16_init(
@@ -461,6 +500,8 @@ void xs3_filter_fir_s16_init(
  * @param[in]    new_sample     Sample to be added to `filter`'s history
  * 
  * @see xs3_filter_fir_s16_t
+ * 
+ * @ingroup xs3_filter_func
  */
 C_API
 void xs3_filter_fir_s16_add_sample(
@@ -481,6 +522,8 @@ void xs3_filter_fir_s16_add_sample(
  * @returns     Next filtered output sample
  * 
  * @see xs3_filter_fir_s16_t
+ * 
+ * @ingroup xs3_filter_func
  */
 C_API
 int16_t xs3_filter_fir_s16(
@@ -496,6 +539,8 @@ int16_t xs3_filter_fir_s16(
  * To process a new input sample, xs3_filter_biquad_s32() can be used with a pointer to one of these structs.
  * 
  * For longer cascades, an array of `xs3_biquad_filter_s32_t` structs can be used with xs3_filter_biquads_s32().
+ * 
+ * @ingroup xs3_filter_type
  */
 C_API
 typedef struct {
@@ -536,8 +581,10 @@ typedef struct {
  * 
  * @returns     Next filtered output sample
  * 
- * @see xs3_biquad_filter_s32_t
- * @see xs3_filter_biquads_s32
+ * @see xs3_biquad_filter_s32_t, 
+ *      xs3_filter_biquads_s32
+ * 
+ * @ingroup xs3_filter_func
  */
 C_API
 int32_t xs3_filter_biquad_s32(
@@ -559,8 +606,10 @@ int32_t xs3_filter_biquad_s32(
  * 
  * @returns     Next filtered output sample
  * 
- * @see xs3_biquad_filter_s32_t
- * @see xs3_filter_biquad_s32
+ * @see xs3_biquad_filter_s32_t, 
+ *      xs3_filter_biquad_s32
+ * 
+ * @ingroup xs3_filter_func
  */
 C_API
 int32_t xs3_filter_biquads_s32(

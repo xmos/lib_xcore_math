@@ -28,6 +28,8 @@
  * 
  * @param[in] x         The vector to have its elements reordered.
  * @param[in] length    The length of `x` (element count).
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_index_bit_reversal(
@@ -74,6 +76,8 @@ void xs3_fft_index_bit_reversal(
  * @param [in] length   The length of `x` in elements (i.e. FFT length @math{N}).
  * 
  * @return The headroom of the result `x`
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 headroom_t xs3_fft_spectra_split(
@@ -101,6 +105,8 @@ headroom_t xs3_fft_spectra_split(
  * @param [in] length   The length of `x` in elements (i.e. FFT length @math{N}).
  * 
  * @return The headroom of the result `x`
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 headroom_t xs3_fft_spectra_merge(
@@ -152,6 +158,8 @@ headroom_t xs3_fft_spectra_merge(
  * @param[in] x         The spectrum @math{X[f]} to be modified.
  * @param[in] length    The size of the DFT to be computed. Twice the length of `x` (in elements).
  * @param[in] inverse   Flag indicating whether the inverse DFT is being computed.
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_mono_adjust(
@@ -187,6 +195,8 @@ void xs3_fft_mono_adjust(
  * @param[in]     N     The size of the DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_dit_forward (
@@ -223,6 +233,8 @@ void xs3_fft_dit_forward (
  * @param[in]     N     The size of the inverse DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_dit_inverse (
@@ -259,6 +271,8 @@ void xs3_fft_dit_inverse (
  * @param[in]     N     The size of the DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_dif_forward (
@@ -295,6 +309,8 @@ void xs3_fft_dif_forward (
  * @param[in]     N     The size of the inverse DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_dif_inverse (

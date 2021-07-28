@@ -6,6 +6,18 @@
 #include "xs3_math_types.h"
 
 
+/**
+ * @page page_bfp_ch_pair_h  bfp_ch_pair.h
+ * 
+ * This header contains functions which operate on block floating-point channel pair vectors.
+ * 
+ * Functions for initializing channel-pair vectors can be found in @ref page_bfp_init_h.
+ * 
+ * @see `bfp_ch_pair_s16_t`, `bfp_ch_pair_s32_t`
+ * 
+ * @ingroup xs3_math_header_file
+ */
+
 /** 
  * @brief Get the headroom of a 16-bit BFP channel-pair vector.
  * 
@@ -30,6 +42,8 @@
  * @param   b         BFP channel-pair vector to get the headroom of
  * 
  * @returns    Headroom of BFP channel-pair vector `b` 
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 headroom_t bfp_ch_pair_s16_headroom(
@@ -61,6 +75,8 @@ headroom_t bfp_ch_pair_s16_headroom(
  * @param   b         BFP channel-pair vector to get the headroom of
  * 
  * @returns    Headroom of BFP channel-pair vector `b` 
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 headroom_t bfp_ch_pair_s32_headroom(
@@ -86,24 +102,26 @@ headroom_t bfp_ch_pair_s32_headroom(
  * saturate to the symmetric 16-bit range (@math{-2^{15} \lt \lt 2^{15}}). To avoid saturation, `b_shl` should be no
  * greater than the headroom of `b` (`b->hr`).
  * 
- * @bfp_op{16, @f$
- *      ChA\\{a_k\\} \leftarrow sat_{16}( \lfloor ChA\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
- *      ChB\\{a_k\\} \leftarrow sat_{16}( \lfloor ChB\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}         \\
- *          \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
+ * @operation{
+ * &    ChA\\{a_k\\} \leftarrow sat_{16}( \lfloor ChA\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
+ * &    ChB\\{a_k\\} \leftarrow sat_{16}( \lfloor ChB\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                                             \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}                           \\
+ * &        \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
  *              \bar{B}\text{ and } \bar{A}\text{ respectively}
- * @f$ }
+ * }
  * 
  * @param[out] a        Output BFP channel-pair vector @vector{A}
  * @param[in]  b        Input BFP channel-pair vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_ch_pair_s16_shl(
     bfp_ch_pair_s16_t* a,
     const bfp_ch_pair_s16_t* b,
-    const left_shift_t shl);
+    const left_shift_t b_shl);
 
 
 /** 
@@ -125,21 +143,23 @@ void bfp_ch_pair_s16_shl(
  * saturate to the symmetric 32-bit range (@math{-2^{31} \lt \lt 2^{31}}). To avoid saturation, `b_shl` should be no
  * greater than the headroom of `b` (`b->hr`).
  * 
- * @bfp_op{32, @f$
- *      ChA\\{a_k\\} \leftarrow sat_{32}( \lfloor ChA\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
- *      ChB\\{a_k\\} \leftarrow sat_{32}( \lfloor ChB\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}         \\
- *          \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
- *              \bar{B}\text{ and } \bar{A}\text{ respectively}
- * @f$ }
+ * @operation{
+ * &     ChA\\{a_k\\} \leftarrow sat_{32}( \lfloor ChA\\{b_k\\} \cdot 2^{b\_shl} \rfloor )      \\
+ * &     ChB\\{a_k\\} \leftarrow sat_{32}( \lfloor ChB\\{b_k\\} \cdot 2^{b\_shl} \rfloor )      \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)                                              \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}                            \\
+ * &         \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
+ *               \bar{B}\text{ and } \bar{A}\text{ respectively}
+ * }
  * 
  * @param[out] a        Output BFP channel-pair vector @vector{A}
  * @param[in]  b        Input BFP channel-pair vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_ch_pair_s32_shl(
     bfp_ch_pair_s32_t* a,
     const bfp_ch_pair_s32_t* b,
-    const left_shift_t shl);
+    const left_shift_t b_shl);

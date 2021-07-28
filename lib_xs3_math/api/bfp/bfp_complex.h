@@ -5,6 +5,18 @@
 
 #include "xs3_math_types.h"
 
+/**
+ * @page page_bfp_complex_h  bfp_complex.h
+ * 
+ * This header contains functions implementing arithmetic operations on 16- and 32-bit complex 
+ * block floating-point vectors.
+ * 
+ * Functions for initializing complex BFP vectors can be found in @ref page_bfp_init_h.
+ * 
+ * @see `bfp_complex_s16_t`, `bfp_complex_s32_t`
+ * 
+ * @ingroup xs3_math_header_file
+ */
 
 /** 
  * @brief Get the headroom of a complex 16-bit BFP vector.
@@ -38,10 +50,12 @@
  * @param   b         complex BFP vector to get the headroom of
  * 
  * @returns    Headroom of complex BFP vector `b` 
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 headroom_t bfp_complex_s16_headroom(
-    bfp_complex_s16_t* a);
+    bfp_complex_s16_t* b);
 
 
 /** 
@@ -76,10 +90,12 @@ headroom_t bfp_complex_s16_headroom(
  * @param   b         complex BFP vector to get the headroom of
  * 
  * @returns    Headroom of complex BFP vector `b` 
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 headroom_t bfp_complex_s32_headroom(
-    bfp_complex_s32_t* a);
+    bfp_complex_s32_t* b);
 
 
 /** 
@@ -101,18 +117,20 @@ headroom_t bfp_complex_s32_headroom(
  * saturate to the symmetric 16-bit range (@math{-2^{15} \lt \lt 2^{15}}). To avoid saturation, `b_shl` should be no
  * greater than the headroom of `b` (`b->hr`).
  * 
- * @bfp_op{16, @f$
- *      Re\\{a_k\\} \leftarrow sat_{16}( \lfloor Re\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
- *      Im\\{a_k\\} \leftarrow sat_{16}( \lfloor Im\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}         \\
- *          \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
+ * @operation{
+ * &    Re\\{a_k\\} \leftarrow sat_{16}( \lfloor Re\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
+ * &    Im\\{a_k\\} \leftarrow sat_{16}( \lfloor Im\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}         \\
+ * &        \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
  *              \bar{B}\text{ and } \bar{A}\text{ respectively}
- * @f$ }
+ * }
  * 
  * @param[out] a        Complex output BFP vector @vector{A}
  * @param[in]  b        Complex input BFP vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_shl(
@@ -129,7 +147,7 @@ void bfp_complex_s16_shl(
  * 
  * This operation can be used to add or remove headroom from a BFP vector.
  * 
- * `b_shr` is the number of bits that the real and imaginary parts of each mantissa will be left-shifted. This shift is 
+ * `b_shl` is the number of bits that the real and imaginary parts of each mantissa will be left-shifted. This shift is 
  * signed and arithmetic, so negative values for `b_shl` will right-shift the mantissas.
  * 
  * `a` and `b` must have been initialized (see bfp_complex_s32_init()), and must be the same length.
@@ -140,24 +158,26 @@ void bfp_complex_s16_shl(
  * saturate to the symmetric 32-bit range (@math{-2^{31} \lt \lt 2^{31}}). To avoid saturation, `b_shl` should be no
  * greater than the headroom of `b` (`b->hr`).
  * 
- * @bfp_op{32, @f$
- *      Re\\{a_k\\} \leftarrow sat_{32}( \lfloor Re\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
- *      Im\\{a_k\\} \leftarrow sat_{32}( \lfloor Im\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}         \\
- *          \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
+ * @operation{
+ * &    Re\\{a_k\\} \leftarrow sat_{32}( \lfloor Re\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
+ * &    Im\\{a_k\\} \leftarrow sat_{32}( \lfloor Im\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}         \\
+ * &        \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
  *              \bar{B}\text{ and } \bar{A}\text{ respectively}
- * @f$ }
+ * }
  * 
  * @param[out] a        Complex output BFP vector @vector{A}
  * @param[in]  b        Complex input BFP vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_shl(
     bfp_complex_s32_t* a,
     const bfp_complex_s32_t* b,
-    const left_shift_t shl);
+    const left_shift_t b_shl);
 
 
 
@@ -174,15 +194,17 @@ void bfp_complex_s32_shl(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{16, @f$
- *      A_k \leftarrow B_k \cdot C_k                    \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * @operation{
+ * &    A_k \leftarrow B_k \cdot C_k                    \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)       \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
- * @f$ }
+ * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input real BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_real_mul(
@@ -202,15 +224,17 @@ void bfp_complex_s16_real_mul(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{32, @f$
- *      A_k \leftarrow B_k \cdot C_k                    \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow B_k \cdot C_k                    \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input real BFP vector @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_real_mul(
@@ -231,15 +255,17 @@ void bfp_complex_s32_real_mul(
  * 
  * This operation can be performed safely in-place on `b` or `c`.
  * 
- * @bfp_op{16, @f$
- *      A_k \leftarrow B_k \cdot C_k                    \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow B_k \cdot C_k                    \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_mul(
@@ -262,15 +288,17 @@ void bfp_complex_s16_mul(
  * 
  * This operation can be performed safely in-place on `b` or `c`.
  * 
- * @bfp_op{32, @f$
- *      A_k \leftarrow B_k \cdot C_k                    \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow B_k \cdot C_k                    \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_mul(
@@ -285,16 +313,18 @@ void bfp_complex_s32_mul(
  * @math{B_k}, the corresponding element of complex input BFP vectors @vector{B}, and @math{(C_k)^*}, the complex 
  * conjugate of the corresponding element of complex input BFP vector @vector{C}.
  * 
- * @bfp_op{16, @f$
- *      A_k \leftarrow B_k \cdot (C_k)^*                                                \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                                       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}  \\
- *          \qquad\text{and } (C_k)^* \text{ is the complex conjugate of } C_k
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow B_k \cdot (C_k)^*                                                \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                                       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}  \\
+ * &        \qquad\text{and } (C_k)^* \text{ is the complex conjugate of } C_k
+ * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_conj_mul(
@@ -313,16 +343,18 @@ void bfp_complex_s16_conj_mul(
  * 
  * This operation can be performed safely in-place on `b` or `c`.
  * 
- * @bfp_op{32, @f$
- *      A_k \leftarrow B_k \cdot (C_k)^*                                                \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                                       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}  \\
- *          \qquad\text{and } (C_k)^* \text{ is the complex conjugate of } C_k
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow B_k \cdot (C_k)^*                                                \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                                       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}  \\
+ * &        \qquad\text{and } (C_k)^* \text{ is the complex conjugate of } C_k
+ * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_conj_mul(
@@ -342,13 +374,15 @@ void bfp_complex_s32_conj_mul(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{16, @f$
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} \cdot \left( \alpha \cdot 2^{\alpha\_exp} \right)
- * @f$ }
+ * }
  * 
  * @param[out] a            Output complex BFP vector @vector{A}
  * @param[in]  b            Input complex BFP vector @vector{B}
  * @param[in]  alpha        Real scalar by which @vector{B} is multiplied
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_real_scale(
@@ -368,13 +402,15 @@ void bfp_complex_s16_real_scale(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{32, @f$
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} \cdot \left( \alpha \cdot 2^{\alpha\_exp} \right)
- * @f$ }
+ * }
  * 
  * @param[out] a            Output complex BFP vector @vector{A}
  * @param[in]  b            Input complex BFP vector @vector{B}
  * @param[in]  alpha        Real scalar by which @vector{B} is multiplied
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_real_scale(
@@ -394,13 +430,15 @@ void bfp_complex_s32_real_scale(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{16, @f$
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} \cdot \left( \alpha \cdot 2^{\alpha\_exp} \right)
- * @f$ }
+ * }
  * 
  * @param[out] a            Output complex BFP vector @vector{A}
  * @param[in]  b            Input complex BFP vector @vector{B}
  * @param[in]  alpha        Complex scalar by which @vector{B} is multiplied
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_scale(
@@ -420,13 +458,15 @@ void bfp_complex_s16_scale(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{32, @f$
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} \cdot \left( \alpha \cdot 2^{\alpha\_exp} \right)
- * @f$ }
+ * }
  * 
  * @param[out] a            Output complex BFP vector @vector{A}
  * @param[in]  b            Input complex BFP vector @vector{B}
  * @param[in]  alpha        Complex scalar by which @vector{B} is multiplied
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_scale(
@@ -445,13 +485,15 @@ void bfp_complex_s32_scale(
  * This operation can be performed safely in-place on `b` or `c`.
  * 
  * 
- * @bfp_op{16, @f$
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} + \bar{C}
- * @f$ }
+ * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_add(
@@ -470,13 +512,15 @@ void bfp_complex_s16_add(
  * This operation can be performed safely in-place on `b` or `c`.
  * 
  * 
- * @bfp_op{32, @f$
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} + \bar{C}
- * @f$ }
+ * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_add(
@@ -496,13 +540,15 @@ void bfp_complex_s32_add(
  * This operation can be performed safely in-place on `b` or `c`.
  * 
  * 
- * @bfp_op{16, @f$
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} - \bar{C}
- * @f$ }
+ * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_sub(
@@ -522,13 +568,15 @@ void bfp_complex_s16_sub(
  * This operation can be performed safely in-place on `b` or `c`.
  * 
  * 
- * @bfp_op{32, @f$
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} - \bar{C}
- * @f$ }
+ * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
  * @param[in]  c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_sub(
@@ -545,14 +593,16 @@ void bfp_complex_s32_sub(
  * `a` and `b` must have been initialized (see bfp_complex_s32_init() and bfp_complex_s16_init()), and must be the 
  * same length.
  * 
- * @bfp_op{16, @f$
- *      A_k \overset{32-bit}{\longleftarrow} B_k    \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)   \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &    A_k \overset{32-bit}{\longleftarrow} B_k    \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)   \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output complex 32-bit BFP vector @vector{A}
  * @param[in]  b     Input complex 16-bit BFP vector @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_to_complex_s32(
@@ -571,14 +621,16 @@ void bfp_complex_s16_to_complex_s32(
  * 
  * This function preserves as much precision as possible.
  * 
- * @bfp_op{32, @f$
- *      A_k \overset{16-bit}{\longleftarrow} B_k    \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)   \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &    A_k \overset{16-bit}{\longleftarrow} B_k    \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)   \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output complex 16-bit BFP vector @vector{A}
  * @param[in]  b     Input complex 32-bit BFP vector @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_to_complex_s16(
@@ -595,15 +647,17 @@ void bfp_complex_s32_to_complex_s16(
  * 
  * `a` and `b` must have been initialized (see bfp_s16_init() bfp_complex_s16_init()), and must be the same length.
  * 
- * @bfp_op{16, @f$
- *      A_k \leftarrow B_k \cdot (B_k)^*                                \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}     \\
- *          \qquad\text{  and } (B_k)^* \text{ is the complex conjugate of } B_k
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow B_k \cdot (B_k)^*                                \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}     \\
+ * &        \qquad\text{  and } (B_k)^* \text{ is the complex conjugate of } B_k
+ * }
  * 
  * @param[out] a     Output real BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_squared_mag(
@@ -620,15 +674,17 @@ void bfp_complex_s16_squared_mag(
  * 
  * `a` and `b` must have been initialized (see bfp_s32_init() bfp_complex_s32_init()), and must be the same length.
  * 
- * @bfp_op{32, @f$
- *      A_k \leftarrow B_k \cdot (B_k)^*                                \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}     \\
- *          \qquad\text{  and } (B_k)^* \text{ is the complex conjugate of } B_k
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow B_k \cdot (B_k)^*                                \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}     \\
+ * &        \qquad\text{  and } (B_k)^* \text{ is the complex conjugate of } B_k
+ * }
  * 
  * @param[out] a     Output real BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_squared_mag(
@@ -643,14 +699,16 @@ void bfp_complex_s32_squared_mag(
  * 
  * `a` and `b` must have been initialized (see bfp_s16_init() bfp_complex_s16_init()), and must be the same length.
  * 
- * @bfp_op{16, @f$
- *      A_k \leftarrow  \left| B_k \right|                              \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow  \left| B_k \right|                              \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output real BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_mag(
@@ -665,14 +723,16 @@ void bfp_complex_s16_mag(
  * 
  * `a` and `b` must have been initialized (see bfp_s32_init() bfp_complex_s32_init()), and must be the same length.
  * 
- * @bfp_op{32, @f$
- *      A_k \leftarrow  \left| B_k \right|                              \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow  \left| B_k \right|                              \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output real BFP vector @vector{A}
  * @param[in]  b     Input complex BFP vector @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_mag(
@@ -687,15 +747,17 @@ void bfp_complex_s32_mag(
  * 
  * `b` must have been initialized (see bfp_complex_s16_init()).
  * 
- * @bfp_op{16, @f$
- *      a \leftarrow \sum_{k=0}^{N-1} \left( b_k \cdot 2^{B\_exp} \right)   \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &    a \leftarrow \sum_{k=0}^{N-1} \left( b_k \cdot 2^{B\_exp} \right)   \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in]  b     Input complex BFP vector @vector{B}
  * 
  * @returns     @math{a}, the sum of vector @vector{B}'s elements
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 float_complex_s32_t bfp_complex_s16_sum(
@@ -709,15 +771,17 @@ float_complex_s32_t bfp_complex_s16_sum(
  * 
  * `b` must have been initialized (see bfp_complex_s32_init()).
  * 
- * @bfp_op{32, @f$
- *      a \leftarrow \sum_{k=0}^{N-1} \left( b_k \cdot 2^{B\_exp} \right)   \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &    a \leftarrow \sum_{k=0}^{N-1} \left( b_k \cdot 2^{B\_exp} \right)   \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in]  b     Input complex BFP vector @vector{B}
  * 
  * @returns     @math{a}, the sum of vector @vector{B}'s elements
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 float_complex_s64_t bfp_complex_s32_sum( 

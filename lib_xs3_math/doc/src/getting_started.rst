@@ -1,3 +1,4 @@
+.. _getting_started:
 
 Getting Started
 ===============
@@ -33,7 +34,7 @@ or as a vector, e.g.
     float foo[20];
 
 
-Standard floating-point values carry both a mantissa :math:`m` and an exponent :math:`p`, such that the logical value represented by such a variable is :math:`m\cdot2^p`. When you have a vector of standard floating-point values, each element of the vector carries its own mantissa and its own exponent: :math:`m[k]\cdot2^{p[k]`
+Standard floating-point values carry both a mantissa :math:`m` and an exponent :math:`p`, such that the logical value represented by such a variable is :math:`m\cdot2^p`. When you have a vector of standard floating-point values, each element of the vector carries its own mantissa and its own exponent: :math:`m[k]\cdot2^{p[k]}`.
 
 ::
 

@@ -11,11 +11,13 @@
 #include "xs3_vpu_info.h"
 
 /**
- * @file xs3_vpu_scalar_ops.h
+ * @page header_scalar_ops  xs3_vpu_scalar_ops.h
  * 
  * These functions implement the behavior of various XS3 VPU instructions in 8-, 16- or 32-bit modes.
  * 
  * @warning This is not considered to be part of the public API.
+ * 
+ * @ingroup xs3_math_header_file
  */
 
 

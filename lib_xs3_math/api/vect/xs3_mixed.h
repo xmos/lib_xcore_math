@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 #include "xs3_math_conf.h"
 #include "xs3_math_types.h"
 #include "xs3_util.h"
@@ -11,6 +13,7 @@
 extern "C" {
 #endif
 
+
 /**
  * @brief Multiply-accumulate an 8-bit matrix by an 8-bit vector into 32-bit accumulators.
  * 
@@ -18,7 +21,7 @@ extern "C" {
  * @math{N}-element column vector @vector{v} and adds it to the 32-bit accumulator vector 
  * @vector{a}.
  * 
- * `accumulators` is the output vector @vector{a} to which the product @math{\bar W\times\barv}
+ * `accumulators` is the output vector @vector{a} to which the product @math{\bar W\times\bar v}
  * is accumulated. Note that the accumulators are encoded in a format native to the XS3 VPU. 
  * To initialize the accumulator vector to zeros, just zero the memory.
  * 
@@ -29,7 +32,7 @@ extern "C" {
  * `matrix` and `input_vect` must both begin at a word-aligned 
  * offsets.
  * 
- * `M_rows` and `N_rows` are the dimensions @math{M} and @math{N} of matrix @vector{W}. @{M} 
+ * `M_rows` and `N_rows` are the dimensions @math{M} and @math{N} of matrix @vector{W}. @math{M} 
  * must be a multiple of 16, and @math{N} must be a multiple of 32.
  * 
  * The result of this multiplication is exact, so long as saturation does not occur.
@@ -40,6 +43,7 @@ extern "C" {
  * @param[in]     M_rows        The number of rows @math{M} in matrix @vector{W}
  * @param[in]     N_cols        The number of columns @math{N} in matrix @vector{W}
  * 
+ * @ingroup xs3_mixed_vect_func
  */
 C_API
 void xs3_mat_mul_s8_x_s8_yield_s32 (
@@ -48,7 +52,6 @@ void xs3_mat_mul_s8_x_s8_yield_s32 (
     const int8_t input_vect[],
     const unsigned M_rows,
     const unsigned N_cols);
-
 
 
 /**
@@ -67,8 +70,11 @@ void xs3_mat_mul_s8_x_s8_yield_s32 (
  * `matrix` and `input_vect` must both begin at a word-aligned 
  * offsets.
  * 
- * `M_rows` and `N_rows` are the dimensions @math{M} and @math{N} of matrix @vector{W}. @{M} 
+ * `M_rows` and `N_rows` are the dimensions @math{M} and @math{N} of matrix @vector{W}. @math{M} 
  * must be a multiple of 16, and @math{N} must be a multiple of 32.
+ * 
+ * `scratch` is a pointer to a word-aligned buffer that this function may use to store 
+ * intermediate results. This buffer must be at least @math{N} bytes long.
  * 
  * The result of this multiplication is exact, so long as saturation does not occur.
  * 
@@ -77,16 +83,18 @@ void xs3_mat_mul_s8_x_s8_yield_s32 (
  * @param[in]     input_vect    The input vector @vector{v}
  * @param[in]     M_rows        The number of rows @math{M} in matrix @vector{W}
  * @param[in]     N_cols        The number of columns @math{N} in matrix @vector{W}
+ * @param[in]     scratch       Scratch buffer required by this function.
+ * 
+ * @ingroup xs3_mixed_vect_func
  */
 C_API
 void xs3_mat_mul_s8_x_s16_yield_s32 (
     int32_t output[],
-    const int8_t weights[],
-    const int16_t input[],
+    const int8_t matrix[],
+    const int16_t input_vect[],
     const unsigned M_rows,
     const unsigned N_cols,
     int8_t scratch[]);
-
 
 #ifdef __XC__
 }   //extern "C"

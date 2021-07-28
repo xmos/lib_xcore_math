@@ -9,15 +9,17 @@ Introduction
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   :glob:
 
    src/getting_started
-   src/notes
    src/fft_lengths
+
+   src/reference/index
 
 
 ``lib_xs3_math`` is a library of optimized math functions for taking advantage of the vector processing unit (VPU) on the XMOS XS3 architecture.
 
-See @ref getting_started to get going.
+See :ref:`getting_started` to get going.
 
 On GitHub
 ---------

@@ -8,11 +8,20 @@
 extern "C" { 
 #endif
 
+
 /**
- * @file bfp_math.h
+ * @page page_xs3_math_h  xs3_math.h
  * 
- * Include this file from a source file to access both the BFP API and low-level API, as well as the `lib_xs3_math` 
- * types and configuration.
+ * This header includes the header files necessary to use `lib_xs3_math`'s high-level block floating-
+ * point API as well as its low-level vector API, including types and functions for 16- and 32-bit vectors.
+ *  
+ * @ingroup xs3_math_header_file
+ */
+
+/**
+ * @defgroup bfp16_func     16-Bit Block Floating-Point Functions
+ * @defgroup bfp32_func     32-Bit Block Floating-Point Functions
+ * @defgroup bfp_fft_func   Block Floating-Point FFT Functions
  */
 
 #include "xs3_math.h"

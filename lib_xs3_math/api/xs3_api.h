@@ -26,3 +26,5 @@
 
 /// (on xcore) Force variable to double word alignment
 #define DWORD_ALIGNED  ALIGNMENT(8)
+
+//
