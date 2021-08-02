@@ -8,6 +8,8 @@ Overview
 
 ``lib_xs3_math`` has a two layer API model. The upper layer is a block floating-point (BFP) API in which many details of operations being performed are hidden from the user. The lower layer, called the `low-level API`, stays much closer to the metal and requires that some care be taken to avoid conditions like arithmetic saturation or underflow. The BFP API calls the low-level API, which is where the bulk of the work is actually performed.
 
+.. image:: images/bfp_bg_fig1.png
+
 
 Background
 ----------
@@ -34,9 +36,7 @@ or as a vector, e.g.
 
 Standard floating-point values carry both a mantissa :math:`m` and an exponent :math:`p`, such that the logical value represented by such a variable is :math:`m\cdot2^p`. When you have a vector of standard floating-point values, each element of the vector carries its own mantissa and its own exponent: :math:`m[k]\cdot2^{p[k]}`.
 
-::
-
-    FIGURE WENT HERE
+.. image:: images/bfp_bg_fig2.png
 
 By contrast, block floating-point objects have a vector of mantissas :math:`\bar{m}` which all share the same exponent :math:`p`, such that the logical value of the element at index :math:`k` is :math:`m[k]\cdot2^p`.
 
@@ -49,9 +49,7 @@ By contrast, block floating-point objects have a vector of mantissas :math:`\bar
         int32_t exp;
     } bfp_vect;
 
-    ::
-
-    FIGURE WENT HERE
+.. image:: images/bfp_bg_fig3.png
 
 Headroom
 ````````
@@ -69,9 +67,7 @@ Consider a 2-element BFP vector intended to carry the values :math:`2^{20}` and 
         int32_t exp;
     } vect = { { (1<<20), (0xFF >> 10) }, 0 };
     
-::
-
-    FIGURE WENT HERE
+.. image:: images/bfp_bg_fig4.png
 
 In the diagram above, the fractional bits (shown in red text) are discarded, as the mantissa is only 32 bits. Then, with :math:`0` as the exponent, ``mant[1]`` underflows to :math:`0`. Meanwhile, the 12 most significant bits of ``mant[0]`` are all zeros.
 
@@ -81,9 +77,7 @@ If we remove headroom from one mantissa of a BFP vector, all other mantissas mus
 
 In this case, if we remove 10 bits of headroom and subtract 10 from the exponent we get the following:
 
-::
-
-    FIGURE WENT HERE
+.. image:: images/bfp_bg_fig5.png
 
 Now, no information is lost in either element. One of the main goals of BFP arithmetic is to keep the headroom in BFP vectors to the minimum necessary (equivalently, keeping the exponent as small as possible). That allows for maximum effective precision of the elements in the vector.
 
