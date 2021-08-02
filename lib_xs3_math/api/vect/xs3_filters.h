@@ -19,8 +19,8 @@
 
 
 /**
- * @defgroup xs3_filter_func  `lib_xs3_math` Filter Functions
- * @defgroup xs3_filter_type  `lib_xs3_math` Filter Types
+ * @defgroup xs3_filter_func  lib_xs3_math Filter Functions
+ * @defgroup xs3_filter_type  lib_xs3_math Filter Types
  */
 
 

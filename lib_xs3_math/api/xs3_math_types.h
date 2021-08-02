@@ -24,9 +24,9 @@
 
 
 /**
- * @defgroup type_scalar  `lib_xs3_math` Scalar Types
- * @defgroup type_bfp     `lib_xs3_math` Block Floating-Point Types
- * @defgroup type_misc    `lib_xs3_math` Misc Types
+ * @defgroup type_scalar  lib_xs3_math Scalar Types
+ * @defgroup type_bfp     lib_xs3_math Block Floating-Point Types
+ * @defgroup type_misc    lib_xs3_math Misc Types
  */
 
 /** 
