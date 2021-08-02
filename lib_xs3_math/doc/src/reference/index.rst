@@ -3,13 +3,19 @@ API Reference
 #############
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     types
-    config_options
-    header_files
+
+.. toctree::
+    :maxdepth: 1
 
     bfp/index
     vect/index
+    config_options
+    header_files
+
+.. toctree::
+    :maxdepth: 2
 
     notes

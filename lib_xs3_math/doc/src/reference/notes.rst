@@ -24,3 +24,10 @@ Note: Spectrum Packing
 .. doxygenpage:: note_spectrum_packing
   :content-only:
 
+
+Note: Library FFT Length Support
+================================
+
+.. doxygenpage:: fft_length_support
+  :content-only:
+

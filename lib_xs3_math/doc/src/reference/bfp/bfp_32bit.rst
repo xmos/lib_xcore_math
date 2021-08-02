@@ -1,3 +1,4 @@
+.. _bfp_32bit:
 
 32-Bit Block Floating-Point Functions
 =====================================

@@ -27,3 +27,4 @@ Configuration Macros
 ====================
 
 .. doxygengroup:: conf_option_macro
+    :content-only:

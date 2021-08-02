@@ -7,12 +7,11 @@ Introduction
 ============
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
-   :glob:
 
    src/getting_started
-   src/fft_lengths
+   src/bfp_background
 
    src/reference/index
 
