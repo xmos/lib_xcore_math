@@ -11,6 +11,8 @@
  * This header contains functions for performing block floating-point Fast Fourier Transforms (FFTs) 
  * and inverse FFTs on BFP vectors of types `bfp_s32_t`, `bfp_complex_s32_t`, and `bfp_ch_pair_s32_t`.
  * 
+ * @note This header is included automatically through `bfp_math.h`.
+ * 
  * @ingroup xs3_math_header_file
  */
 

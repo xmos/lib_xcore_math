@@ -3,6 +3,19 @@
 
 #pragma once
 
+
+/**
+ * @page page_xs3_vpu_info_h  xs3_vpu_info.h
+ * 
+ * This header contains macros and types which may be useful for interacting with the
+ * XS3 VPU at a relatively low level.
+ * 
+ * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
+ * 
+ * @ingroup xs3_math_header_file
+ */
+
+
 /**
  * @defgroup vpu_info XS3 VPU Info
  */

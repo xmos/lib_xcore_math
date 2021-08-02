@@ -23,6 +23,8 @@
  * temporary, to avoid memory leaks they much be deallocated using the corresponding `bfp_*_dealloc()`
  * functions.
  * 
+ * @note This header is included automatically through `bfp_math.h`.
+ * 
  * @see  `bfp_s16_t`, `bfp_s32_t`, `bfp_complex_s16_t`, `bfp_complex_s32_t`, 
  * `bfp_ch_pair_s16_t`, and `bfp_ch_pair_s32_t`
  * 

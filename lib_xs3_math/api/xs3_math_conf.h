@@ -8,6 +8,21 @@
 #include "xs3_math_user_conf.h"
 #endif
 
+
+/**
+ * @page page_xs3_math_conf_h  xs3_math_conf.h
+ * 
+ * This header is used for detecting/setting several compile-time configuration macros.
+ * 
+ * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
+ * 
+ * @see conf_option_macro
+ * 
+ * @ingroup xs3_math_header_file
+ */
+
+
+
 /**
  * @defgroup conf_option_macro  Compile Time Options
  */

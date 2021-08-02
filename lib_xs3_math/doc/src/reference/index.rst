@@ -11,3 +11,5 @@ API Reference
 
     bfp/index
     vect/index
+
+    notes

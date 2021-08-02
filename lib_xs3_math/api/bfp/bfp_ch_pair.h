@@ -13,6 +13,8 @@
  * 
  * Functions for initializing channel-pair vectors can be found in @ref page_bfp_init_h.
  * 
+ * @note This header is included automatically through `bfp_math.h`.
+ * 
  * @see `bfp_ch_pair_s16_t`, `bfp_ch_pair_s32_t`
  * 
  * @ingroup xs3_math_header_file

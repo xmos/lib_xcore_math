@@ -13,6 +13,8 @@
  * 
  * Functions for initializing complex BFP vectors can be found in @ref page_bfp_init_h.
  * 
+ * @note This header is included automatically through `bfp_math.h`.
+ * 
  * @see `bfp_complex_s16_t`, `bfp_complex_s32_t`
  * 
  * @ingroup xs3_math_header_file

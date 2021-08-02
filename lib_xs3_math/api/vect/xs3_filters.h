@@ -5,6 +5,19 @@
 
 #include "xs3_math_types.h"
 
+
+/**
+ * @page page_xs3_filters_h  xs3_filters.h
+ * 
+ * This header contains XS3-optimized functions and types for initializing and executing 
+ * 16- and 32-bit FIR filters, as well as 32-bit biquad filters.
+ * 
+ * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
+ * 
+ * @ingroup xs3_math_header_file
+ */
+
+
 /**
  * @defgroup xs3_filter_func  `lib_xs3_math` Filter Functions
  * @defgroup xs3_filter_type  `lib_xs3_math` Filter Types

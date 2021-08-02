@@ -1,9 +1,11 @@
 .. _compile_time_opts:
 
-##################################
-Compile-Time Configuration Options
-##################################
+#####################
+Library Configuration
+#####################
 
+Configuration Options
+=====================
 
 .. doxygenpage:: conf_option_debug_check_lengths
     :content-only:
@@ -20,9 +22,8 @@ Compile-Time Configuration Options
 .. doxygenpage:: conf_option_free_func
     :content-only:
 
-
-####################
+    
 Configuration Macros
-####################
+====================
 
 .. doxygengroup:: conf_option_macro

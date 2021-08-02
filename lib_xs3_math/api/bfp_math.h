@@ -10,10 +10,11 @@ extern "C" {
 
 
 /**
- * @page page_xs3_math_h  xs3_math.h
+ * @page page_bfp_math_h  bfp_math.h
  * 
  * This header includes the header files necessary to use `lib_xs3_math`'s high-level block floating-
- * point API as well as its low-level vector API, including types and functions for 16- and 32-bit vectors.
+ * point API as well as its low-level vector API, including types and functions for 16- and 32-bit
+ * BFP vectors.
  *  
  * @ingroup xs3_math_header_file
  */

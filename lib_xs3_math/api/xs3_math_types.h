@@ -7,6 +7,22 @@
 
 #include "xs3_api.h"
 
+
+
+/**
+ * @page page_xs3_math_types_h  xs3_math_types.h
+ * 
+ * This header contains definitions for most of the library-defined types which are used
+ * throughout this API.  Several other types (such as those used for filtering) are defined
+ * locally if they're only used within a single header.
+ * 
+ * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
+ * 
+ * @ingroup xs3_math_header_file
+ */
+
+
+
 /**
  * @defgroup type_scalar  `lib_xs3_math` Scalar Types
  * @defgroup type_bfp     `lib_xs3_math` Block Floating-Point Types

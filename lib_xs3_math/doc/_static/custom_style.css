@@ -12,7 +12,9 @@ dl.c.enum {
 
 dl.c.function, 
 dl.c.struct, 
+dl.c.macro, 
 dl.c.type, 
-dl.c.enum {
+dl.c.enum,
+div.docutils.container {
   background: #f8f8f8;
 } 

@@ -12,6 +12,17 @@ extern "C" {
 #endif
 
 
+/**
+ * @page page_xs3_vect_s32_h  xs3_vect_s32.h
+ * 
+ * This header contains functions implementing arithmetic operations on 32-bit vectors, optimized 
+ * for xCore XS3.
+ * 
+ * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
+ * 
+ * @ingroup xs3_math_header_file
+ */
+
 
 /**
  * Maximum bit-depth that can be calculated by xs3_vect_s32_sqrt().
@@ -48,6 +59,8 @@ extern "C" {
  * @param[in]   length  Number of elements in @vector{b}
  * 
  * @returns     @math{a}, the headroom of vector @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_ch_pair_s16_headroom, 
  *      xs3_vect_s16_headroom, 
@@ -90,6 +103,8 @@ headroom_t xs3_vect_ch_pair_s32_headroom(
  * @param[in]   ch_b        Value to set channel A of elements of @vector{a} to
  * @param[in]   ch_a        Value to set channel B of elements of @vector{a} to
  * @param[in]   length      Number of elements in vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_ch_pair_s16_set, 
  *      xs3_vect_s16_set, 
@@ -138,6 +153,8 @@ void xs3_vect_ch_pair_s32_set(
  * 
  * @returns     Headroom of output vector @vector{a}
  * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @see xs3_vect_ch_pair_s32_shr
  * 
  * @ingroup xs3_vect32_func
@@ -180,6 +197,8 @@ headroom_t xs3_vect_ch_pair_s32_shl(
  * @param[in]   b_shr       Arithmetic right-shift applied to elements of @vector{b}
  * 
  * @returns     Headroom of output vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_ch_pair_s32_shr
  * 
@@ -238,6 +257,8 @@ headroom_t xs3_vect_ch_pair_s32_shr(
  * 
  * @returns     Headroom of output vector @vector{a}.
  * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @see xs3_vect_complex_s32_add_prepare
  * 
  * @ingroup xs3_vect32_func
@@ -251,7 +272,19 @@ headroom_t xs3_vect_complex_s32_add(
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
-// xs3_vect_complex_s32_add() uses the same prepare logic as xs3_vect_s32_add()
+
+/**
+ * @brief Obtain the output exponent and shifts required for a call to `xs3_vect_complex_s32_add()`.
+ * 
+ * The logic for computing the shifts and exponents of `xs3_vect_complex_s32_add()` is identical to that for
+ * `xs3_vect_s32_add()`.
+ * 
+ * This macro is provided as a convenience to developers and to make the code more coherent.
+ * 
+ * @see xs3_vect_s32_add_prepare()
+ * 
+ * @ingroup xs3_vect32_prepare
+ */
 #define xs3_vect_complex_s32_add_prepare xs3_vect_s32_add_prepare
 
 
@@ -296,6 +329,8 @@ headroom_t xs3_vect_complex_s32_add(
  * 
  * @return      Headroom of the output vector @vector{a}
  * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @see xs3_vect_complex_s32_conj_mul_prepare
  * 
  * @ingroup xs3_vect32_func
@@ -309,7 +344,19 @@ headroom_t xs3_vect_complex_s32_conj_mul(
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
-// xs3_vect_complex_s32_conj_mul() uses the same prepare logic as xs3_vect_complex_s32_mul()
+
+/**
+ * @brief Obtain the output exponent and shifts required for a call to `xs3_vect_complex_s32_conj_mul()`.
+ * 
+ * The logic for computing the shifts and exponents of `xs3_vect_complex_s32_conj_mul()` is identical to that for
+ * `xs3_vect_complex_s32_mul()`.
+ * 
+ * This macro is provided as a convenience to developers and to make the code more readable.
+ * 
+ * @see xs3_vect_complex_s32_mul_prepare()
+ * 
+ * @ingroup xs3_vect32_prepare
+ */
 #define xs3_vect_complex_s32_conj_mul_prepare xs3_vect_complex_s32_mul_prepare
 
 
@@ -339,6 +386,8 @@ headroom_t xs3_vect_complex_s32_conj_mul(
  * @param[in]   length  Number of elements in @vector{x}
  * 
  * @returns     Headroom of vector @vector{x} 
+ * 
+ * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_ch_pair_s16_headroom, 
  *      xs3_vect_ch_pair_s32_headroom, 
@@ -406,6 +455,8 @@ headroom_t xs3_vect_complex_s32_headroom(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @see xs3_vect_complex_s32_mag_prepare
  * 
  * @ingroup xs3_vect32_func
@@ -418,73 +469,6 @@ headroom_t xs3_vect_complex_s32_mag(
     const right_shift_t b_shr,
     const complex_s32_t* rot_table,
     const unsigned table_rows);
-
-
-/**
- * @brief Obtain the output exponent and shift parameter used by xs3_vect_complex_s32_mag() and 
- *        xs3_vect_complex_s16_mag().
- * 
- * Computing the magnitudes of elements of a complex block-floating point vector can be represented as 
- * 
- * @math{
- *      a_k \cdot 2^{a\_exp} \leftarrow \left| b_k \cdot 2^{b\_exp} \right|
- * }
- * 
- * where each @math{a\_k} is an element of @vector{a}, the output mantissa vector, and each @math{b_k} is an element of
- * @vector{b}, the input mantissa vector, and @math{b\_exp} and @math{a\_exp} are the input and output exponents 
- * respectively.
- * 
- * Using @math{b\_exp} and @math{b\_hr} (the headroom of mantissa vector @vector{b}) this function computes 
- * @math{a\_exp}, as well as @math{b\_shr}, a parameter required by xs3_vect_complex_s32_mag(), which computes the 
- * output mantissa vector @vector{a}.
- * 
- * To maximize precision, the output exponent @math{a\_exp} should be chosen such that the output vector @vector{a} has
- * as little headroom as possible.
- * 
- * This function is used calculate the output exponent and input bit-shift for each of the following functions:
- * * xs3_vect_complex_s32_mag()
- * * xs3_vect_complex_s16_mag()
- * 
- * @par Adjusting Output Exponents
- * @parblock
- * 
- * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating fixed-point arithmetic), the 
- * `b_shr` produced by this function can be adjusted according to the following:
- * \code{.c}
- *      exponent_t desired_exp = ...; // Value known a priori
- *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
- * \endcode
- * 
- * When applying the above adjustment, the following condition should be maintained:
- * * `b_hr + b_shr >= 0`
- * 
- * Using larger values than strictly necessary for `b_shr` may result in unnecessary underflows or loss of precision.
- * @endparblock
- * 
- * @par Notes
- * @parblock
- * 
- * * If @math{b\_hr} is unknown, it can be calculated using the appropriate headroom function (e.g. 
- * xs3_vect_complex_s32_headroom()) or the value `0` can always be safely used (but may result in reduced precision).
- * @endparblock
- * 
- * @param[out]  a_exp               Output exponent associated with output mantissa vector @vector{a}
- * @param[out]  b_shr               Signed arithmetic right-shift to be applied to elements of @vector{b}. Used by the
- *                                  function which computes the output mantissas @vector{a}
- * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
- * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
- * 
- * @see xs3_vect_complex_s16_mag(), 
- *      xs3_vect_complex_s32_mag()
- * 
- * @ingroup xs3_vect32_func
- */
-C_API
-void xs3_vect_complex_mag_s32_prepare(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    const exponent_t b_exp,
-    const headroom_t b_hr);
 
 
 /**
@@ -530,7 +514,7 @@ void xs3_vect_complex_mag_s32_prepare(
  * 
  * @see xs3_vect_complex_s32_mag()
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_complex_s32_mag_prepare(
@@ -581,6 +565,8 @@ void xs3_vect_complex_s32_mag_prepare(
  * @param[in]  c_shr    Right-shift appled to @vector{c}
  * 
  * @return      Headroom of the output vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_complex_s32_mul_prepare
  * 
@@ -658,7 +644,7 @@ headroom_t xs3_vect_complex_s32_mul(
  * @see xs3_vect_complex_s32_conj_mul, 
  *      xs3_vect_complex_s32_mul
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_complex_s32_mul_prepare(
@@ -714,6 +700,8 @@ void xs3_vect_complex_s32_mul_prepare(
  * @param[in]  c_shr    Right-shift appled to @vector{c}.
  * 
  * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_complex_s32_real_mul_prepare
  * 
@@ -789,7 +777,7 @@ headroom_t xs3_vect_complex_s32_real_mul(
  * 
  * @see xs3_vect_complex_s32_real_mul
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_complex_s32_real_mul_prepare(
@@ -843,6 +831,8 @@ void xs3_vect_complex_s32_real_mul_prepare(
  * 
  * @returns     Headroom of the output vector @vector{a}.
  * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @ingroup xs3_vect32_func
  */
 C_API
@@ -854,7 +844,19 @@ headroom_t xs3_vect_complex_s32_real_scale(
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
-// xs3_vect_complex_s32_real_scale() uses the same prepare logic as xs3_vect_s32_mul()
+
+/**
+ * @brief Obtain the output exponent and shifts required for a call to `xs3_vect_complex_s32_real_scale()`.
+ * 
+ * The logic for computing the shifts and exponents of `xs3_vect_complex_s32_real_scale()` is identical to that for
+ * `xs3_vect_s32_mul()`.
+ * 
+ * This macro is provided as a convenience to developers and to make the code more readable.
+ * 
+ * @see xs3_vect_s32_mul_prepare()
+ * 
+ * @ingroup xs3_vect32_prepare
+ */
 #define xs3_vect_complex_s32_real_scale_prepare xs3_vect_s32_mul_prepare
 
 
@@ -901,6 +903,8 @@ headroom_t xs3_vect_complex_s32_real_scale(
  * @param[in]  c_shr    Right-shift applied to @math{c}.
  * 
  * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -975,7 +979,7 @@ headroom_t xs3_vect_complex_s32_scale(
  * 
  * @see xs3_vect_complex_s32_scale
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_complex_s32_scale_prepare(
@@ -1014,6 +1018,8 @@ void xs3_vect_complex_s32_scale_prepare(
  * @param[in]   b_real      Value to set real part of elements of @vector{a} to
  * @param[in]   b_imag      Value to set imaginary part of elements of @vector{a} to
  * @param[in]   length      Number of elements in @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -1056,6 +1062,8 @@ void xs3_vect_complex_s32_set(
  * 
  * @returns     Headroom of the output vector @vector{a}
  * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @ingroup xs3_vect32_func
  */
 C_API
@@ -1096,6 +1104,8 @@ headroom_t xs3_vect_complex_s32_shl(
  * @param[in]   b_shr       Right-shift applied to @vector{b} 
  * 
  * @returns     Headroom of the output vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -1138,6 +1148,8 @@ headroom_t xs3_vect_complex_s32_shr(
  * @param[in]   b           Complex input vector @vector{b}
  * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
  * @param[in]   b_shr       Right-shift appled to @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_complex_s32_squared_mag_prepare
  * 
@@ -1194,7 +1206,7 @@ headroom_t xs3_vect_complex_s32_squared_mag(
  * 
  * @see xs3_vect_complex_s32_squared_mag()
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_complex_s32_squared_mag_prepare(
@@ -1249,6 +1261,8 @@ void xs3_vect_complex_s32_squared_mag_prepare(
  * 
  * @returns     Headroom of output vector @vector{a}.
  * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @see xs3_vect_complex_s32_sub_prepare
  * 
  * @ingroup xs3_vect32_func
@@ -1262,7 +1276,19 @@ headroom_t xs3_vect_complex_s32_sub(
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
-// xs3_vect_complex_s32_sub() uses the same prepare logic as xs3_vect_s32_add()
+
+/**
+ * @brief Obtain the output exponent and shifts required for a call to `xs3_vect_complex_s32_sub()`.
+ * 
+ * The logic for computing the shifts and exponents of `xs3_vect_complex_s32_sub()` is identical to that for
+ * `xs3_vect_s32_add()`.
+ * 
+ * This macro is provided as a convenience to developers and to make the code more readable.
+ * 
+ * @see xs3_vect_s32_add_prepare()
+ * 
+ * @ingroup xs3_vect32_prepare
+ */
 #define xs3_vect_complex_s32_sub_prepare xs3_vect_s32_add_prepare
 
 
@@ -1311,6 +1337,8 @@ headroom_t xs3_vect_complex_s32_sub(
  * @param[in]   b           Complex input vector @vector{b}.
  * @param[in]   length      Number of elements in vector @vector{b}.
  * @param[in]   b_shr       Right-shift appled to @vector{b}.
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_complex_s32_sum_prepare
  * 
@@ -1372,7 +1400,7 @@ void xs3_vect_complex_s32_sum(
  * 
  * @see xs3_vect_complex_s32_sum
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_complex_s32_sum_prepare(
@@ -1411,6 +1439,8 @@ void xs3_vect_complex_s32_sum_prepare(
  * @param[inout]    x           Complex vector to have its tail reversed.
  * @param[in]       length      Number of elements in @vector{x}
  * 
+ * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @see bfp_fft_forward_mono, 
  *      bfp_fft_inverse_mono
  * 
@@ -1420,68 +1450,6 @@ C_API
 void xs3_vect_complex_s32_tail_reverse(
     complex_s32_t x[],
     const unsigned length);
-
-
-/** 
- * @brief Convert a complex 32-bit vector into a complex 16-bit vector.
- * 
- * This function converts a complex 32-bit mantissa vector @vector{b} into a complex 16-bit mantissa vector @vector{a}.
- * Conceptually, the output BFP vector @math{\bar{a}\cdot 2^{a\_exp}} represents the same value as the input BFP vector
- * @math{\bar{b}\cdot 2^{b\_exp}}, only with a reduced bit-depth.
- * 
- * In most cases @math{b\_shr} should be @math{16 - b\_hr}, where @math{b\_hr} is the headroom of the 32-bit input
- * mantissa vector @vector{b}. The output exponent @math{a\_exp} will then be given by
- * 
- * @math{ a\_exp = b\_exp + b\_shr }
- * 
- * @par Parameter Details
- * @parblock
- * 
- * `a_real[]` and `a_imag[]` together represent the complex 16-bit output mantissa vector @vector{a}, with the real part
- * of each @math{a_k} going in `a_real[]` and the imaginary part going in `a_imag[]`.
- * 
- * `b[]` represents the complex 32-bit mantissa vector @vector{b}.
- * 
- * `a_real[]`, `a_imag[]` and `b[]` must each begin at a word-aligned address.
- * 
- * `length` is the number of elements in each of the vectors.
- * 
- * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
- * @endparblock
- * 
- * @operation{ 
- * &     b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
- * &     Re\\{a_k\\} \leftarrow Re\\{b_k'\\}                                 \\
- * &     Im\\{a_k\\} \leftarrow Im\\{b_k'\\}                                 \\
- * &         \qquad\text{ for }k\in 0\ ...\ (length-1) 
- * }
- * 
- * @par Block Floating-Point
- * @parblock
- * 
- * If @vector{b} are the complex 32-bit mantissas of a BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the resulting 
- * vector @vector{a} are the complex 16-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where
- * @math{a\_exp = b\_exp + b\_shr}.
- * @endparblock
- * 
- * @param[out]  a_real      Real part of complex output vector @vector{a}.
- * @param[out]  a_imag      Imaginary part of complex output vector @vector{a}.
- * @param[in]   b           Complex input vector @vector{b}.
- * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
- * @param[in]   b_shr       Right-shift appled to @vector{b}.
- * 
- * @see xs3_vect_s32_to_s16, 
- *      xs3_vect_complex_s16_to_complex_s32
- * 
- * @ingroup xs3_vect32_func
- */
-C_API
-void xs3_vect_complex_s32_to_complex_s16(
-    int16_t a_real[],
-    int16_t a_imag[],
-    const complex_s32_t b[],
-    const unsigned length,
-    const right_shift_t b_shr);
 
 
 /** 
@@ -1509,6 +1477,8 @@ void xs3_vect_complex_s32_to_complex_s16(
  * @param[in]  length   Number of elements in vectors @vector{a} and @vector{b}
  * 
  * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -1558,6 +1528,8 @@ headroom_t xs3_vect_s32_abs(
  * @param[in]   length      Number of elements in @vector{b}
  * 
  * @returns The 64-bit sum @math{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -1609,6 +1581,8 @@ int64_t xs3_vect_s32_abs_sum(
  * @param[in]       c_shr       Right-shift appled to @vector{c}
  * 
  * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_s32_prepare()
  * 
@@ -1702,7 +1676,7 @@ headroom_t xs3_vect_s32_add(
  *      xs3_vect_complex_s16_sub, 
  *      xs3_vect_complex_s32_sub
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_s32_add_prepare(
@@ -1732,6 +1706,8 @@ void xs3_vect_s32_add_prepare(
  * 
  * @returns @math{a}, the index of the maximum element of vector @vector{b}. If there is a tie for the maximum value, 
  *          the lowest tying index is returned.
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` is not word-aligned (See @ref note_vector_alignment)
  */
 C_API
 unsigned xs3_vect_s32_argmax(
@@ -1756,6 +1732,8 @@ unsigned xs3_vect_s32_argmax(
  * 
  * @returns @math{a}, the index of the minimum element of vector @vector{b}. If there is a tie for the minimum value, 
  *          the lowest tying index is returned.
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -1807,6 +1785,8 @@ unsigned xs3_vect_s32_argmin(
  * 
  * @returns  Headroom of output vector @vector{a}
  * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @ingroup xs3_vect32_func
  */
 C_API
@@ -1851,7 +1831,7 @@ headroom_t xs3_vect_s32_clip(
  * 
  * @see xs3_vect_s32_clip
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_s32_clip_prepare(
@@ -1930,6 +1910,8 @@ void xs3_vect_s32_clip_prepare(
  * 
  * @returns The inner product of vectors @vector{b} and @vector{c}, scaled as indicated above.
  * 
+ * @exception ET_LOAD_STORE Raised if `b` or `c` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @ingroup xs3_vect32_func
  */
 C_API
@@ -1995,7 +1977,7 @@ int64_t xs3_vect_s32_dot(
  * 
  * @see xs3_vect_s32_dot
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_s32_dot_prepare(
@@ -2064,6 +2046,8 @@ void xs3_vect_s32_dot_prepare(
  * 
  * @returns 64-bit mantissa of vector @vector{b}'s energy
  * 
+ * @exception ET_LOAD_STORE Raised if `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @ingroup xs3_vect32_func
  */
 C_API
@@ -2120,7 +2104,7 @@ int64_t xs3_vect_s32_energy(
  * 
  * @see xs3_vect_s32_energy
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_s32_energy_prepare(
@@ -2155,6 +2139,8 @@ void xs3_vect_s32_energy_prepare(
  * 
  * @returns     Headroom of vector @vector{x} 
  * 
+ * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @see xs3_vect_ch_pair_s16_headroom, 
  *      xs3_vect_ch_pair_s32_headroom, 
  *      xs3_vect_s16_headroom, 
@@ -2172,7 +2158,7 @@ headroom_t xs3_vect_s32_headroom(
 /**
  * @brief Compute the inverse of elements of a 32-bit vector.
  * 
- * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each vectors must begin
+ * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each vector must begin
  * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
  * `length` is the number of elements in each of the vectors.
@@ -2199,6 +2185,8 @@ headroom_t xs3_vect_s32_headroom(
  * @param[in]   scale       Scale factor applied to dividend when computing inverse
  * 
  * @returns     Headroom of output vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_s32_inverse_prepare
  * 
@@ -2244,7 +2232,7 @@ headroom_t xs3_vect_s32_inverse(
  * 
  * @see xs3_vect_s32_inverse
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_s32_inverse_prepare(
@@ -2278,6 +2266,8 @@ void xs3_vect_s32_inverse_prepare(
  * 
  * @returns     Maximum value from @vector{b}
  * 
+ * @exception ET_LOAD_STORE Raised if `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @ingroup xs3_vect32_func
  */
 C_API
@@ -2308,6 +2298,8 @@ int32_t xs3_vect_s32_max(
  * @param[in]   length      Number of elements in @vector{b}
  * 
  * @returns     Minimum value from @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -2355,6 +2347,8 @@ int32_t xs3_vect_s32_min(
  * @param[in]  c_shr    Right-shift appled to @vector{c}
  * 
  * @returns  Headroom of vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -2431,7 +2425,7 @@ headroom_t xs3_vect_s32_mul(
  * 
  * @see xs3_vect_s32_mul
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_s32_mul_prepare(
@@ -2473,6 +2467,8 @@ void xs3_vect_s32_mul_prepare(
  * @param[in]   length  Number of elements in vectors @vector{a} and @vector{b}
  * 
  * @returns  Headroom of the output vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -2522,6 +2518,8 @@ headroom_t xs3_vect_s32_rect(
  * 
  * @returns  Headroom of output vector @vector{a}
  * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @see xs3_vect_s32_scale_prepare
  * 
  * @ingroup xs3_vect32_func
@@ -2535,7 +2533,19 @@ headroom_t xs3_vect_s32_scale(
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
-// xs3_vect_s32_scale() uses the same prepare logic as xs3_vect_s32_mul()
+
+/**
+ * @brief Obtain the output exponent and shifts required for a call to `xs3_vect_s32_scale()`.
+ * 
+ * The logic for computing the shifts and exponents of `xs3_vect_s32_scale()` is identical to that for
+ * `xs3_vect_s32_mul()`.
+ * 
+ * This macro is provided as a convenience to developers and to make the code more readable.
+ * 
+ * @see xs3_vect_s32_mul_prepare()
+ * 
+ * @ingroup xs3_vect32_prepare
+ */
 #define xs3_vect_s32_scale_prepare xs3_vect_s32_mul_prepare
 
 
@@ -2562,6 +2572,8 @@ headroom_t xs3_vect_s32_scale(
  * @param[out]  a           Output vector @vector{a}
  * @param[in]   b           New value for the elements of @vector{a}
  * @param[in]   length      Number of elements in @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -2601,6 +2613,8 @@ void xs3_vect_s32_set(
  * @param[in]   b_shl       Arithmetic left-shift applied to elements of @vector{b}
  * 
  * @returns     Headroom of output vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -2642,6 +2656,8 @@ headroom_t xs3_vect_s32_shl(
  * 
  * @returns     Headroom of output vector @vector{a}
  * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @ingroup xs3_vect32_func
  */
 C_API
@@ -2655,7 +2671,7 @@ headroom_t xs3_vect_s32_shr(
 /**
  * @brief Compute the square root of elements of a 32-bit vector.
  * 
- * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each vectors must begin
+ * `a[]` and `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each vector must begin
  * at a word-aligned address. This operation can be performed safely in-place on `b[]`.
  * 
  * `length` is the number of elements in each of the vectors.
@@ -2693,6 +2709,8 @@ headroom_t xs3_vect_s32_shr(
  * @param[in]   depth       Number of bits of each output value to compute
  * 
  * @returns     Headroom of output vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
@@ -2757,7 +2775,7 @@ headroom_t xs3_vect_s32_sqrt(
  * 
  * @see xs3_vect_s32_sqrt
  * 
- * @ingroup xs3_vect32_func
+ * @ingroup xs3_vect32_prepare
  */
 C_API
 void xs3_vect_s32_sqrt_prepare(
@@ -2811,6 +2829,8 @@ void xs3_vect_s32_sqrt_prepare(
  * 
  * @returns  Headroom of output vector @vector{a}
  * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @see xs3_vect_s32_sub_prepare
  * 
  * @ingroup xs3_vect32_func
@@ -2824,7 +2844,19 @@ headroom_t xs3_vect_s32_sub(
     const right_shift_t b_shr,
     const right_shift_t c_shr);
 
-// xs3_vect_s32_sub() uses the same prepare logic as xs3_vect_s32_add()
+
+/**
+ * @brief Obtain the output exponent and shifts required for a call to `xs3_vect_s32_sub()`.
+ * 
+ * The logic for computing the shifts and exponents of `xs3_vect_s32_sub()` is identical to that for
+ * `xs3_vect_s32_add()`.
+ * 
+ * This macro is provided as a convenience to developers and to make the code more readable.
+ * 
+ * @see xs3_vect_s32_add_prepare()
+ * 
+ * @ingroup xs3_vect32_prepare
+ */
 #define xs3_vect_s32_sub_prepare xs3_vect_s32_add_prepare
 
 /**
@@ -2867,70 +2899,14 @@ headroom_t xs3_vect_s32_sub(
  * 
  * @returns  64-bit mantissa of the sum, @math{a}.
  * 
+ * @exception ET_LOAD_STORE Raised if `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
  * @ingroup xs3_vect32_func
  */
 C_API
 int64_t xs3_vect_s32_sum(
     const int32_t b[],
     const unsigned length);
-
-
-/** 
- * @brief Convert a 32-bit vector to a 16-bit vector.
- * 
- * This function converts a 32-bit mantissa vector @vector{b} into a 16-bit mantissa vector @vector{a}. Conceptually,
- * the output BFP vector @math{\bar{a}\cdot 2^{a\_exp}} represents the same values as the input BFP vector
- * @math{\bar{b}\cdot 2^{b\_exp}}, only with a reduced bit-depth.
- * 
- * In most cases @math{b\_shr} should be @math{16 - b\_hr}, where @math{b\_hr} is the headroom of the 32-bit input
- * mantissa vector @vector{b}. 
- * 
- * The output exponent @math{a\_exp} will be given by
- * 
- * @math{ a\_exp = b\_exp + b\_shr }
- * 
- * @par Parameter Details
- * @parblock
- * 
- * `a[]` represents the 16-bit output mantissa vector @vector{a}.
- * 
- * `b[]` represents the 32-bit input mantissa vector @vector{b}.
- * 
- * `a[]` and `b[]` must each begin at a word-aligned address.
- * 
- * `length` is the number of elements in each of the vectors.
- * 
- * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
- * 
- * @operation{
- * &     a_k \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)      \\
- * &         \qquad\text{ for }k\in 0\ ...\ (length-1) 
- * }
- * @endparblock
- * 
- * @par Block Floating-Point
- * @parblock
- * 
- * If @vector{b} are the 32-bit mantissas of a BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the resulting 
- * vector @vector{a} are the 16-bit mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}, where
- * @math{a\_exp = b\_exp + b\_shr}.
- * @endparblock
- * 
- * @param[out]  a        Output vector @vector{a}
- * @param[in]   b        Input vector @vector{b}
- * @param[in]   length   Number of elements in vectors @vector{a} and @vector{b}
- * @param[in]   b_shr    Right-shift appled to @vector{b}
- * 
- * @see xs3_vect_s16_to_s32
- * 
- * @ingroup xs3_vect32_func
- */
-C_API
-void xs3_vect_s32_to_s16(
-    int16_t a[],
-    const int32_t b[],
-    const unsigned length,
-    const right_shift_t b_shr);
 
 
 #ifdef __XC__

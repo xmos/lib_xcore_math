@@ -3,8 +3,6 @@
 Getting Started
 ===============
 
-@tableofcontents
-
 Overview
 --------
 

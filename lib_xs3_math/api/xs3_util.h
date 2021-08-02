@@ -9,6 +9,16 @@
 #include <assert.h>
 #include <math.h>
 
+/**
+ * @page page_xs3_util_h  xs3_util.h
+ * 
+ * This header contains various macros and functions.
+ * 
+ * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
+ * 
+ * @ingroup xs3_math_header_file
+ */
+
 
 /**
  * @brief Takes the greater of arguments `A` and `B`, preferring `A` on equality.
