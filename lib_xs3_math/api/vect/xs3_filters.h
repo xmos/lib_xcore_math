@@ -169,8 +169,14 @@
  * (e.g. any headroom `x[t]` is known _a priori_ to have).
  * 
  * @endparblock
- * @todo Perhaps a python script that converts user's floating-point coefficients into coefficients for this filter 
- *       would be a good idea.
+ * 
+ * @par Filter Conversion
+ * @parblock
+ * 
+ * This library includes a python script which converts existing floating-point FIR filter 
+ * coefficients into a suitable representation and generates code for easily initializing and
+ * executing the filter. See @ref filter_conversion for more.
+ * @endparblock
  * 
  * @par Usage Example
  * @parblock
@@ -328,6 +334,8 @@ void xs3_filter_fir_s32_add_sample(
  * @returns     Next filtered output sample
  * 
  * @see xs3_filter_fir_s32_t
+ * 
+ * @ingroup xs3_filter_func
  */
 C_API
 int32_t xs3_filter_fir_s32(
@@ -429,8 +437,14 @@ int32_t xs3_filter_fir_s32(
  * @par Coefficient Scaling
  * @parblock
  * 
- * @todo Perhaps a python script that converts user's floating-point coefficients into coefficients for this filter 
- *       would be a good idea.
+ * @endparblock
+ * 
+ * @par Filter Conversion
+ * @parblock
+ * 
+ * This library includes a python script which converts existing floating-point FIR filter 
+ * coefficients into a suitable representation and generates code for easily initializing and
+ * executing the filter. See @ref filter_conversion for more.
  * @endparblock
  * 
  * @par Usage Example
@@ -552,6 +566,14 @@ int16_t xs3_filter_fir_s16(
  * To process a new input sample, xs3_filter_biquad_s32() can be used with a pointer to one of these structs.
  * 
  * For longer cascades, an array of `xs3_biquad_filter_s32_t` structs can be used with xs3_filter_biquads_s32().
+ * 
+ * @par Filter Conversion
+ * @parblock
+ * 
+ * This library includes a python script which converts existing floating-point cascaed biquad
+ * filter coefficients into a suitable representation and generates code for easily initializing 
+ * and executing the filter. See @ref filter_conversion for more.
+ * @endparblock
  * 
  * @ingroup xs3_filter_type
  */

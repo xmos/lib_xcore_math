@@ -31,3 +31,12 @@ Note: Library FFT Length Support
 .. doxygenpage:: fft_length_support
   :content-only:
 
+
+
+
+Note: Digital Filter Conversion
+================================
+
+.. doxygenpage:: filter_conversion
+  :content-only:
+

@@ -12,6 +12,8 @@ API Reference
 
     bfp/index
     vect/index
+    scalar_funcs
+    utils
     config_options
     header_files
 

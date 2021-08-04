@@ -197,3 +197,52 @@
  * Use the `--help` flag with `gen_fft_table.py` for a more detailed description of its syntax and 
  * parameters.
  */
+
+
+
+/**
+ * @page filter_conversion Note: Digital Filter Conversion
+ * 
+ * This library supports optimized implementations of 16- and 32-bit FIR filters, as well as 
+ * cascaded 32-bit biquad filters.  Each of these filter implementations requires that the 
+ * filter coefficients be represented in a compatible form.
+ * 
+ * To assist with that, several python scripts are distributed with this library which can be
+ * used to convert existing floating-point filter coefficients into a code which is easily 
+ * callable from within an xCore application.
+ * 
+ * Each script reads in floating-point filter coefficients from a file and computes a new 
+ * representation for the filter with coefficients which attempt to maximize precision and are 
+ * compatible with the `lib_xs3_math` filtering API.
+ * 
+ * Each script outputs two files which can be included in your own xCore application. The first 
+ * output is a C source (`.c`) file containing the computed filter parameters and
+ * several function definitions for initializing and executing the generated filter.  The second
+ * output is a C header (`.h`) file which can be `#include`d into your own application to
+ * give access to those functions.
+ * 
+ * Additionally, each script also takes a user-provided filter name as an input parameter.  The 
+ * output files (as well as the function names within) include the filter name so that more than
+ * one filter can be generated and executed using this mechanism.
+ * 
+ * As an example, take the following command to generate a 32-bit FIR filter:
+ * 
+ *    python lib_xs3_math/script/gen_fir_filter_s32.py MyFilter filter_coefs.txt
+ * 
+ * This command creates a filter named "MyFilter", with coefficients taken from a file 
+ * `filter_coefs.txt`.  Two output files will be generated, `MyFilter.c` and `MyFilter.h`.
+ * Including ``MyFilter.h`` provides access to 3 functions, ``MyFilter_init()``, 
+ * `MyFilter_add_sample()`, and `MyFilter()` which correspond to the library functions
+ * `xs3_filter_fir_s32_init()`, `xs3_filter_fir_s32_add_sample()` and `xs3_filter_fir_s32()` 
+ * respectively.
+ * 
+ * Use the `--help` flag with the scripts for more detailed descriptions of inputs and other 
+ * options.
+ * 
+ * |  Filter Type   | Script                                         |
+ * |  -----------   | ------                                         |
+ * | 32-bit FIR     | `lib_xs3_math/script/gen_fir_filter_s32.py`    |
+ * | 16-bit FIR     | `lib_xs3_math/script/gen_fir_filter_s16.py`    |
+ * | 32-bit Biquad  | `lib_xs3_math/script/gen_biquad_filter_s32.py` |
+ * 
+ */
