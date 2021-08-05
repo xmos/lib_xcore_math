@@ -3,8 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+XS3 Math Library
+================
+
 Introduction
-============
+************
 
 .. toctree::
    :maxdepth: 1
@@ -34,7 +37,7 @@ functions, or :ref:`xs3_math_h` for only the low-level functions.
 
 
 Indices and tables
-==================
+******************
 
 * :ref:`genindex`
 * :ref:`search`
