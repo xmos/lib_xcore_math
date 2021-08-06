@@ -48,7 +48,7 @@ jobs:
 
       - name: Build
         run: |
-          docker run --user $(id -u) --rm -w /lib_xs3_math -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/xcore_sdk_builder:latest cmake -B build -DCMAKE_TOOLCHAIN_FILE=etc/xmos_toolchain.cmake && cmake --build build
+          docker run --user $(id -u) --rm -w /lib_xs3_math -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/xcore_sdk_builder:latest bash -l cmake -B build -DCMAKE_TOOLCHAIN_FILE=etc/xmos_toolchain.cmake && cmake --build build
 
   build_documentation:
     name: Build and package documentation
@@ -69,5 +69,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lib_xs3_math_docs
-          path: ./_build/html
+          path: ./lib_xs3_math/lib_xs3_math/doc/_build/html
           retention-days: 5
