@@ -48,7 +48,7 @@ jobs:
 
       - name: Build
         run: |
-          docker run --user $(id -u) --rm -w /lib_xs3_math -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/xcore_sdk_builder:latest bash -l .github/scripts/build_tests.sh
+          docker run --user $(id -u) --rm -w /lib_xs3_math -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/xcore_sdk_builder:latest bash -l .github/scripts/build_tests.sh
 
   build_documentation:
     name: Build and package documentation
