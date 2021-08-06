@@ -11,6 +11,17 @@
 extern "C" {
 #endif
 
+/**
+ * @page page_xs3_vect_s8_h  xs3_vect_s8.h
+ * 
+ * This header contains functions implementing arithmetic operations on 8-bit vectors, optimized 
+ * for xCore XS3.
+ * 
+ * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
+ * 
+ * @ingroup xs3_math_header_file
+ */
+
 
 /**
  * @brief Determine whether each element of a signed 8-bit input vector are negative.
@@ -24,16 +35,20 @@ extern "C" {
  * 
  * `length` is the number of elements in `a[]` and `b[]`.
  * 
- * @low_op{8, @f$
+ * @operation{
  *      a_k \leftarrow \begin{cases}
  *          1 & b_k \lt 0              \\ 
  *          0 & otherwise\end{cases}   \\
  *          \qquad\text{ for }k\in 0\ ...\ (length-1)
- *  @f$ }
+ *  }
  * 
  * @param[out]  a       Output vector @vector{a}
  * @param[in]   b       Input vector @vector{b}
  * @param[in]   length  Number of elements in @vector{a} and @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect8_func
  */
 C_API
 void xs3_vect_s8_is_negative(

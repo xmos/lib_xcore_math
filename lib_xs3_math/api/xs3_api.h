@@ -3,6 +3,19 @@
 
 #pragma once
 
+
+/**
+ * @page page_xs3_api_h  xs3_api.h
+ * 
+ * This header defines several macros used throughout the API to provide consistent,
+ * descriptive and human-readable code.
+ * 
+ * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
+ * 
+ * @ingroup xs3_math_header_file
+ */
+
+
 #if defined(__cplusplus)
 #  define EXTERN_C extern "C"
 #else
@@ -26,3 +39,5 @@
 
 /// (on xcore) Force variable to double word alignment
 #define DWORD_ALIGNED  ALIGNMENT(8)
+
+//

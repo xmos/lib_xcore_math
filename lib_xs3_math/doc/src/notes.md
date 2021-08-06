@@ -2,7 +2,9 @@
 Notes for lib_xs3_math                          {#notes}
 ======================
 
-### Vector Alignment ###                {#vector_alignment}
+### &nbsp;
+
+### Vector Alignment ###                        {#vector_alignment}
 
 This library utilizes the XMOS XS3 architecture's vector processing unit (VPU). All loads and stores to and from the XS3 
 VPU have the requirement that the loaded/stored addresses must be aligned to a 4-byte boundary (word-aligned).
