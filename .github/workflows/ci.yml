@@ -69,7 +69,7 @@ jobs:
           echo "***************"
           echo "***************"
           echo "***************"
-          ls -l _build/html
+          ls -l lib_xs3_math/doc/_build/html
           
       - name: Save documentation artifacts
         uses: actions/upload-artifact@v2
