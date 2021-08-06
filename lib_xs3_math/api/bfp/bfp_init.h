@@ -8,6 +8,28 @@
 
 #include "xs3_math_types.h"
 
+/**
+ * @page page_bfp_init_h  bfp_init.h
+ * 
+ * This header contains functions for initializing the structs representing block floating-point
+ * vectors. Initialization comes in two flavors: static and dynamic. 
+ * 
+ * Static initialization requires the user to supply the buffer which is used to store the mantissa 
+ * vector. Static initiaization is accomplished using the `bfp_*_init()` functions.
+ * 
+ * Dynamic initialization allocates the buffer for the mantissa vectors from the heap using `malloc()`
+ * (unless overridden by the user via configuration of @ref XS3_MALLOC).  Dynamic allocation is 
+ * accomplished using the `bfp_*_alloc()` functions.  If dynamically allocated vectors are to be 
+ * temporary, to avoid memory leaks they much be deallocated using the corresponding `bfp_*_dealloc()`
+ * functions.
+ * 
+ * @note This header is included automatically through `bfp_math.h`.
+ * 
+ * @see  `bfp_s16_t`, `bfp_s32_t`, `bfp_complex_s16_t`, `bfp_complex_s32_t`, 
+ * `bfp_ch_pair_s16_t`, and `bfp_ch_pair_s32_t`
+ * 
+ * @ingroup xs3_math_header_file
+ */
 
 /** 
  * @brief Initialize a 16-bit BFP vector.
@@ -28,6 +50,8 @@
  * @param[in] exp       Exponent of BFP vector
  * @param[in] length    Number of elements in the BFP vector
  * @param[in] calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_init(
@@ -56,6 +80,8 @@ void bfp_s16_init(
  * @param[in]  exp       Exponent of BFP vector
  * @param[in]  length    Number of elements in the BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_init(
@@ -91,6 +117,8 @@ void bfp_s32_init(
  * @param[in]  exp       Exponent of BFP vector
  * @param[in]  length    Number of elements in BFP vector
  * @param[in] calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_init(
@@ -121,6 +149,8 @@ void bfp_complex_s16_init(
  * @param[in]  exp       Exponent of BFP vector
  * @param[in]  length    Number of elements in BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_init(
@@ -151,6 +181,8 @@ void bfp_complex_s32_init(
  * @param[in]  exp       Exponent of BFP vector
  * @param[in]  length    Number of elements in BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_ch_pair_s16_init(
@@ -182,6 +214,8 @@ void bfp_ch_pair_s16_init(
  * @param[in]  exp       Exponent of BFP vector
  * @param[in]  length    Number of elements in BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_ch_pair_s32_init(
@@ -204,6 +238,8 @@ void bfp_ch_pair_s32_init(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_set(
@@ -224,6 +260,8 @@ void bfp_s16_set(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_set(
@@ -244,6 +282,8 @@ void bfp_s32_set(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each complex mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_set(
@@ -264,6 +304,8 @@ void bfp_complex_s16_set(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each complex mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_set(
@@ -285,6 +327,8 @@ void bfp_complex_s32_set(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each channel-pair mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_ch_pair_s16_set(
@@ -306,6 +350,8 @@ void bfp_ch_pair_s16_set(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each channel-pair mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_ch_pair_s32_set(
@@ -343,8 +389,10 @@ void bfp_ch_pair_s32_set(
  * 
  * @returns 32-bit BFP vector
  * 
- * @see bfp_s32_dealloc
- * @see bfp_s32_init
+ * @see bfp_s32_dealloc,
+ *      bfp_s32_init
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 bfp_s32_t bfp_s32_alloc(
@@ -376,8 +424,10 @@ bfp_s32_t bfp_s32_alloc(
  * 
  * @returns 16-bit BFP vector
  * 
- * @see bfp_s16_dealloc
- * @see bfp_s16_init
+ * @see bfp_s16_dealloc,
+ *      bfp_s16_init
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 bfp_s16_t bfp_s16_alloc(
@@ -410,8 +460,10 @@ bfp_s16_t bfp_s16_alloc(
  * 
  * @returns Complex 32-bit BFP vector
  * 
- * @see bfp_complex_s32_dealloc
- * @see bfp_complex_s32_init
+ * @see bfp_complex_s32_dealloc,
+ *      bfp_complex_s32_init
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 bfp_complex_s32_t bfp_complex_s32_alloc(
@@ -449,8 +501,10 @@ bfp_complex_s32_t bfp_complex_s32_alloc(
  * 
  * @returns Complex 16-bit BFP vector
  * 
- * @see bfp_complex_s16_dealloc
- * @see bfp_complex_s16_init
+ * @see bfp_complex_s16_dealloc,
+ *      bfp_complex_s16_init
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 bfp_complex_s16_t bfp_complex_s16_alloc(
@@ -487,8 +541,10 @@ bfp_complex_s16_t bfp_complex_s16_alloc(
  * 
  * @returns 32-bit BFP channel-pair vector
  * 
- * @see bfp_ch_pair_s32_dealloc
- * @see bfp_ch_pair_s32_init
+ * @see bfp_ch_pair_s32_dealloc,
+ *      bfp_ch_pair_s32_init
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 bfp_ch_pair_s32_t bfp_ch_pair_s32_alloc(
@@ -521,8 +577,10 @@ bfp_ch_pair_s32_t bfp_ch_pair_s32_alloc(
  * 
  * @returns 16-bit BFP channel-pair vector
  * 
- * @see bfp_ch_pair_s16_dealloc
- * @see bfp_ch_pair_s16_init
+ * @see bfp_ch_pair_s16_dealloc,
+ *      bfp_ch_pair_s16_init
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 bfp_ch_pair_s16_t bfp_ch_pair_s16_alloc(
@@ -547,6 +605,8 @@ bfp_ch_pair_s16_t bfp_ch_pair_s16_alloc(
  * @param[in] vector  BFP vector to be deallocated.
  * 
  * @see bfp_s32_alloc
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_dealloc(
@@ -571,6 +631,8 @@ void bfp_s32_dealloc(
  * @param[in] vector  BFP vector to be deallocated.
  * 
  * @see bfp_s16_alloc
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_dealloc(
@@ -595,6 +657,8 @@ void bfp_s16_dealloc(
  * @param[in] vector  BFP vector to be deallocated.
  * 
  * @see bfp_complex_s32_alloc
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_dealloc(
@@ -619,6 +683,8 @@ void bfp_complex_s32_dealloc(
  * @param[in] vector  BFP vector to be deallocated.
  * 
  * @see bfp_complex_s16_alloc
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_dealloc(
@@ -643,6 +709,8 @@ void bfp_complex_s16_dealloc(
  * @param[in] vector  BFP vector to be deallocated.
  * 
  * @see bfp_ch_pair_s32_alloc
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_ch_pair_s32_dealloc(
@@ -667,6 +735,8 @@ void bfp_ch_pair_s32_dealloc(
  * @param[in] vector  BFP vector to be deallocated.
  * 
  * @see bfp_ch_pair_s16_alloc
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_ch_pair_s16_dealloc(
