@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include <stdint.h>
@@ -33,7 +33,8 @@ int32_t xs3_filter_fir_s32(
 
 
     if(filter->shift >= 0){
-        acc += (1 << (filter->shift-1));
+        if(filter->shift != 0)
+            acc += (1 << (filter->shift-1));
         acc = acc >> filter->shift;
     } else {
         acc = acc << (-filter->shift);

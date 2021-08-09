@@ -1,6 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
-
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include "xs3_math.h"
@@ -8,8 +7,18 @@
 #include "floating_fft.h"
 #include "tst_common.h"
 #include "fft.h"
-#include "unity.h"
+#include "unity_fixture.h"
 #include "../src/vect/xs3_fft_lut.h"
+
+
+TEST_GROUP_RUNNER(xs3_fft_mono_adjust) {
+  RUN_TEST_CASE(xs3_fft_mono_adjust, xs3_fft_mono_adjust_forward);
+  RUN_TEST_CASE(xs3_fft_mono_adjust, xs3_fft_mono_adjust_inverse);
+}
+
+TEST_GROUP(xs3_fft_mono_adjust);
+TEST_SETUP(xs3_fft_mono_adjust) {}
+TEST_TEAR_DOWN(xs3_fft_mono_adjust) {}
 
 
 #define MAX_PROC_FRAME_LENGTH_LOG2 (MAX_DIT_FFT_LOG2)
@@ -22,7 +31,7 @@
 
 #define MIN_N_LOG2  (4)
 
-void test_xs3_fft_mono_adjust_forward()
+TEST(xs3_fft_mono_adjust, xs3_fft_mono_adjust_forward)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -103,7 +112,7 @@ void test_xs3_fft_mono_adjust_forward()
             TEST_ASSERT_CONVERSION(error);
 
             if(diff > worst_error) { worst_error = diff; }
-            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+3, diff, "Output delta is too large");
+            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+4, diff, "Output delta is too large");
         }
         
 #if PRINT_ERRORS
@@ -121,8 +130,7 @@ void test_xs3_fft_mono_adjust_forward()
 }
 
 
-
-void test_xs3_fft_mono_adjust_inverse()
+TEST(xs3_fft_mono_adjust, xs3_fft_mono_adjust_inverse)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -190,17 +198,3 @@ void test_xs3_fft_mono_adjust_inverse()
 }
 
 
-
-
-
-
-
-
-
-void test_xs3_fft_mono_adjust()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_fft_mono_adjust_forward);
-    RUN_TEST(test_xs3_fft_mono_adjust_inverse);
-}

@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include "floating_fft.h"
@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-
 
 
 void flt_bit_reverse_indexes_float(
@@ -155,7 +154,6 @@ void flt_fft_inverse_float (
 }
 
 
-
 void flt_fft_split_spectrum_float( 
     complex_float_t pts[], 
     const unsigned N)
@@ -188,7 +186,6 @@ void flt_fft_split_spectrum_float(
         pts[  N - i] = a;
     }
 }
-
 
 
 void flt_fft_merge_spectra_float(

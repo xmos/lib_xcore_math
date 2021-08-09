@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 
@@ -41,10 +41,8 @@ FUNCTION_NAME:
     {   ldc r11, 0                              ;   ldc _16, 16                         }
     {   sub b_shr, b_shr, _16                   ;   vsetc r11                           }
     {   shr len, len, EPV_LOG2_S32              ;   shl tail, len, SIZEOF_LOG2_S16      }
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
     {                                           ;   zext tail, 4                        }
     {   mkmsk tail, tail                        ;   bf len, .L_loop_bot                 }
-#endif //XS3_MATH_VECTOR_TAIL_SUPPORT
     {   mkmsk r11, 16                           ;   bu .L_loop_top                      }
 
 .align 16
@@ -56,13 +54,11 @@ FUNCTION_NAME:
     {   add a, a, _16                           ;   bt len, .L_loop_top                 }
 .L_loop_bot:
 
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
     {                                           ;   bf tail, .L_finish                  }
     {                                           ;   vclrdr                              }
         vlashr b[0], b_shr
     {                                           ;   vdepth16                            }
         vstrpv a[0], tail
-#endif //XS3_MATH_VECTOR_TAIL_SUPPORT
 
 .L_finish:
         ldd r4, r5, sp[0]

@@ -1,3 +1,6 @@
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
+// XMOS Public License: Version 1
 
 #include "pseudo_rand.h"
 
@@ -10,8 +13,6 @@ int pseudo_rand(int* state)
   *state = (int)((long long)a * (*state) + c);
   return *state;
 }
-
-
 
 
 int8_t  pseudo_rand_int8(unsigned *r){
@@ -80,8 +81,6 @@ uint32_t pseudo_rand_uint(
     uint32_t d = pseudo_rand_uint32(r) % delta;
     return min + d;
 }
-
-
 
 
 void pseudo_rand_bytes(unsigned *r, char* buffer, unsigned size){

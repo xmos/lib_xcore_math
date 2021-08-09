@@ -1,10 +1,9 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include "testing.h"
 
 #include <math.h>
-
 
 
 /*
@@ -75,7 +74,6 @@ double conv_u64_to_double(
 {
     return (double) ldexp((double)x, x_exp);
 }
-
 
 
 int8_t  conv_double_to_s8 (
@@ -328,7 +326,6 @@ ch_pair_s32_t conv_ch_pair_double_to_ch_pair_s32(
 /*
     Vector conversions
 */
-
 
 
 void conv_vect_s16_to_double(

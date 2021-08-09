@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #ifndef XS3_VPU_SCALAR_OPS_H_
@@ -8,14 +8,20 @@
 #include <stdint.h>
 
 #include "xs3_math_types.h"
-#include "xs3_vpu.h"
+#include "xs3_vpu_info.h"
 
 /**
- * @file xs3_vpu_scalar_ops.h
+ * @page page_xs3_vpu_scalar_ops_h  xs3_vpu_scalar_ops.h
  * 
- * These functions implement the behavior of various XS3 VPU instructions in 8-, 16- or 32-bit modes.
+ * This header contains scalar versions of many of the XS3 VPU's vector instructions.
+ * These are mostly used for unit testing and implementing bit-exact pure C implementations
+ * of optimized functions.
+ * 
+ * @note This file is not included via `xs3_math.` or `bfp_math.h`
  * 
  * @warning This is not considered to be part of the public API.
+ * 
+ * @ingroup xs3_math_header_file
  */
 
 

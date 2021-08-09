@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -12,25 +12,30 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 2314567;
+TEST_GROUP_RUNNER(CLS_macro) {
+  RUN_TEST_CASE(CLS_macro, cls);
+  RUN_TEST_CASE(CLS_macro, CLS_S16);
+  RUN_TEST_CASE(CLS_macro, CLS_S32);
+  RUN_TEST_CASE(CLS_macro, CLS_S64);
+  RUN_TEST_CASE(CLS_macro, CLS_C16);
+  RUN_TEST_CASE(CLS_macro, CLS_C32);
+}
+
+TEST_GROUP(CLS_macro);
+TEST_SETUP(CLS_macro) {}
+TEST_TEAR_DOWN(CLS_macro) {}
+
 
 static char msg_buff[200];
 
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
 #define N        (1000)
 
-static void test_cls()
+TEST(CLS_macro, cls)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 3465;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     cls(-89319282);
 
@@ -68,11 +73,9 @@ static void test_cls()
     }
 }
 
-
-static void test_CLS_S32()
+TEST(CLS_macro, CLS_S32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 764564;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t numbers[N];
     unsigned actual[N];
@@ -87,11 +90,9 @@ static void test_CLS_S32()
     TEST_ASSERT_EQUAL_UINT32_ARRAY(expected, actual, N);
 }
 
-
-static void test_CLS_S16()
+TEST(CLS_macro, CLS_S16)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 23234476;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t numbers[N];
     unsigned actual[N];
@@ -107,12 +108,9 @@ static void test_CLS_S16()
 }
 
 
-
-
-static void test_CLS_C32()
+TEST(CLS_macro, CLS_C32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 1256;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s32_t numbers[N];
     unsigned actual[N];
@@ -129,12 +127,9 @@ static void test_CLS_C32()
 }
 
 
-
-
-static void test_CLS_C16()
+TEST(CLS_macro, CLS_C16)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 890786556;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s16_t numbers[N];
     unsigned actual[N];
@@ -151,12 +146,9 @@ static void test_CLS_C16()
 }
 
 
-
-
-static void test_CLS_S64()
+TEST(CLS_macro, CLS_S64)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 4334;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     TEST_ASSERT_EQUAL_UINT32(64, CLS_S64( 0x0000000000000000LL));
     TEST_ASSERT_EQUAL_UINT32(64, CLS_S64(-0x0000000000000001LL));
@@ -188,15 +180,3 @@ static void test_CLS_S64()
     TEST_ASSERT_EQUAL_UINT32_ARRAY(expected, actual, N);
 }
 
-
-void test_CLS_funcs()
-{
-    SET_TEST_FILE();
-    
-    RUN_TEST(test_cls);
-    RUN_TEST(test_CLS_S32);
-    RUN_TEST(test_CLS_S16);
-    RUN_TEST(test_CLS_C32);
-    RUN_TEST(test_CLS_C16);
-    RUN_TEST(test_CLS_S64);
-}

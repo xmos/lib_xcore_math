@@ -1,17 +1,18 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include <stdio.h>
 
-#include "unity.h"
+#include "unity_fixture.h"
 #include "tst_common.h"
-#include "test_cases.h"
 
 FILE* perf_file = NULL;
 
-int main(int argc, char** argv)
+int main(int argc, const char* argv[])
 {
+    UnityGetCommandLineOptions(argc, argv);
+    UnityBegin(argv[0]);
 
 #if WRITE_PERFORMANCE_INFO
     printf("Writing performance info to: %s\n", PERFORMANCE_INFO_FILENAME);
@@ -19,14 +20,13 @@ int main(int argc, char** argv)
     fprintf(perf_file, "Function, Input Size, Worst Observed Error, Worst Observed Timing, Misc\n");
 #endif
 
-    UNITY_BEGIN();
+    RUN_TEST_GROUP(xs3_fft_helpers);
+    RUN_TEST_GROUP(xs3_fft_mono_adjust);
+    RUN_TEST_GROUP(xs3_fft_dit);
+    RUN_TEST_GROUP(xs3_fft_dif);
 
-    test_xs3_fft_helpers();
-    test_xs3_fft_mono_adjust();
-    test_xs3_fft_dit();
-    test_xs3_fft_dif();
-
-    test_bfp_fft();
+    RUN_TEST_GROUP(bfp_fft);
+    RUN_TEST_GROUP(bfp_fft_packing);
 
 #if WRITE_PERFORMANCE_INFO
     fclose(perf_file);

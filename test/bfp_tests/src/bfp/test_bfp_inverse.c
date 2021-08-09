@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -13,37 +13,37 @@
 #include "../tst_common.h"
 #include "xs3_vpu_scalar_ops.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 2314567;
+
+TEST_GROUP_RUNNER(bfp_inverse) {
+  RUN_TEST_CASE(bfp_inverse, bfp_s16_inverse);
+  RUN_TEST_CASE(bfp_inverse, bfp_s32_inverse);
+}
+
+TEST_GROUP(bfp_inverse);
+TEST_SETUP(bfp_inverse) {}
+TEST_TEAR_DOWN(bfp_inverse) {}
+
 
 static char msg_buff[200];
-
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
 
 #define MAX_LEN     30
 #define REPS        30
 
 
-
-
-static void test_bfp_s16_inverse()
+TEST(bfp_inverse, bfp_s16_inverse)
 {
 
-    PRINTF("%s...\n", __func__);
-    seed = 0xF80C98BE;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t WORD_ALIGNED B_data[MAX_LEN];
     int16_t WORD_ALIGNED A_data[MAX_LEN];
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         bfp_s16_t A, B;
 
@@ -79,18 +79,16 @@ static void test_bfp_s16_inverse()
 }
 
 
-
-static void test_bfp_s32_inverse()
+TEST(bfp_inverse, bfp_s32_inverse)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 47685;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t B_data[MAX_LEN];
     int32_t A_data[MAX_LEN];
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         bfp_s32_t A, B;
 
@@ -123,16 +121,4 @@ static void test_bfp_s32_inverse()
             TEST_ASSERT_INT32_WITHIN(2, expected[i], A.data[i]);
         }
     }
-}
-
-
-
-
-void test_bfp_inverse_vect()
-{
-    SET_TEST_FILE();
-    
-    RUN_TEST(test_bfp_s16_inverse);
-    RUN_TEST(test_bfp_s32_inverse);
-
 }

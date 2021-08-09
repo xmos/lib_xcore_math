@@ -11,8 +11,19 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
+
+TEST_GROUP_RUNNER(bfp_macc) {
+  RUN_TEST_CASE(bfp_macc, bfp_s16_macc);
+  RUN_TEST_CASE(bfp_macc, bfp_s16_nmacc);
+  RUN_TEST_CASE(bfp_macc, bfp_s32_macc);
+  RUN_TEST_CASE(bfp_macc, bfp_s32_nmacc);
+}
+
+TEST_GROUP(bfp_macc);
+TEST_SETUP(bfp_macc) {}
+TEST_TEAR_DOWN(bfp_macc) {}
 
 
 #define REPS    1000
@@ -20,13 +31,9 @@
 
 
 
-
-
-static void test_bfp_s16_macc()
+TEST(bfp_macc, bfp_s16_macc)
 {
-    printf("%s...\n", __func__);
-
-    unsigned seed = 1123441;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataA[LEN];
     int16_t dataB[LEN];
@@ -43,7 +50,7 @@ static void test_bfp_s16_macc()
     bfp_s16_set(&A, 0, -1024);
 
     for(int r = 0; r < REPS; r++){
-        // PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.exp = 10 + (pseudo_rand_int32(&seed) % 10);
         C.exp = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -76,11 +83,9 @@ static void test_bfp_s16_macc()
 }
 
 
-static void test_bfp_s16_nmacc()
+TEST(bfp_macc, bfp_s16_nmacc)
 {
-    printf("%s...\n", __func__);
-
-    unsigned seed = 11662341;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataA[LEN];
     int16_t dataB[LEN];
@@ -97,7 +102,7 @@ static void test_bfp_s16_nmacc()
     bfp_s16_set(&A, 0, -1024);
 
     for(int r = 0; r < REPS; r++){
-        // PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.exp = 10 + (pseudo_rand_int32(&seed) % 10);
         C.exp = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -130,11 +135,9 @@ static void test_bfp_s16_nmacc()
 }
 
 
-static void test_bfp_s32_macc()
+TEST(bfp_macc, bfp_s32_macc)
 {
-    printf("%s...\n", __func__);
-
-    unsigned seed = 1123441;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataA[LEN];
     int32_t dataB[LEN];
@@ -151,7 +154,7 @@ static void test_bfp_s32_macc()
     bfp_s32_set(&A, 0, -1024);
 
     for(int r = 0; r < REPS; r++){
-        // PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.exp = 10 + (pseudo_rand_int32(&seed) % 10);
         C.exp = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -184,11 +187,9 @@ static void test_bfp_s32_macc()
 }
 
 
-static void test_bfp_s32_nmacc()
+TEST(bfp_macc, bfp_s32_nmacc)
 {
-    printf("%s...\n", __func__);
-
-    unsigned seed = 116263441;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataA[LEN];
     int32_t dataB[LEN];
@@ -205,7 +206,7 @@ static void test_bfp_s32_nmacc()
     bfp_s32_set(&A, 0, -1024);
 
     for(int r = 0; r < REPS; r++){
-        // PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.exp = 10 + (pseudo_rand_int32(&seed) % 10);
         C.exp = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -237,17 +238,3 @@ static void test_bfp_s32_nmacc()
     }
 }
 
-
-
-
-void test_bfp_macc()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_s16_macc);
-    RUN_TEST(test_bfp_s16_nmacc);
-
-    RUN_TEST(test_bfp_s32_macc);
-    RUN_TEST(test_bfp_s32_nmacc);
-    
-}

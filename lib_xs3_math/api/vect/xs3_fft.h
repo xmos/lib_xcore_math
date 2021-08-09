@@ -1,7 +1,20 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
+
+
+/**
+ * @page page_xs3_fft_h  xs3_fft.h
+ * 
+ * This header contains XS3-optimized functions for performing Fast Fourier Transforms (FFTs) 
+ * and inverse FFTs on 32-bit vectors, as well as several utility functions required to 
+ * perform the transforms.
+ * 
+ * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
+ * 
+ * @ingroup xs3_math_header_file
+ */
 
 
 /**
@@ -28,6 +41,8 @@
  * 
  * @param[in] x         The vector to have its elements reordered.
  * @param[in] length    The length of `x` (element count).
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_index_bit_reversal(
@@ -74,6 +89,10 @@ void xs3_fft_index_bit_reversal(
  * @param [in] length   The length of `x` in elements (i.e. FFT length @math{N}).
  * 
  * @return The headroom of the result `x`
+ * 
+ * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 headroom_t xs3_fft_spectra_split(
@@ -101,6 +120,10 @@ headroom_t xs3_fft_spectra_split(
  * @param [in] length   The length of `x` in elements (i.e. FFT length @math{N}).
  * 
  * @return The headroom of the result `x`
+ * 
+ * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 headroom_t xs3_fft_spectra_merge(
@@ -152,6 +175,10 @@ headroom_t xs3_fft_spectra_merge(
  * @param[in] x         The spectrum @math{X[f]} to be modified.
  * @param[in] length    The size of the DFT to be computed. Twice the length of `x` (in elements).
  * @param[in] inverse   Flag indicating whether the inverse DFT is being computed.
+ * 
+ * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_mono_adjust(
@@ -187,6 +214,10 @@ void xs3_fft_mono_adjust(
  * @param[in]     N     The size of the DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
+ * 
+ * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_dit_forward (
@@ -223,6 +254,10 @@ void xs3_fft_dit_forward (
  * @param[in]     N     The size of the inverse DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
+ * 
+ * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_dit_inverse (
@@ -259,6 +294,10 @@ void xs3_fft_dit_inverse (
  * @param[in]     N     The size of the DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
+ * 
+ * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_dif_forward (
@@ -295,6 +334,10 @@ void xs3_fft_dif_forward (
  * @param[in]     N     The size of the inverse DFT to be performed.
  * @param[inout]  hr    Pointer to the initial headroom in `x[]`.
  * @param[inout]  exp   Pointer to the initial exponent associated with `x[]`.
+ * 
+ * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_fft_func
  */
 C_API
 void xs3_fft_dif_inverse (
@@ -302,4 +345,3 @@ void xs3_fft_dif_inverse (
     const unsigned N, 
     headroom_t* hr, 
     exponent_t* exp);
-

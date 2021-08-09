@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include "bfp_math.h"
@@ -53,7 +53,7 @@ void bfp_complex_s32_add(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
+    xs3_vect_complex_s32_add_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->hr = xs3_vect_complex_s32_add(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
@@ -72,7 +72,7 @@ void bfp_complex_s32_sub(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
+    xs3_vect_complex_s32_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->hr = xs3_vect_complex_s32_sub(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
@@ -135,7 +135,7 @@ void bfp_complex_s32_conj_mul(
     exponent_t a_exp;
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
+    xs3_vect_complex_s32_conj_mul_prepare(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->exp = a_exp;
     a->hr = xs3_vect_complex_s32_conj_mul(a->data, b->data, c->data, 
@@ -157,8 +157,7 @@ void bfp_complex_s32_real_scale(
 
     headroom_t c_hr = HR_S32(c.mant);
 
-    //Uses same param logic as mul_vect_s32
-    xs3_vect_s32_mul_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp, b->hr, c_hr);
+    xs3_vect_complex_s32_real_scale_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp, b->hr, c_hr);
 
     a->hr = xs3_vect_complex_s32_real_scale( a->data, b->data, c.mant, b->length, b_shr, c_shr);
 }
@@ -211,7 +210,7 @@ void bfp_complex_s32_mag(
 
     right_shift_t b_shr;
 
-    xs3_vect_complex_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
+    xs3_vect_complex_s32_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
 
     a->hr = xs3_vect_complex_s32_mag(a->data, b->data, b->length, 
                                      b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);

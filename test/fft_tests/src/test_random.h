@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
 
@@ -12,8 +12,6 @@ EXTERN_C int64_t  pseudo_rand_int64(unsigned *r);
 EXTERN_C uint64_t pseudo_rand_uint64(unsigned *r);
 
 EXTERN_C void pseudo_rand_bytes(unsigned *r, char* buffer, unsigned size);
-
-
 
 
 EXTERN_C
@@ -46,7 +44,6 @@ void rand_vect_complex_s32(
     const unsigned length,
     const unsigned headroom,
     unsigned* seed);
-
 
 
 EXTERN_C

@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include "xs3_math.h"
 #include "vpu_const_vects.h"
@@ -27,11 +27,16 @@ const int32_t vpu_vec_0x80000000[8] = VEC_S32(0x80000000);
 const int32_t vpu_vec_0x7FFFFFFF[8] = VEC_S32(0x7FFFFFFF);
 
 const int16_t vpu_vec_0x0001[16]     = VEC_S16( 0x0001);
+const int16_t vpu_vec_0x0002[16]     = VEC_S16( 0x0002);
 const int16_t vpu_vec_0x0010[16]     = VEC_S16( 0x0010);
 const int16_t vpu_vec_0x4000[16]     = VEC_S16( 0x4000);
 const int16_t vpu_vec_neg_0x4000[16] = VEC_S16(-0x4000);
 const int16_t vpu_vec_0x8000[16]     = VEC_S16(-0x8000);
 const int16_t vpu_vec_0x7FFF[16]     = VEC_S16(0x7FFF);
+const int16_t vpu_vec_0x007F[16]     = VEC_S16(0x007F);
+const int16_t vpu_vec_0x0100[16]     = VEC_S16(0x0100);
 
 const int8_t vpu_vec_0x01[32] = VEC_S8(0x01);
 const int8_t vpu_vec_0x40[32] = VEC_S8(0x40);
+const int8_t vpu_vec_0x80[32] = VEC_S8(0x80);
+const int8_t vpu_vec_0xC1[32] = VEC_S8(0xC1);

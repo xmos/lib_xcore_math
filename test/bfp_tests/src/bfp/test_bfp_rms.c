@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -11,13 +11,17 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
+TEST_GROUP_RUNNER(bfp_rms) {
+  RUN_TEST_CASE(bfp_rms, bfp_s16_rms);
+  RUN_TEST_CASE(bfp_rms, bfp_s32_rms);
+}
+
+TEST_GROUP(bfp_rms);
+TEST_SETUP(bfp_rms) {}
+TEST_TEAR_DOWN(bfp_rms) {}
 
 #define REPS        100
 #define MAX_LEN     100
@@ -26,11 +30,11 @@
 static unsigned seed;
 
 
-static void test_bfp_s16_rms()
+TEST(bfp_rms, bfp_s16_rms)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 0x042EAD51;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t WORD_ALIGNED dataB[MAX_LEN];
     bfp_s16_t B;
@@ -38,7 +42,7 @@ static void test_bfp_s16_rms()
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         bfp_s16_t B;
 
@@ -76,11 +80,11 @@ static void test_bfp_s16_rms()
 }
 
 
-static void test_bfp_s32_rms()
+TEST(bfp_rms, bfp_s32_rms)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 0x3E71643B;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataB[MAX_LEN];
     bfp_s32_t B;
@@ -88,7 +92,7 @@ static void test_bfp_s32_rms()
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         bfp_s32_t B;
 
@@ -124,15 +128,3 @@ static void test_bfp_s32_rms()
     }
 }
 
-
-
-
-
-
-
-void test_bfp_rms()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_s16_rms);
-    RUN_TEST(test_bfp_s32_rms);
-}

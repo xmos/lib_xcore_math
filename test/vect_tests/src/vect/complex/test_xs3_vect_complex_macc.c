@@ -13,17 +13,28 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
+
+TEST_GROUP_RUNNER(xs3_vect_complex_macc) {
+  RUN_TEST_CASE(xs3_vect_complex_macc, xs3_vect_complex_s16_macc);
+  RUN_TEST_CASE(xs3_vect_complex_macc, xs3_vect_complex_s16_nmacc);
+  RUN_TEST_CASE(xs3_vect_complex_macc, xs3_vect_complex_s32_macc);
+  RUN_TEST_CASE(xs3_vect_complex_macc, xs3_vect_complex_s32_nmacc);
+}
+
+TEST_GROUP(xs3_vect_complex_macc);
+TEST_SETUP(xs3_vect_complex_macc) {}
+TEST_TEAR_DOWN(xs3_vect_complex_macc) {}
 
 
 #define REPS    1000
 #define LEN     257
 
-static void test_xs3_vect_complex_s16_macc()
+
+TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_macc)
 {
-    printf("%s...\n", __func__);
-    unsigned seed = 764533;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_double_t A_fp[LEN], B_fp[LEN], C_fp[LEN];
 
@@ -40,6 +51,7 @@ static void test_xs3_vect_complex_s16_macc()
     hr.a = xs3_vect_complex_s16_headroom(A.re, A.im, LEN);
 
     for(int v = 0; v < REPS; v++){
+        setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int16(&seed) % 10);
@@ -99,10 +111,10 @@ static void test_xs3_vect_complex_s16_macc()
     }
 }
 
-static void test_xs3_vect_complex_s16_nmacc()
+
+TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_nmacc)
 {
-    printf("%s...\n", __func__);
-    unsigned seed = 764533;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_double_t A_fp[LEN], B_fp[LEN], C_fp[LEN];
 
@@ -119,6 +131,7 @@ static void test_xs3_vect_complex_s16_nmacc()
     hr.a = xs3_vect_complex_s16_headroom(A.re, A.im, LEN);
 
     for(int v = 0; v < REPS; v++){
+        setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int16(&seed) % 10);
@@ -179,10 +192,9 @@ static void test_xs3_vect_complex_s16_nmacc()
 }
 
 
-static void test_xs3_vect_complex_s32_macc()
+TEST(xs3_vect_complex_macc, xs3_vect_complex_s32_macc)
 {
-    printf("%s...\n", __func__);
-    unsigned seed = 764533;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_double_t A_fp[LEN], B_fp[LEN], C_fp[LEN];
 
@@ -196,6 +208,7 @@ static void test_xs3_vect_complex_s32_macc()
     hr.a = xs3_vect_complex_s32_headroom(A, LEN);
 
     for(int v = 0; v < REPS; v++){
+        setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -258,10 +271,9 @@ static void test_xs3_vect_complex_s32_macc()
 }
 
 
-static void test_xs3_vect_complex_s32_nmacc()
+TEST(xs3_vect_complex_macc, xs3_vect_complex_s32_nmacc)
 {
-    printf("%s...\n", __func__);
-    unsigned seed = 764533;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_double_t A_fp[LEN], B_fp[LEN], C_fp[LEN];
 
@@ -275,6 +287,7 @@ static void test_xs3_vect_complex_s32_nmacc()
     hr.a = xs3_vect_complex_s32_headroom(A, LEN);
 
     for(int v = 0; v < REPS; v++){
+        setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -336,15 +349,3 @@ static void test_xs3_vect_complex_s32_nmacc()
     }
 }
 
-
-
-void test_xs3_macc_vect_complex()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_complex_s16_macc);
-    RUN_TEST(test_xs3_vect_complex_s16_nmacc);
-
-    RUN_TEST(test_xs3_vect_complex_s32_macc);
-    RUN_TEST(test_xs3_vect_complex_s32_nmacc);
-}

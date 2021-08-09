@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -13,11 +13,24 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(xs3_vect_complex_mag) {
+  RUN_TEST_CASE(xs3_vect_complex_mag, xs3_vect_complex_s32_mag_prepare);
+  RUN_TEST_CASE(xs3_vect_complex_mag, xs3_vect_complex_s16_mag_basic);
+  RUN_TEST_CASE(xs3_vect_complex_mag, xs3_vect_complex_s16_mag_random);
+  RUN_TEST_CASE(xs3_vect_complex_mag, xs3_vect_complex_s32_mag_basic);
+  RUN_TEST_CASE(xs3_vect_complex_mag, xs3_vect_complex_s32_mag_random);
+}
+
+TEST_GROUP(xs3_vect_complex_mag);
+TEST_SETUP(xs3_vect_complex_mag) {}
+TEST_TEAR_DOWN(xs3_vect_complex_mag) {}
 
 
 static char msg_buff[300];
-static unsigned seed = 4563456;
+
 
 const extern unsigned rot_table32_rows;
 const extern complex_s32_t rot_table32[30][4];
@@ -33,12 +46,6 @@ const extern complex_s32_t rot_table32[30][4];
       sprintf(msg_buff, (FMT), __VA_ARGS__);                                            \
       TEST_ASSERT_INT32_WITHIN_MESSAGE((THRESHOLD), (EXPECTED), (ACTUAL), msg_buff);    \
     }} while(0)
-
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
 
 const extern unsigned rot_table32_rows;
@@ -87,19 +94,16 @@ static int32_t mag_complex_s32(complex_s32_t b, right_shift_t b_shr)
 }
 
 
-
-
-
-
 #define REPS        1000
-static void test_xs3_vect_complex_mag_prepare()
+TEST(xs3_vect_complex_mag, xs3_vect_complex_s32_mag_prepare)
 {
-    PRINTF("%s...\n", __func__);
+    
 
-    seed = 0x142B711E;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
         
         exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 31);
@@ -110,7 +114,7 @@ static void test_xs3_vect_complex_mag_prepare()
         exponent_t a_exp;
         right_shift_t b_shr;
 
-        xs3_vect_complex_mag_prepare(&a_exp, &b_shr, b_exp, b_hr);
+        xs3_vect_complex_s32_mag_prepare(&a_exp, &b_shr, b_exp, b_hr);
 
         xs3_vect_complex_s32_mag(&A_mag, &B, 1, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
 
@@ -122,15 +126,11 @@ static void test_xs3_vect_complex_mag_prepare()
 #undef REPS
 
 
-
-
-
-
-
 #define THRESHOLD   5
-static void test_xs3_vect_complex_s16_mag_basic()
+
+TEST(xs3_vect_complex_mag, xs3_vect_complex_s16_mag_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         complex_s16_t b;
@@ -182,7 +182,7 @@ static void test_xs3_vect_complex_s16_mag_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        // PRINTF("\ttest vector %d..\n", v);
+        // setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -221,21 +221,20 @@ static void test_xs3_vect_complex_s16_mag_basic()
         }
     }
 
-    PRINTF("\tMaximum absolute delta: %u\n", max_abs_delta);
+    // printf("\tMaximum absolute delta: %u\n", max_abs_delta);
 }
 #undef THRESHOLD
-
-
-
 
 
 #define MAX_LEN     100
 #define REPS        1000
 #define THRESHOLD   10
-static void test_xs3_vect_complex_s16_mag_random()
+
+TEST(xs3_vect_complex_mag, xs3_vect_complex_s16_mag_random)
 {
-    PRINTF("%s...\n", __func__);
-    unsigned seed = 0x9B54F255;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     headroom_t hr;
     
@@ -252,7 +251,7 @@ static void test_xs3_vect_complex_s16_mag_random()
 
         unsigned rep_seed = seed;
 
-        // PRINTF("\trepetition % 3d..\t(seed: 0x%08X)\n", v, seed);
+        // setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
@@ -285,20 +284,18 @@ static void test_xs3_vect_complex_s16_mag_random()
         TEST_ASSERT_EQUAL_MSG(xs3_vect_s16_headroom((int16_t*) A, len), hr, v);
     }
 
-    PRINTF("\tMaximum absolute delta: %u\n", max_abs_delta);
+    // printf("\tMaximum absolute delta: %u\n", max_abs_delta);
 }
 #undef MAX_LEN
 #undef REPS
 #undef THRESHOLD
 
 
-
-
-
 #define THRESHOLD   7
-static void test_xs3_vect_complex_s32_mag_basic()
+
+TEST(xs3_vect_complex_mag, xs3_vect_complex_s32_mag_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         complex_s32_t b;
@@ -342,7 +339,7 @@ static void test_xs3_vect_complex_s32_mag_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        // PRINTF("\ttest vector %d..\n", v);
+        // setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -378,23 +375,20 @@ static void test_xs3_vect_complex_s32_mag_basic()
         }
     }
 
-    PRINTF("\tMaximum absolute delta: %u\n", max_abs_delta);
+    // printf("\tMaximum absolute delta: %u\n", max_abs_delta);
 }
 #undef THRESHOLD
-
-
-
-
-
 
 
 #define MAX_LEN     100
 #define REPS        1000
 #define THRESHOLD   7
-static void test_xs3_vect_complex_s32_mag_random()
+
+TEST(xs3_vect_complex_mag, xs3_vect_complex_s32_mag_random)
 {
-    PRINTF("%s...\n", __func__);
-    unsigned seed = 3463456;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     headroom_t hr;
     
@@ -407,7 +401,7 @@ static void test_xs3_vect_complex_s32_mag_random()
 
         unsigned rep_seed = seed;
 
-        // PRINTF("\trepetition % 3d..\t(seed: 0x%08X)\n", v, seed);
+        // setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
@@ -442,23 +436,9 @@ static void test_xs3_vect_complex_s32_mag_random()
         TEST_ASSERT_EQUAL_MSG(xs3_vect_s32_headroom((int32_t*) A, len), hr, v);
     }
 
-    PRINTF("\tMaximum absolute delta: %u\n", max_abs_delta);
+    // printf("\tMaximum absolute delta: %u\n", max_abs_delta);
 }
 #undef MAX_LEN
 #undef REPS
 #undef THRESHOLD
 
-
-
-void test_xs3_mag_vect_complex()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_complex_mag_prepare);
-
-    RUN_TEST(test_xs3_vect_complex_s16_mag_basic);
-    RUN_TEST(test_xs3_vect_complex_s16_mag_random);
-
-    RUN_TEST(test_xs3_vect_complex_s32_mag_basic);
-    RUN_TEST(test_xs3_vect_complex_s32_mag_random);
-}

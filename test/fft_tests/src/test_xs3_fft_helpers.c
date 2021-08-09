@@ -1,6 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
-
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include "xs3_math.h"
@@ -8,8 +7,19 @@
 #include "floating_fft.h"
 #include "tst_common.h"
 #include "fft.h"
-#include "unity.h"
+#include "unity_fixture.h"
 #include "../src/vect/xs3_fft_lut.h"
+
+TEST_GROUP_RUNNER(xs3_fft_helpers) {
+  RUN_TEST_CASE(xs3_fft_helpers, xs3_fft_index_bit_reversal);
+  RUN_TEST_CASE(xs3_fft_helpers, xs3_vect_complex_s32_tail_reverse);
+  RUN_TEST_CASE(xs3_fft_helpers, xs3_fft_spectra_split);
+  RUN_TEST_CASE(xs3_fft_helpers, xs3_fft_spectra_merge);
+}
+
+TEST_GROUP(xs3_fft_helpers);
+TEST_SETUP(xs3_fft_helpers) {}
+TEST_TEAR_DOWN(xs3_fft_helpers) {}
 
 
 #define MAX_PROC_FRAME_LENGTH_LOG2 (MAX_DIT_FFT_LOG2)
@@ -20,7 +30,7 @@
 #define MIN_N_LOG2  (2)
 
 
-void test_xs3_fft_index_bit_reversal()
+TEST(xs3_fft_helpers, xs3_fft_index_bit_reversal)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -78,7 +88,7 @@ void test_xs3_fft_index_bit_reversal()
 }
 
 
-void test_xs3_vect_complex_s32_tail_reverse()
+TEST(xs3_fft_helpers, xs3_vect_complex_s32_tail_reverse)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -121,8 +131,7 @@ void test_xs3_vect_complex_s32_tail_reverse()
 }
 
 
-
-void test_xs3_fft_spectra_split()
+TEST(xs3_fft_helpers, xs3_fft_spectra_split)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -181,11 +190,7 @@ void test_xs3_fft_spectra_split()
 }
 
 
-
-
-
-
-void test_xs3_fft_spectra_merge()
+TEST(xs3_fft_helpers, xs3_fft_spectra_merge)
 {
 #if PRINT_FUNC_NAMES
     printf("%s..\n", __func__);
@@ -240,17 +245,4 @@ void test_xs3_fft_spectra_merge()
         fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), N, worst_error, worst_timing);
 #endif
     }
-}
-
-
-
-
-void test_xs3_fft_helpers()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_fft_index_bit_reversal);
-    RUN_TEST(test_xs3_vect_complex_s32_tail_reverse);
-    RUN_TEST(test_xs3_fft_spectra_split);
-    RUN_TEST(test_xs3_fft_spectra_merge);
 }

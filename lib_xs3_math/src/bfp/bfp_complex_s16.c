@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include "bfp_math.h"
@@ -38,9 +38,10 @@ void bfp_complex_s16_shl(
 
     a->exp = b->exp;
 
-    const headroom_t re_hr = xs3_vect_s16_shl(a->real, b->real, b->length, shl);
-    const headroom_t im_hr = xs3_vect_s16_shl(a->imag, b->imag, b->length, shl);
-    a->hr = (re_hr <= im_hr)? re_hr : im_hr;
+    a->hr = xs3_vect_complex_s16_shl(a->real, a->imag, b->real, b->imag, b->length, shl);
+    // const headroom_t re_hr = xs3_vect_s16_shl(a->real, b->real, b->length, shl);
+    // const headroom_t im_hr = xs3_vect_s16_shl(a->imag, b->imag, b->length, shl);
+    // a->hr = (re_hr <= im_hr)? re_hr : im_hr;
 }
 
 
@@ -57,7 +58,7 @@ void bfp_complex_s16_add(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
+    xs3_vect_complex_s16_add_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
     
     a->hr = xs3_vect_complex_s16_add(a->real, a->imag, b->real, b->imag, c->real, c->imag, 
                                      b->length, b_shr, c_shr);
@@ -77,7 +78,7 @@ void bfp_complex_s16_sub(
 
     right_shift_t b_shr, c_shr;
 
-    xs3_vect_add_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
+    xs3_vect_complex_s16_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
     
     a->hr = xs3_vect_complex_s16_sub(a->real, a->imag, b->real, b->imag, c->real, c->imag,
                                      b->length, b_shr, c_shr);
@@ -101,10 +102,13 @@ void bfp_complex_s16_real_mul(
     xs3_vect_complex_s16_real_mul_prepare(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr);
 
     a->exp = a_exp;
+
+    a->hr = xs3_vect_complex_s16_real_mul(a->real, a->imag, b->real, b->imag, 
+                                          c->data, b->length, sat);
     
-    const headroom_t re_hr = xs3_vect_s16_mul(a->real, b->real, c->data, b->length, sat);
-    const headroom_t im_hr = xs3_vect_s16_mul(a->imag, b->imag, c->data, b->length, sat);
-    a->hr = (re_hr <= im_hr)? re_hr : im_hr;
+    // const headroom_t re_hr = xs3_vect_s16_mul(a->real, b->real, c->data, b->length, sat);
+    // const headroom_t im_hr = xs3_vect_s16_mul(a->imag, b->imag, c->data, b->length, sat);
+    // a->hr = (re_hr <= im_hr)? re_hr : im_hr;
 }
 
 
@@ -143,7 +147,7 @@ void bfp_complex_s16_conj_mul(
     exponent_t a_exp;
     right_shift_t sat;
 
-    xs3_vect_complex_s16_mul_prepare(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr);
+    xs3_vect_complex_s16_conj_mul_prepare(&a_exp, &sat, b->exp, c->exp, b->hr, c->hr);
 
     a->exp = a_exp;
     a->hr = xs3_vect_complex_s16_conj_mul(a->real, a->imag, b->real, b->imag, c->real, c->imag, b->length, sat);
@@ -163,7 +167,7 @@ void bfp_complex_s16_real_scale(
     right_shift_t a_shr;
     headroom_t s_hr = HR_S16(alpha.mant);
 
-    xs3_vect_s16_scale_prepare(&a->exp, &a_shr, b->exp, alpha.exp, b->hr, s_hr);
+    xs3_vect_complex_s16_real_scale_prepare(&a->exp, &a_shr, b->exp, alpha.exp, b->hr, s_hr);
 
     a->hr = xs3_vect_complex_s16_real_scale(a->real, a->imag, b->real, b->imag, alpha.mant, b->length, a_shr);
 }
@@ -183,7 +187,7 @@ void bfp_complex_s16_scale(
 
     headroom_t alpha_hr = HR_C16(alpha.mant);
 
-    xs3_vect_complex_s16_mul_prepare(&a->exp, &a_shr, b->exp, alpha.exp, b->hr, alpha_hr);
+    xs3_vect_complex_s16_scale_prepare(&a->exp, &a_shr, b->exp, alpha.exp, b->hr, alpha_hr);
 
     a->hr = xs3_vect_complex_s16_scale(a->real, a->imag, b->real, b->imag, 
                                                   alpha.mant.re, alpha.mant.im, 
@@ -219,7 +223,7 @@ void bfp_complex_s16_mag(
 
     right_shift_t b_shr;
 
-    xs3_vect_complex_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
+    xs3_vect_complex_s16_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
 
     a->hr = xs3_vect_complex_s16_mag(a->data, b->real, b->imag, b->length, 
                                      b_shr, (int16_t*) rot_table16, rot_table16_rows);

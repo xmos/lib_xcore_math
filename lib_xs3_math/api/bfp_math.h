@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #ifndef BFP_MATH_H_
 #define BFP_MATH_H_
@@ -8,11 +8,21 @@
 extern "C" { 
 #endif
 
+
 /**
- * @file bfp_math.h
+ * @page page_bfp_math_h  bfp_math.h
  * 
- * Include this file from a source file to access both the BFP API and low-level API, as well as the `lib_xs3_math` 
- * types and configuration.
+ * This header includes the header files necessary to use `lib_xs3_math`'s high-level block floating-
+ * point API as well as its low-level vector API, including types and functions for 16- and 32-bit
+ * BFP vectors.
+ *  
+ * @ingroup xs3_math_header_file
+ */
+
+/**
+ * @defgroup bfp16_func     16-Bit Block Floating-Point Functions
+ * @defgroup bfp32_func     32-Bit Block Floating-Point Functions
+ * @defgroup bfp_fft_func   Block Floating-Point FFT Functions
  */
 
 #include "xs3_math.h"

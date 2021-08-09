@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
 
@@ -8,6 +8,28 @@
 
 #include "xs3_math_types.h"
 
+/**
+ * @page page_bfp_init_h  bfp_init.h
+ * 
+ * This header contains functions for initializing the structs representing block floating-point
+ * vectors. Initialization comes in two flavors: static and dynamic. 
+ * 
+ * Static initialization requires the user to supply the buffer which is used to store the mantissa 
+ * vector. Static initiaization is accomplished using the `bfp_*_init()` functions.
+ * 
+ * Dynamic initialization allocates the buffer for the mantissa vectors from the heap using `malloc()`
+ * (unless overridden by the user via configuration of @ref XS3_MALLOC).  Dynamic allocation is 
+ * accomplished using the `bfp_*_alloc()` functions.  If dynamically allocated vectors are to be 
+ * temporary, to avoid memory leaks they much be deallocated using the corresponding `bfp_*_dealloc()`
+ * functions.
+ * 
+ * @note This header is included automatically through `bfp_math.h`.
+ * 
+ * @see  `bfp_s16_t`, `bfp_s32_t`, `bfp_complex_s16_t`, `bfp_complex_s32_t`, 
+ * `bfp_ch_pair_s16_t`, and `bfp_ch_pair_s32_t`
+ * 
+ * @ingroup xs3_math_header_file
+ */
 
 /** 
  * @brief Initialize a 16-bit BFP vector.
@@ -28,6 +50,8 @@
  * @param[in] exp       Exponent of BFP vector
  * @param[in] length    Number of elements in the BFP vector
  * @param[in] calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_init(
@@ -56,6 +80,8 @@ void bfp_s16_init(
  * @param[in]  exp       Exponent of BFP vector
  * @param[in]  length    Number of elements in the BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_init(
@@ -91,6 +117,8 @@ void bfp_s32_init(
  * @param[in]  exp       Exponent of BFP vector
  * @param[in]  length    Number of elements in BFP vector
  * @param[in] calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_init(
@@ -121,6 +149,8 @@ void bfp_complex_s16_init(
  * @param[in]  exp       Exponent of BFP vector
  * @param[in]  length    Number of elements in BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_init(
@@ -151,6 +181,8 @@ void bfp_complex_s32_init(
  * @param[in]  exp       Exponent of BFP vector
  * @param[in]  length    Number of elements in BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_ch_pair_s16_init(
@@ -182,6 +214,8 @@ void bfp_ch_pair_s16_init(
  * @param[in]  exp       Exponent of BFP vector
  * @param[in]  length    Number of elements in BFP vector
  * @param[in]  calc_hr   Boolean indicating whether the HR of the BFP vector should be calculated
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_ch_pair_s32_init(
@@ -204,6 +238,8 @@ void bfp_ch_pair_s32_init(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_set(
@@ -224,6 +260,8 @@ void bfp_s16_set(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_set(
@@ -244,6 +282,8 @@ void bfp_s32_set(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each complex mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_complex_s16_set(
@@ -264,6 +304,8 @@ void bfp_complex_s16_set(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each complex mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_complex_s32_set(
@@ -285,6 +327,8 @@ void bfp_complex_s32_set(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each channel-pair mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_ch_pair_s16_set(
@@ -306,9 +350,394 @@ void bfp_ch_pair_s16_set(
  * @param[out] a         BFP vector to update
  * @param[in]  b         New value each channel-pair mantissa is set to
  * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_ch_pair_s32_set(
     bfp_ch_pair_s32_t* a,
     const ch_pair_s32_t b,
     const exponent_t exp);
+
+
+/**
+ * @brief Dynamically allocate a 32-bit BFP vector from the heap.
+ * 
+ * If allocation was unsuccessful, the `data` field of the returned vector will be NULL, and
+ * the `length` field will be zero.  Otherwise, `data` will point to the allocated memory and
+ * the `length` field will be the user-specified length. The `length` argument must not be 
+ * zero.
+ * 
+ * Neither the BFP exponent, headroom, nor the elements of the allocated mantissa vector are 
+ * set by this function. To set the BFP vector elements to a known value, use bfp_s32_set() 
+ * on the retuned BFP vector.
+ * 
+ * BFP vectors allocated using this function must be deallocated using bfp_s32_dealloc() to
+ * avoid a memory leak.
+ * 
+ * To initialize a BFP vector using static memory allocation, use bfp_s32_init() instead.
+ * 
+ * @note This function always allocates an extra 2 elements so that `bfp_fft_unpack_mono()` can
+ *       safely be used, but these two elements will NOT be reflected in the returned vector
+ *       length.
+ * @par
+ * @note Dynamic allocation of BFP vectors relies on allocation from the heap, and offers no
+ *       guarantees about the execution time.  Use of this function in any time-critical 
+ *       section of code is highly discouraged.
+ * 
+ * @param[in] length  The length of the BFP vector to be allocated (in elements)
+ * 
+ * @returns 32-bit BFP vector
+ * 
+ * @see bfp_s32_dealloc,
+ *      bfp_s32_init
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+bfp_s32_t bfp_s32_alloc(
+    unsigned length);
+
+    
+/**
+ * @brief Dynamically allocate a 16-bit BFP vector from the heap.
+ * 
+ * If allocation was unsuccessful, the `data` field of the returned vector will be NULL, and
+ * the `length` field will be zero.  Otherwise, `data` will point to the allocated memory and
+ * the `length` field will be the user-specified length. The `length` argument must not be 
+ * zero.
+ * 
+ * Neither the BFP exponent, headroom, nor the elements of the allocated mantissa vector are 
+ * set by this function. To set the BFP vector elements to a known value, use bfp_s16_set() 
+ * on the retuned BFP vector.
+ * 
+ * BFP vectors allocated using this function must be deallocated using bfp_s16_dealloc() to
+ * avoid a memory leak.
+ * 
+ * To initialize a BFP vector using static memory allocation, use bfp_s16_init() instead.
+ * 
+ * @note Dynamic allocation of BFP vectors relies on allocation from the heap, and offers no
+ *       guarantees about the execution time.  Use of this function in any time-critical 
+ *       section of code is highly discouraged.
+ * 
+ * @param[in] length  The length of the BFP vector to be allocated (in elements)
+ * 
+ * @returns 16-bit BFP vector
+ * 
+ * @see bfp_s16_dealloc,
+ *      bfp_s16_init
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+bfp_s16_t bfp_s16_alloc(
+    const unsigned length);
+
+
+/**
+ * @brief Dynamically allocate a complex 32-bit BFP vector from the heap.
+ * 
+ * If allocation was unsuccessful, the `data` field of the returned vector will be NULL, and
+ * the `length` field will be zero.  Otherwise, `data` will point to the allocated memory and
+ * the `length` field will be the user-specified length. The `length` argument must not be 
+ * zero.
+ * 
+ * Neither the BFP exponent, headroom, nor the elements of the allocated mantissa vector are 
+ * set by this function. To set the BFP vector elements to a known value, use 
+ * bfp_complex_s32_set() on the retuned BFP vector.
+ * 
+ * BFP vectors allocated using this function must be deallocated using 
+ * bfp_complex_s32_dealloc() to avoid a memory leak.
+ * 
+ * To initialize a BFP vector using static memory allocation, use bfp_complex_s32_init() 
+ * instead.
+ * 
+ * @note Dynamic allocation of BFP vectors relies on allocation from the heap, and offers no
+ *       guarantees about the execution time.  Use of this function in any time-critical 
+ *       section of code is highly discouraged.
+ * 
+ * @param[in] length  The length of the BFP vector to be allocated (in elements)
+ * 
+ * @returns Complex 32-bit BFP vector
+ * 
+ * @see bfp_complex_s32_dealloc,
+ *      bfp_complex_s32_init
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+bfp_complex_s32_t bfp_complex_s32_alloc(
+    const unsigned length);
+
+    
+/**
+ * @brief Dynamically allocate a complex 16-bit BFP vector from the heap.
+ * 
+ * If allocation was unsuccessful, the `real` and `imag` fields of the returned vector will 
+ * be NULL, and the `length` field will be zero.  Otherwise, `real` and `imag` will point to 
+ * the allocated memory and the `length` field will be the user-specified length. The `length` 
+ * argument must not be zero.
+ * 
+ * This function allocates a single block of memory for both the real and imaginary parts of
+ * the BFP vector.  Because all BFP functions require the mantissa buffers to begin at a word-
+ * aligned address, if `length` is odd, this function will allocate an extra `int16_t` element
+ * for the buffer.
+ * 
+ * Neither the BFP exponent, headroom, nor the elements of the allocated mantissa vector are 
+ * set by this function. To set the BFP vector elements to a known value, use 
+ * bfp_complex_s16_set() on the retuned BFP vector.
+ * 
+ * BFP vectors allocated using this function must be deallocated using 
+ * bfp_complex_s16_dealloc() to avoid a memory leak.
+ * 
+ * To initialize a BFP vector using static memory allocation, use bfp_complex_s16_init() 
+ * instead.
+ * 
+ * @note Dynamic allocation of BFP vectors relies on allocation from the heap, and offers no
+ *       guarantees about the execution time.  Use of this function in any time-critical 
+ *       section of code is highly discouraged.
+ * 
+ * @param[in] length  The length of the BFP vector to be allocated (in elements)
+ * 
+ * @returns Complex 16-bit BFP vector
+ * 
+ * @see bfp_complex_s16_dealloc,
+ *      bfp_complex_s16_init
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+bfp_complex_s16_t bfp_complex_s16_alloc(
+    const unsigned length);
+
+
+/**
+ * @brief Dynamically allocate a 32-bit BFP channel-pair vector from the heap.
+ * 
+ * If allocation was unsuccessful, the `data` field of the returned vector will be NULL, and
+ * the `length` field will be zero.  Otherwise, `data` will point to the allocated memory and
+ * the `length` field will be the user-specified length. The `length` argument must not be 
+ * zero.
+ * 
+ * Neither the BFP exponent, headroom, nor the elements of the allocated mantissa vector are 
+ * set by this function. To set the BFP vector elements to a known value, use 
+ * bfp_ch_pair_s32_set() on the retuned BFP vector.
+ * 
+ * BFP vectors allocated using this function must be deallocated using 
+ * bfp_ch_pair_s32_dealloc() to avoid a memory leak.
+ * 
+ * To initialize a BFP vector using static memory allocation, use bfp_ch_pair_s32_init()
+ * instead.
+ * 
+ * @note This function always allocates an extra 2 `ch_pair_s32_t` elements so that 
+ *       `bfp_fft_unpack_stereo()` can safely be used, but these two elements will NOT be 
+ *       reflected in the returned vector's length.
+ * @par
+ * @note Dynamic allocation of BFP vectors relies on allocation from the heap, and offers no
+ *       guarantees about the execution time.  Use of this function in any time-critical 
+ *       section of code is highly discouraged.
+ * 
+ * @param[in] length  The length of the BFP vector to be allocated (in elements)
+ * 
+ * @returns 32-bit BFP channel-pair vector
+ * 
+ * @see bfp_ch_pair_s32_dealloc,
+ *      bfp_ch_pair_s32_init
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+bfp_ch_pair_s32_t bfp_ch_pair_s32_alloc(
+    const unsigned length);
+
+
+/**
+ * @brief Dynamically allocate a 16-bit BFP channel-pair vector from the heap.
+ * 
+ * If allocation was unsuccessful, the `data` field of the returned vector will be NULL, and
+ * the `length` field will be zero.  Otherwise, `data` will point to the allocated memory and
+ * the `length` field will be the user-specified length. The `length` argument must not be 
+ * zero.
+ * 
+ * Neither the BFP exponent, headroom, nor the elements of the allocated mantissa vector are 
+ * set by this function. To set the BFP vector elements to a known value, use 
+ * bfp_ch_pair_s16_set() on the retuned BFP vector.
+ * 
+ * BFP vectors allocated using this function must be deallocated using 
+ * bfp_ch_pair_s16_dealloc() to avoid a memory leak.
+ * 
+ * To initialize a BFP vector using static memory allocation, use bfp_ch_pair_s16_init()
+ * instead.
+ * 
+ * @note Dynamic allocation of BFP vectors relies on allocation from the heap, and offers no
+ *       guarantees about the execution time.  Use of this function in any time-critical 
+ *       section of code is highly discouraged.
+ * 
+ * @param[in] length  The length of the BFP vector to be allocated (in elements)
+ * 
+ * @returns 16-bit BFP channel-pair vector
+ * 
+ * @see bfp_ch_pair_s16_dealloc,
+ *      bfp_ch_pair_s16_init
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+bfp_ch_pair_s16_t bfp_ch_pair_s16_alloc(
+    const unsigned length);
+
+
+/**
+ * @brief Deallocate a 32-bit BFP vector allocated by bfp_s32_alloc().
+ * 
+ * Use this function to free the heap memory allocated by bfp_s32_alloc().
+ * 
+ * BFP vectors whose mantissa buffer was (successfully) dynamically allocated have a flag 
+ * set which indicates as much.  This function can safely be called on any bfp_s32_t which
+ * has not had its `flags` or `data` manually manipulated, including:
+ * * bfp_s32_t resulting from a successful call to bfp_s32_alloc()
+ * * bfp_s32_t resulting from an unsuccessful call to bfp_s32_alloc()
+ * * bfp_s32_t initialized with a call to bfp_s32_init()
+ * 
+ * In the latter two cases, this function does nothing. In the former, the `data`, `length`
+ * and `flags` fields of `vector` are cleared to zero.
+ * 
+ * @param[in] vector  BFP vector to be deallocated.
+ * 
+ * @see bfp_s32_alloc
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_s32_dealloc(
+    bfp_s32_t* vector);
+
+
+/**
+ * @brief Deallocate a 16-bit BFP vector allocated by bfp_s16_alloc().
+ * 
+ * Use this function to free the heap memory allocated by bfp_s16_alloc().
+ * 
+ * BFP vectors whose mantissa buffer was (successfully) dynamically allocated have a flag 
+ * set which indicates as much.  This function can safely be called on any bfp_s16_t which
+ * has not had its `flags` or `data` manually manipulated, including:
+ * * bfp_s16_t resulting from a successful call to bfp_s16_alloc()
+ * * bfp_s16_t resulting from an unsuccessful call to bfp_s16_alloc()
+ * * bfp_s16_t initialized with a call to bfp_s16_init()
+ * 
+ * In the latter two cases, this function does nothing. In the former, the `data`, `length`
+ * and `flags` fields of `vector` are cleared to zero.
+ * 
+ * @param[in] vector  BFP vector to be deallocated.
+ * 
+ * @see bfp_s16_alloc
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+void bfp_s16_dealloc(
+    bfp_s16_t* vector);
+
+
+/**
+ * @brief Deallocate a complex 32-bit BFP vector allocated by bfp_complex_s32_alloc().
+ * 
+ * Use this function to free the heap memory allocated by bfp_complex_s32_alloc().
+ * 
+ * BFP vectors whose mantissa buffer was (successfully) dynamically allocated have a flag 
+ * set which indicates as much.  This function can safely be called on any bfp_complex_s32_t 
+ * which has not had its `flags` or `data` manually manipulated, including:
+ * * bfp_complex_s32_t resulting from a successful call to bfp_complex_s32_alloc()
+ * * bfp_complex_s32_t resulting from an unsuccessful call to bfp_complex_s32_alloc()
+ * * bfp_complex_s32_t initialized with a call to bfp_complex_s32_init()
+ * 
+ * In the latter two cases, this function does nothing. In the former, the `data`, `length`
+ * and `flags` fields of `vector` are cleared to zero.
+ * 
+ * @param[in] vector  BFP vector to be deallocated.
+ * 
+ * @see bfp_complex_s32_alloc
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_complex_s32_dealloc(
+    bfp_complex_s32_t* vector);
+
+
+/**
+ * @brief Deallocate a complex 16-bit BFP vector allocated by bfp_complex_s16_alloc().
+ * 
+ * Use this function to free the heap memory allocated by bfp_complex_s16_alloc().
+ * 
+ * BFP vectors whose mantissa buffer was (successfully) dynamically allocated have a flag 
+ * set which indicates as much.  This function can safely be called on any bfp_complex_s16_t 
+ * which has not had its `flags` or `real` manually manipulated, including:
+ * * bfp_complex_s16_t resulting from a successful call to bfp_complex_s16_alloc()
+ * * bfp_complex_s16_t resulting from an unsuccessful call to bfp_complex_s16_alloc()
+ * * bfp_complex_s16_t initialized with a call to bfp_complex_s16_init()
+ * 
+ * In the latter two cases, this function does nothing. In the former, the `real`, `imag`, 
+ * `length` and `flags` fields of `vector` are cleared to zero.
+ * 
+ * @param[in] vector  BFP vector to be deallocated.
+ * 
+ * @see bfp_complex_s16_alloc
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+void bfp_complex_s16_dealloc(
+    bfp_complex_s16_t* vector);
+
+
+/**
+ * @brief Deallocate a 32-bit channel-pair BFP vector allocated by bfp_ch_pair_s32_alloc().
+ * 
+ * Use this function to free the heap memory allocated by bfp_ch_pair_s32_alloc().
+ * 
+ * BFP vectors whose mantissa buffer was (successfully) dynamically allocated have a flag 
+ * set which indicates as much.  This function can safely be called on any bfp_ch_pair_s32_t 
+ * which has not had its `flags` or `data` manually manipulated, including:
+ * * bfp_ch_pair_s32_t resulting from a successful call to bfp_ch_pair_s32_alloc()
+ * * bfp_ch_pair_s32_t resulting from an unsuccessful call to bfp_ch_pair_s32_alloc()
+ * * bfp_ch_pair_s32_t initialized with a call to bfp_ch_pair_s32_init()
+ * 
+ * In the latter two cases, this function does nothing. In the former, the `data`, `length`
+ * and `flags` fields of `vector` are cleared to zero.
+ * 
+ * @param[in] vector  BFP vector to be deallocated.
+ * 
+ * @see bfp_ch_pair_s32_alloc
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_ch_pair_s32_dealloc(
+    bfp_ch_pair_s32_t* vector);
+
+
+/**
+ * @brief Deallocate a 16-bit channel-pair BFP vector allocated by bfp_ch_pair_s16_alloc().
+ * 
+ * Use this function to free the heap memory allocated by bfp_ch_pair_s16_alloc().
+ * 
+ * BFP vectors whose mantissa buffer was (successfully) dynamically allocated have a flag 
+ * set which indicates as much.  This function can safely be called on any bfp_ch_pair_s16_t 
+ * which has not had its `flags` or `data` manually manipulated, including:
+ * * bfp_ch_pair_s16_t resulting from a successful call to bfp_ch_pair_s16_alloc()
+ * * bfp_ch_pair_s16_t resulting from an unsuccessful call to bfp_ch_pair_s16_alloc()
+ * * bfp_ch_pair_s16_t initialized with a call to bfp_ch_pair_s16_init()
+ * 
+ * In the latter two cases, this function does nothing. In the former, the `data`, `length`
+ * and `flags` fields of `vector` are cleared to zero.
+ * 
+ * @param[in] vector  BFP vector to be deallocated.
+ * 
+ * @see bfp_ch_pair_s16_alloc
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+void bfp_ch_pair_s16_dealloc(
+    bfp_ch_pair_s16_t* vector);

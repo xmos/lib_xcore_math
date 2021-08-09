@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 #pragma once
 
 #include "xs3_math_types.h"
@@ -28,6 +28,7 @@ extern const int32_t vpu_vec_0x80000000[8];
 extern const int32_t vpu_vec_0x7FFFFFFF[8];
 
 extern const int16_t vpu_vec_0x0001[16];
+extern const int16_t vpu_vec_0x0002[16];
 extern const int16_t vpu_vec_0x0010[16];
 extern const int16_t vpu_vec_0x4000[16];
 extern const int16_t vpu_vec_neg_0x4000[16];

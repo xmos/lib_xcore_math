@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #if defined(__XS3A__)
 #ifndef XS3_MATH_NO_ASM
@@ -11,24 +11,14 @@
 .issue_mode dual
 .align 4
 
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
-  #define NSTACKWORDS     (8)
-#else
-  #define NSTACKWORDS     (0)
-#endif
+#define NSTACKWORDS     (8)
 
-
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
-  #define STACK_TMP_VEC       (NSTACKWORDS-8)
-#endif
+#define STACK_TMP_VEC       (NSTACKWORDS-8)
 
 #define a           r0
 #define b           r1
 #define len         r2
 #define tail        r3
-
-
-
 
 
 
@@ -44,15 +34,9 @@ headroom_t xs3_vect_s16_rect(
 xs3_vect_s16_rect:
         dualentsp NSTACKWORDS
         ldc r11, 0x0100
-
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
     {   shl tail, len, SIZEOF_LOG2_S16          ;   shr len, len, EPV_LOG2_S16              }
     {   zext tail, 5                            ;   vsetc r11                               }
     {                                           ;   bu .L_apply_op                          }
-#else //XS3_MATH_VECTOR_TAIL_SUPPORT
-    {   shr len, len, EPV_LOG2_S16              ;   vsetc r11                               }
-    {                                           ;   bu .L_apply_op                          }
-#endif //XS3_MATH_VECTOR_TAIL_SUPPORT
 
 .L_func_end_s16:
 .cc_bottom xs3_vect_s16_rect.function
@@ -70,16 +54,10 @@ headroom_t xs3_vect_s32_rect(
 .cc_top xs3_vect_s32_rect.function,xs3_vect_s32_rect
 
 xs3_vect_s32_rect:
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
         dualentsp NSTACKWORDS
     {   ldc r11, 0                              ;   shl tail, len, SIZEOF_LOG2_S32          }
     {   shr len, len, EPV_LOG2_S32              ;   vsetc r11                               }
     {   zext tail, 5                            ;   bu .L_apply_op                          }
-#else //XS3_MATH_VECTOR_TAIL_SUPPORT
-    {   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
-    {   shr len, len, EPV_LOG2_S32              ;   vsetc r11                               }
-    {                                           ;   bu .L_apply_op                          }
-#endif //XS3_MATH_VECTOR_TAIL_SUPPORT
 
 .L_func_end_s32:
 .cc_bottom xs3_vect_s32_rect.function
@@ -110,9 +88,7 @@ xs3_vect_s32_rect:
 
 .L_apply_op:
 
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
     {   mkmsk tail, tail                        ;                                           }
-#endif //XS3_MATH_VECTOR_TAIL_SUPPORT
     {   mov r11, b                              ;   bf loop_count, .L_loop_bot              }
     {   ldc r1, 32                              ;   bu .L_loop_top                          }
 .align 16
@@ -123,8 +99,6 @@ xs3_vect_s32_rect:
         {                                           ;   bt loop_count, .L_loop_top              }
 .L_loop_bot:
 
-#if XS3_MATH_VECTOR_TAIL_SUPPORT
-
     {                                           ;   bf tail, .L_finish                      }
     {                                           ;   vclrdr                                  }
     {   ldaw r11, sp[STACK_TMP_VEC]             ;   vldr r11[0]                             }
@@ -134,8 +108,6 @@ xs3_vect_s32_rect:
     {                                           ;   vldr r11[0]                             }
     {                                           ;   vstr r11[0]                             }
         vstrpv a[0], tail
-
-#endif //XS3_MATH_VECTOR_TAIL_SUPPORT
 
 .L_finish:
     {   ldc r0, 32                              ;   vgetc r11                               }

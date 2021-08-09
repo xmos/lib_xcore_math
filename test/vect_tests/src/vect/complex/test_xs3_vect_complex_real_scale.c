@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -14,32 +14,33 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
 
-static unsigned seed = 2314567;
+TEST_GROUP_RUNNER(xs3_vect_complex_real_scale) {
+  RUN_TEST_CASE(xs3_vect_complex_real_scale, xs3_vect_s16_scale_prepare);
+  RUN_TEST_CASE(xs3_vect_complex_real_scale, xs3_vect_complex_s16_real_scale);
+  RUN_TEST_CASE(xs3_vect_complex_real_scale, xs3_vect_complex_s32_real_scale);
+}
+
+TEST_GROUP(xs3_vect_complex_real_scale);
+TEST_SETUP(xs3_vect_complex_real_scale) {}
+TEST_TEAR_DOWN(xs3_vect_complex_real_scale) {}
 
 
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
-#define REPS        1000
+#define REPS        200
 #define MAX_LEN     256
 
 
-
-static void test_xs3_vect_s16_scale_prepare()
+TEST(xs3_vect_complex_real_scale, xs3_vect_s16_scale_prepare)
 {
-    PRINTF("%s...\n", __func__);
+    
 
-    seed = 0x0E538276;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
         
         exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 15);
@@ -55,7 +56,7 @@ static void test_xs3_vect_s16_scale_prepare()
         exponent_t a_exp;
         right_shift_t sat;
 
-        xs3_vect_s16_scale_prepare(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_complex_s16_real_scale_prepare(&a_exp, &sat, b_exp, c_exp, b_hr, c_hr);
 
         xs3_vect_complex_s16_real_scale(&A_re, &A_im, &B_re, &B_im, C, 1, sat);
 
@@ -80,14 +81,11 @@ static void test_xs3_vect_s16_scale_prepare()
 }
 
 
-
-
-
-
-static void test_xs3_vect_complex_s16_real_scale()
+TEST(xs3_vect_complex_real_scale, xs3_vect_complex_s16_real_scale)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 0xAD24398D;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
     
     struct { 
         int16_t real[MAX_LEN]; 
@@ -98,7 +96,7 @@ static void test_xs3_vect_complex_s16_real_scale()
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
 
@@ -171,15 +169,12 @@ static void test_xs3_vect_complex_s16_real_scale()
 }
 
 
-
-
-
-
-static void test_xs3_vect_complex_s32_real_scale()
+TEST(xs3_vect_complex_real_scale, xs3_vect_complex_s32_real_scale)
 {
-    PRINTF("%s...\n", __func__);
+    
 
-    seed = 0xB9A64595;
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     complex_s32_t A[MAX_LEN];
     complex_s32_t B[MAX_LEN];
@@ -192,7 +187,7 @@ static void test_xs3_vect_complex_s32_real_scale()
     complex_s32_t expA[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -206,7 +201,7 @@ static void test_xs3_vect_complex_s32_real_scale()
 
         right_shift_t b_shr, c_shr;
         exponent_t a_exp;
-        xs3_vect_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        xs3_vect_complex_s32_real_scale_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         for(int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> b_hr;
@@ -229,16 +224,3 @@ static void test_xs3_vect_complex_s32_real_scale()
     }
 }
 
-
-
-
-
-void test_xs3_scalar_mul_vect_complex()
-{
-    SET_TEST_FILE();
-    
-    RUN_TEST(test_xs3_vect_s16_scale_prepare);
-    RUN_TEST(test_xs3_vect_complex_s16_real_scale);
-    RUN_TEST(test_xs3_vect_complex_s32_real_scale);
-
-}

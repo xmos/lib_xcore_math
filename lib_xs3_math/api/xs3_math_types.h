@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
 
@@ -7,8 +7,32 @@
 
 #include "xs3_api.h"
 
+
+
+/**
+ * @page page_xs3_math_types_h  xs3_math_types.h
+ * 
+ * This header contains definitions for most of the library-defined types which are used
+ * throughout this API.  Several other types (such as those used for filtering) are defined
+ * locally if they're only used within a single header.
+ * 
+ * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
+ * 
+ * @ingroup xs3_math_header_file
+ */
+
+
+
+/**
+ * @defgroup type_scalar  lib_xs3_math Scalar Types
+ * @defgroup type_bfp     lib_xs3_math Block Floating-Point Types
+ * @defgroup type_misc    lib_xs3_math Misc Types
+ */
+
 /** 
  * @brief A complex number with a 64-bit real part and 64-bit imaginary part.
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
@@ -18,6 +42,8 @@ typedef struct {
 
 /** 
  * @brief A complex number with a 32-bit real part and 32-bit imaginary part.
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
@@ -27,6 +53,8 @@ typedef struct {
 
 /** 
  * @brief A complex number with a 16-bit real part and 16-bit imaginary part.
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
@@ -36,6 +64,8 @@ typedef struct {
 
 /** 
  * @brief A pair of 32-bit samples, associated with channels A and B.
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
@@ -45,6 +75,8 @@ typedef struct {
 
 /** 
  * @brief A pair of 16-bit samples, associated with channels A and B.
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
@@ -60,6 +92,8 @@ typedef struct {
  * block floating-point vector.
  * 
  * For a floating-point value @math{x \cdot 2^p}, @math{p} is the exponent, and may usually be positive or negative.
+ * 
+ * @ingroup type_scalar
  */
 typedef int exponent_t;
 
@@ -68,6 +102,8 @@ typedef int exponent_t;
  * 
  * Represents the headroom of a signed or unsigned integer, complex integer or channel pair, or the headroom of the 
  * mantissa array of a block floating-point vector.
+ * 
+ * @ingroup type_scalar
  */
 typedef unsigned headroom_t;
 
@@ -78,6 +114,8 @@ typedef unsigned headroom_t;
  * negative values represent leftward bit-shifts.
  * 
  * @see left_shift_t
+ * 
+ * @ingroup type_scalar
  */
 typedef int right_shift_t;
 
@@ -88,6 +126,8 @@ typedef int right_shift_t;
  * negative values represent rightward bit-shifts.
  * 
  * @see right_shift_t
+ * 
+ * @ingroup type_scalar
  */
 typedef int left_shift_t;
 
@@ -107,6 +147,8 @@ typedef int left_shift_t;
  *      return ldexpf(x.mant, x.exp);
  *  }
  * @endcode
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
@@ -128,6 +170,8 @@ typedef struct {
  *      return ldexpf(x.mant, x.exp);
  *  }
  * @endcode
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
@@ -149,6 +193,8 @@ typedef struct {
  *      return ldexp(x.mant, x.exp);
  *  }
  * @endcode
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
@@ -162,6 +208,8 @@ typedef struct {
  * Represents a (non-standard) complex floating-point value given by @math{ A + j\cdot B \cdot 2^{x} }, where @math{A} 
  * is `mant.re`, the 16-bit real part of the mantissa, @math{B} is `mant.im`, the 16-bit imaginary part of the mantissa,
  * and @math{x} is the exponent `exp`.
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
@@ -175,6 +223,8 @@ typedef struct {
  * Represents a (non-standard) complex floating-point value given by @math{ A + j\cdot B \cdot 2^{x} }, where @math{A} 
  * is `mant.re`, the 32-bit real part of the mantissa, @math{B} is `mant.im`, the 32-bit imaginary part of the mantissa,
  * and @math{x} is the exponent `exp`.
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
@@ -188,12 +238,43 @@ typedef struct {
  * Represents a (non-standard) complex floating-point value given by @math{ A + j\cdot B \cdot 2^{x} }, where @math{A} 
  * is `mant.re`, the 64-bit real part of the mantissa, @math{B} is `mant.im`, the 64-bit imaginary part of the mantissa,
  * and @math{x} is the exponent `exp`.
+ * 
+ * @ingroup type_scalar
  */
 C_TYPE
 typedef struct {
     complex_s64_t mant; ///< complex 64-bit mantissa
     exponent_t exp;     ///< exponent
 } float_complex_s64_t;
+
+
+C_TYPE
+/**
+ * @brief (Opaque) Flags field for BFP vectors.
+ * 
+ * @warning Users should not manually modify fields of this type, as it is intended to be opaque.
+ * 
+ * @ingroup type_bfp
+ */
+typedef enum {
+  /** 
+   * Indicates that BFP vector's mantissa buffer(s) were allocated dynamically 
+   * 
+   * This flag lets the bfp_*_dealloc() functions know whether the mantissa vector must
+   * be free()ed.
+  */
+  BFP_FLAG_DYNAMIC  =  (1 << 0),
+
+  /** 
+   * (bfp_complex_s32_t only) Indicates that a vector is the spectrum of channel B (the second
+   * channel) when bfp_fft_forward_stereo() is used.
+   * 
+   * Vectors with this flag set will not have their `data` free()ed by bfp_*_dealloc().
+   * 
+   * This is also used as a safety check when `bfp_fft_inverse_stereo()` is used.
+   */
+  BFP_FLAG_CHAN_B   =  (1 << 1),
+} bfp_flags_e;
 
 
 /**
@@ -207,6 +288,8 @@ typedef struct {
  * 
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
+ * 
+ * @ingroup type_bfp
  */
 //! [bfp_s32_t]
 C_TYPE
@@ -219,6 +302,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_s32_t;
 //! [bfp_s32_t]
 
@@ -236,6 +321,8 @@ typedef struct {
  * 
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
+ * 
+ * @ingroup type_bfp
  */
 //! [bfp_s16_t]
 C_TYPE
@@ -248,6 +335,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_s16_t;
 //! [bfp_s16_t]
 
@@ -263,6 +352,8 @@ typedef struct {
  * 
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
+ * 
+ * @ingroup type_bfp
  */
 //! [bfp_complex_s32_t]
 C_TYPE
@@ -275,6 +366,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_complex_s32_t;
 //! [bfp_complex_s32_t]
 
@@ -290,6 +383,8 @@ typedef struct {
  * 
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
+ * 
+ * @ingroup type_bfp
  */
 //! [bfp_complex_s16_t]
 C_TYPE
@@ -304,6 +399,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_complex_s16_t;
 //! [bfp_complex_s16_t]
 
@@ -323,6 +420,8 @@ typedef struct {
  * 
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
+ * 
+ * @ingroup type_bfp
  */
 //! [bfp_ch_pair_s32_t]
 C_TYPE
@@ -335,6 +434,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_ch_pair_s32_t;
 //! [bfp_ch_pair_s32_t]
 
@@ -354,6 +455,8 @@ typedef struct {
  * 
  * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
  * minimize precision loss as elements become small.
+ * 
+ * @ingroup type_bfp
  */
 //! [bfp_ch_pair_s16_t]
 C_TYPE
@@ -366,6 +469,8 @@ typedef struct {
     headroom_t hr;
     /** Current size of ``data[]``, expressed in elements */
     unsigned length;
+    /** BFP vector flags. Users should not normally modify these manually. */
+    bfp_flags_e flags;
 } bfp_ch_pair_s16_t;
 //! [bfp_ch_pair_s16_t]
 
@@ -375,6 +480,8 @@ typedef struct {
 
 /**
  * @brief A complex number with a single-precision floating-point real part and a single-precision floating-point imaginary part.
+ * 
+ * @ingroup type_misc
  */
 C_TYPE
 typedef struct {
@@ -384,6 +491,8 @@ typedef struct {
 
 /**
  * @brief A complex number with a double-precision floating-point real part and a double-precision floating-point imaginary part.
+ * 
+ * @ingroup type_misc
  */
 C_TYPE
 typedef struct {
@@ -393,6 +502,8 @@ typedef struct {
 
 /**
  * @brief A pair of single-precision floating-point samples, associated with channels A and B.
+ * 
+ * @ingroup type_misc
  */
 C_TYPE
 typedef struct {
@@ -402,9 +513,30 @@ typedef struct {
 
 /**
  * @brief A pair of double-precision floating-point samples, associated with channels A and B.
+ * 
+ * @ingroup type_misc
  */
 C_TYPE
 typedef struct {
     double ch_a;    ///< Channel A
     double ch_b;    ///< Channel B
 } ch_pair_double_t;
+
+/**
+ * @brief Holds a set of sixteen 32-bit accumulators in the XS3 VPU's internal format.
+ * 
+ * The XS3 VPU stores 32-bit accumulators with the most significant 16-bits stored in one 256-bit vector register (called vD),
+ * and the least significant 16-bit stored in another 256-bit register (called vR). This struct reflects that internal format,
+ * and is occasionally used to store intermediate results.
+ * 
+ * @note `vR` is unsigned. This reflects the fact that a signed 16-bit integer `0xSTUVWXYZ` is always exactly 
+ * `0x0000WXYZ` larger than `0xSTUV0000`.  To combine the upper and lower 16-bits of an accumulator, use 
+ * `(((int32_t)vD[k]) << 16) + vR[k]`.
+ * 
+ * @ingroup type_misc
+ */
+C_TYPE
+typedef struct {
+  int16_t vD[16];   ///< Most significant 16 bits of accumulators
+  uint16_t vR[16];  ///< Least significant 16 bits of accumulators
+} xs3_split_acc_s32_t;

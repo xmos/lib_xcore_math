@@ -31,11 +31,8 @@ Repository Structure
 Requirements
 ------------
 
-* xTIMEcomposer tools version 15.0.1 or later
-* The XMOS fork of the Unity unit test framework (for building unit tests)
-
-  * This is included as a sub-module when cloning this repository
-
+* xTIMEcomposer tools version 15.0.6 or later
+* CMake (for building the library and unit tests)
 * GNU Make (for building the libary and unit tests)
 * Doxygen (for building documentation)
 * Python 3 (for running source generation scripts, if necessary)
@@ -98,35 +95,38 @@ Getting and Building
 Clone the Repository
 --------------------
 
-To clone this repository and its submodules (Unity repo required for unit tests) use the following: ::
+To clone this repository you may use the following: ::
 
-    git clone --recurse-submodules git@github.com:xmos/lib_xs3_math 
+    git clone git@github.com:xmos/lib_xs3_math 
 
 
 Including lib_xs3_math in External Applications
 -----------------------------------------------
 
-``lib_xs3_math`` is intended to be compiled into a static library which is linked into your own application. Once the repository and its submodules have been cloned, ``make build`` can be run from the root of the cloned directory to build the ``lib_xs3_math`` static library and all unit tests.
+``lib_xs3_math`` may be included in your own applications either as source to be compiled by your application or as a static library to be linked into your own application. This library uses CMake to manage build configurations. To configure your CMake build environment for ``lib_xs3_math``, from the root of the cloned repository, the following command may be used (ensure that the XTC build tools are on your path): ::
 
-To build documentation, ``make docs`` can be run from that same directory.
+    mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_toolchain.cmake -G"Unix Makefiles" ..
 
-To use ``lib_xs3_math`` in your own xCore application, the static library ``lib_xs3_math.a`` (found at ``lib_xs3_math/lib/xcore/``) can then be linked into your application. The ``lib_xs3_math.a`` found at ``lib_xs3_math/lib/ref/`` uses the un-optimized implementations of the low-level functions. `/lib_xs3_math/api/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/>`_ should be added as an include directory to your own project.
+Then to actually build the the library as a static binary, as well as the unit tests, just use the ``make`` command from the `build` directory.
+
+If you wish to include ``lib_xs3_math`` in your own application as a static library, the generated ``lib_xs3_math.a`` can then be linked into your own application. Be sure to also add ``lib_xs3_math/api`` as an include directory for your project.
+
+To incorporate ``lib_xs3_math`` into your own CMake project, you have two options. You can either add ``/lib_xs3_math`` as a CMake subdirectory (via ``add_subdirectory()``), which will include it as a static library. Or, to include it as a source library you can include ``/lib_xs3_math/lib_xs3_math.cmake`` in your application's CMake project, which will populate various CMake variables (prepended with ``LIB_XS3_MATH_``) with the source files, include directories and build flags required. See ``/lib_xs3_math/lib_xs3_math.cmake`` for the specific variables.
+
+For other build systems
+
+* Add ``lib_xs3_math/api`` as an include directory
+* Add all .c files in ``lib_xs3_math/src/vect`` and ``lib_xs3_math/src/bfp`` as source files
+* Add all .S files in ``lib_xs3_math/src/arch/xcore`` as source files
+
+  * These are assembly files and should be compiled with ``xcc`` as are the C files.
 
 Then, from your source files, include ``bfp_math.h`` for the BFP API, or ``xs3_math.h`` for the low-level API only.
-
-To include ``lib_xs3_math`` in your application
-
-* add `/lib_xs3_math/api/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/>`_ as an include directory.
-* add the ``.c`` and ``.S`` files in `/lib_xs3_math/src <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math>`_ to your source.
-
-Some build-time configuration of the library is possible by using certain global defines. See `xs3_math_conf.h <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/api/xs3_math_conf.h>`_ and its associated documentation for more information. 
-
-If you prefer to use your own build system to build ``lib_xs3_math``, include all source files in `/lib_xs3_math/src/vect/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/vect/>`_ and `/lib_xs3_math/src/bfp/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/bfp/>`_, and all source files in *one subdirectory* of `/lib_xs3_math/src/arch/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/arch/>`_. If prototyping an algorithm on a host system, rather than on xCore, use `/lib_xs3_math/src/arch/ref/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/arch/ref/>`_, otherwise `/lib_xs3_math/src/arch/xcore/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/arch/xcore/>`_ should be compiled.
 
 Unit Tests
 ----------
 
-This project uses GNU Make to build the unit test applications. Both unit test projects currently target the xCORE.ai explorer board. All unit tests are currently in the `/test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/>`_ directory:
+This project uses CMake to build the unit test applications. Use the steps described above to configure and build the unit test applications. Both unit test projects currently target the xCORE.ai explorer board. All unit tests are currently in the `/test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/>`_ directory:
 
 * `/test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/>`_ - Unit test projects for ``lib_xs3_math``.
 
@@ -139,29 +139,17 @@ Low-level Unit Tests
 
 This application runs unit tests for the various 16- and 32-bit low-level vectorized arithmetic functions. This application is located at `/test/vect_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/vect_tests>`_.
 
-Move to test directory:
+To execute the low-level arithmetic unit tests on the explorer board, from your CMake build directory use the following (after ensuring that the hardware is connected and drivers properly installed):
 
 ::
 
-    cd test/vect_tests
+    xrun --xscope test/vect_tests/vect_tests.xe
 
-Build the unit test application:
-
-::
-
-    make all
-
-To run the unit tests on the explorer board (after ensuring that the hardware is connected and drivers properly installed):
+Or, to run the unit tests in the software simulator:
 
 ::
 
-    xrun --xscope bin/xcore/vect_tests.xcore.xe
-
-To run the unit tests in the software simulator:
-
-::
-
-    xsim bin/xcore/vect_tests.xcore.xe
+    xsim test/vect_tests/vect_tests.xe
 
 Note that running the unit tests in the simulator may be *very* slow.
 
@@ -170,31 +158,11 @@ BFP Unit Tests
 
 This application runs unit tests for the various 16- and 32-bit BFP vectorized arithmetic functions. This application is located at `/test/bfp_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/bfp_tests>`_.
 
-Move to test directory:
+As with ``vect_tests``, the ``bfp_tests`` unit test application can be run with:
 
 ::
 
-    cd test/bfp_tests
-
-Build the unit test application:
-
-::
-
-    make all
-
-To run the unit tests on the explorer board (after ensuring that the hardware is connected and drivers properly installed):
-
-::
-
-    xrun --xscope bin/xcore/bfp_tests.xcore.xe
-
-To run the unit tests in the software simulator:
-
-::
-
-    xsim bin/xcore/bfp_tests.xcore.xe
-
-Note that running the unit tests in the simulator may be *very* slow.
+    xrun --xscope test/bfp_tests/bfp_tests.xe
 
 
 FFT Unit Tests
@@ -202,31 +170,23 @@ FFT Unit Tests
 
 This application runs all FFT-related unit tests. This application is located at `/test/fft_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/fft_tests>`_.
 
-Move to test directory:
+As with ``vect_tests``, the ``fft_tests`` unit test application can be run with:
 
 ::
 
-    cd test/fft_tests
+    xrun --xscope test/fft_tests/fft_tests.xe
 
-Build the unit test application:
 
-::
+Filter Unit Tests
+*****************
 
-    make all
+This application runs unit tests for 16- and 32-bit FIR filters and 32-bit Biquad filters. This application is located at `/test/filter_tests/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/filter_tests>`_.
 
-To run the FFT unit tests on the explorer board (after ensuring that the hardware is connected and drivers properly installed):
-
-::
-
-    xrun --xscope bin/xcore/fft_tests.xcore.xe
-
-To run the unit tests in the software simulator:
+As with ``vect_tests``, the ``filter_tests`` unit test application can be run with:
 
 ::
 
-    xsim bin/xcore/fft_tests.xcore.xe
-
-Note that running the unit tests in the simulator may be *very* slow.
+    xrun --xscope test/filter_tests/filter_tests.xe
 
 
 Building Documentation
@@ -236,9 +196,7 @@ This project currently uses Doxygen for library and API documentation. API funct
 
  To build the stand-alone documentation as HTML a Doxygen install will be required. The documentation has been written against Doxygen version 1.8; your mileage may vary with other versions.
 
-With Doxygen on your path, the documentation can be built by invoking the ``docs`` Make target from any directory containing a ``Makefile``.
-
-Alternatively, the documentaiton can be built by calling ``doxygen`` from within the `/lib_xs3_math/doc/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/doc/>`_ directory.
+With Doxygen on your path, the documentation can be built by calling ``doxygen`` from within the `/lib_xs3_math/doc/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/doc/>`_ directory.
 
 The documentation will be generated within the ``/lib_xs3_math/doc/build/`` directory. To view the HTML version of the documentation, open ``/lib_xs3_math/doc/build/html/index.html`` in a browser.
 

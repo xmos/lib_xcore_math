@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdio.h>
@@ -7,24 +7,6 @@
 #include "xs3_math.h"
 
 
-
-
-////////////////////////////////////////
-//  Shared params (16- and 32-bit)    //
-////////////////////////////////////////
-
-
-void xs3_vect_complex_mag_prepare(
-    exponent_t* a_exp,
-    right_shift_t* b_shr,
-    const exponent_t b_exp,
-    const headroom_t b_hr)
-{
-    // Needs 1 bit of headroom. For 16 bits, consider that complex mantissa values near (INT16_MAX + INT16_MAX*j) can't 
-    // be rotated to the real axis without going beyond the range of a 16-bit integer.
-    *b_shr = 1-(int)b_hr;
-    *a_exp = b_exp + *b_shr;
-}
 
 
 ////////////////////////////////////////
@@ -270,6 +252,18 @@ void xs3_vect_complex_s32_macc_prepare(
     // p_shr needs to be split between b_shr and c_shr. (it can't be negative)
     *b_shr += (p_shr>>1);
     *c_shr += p_shr - (p_shr>>1);
+}
+
+void xs3_vect_complex_s32_mag_prepare(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    const exponent_t b_exp,
+    const headroom_t b_hr)
+{
+    // Needs 1 bit of headroom. For 16 bits, consider that complex mantissa values near (INT16_MAX + INT16_MAX*j) can't 
+    // be rotated to the real axis without going beyond the range of a 16-bit integer.
+    *b_shr = 1-(int)b_hr;
+    *a_exp = b_exp + *b_shr;
 }
 
 

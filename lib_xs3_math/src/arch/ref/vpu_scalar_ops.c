@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdio.h>
 
@@ -48,9 +48,10 @@ int8_t vlashr8(
     const int8_t x,
     const right_shift_t shr)
 {
-    if((shr <= -8) && (x != 0) )    return (x >= 0)? VPU_INT8_MAX : VPU_INT8_MIN;
-    else if(shr < 0)                return SAT(8)(((int32_t)x) << (-shr));
-    else                            return SAT(8)(x >> shr);
+    if(shr >= 8)                        return (x >= 0)? 0 : -1;
+    else if((shr <= -8) && (x != 0) )   return (x >= 0)? VPU_INT8_MAX : VPU_INT8_MIN;
+    else if(shr < 0)                    return SAT(8)(((int32_t)x) << (-shr));
+    else                                return SAT(8)(x >> shr);
 }
 
 
@@ -148,9 +149,10 @@ int16_t vlashr16(
     const int16_t x,
     const right_shift_t shr)
 {
-    if((shr <= -16) && (x != 0) )   return (x >= 0)? VPU_INT16_MAX : VPU_INT16_MIN;
-    else if(shr < 0)                return SAT(16)(((int32_t)x) << (-shr));
-    else                            return SAT(16)(x >> shr);
+    if(shr >= 16)                       return (x >= 0)? 0 : -1;
+    else if((shr <= -16) && (x != 0) )  return (x >= 0)? VPU_INT16_MAX : VPU_INT16_MIN;
+    else if(shr < 0)                    return SAT(16)(((int32_t)x) << (-shr));
+    else                                return SAT(16)(x >> shr);
 }
 
 
@@ -269,9 +271,10 @@ int32_t vlashr32(
     const int32_t x,
     const right_shift_t shr)
 {
-    if((shr <= -32) && (x != 0) )   return (x >= 0)? VPU_INT32_MAX : VPU_INT32_MIN;
-    else if(shr < 0)                return SAT(32)(((int64_t)x) << (-shr));
-    else                            return SAT(32)(x >> shr);
+    if(shr >= 32)                       return (x >= 0)? 0 : -1;
+    else if((shr <= -32) && (x != 0) )  return (x >= 0)? VPU_INT32_MAX : VPU_INT32_MIN;
+    else if(shr < 0)                    return SAT(32)(((int64_t)x) << (-shr));
+    else                                return SAT(32)(x >> shr);
 }
 
 

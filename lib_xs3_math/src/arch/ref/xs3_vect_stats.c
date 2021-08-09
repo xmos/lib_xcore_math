@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdio.h>
@@ -121,8 +121,11 @@ int32_t xs3_vect_s16_abs_sum(
 
     for(int k = 0; k < length; k++){
         const int j = k % VPU_INT16_ACC_PERIOD;
-        int16_t B = vlmul16(b[k], vsign16(b[k]));
-        acc[j] = vlmacc16(acc[j], B, 1);
+
+        acc[j] = vlmacc16(acc[j], -1, b[k]);
+
+        int16_t tmp = vpos16(b[k]);
+        acc[j] = vlmacc16(acc[j], 2, tmp);
     }
 
     return vadddr16(acc);

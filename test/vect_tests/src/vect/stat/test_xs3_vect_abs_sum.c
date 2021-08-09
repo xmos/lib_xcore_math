@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -12,9 +12,21 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 2314567;
+
+TEST_GROUP_RUNNER(xs3_vect_abs_sum) {
+  RUN_TEST_CASE(xs3_vect_abs_sum, xs3_vect_s16_abs_sum_basic);
+  RUN_TEST_CASE(xs3_vect_abs_sum, xs3_vect_s16_abs_sum_random);
+  RUN_TEST_CASE(xs3_vect_abs_sum, xs3_vect_s32_abs_sum_basic);
+  RUN_TEST_CASE(xs3_vect_abs_sum, xs3_vect_s32_abs_sum_random);
+}
+
+TEST_GROUP(xs3_vect_abs_sum);
+TEST_SETUP(xs3_vect_abs_sum) {}
+TEST_TEAR_DOWN(xs3_vect_abs_sum) {}
+
+
 static char msg_buff[200];
 
 
@@ -24,15 +36,10 @@ static char msg_buff[200];
       TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
     }} while(0)
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
-
-void test_xs3_vect_s16_abs_sum_basic()
+TEST(xs3_vect_abs_sum, xs3_vect_s16_abs_sum_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         int16_t b;
@@ -54,7 +61,7 @@ void test_xs3_vect_s16_abs_sum_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -65,7 +72,6 @@ void test_xs3_vect_s16_abs_sum_basic()
 
         for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
             unsigned len = lengths[l];
-            PRINTF("\tlength %u..\n", len);
 
             for(int i = 0; i < len; i++){
                 B[i] = casse->b;
@@ -73,23 +79,28 @@ void test_xs3_vect_s16_abs_sum_basic()
 
             result = xs3_vect_s16_abs_sum(B, len);
 
-            int16_t t = casse->b;
+            int32_t t = casse->b;
             t = (t>=0)? t : -t;
-            t = (t>=0)? t : 0x7FFF; // because -1*(-0x8000) = -0x8000
+            // t = (t>=0)? t : 0x7FFF; // because -1*(-0x8000) = -0x8000
             int32_t exp = t * len;
 
-            TEST_ASSERT_EQUAL_MSG(exp, result, casse->line);
+            XTEST_ASSERT_S32_EQUAL(exp, result,
+                "Case @ line %u\n"
+                "length: %u\n",
+                casse->line, len);
         }
     }
 }
 
 
 #define MAX_LEN     200
-#define REPS        (100)
-void test_xs3_vect_s16_abs_sum_random()
+#define REPS        (1000)
+
+TEST(xs3_vect_abs_sum, xs3_vect_s16_abs_sum_random)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 343446;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int32_t result;
     int16_t B[MAX_LEN];
@@ -97,7 +108,7 @@ void test_xs3_vect_s16_abs_sum_random()
     for(int v = 0; v < REPS; v++){
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
-        PRINTF("\trepetition %d.. (seed: 0x%08X; len: %u)\n", v, seed, len);
+        setExtraInfo_RSL(v, seed, len);
 
         
         for(int i = 0; i < len; i++){
@@ -113,18 +124,16 @@ void test_xs3_vect_s16_abs_sum_random()
             exp += b;
         }
 
-        TEST_ASSERT_EQUAL(exp, result);
-        
+        TEST_ASSERT_EQUAL_MESSAGE(exp, result, "");
     }
 }
 #undef MAX_LEN
 #undef REPS
 
 
-
-void test_xs3_vect_s32_abs_sum_basic()
+TEST(xs3_vect_abs_sum, xs3_vect_s32_abs_sum_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         int32_t b;
@@ -146,7 +155,7 @@ void test_xs3_vect_s32_abs_sum_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -157,7 +166,6 @@ void test_xs3_vect_s32_abs_sum_basic()
 
         for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
             unsigned len = lengths[l];
-            PRINTF("\tlength %u..\n", len);
 
             for(int i = 0; i < len; i++){
                 B[i] = casse->b;
@@ -179,13 +187,14 @@ void test_xs3_vect_s32_abs_sum_basic()
 }
 
 
-
 #define MAX_LEN     200
 #define REPS        (100)
-void test_xs3_vect_s32_abs_sum_random()
+
+TEST(xs3_vect_abs_sum, xs3_vect_s32_abs_sum_random)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 346332123;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int64_t result;
     int32_t B[MAX_LEN];
@@ -195,7 +204,7 @@ void test_xs3_vect_s32_abs_sum_random()
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         // len = 9;
 
-        PRINTF("\trepetition %d.. (seed: 0x%08X; len: %u)\n", v, seed, len);
+        setExtraInfo_RSL(v, seed, len);
 
         for(int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed);
@@ -203,29 +212,18 @@ void test_xs3_vect_s32_abs_sum_random()
 
         result = xs3_vect_s32_abs_sum(B, len);
 
-        int32_t exp = 0;
+        int64_t exp = 0;
         for(int i = 0; i < len; i++){
             int64_t b = B[i];
             b = (b>=0)? b : -b;
             exp += b;
         }
 
-        TEST_ASSERT_EQUAL(exp, result);
+        XTEST_ASSERT_S64_EQUAL(exp, result, 
+            "length: %u", len);
         
     }
 }
 #undef MAX_LEN
 #undef REPS
 
-
-
-void test_xs3_abs_sum()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_s16_abs_sum_basic);
-    RUN_TEST(test_xs3_vect_s16_abs_sum_random);
-
-    RUN_TEST(test_xs3_vect_s32_abs_sum_basic);
-    RUN_TEST(test_xs3_vect_s32_abs_sum_random);
-}

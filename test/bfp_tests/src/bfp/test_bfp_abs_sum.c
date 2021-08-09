@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -11,26 +11,28 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
+
+TEST_GROUP_RUNNER(bfp_abs_sum) {
+  RUN_TEST_CASE(bfp_abs_sum, bfp_s16_abs_sum);
+  RUN_TEST_CASE(bfp_abs_sum, bfp_s32_abs_sum);
+}
+
+TEST_GROUP(bfp_abs_sum);
+TEST_SETUP(bfp_abs_sum) {}
+TEST_TEAR_DOWN(bfp_abs_sum) {}
 
 
 #define REPS        1000
 #define MAX_LEN     1024 
 
 
-static unsigned seed = 666;
-
-
-static void test_bfp_s16_abs_sum()
+TEST(bfp_abs_sum, bfp_s16_abs_sum)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 67765974;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataB[MAX_LEN];
     bfp_s16_t B;
@@ -38,7 +40,7 @@ static void test_bfp_s16_abs_sum()
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -100, 100);
@@ -64,11 +66,11 @@ static void test_bfp_s16_abs_sum()
     }
 }
 
-static void test_bfp_s32_abs_sum()
+TEST(bfp_abs_sum, bfp_s32_abs_sum)
 {
-    PRINTF("%s...\t(random vectors)\n", __func__);
 
-    seed = 8789;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataB[MAX_LEN];
     bfp_s32_t B;
@@ -76,7 +78,7 @@ static void test_bfp_s32_abs_sum()
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -100, 100);
@@ -100,14 +102,4 @@ static void test_bfp_s32_abs_sum()
         TEST_ASSERT_EQUAL(expected.exp, result.exp);
         TEST_ASSERT_EQUAL(expected.mant, result.mant);
     }
-}
-
-
-
-
-void test_bfp_abs_sum()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_s16_abs_sum);
-    RUN_TEST(test_bfp_s32_abs_sum);
 }

@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -12,25 +12,26 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 2314567;
+TEST_GROUP_RUNNER(HR_macro) {
+  RUN_TEST_CASE(HR_macro, HR_S16);
+  RUN_TEST_CASE(HR_macro, HR_S32);
+  RUN_TEST_CASE(HR_macro, HR_S64);
+  RUN_TEST_CASE(HR_macro, HR_C16);
+  RUN_TEST_CASE(HR_macro, HR_C32);
+}
 
-
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
+TEST_GROUP(HR_macro);
+TEST_SETUP(HR_macro) {}
+TEST_TEAR_DOWN(HR_macro) {}
 
 
 #define N        1024
 
-
-static void test_HR_S32()
+TEST(HR_macro, HR_S32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 999456;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t numbers[N];
     unsigned actual[N];
@@ -45,11 +46,9 @@ static void test_HR_S32()
     TEST_ASSERT_EQUAL_UINT32_ARRAY(expected, actual, N);
 }
 
-
-static void test_HR_S16()
+TEST(HR_macro, HR_S16)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 2311;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t numbers[N];
     unsigned actual[N];
@@ -65,12 +64,9 @@ static void test_HR_S16()
 }
 
 
-
-
-static void test_HR_C32()
+TEST(HR_macro, HR_C32)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 7889;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s32_t numbers[N];
     unsigned actual[N];
@@ -87,12 +83,9 @@ static void test_HR_C32()
 }
 
 
-
-
-static void test_HR_C16()
+TEST(HR_macro, HR_C16)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 343446;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s16_t numbers[N];
     unsigned actual[N];
@@ -109,13 +102,9 @@ static void test_HR_C16()
 }
 
 
-
-
-
-static void test_HR_S64()
+TEST(HR_macro, HR_S64)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 456456;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
 
     TEST_ASSERT_EQUAL_UINT32(63, HR_S64( 0x0000000000000000LL));
@@ -148,17 +137,4 @@ static void test_HR_S64()
         TEST_ASSERT_EQUAL(numbers[i], numbers2[i]);
         TEST_ASSERT_NOT_EQUAL(numbers[i], numbers3[i]);
     }
-}
-
-
-
-void test_HR_funcs()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_HR_S32);
-    RUN_TEST(test_HR_S16);
-    RUN_TEST(test_HR_C32);
-    RUN_TEST(test_HR_C16);
-    RUN_TEST(test_HR_S64);
 }

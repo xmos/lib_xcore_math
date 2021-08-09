@@ -1,6 +1,26 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.11)
+
+## Disable in-source build.
+if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+    message(FATAL_ERROR "In-source build is not allowed! Please specify a build folder.\n\tex:cmake -B build")
+endif()
 
 project(xmos-lib_xs3_math)
+
+set(BUILD_TESTS    ON CACHE BOOL "Include unit tests as CMake targets." )
+set(BUILD_EXAMPLES ON CACHE BOOL "Include examples as CMake targets."   )
+
+## fetch dependencies
+include(FetchContent)
+
+FetchContent_Declare(
+  unity
+  GIT_REPOSITORY https://github.com/ThrowTheSwitch/Unity.git
+  GIT_TAG        v2.5.2
+  GIT_SHALLOW    TRUE
+  SOURCE_DIR     unity
+)
+FetchContent_Populate(unity)
 
 ## Compile flags for C/C++ for all libs and apps (for all platforms)
 list(APPEND   COMPILE_FLAGS        -Os -g -MMD   )
@@ -28,4 +48,11 @@ add_compile_options( ${COMPILE_FLAGS} )
 ## Add libs and apps
 
 add_subdirectory( lib_xs3_math )
-add_subdirectory( test )
+
+if ( ${BUILD_TESTS} )
+  add_subdirectory( test )
+endif()
+
+if ( ${BUILD_EXAMPLES} )
+  add_subdirectory( example )
+endif()

@@ -11,22 +11,28 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
+
+TEST_GROUP_RUNNER(bfp_complex_macc) {
+  RUN_TEST_CASE(bfp_complex_macc, bfp_complex_s16_macc);
+  RUN_TEST_CASE(bfp_complex_macc, bfp_complex_s16_nmacc);
+  RUN_TEST_CASE(bfp_complex_macc, bfp_complex_s32_macc);
+  RUN_TEST_CASE(bfp_complex_macc, bfp_complex_s32_nmacc);
+}
+
+TEST_GROUP(bfp_complex_macc);
+TEST_SETUP(bfp_complex_macc) {}
+TEST_TEAR_DOWN(bfp_complex_macc) {}
 
 
 #define REPS    1000
 #define LEN     257
 
 
-
-
-
-static void test_bfp_complex_s16_macc()
+TEST(bfp_complex_macc, bfp_complex_s16_macc)
 {
-    printf("%s...\n", __func__);
-
-    unsigned seed = 11234411;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     struct {
       int16_t real[LEN + (LEN%2)];  // LEN%2 is so 'im' stays word-aligned
@@ -49,7 +55,7 @@ static void test_bfp_complex_s16_macc()
     bfp_complex_s16_set(&A, zero, -1024);
 
     for(int r = 0; r < REPS; r++){
-        // PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.exp = 10 + (pseudo_rand_int32(&seed) % 10);
         C.exp = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -90,11 +96,9 @@ static void test_bfp_complex_s16_macc()
 }
 
 
-static void test_bfp_complex_s16_nmacc()
+TEST(bfp_complex_macc, bfp_complex_s16_nmacc)
 {
-    printf("%s...\n", __func__);
-
-    unsigned seed = 11664411;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     struct {
       int16_t real[LEN + (LEN%2)];  // LEN%2 is so 'im' stays word-aligned
@@ -117,7 +121,7 @@ static void test_bfp_complex_s16_nmacc()
     bfp_complex_s16_set(&A, zero, -1024);
 
     for(int r = 0; r < REPS; r++){
-        // PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.exp = 10 + (pseudo_rand_int32(&seed) % 10);
         C.exp = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -158,11 +162,9 @@ static void test_bfp_complex_s16_nmacc()
 }
 
 
-static void test_bfp_complex_s32_macc()
+TEST(bfp_complex_macc, bfp_complex_s32_macc)
 {
-    printf("%s...\n", __func__);
-
-    unsigned seed = 11234413;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s32_t dataA[LEN];
     complex_s32_t dataB[LEN];
@@ -183,7 +185,7 @@ static void test_bfp_complex_s32_macc()
     bfp_complex_s32_set(&A, zero, -1024);
 
     for(int r = 0; r < REPS; r++){
-        // PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.exp = 10 + (pseudo_rand_int32(&seed) % 10);
         C.exp = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -223,11 +225,9 @@ static void test_bfp_complex_s32_macc()
 }
 
 
-static void test_bfp_complex_s32_nmacc()
+TEST(bfp_complex_macc, bfp_complex_s32_nmacc)
 {
-    printf("%s...\n", __func__);
-
-    unsigned seed = 11234413;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s32_t dataA[LEN];
     complex_s32_t dataB[LEN];
@@ -248,7 +248,7 @@ static void test_bfp_complex_s32_nmacc()
     bfp_complex_s32_set(&A, zero, -1024);
 
     for(int r = 0; r < REPS; r++){
-        // PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         B.exp = 10 + (pseudo_rand_int32(&seed) % 10);
         C.exp = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -285,20 +285,4 @@ static void test_bfp_complex_s32_nmacc()
             TEST_ASSERT_INT32_WITHIN(3, expA[i].im, A.data[i].im);
         }
     }
-}
-
-
-
-
-
-void test_bfp_macc_complex()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_complex_s16_macc);
-    RUN_TEST(test_bfp_complex_s16_nmacc);
-
-    RUN_TEST(test_bfp_complex_s32_macc);
-    RUN_TEST(test_bfp_complex_s32_nmacc);
-    
 }

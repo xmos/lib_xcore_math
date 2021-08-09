@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -12,9 +12,20 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-static unsigned seed = 2314567;
+
+TEST_GROUP_RUNNER(xs3_vect_dot) {
+  RUN_TEST_CASE(xs3_vect_dot, xs3_vect_s32_dot_prepare);
+  RUN_TEST_CASE(xs3_vect_dot, xs3_vect_s16_dot);
+  RUN_TEST_CASE(xs3_vect_dot, xs3_vect_s32_dot_basic);
+}
+
+TEST_GROUP(xs3_vect_dot);
+TEST_SETUP(xs3_vect_dot) {}
+TEST_TEAR_DOWN(xs3_vect_dot) {}
+
+
 static char msg_buff[200];
 
 
@@ -24,28 +35,21 @@ static char msg_buff[200];
       TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
     }} while(0)
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
-
-
 
 #define REPS        1000
 #define MAX_LEN     1024
 
 
-
-static void test_xs3_vect_s32_dot_prepare()
+TEST(xs3_vect_dot, xs3_vect_s32_dot_prepare)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 0xEF70DEF9;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int32_t B[MAX_LEN], C[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         const unsigned B_length = pseudo_rand_uint(&seed, 1, MAX_LEN);
 
@@ -69,20 +73,6 @@ static void test_xs3_vect_s32_dot_prepare()
 
         int64_t result = xs3_vect_s32_dot(B, C, B_length, b_shr, c_shr);
 
-        // PRINTF("\t        B_length  = %u\n", B_length);
-        // PRINTF("\t        B_exp = %d\n", B_exp);
-        // PRINTF("\t        C_exp = %d\n", C_exp);
-        // PRINTF("\t        B_hr = %d     (-2^%d)\n", B_hr, 31-B_hr);
-        // PRINTF("\t        C_hr = %d     (-2^%d)\n", C_hr, 31-C_hr);
-        // PRINTF("\t        b_shr = %d\n", b_shr);
-        // PRINTF("\t        c_shr = %d\n", c_shr);
-        // PRINTF("\t            B[0] = %ld   (0x%08lX)\n", B[0], (uint32_t)B[0]);
-        // PRINTF("\t            C[0] = %ld   (0x%08lX)\n", C[0], (uint32_t)C[0]);
-        // PRINTF("\t        A_exp = %d\n", A_exp);
-        // PRINTF("\t            result = %lld    (0x%08llX)     (%e)\n", result, (uint64_t) result, ldexp(result, A_exp));
-        // PRINTF("\t            expected = %e\n", expected);
-
-
         double got = ldexp(result, A_exp);
 
         TEST_ASSERT( fabs((expected-got)/expected) < ldexp(1, -25) );
@@ -92,14 +82,14 @@ static void test_xs3_vect_s32_dot_prepare()
 #undef REPS
 
 
-
-
 #define MAX_LEN     4096
 #define REPS        1000
-static void test_xs3_vect_s16_dot()
+
+TEST(xs3_vect_dot, xs3_vect_s16_dot)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 0x92B7BD9A;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int16_t WORD_ALIGNED B[MAX_LEN];
     int16_t WORD_ALIGNED C[MAX_LEN];
@@ -107,7 +97,7 @@ static void test_xs3_vect_s16_dot()
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition %d.. (seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         const unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -140,11 +130,11 @@ static void test_xs3_vect_s16_dot()
 #undef REPS
 
 
-
 #define MAX_LEN     40
-static void test_xs3_vect_s32_dot_basic()
+
+TEST(xs3_vect_dot, xs3_vect_s32_dot_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         struct{ int32_t b;  int32_t c;  } input;
@@ -185,7 +175,7 @@ static void test_xs3_vect_s32_dot_basic()
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -209,14 +199,3 @@ static void test_xs3_vect_s32_dot_basic()
 }
 #undef MAX_LEN
 
-
-
-
-void test_xs3_dot()
-{
-    SET_TEST_FILE();
-    RUN_TEST(test_xs3_vect_s32_dot_prepare);
-
-    RUN_TEST(test_xs3_vect_s16_dot);
-    RUN_TEST(test_xs3_vect_s32_dot_basic);
-}

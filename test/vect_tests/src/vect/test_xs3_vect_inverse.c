@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -13,32 +13,35 @@
 #include "../tst_common.h"
 #include "xs3_vpu_scalar_ops.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+TEST_GROUP_RUNNER(xs3_vect_inverse) {
+  RUN_TEST_CASE(xs3_vect_inverse, xs3_vect_s16_inverse_prepare);
+  RUN_TEST_CASE(xs3_vect_inverse, xs3_vect_s32_inverse_prepare);
+  RUN_TEST_CASE(xs3_vect_inverse, xs3_vect_s16_inverse);
+  RUN_TEST_CASE(xs3_vect_inverse, xs3_vect_s32_inverse);
+}
 
-static unsigned seed = 2314567;
-
-
-
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
+TEST_GROUP(xs3_vect_inverse);
+TEST_SETUP(xs3_vect_inverse) {}
+TEST_TEAR_DOWN(xs3_vect_inverse) {}
 
 
 #define MAX_LEN     30
 #define REPS        30
 
 
-
 #define LEN  4
-static void test_xs3_vect_s16_inverse_prepare()
+
+
+TEST(xs3_vect_inverse, xs3_vect_s16_inverse_prepare)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 56456;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t hr = pseudo_rand_uint(&seed, 0, 12);
@@ -98,14 +101,16 @@ static void test_xs3_vect_s16_inverse_prepare()
 #undef LEN
 
 #define LEN  4
-static void test_xs3_vect_s32_inverse_prepare()
+
+TEST(xs3_vect_inverse, xs3_vect_s32_inverse_prepare)
 {
-    PRINTF("%s...\n", __func__);
-    seed = 435634;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t hr = pseudo_rand_uint(&seed, 0, 28);
@@ -165,19 +170,19 @@ static void test_xs3_vect_s32_inverse_prepare()
 #undef LEN
 
 
-
-static void test_xs3_vect_s16_inverse()
+TEST(xs3_vect_inverse, xs3_vect_s16_inverse)
 {
 
-    PRINTF("%s...\n", __func__);
-    seed = 0xF80C98BE;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
 
     int16_t B[MAX_LEN];
     int16_t A[MAX_LEN];
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
+        setExtraInfo_RS(v, seed);
 
         const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN-1);
 
@@ -214,21 +219,18 @@ static void test_xs3_vect_s16_inverse()
 }
 
 
-
-static void test_xs3_vect_s32_inverse()
+TEST(xs3_vect_inverse, xs3_vect_s32_inverse)
 {
-
-    PRINTF("%s...\n", __func__);
-    seed = 0xF80C98BE;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t B[MAX_LEN];
     int32_t A[MAX_LEN];
 
 
     for(int v = 0; v < REPS; v++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", v, seed);
-
+        unsigned old_seed = seed;
         const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN-1);
+        setExtraInfo_RSL(v, seed, length);
 
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
@@ -244,6 +246,7 @@ static void test_xs3_vect_s32_inverse()
 
         xs3_vect_s32_inverse_prepare(&a_exp, &scale, B, b_exp, length);
 
+        xs3_vect_s32_inverse(A, B, length, scale);
 
         double expected_flt[MAX_LEN];
 
@@ -257,40 +260,26 @@ static void test_xs3_vect_s32_inverse()
 
         for(int i = 0; i < length; i++){
 
-            // if( abs(expected[i] - A[i]) > 2 ) {
+            if( abs(expected[i] - A[i]) > 2 ) {
 
-            //     printf("i = %d\n", i);
+                printf("i = %d\n", i);
 
-            //     printf("b_exp = %d\n", b_exp);
-            //     printf("scale = %u\n", scale);
-            //     for(int i = 0; i < length; i++)
-            //         printf("  b[%d] = %ld    (0x%08X)\n", i, B[i], (unsigned) B[i] );
+                printf("b_exp = %d\n", b_exp);
+                printf("scale = %u\n", scale);
+                for(int i = 0; i < length; i++)
+                    printf("  b[%d] = %ld    (0x%08X)\n", i, B[i], (unsigned) B[i] );
 
 
-            //     printf("a_exp = %d\n", a_exp);
-            //     for(int i = 0; i < length; i++)
-            //         printf("  a[%d] = %ld    (0x%08X)\n", i, A[i], (unsigned) A[i] );
+                printf("a_exp = %d\n", a_exp);
+                for(int i = 0; i < length; i++)
+                    printf("  a[%d] = %ld    (0x%08X)\n", i, A[i], (unsigned) A[i] );
 
-            // }
+            }
 
-            TEST_ASSERT_INT32_WITHIN(2, expected[i], A[i]);
-
+            TEST_ASSERT_INT32_WITHIN_MESSAGE(2, expected[i], A[i], "");
 
 
         }
     }
 }
 
-
-
-
-void test_xs3_inverse_vect()
-{
-    SET_TEST_FILE();
-    
-    RUN_TEST(test_xs3_vect_s16_inverse_prepare);
-    RUN_TEST(test_xs3_vect_s32_inverse_prepare);
-    RUN_TEST(test_xs3_vect_s16_inverse);
-    RUN_TEST(test_xs3_vect_s32_inverse);
-
-}

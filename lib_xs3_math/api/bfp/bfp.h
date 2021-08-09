@@ -1,21 +1,9 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
 
 #include "xs3_math_types.h"
-
-/**
- * @page bfp_vector_functions16 16-bit BFP Functions
- * 
- * Below is a listing of the block floating-point API functions provided by this library that operate on 16-bit data.
- */
-
-/**
- * @page bfp_vector_functions32 32-bit BFP Functions
- * 
- * Below is a listing of the block floating-point API functions provided by this library that operate on 32-bit data.
- */
 
 
 
@@ -32,6 +20,20 @@
     32-bit:     (-2147483647, 2147483647)
 */
 
+/**
+ * @page page_bfp_h  bfp.h
+ * 
+ * This header contains functions implementing arithmetic operations on 16- and 32-bit block floating-point
+ * vectors.
+ * 
+ * Functions for initializing BFP vectors can be found in @ref page_bfp_init_h.
+ * 
+ * @note This header is included automatically through `bfp_math.h`.
+ * 
+ * @see  `bfp_s16_t`, `bfp_s32_t`
+ * 
+ * @ingroup xs3_math_header_file
+ */
 
 
 /** 
@@ -57,10 +59,12 @@
  * @param   b         BFP vector to get the headroom of
  * 
  * @returns    Headroom of BFP vector `b` 
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 headroom_t bfp_s16_headroom(
-    bfp_s16_t* a);
+    bfp_s16_t* b);
 
 
 /** 
@@ -86,10 +90,12 @@ headroom_t bfp_s16_headroom(
  * @param   b         BFP vector to get the headroom of
  * 
  * @returns    Headroom of BFP vector `b` 
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 headroom_t bfp_s32_headroom(
-    bfp_s32_t* a);
+    bfp_s32_t* b);
 
 
 /** 
@@ -111,17 +117,20 @@ headroom_t bfp_s32_headroom(
  * saturate to the symmetric 16-bit range (@math{-2^{15} \lt \lt 2^{15}}). To avoid saturation, `b_shl` should be no
  * greater than the headroom of `b` (`b->hr`).
  * 
- * @bfp_op{16, @f$
- *      a_k \leftarrow sat_{16}( \lfloor b_k \cdot 2^{b\_shl} \rfloor )     \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}         \\
- *          \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
+ * 
+ * @operation{
+ * &    a_k \leftarrow sat_{16}( \lfloor b_k \cdot 2^{b\_shl} \rfloor )     \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}         \\
+ * &        \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
  *              \bar{B}\text{ and } \bar{A}\text{ respectively}
- * @f$ }
+ * }
  * 
  * @param[out] a        Output BFP vector @vector{A}
  * @param[in]  b        Input BFP vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_shl(
@@ -149,23 +158,25 @@ void bfp_s16_shl(
  * saturate to the symmetric 32-bit range (@math{-2^{31} \lt \lt 2^{31}}). To avoid saturation, `b_shl` should be no
  * greater than the headroom of `b` (`b->hr`).
  * 
- * @bfp_op{32, @f$
- *      a_k \leftarrow sat_{32}( \lfloor b_k \cdot 2^{b\_shl} \rfloor )     \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}         \\
- *          \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
- *              \bar{B}\text{ and } \bar{A}\text{ respectively}
- * @f$ }
+ * @operation{
+ * &     a_k \leftarrow sat_{32}( \lfloor b_k \cdot 2^{b\_shl} \rfloor )     \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)                           \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}         \\
+ * &         \qquad\text{  and } b_k \text{ and } a_k \text{ are the } k\text{th mantissas from } 
+ *               \bar{B}\text{ and } \bar{A}\text{ respectively}
+ * }
  * 
  * @param[out] a        Output BFP vector @vector{A}
  * @param[in]  b        Input BFP vector @vector{B}
  * @param[in]  b_shl    Signed arithmetic left-shift to be applied to mantissas of @vector{B}.
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_shl(
     bfp_s32_t* a,
     const bfp_s32_t* b,
-    const left_shift_t shl);
+    const left_shift_t b_shl);
 
 
 
@@ -179,13 +190,15 @@ void bfp_s32_shl(
  * 
  * This operation can be performed safely in-place on `b` or `c`.
  * 
- * @bfp_op{16, @f$ 
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} + \bar{C}  
- * @f$ }
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  * @param[in]  c     Input BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_add(
@@ -203,13 +216,15 @@ void bfp_s16_add(
  * 
  * This operation can be performed safely in-place on `b` or `c`.
  * 
- * @bfp_op{32, @f$ 
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} + \bar{C}  
- * @f$ }
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  * @param[in]  c     Input BFP vector @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_add(
@@ -229,13 +244,15 @@ void bfp_s32_add(
  * 
  * This operation can be performed safely in-place on `b` or `c`.
  * 
- * @bfp_op{16, @f$ 
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} - \bar{C}  
- * @f$ }
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  * @param[in]  c     Input BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_sub(
@@ -253,13 +270,15 @@ void bfp_s16_sub(
  * 
  * This operation can be performed safely in-place on `b` or `c`.
  * 
- * @bfp_op{32, @f$ 
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} - \bar{C}  
- * @f$ }
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
  * @param[in]  c     Input BFP vector @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_sub(
@@ -278,15 +297,17 @@ void bfp_s32_sub(
  * 
  * This operation can be performed safely in-place on `b` or `c`.
  * 
- * @bfp_op{16, @f$ 
- *      A_k \leftarrow B_k \cdot C_k                    \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
- * @f$ }
+ * @operation{ 
+ * &     A_k \leftarrow B_k \cdot C_k                    \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
  * 
  * @param a     Output BFP vector @vector{A}
  * @param b     Input BFP vector @vector{B}
  * @param c     Input BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_mul(
@@ -306,15 +327,17 @@ void bfp_s16_mul(
  * 
  * This operation can be performed safely in-place on `b` or `c`.
  * 
- * @bfp_op{32, @f$ 
- *      A_k \leftarrow B_k \cdot C_k                            \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
- * @f$ }
+ * @operation{ 
+ * &     A_k \leftarrow B_k \cdot C_k                             \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)                \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
  * 
  * @param a     Output BFP vector @vector{A}
  * @param b     Input BFP vector @vector{B}
  * @param c     Input BFP vector @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_mul(
@@ -400,13 +423,15 @@ void bfp_s32_nmacc(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{16, @f$
+ * @operation{ 
  *      \bar{A} \leftarrow \bar{B} \cdot \left(\alpha \cdot 2^{\alpha\_exp}\right)
- * @f$ }
+ * }
  * 
  * @param[out] a            Output BFP vector @vector{A}
  * @param[in]  b            Input BFP vector @vector{B}
  * @param[in]  alpha        Scalar by which @vector{B} is multiplied
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_scale(
@@ -428,13 +453,15 @@ void bfp_s16_scale(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{32, @f$
+ * @operation{
  *      \bar{A} \leftarrow \bar{B} \cdot \left(\alpha \cdot 2^{\alpha\_exp}\right)
- * @f$ }
+ * }
  * 
  * @param[out] a             Output BFP vector @vector{A}
  * @param[in]  b             Input BFP vector @vector{B}
  * @param[in]  alpha        Scalar by which @vector{B} is multiplied
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_scale(
@@ -453,14 +480,16 @@ void bfp_s32_scale(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{16, @f$ 
+ * @operation{ 
  *      A_k \leftarrow \left| B_k \right|               \\
  *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
  *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_abs(
@@ -478,14 +507,16 @@ void bfp_s16_abs(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{32, @f$ 
- *      A_k \leftarrow \left| B_k \right|               \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{ 
+ * &     A_k \leftarrow \left| B_k \right|               \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_abs(
@@ -501,14 +532,16 @@ void bfp_s32_abs(
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
- * @bfp_op{16, @f$
- *      A \leftarrow \sum_{k=0}^{N-1} \left( B_k \right)            \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow \sum_{k=0}^{N-1} \left( B_k \right)            \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in] b         Input BFP vector @vector{B}
  * 
  * @returns  @math{A}, the sum of elements of @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 float_s32_t bfp_s16_sum(
@@ -523,15 +556,17 @@ float_s32_t bfp_s16_sum(
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
- * @bfp_op{32, @f$
- *      A \leftarrow \sum_{k=0}^{N-1} \left( B_k \right)            \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow \sum_{k=0}^{N-1} \left( B_k \right)            \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * 
  * @param[in] b         Input BFP vector @vector{B}
  * 
  * @returns  @math{A}, the sum of elements of @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 float_s64_t bfp_s32_sum(
@@ -547,15 +582,17 @@ float_s64_t bfp_s32_sum(
  * 
  * `b` and `c` must have been initialized (see bfp_s16_init()), and must be the same length.
  * 
- * @bfp_op{16, @f$
- *      a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{N-1} \left( B_k \cdot C_k \right)     \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
- * @f$ }
+ * @operation{
+ * &     a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{N-1} \left( B_k \cdot C_k \right)     \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
  * 
  * @param[in]  b        Input BFP vector @vector{B}
  * @param[in]  c        Input BFP vector @vector{C}
  * 
  * @returns     @math{A}, the inner product of vectors @vector{B} and @vector{C}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 float_s64_t bfp_s16_dot(
@@ -572,15 +609,17 @@ float_s64_t bfp_s16_dot(
  * 
  * `b` and `c` must have been initialized (see bfp_s32_init()), and must be the same length.
  * 
- * @bfp_op{32, @f$
- *      a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{N-1} \left( B_k \cdot C_k \right)     \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
- * @f$ }
+ * @operation{
+ * &     a \cdot 2^{a\_exp} \leftarrow \sum_{k=0}^{N-1} \left( B_k \cdot C_k \right)     \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
  * 
  * @param[in]  b        Input BFP vector @vector{B}
  * @param[in]  c        Input BFP vector @vector{C}
  * 
  * @returns     @math{A}, the inner product of vectors @vector{B} and @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 float_s64_t bfp_s32_dot(
@@ -599,21 +638,23 @@ float_s64_t bfp_s32_dot(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{16, @f$
- *      A_k \leftarrow \begin{cases}
- *          L \cdot 2^{bound\_exp}      &   B_k \lt L \cdot 2^{bound\_exp}  \\
- *          U \cdot 2^{bound\_exp}      &   B_k \gt U \cdot 2^{bound\_exp}  \\
- *          B_k                         &   otherwise
- *      \end{cases}                                     \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A_k \leftarrow \begin{cases}
+ * &         L \cdot 2^{bound\_exp}      &   B_k \lt L \cdot 2^{bound\_exp}  \\
+ * &         U \cdot 2^{bound\_exp}      &   B_k \gt U \cdot 2^{bound\_exp}  \\
+ * &         B_k                         &   otherwise
+ * &     \end{cases}                                     \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a             Output BFP vector @vector{A}
  * @param[in]  b             Input BFP vector @vector{B}
  * @param[in]  lower_bound   Mantissa of the lower clipping bound, @math{L}
  * @param[in]  upper_bound   Mantissa of the upper clipping bound, @math{U}
  * @param[in]  bound_exp     Shared exponent of the clipping bounds
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_clip(
@@ -635,21 +676,23 @@ void bfp_s16_clip(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{32, @f$
- *      A_k \leftarrow \begin{cases}
- *          L \cdot 2^{bound\_exp}      &   B_k \lt L \cdot 2^{bound\_exp}  \\
- *          U \cdot 2^{bound\_exp}      &   B_k \gt U \cdot 2^{bound\_exp}  \\
- *          B_k                         &   otherwise
- *      \end{cases}                                     \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A_k \leftarrow \begin{cases}
+ * &         L \cdot 2^{bound\_exp}      &   B_k \lt L \cdot 2^{bound\_exp}  \\
+ * &         U \cdot 2^{bound\_exp}      &   B_k \gt U \cdot 2^{bound\_exp}  \\
+ * &         B_k                         &   otherwise
+ * &     \end{cases}                                     \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a             Output BFP vector @vector{A}
  * @param[in]  b             Input BFP vector @vector{B}
  * @param[in]  lower_bound   Mantissa of the lower clipping bound, @math{L}
  * @param[in]  upper_bound   Mantissa of the upper clipping bound, @math{U}
  * @param[in]  bound_exp     Shared exponent of the clipping bounds
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_clip(
@@ -670,17 +713,19 @@ void bfp_s32_clip(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{16, @f$
- *      A_k \leftarrow \begin{cases}
- *          0       &   B_k \lt 0       \\
- *          B_k     &   otherwise
- *      \end{cases}                     \\
- *      \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *      \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A_k \leftarrow \begin{cases}
+ * &         0       &   B_k \lt 0       \\
+ * &         B_k     &   otherwise
+ * &     \end{cases}                     \\
+ * &     \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &     \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_rect(
@@ -698,17 +743,19 @@ void bfp_s16_rect(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{32, @f$
- *      A_k \leftarrow \begin{cases}
- *          0       &   B_k \lt 0       \\
- *          B_k     &   otherwise
- *      \end{cases}                     \\
- *      \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *      \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A_k \leftarrow \begin{cases}
+ * &         0       &   B_k \lt 0       \\
+ * &         B_k     &   otherwise
+ * &     \end{cases}                     \\
+ * &     \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &     \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_rect(
@@ -725,14 +772,16 @@ void bfp_s32_rect(
  * 
  * As much precision as possible will be retained.
  * 
- * @bfp_op{32, @f$
- *      A_k \overset{16-bit}{\longleftarrow} B_k        \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A_k \overset{16-bit}{\longleftarrow} B_k        \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
+ * 
+ * @ingroup bfp32_func
  **/
 C_API
 void bfp_s32_to_s16(
@@ -747,14 +796,16 @@ void bfp_s32_to_s16(
  * 
  * `a` and `b` must have been initialized (see bfp_s16_init() and bfp_s32_init()), and must be the same length.
  * 
- * @bfp_op{16, @f$
- *      A_k \overset{32-bit}{\longleftarrow} B_k        \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A_k \overset{32-bit}{\longleftarrow} B_k        \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
+ * 
+ * @ingroup bfp16_func
  **/
 C_API
 void bfp_s16_to_s32(
@@ -772,21 +823,24 @@ void bfp_s16_to_s32(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{16, @f$ 
- *      A_k \leftarrow \sqrt{B_k}                       \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{ 
+ * &     A_k \leftarrow \sqrt{B_k}                       \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @par Notes
- * 
+ * @parblock
  * * Only the `XS3_BFP_SQRT_DEPTH_S16` (see xs3_math_conf.h) most significant bits of each result are computed.
  * 
  * * This function only computes real roots. For any @math{B_k \lt 0}, the corresponding output @math{A_k} is set to 
  *   @math{0}.
+ * @endparblock
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_sqrt(
@@ -804,21 +858,24 @@ void bfp_s16_sqrt(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{32, @f$ 
- *      A_k \leftarrow \sqrt{B_k}                       \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{ 
+ * &     A_k \leftarrow \sqrt{B_k}                       \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @par Notes
- * 
+ * @parblock
  * * Only the `XS3_BFP_SQRT_DEPTH_S32` (see xs3_math_conf.h) most significant bits of each result are computed.
  * 
  * * This function only computes real roots. For any @math{B_k \lt 0}, the corresponding output @math{A_k} is set to 
  *   @math{0}.
+ * @endparblock
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_sqrt(
@@ -836,14 +893,16 @@ void bfp_s32_sqrt(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{16, @f$ 
- *      A_k \leftarrow B_k^{-1}                     \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)   \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{ 
+ * &     A_k \leftarrow B_k^{-1}                     \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)   \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 void bfp_s16_inverse(
@@ -861,14 +920,16 @@ void bfp_s16_inverse(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
- * @bfp_op{32, @f$ 
- *      A_k \leftarrow B_k^{-1}                     \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)   \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{ 
+ * &     A_k \leftarrow B_k^{-1}                     \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)   \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
  * @param[in]  b     Input BFP vector @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_inverse(
@@ -883,14 +944,16 @@ void bfp_s32_inverse(
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
- * @bfp_op{16, @f$
- *      A \leftarrow \sum_{k=0}^{N-1} \left| A_k \right|            \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow \sum_{k=0}^{N-1} \left| A_k \right|            \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in] b         Input BFP vector @vector{B}
  * 
  * @returns  @math{A}, the sum of absolute values of elements of @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 float_s32_t bfp_s16_abs_sum(
@@ -904,14 +967,16 @@ float_s32_t bfp_s16_abs_sum(
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
- * @bfp_op{32, @f$
- *      A \leftarrow \sum_{k=0}^{N-1} \left| A_k \right|            \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow \sum_{k=0}^{N-1} \left| A_k \right|            \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in] b         Input BFP vector @vector{B}
  * 
  * @returns  @math{A}, the sum of absolute values of elements of @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 float_s64_t bfp_s32_abs_sum(
@@ -926,14 +991,16 @@ float_s64_t bfp_s32_abs_sum(
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
- * @bfp_op{16, @f$
- *      A \leftarrow \frac{1}{N} \sum_{k=0}^{N-1} \left( B_k \right)     \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow \frac{1}{N} \sum_{k=0}^{N-1} \left( B_k \right)     \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in]  b        Input BFP vector @vector{B}
  * 
  * @returns  @math{A}, the mean value of @vector{B}'s elements
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 float_s16_t bfp_s16_mean(
@@ -948,14 +1015,16 @@ float_s16_t bfp_s16_mean(
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
- * @bfp_op{32, @f$
- *      A \leftarrow \frac{1}{N} \sum_{k=0}^{N-1} \left( B_k \right)     \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow \frac{1}{N} \sum_{k=0}^{N-1} \left( B_k \right)     \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in]  b        Input BFP vector @vector{B}
  * 
  * @returns  @math{A}, the mean value of @vector{B}'s elements
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 float_s32_t bfp_s32_mean(
@@ -970,14 +1039,16 @@ float_s32_t bfp_s32_mean(
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
- * @bfp_op{16, @f$
- *      A \leftarrow \sum_{k=0}^{N-1} \left( B_k^2 \right)   \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow \sum_{k=0}^{N-1} \left( B_k^2 \right)   \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in]  b        Input BFP vector @vector{B}
  * 
  * @returns  @math{A}, @vector{B}'s energy
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 float_s64_t bfp_s16_energy(
@@ -992,14 +1063,16 @@ float_s64_t bfp_s16_energy(
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
- * @bfp_op{32, @f$
- *      A \leftarrow \sum_{k=0}^{N-1} \left( B_k^2 \right)   \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow \sum_{k=0}^{N-1} \left( B_k^2 \right)   \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in]  b        Input BFP vector @vector{B}
  * 
  * @returns  @math{A}, @vector{B}'s energy
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 float_s64_t bfp_s32_energy(
@@ -1016,14 +1089,16 @@ float_s64_t bfp_s32_energy(
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
- * @bfp_op{16, @f$
- *      A \leftarrow \sqrt{\frac{1}{N}\sum_{k=0}^{N-1} \left( B_k^2 \right) }  \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow \sqrt{\frac{1}{N}\sum_{k=0}^{N-1} \left( B_k^2 \right) }  \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in]  b        Input BFP vector @vector{B}
  * 
  * @returns  @math{A}, the RMS value of @vector{B}'s elements
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 float_s32_t bfp_s16_rms(
@@ -1040,14 +1115,16 @@ float_s32_t bfp_s16_rms(
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
- * @bfp_op{32, @f$
- *      A \leftarrow \sqrt{\frac{1}{N}\sum_{k=0}^{N-1} \left( B_k^2 \right) }  \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow \sqrt{\frac{1}{N}\sum_{k=0}^{N-1} \left( B_k^2 \right) }  \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in]  b        Input BFP vector @vector{B}
  * 
  * @returns  @math{A}, the RMS value of @vector{B}'s elements
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 float_s32_t bfp_s32_rms(
@@ -1062,14 +1139,16 @@ float_s32_t bfp_s32_rms(
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
- * @bfp_op{16, @f$
- *      A \leftarrow max\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow max\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in] b     Input vector
  * 
  * @returns     @math{A}, the value of @vector{B}'s maximum element
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 float_s16_t bfp_s16_max(
@@ -1084,14 +1163,16 @@ float_s16_t bfp_s16_max(
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
- * @bfp_op{32, @f$
- *      A \leftarrow max\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow max\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in] b     Input vector
  * 
  * @returns     @math{A}, the value of @vector{B}'s maximum element
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 float_s32_t bfp_s32_max(
@@ -1106,14 +1187,16 @@ float_s32_t bfp_s32_max(
  * 
  * `b` must have been initialized (see bfp_s16_init()).
  * 
- * @bfp_op{16, @f$
- *      A \leftarrow min\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow min\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in] b     Input vector
  * 
  * @returns     @math{A}, the value of @vector{B}'s minimum element
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 float_s16_t bfp_s16_min(
@@ -1128,14 +1211,16 @@ float_s16_t bfp_s16_min(
  * 
  * `b` must have been initialized (see bfp_s32_init()).
  * 
- * @bfp_op{32, @f$
- *      A \leftarrow min\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     A \leftarrow min\left(B_0\, B_1\, ...\, B_{N-1} \right)     \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @param[in] b     Input vector
  * 
  * @returns     @math{A}, the value of @vector{B}'s minimum element
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 float_s32_t bfp_s32_min(
@@ -1150,19 +1235,22 @@ float_s32_t bfp_s32_min(
  * 
  * If `i` is the value returned, then the maximum value in @vector{B} is `ldexp(b->data[i], b->exp)`.
  * 
- * @bfp_op{16, @f$
- *      a \leftarrow argmax_k\left(b_k\right)           \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     a \leftarrow argmax_k\left(b_k\right)           \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @par Notes
- * 
+ * @parblock
  * * If there is a tie for maximum value, the lowest tying index is returned.
+ * @endparblock
  * 
  * @param[in] b     Input vector
  * 
  * @returns     @math{a}, the index of the maximum value from @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 unsigned bfp_s16_argmax(
@@ -1177,19 +1265,22 @@ unsigned bfp_s16_argmax(
  * 
  * If `i` is the value returned, then the maximum value in @vector{B} is `ldexp(b->data[i], b->exp)`.
  * 
- * @bfp_op{32, @f$
- *      a \leftarrow argmax_k\left(b_k\right)           \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     a \leftarrow argmax_k\left(b_k\right)           \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @par Notes
- * 
+ * @parblock
  * * If there is a tie for maximum value, the lowest tying index is returned.
+ * @endparblock
  * 
  * @param[in] b     Input vector
  * 
  * @returns     @math{a}, the index of the maximum value from @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 unsigned bfp_s32_argmax(
@@ -1204,19 +1295,22 @@ unsigned bfp_s32_argmax(
  * 
  * If `i` is the value returned, then the minimum value in @vector{B} is `ldexp(b->data[i], b->exp)`.
  * 
- * @bfp_op{16, @f$
- *      a \leftarrow argmin_k\left(b_k\right)           \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     a \leftarrow argmin_k\left(b_k\right)           \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @par Notes
- * 
+ * @parblock
  * * If there is a tie for minimum value, the lowest tying index is returned.
+ * @endparblock
  * 
  * @param[in] b     Input vector
  * 
  * @returns     @math{a}, the index of the minimum value from @vector{B}
+ * 
+ * @ingroup bfp16_func
  */
 C_API
 unsigned bfp_s16_argmin(
@@ -1231,19 +1325,22 @@ unsigned bfp_s16_argmin(
  * 
  * If `i` is the value returned, then the minimum value in @vector{B} is `ldexp(b->data[i], b->exp)`.
  * 
- * @bfp_op{32, @f$
- *      a \leftarrow argmin_k\left(b_k\right)           \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
- * @f$ }
+ * @operation{
+ * &     a \leftarrow argmin_k\left(b_k\right)           \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
  * 
  * @par Notes
- * 
+ * @parblock
  * * If there is a tie for minimum value, the lowest tying index is returned.
+ * @endparblock
  * 
  * @param[in] b     Input vector
  * 
  * @returns     @math{a}, the index of the minimum value from @vector{B}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 unsigned bfp_s32_argmin(

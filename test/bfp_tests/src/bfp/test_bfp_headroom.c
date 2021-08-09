@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -11,31 +11,36 @@
 
 #include "../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
 
+TEST_GROUP_RUNNER(bfp_headroom) {
+  RUN_TEST_CASE(bfp_headroom, bfp_s32_headroom);
+  RUN_TEST_CASE(bfp_headroom, bfp_s16_headroom);
+  RUN_TEST_CASE(bfp_headroom, bfp_complex_s32_headroom);
+  RUN_TEST_CASE(bfp_headroom, bfp_complex_s16_headroom);
+  RUN_TEST_CASE(bfp_headroom, bfp_ch_pair_s32_headroom);
+  RUN_TEST_CASE(bfp_headroom, bfp_ch_pair_s16_headroom);
+}
+
+TEST_GROUP(bfp_headroom);
+TEST_SETUP(bfp_headroom) {}
+TEST_TEAR_DOWN(bfp_headroom) {}
 
 #define REPS        (1000)
 #define MAX_LEN     1024
 
 
-
-
-
-static void test_bfp_s16_headroom()
+TEST(bfp_headroom, bfp_s16_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 769234;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int16_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -64,17 +69,16 @@ static void test_bfp_s16_headroom()
 }
 
 
-
-static void test_bfp_s32_headroom()
+TEST(bfp_headroom, bfp_s32_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 56785;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -103,22 +107,17 @@ static void test_bfp_s32_headroom()
 }
 
 
-
-
-
-
-
-static void test_bfp_complex_s16_headroom()
+TEST(bfp_headroom, bfp_complex_s16_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 7685699;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     int16_t WORD_ALIGNED real[MAX_LEN];
     int16_t WORD_ALIGNED imag[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -154,19 +153,16 @@ static void test_bfp_complex_s16_headroom()
 }
 
 
-
-
-
-static void test_bfp_complex_s32_headroom()
+TEST(bfp_headroom, bfp_complex_s32_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 54322;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     complex_s32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -197,20 +193,16 @@ static void test_bfp_complex_s32_headroom()
 }
 
 
-
-
-
-
-static void test_bfp_ch_pair_s16_headroom()
+TEST(bfp_headroom, bfp_ch_pair_s16_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 456488;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     ch_pair_s16_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -241,19 +233,16 @@ static void test_bfp_ch_pair_s16_headroom()
 }
 
 
-
-
-
-static void test_bfp_ch_pair_s32_headroom()
+TEST(bfp_headroom, bfp_ch_pair_s32_headroom)
 {
-    PRINTF("%s...\n", __func__);
 
-    unsigned seed = 344;
+
+    unsigned seed = SEED_FROM_FUNC_NAME();
     
     ch_pair_s32_t WORD_ALIGNED data[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep %d..\n", r);
+        setExtraInfo_R(r);
 
         unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
@@ -284,20 +273,3 @@ static void test_bfp_ch_pair_s32_headroom()
 }
 
 
-
-
-
-
-void test_bfp_headroom_vect()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_bfp_s16_headroom);
-    RUN_TEST(test_bfp_s32_headroom);
-    
-    RUN_TEST(test_bfp_complex_s16_headroom);
-    RUN_TEST(test_bfp_complex_s32_headroom);
-    
-    RUN_TEST(test_bfp_ch_pair_s16_headroom);
-    RUN_TEST(test_bfp_ch_pair_s32_headroom);
-}

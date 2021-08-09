@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 #pragma once
 
 #include "xs3_math_conf.h"
@@ -73,8 +73,6 @@ C_API void conv_vect_complex_s32_to_complex_double(complex_double_t output[], co
 C_API void conv_vect_complex_s32_to_complex_double_v2(double out_real[], double out_imag[], const complex_s32_t input[], const unsigned length, const exponent_t input_exp, conv_error_e *error);
 
 
-
-
 /*
  * Float/Fixed comparision
  */
@@ -103,9 +101,6 @@ C_API unsigned abs_diff_vect_s32( int32_t * B, const exponent_t B_exp, double * 
 C_API unsigned abs_diff_vect_u8(uint8_t * B, const exponent_t B_exp, double * f, unsigned length,conv_error_e* error);
 C_API unsigned abs_diff_vect_u16(uint16_t * B, const exponent_t B_exp, double * f, unsigned length,conv_error_e* error);
 C_API unsigned abs_diff_vect_u32(uint32_t * B, const exponent_t B_exp, double * f, unsigned length,conv_error_e* error);
-
-
-
 
 
 #define TESTING_FLOAT_NUM_DIGITS 22
@@ -137,3 +132,9 @@ C_API void print_vect_double(double * B, unsigned length, conv_error_e* error);
     do{ printf("[(plt.plot(np.real(qwer),label='real'),plt.plot(np.imag(qwer),label='imag')) for qwer in [\n"); \
         A; printf(" - \n"); B; printf("]]\n"); } while(0)
         
+
+// Get a (weakly) pseudo-random unsigned integer derived from the name of
+// the containing function. This is intended to provide a unique random seed 
+// for each test case.
+#define SEED_FROM_FUNC_NAME()    get_seed(__func__, sizeof(__func__))
+C_API unsigned get_seed(const char* str, const unsigned len);

@@ -1,10 +1,20 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
 
 #include "xs3_math_types.h"
 
+/**
+ * @page page_bfp_fft_h  bfp_fft.h
+ * 
+ * This header contains functions for performing block floating-point Fast Fourier Transforms (FFTs) 
+ * and inverse FFTs on BFP vectors of types `bfp_s32_t`, `bfp_complex_s32_t`, and `bfp_ch_pair_s32_t`.
+ * 
+ * @note This header is included automatically through `bfp_math.h`.
+ * 
+ * @ingroup xs3_math_header_file
+ */
 
 /** 
  * @brief Performs a forward real Discrete Fourier Transform on a real 32-bit sequence.
@@ -14,7 +24,7 @@
  * 
  * The operation performed is:
  * @f[
- *      X[f] = \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)
+ *      X[f] = \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)  \\
  *      \text{ for } 0 \le f \le N/2
  * @f]
  * where @math{x[n]} is the BFP vector initially represented by `x`, and @math{X[f]} is the DFT of @math{x[n]} 
@@ -33,7 +43,7 @@
  * represents @math{X[0] + j X[N/2]}.
  * 
  * @par Example
- * \code
+ * @code{.c}
  *      // Initialize time domain data with samples.
  *      int32_t buffer[N] = { ... };
  *      bfp_s32_t samples;
@@ -49,7 +59,7 @@
  *      }
  *      // Use `samples` again to use new time domain data. 
  *      ...
- * \endcode
+ * @endcode
  * 
  * @note A single channel of real data can also be DFTed using bfp_fft_forward_stereo() (by packing the data into one of
  *       the channels of an array of `ch_pair_t`) or bfp_fft_forward_complex() (by converting the real sequence to a 
@@ -60,6 +70,8 @@
  * @param[inout] x  The BFP vector @math{x[n]} to be DFTed.
  * 
  * @return Address of input BFP vector `x`, cast as `bfp_complex_s32_t*`.
+ * 
+ * @ingroup bfp_fft_func
  */
 C_API
 bfp_complex_s32_t* bfp_fft_forward_mono(
@@ -75,7 +87,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
  * 
  * The operation performed is:
  * @f[
- *      x[n] = \sum_{f=0}^{N/2} \left( X[f]\cdot e^{j2\pi fn/N} \right)
+ *      x[n] = \sum_{f=0}^{N/2} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
  *      \text{ for } 0 \le n \lt N
  * @f]
  * where @math{X[f]} is the BFP vector initially represented by `x`, and @math{x[n]} is the IDFT of @math{X[f]} 
@@ -94,7 +106,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
  * represents @math{X[0] + j X[N/2]}.
  * 
  * @par Example
- * \code
+ * @code
  *      // Initialize time domain data with samples.
  *      int32_t buffer[N] = { ... };
  *      bfp_s32_t samples;
@@ -110,7 +122,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
  *      }
  *      // Use `samples` again to use new time domain data. 
  *      ...
- * \endcode
+ * @endcode
  * 
  * @note An equivalent operation can be performed using bfp_fft_inverse_stereo() (by packing the data into the spectrum
  *       of one of the two channels) or bfp_fft_inverse_complex() (by appropriately re-encoding the spectrum). However, 
@@ -121,6 +133,8 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
  * @param[inout] x  The BFP vector @math{X[f]} to be IDFTed.
  * 
  * @return Address of input BFP vector `x`, cast as `bfp_s32_t*`.
+ * 
+ * @ingroup bfp_fft_func
  */
 C_API
 bfp_s32_t* bfp_fft_inverse_mono(
@@ -136,7 +150,7 @@ bfp_s32_t* bfp_fft_inverse_mono(
  * 
  * The operation performed is:
  * @f[
- *      X[f] = \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)
+ *      X[f] = \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)  \\
  *      \text{ for } 0 \le f \lt N
  * @f]
  * where @math{x[n]} is the BFP vector initially represented by `x`, and @math{X[f]} is the DFT of @math{x[n]}, also
@@ -151,7 +165,7 @@ bfp_s32_t* bfp_fft_inverse_mono(
  * for `0 <= f < (x->length)` represent @math{X[f]} for @math{0 \le f \lt N}.
  * 
  * @par Example
- * \code
+ * @code
  *      // Initialize complex time domain data with samples.
  *      complex_s32_t buffer[N] = { ... };
  *      bfp_complex_s32_t vector;
@@ -164,9 +178,11 @@ bfp_s32_t* bfp_fft_inverse_mono(
  *      bfp_fft_inverse_mono(&vector);
  *      // `vector` contains (complex) time-domain data again
  *      ...
- * \endcode
+ * @endcode
  * 
  * @param[inout] x  The BFP vector @math{x[n]} to be DFTed.
+ * 
+ * @ingroup bfp_fft_func
  */
 C_API
 void bfp_fft_forward_complex(
@@ -180,7 +196,7 @@ void bfp_fft_forward_complex(
  * 
  * The operation performed is:
  * @f[
- *      x[n] = \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right)
+ *      x[n] = \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
  *      \text{ for } 0 \le f \lt N
  * @f]
  * where @math{X[f]} is the BFP vector initially represented by `x`, and @math{x[n]} is the DFT of @math{X[f]}, also
@@ -195,7 +211,7 @@ void bfp_fft_forward_complex(
  * `0 <= f < (x->length)` represent @math{X[f]} for @math{0 \le f \lt N}.
  * 
  * @par Example
- * \code
+ * @code
  *      // Initialize complex time domain data with samples.
  *      complex_s32_t buffer[N] = { ... };
  *      bfp_complex_s32_t vector;
@@ -208,9 +224,11 @@ void bfp_fft_forward_complex(
  *      bfp_fft_inverse_mono(&vector);
  *      // `vector` contains (complex) time-domain data again
  *      ...
- * \endcode
+ * @endcode
  * 
  * @param[inout] x  The BFP vector @math{x[n]} to be IDFTed.
+ * 
+ * @ingroup bfp_fft_func
  */
 C_API
 void bfp_fft_inverse_complex(
@@ -245,7 +263,7 @@ void bfp_fft_inverse_complex(
  * represents @math{A[0] + j A[N/2]}. Likewise for the encoding of `b->data`.
  * 
  * @par Example
- * \code
+ * @code
  *      // Initialize time domain data with samples.
  *      ch_pair_s32_t buffer[N] = { {...}, ... };
  *      bfp_ch_pair_s32_t stereo_samples;
@@ -262,14 +280,20 @@ void bfp_fft_inverse_complex(
  *      }
  *      // Use `stereo_samples` again to use new time domain data. 
  *      ...
- * \endcode
+ * @endcode
  * 
  * @note When performing a DFT on a pair of channels, bfp_fft_forward_stereo() is more efficient than using 
  *       bfp_fft_forward_mono() twice.
+ * 
+ * @warning If you intend to apply an IFFT to BFP vectors `a` and `b` you must keep track of both
+ *          vectors (and keep track of which is which), because bfp_fft_inverse_stereo() requires
+ *          that the mantissa buffer of vector `b` directly follows that of `a`.
  *  
  * @param[out]  a   Output spectrum for channel A.
  * @param[out]  b   Output spectrum for channel B.
  * @param[in]   x   channel-pair BFP vector to be DFTed.
+ * 
+ * @ingroup bfp_fft_func
  */
 C_API
 void bfp_fft_forward_stereo(
@@ -302,7 +326,7 @@ void bfp_fft_forward_stereo(
  * and `a->data[0]` represents @math{A[0] + j A[N/2]}. Likewise for the encoding of `b->data`.
  * 
  * @par Example
- * \code
+ * @code
  *      // Initialize time domain data with samples.
  *      ch_pair_s32_t buffer[N] = { {...}, ... };
  *      bfp_ch_pair_s32_t stereo_samples;
@@ -319,7 +343,7 @@ void bfp_fft_forward_stereo(
  *      }
  *      // Use `stereo_samples` again to use new time domain data. 
  *      ...
- * \endcode
+ * @endcode
  * 
  * @note When calling this function the following conditions must hold:
  *          `b->length == a->length` and `b->data == &a->data[a->length]`
@@ -331,9 +355,130 @@ void bfp_fft_forward_stereo(
  * @param[out]  x   Output BFP channel-pair vector.
  * @param[out]  a   Spectrum for channel A.
  * @param[in]   b   Spectrum for channel B.
+ * 
+ * @ingroup bfp_fft_func
  */
 C_API
 void  bfp_fft_inverse_stereo(
     bfp_ch_pair_s32_t* x,
     const bfp_complex_s32_t* a,
     const bfp_complex_s32_t* b);
+
+/**
+ * @brief Unpack the spectrum resulting from bfp_fft_forward_mono().
+ * 
+ * The DFT of a real signal is periodic with period FFT_N (the FFT length) and has a complex
+ * conjugate symmetry about index 0. These two properties guarantee that the imaginary part of
+ * both the DC component (index 0) and the Nyquist component (index FFT_N/2) of the spectrum
+ * are zero. To compute the forward FFT in-place, bfp_fft_forward_mono() packs the real part 
+ * of the Nyquist rate component of the output spectrum into the imaginary part of the DC
+ * component.
+ * 
+ * This may be undesirable when operating on the signal's complex spectrum. Use this function
+ * to unpack the Nyquist component. This function will also adjust the BFP vector's length to
+ * reflect this unpacking.
+ * 
+ * NOTE: If you intend to unpack the spectrum using this function, the buffer for the time-domain
+ *       BFP vector must have length `FFT_N+2`, rather than `FFT_N` (`int32_t` elements), but
+ *       these should NOT be reflected in the time-domain BFP vector's `length` field.
+ * 
+ * @f{align*}{
+ * &       Re\{x_{N/2}\}  && \leftarrow  Im\{x_0\}     \\
+ * &       Im\{x_0\}      && \leftarrow 0              \\
+ * &       Im\{x_{N/2}\}  && \leftarrow 0              \\
+ * &       x.length       && \leftarrow x.length + 1
+ * @f}
+ * 
+ * NOTE: Before bfp_fft_inverse_mono() may be applied, bfp_fft_pack_mono() must be called, as the
+ *       inverse FFT expects the data to be packed.
+ * 
+ * @param[inout]  x  The spectrum to be unpacked
+ * 
+ * @see bfp_fft_forward_mono,
+ *      bfp_fft_pack_mono
+ * 
+ * @ingroup bfp_fft_func
+ */
+C_API
+void bfp_fft_unpack_mono(
+    bfp_complex_s32_t* x);
+
+
+/**
+ * @brief Unpack the spectrum resulting from bfp_fft_forward_stereo().
+ * 
+ * The DFT of a real signal is periodic with period FFT_N (the FFT length) and has a complex
+ * conjugate symmetry about index 0. These two properties guarantee that the imaginary part of
+ * both the DC component (index 0) and the Nyquist component (index FFT_N/2) of the spectrum
+ * are zero. To compute the forward FFT in-place, bfp_fft_forward_stereo() packs the real part 
+ * of the Nyquist rate component of the output spectra into the imaginary part of the DC
+ * component.
+ * 
+ * This may be undesirable when operating on the signal's complex spectrum. Use this function
+ * to unpack the Nyquist component. This function will also adjust the BFP vectors' length to
+ * reflect this unpacking.
+ * 
+ * NOTE: If you intend to unpack the spectrum using this function, the buffer for the time-domain
+ *       BFP vector must have length `FFT_N+2`, rather than `FFT_N` (`ch_pair_s32_t` elements), but
+ *       these should NOT be reflected in the time-domain BFP vector's `length` field.
+ * 
+ * @f{align*}{
+ * &   Re\{x_{N/2}\}  && \leftarrow  Im\{x_0\}    \\
+ * &   Im\{x_0\}      && \leftarrow 0             \\
+ * &   Im\{x_{N/2}\}  && \leftarrow 0             \\
+ * &   x.length       && \leftarrow x.length + 1
+ * @f}
+ * 
+ * NOTE: Before bfp_fft_inverse_stereo() may be applied, bfp_fft_pack_stereo() must be called, 
+ *       as the inverse FFT expects the data to be packed.
+ * 
+ * @param[inout]  x1  The spectrum of the first channel to be unpacked
+ * @param[inout]  x2  The spectrum of the second channel to be unpacked
+ * 
+ * @see bfp_fft_forward_stereo,
+ *      bfp_fft_pack_stereo
+ * 
+ * @ingroup bfp_fft_func
+ */
+C_API
+void bfp_fft_unpack_stereo(
+    bfp_complex_s32_t* x1,
+    bfp_complex_s32_t* x2);
+
+
+/**
+ * @brief Pack the spectrum resulting from bfp_fft_unpack_mono().
+ * 
+ * This function applies the reverse process of bfp_fft_unpack_mono(), to prepare it for an
+ * inverse FFT using bfp_fft_inverse_mono().
+ * 
+ * @param[inout]  x   The spectrum to be packed
+ * 
+ * @see bfp_fft_inverse_mono,
+ *      bfp_fft_unpack_mono
+ * 
+ * @ingroup bfp_fft_func
+ */
+C_API
+void bfp_fft_pack_mono(
+    bfp_complex_s32_t* x);
+
+
+/**
+ * @brief Pack the spectrum resulting from bfp_fft_unpack_stereo().
+ * 
+ * This function applies the reverse process of bfp_fft_unpack_stereo(), to prepare it for an
+ * inverse FFT using bfp_fft_inverse_stereo().
+ * 
+ * @param[inout]  x1   The first channel of the spectrum to be packed
+ * @param[inout]  x2   The second channel of the spectrum to be packed
+ * 
+ * @see bfp_fft_inverse_stereo,
+ *      bfp_fft_unpack_stereo
+ * 
+ * @ingroup bfp_fft_func
+ */
+C_API
+void bfp_fft_pack_stereo(
+    bfp_complex_s32_t* x1,
+    bfp_complex_s32_t* x2);

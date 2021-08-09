@@ -1,5 +1,5 @@
-// Copyright 2020 XMOS LIMITED. This Software is subject to the terms of the 
-// XMOS Public License: Version 1
+// Copyright 2020-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -12,7 +12,17 @@
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
+
+
+TEST_GROUP_RUNNER(xs3_vect_complex_s16_to_complex_s32) {
+  RUN_TEST_CASE(xs3_vect_complex_s16_to_complex_s32, xs3_vect_complex_s16_to_complex_s32_basic);
+  RUN_TEST_CASE(xs3_vect_complex_s16_to_complex_s32, xs3_vect_complex_s16_to_complex_s32_random);
+}
+
+TEST_GROUP(xs3_vect_complex_s16_to_complex_s32);
+TEST_SETUP(xs3_vect_complex_s16_to_complex_s32) {}
+TEST_TEAR_DOWN(xs3_vect_complex_s16_to_complex_s32) {}
 
 static char msg_buff[200];
 
@@ -23,15 +33,12 @@ static char msg_buff[200];
     }} while(0)
 
 
-#if !defined(DEBUG_ON) || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
-#endif
-
 #define MAX_LEN 50
-static void test_xs3_vect_complex_s16_to_complex_s32_basic()
+
+
+TEST(xs3_vect_complex_s16_to_complex_s32, xs3_vect_complex_s16_to_complex_s32_basic)
 {
-    PRINTF("%s...\n", __func__);
+    
 
     typedef struct {
         complex_s16_t b;
@@ -58,7 +65,7 @@ static void test_xs3_vect_complex_s16_to_complex_s32_basic()
     const unsigned start_case = 0;
 
     for(int v = start_case; v < N_cases; v++){
-        PRINTF("\ttest vector %d..\n", v);
+        setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
@@ -71,7 +78,6 @@ static void test_xs3_vect_complex_s16_to_complex_s32_basic()
 
         for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
             unsigned len = lengths[i];
-            PRINTF("\tlength %u..\n", len);
 
             for(int i = 0; i < MAX_LEN; i++){
                 B.real[i] = (i < len)? casse->b.re : 0xBBBB;
@@ -98,10 +104,12 @@ static void test_xs3_vect_complex_s16_to_complex_s32_basic()
 
 #define MAX_LEN     68
 #define REPS        (100)
-static void test_xs3_vect_complex_s16_to_complex_s32_random()
+
+TEST(xs3_vect_complex_s16_to_complex_s32, xs3_vect_complex_s16_to_complex_s32_random)
 {
-    PRINTF("%s...\n", __func__);
-    unsigned seed = 778;
+    
+    unsigned seed = SEED_FROM_FUNC_NAME();
+
     
     complex_s32_t DWORD_ALIGNED A[MAX_LEN];
     struct {
@@ -111,7 +119,7 @@ static void test_xs3_vect_complex_s16_to_complex_s32_random()
 
     for(int v = 0; v < REPS; v++){
 
-        PRINTF("\trepetition %d..\n", v);
+        setExtraInfo_R(v);
 
         const unsigned len = pseudo_rand_uint32(&seed) % MAX_LEN + 1;
 
@@ -137,10 +145,3 @@ static void test_xs3_vect_complex_s16_to_complex_s32_random()
 #undef MAX_LEN
 #undef REPS
 
-void test_xs3_vect_complex_s16_to_complex_s32()
-{
-    SET_TEST_FILE();
-
-    RUN_TEST(test_xs3_vect_complex_s16_to_complex_s32_basic);
-    RUN_TEST(test_xs3_vect_complex_s16_to_complex_s32_random);
-}
