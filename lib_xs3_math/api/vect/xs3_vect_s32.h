@@ -423,6 +423,28 @@ headroom_t xs3_vect_complex_s32_nmacc(
     const right_shift_t acc_shr,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
+
+
+C_API
+headroom_t xs3_vect_complex_s32_conj_macc(
+    complex_s32_t acc[],
+    const complex_s32_t b[],
+    const complex_s32_t c[],
+    const unsigned length,
+    const right_shift_t acc_shr,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
+
+
+C_API
+headroom_t xs3_vect_complex_s32_conj_nmacc(
+    complex_s32_t acc[],
+    const complex_s32_t b[],
+    const complex_s32_t c[],
+    const unsigned length,
+    const right_shift_t acc_shr,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
     
 C_API
 void xs3_vect_complex_s32_macc_prepare(
@@ -436,6 +458,13 @@ void xs3_vect_complex_s32_macc_prepare(
     const exponent_t acc_hr,
     const headroom_t b_hr,
     const headroom_t c_hr);
+
+
+#define xs3_vect_complex_s32_nmacc_prepare xs3_vect_complex_s32_macc_prepare
+
+#define xs3_vect_complex_s32_conj_macc_prepare xs3_vect_complex_s32_macc_prepare
+
+#define xs3_vect_complex_s32_conj_nmacc_prepare xs3_vect_complex_s32_macc_prepare
 
 /**
  * @brief Compute the magnitude of each element of a complex 32-bit vector.
@@ -2501,6 +2530,8 @@ void xs3_vect_s32_macc_prepare(
     const headroom_t acc_hr,
     const headroom_t b_hr,
     const headroom_t c_hr);
+    
+#define xs3_vect_s32_nmacc_prepare  xs3_vect_s32_macc_prepare
 
 /** 
  * @brief Rectify the elements of a 32-bit vector.

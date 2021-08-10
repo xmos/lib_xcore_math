@@ -16,23 +16,23 @@
 #include "unity_fixture.h"
 
 
-TEST_GROUP_RUNNER(xs3_vect_complex_macc) {
-  RUN_TEST_CASE(xs3_vect_complex_macc, xs3_vect_complex_s16_macc);
-  RUN_TEST_CASE(xs3_vect_complex_macc, xs3_vect_complex_s16_nmacc);
-  RUN_TEST_CASE(xs3_vect_complex_macc, xs3_vect_complex_s32_macc);
-  RUN_TEST_CASE(xs3_vect_complex_macc, xs3_vect_complex_s32_nmacc);
+TEST_GROUP_RUNNER(xs3_vect_complex_conj_macc) {
+  RUN_TEST_CASE(xs3_vect_complex_conj_macc, xs3_vect_complex_s16_conj_macc);
+  RUN_TEST_CASE(xs3_vect_complex_conj_macc, xs3_vect_complex_s16_conj_nmacc);
+  RUN_TEST_CASE(xs3_vect_complex_conj_macc, xs3_vect_complex_s32_conj_macc);
+  RUN_TEST_CASE(xs3_vect_complex_conj_macc, xs3_vect_complex_s32_conj_nmacc);
 }
 
-TEST_GROUP(xs3_vect_complex_macc);
-TEST_SETUP(xs3_vect_complex_macc) {}
-TEST_TEAR_DOWN(xs3_vect_complex_macc) {}
+TEST_GROUP(xs3_vect_complex_conj_macc);
+TEST_SETUP(xs3_vect_complex_conj_macc) {}
+TEST_TEAR_DOWN(xs3_vect_complex_conj_macc) {}
 
 
-#define REPS    1000
+#define REPS    100
 #define LEN     257
 
 
-TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_macc)
+TEST(xs3_vect_complex_conj_macc, xs3_vect_complex_s16_conj_macc)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -76,19 +76,19 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_macc)
         hr.c = xs3_vect_complex_s16_headroom(C.re, C.im, LEN);
 
         right_shift_t acc_shr, bc_shr;
-        xs3_vect_complex_s16_macc_prepare(&exp.a, &acc_shr, &bc_shr, 
+        xs3_vect_complex_s16_conj_macc_prepare(&exp.a, &acc_shr, &bc_shr, 
                                           exp.a, exp.b, exp.c, 
                                           hr.a, hr.b, hr.c);
 
-        hr.a = xs3_vect_complex_s16_macc(A.re, A.im, B.re, B.im, C.re, C.im, LEN, acc_shr, bc_shr);
+        hr.a = xs3_vect_complex_s16_conj_macc(A.re, A.im, B.re, B.im, C.re, C.im, LEN, acc_shr, bc_shr);
         
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
           conv_error_e error = 0;
           complex_double_t expected_fp;
-          expected_fp.re = A_fp[i].re + B_fp[i].re * C_fp[i].re - B_fp[i].im * C_fp[i].im;
-          expected_fp.im = A_fp[i].im + B_fp[i].re * C_fp[i].im + B_fp[i].im * C_fp[i].re;
+          expected_fp.re = A_fp[i].re + B_fp[i].re * C_fp[i].re + B_fp[i].im * C_fp[i].im;
+          expected_fp.im = A_fp[i].im - B_fp[i].re * C_fp[i].im + B_fp[i].im * C_fp[i].re;
           
           complex_s32_t expected;
           expected.re = conv_double_to_s16(expected_fp.re, exp.a, &error);
@@ -112,7 +112,7 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_macc)
 }
 
 
-TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_nmacc)
+TEST(xs3_vect_complex_conj_macc, xs3_vect_complex_s16_conj_nmacc)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -156,19 +156,19 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_nmacc)
         hr.c = xs3_vect_complex_s16_headroom(C.re, C.im, LEN);
 
         right_shift_t acc_shr, bc_shr;
-        xs3_vect_complex_s16_nmacc_prepare(&exp.a, &acc_shr, &bc_shr, 
-                                           exp.a, exp.b, exp.c, 
-                                           hr.a, hr.b, hr.c);
+        xs3_vect_complex_s16_conj_macc_prepare(&exp.a, &acc_shr, &bc_shr, 
+                                          exp.a, exp.b, exp.c, 
+                                          hr.a, hr.b, hr.c);
 
-        hr.a = xs3_vect_complex_s16_nmacc(A.re, A.im, B.re, B.im, C.re, C.im, LEN, acc_shr, bc_shr);
+        hr.a = xs3_vect_complex_s16_conj_nmacc(A.re, A.im, B.re, B.im, C.re, C.im, LEN, acc_shr, bc_shr);
         
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
           conv_error_e error = 0;
           complex_double_t expected_fp;
-          expected_fp.re = A_fp[i].re - ( B_fp[i].re * C_fp[i].re - B_fp[i].im * C_fp[i].im );
-          expected_fp.im = A_fp[i].im - ( B_fp[i].re * C_fp[i].im + B_fp[i].im * C_fp[i].re );
+          expected_fp.re = A_fp[i].re - (  B_fp[i].re * C_fp[i].re + B_fp[i].im * C_fp[i].im );
+          expected_fp.im = A_fp[i].im - (- B_fp[i].re * C_fp[i].im + B_fp[i].im * C_fp[i].re );
           
           complex_s32_t expected;
           expected.re = conv_double_to_s16(expected_fp.re, exp.a, &error);
@@ -192,7 +192,7 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_nmacc)
 }
 
 
-TEST(xs3_vect_complex_macc, xs3_vect_complex_s32_macc)
+TEST(xs3_vect_complex_conj_macc, xs3_vect_complex_s32_conj_macc)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -237,15 +237,15 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s32_macc)
                                           exp.a, exp.b, exp.c, 
                                           hr.a, hr.b, hr.c);
 
-        hr.a = xs3_vect_complex_s32_macc(A, B, C, LEN, acc_shr, b_shr, c_shr);
+        hr.a = xs3_vect_complex_s32_conj_macc(A, B, C, LEN, acc_shr, b_shr, c_shr);
         
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
           conv_error_e error = 0;
           complex_double_t expected_fp;
-          expected_fp.re = A_fp[i].re + B_fp[i].re * C_fp[i].re - B_fp[i].im * C_fp[i].im;
-          expected_fp.im = A_fp[i].im + B_fp[i].re * C_fp[i].im + B_fp[i].im * C_fp[i].re;
+          expected_fp.re = A_fp[i].re + B_fp[i].re * C_fp[i].re + B_fp[i].im * C_fp[i].im;
+          expected_fp.im = A_fp[i].im - B_fp[i].re * C_fp[i].im + B_fp[i].im * C_fp[i].re;
 
           complex_s32_t expected;
           expected.re = conv_double_to_s32(expected_fp.re, exp.a, &error);
@@ -260,8 +260,10 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s32_macc)
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.re, A[i].re, "Error not within threshold (real).");
 
-          if(expected.im - A[i].im > THRESHOLD || A[i].im - expected.im > THRESHOLD)
+          if(expected.im - A[i].im > THRESHOLD || A[i].im - expected.im > THRESHOLD){
             printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A[%d].im = %ld\n", v, exp.a, i, expected.im, expected_fp.im, i, A[i].im);
+            printf("B[%d] = %f + i*%f;   C = %f + i*%f\n", i, B_fp[i].re, B_fp[i].im, C_fp[i].re, C_fp[i].im); 
+          }
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.im, A[i].im, "Error not within threshold (imag).");
 #undef THRESHOLD
@@ -271,7 +273,7 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s32_macc)
 }
 
 
-TEST(xs3_vect_complex_macc, xs3_vect_complex_s32_nmacc)
+TEST(xs3_vect_complex_conj_macc, xs3_vect_complex_s32_conj_nmacc)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -312,19 +314,19 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s32_nmacc)
         hr.c = xs3_vect_complex_s32_headroom(C, LEN);
 
         right_shift_t acc_shr, b_shr, c_shr;
-        xs3_vect_complex_s32_nmacc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr, 
-                                           exp.a, exp.b, exp.c, 
-                                           hr.a, hr.b, hr.c);
+        xs3_vect_complex_s32_conj_macc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr, 
+                                          exp.a, exp.b, exp.c, 
+                                          hr.a, hr.b, hr.c);
 
-        hr.a = xs3_vect_complex_s32_nmacc(A, B, C, LEN, acc_shr, b_shr, c_shr);
+        hr.a = xs3_vect_complex_s32_conj_nmacc(A, B, C, LEN, acc_shr, b_shr, c_shr);
         
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
           conv_error_e error = 0;
           complex_double_t expected_fp;
-          expected_fp.re = A_fp[i].re - ( B_fp[i].re * C_fp[i].re - B_fp[i].im * C_fp[i].im );
-          expected_fp.im = A_fp[i].im - ( B_fp[i].re * C_fp[i].im + B_fp[i].im * C_fp[i].re );
+          expected_fp.re = A_fp[i].re - (  B_fp[i].re * C_fp[i].re + B_fp[i].im * C_fp[i].im );
+          expected_fp.im = A_fp[i].im - (- B_fp[i].re * C_fp[i].im + B_fp[i].im * C_fp[i].re );
 
           complex_s32_t expected;
           expected.re = conv_double_to_s32(expected_fp.re, exp.a, &error);

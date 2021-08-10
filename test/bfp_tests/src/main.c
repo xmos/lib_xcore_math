@@ -50,6 +50,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(bfp_complex_mag);
     RUN_TEST_GROUP(bfp_complex_sum);
     RUN_TEST_GROUP(bfp_complex_macc);
+    RUN_TEST_GROUP(bfp_complex_conj_macc);
     
     RUN_TEST_GROUP(bfp_depth_convert);
     RUN_TEST_GROUP(bfp_complex_depth_convert);

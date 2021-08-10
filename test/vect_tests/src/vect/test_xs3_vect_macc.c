@@ -127,7 +127,7 @@ TEST(xs3_vect_macc, xs3_vect_s16_nmacc)
         hr.c = xs3_vect_s16_headroom(C, LEN);
 
         right_shift_t acc_shr, bc_shr;
-        xs3_vect_s16_macc_prepare(&exp.a, &acc_shr, &bc_shr, 
+        xs3_vect_s16_nmacc_prepare(&exp.a, &acc_shr, &bc_shr, 
                                   exp.a, exp.b, exp.c, 
                                   hr.a, hr.b, hr.c);
 
@@ -251,7 +251,7 @@ TEST(xs3_vect_macc, xs3_vect_s32_nmacc)
         hr.c = xs3_vect_s32_headroom(C, LEN);
 
         right_shift_t acc_shr, b_shr, c_shr;
-        xs3_vect_s32_macc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr, 
+        xs3_vect_s32_nmacc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr, 
                                               exp.a, exp.b, exp.c, 
                                               hr.a, hr.b, hr.c);
 

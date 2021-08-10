@@ -568,6 +568,30 @@ headroom_t xs3_vect_complex_s16_nmacc(
     const unsigned length,
     const right_shift_t acc_shr,
     const right_shift_t bc_sat);
+
+C_API
+headroom_t xs3_vect_complex_s16_conj_macc(
+    int16_t acc_real[],
+    int16_t acc_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const int16_t c_real[],
+    const int16_t c_imag[],
+    const unsigned length,
+    const right_shift_t acc_shr,
+    const right_shift_t bc_sat);
+
+C_API
+headroom_t xs3_vect_complex_s16_conj_nmacc(
+    int16_t acc_real[],
+    int16_t acc_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const int16_t c_real[],
+    const int16_t c_imag[],
+    const unsigned length,
+    const right_shift_t acc_shr,
+    const right_shift_t bc_sat);
     
 C_API
 void xs3_vect_complex_s16_macc_prepare(
@@ -580,6 +604,12 @@ void xs3_vect_complex_s16_macc_prepare(
     const headroom_t acc_hr,
     const headroom_t b_hr,
     const headroom_t c_hr);
+
+#define xs3_vect_complex_s16_nmacc_prepare xs3_vect_complex_s16_macc_prepare
+
+#define xs3_vect_complex_s16_conj_macc_prepare xs3_vect_complex_s16_macc_prepare
+
+#define xs3_vect_complex_s16_conj_nmacc_prepare xs3_vect_complex_s16_macc_prepare
 
 /**
  * @brief Obtain the output exponent and shifts required for a call to `xs3_vect_complex_s16_mag()`.
@@ -2028,6 +2058,8 @@ void xs3_vect_s16_macc_prepare(
     const headroom_t acc_hr,
     const headroom_t b_hr,
     const headroom_t c_hr);
+
+#define xs3_vect_s16_nmacc_prepare  xs3_vect_s16_macc_prepare
 
 C_API
 headroom_t xs3_vect_s16_macc(

@@ -262,7 +262,6 @@ void bfp_complex_s16_to_complex_s32(
 }
 
 
-
 void bfp_complex_s16_macc(
     bfp_complex_s16_t* acc, 
     const bfp_complex_s16_t* b, 
@@ -284,7 +283,6 @@ void bfp_complex_s16_macc(
 }
 
 
-
 void bfp_complex_s16_nmacc(
     bfp_complex_s16_t* acc, 
     const bfp_complex_s16_t* b, 
@@ -299,8 +297,50 @@ void bfp_complex_s16_nmacc(
     exponent_t a_exp;
     right_shift_t acc_shr, bc_sat;
 
-    xs3_vect_complex_s16_macc_prepare(&a_exp, &acc_shr, &bc_sat, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
+    xs3_vect_complex_s16_nmacc_prepare(&a_exp, &acc_shr, &bc_sat, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
 
     acc->exp = a_exp;
     acc->hr = xs3_vect_complex_s16_nmacc(acc->real, acc->imag, b->real, b->imag, c->real, c->imag, b->length, acc_shr, bc_sat);
+}
+
+
+void bfp_complex_s16_conj_macc(
+    bfp_complex_s16_t* acc, 
+    const bfp_complex_s16_t* b, 
+    const bfp_complex_s16_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == acc->length);
+    assert(b->length == c->length);
+    assert(b->length != 0);
+#endif
+
+    exponent_t a_exp;
+    right_shift_t acc_shr, bc_sat;
+
+    xs3_vect_complex_s16_conj_macc_prepare(&a_exp, &acc_shr, &bc_sat, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
+
+    acc->exp = a_exp;
+    acc->hr = xs3_vect_complex_s16_conj_macc(acc->real, acc->imag, b->real, b->imag, c->real, c->imag, b->length, acc_shr, bc_sat);
+}
+
+
+void bfp_complex_s16_conj_nmacc(
+    bfp_complex_s16_t* acc, 
+    const bfp_complex_s16_t* b, 
+    const bfp_complex_s16_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == acc->length);
+    assert(b->length == c->length);
+    assert(b->length != 0);
+#endif
+
+    exponent_t a_exp;
+    right_shift_t acc_shr, bc_sat;
+
+    xs3_vect_complex_s16_conj_nmacc_prepare(&a_exp, &acc_shr, &bc_sat, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
+
+    acc->exp = a_exp;
+    acc->hr = xs3_vect_complex_s16_conj_nmacc(acc->real, acc->imag, b->real, b->imag, c->real, c->imag, b->length, acc_shr, bc_sat);
 }
