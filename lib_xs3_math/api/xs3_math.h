@@ -41,7 +41,11 @@ extern "C" {
 #include "xs3_math_types.h"
 
 #include "vect/xs3_vect_s32.h"
+#include "vect/xs3_vect_complex_s32.h"
+#include "vect/xs3_vect_ch_pair_s32.h"
 #include "vect/xs3_vect_s16.h"
+#include "vect/xs3_vect_complex_s16.h"
+#include "vect/xs3_vect_ch_pair_s16.h"
 #include "vect/xs3_vect_s8.h"
 #include "vect/xs3_mixed.h"
 #include "vect/xs3_fft.h"
