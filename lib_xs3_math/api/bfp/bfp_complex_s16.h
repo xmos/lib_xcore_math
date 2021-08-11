@@ -192,6 +192,22 @@ void bfp_complex_s16_conj_mul(
     const bfp_complex_s16_t* c);
 
 
+/**
+ * @brief Multiply one complex 16-bit BFP vector by another element-wise and add the result to a
+ * third vector.
+ * 
+ * @operation{
+ * &    A_k \leftarrow A_k + (B_k \cdot C_k)            \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
+ * 
+ * @param[inout]  acc   Input/Output accumulator complex BFP vector @vector{A}
+ * @param[in]     b     Input complex BFP vector @vector{B}
+ * @param[in]     c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
+ */
 C_API
 void bfp_complex_s16_macc(
     bfp_complex_s16_t* acc, 
@@ -199,20 +215,70 @@ void bfp_complex_s16_macc(
     const bfp_complex_s16_t* c);
 
 
+/**
+ * @brief Multiply one complex 16-bit BFP vector by another element-wise and subtract the result
+ * from a third vector.
+ * 
+ * @operation{
+ * &    A_k \leftarrow A_k - (B_k \cdot C_k)            \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
+ * 
+ * @param[inout]  acc   Input/Output accumulator complex BFP vector @vector{A}
+ * @param[in]     b     Input complex BFP vector @vector{B}
+ * @param[in]     c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
+ */
 C_API
 void bfp_complex_s16_nmacc(
     bfp_complex_s16_t* acc, 
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c);
-    
 
+
+/**
+ * @brief Multiply one complex 16-bit BFP vector by the complex conjugate of another element-wise
+ * and add the result to a third vector.
+ * 
+ * @operation{
+ * &    A_k \leftarrow A_k + (B_k \cdot C_k^*)                                          \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                                       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}  \\
+ * &        \qquad\text{and } (C_k)^* \text{ is the complex conjugate of } C_k
+ * }
+ * 
+ * @param[inout]  acc   Input/Output accumulator complex BFP vector @vector{A}
+ * @param[in]     b     Input complex BFP vector @vector{B}
+ * @param[in]     c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
+ */
 C_API
 void bfp_complex_s16_conj_macc(
     bfp_complex_s16_t* acc, 
     const bfp_complex_s16_t* b, 
     const bfp_complex_s16_t* c);
-    
 
+
+/**
+ * @brief Multiply one complex 16-bit BFP vector by the complex conjugate of another element-wise
+ * and subtract the result from a third vector.
+ * 
+ * @operation{
+ * &    A_k \leftarrow A_k - (B_k \cdot C_k^*)                                          \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                                       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}  \\
+ * &        \qquad\text{and } (C_k)^* \text{ is the complex conjugate of } C_k
+ * }
+ * 
+ * @param[inout]  acc   Input/Output accumulator complex BFP vector @vector{A}
+ * @param[in]     b     Input complex BFP vector @vector{B}
+ * @param[in]     c     Input complex BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
+ */
 C_API
 void bfp_complex_s16_conj_nmacc(
     bfp_complex_s16_t* acc, 

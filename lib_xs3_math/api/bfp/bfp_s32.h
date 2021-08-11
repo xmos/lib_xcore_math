@@ -190,13 +190,20 @@ void bfp_s32_mul(
 
 
 /**
- * Multiply-accumulate 
+ * @brief Multiply one 32-bit BFP vector by another element-wise and add the result to a third
+ * vector.
  * 
- * @bfp_op{32, @f$ 
- *      A_k \leftarrow A_k + B_k \cdot C_k              \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow A_k + B_k \cdot C_k              \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
+ * 
+ * @param[inout]  acc   Input/Output accumulator BFP vector @vector{A}
+ * @param[in]     b     Input BFP vector @vector{B}
+ * @param[in]     c     Input BFP vector @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_macc(
@@ -204,15 +211,22 @@ void bfp_s32_macc(
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
 
-    
+
 /**
- * Multiply-accumulate (negated)
+ * @brief Multiply one 32-bit BFP vector by another element-wise and subtract the result from a
+ * third vector.
  * 
- * @bfp_op{32, @f$ 
- *      A_k \leftarrow A_k - B_k \cdot C_k              \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
- * @f$ }
+ * @operation{
+ * &    A_k \leftarrow A_k - B_k \cdot C_k              \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
+ * 
+ * @param[inout]  acc   Input/Output accumulator BFP vector @vector{A}
+ * @param[in]     b     Input BFP vector @vector{B}
+ * @param[in]     c     Input BFP vector @vector{C}
+ * 
+ * @ingroup bfp32_func
  */
 C_API
 void bfp_s32_nmacc(
