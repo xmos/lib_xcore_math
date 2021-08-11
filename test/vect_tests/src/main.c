@@ -63,6 +63,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_complex_s16_to_complex_s32);
     RUN_TEST_GROUP(xs3_vect_complex_macc);
     RUN_TEST_GROUP(xs3_vect_complex_conj_macc);
+    RUN_TEST_GROUP(xs3_vect_complex_conjugate);
 
     // misc
     RUN_TEST_GROUP(xs3_vect_extract);

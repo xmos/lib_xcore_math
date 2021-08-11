@@ -501,3 +501,27 @@ void bfp_complex_s16_mag(
 C_API
 float_complex_s32_t bfp_complex_s16_sum(
     const bfp_complex_s16_t* b);
+
+
+/** 
+ * @brief Get the complex conjugate of each element of a complex 16-bit BFP vector.
+ * 
+ * Each element @math{A_k} of complex output BFP vector @vector{A} is set to the complex conjugate
+ * of @math{B_k}, the corresponding element of complex input BFP vector @vector{B}.
+ * 
+ * @operation{
+ * &    A_k \leftarrow B_k^*                                                            \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                                       \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}  \\
+ * &        \qquad\text{and } B_k^* \text{ is the complex conjugate of } B_k
+ * }
+ * 
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+void bfp_complex_s16_conjugate(
+    bfp_complex_s16_t* a, 
+    const bfp_complex_s16_t* b);

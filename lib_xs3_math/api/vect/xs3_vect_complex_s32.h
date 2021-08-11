@@ -1715,6 +1715,42 @@ C_API
 void xs3_vect_complex_s32_tail_reverse(
     complex_s32_t x[],
     const unsigned length);
+    
+
+/**
+ * @brief Get the complex conjugate of a complex 32-bit vector.
+ * 
+ * The complex conjugate of a complex scalar @math{z = x + yi} is @math{z^* = x - yi}.
+ * This function computes the complex conjugate of each element of @vector{b} (negates the imaginary
+ * part of each element) and places the result in @vector{a}.
+ * 
+ * `a[]` is the complex 32-bit output vector @vector{a}.
+ * 
+ * `b[]` is the complex 32-bit input vector @vector{b}.
+ * 
+ * Both `a` and `b` must point to word-aligned addresses.
+ * 
+ * `length` is the number of elements in @vector{a} and @vector{b}.
+ * 
+ * @operation{
+ * &     Re\\{a_k\\} \leftarrow Re\\{b_k\\}               \\
+ * &     Im\\{a_k\\} \leftarrow - Im\\{b_k\\}             \\
+ * &         \qquad\text{ for }k\in 1\ ...\ (length-1) 
+ * }
+ * 
+ * @param[out]  a       Complex 32-bit output vector @vector{a}
+ * @param[in]   b       Complex 32-bit input vector @vector{b}
+ * @param[in]   length  Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_complex_s32_conjugate(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const unsigned length);
 
 
 #ifdef __XC__

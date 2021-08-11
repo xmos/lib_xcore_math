@@ -8,7 +8,7 @@
 #include "vect/xs3_vect_s16.h"
 #include "../vect/vpu_helper.h"
 
-
+#include <string.h>
 
 const extern unsigned rot_table16_rows;
 const extern int16_t rot_table16[14][2][16];
@@ -343,4 +343,23 @@ void bfp_complex_s16_conj_nmacc(
 
     acc->exp = a_exp;
     acc->hr = xs3_vect_complex_s16_conj_nmacc(acc->real, acc->imag, b->real, b->imag, c->real, c->imag, b->length, acc_shr, bc_sat);
+}
+
+
+void bfp_complex_s16_conjugate(
+    bfp_complex_s16_t* a, 
+    const bfp_complex_s16_t* b)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == a->length);
+    assert(b->length != 0);
+#endif
+
+    a->exp = b->exp;
+    a->hr = b->hr;
+    
+    if(a != b)
+      memcpy(a->real, b->real, b->length * sizeof(int16_t));
+
+    xs3_vect_s16_scale(a->imag, b->imag, b->length, -1, 0);
 }
