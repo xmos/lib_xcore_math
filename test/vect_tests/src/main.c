@@ -46,6 +46,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_energy);
     RUN_TEST_GROUP(xs3_vect_sqrt);
     RUN_TEST_GROUP(xs3_vect_bitdepth_convert);
+    RUN_TEST_GROUP(xs3_vect_macc);
 
     // complex vector
     RUN_TEST_GROUP(xs3_vect_complex_add);
@@ -60,6 +61,9 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_complex_sum);
     RUN_TEST_GROUP(xs3_vect_complex_s32_to_complex_s16);
     RUN_TEST_GROUP(xs3_vect_complex_s16_to_complex_s32);
+    RUN_TEST_GROUP(xs3_vect_complex_macc);
+    RUN_TEST_GROUP(xs3_vect_complex_conj_macc);
+    RUN_TEST_GROUP(xs3_vect_complex_conjugate);
 
     // misc
     RUN_TEST_GROUP(xs3_vect_extract);

@@ -250,3 +250,103 @@ void bfp_complex_s32_to_complex_s16(
     a->exp = b->exp + b_shr;
     a->hr = 0;
 }
+
+
+void bfp_complex_s32_macc(
+    bfp_complex_s32_t* acc, 
+    const bfp_complex_s32_t* b, 
+    const bfp_complex_s32_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == acc->length);
+    assert(b->length == c->length);
+    assert(b->length != 0);
+#endif
+
+    exponent_t a_exp;
+    right_shift_t acc_shr, b_shr, c_shr;
+
+    xs3_vect_complex_s32_macc_prepare(&a_exp, &acc_shr, &b_shr, &c_shr, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
+
+    acc->exp = a_exp;
+    acc->hr = xs3_vect_complex_s32_macc(acc->data, b->data, c->data, b->length, acc_shr, b_shr, c_shr);
+}
+
+
+void bfp_complex_s32_nmacc(
+    bfp_complex_s32_t* acc, 
+    const bfp_complex_s32_t* b, 
+    const bfp_complex_s32_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == acc->length);
+    assert(b->length == c->length);
+    assert(b->length != 0);
+#endif
+
+    exponent_t a_exp;
+    right_shift_t acc_shr, b_shr, c_shr;
+
+    xs3_vect_complex_s32_nmacc_prepare(&a_exp, &acc_shr, &b_shr, &c_shr, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
+
+    acc->exp = a_exp;
+    acc->hr = xs3_vect_complex_s32_nmacc(acc->data, b->data, c->data, b->length, acc_shr, b_shr, c_shr);
+}
+
+
+void bfp_complex_s32_conj_macc(
+    bfp_complex_s32_t* acc, 
+    const bfp_complex_s32_t* b, 
+    const bfp_complex_s32_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == acc->length);
+    assert(b->length == c->length);
+    assert(b->length != 0);
+#endif
+
+    exponent_t a_exp;
+    right_shift_t acc_shr, b_shr, c_shr;
+
+    xs3_vect_complex_s32_conj_macc_prepare(&a_exp, &acc_shr, &b_shr, &c_shr, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
+
+    acc->exp = a_exp;
+    acc->hr = xs3_vect_complex_s32_conj_macc(acc->data, b->data, c->data, b->length, acc_shr, b_shr, c_shr);
+}
+
+
+void bfp_complex_s32_conj_nmacc(
+    bfp_complex_s32_t* acc, 
+    const bfp_complex_s32_t* b, 
+    const bfp_complex_s32_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == acc->length);
+    assert(b->length == c->length);
+    assert(b->length != 0);
+#endif
+
+    exponent_t a_exp;
+    right_shift_t acc_shr, b_shr, c_shr;
+
+    xs3_vect_complex_s32_conj_nmacc_prepare(&a_exp, &acc_shr, &b_shr, &c_shr, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
+
+    acc->exp = a_exp;
+    acc->hr = xs3_vect_complex_s32_conj_nmacc(acc->data, b->data, c->data, b->length, acc_shr, b_shr, c_shr);
+}
+
+
+void bfp_complex_s32_conjugate(
+    bfp_complex_s32_t* a, 
+    const bfp_complex_s32_t* b)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == a->length);
+    assert(b->length != 0);
+#endif
+
+    a->exp = b->exp;
+    a->hr = b->hr;
+
+    xs3_vect_complex_s32_conjugate(a->data, b->data, b->length);
+}

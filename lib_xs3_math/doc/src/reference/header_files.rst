@@ -19,13 +19,6 @@
 .. doxygenpage:: page_bfp_math_h
   :content-only:
 
-
-
-`bfp.h`
--------
-  
-.. doxygenpage:: page_bfp_h
-  :content-only:
   
 
 
@@ -36,19 +29,50 @@
   :content-only:
 
 
-
-`bfp_complex.h`
----------------
-
-.. doxygenpage:: page_bfp_complex_h
+`bfp_s16.h`
+-----------
+  
+.. doxygenpage:: page_bfp_s16_h
   :content-only:
 
 
 
-`bfp_ch_pair.h`
----------------
+`bfp_complex_s16.h`
+-------------------
 
-.. doxygenpage:: page_bfp_ch_pair_h
+.. doxygenpage:: page_bfp_complex_s16_h
+  :content-only:
+
+
+
+`bfp_ch_pair_s16.h`
+-------------------
+
+.. doxygenpage:: page_bfp_ch_pair_s16_h
+  :content-only:
+
+
+
+`bfp_s32.h`
+-----------
+  
+.. doxygenpage:: page_bfp_s32_h
+  :content-only:
+
+
+
+`bfp_complex_s32.h`
+-------------------
+
+.. doxygenpage:: page_bfp_complex_s32_h
+  :content-only:
+
+
+
+`bfp_ch_pair_s32.h`
+-------------------
+
+.. doxygenpage:: page_bfp_ch_pair_s32_h
   :content-only:
 
 
@@ -77,10 +101,42 @@
 
 
   
+`xs3_vect_complex_s16.h`
+------------------------
+  
+.. doxygenpage:: page_xs3_vect_complex_s16_h
+  :content-only:
+
+
+  
+`xs3_vect_ch_pair_s16.h`
+------------------------
+  
+.. doxygenpage:: page_xs3_vect_ch_pair_s16_h
+  :content-only:
+
+
+  
 `xs3_vect_s32.h`
 ----------------
   
 .. doxygenpage:: page_xs3_vect_s32_h
+  :content-only:
+
+
+  
+`xs3_vect_complex_s32.h`
+------------------------
+  
+.. doxygenpage:: page_xs3_vect_complex_s32_h
+  :content-only:
+
+
+  
+`xs3_vect_ch_pair_s32.h`
+------------------------
+  
+.. doxygenpage:: page_xs3_vect_ch_pair_s32_h
   :content-only:
 
 

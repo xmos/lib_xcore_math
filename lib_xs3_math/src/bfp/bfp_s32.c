@@ -398,3 +398,48 @@ void bfp_s32_to_s16(
 
     xs3_vect_s32_to_s16(a->data, b->data, b->length, b_shr);
 }
+
+
+
+
+void bfp_s32_macc(
+    bfp_s32_t* acc, 
+    const bfp_s32_t* b, 
+    const bfp_s32_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == c->length);
+    assert(b->length == a->length);
+    assert(b->length != 0);
+#endif
+
+    right_shift_t acc_shr, b_shr, c_shr;
+    xs3_vect_s32_macc_prepare(&acc->exp, 
+                              &acc_shr, &b_shr, &c_shr, 
+                              acc->exp, b->exp, c->exp, 
+                              acc->hr, b->hr, c->hr); 
+
+    acc->hr = xs3_vect_s32_macc(acc->data, b->data, c->data, 
+                                b->length, acc_shr, b_shr, c_shr);
+}
+
+void bfp_s32_nmacc(
+    bfp_s32_t* acc, 
+    const bfp_s32_t* b, 
+    const bfp_s32_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == c->length);
+    assert(b->length == a->length);
+    assert(b->length != 0);
+#endif
+
+    right_shift_t acc_shr, b_shr, c_shr;
+    xs3_vect_s32_macc_prepare(&acc->exp, 
+                              &acc_shr, &b_shr, &c_shr, 
+                              acc->exp, b->exp, c->exp, 
+                              acc->hr, b->hr, c->hr); 
+
+    acc->hr = xs3_vect_s32_nmacc(acc->data, b->data, c->data, 
+                                 b->length, acc_shr, b_shr, c_shr);
+}

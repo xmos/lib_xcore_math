@@ -14,6 +14,37 @@
 ////////////////////////////////////////
 
 
+void xs3_vect_complex_s16_macc_prepare(
+    exponent_t* new_acc_exp,
+    right_shift_t* acc_shr,
+    right_shift_t* bc_shr,
+    const exponent_t acc_exp,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t acc_hr,
+    const headroom_t b_hr,
+    const headroom_t c_hr)
+{
+  // Compared to xs3_vect_s16_macc_prepare() (see that function for more details) we need one extra bit of shift 
+  // in bc_shr
+
+  const headroom_t bc_hr = b_hr + c_hr;
+  *bc_shr = 17 - bc_hr;
+
+  // The exponent associated with the right-shifted product of B and C
+  const exponent_t bc_exp = b_exp + c_exp - bc_hr + 17;
+
+  // The exponent that acc[] would have if it had exactly one bit of headroom.
+  // This way 
+  const exponent_t tmp_exp = acc_exp - acc_hr + 1;
+
+  // The new exponent should be whichever of those two exponents is greater.
+  *new_acc_exp = (bc_exp > tmp_exp)? bc_exp : tmp_exp;
+  
+  // Can compute the proper shifts now
+  *acc_shr = *new_acc_exp - acc_exp;
+  *bc_shr += *new_acc_exp - bc_exp;
+}
 
 
 void xs3_vect_complex_s16_real_mul_prepare(
@@ -164,6 +195,64 @@ void xs3_vect_complex_s16_squared_mag_prepare(
 ////////////////////////////////////////
 
 
+
+void xs3_vect_complex_s32_macc_prepare(
+    exponent_t* new_acc_exp,
+    right_shift_t* acc_shr,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t acc_exp,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const exponent_t acc_hr,
+    const headroom_t b_hr,
+    const headroom_t c_hr)
+{
+    /*
+        If B and C are both {-0x80000000, -0x80000000}, then the imaginary part of their product is:
+
+          P = imag(B*C) = -2^31 * -2^31 + -2^31 * -2^31
+            = 2 * 2^(62) = 2^63
+        
+        With the 30-bit right shift applied by the VPU,
+
+          Q = P * 2^-30
+            = 2^33
+
+        Because we'll have to add after multiplying, we want at least 1 bit of headroom in the result, which
+        means it needs to be at most 2^30. So We need to make sure that's shifted 3 bits.
+
+        But that's assuming  b_hr = c_hr = 0. With headroom that becomes
+
+          P = 2^(63 - b_hr - c_hr)
+          Q = 2^(33 - b_hr - c_hr)
+
+        Every bit of headroom is one bit less to shift
+
+        total_bc_shr = (3 - b_hr - c_hr);
+
+        The shift is actually applied to inputs, though, so it gets split between B[] and C[]
+
+    */
+    
+    *b_shr = 1 - b_hr;
+    *c_shr = 2 - c_hr;
+
+    // exponent_t p_exp = b_exp + c_exp + *b_shr + *c_shr + 30;
+    exponent_t p_exp = b_exp + c_exp - b_hr - c_hr + 33;
+    // d_exp is the exponent acc[] would have if it were shifted to have 1 bit of headroom
+    exponent_t d_exp = acc_exp - acc_hr + 1;
+
+    *new_acc_exp = (d_exp > p_exp)? d_exp : p_exp;
+
+    *acc_shr = *new_acc_exp - acc_exp;
+
+    right_shift_t p_shr = *new_acc_exp - p_exp;
+
+    // p_shr needs to be split between b_shr and c_shr. (it can't be negative)
+    *b_shr += (p_shr>>1);
+    *c_shr += p_shr - (p_shr>>1);
+}
 
 void xs3_vect_complex_s32_mag_prepare(
     exponent_t* a_exp,
