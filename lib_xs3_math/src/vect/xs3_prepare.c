@@ -636,6 +636,14 @@ void xs3_vect_s32_energy_prepare(
 
     *b_shr = MAX(*b_shr, -((int)b_hr));
 
+    // b_shr == -14 is annoying because  ( ((X[k]<<14)^2) & (1<<29) )  is always be 0, which means
+    // that when the 30-bit right-shift happens, it will always round down (square is guaranteed to
+    // be positive), which in turn means the error is not zero mean, which in turn means that the
+    // expected error grows with length.
+
+    // if(*b_shr == -14)
+    //   *b_shr = -13;
+
     *a_exp = 2*(b_exp + *b_shr) + 30;
 }
 

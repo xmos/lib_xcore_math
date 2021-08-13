@@ -363,3 +363,15 @@ void bfp_complex_s16_conjugate(
 
     xs3_vect_s16_scale(a->imag, b->imag, b->length, -1, 0);
 }
+
+
+float_s64_t bfp_complex_s16_energy(
+    const bfp_complex_s16_t* b)
+{
+    float_s64_t a;
+    a.exp = 2*b->exp;
+    a.mant = 0;
+    a.mant += xs3_vect_s16_dot(b->real, b->real, b->length);
+    a.mant += xs3_vect_s16_dot(b->imag, b->imag, b->length);
+    return a;
+}

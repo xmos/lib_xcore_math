@@ -350,3 +350,17 @@ void bfp_complex_s32_conjugate(
 
     xs3_vect_complex_s32_conjugate(a->data, b->data, b->length);
 }
+
+
+float_s64_t bfp_complex_s32_energy(
+    const bfp_complex_s32_t* b)
+{
+  float_s64_t a;
+  
+  right_shift_t b_shr;
+  xs3_vect_s32_energy_prepare(&a.exp, &b_shr, 2 * b->length, b->exp, b->hr);
+  
+  a.mant = xs3_vect_s32_energy( (int32_t*) b->data, 2 * b->length, b_shr);
+
+  return a;
+}

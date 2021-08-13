@@ -530,3 +530,26 @@ C_API
 void bfp_complex_s32_conjugate(
     bfp_complex_s32_t* a, 
     const bfp_complex_s32_t* b);
+
+
+/**
+ * @brief Get the energy of a complex 32-bit BFP vector.
+ *
+ * The energy of a complex 32-bit BFP vector here is the sum of the squared magnitudes of each of
+ * the vector's elements.
+ * 
+ * @operation{
+ * &    a \leftarrow \sum_{k=0}^{N-1} \left( \left|b_k \cdot 2^{B\_exp}\right|^2 \right)    \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                                           \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
+ * 
+ * @param[in] b   Input complex BFP vector @vector{B}
+ * 
+ * @returns     @math{a}, the energy of vector @vector{B}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+float_s64_t bfp_complex_s32_energy(
+    const bfp_complex_s32_t* b);
