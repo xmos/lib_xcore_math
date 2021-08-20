@@ -27,19 +27,23 @@ TEST_TEAR_DOWN(bfp_fft) {}
 #define MAX_PROC_FRAME_LENGTH_LOG2 10
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
-#define EXPONENT_SIZE 5
+#define EXPONENT_SIZE   3
+#define EXP_BOUND_LOW   (1-(1<<EXPONENT_SIZE))
+#define EXP_BOUND_HIGH  (1<<EXPONENT_SIZE)
 #define MAX_HEADROOM 5
 #define WIGGLE 20
 
-#define MIN_FFT_N_LOG2  (2)
+#define MIN_FFT_N_LOG2  (4)
 
-#define LOOPS_LOG2  (8)
+#define LOOPS_LOG2  (6)
 
 
 TEST(bfp_fft, bfp_fft_forward_complex)
 {
+#define FUNC_NAME "bfp_fft_forward_complex"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 0x0429BBDF;
@@ -92,25 +96,28 @@ TEST(bfp_fft, bfp_fft_forward_complex)
         }
         
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, FFT_N, worst_error);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, FFT_N, worst_error);
 #endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, FFT_N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, FFT_N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
-        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), FFT_N, worst_error, worst_timing);
+        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(FUNC_NAME[5]), FFT_N, worst_error, worst_timing);
 #endif
     }
 
+#undef FUNC_NAME
 }
 
 
 TEST(bfp_fft, bfp_fft_inverse_complex)
 {
+#define FUNC_NAME "bfp_fft_inverse_complex"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 1;
@@ -164,27 +171,33 @@ TEST(bfp_fft, bfp_fft_inverse_complex)
         }
         
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, FFT_N, worst_error);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, FFT_N, worst_error);
 #endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, FFT_N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, FFT_N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
-        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), FFT_N, worst_error, worst_timing);
+        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(FUNC_NAME[5]), FFT_N, worst_error, worst_timing);
 #endif
     }
+
+#undef FUNC_NAME
 }
 
 
 TEST(bfp_fft, bfp_fft_forward_stereo)
 {
+#define FUNC_NAME "bfp_fft_forward_stereo"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 1;
+
+    conv_error_e error = 0;
 
     for(unsigned k = MIN_FFT_N_LOG2; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
         unsigned FFT_N = (1<<k);
@@ -199,71 +212,110 @@ TEST(bfp_fft, bfp_fft_forward_stereo)
 
             const unsigned seed = r;
 
-            ch_pair_s32_t DWORD_ALIGNED a[MAX_PROC_FRAME_LENGTH];
+            // Buffers for the BFP vectors (both time and freq domain)
+            int32_t DWORD_ALIGNED chanA_buff[MAX_PROC_FRAME_LENGTH];
+            int32_t DWORD_ALIGNED chanB_buff[MAX_PROC_FRAME_LENGTH];
 
-            bfp_ch_pair_s32_t A;
+            // Scratch buffer required for stereo FFT
+            complex_s32_t DWORD_ALIGNED scratch[MAX_PROC_FRAME_LENGTH];
 
+            // Floating point reference vector
             complex_double_t DWORD_ALIGNED ref[MAX_PROC_FRAME_LENGTH];
 
-            conv_error_e error = 0;
-            const exponent_t initial_exponent = sext(pseudo_rand_int32(&r), EXPONENT_SIZE);
-            right_shift_t shr = pseudo_rand_uint32(&r) % MAX_HEADROOM;
+            // Choose random time-domain exponents for each channel
+            exponent_t initial_exponentA = pseudo_rand_int(&r, EXP_BOUND_LOW, EXP_BOUND_HIGH);
+            exponent_t initial_exponentB = pseudo_rand_int(&r, EXP_BOUND_LOW, EXP_BOUND_HIGH);
+            initial_exponentB = initial_exponentA;
+
+            // Choose random headroom for each channel (not guaranteed -- will be recomputed after)
+            right_shift_t a_shr = pseudo_rand_uint(&r, 0, MAX_HEADROOM+1);
+            right_shift_t b_shr = pseudo_rand_uint(&r, 0, MAX_HEADROOM+1);
+            // b_shr = a_shr;
             
-
+            // Fill buffers with random data
             for(unsigned i = 0; i < FFT_N; i++){
-                a[i].ch_a = pseudo_rand_int32(&r) >> shr;
-                a[i].ch_b = pseudo_rand_int32(&r) >> shr;
-                ref[i].re = conv_s32_to_double(a[i].ch_a, initial_exponent, &error);
-                ref[i].im = conv_s32_to_double(a[i].ch_b, initial_exponent, &error);
+                chanA_buff[i] = pseudo_rand_int32(&r) >> a_shr;
+                chanB_buff[i] = pseudo_rand_int32(&r) >> b_shr;
+
+                ref[i].re = ldexp(chanA_buff[i], initial_exponentA);
+                ref[i].im = ldexp(chanB_buff[i], initial_exponentB);
             }
-            TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error");
 
-            bfp_ch_pair_s32_init(&A, a, initial_exponent, FFT_N, 1);
+            // time-domain BFP vectors
+            bfp_s32_t chanA_td;
+            bfp_s32_t chanB_td;
 
+            // Initialize BFP vectors (and recalc HR)
+            bfp_s32_init(&chanA_td, chanA_buff, initial_exponentA, FFT_N, 1);
+            bfp_s32_init(&chanB_td, chanB_buff, initial_exponentB, FFT_N, 1);
+
+            // FFT using float reference implementation
             flt_bit_reverse_indexes_double(ref, FFT_N);
             flt_fft_forward_double(ref, FFT_N, sine_table);
             flt_fft_split_spectrum_double(ref, FFT_N);
 
-            bfp_complex_s32_t z1, z2;
-
+            // Perform forward FFT and timestamp it
             unsigned ts1 = getTimestamp();
-            bfp_fft_forward_stereo(&z1, &z2, &A);
+            bfp_fft_forward_stereo(&chanA_td, &chanB_td, scratch);
             unsigned ts2 = getTimestamp();
-            
-            float timing = (ts2-ts1)/100.0;
-            if(timing > worst_timing) worst_timing = timing;
 
-            unsigned diff = abs_diff_vect_complex_s32((complex_s32_t*) A.data, A.exp, ref, FFT_N, &error);
-            if(diff > worst_error) worst_error = diff;
+            // freq domain BFP vectors (aliased from time-domain vectors)
+            bfp_complex_s32_t* chanA_fd = (bfp_complex_s32_t*) &chanA_td; 
+            bfp_complex_s32_t* chanB_fd = (bfp_complex_s32_t*) &chanB_td;
 
-            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
+            // Check for accuracy/correctness
+            TEST_ASSERT_EQUAL(FFT_N/2, chanA_fd->length);
+            TEST_ASSERT_EQUAL(FFT_N/2, chanB_fd->length);
+
+            // headroom is expected to be the minimum of the two channels
+            headroom_t exp_hr = MIN(xs3_vect_complex_s32_headroom(chanA_fd->data, chanA_fd->length), 
+                                    xs3_vect_complex_s32_headroom(chanB_fd->data, chanB_fd->length));
+
+            TEST_ASSERT_EQUAL(exp_hr, chanA_fd->hr);
+            TEST_ASSERT_EQUAL(exp_hr, chanB_fd->hr);
+
+            unsigned diffA = abs_diff_vect_complex_s32( chanA_fd->data, chanA_fd->exp, &ref[0], FFT_N/2, &error);
+            unsigned diffB = abs_diff_vect_complex_s32( chanB_fd->data, chanB_fd->exp, &ref[FFT_N/2], FFT_N/2, &error);
+
             TEST_ASSERT_CONVERSION(error);
-            TEST_ASSERT_EQUAL(FFT_N/2, z1.length);
-            TEST_ASSERT_EQUAL(FFT_N/2, z2.length);
+            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diffA, "Output delta is too large (chanA)");
+            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diffB, "Output delta is too large (chanB)");
+            
+            // Update worst-case timing and error info
+            float timing = (ts2-ts1)/100.0;
+            worst_timing = MAX(worst_timing, timing);
+
+            worst_error = MAX(worst_error, diffA);
+            worst_error = MAX(worst_error, diffB);
         }
         
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, FFT_N, worst_error);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, FFT_N, worst_error);
 #endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, FFT_N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, FFT_N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
-        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), FFT_N, worst_error, worst_timing);
+        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(FUNC_NAME[5]), FFT_N, worst_error, worst_timing);
 #endif
     }
+
+#undef FUNC_NAME
 }
 
 
 TEST(bfp_fft, bfp_fft_inverse_stereo)
 {
+#define FUNC_NAME "bfp_fft_inverse_stereo"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 1;
+    conv_error_e error = 0;
 
     for(unsigned k = MIN_FFT_N_LOG2; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
         unsigned FFT_N = (1<<k);
@@ -276,69 +328,120 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
         
         for(unsigned t = 0; t < (1<<LOOPS_LOG2); t++){
             
+            // Buffers for the BFP vectors (both time and freq domain)
+            complex_s32_t DWORD_ALIGNED a_data[MAX_PROC_FRAME_LENGTH/2];
+            complex_s32_t DWORD_ALIGNED b_data[MAX_PROC_FRAME_LENGTH/2];
 
-            complex_s32_t DWORD_ALIGNED ab_data[MAX_PROC_FRAME_LENGTH];
+            // Floating point reference vector
             complex_double_t DWORD_ALIGNED ref[MAX_PROC_FRAME_LENGTH];
 
+            // Scratch buffer required for stereo FFT
+            complex_s32_t DWORD_ALIGNED scratch[MAX_PROC_FRAME_LENGTH];
+
+            // Choose random time-domain exponents for each channel
+            exponent_t initial_exponentA = pseudo_rand_int(&r, EXP_BOUND_LOW, EXP_BOUND_HIGH);
+            exponent_t initial_exponentB = pseudo_rand_int(&r, EXP_BOUND_LOW, EXP_BOUND_HIGH);
+            initial_exponentB = initial_exponentA;
+
+            // Choose random headroom for each channel (not guaranteed -- will be recomputed after)
+            right_shift_t a_shr = pseudo_rand_uint(&r, 0, MAX_HEADROOM+1);
+            right_shift_t b_shr = pseudo_rand_uint(&r, 0, MAX_HEADROOM+1);
+
+            // Fill buffers with random data
+            for(unsigned i = 0; i < FFT_N/2; i++){
+                a_data[i].re = pseudo_rand_int32(&r) >> a_shr;
+                a_data[i].im = pseudo_rand_int32(&r) >> a_shr;
+
+                b_data[i].re = pseudo_rand_int32(&r) >> b_shr;
+                b_data[i].im = pseudo_rand_int32(&r) >> b_shr;
+
+                ref[i].re = ldexp(a_data[i].re, initial_exponentA);
+                ref[i].im = ldexp(a_data[i].im, initial_exponentA);
+
+                ref[(FFT_N/2)+i].re = ldexp(b_data[i].re, initial_exponentB);
+                ref[(FFT_N/2)+i].im = ldexp(b_data[i].im, initial_exponentB);
+            }
+
+            // Freq domain BFP vectors
             bfp_complex_s32_t A_fft;
             bfp_complex_s32_t B_fft;
-            bfp_ch_pair_s32_t AB;
 
+            // Initialize BFP vectors (and recalc HR)
+            bfp_complex_s32_init(&A_fft, a_data, initial_exponentA, FFT_N/2, 1);
+            bfp_complex_s32_init(&B_fft, b_data, initial_exponentB, FFT_N/2, 1);
 
-            conv_error_e error = 0;
-            const exponent_t initial_exponent = sext(pseudo_rand_int32(&r), EXPONENT_SIZE);
-            right_shift_t shr = pseudo_rand_uint32(&r) % MAX_HEADROOM;
-
-            for(unsigned i = 0; i < FFT_N; i++){
-                ab_data[i].re = pseudo_rand_int32(&r) >> shr;
-                ab_data[i].im = pseudo_rand_int32(&r) >> shr;
-                ref[i].re = conv_s32_to_double(ab_data[i].re, initial_exponent, &error);
-                ref[i].im = conv_s32_to_double(ab_data[i].im, initial_exponent, &error);
-            }
-            TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error");
-
-            bfp_complex_s32_init(&A_fft, &ab_data[0], initial_exponent, FFT_N/2, 1);
-            bfp_complex_s32_init(&B_fft, &ab_data[FFT_N/2], initial_exponent, FFT_N/2, 1);
-
-            bfp_ch_pair_s32_init(&AB, (ch_pair_s32_t*) ab_data, 0, FFT_N, 0);
-
+            // IFFT using float reference implementation
             flt_fft_merge_spectra_double(ref, FFT_N);
             flt_bit_reverse_indexes_double(ref, FFT_N);
             flt_fft_inverse_double(ref, FFT_N, sine_table);
 
+            // Perform inverse FFT and timestamp it
             unsigned ts1 = getTimestamp();
-             bfp_fft_inverse_stereo(&AB, &A_fft, &B_fft);
+             bfp_fft_inverse_stereo(&A_fft, &B_fft, scratch);
             unsigned ts2 = getTimestamp();
-            
-            float timing = (ts2-ts1)/100.0;
-            if(timing > worst_timing) worst_timing = timing;
 
-            unsigned diff = abs_diff_vect_complex_s32((complex_s32_t*) AB.data, AB.exp, ref, FFT_N, &error);
-            if(diff > worst_error) worst_error = diff;
-            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diff, "Output delta is too large");
+            // Time domain BFP vectors (aliased from freq domain)
+            bfp_s32_t* A = (bfp_s32_t*) &A_fft;
+            bfp_s32_t* B = (bfp_s32_t*) &B_fft;
+
+            //Split ref into two channels
+            double refA[FFT_N];
+            double refB[FFT_N];
+
+            for(int i = 0; i < FFT_N; i++){
+              refA[i] = ref[i].re;
+              refB[i] = ref[i].im;
+            }
+
+            // Check for accuracy/correctness
+            TEST_ASSERT_EQUAL(FFT_N, A->length);
+            TEST_ASSERT_EQUAL(FFT_N, B->length);
+
+            // headroom is expected to be the minimum of the two channels
+            headroom_t exp_hr = MIN(xs3_vect_s32_headroom(A->data, A->length), 
+                                    xs3_vect_s32_headroom(B->data, B->length));
+
+            TEST_ASSERT_EQUAL(exp_hr, A->hr);
+            TEST_ASSERT_EQUAL(exp_hr, B->hr);
+
+            unsigned diffA = abs_diff_vect_s32(A->data, A->exp, refA, FFT_N, &error);
+            unsigned diffB = abs_diff_vect_s32(B->data, B->exp, refB, FFT_N, &error);
+            
             TEST_ASSERT_CONVERSION(error);
-            TEST_ASSERT_EQUAL(FFT_N, AB.length);
+            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diffA, "Output delta is too large (chanA)");
+            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diffB, "Output delta is too large (chanB)");
+            
+            // Update worst-case timing and error info
+            float timing = (ts2-ts1)/100.0;
+            worst_timing = MAX(worst_timing, timing);
+
+            worst_error = MAX(worst_error, diffA);
+            worst_error = MAX(worst_error, diffB);
         }
         
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, FFT_N, worst_error);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, FFT_N, worst_error);
 #endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, FFT_N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, FFT_N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
-        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), FFT_N, worst_error, worst_timing);
+        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(FUNC_NAME[5]), FFT_N, worst_error, worst_timing);
 #endif
     }
+
+#undef FUNC_NAME
 }
 
 
 TEST(bfp_fft, bfp_fft_forward_mono)
 {
+#define FUNC_NAME "bfp_fft_forward_mono"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 1;
@@ -395,24 +498,28 @@ TEST(bfp_fft, bfp_fft_forward_mono)
         }
         
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, FFT_N, worst_error);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, FFT_N, worst_error);
 #endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, FFT_N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, FFT_N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
-        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), FFT_N, worst_error, worst_timing);
+        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(FUNC_NAME[5]), FFT_N, worst_error, worst_timing);
 #endif
     }
+
+#undef FUNC_NAME
 }
 
 
 TEST(bfp_fft, bfp_fft_inverse_mono)
 {
+#define FUNC_NAME "bfp_fft_inverse_mono"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 1;
@@ -480,15 +587,17 @@ TEST(bfp_fft, bfp_fft_inverse_mono)
         }
         
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, FFT_N, worst_error);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, FFT_N, worst_error);
 #endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, FFT_N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, FFT_N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
-        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), FFT_N, worst_error, worst_timing);
+        fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(FUNC_NAME[5]), FFT_N, worst_error, worst_timing);
 #endif
     }
+
+#undef FUNC_NAME
 }

@@ -227,9 +227,7 @@ headroom_t xs3_vect_complex_s16_conj_mul(
  * 
  * @returns     Headroom of vector @vector{x} 
  * 
- * @see xs3_vect_ch_pair_s16_headroom, 
- *      xs3_vect_ch_pair_s32_headroom, 
- *      xs3_vect_s16_headroom, 
+ * @see xs3_vect_s16_headroom, 
  *      xs3_vect_s32_headroom, 
  *      xs3_vect_complex_s32_headroom
  * 

@@ -32,6 +32,17 @@ extern "C" {
 #define XS3_VECT_SQRT_S32_MAX_DEPTH     (31)
 
 
+/**
+ * 
+ * 
+ */
+C_API
+headroom_t xs3_vect_s32_copy(
+    int32_t a[],
+    const int32_t b[],
+    const unsigned length);
+
+
 /** 
  * @brief Compute the element-wise absolute value of a 32-bit vector.
  * 
@@ -721,9 +732,7 @@ void xs3_vect_s32_energy_prepare(
  * 
  * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
  * 
- * @see xs3_vect_ch_pair_s16_headroom, 
- *      xs3_vect_ch_pair_s32_headroom, 
- *      xs3_vect_s16_headroom, 
+ * @see xs3_vect_s16_headroom, 
  *      xs3_vect_complex_s16_headroom, 
  *      xs3_vect_complex_s32_headroom
  * 

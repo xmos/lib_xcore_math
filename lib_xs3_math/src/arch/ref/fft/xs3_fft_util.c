@@ -6,6 +6,8 @@
 #include "../../../vect/vpu_const_vects.h"
 #include "../../../vect/xs3_fft_lut.h"
 
+#include "xs3_vpu_scalar_ops.h"
+
 static unsigned bitrev(unsigned index, size_t bit_width)
 {
     unsigned res = 0;
@@ -265,3 +267,4 @@ void xs3_vect_complex_s32_tail_reverse(
         x[k] = tmp;
     }
 }
+
