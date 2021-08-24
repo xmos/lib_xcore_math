@@ -27,6 +27,8 @@ TEST_GROUP_RUNNER(xs3_vect_zip) {
 #define REPS        100
 #define MAX_LEN     64
 
+
+
 TEST(xs3_vect_zip, xs3_vect_s32_zip)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();

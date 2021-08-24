@@ -18,31 +18,6 @@
 
 
 /**
- * 
- * 
- */
-C_API
-void xs3_vect_s32_zip(
-    complex_s32_t a[],
-    const int32_t b[],
-    const int32_t c[],
-    const unsigned length,
-    const right_shift_t b_shr,
-    const right_shift_t c_shr);
-
-
-/**
- * 
- * 
- */
-C_API
-void xs3_vect_s32_unzip(
-    int32_t a[],
-    int32_t b[],
-    const complex_s32_t c[],
-    const unsigned length);
-
-/**
  * @brief Applies the index bit-reversal required for FFTs.
  * 
  * Applying an FFT (xs3_fft_dit_forward() or xs3_fft_dif_forward()) or IFFT (xs3_fft_dit_inverse() or xs3_fft_dif_inverse()) requires

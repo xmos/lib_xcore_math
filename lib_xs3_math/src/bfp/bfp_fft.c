@@ -214,8 +214,6 @@ void bfp_fft_forward_stereo(
     // Copy the data from the scratch buffer back to the input buffers
     xs3_vect_s32_copy((int32_t*) a_fft->data, (int32_t*) &scratch[0], FFT_N);
     xs3_vect_s32_copy((int32_t*) b_fft->data, (int32_t*) &scratch[FFT_N/2], FFT_N);
-    // memcpy(a_fft->data, &scratch[0], FFT_N/2 * sizeof(complex_s32_t));
-    // memcpy(b_fft->data, &scratch[FFT_N/2], FFT_N/2 * sizeof(complex_s32_t));
 
     //a and b might actually have different headroom, but the xs3_fft_spectra_split() only
     // computes the headroom of the entire FFT_N-element complex spectrum, which is the same

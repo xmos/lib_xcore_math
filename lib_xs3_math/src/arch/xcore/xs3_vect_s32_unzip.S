@@ -4,7 +4,7 @@
 #if defined(__XS3A__)
 #ifndef XS3_MATH_NO_ASM
 
-#include "../asm_helper.h"
+#include "asm_helper.h"
 
 /*  
     void xs3_vect_s32_unzip(
