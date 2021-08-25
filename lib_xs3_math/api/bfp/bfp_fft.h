@@ -227,70 +227,84 @@ void bfp_fft_inverse_complex(
 /** 
  * @brief Performs a forward real Discrete Fourier Transform on a pair of real 32-bit sequences.
  * 
- * Performs an @math{N}-point forward real DFT on the real 32-bit BFP vector `x` of sample pairs, where @math{N} is 
- * `x->length`. The operation is performed in-place, resulting in a pair of @math{N/2}-element complex 32-bit BFP 
- * vectors.
+ * @note 
+ * @parblock
+ * Use of this function is not currently recommended. It functions correctly, but a recent
+ * change in this library's API (namely, dropping support for channel-pair vectors) means this
+ * function is no more computationally efficient than calling `bfp_fft_forward_mono()` on each input
+ * vector separately. Additionally, this function currently requires a scratch buffer, whereas the
+ * mono FFT does not. 
+ * @endparblock
+ * 
+ * Performs an @math{N}-point forward real DFT on the real 32-bit BFP vectors @vector{a} and
+ * @vector{b}, where @math{N} is `a->length` (which must equal `b->length`). The resulting spectra,
+ * @vector{A} and @vector{B}, are placed in `a` and `b`. Each spectrum is a @math{N/2}-element
+ * complex 32-bit BFP vectors. To access the spectrum, the pointers `a` and `b` should be cast to
+ * `bfp_complex_s32_t*` following a call to this function.
  * 
  * The operation performed is:
  * @f[
  *      A[f] = \sum_{n=0}^{N-1} \left( a[n]\cdot e^{-j2\pi fn/N} \right) \text{ for } 0 \le f \le N/2 \\
  *      B[f] = \sum_{n=0}^{N-1} \left( b[n]\cdot e^{-j2\pi fn/N} \right) \text{ for } 0 \le f \le N/2
  * @f]
- * where @math{a[n]} and @math{b[n]} are the two time-domain sequences represented by BFP vector `x`, and @math{A[f]} 
- * and @math{B[f]} are the DFT of @math{a[n]} and @math{b[n]} respectively represented by complex BFP vectors `a` and 
- * `b`.
+ * where @math{a[n]} and @math{b[n]} are the two time-domain sequences represented by input BFP
+ * vectors `a` and `b`, and @math{A[f]} and @math{B[f]} are the DFT of @math{a[n]} and @math{b[n]}
+ * respectively.
  * 
- * `x->length` (@math{N}) must be a power of 2, and must be no larger than `(1<<MAX_DIT_FFT_LOG2)`.
+ * `a->length` (@math{N}) must be equal to `b->length, must be a power of 2, and must be no larger
+ * than `(1<<MAX_DIT_FFT_LOG2)`.
+ *
+ * _The parameters `a` and `b` are used as both inputs and outputs_. To access the result of the
+ * FFT, `a` and `b` should be cast to `bfp_complex_s32_t`*. The structs' metadata (e.g. `exp`, `hr`,
+ * `length`) are updated by this function to reflect this change of interpretation. The `bfp_s32_t`
+ * references should be considered corrupted after this call (at least until
+ * bfp_fft_inverse_stereo() is called).
  * 
- * The output BFP vectors `a` and `b` need not have been initialized prior to calling this function. Their contents
- * (including the addresses to which `a->data` and `b->data` point) will be overwritten.
+ * The spectrum data is encoded in `a->data` and `b->data` as specified for real DFTs in @ref
+ * spectrum_packing. That is, `a->data[f]` for `1 <= f < (a->length)` represent @math{A[f]} for
+ * @math{1 \le f \lt (N/2)} and `a->data[0]` represents @math{A[0] + j A[N/2]}. Likewise for the
+ * encoding of `b->data`.
  * 
- * The contents of `x` are modified (and should be considered corrupted) by this function. However, the contents of 
- * `a->data` and `b->data` together occupy the region of memory originally pointed to by `x->data`.
- * 
- * The spectrum data is encoded in `a->data` and `b->data` as specified for real DFTs in @ref spectrum_packing. That 
- * is, `a->data[f]` for `1 <= f < (a->length)` represent @math{A[f]} for @math{1 \le f \lt (N/2)} and `a->data[0]`
- * represents @math{A[0] + j A[N/2]}. Likewise for the encoding of `b->data`.
+ * This function requires a scratch buffer large enough to contain @math{N} `complex_s32_t`
+ * elements.
  * 
  * @par Example
  * @code
  *      // Initialize time domain data with samples.
  *      int32_t bufferA[N] = { ... };
  *      int32_t bufferB[N] = { ... };
- *      int32_t scratch[2*N];
+ *      complex_s32_t scratch[N]; // scratch buffer -- contents don't matter
  *      bfp_s32_t channel_A, channel_B;
  *      bfp_s32_init(&channel_A, buffer, 0, N, 1);
  *      bfp_s32_init(&channel_B, buffer, 0, N, 1);
  * 
  *      // Perform the forward DFT
  *      bfp_fft_forward_stereo(&channel_A, &channel_B, scratch);
- * 
+ *      
+ *      // channel_A and channel_B should now be considered clobbered as the structs are now 
+ *      // effectively bfp_complex_s32_t
  *      bfp_complex_s32_t* chanA = (bfp_complex_s32_t*) &channel_A;
  *      bfp_complex_s32_t* chanB = (bfp_complex_s32_t*) &channel_B;
  * 
- *      // channel_A and channel_B should not be used in here
  *      // Operate on frequency domain data using `chanA` and `chanB`
  *      ...
  *      // Perform the inverse DFT to go back to time domain
  *      bfp_fft_inverse_stereo(&chanA, &chanB, scratch);
  *      
- * 
  *      // Use channel_A and channel_B again to use new time domain data. 
  *      ...
  * @endcode
- * 
- * @note When performing a DFT on a pair of channels, bfp_fft_forward_stereo() is more compute
- *       efficient than using bfp_fft_forward_mono() twice.
- * 
- * @warning If you intend to apply an IFFT to BFP vectors `a` and `b` you must keep track of both
- *          vectors (and keep track of which is which), because bfp_fft_inverse_stereo() requires
- *          that the mantissa buffer of vector `b` directly follows that of `a`.
  *  
- * @param[out]  a   Output spectrum for channel A.
- * @param[out]  b   Output spectrum for channel B.
- * @param[in]   x   channel-pair BFP vector to be DFTed.
+ * @param[inout]  a         [Input] Time-domain BFP vector @vector{a}. [Output] Frequency domain
+ *                          BFP vector @vector{A}
+ * @param[inout]  b         [Input] Time-domain BFP vector @vector{b}. [Output] Frequency domain
+ *                          BFP vector @vector{B}
+ * @param         scratch   Scratch buffer of at least `a->length` `complex_s32_t` elements
  * 
- * @ingroup bfp_fft_func
+ * @deprecated
+ * 
+ * // Suppress this from generated documentation for the time being
+ * // @ingroup bfp_fft_func
  */
 C_API
 void bfp_fft_forward_stereo(
@@ -302,71 +316,87 @@ void bfp_fft_forward_stereo(
 /** 
  * @brief Performs an inverse real Discrete Fourier Transform on a pair of complex 32-bit sequences.
  * 
- * Performs a pair of @math{N}-point inverse real DFTs on the complex 32-bit BFP vectors `a` and `b`, where @math{N} is 
- * `2*a->length` (with `a->length == b->length`). The operation is performed in-place, resulting in a pair of real 
- * sequences packed into channels A and B of an @math{N}-element 32-bit BFP channel-pair vector.
+ * @note 
+ * @parblock
+ * Use of this function is not currently recommended. It functions correctly, but a recent
+ * change in this library's API (namely, dropping support for channel-pair vectors) means this
+ * function is no more computationally efficient than calling `bfp_fft_forward_mono()` on each input
+ * vector separately. Additionally, this function currently requires a scratch buffer, whereas the
+ * mono FFT does not. 
+ * @endparblock
+ * 
+ * Performs an @math{N}-point inverse real DFT on the 32-bit complex BFP vectors @vector{A} and
+ * @vector{B} (`A_fft` and `B_fft` respectively), where @math{N} is `A_fft->length` . The resulting
+ * real signals, @vector{a} and @vector{b}, are placed in `A_fft` and `B_fft`. Each time-domain
+ * result is a @math{N/2}-element real 32-bit BFP vectors. To access the spectrum, the pointers
+ * `A_fft` and `B_fft` should be cast to `bfp_s32_t*` following a call to this function.
  * 
  * The operation performed is:
  * @f[
  *      a[n] = \sum_{f=0}^{N/2-1} \left( A[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n \lt N \\
  *      b[n] = \sum_{f=0}^{N/2-1} \left( B[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n \lt N
  * @f]
- * where @math{A[f]} and @math{B[f]} are the frequency spectra represented by BFP vectors `a` and `b`, and @math{a[n]} 
- * and @math{b[n]} are the IDFT of @math{A[f]} and @math{B[f]} respectively represented by BFP channel-pair vector `x`.
+ * where @math{A[f]} and @math{B[f]} are the frequency spectra represented by BFP vectors `A_fft`
+ * and `B_fft`, and @math{a[n]} and @math{b[n]} are the IDFT of @math{A[f]} and @math{B[f]}.
+ *
+ * `A_fft->length` (@math{N}) must be a power of 2, and must be no larger than
+ * `(1<<(MAX_DIT_FFT_LOG2-1))`.
  * 
- * `a->length` (@math{N}) must be a power of 2, and must be no larger than `(1<<(MAX_DIT_FFT_LOG2-1))`.
+ * _The parameters `A_fft` and `B_fft` are used as both inputs and outputs_. To access the result of
+ * the IFFT, `A_fft` and `B_fft` should be cast to `bfp_s32_t`*. The structs' metadata (e.g. `exp`,
+ * `hr`, `length`) are updated by this function to reflect this change of interpretation. The
+ * `bfp_complex_s32_t` references should be considered corrupted after this call.
  * 
- * The output BFP vector `x` need not have been initialized prior to calling this function. Its contents (including the 
- * address to which `x->data` points) will be overwritten.
+ * The spectrum data encoded in `A_fft->data` and `A_fft->data` are interpreted as specified for
+ * real DFTs in @ref spectrum_packing. That is, `A_fft->data[f]` for `1 <= f < (a->length)`
+ * represent @math{A[f]} for @math{1 \le f \lt (N/2)} and `A_fft->data[0]` represents @math{A[0] + j
+ * A[N/2]}. Likewise for the encoding of `B_fft->data`.
  * 
- * The spectrum data encoded in `a->data` and `b->data` are interpreted as specified for real DFTs in @ref 
- * spectrum_packing. That is, `a->data[f]` for `1 <= f < (a->length)` represent @math{A[f]} for @math{1 \le f \lt (N/2)} 
- * and `a->data[0]` represents @math{A[0] + j A[N/2]}. Likewise for the encoding of `b->data`.
+ * This function requires a scratch buffer large enough to contain @math{2N} `complex_s32_t`
+ * elements.
  * 
  * @par Example
  * @code
  *      // Initialize time domain data with samples.
  *      int32_t bufferA[N] = { ... };
  *      int32_t bufferB[N] = { ... };
- *      int32_t scratch[2*N];
+ *      complex_s32_t scratch[N]; // scratch buffer -- contents don't matter
  *      bfp_s32_t channel_A, channel_B;
  *      bfp_s32_init(&channel_A, buffer, 0, N, 1);
  *      bfp_s32_init(&channel_B, buffer, 0, N, 1);
  * 
  *      // Perform the forward DFT
  *      bfp_fft_forward_stereo(&channel_A, &channel_B, scratch);
- * 
+ *      
+ *      // channel_A and channel_B should now be considered clobbered as the structs are now 
+ *      // effectively bfp_complex_s32_t
  *      bfp_complex_s32_t* chanA = (bfp_complex_s32_t*) &channel_A;
  *      bfp_complex_s32_t* chanB = (bfp_complex_s32_t*) &channel_B;
  * 
- *      // channel_A and channel_B should not be used in here
  *      // Operate on frequency domain data using `chanA` and `chanB`
  *      ...
  *      // Perform the inverse DFT to go back to time domain
  *      bfp_fft_inverse_stereo(&chanA, &chanB, scratch);
  *      
- * 
  *      // Use channel_A and channel_B again to use new time domain data. 
  *      ...
  * @endcode
- * 
- * @note When calling this function the following conditions must hold:
- *          `b->length == a->length` and `b->data == &a->data[a->length]`
- *       This allows the operation to be performed efficiently in-place.
- * @par
- * @note When performing an IDFT on a pair of channels, bfp_fft_inverse_stereo() is more compute
- *       efficient than using bfp_fft_inverse_mono() twice.
  *  
- * @param[out]  x   Output BFP channel-pair vector.
- * @param[out]  a   Spectrum for channel A.
- * @param[in]   b   Spectrum for channel B.
+ * @param[inout]  A_fft     [Input] Freq-domain BFP vector @vector{A}. 
+ *                          [Output] Time domain BFP vector @vector{b}
+ * @param[inout]  B_fft     [Input] Freq-domain BFP vector @vector{b}. 
+ *                          [Output] Time domain BFP vector @vector{b}
+ * @param         scratch   Scratch buffer of at least `2*A_fft->length` `complex_s32_t` elements
  * 
- * @ingroup bfp_fft_func
+ * @deprecated
+ * 
+ * // Suppress this from generated documentation for the time being
+ * // @ingroup bfp_fft_func
  */
 C_API
 void  bfp_fft_inverse_stereo(
-    bfp_complex_s32_t* a,
-    bfp_complex_s32_t* b,
+    bfp_complex_s32_t* A_fft,
+    bfp_complex_s32_t* B_fft,
     complex_s32_t scratch[]);
 
 /**

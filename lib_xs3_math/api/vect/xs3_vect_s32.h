@@ -33,8 +33,34 @@ extern "C" {
 
 
 /**
+ * @brief Copy one 32-bit vector to another.
  * 
+ * This function is effectively a constrained version of `memcpy`.
  * 
+ * With the constraints below met, this function should be modestly faster than `memcpy`.
+ * 
+ * `a[]` is the output vector to which elements are copied.
+ * 
+ * `b[]` is the input vector from which elements are copied.
+ * 
+ * `a` and `b` each must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements to be copied. `length` must be a multiple of 8.
+ * 
+ * @operation{
+ * &    a_k \leftarrow b_k                              \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @param[out]  a         Output vector @vector{a}
+ * @param[in]   b         Input vector @vector{b}
+ * @param[in]   length    Number of elements in @vector{a} and @vector{b}
+ * 
+ * @returns   Headroom of output vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ *
+ * @ingroup xs3_vect32_func
  */
 C_API
 headroom_t xs3_vect_s32_copy(
