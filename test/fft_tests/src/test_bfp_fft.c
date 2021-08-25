@@ -35,7 +35,7 @@ TEST_TEAR_DOWN(bfp_fft) {}
 
 #define MIN_FFT_N_LOG2  (4)
 
-#define LOOPS_LOG2  (6)
+#define LOOPS_LOG2  (8)
 
 
 TEST(bfp_fft, bfp_fft_forward_complex)
@@ -225,12 +225,10 @@ TEST(bfp_fft, bfp_fft_forward_stereo)
             // Choose random time-domain exponents for each channel
             exponent_t initial_exponentA = pseudo_rand_int(&r, EXP_BOUND_LOW, EXP_BOUND_HIGH);
             exponent_t initial_exponentB = pseudo_rand_int(&r, EXP_BOUND_LOW, EXP_BOUND_HIGH);
-            initial_exponentB = initial_exponentA;
 
             // Choose random headroom for each channel (not guaranteed -- will be recomputed after)
             right_shift_t a_shr = pseudo_rand_uint(&r, 0, MAX_HEADROOM+1);
             right_shift_t b_shr = pseudo_rand_uint(&r, 0, MAX_HEADROOM+1);
-            // b_shr = a_shr;
             
             // Fill buffers with random data
             for(unsigned i = 0; i < FFT_N; i++){
@@ -341,7 +339,6 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
             // Choose random time-domain exponents for each channel
             exponent_t initial_exponentA = pseudo_rand_int(&r, EXP_BOUND_LOW, EXP_BOUND_HIGH);
             exponent_t initial_exponentB = pseudo_rand_int(&r, EXP_BOUND_LOW, EXP_BOUND_HIGH);
-            initial_exponentB = initial_exponentA;
 
             // Choose random headroom for each channel (not guaranteed -- will be recomputed after)
             right_shift_t a_shr = pseudo_rand_uint(&r, 0, MAX_HEADROOM+1);
