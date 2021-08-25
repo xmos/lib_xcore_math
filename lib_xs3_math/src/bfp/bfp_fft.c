@@ -159,129 +159,135 @@ void bfp_fft_inverse_complex(
 
 
 void bfp_fft_forward_stereo(
-    bfp_complex_s32_t* a,
-    bfp_complex_s32_t* b,
-    bfp_ch_pair_s32_t* input)
+    bfp_s32_t* a,
+    bfp_s32_t* b,
+    complex_s32_t scratch[])
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     // Length must be 2^p where p is a non-negative integer
-    assert(input->length != 0);
+    assert(a->length != 0);
+    // Length of a and b must be the same
+    assert(a->length == b->length);
     // for a positive power of 2, subtracting 1 should increase its headroom.
-    assert(cls(input->length - 1) > cls(input->length)); 
+    assert(cls(a->length - 1) > cls(a->length)); 
 #endif
 
+    const unsigned FFT_N = a->length;
+
     //The FFT implementation requires 2 bits of headroom to ensure no saturation occurs
-    right_shift_t input_shr = 2 - input->hr;
-    input->hr += input_shr;
-    input->exp += input_shr;
-    
-    if(input_shr)
-        input->hr = xs3_vect_s32_shl((int32_t*) input->data,(int32_t*)  input->data, 
-                                     2*input->length, -input_shr);
+    right_shift_t a_shr = 2 - a->hr;
+    right_shift_t b_shr = 2 - b->hr;
+
+    a->hr += a_shr;
+    a->exp += a_shr;
+
+    b->hr += b_shr;
+    b->exp += b_shr;
+
+    // The stereo FFT requires the input samples from a and b to be interleaved into a single 
+    // buffer. We'll zip them into scratch and apply the shifts.
+    xs3_vect_s32_zip(scratch, a->data, b->data, FFT_N, a_shr, b_shr);
 
     // Boggle the elements of the input spectrum as required (bit-reversed indexing) by 
     // xs3_fft_dit_forward(). (See comment above in bfp_fft_forward_mono())
-    xs3_fft_index_bit_reversal((complex_s32_t*) input->data, input->length);
+    xs3_fft_index_bit_reversal(scratch, FFT_N);
+
+    // The change in each signal's exponent from FFTing
+    exponent_t exp_diff = 0;
+
+    // The headroom of the FFT result
+    headroom_t hr = a->hr;
 
     // Do the actual FFT
-    xs3_fft_dit_forward((complex_s32_t*) input->data, input->length, &input->hr, &input->exp); 
+    xs3_fft_dit_forward(scratch, FFT_N, &hr, &exp_diff); 
 
-    // Each of the two output vectors store only a half-period of their respective spectra
-    // (because they are the spectra of real signals). The second half of the input vector's
-    // mantissa buffer will be used to store the output spectrum for channel B. The user should
-    // take care to keep track of which spectrum is which, because bfp_fft_inverse_stereo() will
-    // require them to be presented in the correct order.
-    a->data = (complex_s32_t*) &input->data[0];
-    b->data = (complex_s32_t*) &input->data[input->length/2];
+    // Aliased input BFP vectors
+    bfp_complex_s32_t* a_fft = (bfp_complex_s32_t*) a;
+    bfp_complex_s32_t* b_fft = (bfp_complex_s32_t*) b;
 
-    // The stereo FFT assumes the input channels are purely real, and implements the DFT by 
-    // packing the Channel B's time-domain signal into the imaginary part of a complex
-    // input vector (note: The bfp_ch_pair_s32_t type does this naturally because the 
-    // mantissas are stored in an array of ch_pair_s32_t). The resulting complex spectrum
-    // contains a half-period of each of the two channels' spectra, but in a jumbled up
-    // form. This function un-jumbles them.
-    a->hr = xs3_fft_spectra_split(a->data, input->length);
+    // The stereo FFT assumes the input channels are purely real, and implements the DFT by packing
+    // the Channel B's time-domain signal into the imaginary part of a complex input vector. The
+    // resulting complex spectrum contains a half-period of each of the two channels' spectra, but
+    // in a jumbled up form. This function un-jumbles them.
+    hr = xs3_fft_spectra_split(scratch, FFT_N);
+
+    // Copy the data from the scratch buffer back to the input buffers
+    xs3_vect_s32_copy((int32_t*) a_fft->data, (int32_t*) &scratch[0], FFT_N);
+    xs3_vect_s32_copy((int32_t*) b_fft->data, (int32_t*) &scratch[FFT_N/2], FFT_N);
 
     //a and b might actually have different headroom, but the xs3_fft_spectra_split() only
     // computes the headroom of the entire FFT_N-element complex spectrum, which is the same
     // as the minimum of the headroom of the two spectra. If a user needs a more accurate
     // count of each spectrum's headroom, bfp_complex_s32_headroom() should be called on 
     // each output BFP vector.
-    b->hr = a->hr;
+    a_fft->hr = b_fft->hr = hr;
 
     // Correct the exponents and lengths (as only a half-period of their spectra were computed)
-    a->length = b->length = input->length / 2;
-    a->exp = b->exp = input->exp;
+    a_fft->length = b_fft->length = FFT_N / 2;
+    a_fft->exp += exp_diff;
+    b_fft->exp += exp_diff;
 
-    a->flags = input->flags;
-    b->flags = input->flags | BFP_FLAG_CHAN_B;
 }
 
 
 void  bfp_fft_inverse_stereo(
-    bfp_ch_pair_s32_t* x,
-    const bfp_complex_s32_t* a,
-    const bfp_complex_s32_t* b)
+    bfp_complex_s32_t* a_fft,
+    bfp_complex_s32_t* b_fft,
+    complex_s32_t scratch[])
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS)
     // The two input vectors must be the same length
-    assert(a->length == b->length);
-    // The mantissa buffers for both input vectors must be adjacent in memory
-    assert(b->data == &a->data[a->length]);
-
+    assert(a_fft->length == b_fft->length);
     // Length must be 2^p where p is a non-negative integer
-    assert(a->length != 0);
+    assert(a_fft->length != 0);
     // for a positive power of 2, subtracting 1 should increase its headroom.
-    assert(cls(a->length - 1) > cls(a->length));
+    assert(cls(a_fft->length - 1) > cls(a_fft->length));
 #endif
-
-#if (DEBUG)
-    // a must be a first channel and b must be a second channel
-    assert(!(a->flags & BFP_FLAG_CHAN_B));
-    assert(b->flags & BFP_FLAG_CHAN_B);
-#endif //DEBUG
 
     // a and b store only a half-period of their respective spectra, so the FFT length is twice
     // the length of a or b (which must have the same length)
-    const unsigned FFT_N = 2*a->length;
+    const unsigned FFT_N = 2*a_fft->length;
 
-    // a and b need to be given the same exponent for the result of the FFT to make sense,
-    // because the time-domain output vector (type bfp_ch_pair_s32_t) can only store a single
-    // exponent for both channels. Additionally, 2 bits of headroom are required by 
-    // xs3_fft_dit_inverse()
-    right_shift_t a_shr = 2 - a->hr;
-    right_shift_t b_shr = 2 - b->hr;
+    // 2 bits of headroom are required by xs3_fft_dit_inverse()
+    right_shift_t a_shr = 2 - a_fft->hr;
+    right_shift_t b_shr = 2 - b_fft->hr;
 
-    exponent_t a_exp = a->exp + a_shr;
-    exponent_t b_exp = b->exp + b_shr;
+    // Both input vectors need to be copied to the scratch buffer.
+    xs3_vect_complex_s32_shr(&scratch[0], a_fft->data, FFT_N/2, a_shr);
+    xs3_vect_complex_s32_shr(&scratch[FFT_N/2], b_fft->data, FFT_N/2, b_shr);
+    
+    a_fft->exp += a_shr;
+    b_fft->exp += b_shr;
 
-    if( a_exp <= b_exp ){
-        a_shr += (b_exp - a_exp);
-        x->exp = a->exp + a_shr;
-    } else {
-        b_shr += (a_exp - b_exp);
-        x->exp = b->exp + b_shr;
-    }
+    a_fft->hr += a_shr;
+    b_fft->hr += b_shr;
 
-    if(a_shr) xs3_vect_s32_shl((int32_t*)a->data, (int32_t*) a->data, FFT_N, -a_shr);
-    if(b_shr) xs3_vect_s32_shl((int32_t*)b->data, (int32_t*) b->data, FFT_N, -b_shr);
-
-    // Channel A's spectrum points to the beginning of the time-domain buffer
-    x->data = (ch_pair_s32_t*) a->data;
-    x->length = 2 * a->length;
-    x->hr = MIN(a->hr + a_shr, b->hr + b_shr);
+    headroom_t hr = 2;
+    exponent_t exp_diff = 0;
 
     // Because the real, stereo IFFT is implemented using a complex FFT, the two channels'
     // spectra have to be jumbled together in a particular way prior to applying the IFFT
-    xs3_fft_spectra_merge((complex_s32_t*) x->data, FFT_N);
-
-    // Do the actual IFFT
-    xs3_fft_index_bit_reversal((complex_s32_t*) x->data, FFT_N);
+    xs3_fft_spectra_merge(scratch, FFT_N);
 
     // Undo the bit-reversed indexing
-    xs3_fft_dit_inverse((complex_s32_t*) x->data, FFT_N, &x->hr, &x->exp);
-    
-    x->flags = a->flags;
+    xs3_fft_index_bit_reversal(scratch, FFT_N);
+
+    // Do the actual IFFT
+    xs3_fft_dit_inverse(scratch, FFT_N, &hr, &exp_diff);
+
+    // Aliases for time-domain vectors
+    bfp_s32_t* a = (bfp_s32_t*) a_fft;
+    bfp_s32_t* b = (bfp_s32_t*) b_fft;
+
+    // Copy data back from scratch buffer
+    xs3_vect_s32_unzip(a->data, b->data, scratch, FFT_N);
+
+    // Update vector metadata
+    a->hr = b->hr = hr;
+    a->length = b->length = FFT_N;
+
+    a->exp += exp_diff;
+    b->exp += exp_diff;
 }
 
 
@@ -304,55 +310,4 @@ void bfp_fft_pack_mono(
   x->length--;
   // Move Nyquist component's real part to DC imaginary part
   x->data[0].im = x->data[x->length].re;
-}
-
-void bfp_fft_unpack_stereo(
-  bfp_complex_s32_t* x1,
-  bfp_complex_s32_t* x2)
-{
-#if DEBUG
-  // For this to work correctly, the mantissa buffers for x1 and x2 must be adjacent
-  // and x1 and x2 must be the same length.
-  assert( x1->length == x2->length);
-  assert( ((unsigned)&x2->data) == (((unsigned)&x1->data) + (sizeof(dsp_complex_t) * x1->length)) );
-
-  // Ideally we'd also be able to check the length of the underlying buffer that both
-  // x1 and x2 are using (to make sure that extra space is available to unpack into),
-  // but we don't have a way to do that.
-#endif // DEBUG
-
-  //determine new start address for the second channel
-  complex_s32_t* new_x2 = &x2->data[1];
-  // Move all of ChB's spectrum over one element
-  memmove(new_x2, x2->data, sizeof(complex_s32_t) * x2->length);
-  // Update address of x2 data
-  x2->data = new_x2;
-  //Change length of both spectra
-  x1->length++;
-  x2->length++;
-  // Unpack Nyquist component
-  x1->data[x1->length-1].re = x1->data[0].im;
-  x2->data[x2->length-1].re = x2->data[0].im;
-  // Zero out imag parts of both DC and Nyquist
-  x1->data[0].im = x2->data[0].im = 0;
-  x1->data[x1->length-1].im = x2->data[x2->length-1].im = 0;
-}
-
-void bfp_fft_pack_stereo(
-  bfp_complex_s32_t* x1,
-  bfp_complex_s32_t* x2)
-{
-  // Re-pack Nyquist elements
-  x1->data[0].im = x1->data[x1->length-1].re;
-  x2->data[0].im = x2->data[x2->length-1].re;
-  // Change length of both spectra
-  x1->length--;
-  x2->length--;
-  // determine new start address for ChB
-  complex_s32_t* new_ChB = &x2->data[-1];
-  // Move all of ChB's spectrum over one element
-  memmove(new_ChB, x2->data, sizeof(complex_s32_t) * x2->length);
-  // Update address of ChB data
-  x2->data = new_ChB;
-  // (no need to zero-out (or un-zero-out?) anything to repack)
 }

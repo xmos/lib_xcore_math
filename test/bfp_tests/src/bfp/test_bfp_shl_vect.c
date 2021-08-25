@@ -21,8 +21,6 @@ TEST_GROUP_RUNNER(bfp_shl) {
   RUN_TEST_CASE(bfp_shl, bfp_complex_s32_shl);
   RUN_TEST_CASE(bfp_shl, bfp_complex_s16_shl_2);
   RUN_TEST_CASE(bfp_shl, bfp_complex_s32_shl_2);
-  RUN_TEST_CASE(bfp_shl, bfp_ch_pair_s16_shl);
-  RUN_TEST_CASE(bfp_shl, bfp_ch_pair_s32_shl);
 }
 
 TEST_GROUP(bfp_shl);
@@ -135,120 +133,6 @@ TEST(bfp_shl, bfp_s32_shl)
 
         for(int i = 0; i < A.length; i++)
             TEST_ASSERT_EQUAL(B_copy.data[i] >> (-shl), B.data[i]);
-    }
-}
-
-
-TEST(bfp_shl, bfp_ch_pair_s16_shl)
-{
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
-    ch_pair_s16_t dataA[MAX_LEN];
-    ch_pair_s16_t dataB[MAX_LEN];
-    ch_pair_s16_t dataB_copy[MAX_LEN];
-    bfp_ch_pair_s16_t A, B, B_copy;
-    A.data = dataA;
-    B.data = dataB;
-
-    for(int r = 0; r < REPS; r++){
-        setExtraInfo_RS(r, seed);
-
-        test_random_bfp_ch_pair_s16(&B, MAX_LEN, &seed, &A, 0);
-
-        memcpy(&B_copy, &B, sizeof(B));
-        memcpy(dataB_copy, dataB, sizeof(dataB));
-
-        unsigned leave_hr = 1;
-
-        bfp_ch_pair_s16_shl(&A, &B, B.hr-leave_hr);
-
-        TEST_ASSERT_EQUAL(B_copy.length, A.length);
-        TEST_ASSERT_EQUAL(B_copy.length, B.length);
-        TEST_ASSERT_EQUAL(leave_hr, A.hr);
-        TEST_ASSERT_EQUAL(B_copy.hr, B.hr);
-        TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
-        TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
-
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_EQUAL(B_copy.data[i].ch_a << (B_copy.hr-leave_hr), A.data[i].ch_a);
-            TEST_ASSERT_EQUAL(B_copy.data[i].ch_b << (B_copy.hr-leave_hr), A.data[i].ch_b);
-        }
-
-        int shl = -(pseudo_rand_uint32(&seed) % 5) - 1;
-
-        memcpy(&B_copy, &A, sizeof(A));
-        memcpy(dataB_copy, dataA, sizeof(dataA));
-
-        bfp_ch_pair_s16_shl(&B, &A, shl);
-        
-        TEST_ASSERT_EQUAL(B_copy.length, B.length);
-        TEST_ASSERT_EQUAL(B_copy.length, A.length);
-        TEST_ASSERT_EQUAL(-shl+leave_hr, B.hr);
-        TEST_ASSERT_EQUAL(leave_hr, A.hr);
-        TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
-        TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
-
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_EQUAL(B_copy.data[i].ch_a >> (-shl), B.data[i].ch_a);
-            TEST_ASSERT_EQUAL(B_copy.data[i].ch_b >> (-shl), B.data[i].ch_b);
-        }
-    }
-}
-
-
-TEST(bfp_shl, bfp_ch_pair_s32_shl)
-{
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
-    ch_pair_s32_t dataA[MAX_LEN];
-    ch_pair_s32_t dataB[MAX_LEN];
-    ch_pair_s32_t dataB_copy[MAX_LEN];
-    bfp_ch_pair_s32_t A, B, B_copy;
-    A.data = dataA;
-    B.data = dataB;
-
-    for(int r = 0; r < REPS; r++){
-        setExtraInfo_RS(r, seed);
-
-        test_random_bfp_ch_pair_s32(&B, MAX_LEN, &seed, &A, 0);
-
-        memcpy(&B_copy, &B, sizeof(B));
-        memcpy(dataB_copy, dataB, sizeof(dataB));
-
-        unsigned leave_hr = 1;
-
-        bfp_ch_pair_s32_shl(&A, &B, B.hr-leave_hr);
-
-        TEST_ASSERT_EQUAL(B_copy.length, A.length);
-        TEST_ASSERT_EQUAL(B_copy.length, B.length);
-        TEST_ASSERT_EQUAL(leave_hr, A.hr);
-        TEST_ASSERT_EQUAL(B_copy.hr, B.hr);
-        TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
-        TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
-
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_EQUAL(B_copy.data[i].ch_a << (B_copy.hr-leave_hr), A.data[i].ch_a);
-            TEST_ASSERT_EQUAL(B_copy.data[i].ch_b << (B_copy.hr-leave_hr), A.data[i].ch_b);
-        }
-
-        int shl = -(pseudo_rand_uint32(&seed) % 5) - 1;
-
-        memcpy(&B_copy, &A, sizeof(A));
-        memcpy(dataB_copy, dataA, sizeof(dataA));
-
-        bfp_ch_pair_s32_shl(&B, &A, shl);
-        
-        TEST_ASSERT_EQUAL(B_copy.length, B.length);
-        TEST_ASSERT_EQUAL(B_copy.length, A.length);
-        TEST_ASSERT_EQUAL(-shl+leave_hr, B.hr);
-        TEST_ASSERT_EQUAL(leave_hr, A.hr);
-        TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
-        TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
-
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_EQUAL(B_copy.data[i].ch_a >> (-shl), B.data[i].ch_a);
-            TEST_ASSERT_EQUAL(B_copy.data[i].ch_b >> (-shl), B.data[i].ch_b);
-        }
     }
 }
 

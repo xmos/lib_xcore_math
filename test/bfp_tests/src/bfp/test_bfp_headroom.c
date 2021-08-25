@@ -19,8 +19,6 @@ TEST_GROUP_RUNNER(bfp_headroom) {
   RUN_TEST_CASE(bfp_headroom, bfp_s16_headroom);
   RUN_TEST_CASE(bfp_headroom, bfp_complex_s32_headroom);
   RUN_TEST_CASE(bfp_headroom, bfp_complex_s16_headroom);
-  RUN_TEST_CASE(bfp_headroom, bfp_ch_pair_s32_headroom);
-  RUN_TEST_CASE(bfp_headroom, bfp_ch_pair_s16_headroom);
 }
 
 TEST_GROUP(bfp_headroom);
@@ -191,85 +189,3 @@ TEST(bfp_headroom, bfp_complex_s32_headroom)
         TEST_ASSERT_EQUAL(exp_hr, got_hr);
     }
 }
-
-
-TEST(bfp_headroom, bfp_ch_pair_s16_headroom)
-{
-
-
-    unsigned seed = SEED_FROM_FUNC_NAME();
-    
-    ch_pair_s16_t WORD_ALIGNED data[MAX_LEN];
-
-    for(int r = 0; r < REPS; r++){
-        setExtraInfo_R(r);
-
-        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
-        int shr = pseudo_rand_uint32(&seed) % 10;
-
-        for(int i = 0; i < length; i++){
-            data[i].ch_a = pseudo_rand_int16(&seed) >> shr;
-            data[i].ch_b = pseudo_rand_int16(&seed) >> shr;
-        }
-        
-        headroom_t exp_hr = xs3_vect_s16_headroom((int16_t*)data, length*2);
-
-        bfp_ch_pair_s16_t A;
-
-        bfp_ch_pair_s16_init(&A, data, exponent, length, 0);
-
-        TEST_ASSERT_EQUAL(data, A.data);
-        TEST_ASSERT_EQUAL(exponent, A.exp);
-        TEST_ASSERT_EQUAL(0, A.hr);
-
-        headroom_t got_hr = bfp_ch_pair_s16_headroom(&A);
-
-        TEST_ASSERT_EQUAL(data, A.data);
-        TEST_ASSERT_EQUAL(exponent, A.exp);
-        TEST_ASSERT_EQUAL(exp_hr, A.hr);
-        TEST_ASSERT_EQUAL(exp_hr, got_hr);
-    }
-}
-
-
-TEST(bfp_headroom, bfp_ch_pair_s32_headroom)
-{
-
-
-    unsigned seed = SEED_FROM_FUNC_NAME();
-    
-    ch_pair_s32_t WORD_ALIGNED data[MAX_LEN];
-
-    for(int r = 0; r < REPS; r++){
-        setExtraInfo_R(r);
-
-        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
-        int shr = pseudo_rand_uint32(&seed) % 10;
-
-        for(int i = 0; i < length; i++){
-            data[i].ch_a = pseudo_rand_int32(&seed) >> shr;
-            data[i].ch_b = pseudo_rand_int32(&seed) >> shr;
-        }
-        
-        headroom_t exp_hr = xs3_vect_s32_headroom((int32_t*)data, length*2);
-
-        bfp_ch_pair_s32_t A;
-
-        bfp_ch_pair_s32_init(&A, data, exponent, length, 0);
-
-        TEST_ASSERT_EQUAL(data, A.data);
-        TEST_ASSERT_EQUAL(exponent, A.exp);
-        TEST_ASSERT_EQUAL(0, A.hr);
-
-        headroom_t got_hr = bfp_ch_pair_s32_headroom(&A);
-
-        TEST_ASSERT_EQUAL(data, A.data);
-        TEST_ASSERT_EQUAL(exponent, A.exp);
-        TEST_ASSERT_EQUAL(exp_hr, A.hr);
-        TEST_ASSERT_EQUAL(exp_hr, got_hr);
-    }
-}
-
-

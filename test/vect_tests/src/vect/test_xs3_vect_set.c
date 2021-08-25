@@ -19,8 +19,6 @@ TEST_GROUP_RUNNER(xs3_vect_set) {
   RUN_TEST_CASE(xs3_vect_set, xs3_vect_s32_set);
   RUN_TEST_CASE(xs3_vect_set, xs3_vect_complex_s16_set);
   RUN_TEST_CASE(xs3_vect_set, xs3_vect_complex_s32_set);
-  RUN_TEST_CASE(xs3_vect_set, xs3_vect_ch_pair_s16_set);
-  RUN_TEST_CASE(xs3_vect_set, xs3_vect_ch_pair_s32_set);
 }
 
 TEST_GROUP(xs3_vect_set);
@@ -158,72 +156,3 @@ TEST(xs3_vect_set, xs3_vect_complex_s32_set)
         
     }
 }
-
-
-TEST(xs3_vect_set, xs3_vect_ch_pair_s16_set)
-{
-    
-
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
-
-    ch_pair_s16_t WORD_ALIGNED A[MAX_LEN];
-
-    for(int v = 0; v < REPS; v++){
-        setExtraInfo_RS(v, seed);
-
-        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-        
-        memset(A, 0xCC, sizeof(A));
-
-        const int16_t new_ch_a = pseudo_rand_int16(&seed);
-        const int16_t new_ch_b = pseudo_rand_int16(&seed);
-        
-        xs3_vect_ch_pair_s16_set(A, new_ch_a, new_ch_b, length);
-
-        for(int i = 0; i < length; i++){
-            TEST_ASSERT_EQUAL_INT16(new_ch_a, A[i].ch_a);
-            TEST_ASSERT_EQUAL_INT16(new_ch_b, A[i].ch_b);
-        }
-        for(int i = length; i < MAX_LEN; i++){
-            TEST_ASSERT_EQUAL_INT16(0xCCCC, A[i].ch_a);
-            TEST_ASSERT_EQUAL_INT16(0xCCCC, A[i].ch_b);
-        }
-        
-    }
-}
-
-
-TEST(xs3_vect_set, xs3_vect_ch_pair_s32_set)
-{
-    
-
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
-
-    ch_pair_s32_t WORD_ALIGNED A[MAX_LEN];
-
-    for(int v = 0; v < REPS; v++){
-        setExtraInfo_RS(v, seed);
-
-        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-        
-        memset(A, 0xCC, sizeof(A));
-
-        const int32_t new_ch_a = pseudo_rand_int32(&seed);
-        const int32_t new_ch_b = pseudo_rand_int32(&seed);
-        
-        xs3_vect_ch_pair_s32_set(A, new_ch_a, new_ch_b, length);
-
-        for(int i = 0; i < length; i++){
-            TEST_ASSERT_EQUAL_INT32(new_ch_a, A[i].ch_a);
-            TEST_ASSERT_EQUAL_INT32(new_ch_b, A[i].ch_b);
-        }
-        for(int i = length; i < MAX_LEN; i++){
-            TEST_ASSERT_EQUAL_INT32(0xCCCCCCCC, A[i].ch_a);
-            TEST_ASSERT_EQUAL_INT32(0xCCCCCCCC, A[i].ch_b);
-        }
-        
-    }
-}
-

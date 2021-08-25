@@ -201,9 +201,7 @@ headroom_t xs3_vect_complex_s32_conj_mul(
  * 
  * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
  * 
- * @see xs3_vect_ch_pair_s16_headroom, 
- *      xs3_vect_ch_pair_s32_headroom, 
- *      xs3_vect_s16_headroom, 
+ * @see xs3_vect_s16_headroom, 
  *      xs3_vect_s32_headroom, 
  *      xs3_vect_complex_s16_headroom
  * 

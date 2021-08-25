@@ -20,8 +20,6 @@ TEST_GROUP_RUNNER(xs3_vect_shl) {
   RUN_TEST_CASE(xs3_vect_shl, xs3_vect_s16_shl_random);
   RUN_TEST_CASE(xs3_vect_shl, xs3_vect_s32_shl_basic);
   RUN_TEST_CASE(xs3_vect_shl, xs3_vect_s32_shl_random);
-  RUN_TEST_CASE(xs3_vect_shl, xs3_vect_ch_pair_s16_shl);
-  RUN_TEST_CASE(xs3_vect_shl, xs3_vect_ch_pair_s32_shl);
   RUN_TEST_CASE(xs3_vect_shl, xs3_vect_complex_s16_shl);
   RUN_TEST_CASE(xs3_vect_shl, xs3_vect_complex_s32_shl);
 }
@@ -289,94 +287,6 @@ TEST(xs3_vect_shl, xs3_vect_s32_shl_random)
     }
 }
 #undef LEN
-
-
-TEST(xs3_vect_shl, xs3_vect_ch_pair_s16_shl)
-{
-    
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
-
-    ch_pair_s16_t WORD_ALIGNED A[MAX_LEN];
-    ch_pair_s16_t WORD_ALIGNED B[MAX_LEN];
-
-    for(int v = 0; v < REPS; v++){
-
-        setExtraInfo_R(v);
-
-        const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
-
-        const headroom_t hr = pseudo_rand_uint(&seed, 0, 12);
-
-        const left_shift_t shl = pseudo_rand_int(&seed, -4, 4);
-        
-        for(int i = 0; i < length; i++){
-            B[i].ch_a = pseudo_rand_int16(&seed) >> hr;
-            B[i].ch_b = pseudo_rand_int16(&seed) >> hr;
-        }
-
-        xs3_vect_ch_pair_s16_shl(A, B, length, shl);
-
-        for(int i = 0; i < length; i++){
-            TEST_ASSERT_EQUAL_HEX16( ASHR16(B[i].ch_a, -shl), A[i].ch_a );
-            TEST_ASSERT_EQUAL_HEX16( ASHR16(B[i].ch_b, -shl), A[i].ch_b );
-        }
-
-        memcpy(A, B, sizeof(A));
-
-        xs3_vect_ch_pair_s16_shl(A, A, length, shl);
-
-        for(int i = 0; i < length; i++){
-            TEST_ASSERT_EQUAL_HEX16( ASHR16(B[i].ch_a, -shl), A[i].ch_a );
-            TEST_ASSERT_EQUAL_HEX16( ASHR16(B[i].ch_b, -shl), A[i].ch_b );
-        }
-
-
-    }
-}
-
-
-TEST(xs3_vect_shl, xs3_vect_ch_pair_s32_shl)
-{
-    
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
-
-    ch_pair_s32_t A[MAX_LEN];
-    ch_pair_s32_t B[MAX_LEN];
-
-    for(int v = 0; v < REPS; v++){
-
-        setExtraInfo_R(v);
-
-        const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
-
-        const headroom_t hr = pseudo_rand_uint(&seed, 0, 28);
-
-        const left_shift_t shl = pseudo_rand_int(&seed, -8, 8);
-        
-        for(int i = 0; i < length; i++){
-            B[i].ch_a = pseudo_rand_int32(&seed) >> hr;
-            B[i].ch_b = pseudo_rand_int32(&seed) >> hr;
-        }
-
-        xs3_vect_ch_pair_s32_shl(A, B, length, shl);
-
-        for(int i = 0; i < length; i++){
-            TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].ch_a, -shl), A[i].ch_a );
-            TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].ch_b, -shl), A[i].ch_b );
-        }
-
-        memcpy(A, B, sizeof(A));
-
-        xs3_vect_ch_pair_s32_shl(A, A, length, shl);
-
-        for(int i = 0; i < length; i++){
-            TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].ch_a, -shl), A[i].ch_a );
-            TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].ch_b, -shl), A[i].ch_b );
-        }
-    }
-}
 
 
 TEST(xs3_vect_shl, xs3_vect_complex_s16_shl)

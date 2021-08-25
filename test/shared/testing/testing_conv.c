@@ -250,30 +250,6 @@ complex_double_t conv_complex_s32_to_complex_double(
     return r;
 }
 
-ch_pair_double_t conv_ch_pair_s16_to_ch_pair_double(
-    ch_pair_s16_t x, 
-    const exponent_t x_exp, 
-    conv_error_e* error)
-{
-    ch_pair_double_t r;
-    r.ch_a = conv_s16_to_double(x.ch_a, x_exp, error);
-    r.ch_b = conv_s16_to_double(x.ch_b, x_exp, error);
-
-    return r;
-}
-
-ch_pair_double_t conv_ch_pair_s32_to_ch_pair_double(
-    ch_pair_s32_t x, 
-    const exponent_t x_exp, 
-    conv_error_e* error)
-{
-    ch_pair_double_t r;
-    r.ch_a = conv_s32_to_double(x.ch_a, x_exp, error);
-    r.ch_b = conv_s32_to_double(x.ch_b, x_exp, error);
-
-    return r;
-}
-
 complex_s16_t conv_complex_double_to_complex_s16(
     complex_double_t x, 
     const exponent_t x_exp, 
@@ -294,30 +270,6 @@ complex_s32_t conv_complex_double_to_complex_s32(
     complex_s32_t r;
     r.re = conv_double_to_s32(x.re, x_exp, error);
     r.im = conv_double_to_s32(x.im, x_exp, error);
-
-    return r;
-}
-
-ch_pair_s16_t conv_ch_pair_double_to_ch_pair_s16(
-    ch_pair_double_t x, 
-    const exponent_t x_exp, 
-    conv_error_e* error)
-{
-    ch_pair_s16_t r;
-    r.ch_a = conv_double_to_s16(x.ch_a, x_exp, error);
-    r.ch_b = conv_double_to_s16(x.ch_b, x_exp, error);
-
-    return r;
-}
-
-ch_pair_s32_t conv_ch_pair_double_to_ch_pair_s32(
-    ch_pair_double_t x, 
-    const exponent_t x_exp, 
-    conv_error_e* error)
-{
-    ch_pair_s32_t r;
-    r.ch_a = conv_double_to_s32(x.ch_a, x_exp, error);
-    r.ch_b = conv_double_to_s32(x.ch_b, x_exp, error);
 
     return r;
 }
