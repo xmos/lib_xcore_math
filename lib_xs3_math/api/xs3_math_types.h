@@ -62,28 +62,6 @@ typedef struct {
     int16_t im; ///< Imaginary Part
 } complex_s16_t;
 
-/** 
- * @brief A pair of 32-bit samples, associated with channels A and B.
- * 
- * @ingroup type_scalar
- */
-C_TYPE
-typedef struct {
-    int32_t ch_a;   ///< Channel A
-    int32_t ch_b;   ///< Channel B
-} ch_pair_s32_t;
-
-/** 
- * @brief A pair of 16-bit samples, associated with channels A and B.
- * 
- * @ingroup type_scalar
- */
-C_TYPE
-typedef struct {
-    int16_t ch_a;   ///< Channel A
-    int16_t ch_b;   ///< Channel B
-} ch_pair_s16_t;
-
 
 /**
  * @brief An exponent.
@@ -264,16 +242,6 @@ typedef enum {
    * be free()ed.
   */
   BFP_FLAG_DYNAMIC  =  (1 << 0),
-
-  /** 
-   * (bfp_complex_s32_t only) Indicates that a vector is the spectrum of channel B (the second
-   * channel) when bfp_fft_forward_stereo() is used.
-   * 
-   * Vectors with this flag set will not have their `data` free()ed by bfp_*_dealloc().
-   * 
-   * This is also used as a safety check when `bfp_fft_inverse_stereo()` is used.
-   */
-  BFP_FLAG_CHAN_B   =  (1 << 1),
 } bfp_flags_e;
 
 
@@ -404,76 +372,6 @@ typedef struct {
 } bfp_complex_s16_t;
 //! [bfp_complex_s16_t]
 
-/**
- * @brief A block floating-point vector of 32-bit channel pairs.
- * 
- * Initialized with the ``bfp_ch_pair_s32_init()`` function.
- * 
- * The ``data[].ch_a`` elements collectively represent a sequence of samples associated with one 
- * channel, while the ``data[].ch_b`` elements collectively represent a sequence of samples associated
- * with another.
- * 
- * The logical quantity represented by each element (for channel a) of this vector is:
- *      ``data[k].ch_a * 2^(exp)``
- *      where the multiplication and exponentiation are using real (non-modular) arithmetic
- * Likewise for channel b.
- * 
- * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
- * minimize precision loss as elements become small.
- * 
- * @ingroup type_bfp
- */
-//! [bfp_ch_pair_s32_t]
-C_TYPE
-typedef struct {
-    /** Pointer to the underlying element buffer.*/
-    ch_pair_s32_t* data;
-    /** Exponent associated with the vector. */
-    exponent_t exp;
-    /** Current headroom in the ``data[]`` */
-    headroom_t hr;
-    /** Current size of ``data[]``, expressed in elements */
-    unsigned length;
-    /** BFP vector flags. Users should not normally modify these manually. */
-    bfp_flags_e flags;
-} bfp_ch_pair_s32_t;
-//! [bfp_ch_pair_s32_t]
-
-/**
- * @brief A block floating-point vector of 16-bit channel pairs.
- * 
- * Initialized with the ``bfp_ch_pair_s16_init()`` function.
- * 
- * The ``data[].ch_a`` elements collectively represent a sequence of samples associated with one 
- * channel, while the ``data[].ch_b`` elements collectively represent a sequence of samples associated
- * with another.
- * 
- * The logical quantity represented by each element (for channel a) of this vector is:
- *      ``data[k].ch_a * 2^(exp)``
- *      where the multiplication and exponentiation are using real (non-modular) arithmetic
- * Likewise for channel b.
- * 
- * The BFP API keeps the ``hr`` field up-to-date with the current headroom of ``data[]`` so as to
- * minimize precision loss as elements become small.
- * 
- * @ingroup type_bfp
- */
-//! [bfp_ch_pair_s16_t]
-C_TYPE
-typedef struct {
-    /** Pointer to the underlying element buffer.*/
-    ch_pair_s16_t* data;
-    /** Exponent associated with the vector. */
-    exponent_t exp;
-    /** Current headroom in the ``data[]`` */
-    headroom_t hr;
-    /** Current size of ``data[]``, expressed in elements */
-    unsigned length;
-    /** BFP vector flags. Users should not normally modify these manually. */
-    bfp_flags_e flags;
-} bfp_ch_pair_s16_t;
-//! [bfp_ch_pair_s16_t]
-
 
 // Some standard float types required by some of the unit tests. @todo This probably belongs elsewhere
 
@@ -489,6 +387,7 @@ typedef struct {
     float im;   ///< Imaginary Part
 } complex_float_t;
 
+
 /**
  * @brief A complex number with a double-precision floating-point real part and a double-precision floating-point imaginary part.
  * 
@@ -500,27 +399,6 @@ typedef struct {
     double im;  ///< Imaginary Part
 } complex_double_t;
 
-/**
- * @brief A pair of single-precision floating-point samples, associated with channels A and B.
- * 
- * @ingroup type_misc
- */
-C_TYPE
-typedef struct {
-    float ch_a; ///< Channel A
-    float ch_b; ///< Channel B
-} ch_pair_float_t;
-
-/**
- * @brief A pair of double-precision floating-point samples, associated with channels A and B.
- * 
- * @ingroup type_misc
- */
-C_TYPE
-typedef struct {
-    double ch_a;    ///< Channel A
-    double ch_b;    ///< Channel B
-} ch_pair_double_t;
 
 /**
  * @brief Holds a set of sixteen 32-bit accumulators in the XS3 VPU's internal format.

@@ -79,38 +79,6 @@ bfp_complex_s16_t bfp_complex_s16_alloc(
 
 
 ////////////
-bfp_ch_pair_s32_t bfp_ch_pair_s32_alloc(
-    const unsigned length)
-{
-#if (DEBUG)
-  assert( length > 0 );
-#endif // DEBUG
-
-  bfp_ch_pair_s32_t bfp_vec;
-  bfp_vec.data = XS3_MALLOC(sizeof(ch_pair_s32_t) * (length+2));
-  bfp_vec.length = (bfp_vec.data == NULL)? 0 : length;
-  bfp_vec.flags  = (bfp_vec.data == NULL)? 0 : BFP_FLAG_DYNAMIC;
-  return bfp_vec;
-}
-
-
-////////////
-bfp_ch_pair_s16_t bfp_ch_pair_s16_alloc(
-    const unsigned length)
-{
-#if (DEBUG)
-  assert( length > 0 );
-#endif // DEBUG
-
-  bfp_ch_pair_s16_t bfp_vec;
-  bfp_vec.data = XS3_MALLOC(sizeof(ch_pair_s32_t) * (length));
-  bfp_vec.length = (bfp_vec.data == NULL)? 0 : length;
-  bfp_vec.flags  = (bfp_vec.data == NULL)? 0 : BFP_FLAG_DYNAMIC;
-  return bfp_vec;
-}
-
-
-////////////
 void bfp_s32_dealloc(
     bfp_s32_t* vector)
 {
@@ -141,7 +109,6 @@ void bfp_complex_s32_dealloc(
     bfp_complex_s32_t* vector)
 {
   if(!(vector->flags & BFP_FLAG_DYNAMIC)) return;
-  if(vector->flags & BFP_FLAG_CHAN_B) return;
 
   XS3_FREE(vector->data);
   vector->data = NULL;
@@ -161,30 +128,4 @@ void bfp_complex_s16_dealloc(
   vector->imag = NULL;
   vector->length = 0;
   vector->flags = 0;
-}
-
-
-////////////
-void bfp_ch_pair_s32_dealloc(
-    bfp_ch_pair_s32_t* vector)
-{
-  if(!(vector->flags & BFP_FLAG_DYNAMIC)) return;
-
-  XS3_FREE(vector->data);
-  vector->data = NULL;
-  vector->length = 0;
-  vector->flags = 0;
-}
-
-
-////////////
-void bfp_ch_pair_s16_dealloc(
-    bfp_ch_pair_s16_t* vector)
-{
-  if(!(vector->flags & BFP_FLAG_DYNAMIC)) return;
-
-  XS3_FREE(vector->data);
-  vector->data = NULL;
-  vector->length = 0;
-  vector->flags  = 0;
 }

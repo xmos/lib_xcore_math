@@ -171,99 +171,92 @@ void fft_stereo_example()
 
   /*
     This function demonstrates how apply the forward and inverse FFT to a pair of channels, each
-    containing a sequence of real sample data.  This is accomplished using the 
+    containing a sequence of real sample data.  This is accomplished using the
     bfp_fft_forward_stereo() and bfp_fft_inverse_stereo() functions respectively.
 
-    bfp_ch_pair_s32_t     --bfp_fft_forward_stereo()--> 2 x bfp_complex_s32_t
-    2 x bfp_complex_s32_t --bfp_fft_inverse_stereo()--> bfp_ch_pair_s32_t
+    2 x bfp_s32_t     --bfp_fft_forward_stereo()--> 2 x bfp_complex_s32_t
+    2 x bfp_complex_s32_t --bfp_fft_inverse_stereo()--> 2 x bfp_s32_t
   */
   
-  // bfp_fft_forward_stereo() requires an input BFP vector of type bfp_ch_pair_s32_t, whose 
-  // mantissa vector is backed by a ch_pair_s32_t array.
-  // The ch_pair_s32_t type contains two fields, `ch_a` and `ch_b`, corresponding to the two
-  // represented channels. The buffer is then an alternating sequence of samples for channel
-  // A and channel B (much like the real and imaginary parts of a complex 32-bit vector).
-  // The +2 is because we're going to do some unpacking of the spectra after applying the FFT.
-  // Further explanation is below.
-  ch_pair_s32_t buffer[LENGTH + 2];
+  // bfp_fft_forward_stereo() requires 2 input BFP vectors of type bfp_s32_t, whose  mantissa
+  // vectors are backed by a int32_t arrays. The +1 is because we're going to do some unpacking of
+  // the spectra after applying the FFT. See fft_mono_example() for unpacking explanation. 
+  // The DWORD_ALIGNED qualifier instructs the compiler to ensure the arrays start at an
+  // 8-byte-aligned memory offset.
+  int32_t DWORD_ALIGNED bufferA[LENGTH + 1];
+  int32_t DWORD_ALIGNED bufferB[LENGTH + 1];
+
+  // bfp_fft_forward_stereo() and bfp_fft_inverse_stereo() also require a scratch buffer with
+  // element type complex_s32_t which is the same length (in elements) of the input vectors.
+  complex_s32_t DWORD_ALIGNED scratch[LENGTH];
   
-  // Fill in the buffer with random mantissas (left shift is to ensure some are negative).
+  // Fill in the buffers with random mantissas (left shift is to ensure some are negative).
   for(int k = 0; k < LENGTH; k++){
-    buffer[k].ch_a = rand() << 1;
-    buffer[k].ch_b = rand() << 1;
+    bufferA[k] = rand() << 1;
+    bufferB[k] = rand() << 1;
   }
 
-  // Before doing the forward FFT the array needs to be turned into a proper BFP vector. So we 
-  // initialize a bfp_ch_pair_s32_t.
-  // In many situations there is no obvious natural exponent to associate with the time-domain 
-  // signal (such as left-right PCM audio streams). In such a situation, it is often convenient 
-  // to select an exponent that normalizes the data to a known range, such as [-1.0, 1.0). For 
-  // 32-bit signed data, an exponent of -31 does that.
+  // Before doing the forward FFT the array needs to be turned into a proper BFP vector. So we
+  // initialize a pair of bfp_s32_t structs.
+  //
+  // In many situations there is no obvious natural exponent to associate with the time-domain
+  // signal (such as PCM audio streams). In such a situation, it is often convenient to select an
+  // exponent that normalizes the data to a known range, such as [-1.0, 1.0). For 32-bit signed
+  // data, an exponent of -31 does that.
+  //
   // Note that the final parameter is instructing the init function to compute the headroom of the
   // input vector. If we instead chose to fill buffer[] with random data *after* initializing x,
   // there would be no point to computing the headroom here, as it is invalidated the moment we
-  // modify x.data[].
-  bfp_ch_pair_s32_t x;
-  bfp_ch_pair_s32_init(&x, buffer, -31, LENGTH, 1);
+  // modify a.data[] or b.data[].
+  bfp_s32_t a, b;
+  bfp_s32_init(&a, bufferA, -31, LENGTH, 1);
+  bfp_s32_init(&b, bufferB, -31, LENGTH, 1);
 
-  // Print out the floating point equivalent values of the input vector's elements prior to applying
+  // Print out the floating point equivalent values of the input vectors' elements prior to applying
   // the FFT.
-  printf("x = [");
-  for(int k = 0; k < x.length; k++)
-    printf("(%0.04f, %0.04f), ", ldexp(x.data[k].ch_a, x.exp), ldexp(x.data[k].ch_b, x.exp));
+  printf("a = [");
+  for(int k = 0; k < a.length; k++)
+    printf("%0.04f, ", ldexp(a.data[k], a.exp));
   printf("]\n\n");
 
-  // bfp_fft_forward_stereo() operates on data in-place. We'll print out the buffer address before
-  // and (both addresses) after the transformation to convince ourselves of this.
-  printf("&x.data[0] --> 0x%08X\n", (unsigned) &x.data[0]);
-  printf("x.length --> %u\n\n", x.length);
-
-  // bfp_fft_forward_stereo() outputs two complex BFP vectors via output parameters, so we will
-  // allocate those here. Note that these need not be initialized by us (indeed, and initialization
-  // will be clobbered by bfp_fft_forward_stereo()) as the transform will initialize them to point
-  // to the appropriate addresses within the input vector's buffer.
-  bfp_complex_s32_t ChA, ChB;
+  printf("b = [");
+  for(int k = 0; k < b.length; k++)
+    printf("%0.04f, ", ldexp(b.data[k], b.exp));
+  printf("]\n\n");
 
   // Apply the FFT.
-  // This function takes a pointer to the input BFP vector ('&x' below) and to two ouput BFP
-  // vectors ('&ChA' and '&ChB' below). The output vectors are inialized by this function.
-  bfp_fft_forward_stereo(&ChA, &ChB, &x);
+  // 
+  // This function takes a pointer to the input BFP vectors and a scratch buffer
+  bfp_fft_forward_stereo(&a, &b, scratch);
+
+  // The two bfp_s32_t vectors containing the time-domain data have now been clobbered with the
+  // frequency-domain data, and should not be directly accessed. Instead, we alias each bfp_s32_t to
+  // a bfp_complex_s32_t and access the results through that.
+  bfp_complex_s32_t* ChA = (bfp_complex_s32_t*) &a;
+  bfp_complex_s32_t* ChB = (bfp_complex_s32_t*) &b;
 
 
   /*
-    See the note above (in fft_mono_example()) about the properties of the real DFT that allow it
-    to be computed in-place. Much of the same applies for the stereo DFT.
+    See the note above (in fft_mono_example()) about the properties of the real DFT that allow it to
+    be computed in-place. Much of the same applies for the stereo DFT.
 
     It is another property of the DFT that the real and imaginary parts of the input domain are
     transformed in a way which allows two purely real signals to be DFTed simultaneously and their
     spectra to be fully separated afterwards. This is done by bfp_fft_forward_stereo().
 
     Like the mono FFT, each output spectrum (channels A and B) is represented by only N/2 complex
-    elements. This is again is allowed as a result of the assumption that the input signals are 
-    purely real. Also like the mono FFT, the real part of the Nyquist rate is packed into the 
-    imaginary part of the DC element for each of the spectra.
+    elements. This again is allowed as a result of the assumption that the input signals are purely
+    real. Also like the mono FFT, the real part of the Nyquist rate is packed into the imaginary
+    part of the DC element for each of the spectra.
 
-    Unpacking the stereo FFTs is slightly more involved than the mono case. In this case (as with
-    mono) the user allocates space for 2 extra ch_pair_s32_t elements in the input buffer (but not
-    indicated in the BFP vector's length). After transforming, however, the entirety of the channel
-    B spectrum must be moved so that it starts at an address 8 bytes higher. Then the Nyquist rate
-    component can be moved to their appropriate elements (N/2). 
-    
-    Be sure to:
-    
-    - Move the real part of the Nyquist component to the appropriate element
-    - zero out the imaginary part of both DC and Nyquist.
-    - Change the lengths of the BFP vectors from N/2 to N/2 + 1
-    - Change the `data` pointer of ChB to the shifted address
+    The spectrum for each channel can be unpacked using bfp_fft_unpack_mono(), just as with
+    bfp_fft_forward_mono().
 
     If much computation is to be done in the frequency domain this unpacking is likely to be
-    relatively inexpensive and to reduce the likely of errors (e.g. complex multiplication of the
-    packed spectrum will likely produce undesired effects).
+    relatively inexpensive and to reduce the likelihood of errors (e.g. complex multiplication of
+    the packed spectrum will likely produce undesired effects).
 
-    Before inverting, the signal must be re-packed by reversing these steps.
-
-    We'll show the process for unpacking and re-packing the signal below. Note that we allocated
-    extra space in `buffer` above.
+    Before performing the inverse FFT, the signal must be re-packed with bfp_fft_pack_mono().
 
   */
 
@@ -271,26 +264,24 @@ void fft_stereo_example()
 
   // Unpack the spectra
   if(UNPACK_SPECTRA_STEREO) {
-    bfp_fft_unpack_stereo(&ChA, &ChB);
+    bfp_fft_unpack_mono(ChA);
+    bfp_fft_unpack_mono(ChB);
   }
 
 
-  // Print out the addresses and lengths of the channel A and channel B frequency spectra.
-  printf("&ChA.data[0] --> 0x%08X\n", (unsigned) &ChA.data[0]);
-  printf("ChA.length --> %u\n\n", ChA.length);
-
-  printf("&ChB.data[0] --> 0x%08X\n", (unsigned) &ChB.data[0]);
-  printf("ChB.length --> %u\n\n", ChB.length);
+  // Print out the lengths of the channel A and channel B frequency spectra.
+  printf("ChA.length --> %u\n\n", ChA->length);
+  printf("ChB.length --> %u\n\n", ChB->length);
 
   // Print out the floating-point equivalent of the channel A and B frequency spectra.
   printf("ChA = [");
-  for(int k = 0; k < ChA.length; k++)
-    printf("(%0.04f + %0.04fj), ", ldexp(ChA.data[k].re, ChA.exp), ldexp(ChA.data[k].im, ChA.exp) );
+  for(int k = 0; k < ChA->length; k++)
+    printf("(%0.04f + %0.04fj), ", ldexp(ChA->data[k].re, ChA->exp), ldexp(ChA->data[k].im, ChA->exp) );
   printf("]\n\n");
 
   printf("ChB = [");
-  for(int k = 0; k < ChB.length; k++)
-    printf("(%0.04f + %0.04fj), ", ldexp(ChB.data[k].re, ChB.exp), ldexp(ChB.data[k].im, ChB.exp) );
+  for(int k = 0; k < ChB->length; k++)
+    printf("(%0.04f + %0.04fj), ", ldexp(ChB->data[k].re, ChB->exp), ldexp(ChB->data[k].im, ChB->exp) );
   printf("]\n\n");
 
   ///////////////////////////////
@@ -302,21 +293,28 @@ void fft_stereo_example()
   
   // Repack the spectra
   if(UNPACK_SPECTRA_STEREO) {
-    bfp_fft_pack_stereo(&ChA, &ChB);
+    bfp_fft_pack_mono(ChA);
+    bfp_fft_pack_mono(ChB);
   }
 
   // Apply the inverse FFT.
   // This function behaves much like the forward stereo FFT, with the input and output parameters
-  // reversed. The time-domain stereo BFP vector `x` will be re-initialized by this function with
-  // the appropriate data address, length, exponent and headroom.
-  bfp_fft_inverse_stereo(&x, &ChA, &ChB);
+  // reversed.
+  bfp_fft_inverse_stereo(ChA, ChB, scratch);
 
+  // ChA and ChB should now be considered clobbered, and `a` and `b` can be used to access the
+  // time-domain data.
 
   // Finally, print out the inverse transformed signal, which should match the original signal to
   // within the arithmetic precision of the forward and inverse transform pair.
-  printf("x = [");
-  for(int k = 0; k < x.length; k++)
-    printf("(%0.04f, %0.04f), ", ldexp(x.data[k].ch_a, x.exp), ldexp(x.data[k].ch_b, x.exp));
+  printf("a = [");
+  for(int k = 0; k < a.length; k++)
+    printf("%0.04f, ", ldexp(a.data[k], a.exp));
+  printf("]\n\n");
+
+  printf("b = [");
+  for(int k = 0; k < b.length; k++)
+    printf("%0.04f, ", ldexp(b.data[k], b.exp));
   printf("]\n\n");
 
 }

@@ -32,8 +32,6 @@ extern "C" {
 #include "bfp/bfp_s16.h"
 #include "bfp/bfp_complex_s32.h"
 #include "bfp/bfp_complex_s16.h"
-#include "bfp/bfp_ch_pair_s32.h"
-#include "bfp/bfp_ch_pair_s16.h"
 #include "bfp/bfp_fft.h"
 
 #ifdef __XC__

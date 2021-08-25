@@ -6,56 +6,8 @@
 
 #include "xs3_math.h"
 
+// #include "xs3_vpu_scalar_ops.h"
 
-// These were originally declared as 'static inline', but everything is a lot cleaner
-// if they are not. I'll just trust the compiler to do the right thing, and if it doesn't,
-// it isn't much of a hit.
-
-headroom_t xs3_vect_ch_pair_s16_headroom(
-    const ch_pair_s16_t a[],
-    const unsigned length)
-{
-    return xs3_vect_s16_headroom((int16_t *) a, 2*length);
-}
-
-
-
-void xs3_vect_ch_pair_s16_set(
-    ch_pair_s16_t data[],
-    const int16_t ch_a,
-    const int16_t ch_b,
-    const unsigned length)
-{
-    union {
-        int32_t s32;
-        ch_pair_s16_t cp16;
-    } tmp;
-
-    tmp.cp16.ch_a = ch_a;
-    tmp.cp16.ch_b = ch_b;
-    
-    xs3_vect_s32_set((int32_t*) data, tmp.s32, length);
-}
-
-
-headroom_t xs3_vect_ch_pair_s16_shl(
-    ch_pair_s16_t a[],
-    const ch_pair_s16_t b[],
-    const unsigned length,
-    const left_shift_t shl)
-{
-    return xs3_vect_ch_pair_s16_shr(a, b, length, -shl);
-}
-
-
-headroom_t xs3_vect_ch_pair_s16_shr(
-    ch_pair_s16_t a[],
-    const ch_pair_s16_t b[],
-    const unsigned length,
-    const right_shift_t shr)
-{
-    return xs3_vect_s16_shr((int16_t*) a, (int16_t*) b, 2*length, shr);
-}
 
 
 headroom_t xs3_vect_complex_s16_add(
@@ -174,44 +126,6 @@ headroom_t xs3_vect_s16_shr(
 {
     return xs3_vect_s16_shl(a, b, length, -shr);
 }
-
-
-
-
-headroom_t xs3_vect_ch_pair_s32_headroom(
-    const ch_pair_s32_t a[],
-    const unsigned length)
-{
-    return xs3_vect_s32_headroom((int32_t*) a, 2*length);
-}
-
-void xs3_vect_ch_pair_s32_set(
-    ch_pair_s32_t data[],
-    const int32_t ch_a,
-    const int32_t ch_b,
-    const unsigned length)
-{
-    xs3_vect_complex_s32_set((complex_s32_t*) data, ch_a, ch_b, length);
-}
-
-headroom_t xs3_vect_ch_pair_s32_shl(
-    ch_pair_s32_t a[],
-    const ch_pair_s32_t b[],
-    const unsigned length,
-    const left_shift_t shl)
-{
-    return xs3_vect_ch_pair_s32_shr(a, b, length, -shl);
-}
-
-headroom_t xs3_vect_ch_pair_s32_shr(
-    ch_pair_s32_t a[],
-    const ch_pair_s32_t b[],
-    const unsigned length,
-    const right_shift_t shr)
-{
-    return xs3_vect_s32_shr((int32_t*) a, (int32_t*) b, 2*length, shr);
-}
-
 
 
 

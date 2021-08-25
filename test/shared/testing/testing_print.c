@@ -7,43 +7,6 @@
 
 #include <stdio.h>
 
-void print_vect_ch_pair_s16(
-    ch_pair_s16_t * B, 
-    const exponent_t B_exp,
-    unsigned length,
-    int channel_index, 
-    conv_error_e* error)
-{
-    printf("np.asarray([");
-    for(unsigned i=0;i<length;i++)
-        printf("%.*f, ", TESTING_FLOAT_NUM_DIGITS, conv_s16_to_double( ((int16_t*)&B[i])[channel_index], B_exp, error));
-    printf("])\n");
-}
-
-void print_vect_ch_pair_s32(
-    ch_pair_s32_t * B, 
-    const exponent_t B_exp,
-    unsigned length,
-    int channel_index, 
-    conv_error_e* error)
-{
-    printf("np.asarray([");
-    for(unsigned i=0;i<length;i++)
-        printf("%.*f, ", TESTING_FLOAT_NUM_DIGITS, conv_s32_to_double( ((int32_t*)&B[i])[channel_index], B_exp, error));
-    printf("])\n");
-}
-
-void print_vect_ch_pair_double(
-    ch_pair_double_t * B, 
-    unsigned length, 
-    int channel_index,
-    conv_error_e* error)
-{
-    printf("np.asarray([");
-    for(unsigned i=0;i<length;i++)
-        printf("%.*f, ", TESTING_FLOAT_NUM_DIGITS, ((double*)&B[i])[channel_index]);
-    printf("])\n");
-}
 
 void print_vect_complex_s16(
     complex_s16_t * B, 

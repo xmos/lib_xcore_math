@@ -19,8 +19,6 @@ TEST_GROUP_RUNNER(bfp_set) {
   RUN_TEST_CASE(bfp_set, bfp_s16_set);
   RUN_TEST_CASE(bfp_set, bfp_complex_s32_set);
   RUN_TEST_CASE(bfp_set, bfp_complex_s16_set);
-  RUN_TEST_CASE(bfp_set, bfp_ch_pair_s32_set);
-  RUN_TEST_CASE(bfp_set, bfp_ch_pair_s16_set);
 }
 
 TEST_GROUP(bfp_set);
@@ -199,95 +197,3 @@ TEST(bfp_set, bfp_complex_s32_set)
         }
     }
 }
-
-
-TEST(bfp_set, bfp_ch_pair_s16_set) 
-{
-    unsigned seed = SEED_FROM_FUNC_NAME();
-    
-    bfp_ch_pair_s16_t A;
-
-    ch_pair_s16_t WORD_ALIGNED data[MAX_LEN];
-
-    ch_pair_s16_t val;
-
-
-    for(int r = 0; r < REPS; r++){
-        setExtraInfo_R(r);
-
-        memset(data, 0, sizeof(data));
-
-        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-
-        bfp_ch_pair_s16_init(&A, data, 0, length, 0);
-
-        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
-
-        val.ch_a = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
-        val.ch_b = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 10);
-
-        bfp_ch_pair_s16_set(&A, val, exponent);
-
-        headroom_t exp_hr = HR_S16(val.ch_a) < HR_S16(val.ch_b)? 
-                            HR_S16(val.ch_a) : HR_S16(val.ch_b);
-
-        TEST_ASSERT_EQUAL(exponent, A.exp);
-        TEST_ASSERT_EQUAL(exp_hr, A.hr);
-
-        for(int i = 0; i < length; i++){
-            TEST_ASSERT_EQUAL(val.ch_a, A.data[i].ch_a);
-            TEST_ASSERT_EQUAL(val.ch_b, A.data[i].ch_b);
-        }
-        for(int i = length; i < MAX_LEN; i++){
-            TEST_ASSERT_EQUAL(0, A.data[i].ch_a);
-            TEST_ASSERT_EQUAL(0, A.data[i].ch_b);
-        }
-    }
-}
-
-
-TEST(bfp_set, bfp_ch_pair_s32_set) 
-{
-    unsigned seed = SEED_FROM_FUNC_NAME();
-    
-    bfp_ch_pair_s32_t A;
-
-    ch_pair_s32_t WORD_ALIGNED data[MAX_LEN];
-
-    ch_pair_s32_t val;
-
-
-    for(int r = 0; r < REPS; r++){
-        setExtraInfo_R(r);
-
-        memset(data, 0, sizeof(data));
-
-        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-
-        bfp_ch_pair_s32_init(&A, data, 0, length, 0);
-
-        exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
-
-        val.ch_a = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
-        val.ch_b = pseudo_rand_int32(&seed) >> (pseudo_rand_uint32(&seed) % 10);
-
-        bfp_ch_pair_s32_set(&A, val, exponent);
-
-        headroom_t exp_hr = HR_S32(val.ch_a) < HR_S32(val.ch_b)? 
-                            HR_S32(val.ch_a) : HR_S32(val.ch_b);
-
-        TEST_ASSERT_EQUAL(exponent, A.exp);
-        TEST_ASSERT_EQUAL(exp_hr, A.hr);
-
-        for(int i = 0; i < length; i++){
-            TEST_ASSERT_EQUAL(val.ch_a, A.data[i].ch_a);
-            TEST_ASSERT_EQUAL(val.ch_b, A.data[i].ch_b);
-        }
-        for(int i = length; i < MAX_LEN; i++){
-            TEST_ASSERT_EQUAL(0, A.data[i].ch_a);
-            TEST_ASSERT_EQUAL(0, A.data[i].ch_b);
-        }
-    }
-}
-
-

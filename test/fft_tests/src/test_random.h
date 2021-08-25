@@ -78,19 +78,3 @@ void test_random_bfp_complex_s32(
     unsigned* seed,
     bfp_complex_s32_t* A,
     int length);
-
-EXTERN_C
-void test_random_bfp_ch_pair_s16(
-    bfp_ch_pair_s16_t* B, 
-    unsigned max_len, 
-    unsigned* seed,
-    bfp_ch_pair_s16_t* A,
-    int length);
-
-EXTERN_C
-void test_random_bfp_ch_pair_s32(
-    bfp_ch_pair_s32_t* B, 
-    unsigned max_len, 
-    unsigned* seed,
-    bfp_ch_pair_s32_t* A,
-    int length);

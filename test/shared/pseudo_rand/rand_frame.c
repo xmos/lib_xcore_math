@@ -123,68 +123,6 @@ void test_random_bfp_complex_s32(
 
 }
 
-void test_random_bfp_ch_pair_s16(
-    bfp_ch_pair_s16_t* B, 
-    unsigned max_len, 
-    unsigned* seed,
-    bfp_ch_pair_s16_t* A,
-    int length)
-{
-    if(length <= 0){
-        if(max_len != 1)
-            length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
-        else
-            length = 1;
-    }
-
-    exponent_t exponent = (pseudo_rand_int32(seed) % 40) - 20;
-
-    int shr = (pseudo_rand_uint32(seed) % 10) + 1;
-
-    for(int i = 0; i < length; i++){
-        B->data[i].ch_a = pseudo_rand_int16(seed) >> shr;
-        B->data[i].ch_b = pseudo_rand_int16(seed) >> shr;
-    }
-    
-    bfp_ch_pair_s16_init(B, B->data, exponent, length, 1);
-
-    if(A != NULL){
-        A->length = B->length;
-    }
-
-}
-
-void test_random_bfp_ch_pair_s32(
-    bfp_ch_pair_s32_t* B, 
-    unsigned max_len, 
-    unsigned* seed,
-    bfp_ch_pair_s32_t* A,
-    int length)
-{
-    if(length <= 0){
-        if(max_len != 1)
-            length = (pseudo_rand_uint32(seed) % (max_len-1)) + 1;
-        else
-            length = 1;
-    }
-
-    exponent_t exponent = (pseudo_rand_int32(seed) % 40) - 20;
-
-    int shr = (pseudo_rand_uint32(seed) % 10) + 1;
-
-    for(int i = 0; i < length; i++){
-        B->data[i].ch_a = pseudo_rand_int32(seed) >> shr;
-        B->data[i].ch_b = pseudo_rand_int32(seed) >> shr;
-    }
-    
-    bfp_ch_pair_s32_init(B, B->data, exponent, length, 1);
-
-    if(A != NULL){
-        A->length = B->length;
-    }
-
-}
-
 
 void test_double_from_s16(
     double* d_out,

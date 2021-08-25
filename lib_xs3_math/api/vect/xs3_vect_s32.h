@@ -32,6 +32,43 @@ extern "C" {
 #define XS3_VECT_SQRT_S32_MAX_DEPTH     (31)
 
 
+/**
+ * @brief Copy one 32-bit vector to another.
+ * 
+ * This function is effectively a constrained version of `memcpy`.
+ * 
+ * With the constraints below met, this function should be modestly faster than `memcpy`.
+ * 
+ * `a[]` is the output vector to which elements are copied.
+ * 
+ * `b[]` is the input vector from which elements are copied.
+ * 
+ * `a` and `b` each must begin at a word-aligned address.
+ * 
+ * `length` is the number of elements to be copied. `length` must be a multiple of 8.
+ * 
+ * @operation{
+ * &    a_k \leftarrow b_k                              \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @param[out]  a         Output vector @vector{a}
+ * @param[in]   b         Input vector @vector{b}
+ * @param[in]   length    Number of elements in @vector{a} and @vector{b}
+ * 
+ * @returns   Headroom of output vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ *
+ * @ingroup xs3_vect32_func
+ */
+C_API
+headroom_t xs3_vect_s32_copy(
+    int32_t a[],
+    const int32_t b[],
+    const unsigned length);
+
+
 /** 
  * @brief Compute the element-wise absolute value of a 32-bit vector.
  * 
@@ -721,9 +758,7 @@ void xs3_vect_s32_energy_prepare(
  * 
  * @exception ET_LOAD_STORE Raised if `x` is not word-aligned (See @ref note_vector_alignment)
  * 
- * @see xs3_vect_ch_pair_s16_headroom, 
- *      xs3_vect_ch_pair_s32_headroom, 
- *      xs3_vect_s16_headroom, 
+ * @see xs3_vect_s16_headroom, 
  *      xs3_vect_complex_s16_headroom, 
  *      xs3_vect_complex_s32_headroom
  * 
@@ -1614,14 +1649,14 @@ void xs3_vect_s32_sqrt_prepare(
 /**
  * @brief Subtract one 32-bit vector from another.
  * 
- * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} 
- * respectively. Each must begin at a word-aligned address. This operation can be performed safely in-place on `b[]` or
- * `c[]`.
+ * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and
+ * @vector{c} respectively. Each must begin at a word-aligned address. This operation can be
+ * performed safely in-place on `b[]` or `c[]`.
  * 
  * `length` is the number of elements in each of the vectors.
  * 
- * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b} and @vector{c} 
- * respectively.
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each element of @vector{b}
+ * and @vector{c} respectively.
  * 
  * @operation{ 
  * &     b_k' = sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)  \\
@@ -1633,17 +1668,17 @@ void xs3_vect_s32_sqrt_prepare(
  * @par Block Floating-Point
  * @parblock
  * 
- * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} } and 
- * @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the mantissas of BFP vector 
- * @math{\bar{a} \cdot 2^{a\_exp}}. 
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b} \cdot 2^{b\_exp} }
+ * and @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting vector @vector{a} are the mantissas of
+ * BFP vector @math{\bar{a} \cdot 2^{a\_exp}}. 
+ *
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that @math{a\_exp = b\_exp +
+ * b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they are
+ * associated with the same exponent.
  * 
- * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
- * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes sense if they
- * are associated with the same exponent.
- * 
- * The function xs3_vect_s32_sub_prepare() can be used to obtain values for @math{a\_exp}, @math{b\_shr} and 
- * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and 
- * @math{c\_hr}.
+ * The function xs3_vect_s32_sub_prepare() can be used to obtain values for @math{a\_exp},
+ * @math{b\_shr} and  * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp}
+ * and the input headrooms @math{b\_hr} and @math{c\_hr}.
  * @endparblock
  * 
  * @param[out] a        Output vector @vector{a}
@@ -1706,18 +1741,21 @@ headroom_t xs3_vect_s32_sub(
  * @par Additional Details
  * @parblock
  * 
- * Internally, each element accumulates into one of eight 40-bit accumulators (which are all used simultaneously) which 
- * apply symmetric 40-bit saturation logic (with bounds @math{\approx 2^{39}}) with each value added. The saturating 
- * arithmetic employed is _not associative_ and no indication is given if saturation occurs at an intermediate step. To 
- * avoid the possibility of saturation errors, `length` should be no greater than @math{2^{11+b\_hr}}, where 
+ * Internally, each element accumulates into one of eight 40-bit accumulators (which are all used
+ * simultaneously) which apply symmetric 40-bit saturation logic (with bounds @math{\approx 2^{39}})
+ * with each value added. The saturating arithmetic employed is _not associative_ and no indication
+ * is given if saturation occurs at an intermediate step. To avoid the possibility of saturation
+ * errors, `length` should be no greater than @math{2^{11+b\_hr}}, where 
  * @math{b\_hr} is the headroom of @vector{b}.
  * 
- * If the caller's mantissa vector is longer than that, the full result can be found by calling this function multiple 
- * times for partial results on sub-sequences of the input, and adding the results in user code. 
- * 
- * In many situations the caller may have _a priori_ knowledge that saturation is impossible (or very nearly so), in 
- * which case this guideline may be disregarded. However, such situations are application-specific and are well beyond 
- * the scope of this documentation, and as such are left to the user's discretion.
+ * If the caller's mantissa vector is longer than that, the full result can be found by calling this
+ * function multiple times for partial results on sub-sequences of the input, and adding the results
+ * in user code. 
+ *
+ * In many situations the caller may have _a priori_ knowledge that saturation is impossible (or
+ * very nearly so), in which case this guideline may be disregarded. However, such situations are
+ * application-specific and are well beyond the scope of this documentation, and as such are left to
+ * the user's discretion.
  * @endparblock
  * 
  * @param[in]   b         Input vector @vector{b}
@@ -1734,6 +1772,106 @@ int64_t xs3_vect_s32_sum(
     const int32_t b[],
     const unsigned length);
 
+
+/**
+ * @brief Interleave the elements of two vectors into a single vector.
+ *
+ * Elements of 32-bit input vectors @vector{b} and @vector{c} are interleaved into 32-bit output
+ * vector @vector{a}. Each element of @vector{b} has a right-shift of @math{b\_shr} applied, and
+ * each element of @vector{c} has a right-shift of @math{c\_shr} applied.
+ *
+ * Alternatively (and equivalently), this function can be conceived of as taking two real vectors
+ * @vector{b} and @vector{c} and forming a new complex vector @vector{a} where @math{\bar{a} =
+ * \bar{b} + i\cdot\bar{c}}.
+ *
+ * If vectors @vector{b} and @vector{c} each have @math{N} elements, then the resulting @vector{a}
+ * will have either @math{2N} `int32_t` elements or (equivalently) @math{N} `complex_s32_t` elements
+ * (and must have space for such). 
+ *
+ * Each element @math{b_k} of @vector{b} will end up as end up as element @math{a_{2k}} of
+ * @vector{a} (with the bit-shift applied). Each element @math{c_k} will end up as element
+ * @math{a_{2k+1}} of @vector{a}.
+ *
+ * `a[]` is the output vector @vector{a}.
+ *
+ * `b[]` and `c[]` are the input vectors @vector{b} and @vector{c} respectively.
+ *
+ * `a`, `b` and `c` must each begin at a double word-aligned (8 byte) address. (see @ref
+ * DWORD_ALIGNED).
+ *
+ * `length` is the number @math{N} of `int32_t` elements in @vector{b} and @vector{c}.
+ *
+ * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
+ *
+ * `c_shr` is the signed arithmetic right-shift applied to elements of @vector{c}.
+ *
+ * @operation{
+ * &     Re\{a_{k}\} \leftarrow sat_{32}( b_k \cdot 2^{-b\_shr}                 \\
+ * &     Im\{a_{k}\} \leftarrow sat_{32}( c_k \cdot 2^{-c\_shr}                 \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (N-1) 
+ * }
+ * 
+ * @param[out]  a       Output vector @vector{a}
+ * @param[in]   b       Input vector @vector{b}
+ * @param[in]   c       Input vector @vector{c}
+ * @param[in]   length  Number of elements @math{N} in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]   b_shr   Signed arithmetic right-shift applied to elements of @vector{b}
+ * @param[in]   c_shr   Signed arithmetic right-shift applied to elements of @vector{c}
+ *
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not double word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_s32_zip(
+    complex_s32_t a[],
+    const int32_t b[],
+    const int32_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
+
+
+/**
+ * @brief Deinterleave the real and imaginary parts of a complex 32-bit vector into two separate
+ * vectors.
+ *
+ * Complex 32-bit input vector @vector{c} has its real and imaginary parts (which correspond to the
+ * even and odd-indexed elements, if reinterpreted as an `int32_t` array) split apart to create real
+ * 32-bit output vectors @vector{a} and @vector{b}, such that  @math{\bar{a} = Re\{\bar{c}\}} and
+ * @math{\bar{b} = Im\{\bar{c}\}}.
+ *
+ * `a[]` and `b[]` are the real output vectors @vector{a} and @vector{b} which receive the real and
+ * imaginary parts respectively of @vector{c}. `a` and `b` must each begin at a word-aligned
+ * address.
+ *
+ * `c[]` is the complex input vector @vector{c}. `c` must begin at a double word-aligned address.
+ *
+ * `length` is the number @math{N} of `int32_t` elements in @vector{a} and @vector{b} and the number
+ * of `complex_s32_t` in @vector{c}.
+ *
+ * @operation{
+ * &    a_k = Re\{c_k}                              \\
+ * &    b_k = Im\{c_k}                              \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (N-1) 
+ * }
+ *
+ * @param[out]  a       Output vector @vector{a}
+ * @param[out]  b       Output vector @vector{b}
+ * @param[in]   c       Input vector @vector{c}
+ * @param[in]   length  The number of elements @math{N} in vectors @vector{a}, @vector{b} and @vector{c}
+ *
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * @exception ET_LOAD_STORE Raised if `c` is not double word-aligned (See @ref note_vector_alignment)
+ *
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_s32_unzip(
+    int32_t a[],
+    int32_t b[],
+    const complex_s32_t c[],
+    const unsigned length);
 
 #ifdef __XC__
 }   //extern "C"

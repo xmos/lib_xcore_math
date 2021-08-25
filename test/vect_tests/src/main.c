@@ -24,6 +24,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_mul_s32);
 
     // real vector
+    RUN_TEST_GROUP(xs3_vect_copy);
     RUN_TEST_GROUP(xs3_vect_headroom);
     RUN_TEST_GROUP(xs3_vect_set);
     RUN_TEST_GROUP(xs3_vect_shr);
@@ -47,6 +48,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_sqrt);
     RUN_TEST_GROUP(xs3_vect_bitdepth_convert);
     RUN_TEST_GROUP(xs3_vect_macc);
+    RUN_TEST_GROUP(xs3_vect_zip);
 
     // complex vector
     RUN_TEST_GROUP(xs3_vect_complex_add);

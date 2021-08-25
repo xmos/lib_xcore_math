@@ -82,43 +82,6 @@ void bfp_complex_s32_init(
 
 
 
-
-void bfp_ch_pair_s16_init(
-    bfp_ch_pair_s16_t* a, 
-    ch_pair_s16_t* data, 
-    const exponent_t exp, 
-    const unsigned length,
-    const unsigned calc_hr)
-{
-    a->data = data;
-    a->length = length;
-    a->exp = exp;
-    a->flags = 0;
-
-    if(calc_hr) bfp_ch_pair_s16_headroom(a);
-    else        a->hr = 0;
-}
-
-
-    
-void bfp_ch_pair_s32_init(
-    bfp_ch_pair_s32_t* a, 
-    ch_pair_s32_t* data, 
-    const exponent_t exp, 
-    const unsigned length,
-    const unsigned calc_hr)
-{
-    a->data = data;
-    a->length = length;
-    a->exp = exp;
-    a->flags = 0;
-
-    if(calc_hr) bfp_ch_pair_s32_headroom(a);
-    else        a->hr = 0;
-}
-
-
-
 void bfp_s16_set(
     bfp_s16_t* a,
     const int16_t value,
@@ -170,35 +133,4 @@ void bfp_complex_s32_set(
     a->flags = 0;
 
     xs3_vect_complex_s32_set( a->data, value.re, value.im, a->length);
-}
-
-
-
-void bfp_ch_pair_s16_set(
-    bfp_ch_pair_s16_t* a,
-    const ch_pair_s16_t value,
-    const exponent_t exp)
-{
-    a->exp = exp;
-    a->hr = HR_C16(*((complex_s16_t*)&value));
-    a->flags = 0;
-
-    const int32_t x = value.ch_b << 16;
-    const int32_t y = value.ch_a & 0xFFFF;
-    const int32_t v = (x|y);
-    xs3_vect_s32_set( (int32_t*) a->data, v, a->length);
-}
-
-
-
-void bfp_ch_pair_s32_set(
-    bfp_ch_pair_s32_t* a,
-    const ch_pair_s32_t value,
-    const exponent_t exp)
-{
-    a->exp = exp;
-    a->hr = HR_C32(*((complex_s32_t*)&value));
-    a->flags = 0;
-
-    xs3_vect_complex_s32_set( (complex_s32_t*) a->data, value.ch_a, value.ch_b, a->length);
 }
