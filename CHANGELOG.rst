@@ -41,6 +41,7 @@ New Functions
   
   * `bfp_complex_sXX_conjugate()` -- Get the complex conjugate of a vector
   * `bfp_complex_sXX_energy()` -- Compute the sum of a complex vector's elements' squared magnitudes.
+  * `bfp_sXX_use_exponent()` / `bfp_complex_sXX_use_exponent()` -- Force BFP vector to encode mantissas using specified exponent (i.e. convert to specified Q-format)
     
 
 * Low-level API
