@@ -16,12 +16,29 @@ headroom_t bfp_s16_headroom(
     bfp_s16_t* a)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
-    assert(a->length != 0);
+  assert(a->length != 0);
 #endif
 
-     a->hr = xs3_vect_s16_headroom(a->data, a->length);
+  a->hr = xs3_vect_s16_headroom(a->data, a->length);
 
-     return a->hr;
+  return a->hr;
+}
+
+    
+void bfp_s16_use_exponent(
+    bfp_s16_t* a,
+    const exponent_t exp)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+  assert(a->length != 0);
+#endif
+
+  right_shift_t delta_p = exp - a->exp;
+
+  if(delta_p == 0) return;
+
+  a->hr = xs3_vect_s16_shr(a->data, a->data, a->length, delta_p);
+  a->exp = exp;
 }
 
 

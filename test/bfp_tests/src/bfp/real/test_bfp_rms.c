@@ -9,7 +9,7 @@
 
 #include "bfp_math.h"
 
-#include "../tst_common.h"
+#include "../../tst_common.h"
 
 #include "unity_fixture.h"
 

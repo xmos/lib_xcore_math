@@ -9,22 +9,23 @@
 
 #include "bfp_math.h"
 
-#include "../tst_common.h"
+#include "../../tst_common.h"
 
 #include "unity_fixture.h"
 
 
-TEST_GROUP_RUNNER(bfp_sub) {
-  RUN_TEST_CASE(bfp_sub, bfp_s16_sub);
-  RUN_TEST_CASE(bfp_sub, bfp_s32_sub);
+TEST_GROUP_RUNNER(bfp_mul) {
+  RUN_TEST_CASE(bfp_mul, bfp_s32_mul);
+  RUN_TEST_CASE(bfp_mul, bfp_s16_mul);
 }
 
-TEST_GROUP(bfp_sub);
-TEST_SETUP(bfp_sub) {}
-TEST_TEAR_DOWN(bfp_sub) {}
+TEST_GROUP(bfp_mul);
+TEST_SETUP(bfp_mul) {}
+TEST_TEAR_DOWN(bfp_mul) {}
 
 #define REPS        1000
-#define MAX_LEN     18  //Smaller lengths mean larger variance w.r.t. individual element headroom
+#define MAX_LEN     256
+
 
 static char msg_buff[200];
 
@@ -35,7 +36,7 @@ static char msg_buff[200];
     }} while(0)
 
 
-TEST(bfp_sub, bfp_s16_sub)
+TEST(bfp_mul, bfp_s16_mul)
 {
 
 
@@ -65,10 +66,10 @@ TEST(bfp_sub, bfp_s16_sub)
         test_double_from_s16(Cf, &C);
 
         for(int i = 0; i < B.length; i++){
-            Af[i] = Bf[i] - Cf[i];
+            Af[i] = Bf[i] * Cf[i];
         }
 
-        bfp_s16_sub(&A, &B, &C);
+        bfp_s16_mul(&A, &B, &C);
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -79,7 +80,7 @@ TEST(bfp_sub, bfp_s16_sub)
 }
 
 
-TEST(bfp_sub, bfp_s32_sub)
+TEST(bfp_mul, bfp_s32_mul)
 {
 
 
@@ -105,14 +106,20 @@ TEST(bfp_sub, bfp_s32_sub)
         test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
         test_random_bfp_s32(&C, MAX_LEN, &seed, &A, B.length);
 
+        //Just to make the test easier.
+        for(int i = 0; i < B.length; i++){
+            B.data[i] = B.data[i] & 0xFFFFFFFE;
+            C.data[i] = C.data[i] & 0xFFFFFFFE;
+        }
+
         test_double_from_s32(Bf, &B);
         test_double_from_s32(Cf, &C);
 
         for(int i = 0; i < B.length; i++){
-            Af[i] = Bf[i] - Cf[i];
+            Af[i] = Bf[i] * Cf[i];
         }
 
-        bfp_s32_sub(&A, &B, &C);
+        bfp_s32_mul(&A, &B, &C);
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -121,5 +128,3 @@ TEST(bfp_sub, bfp_s32_sub)
         }
     }
 }
-
-

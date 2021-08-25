@@ -10,7 +10,7 @@
 #include "bfp_math.h"
 #include "../src/vect/vpu_helper.h"
 
-#include "../tst_common.h"
+#include "../../tst_common.h"
 
 #include "unity_fixture.h"
 

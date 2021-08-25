@@ -9,23 +9,22 @@
 
 #include "bfp_math.h"
 
-#include "../tst_common.h"
+#include "../../tst_common.h"
 
 #include "unity_fixture.h"
 
 
-TEST_GROUP_RUNNER(bfp_mul) {
-  RUN_TEST_CASE(bfp_mul, bfp_s32_mul);
-  RUN_TEST_CASE(bfp_mul, bfp_s16_mul);
+TEST_GROUP_RUNNER(bfp_add) {
+  RUN_TEST_CASE(bfp_add, bfp_s16_add);
+  RUN_TEST_CASE(bfp_add, bfp_s32_add);
 }
 
-TEST_GROUP(bfp_mul);
-TEST_SETUP(bfp_mul) {}
-TEST_TEAR_DOWN(bfp_mul) {}
+TEST_GROUP(bfp_add);
+TEST_SETUP(bfp_add) {}
+TEST_TEAR_DOWN(bfp_add) {}
 
 #define REPS        1000
-#define MAX_LEN     256
-
+#define MAX_LEN     18  //Smaller lengths mean larger variance w.r.t. individual element headroom
 
 static char msg_buff[200];
 
@@ -36,10 +35,8 @@ static char msg_buff[200];
     }} while(0)
 
 
-TEST(bfp_mul, bfp_s16_mul)
+TEST(bfp_add, bfp_s16_add)
 {
-
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataA[MAX_LEN];
@@ -57,33 +54,37 @@ TEST(bfp_mul, bfp_s16_mul)
     double Cf[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        setExtraInfo_RS(r, seed);
+        const unsigned old_seed = seed;
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
         test_random_bfp_s16(&C, MAX_LEN, &seed, &A, B.length);
+
+        setExtraInfo_RSL(r, old_seed, B.length);
 
         test_double_from_s16(Bf, &B);
         test_double_from_s16(Cf, &C);
 
         for(int i = 0; i < B.length; i++){
-            Af[i] = Bf[i] * Cf[i];
+            Af[i] = Bf[i] + Cf[i];
         }
 
-        bfp_s16_mul(&A, &B, &C);
+        bfp_s16_add(&A, &B, &C);
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
-        }
+        XTEST_ASSERT_VECT_S16_WITHIN(1, expA, A.data, A.length,
+            "B.hr = %u\n"
+            "C.hr = %u\n"
+            "Expected: %d * 2^%d <-- (%d * 2^%d) + (%d * 2^%d)\n"
+            "Actual: %d * 2^%d\n", 
+            B.hr, C.hr, expA[i], A.exp, B.data[i], B.exp, 
+            C.data[i], C.exp, A.data[i], A.exp);
     }
 }
 
 
-TEST(bfp_mul, bfp_s32_mul)
+TEST(bfp_add, bfp_s32_add)
 {
-
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataA[MAX_LEN];
@@ -106,20 +107,14 @@ TEST(bfp_mul, bfp_s32_mul)
         test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
         test_random_bfp_s32(&C, MAX_LEN, &seed, &A, B.length);
 
-        //Just to make the test easier.
-        for(int i = 0; i < B.length; i++){
-            B.data[i] = B.data[i] & 0xFFFFFFFE;
-            C.data[i] = C.data[i] & 0xFFFFFFFE;
-        }
-
         test_double_from_s32(Bf, &B);
         test_double_from_s32(Cf, &C);
 
         for(int i = 0; i < B.length; i++){
-            Af[i] = Bf[i] * Cf[i];
+            Af[i] = Bf[i] + Cf[i];
         }
 
-        bfp_s32_mul(&A, &B, &C);
+        bfp_s32_add(&A, &B, &C);
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
@@ -128,3 +123,5 @@ TEST(bfp_mul, bfp_s32_mul)
         }
     }
 }
+
+

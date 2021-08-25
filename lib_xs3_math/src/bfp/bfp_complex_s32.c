@@ -24,6 +24,23 @@ headroom_t bfp_complex_s32_headroom(
     return a->hr;
 }
 
+    
+void bfp_complex_s32_use_exponent(
+    bfp_complex_s32_t* a,
+    const exponent_t exp)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+  assert(a->length != 0);
+#endif
+
+  right_shift_t delta_p = exp - a->exp;
+
+  if(delta_p == 0) return;
+
+  a->hr = xs3_vect_complex_s32_shr(a->data, a->data, a->length, delta_p);
+  a->exp = exp;
+}
+
 
 void bfp_complex_s32_shl(
     bfp_complex_s32_t* a,

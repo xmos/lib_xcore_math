@@ -20,6 +20,85 @@
  * @ingroup xs3_math_header_file
  */
 
+
+/**
+ * @brief Set all elements of a complex 16-bit BFP vector to a specified value.
+ * 
+ * The exponent of `a` is set to `exp`, and each element's mantissa is set to `b`.
+ * 
+ * After performing this operation, all elements will represent the same value @math{b \cdot 2^{exp}}.
+ * 
+ * `a` must have been initialized (see bfp_complex_s16_init()).
+ * 
+ * @param[out] a         BFP vector to update
+ * @param[in]  b         New value each complex mantissa is set to
+ * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+void bfp_complex_s16_set(
+    bfp_complex_s16_t* a,
+    const complex_s16_t b,
+    const exponent_t exp);
+
+
+/**
+ * @brief Modify a complex 16-bit BFP vector to use a specified exponent.
+ * 
+ * This function forces complex BFP vector @vector{A} to use a specified exponent. The mantissa
+ * vector @vector{a} will be bit-shifted left or right to compensate for the changed exponent.
+ * 
+ * This function can be used, for example, before calling a fixed-point arithmetic function to 
+ * ensure the underlying mantissa vector has the needed Q-format. As another example, this may be
+ * useful when communicating with peripheral devices (e.g. via I2S) that require sample data to
+ * be in a specified format.
+ * 
+ * Note that this sets the _current_ encoding, and does not _fix_ the exponent permanently (i.e.
+ * subsequent operations may change the exponent as usual).
+ * 
+ * If the required fixed-point Q-format is `QX.Y`, where `Y` is the number of fractional bits in the
+ * resulting mantissas, then the associated exponent (and value for parameter `exp`) is `-Y`.
+ * 
+ * `a` points to input BFP vector @vector{A}, with complex mantissa vector @vector{a} and exponent
+ * @math{a\_exp}. `a` is updated in place to produce resulting BFP vector @vector{\tilde{A}} with
+ * complex mantissa vector @vector{\tilde{a}} and exponent @math{\tilde{a}\_exp}.
+ * 
+ * `exp` is @math{\tilde{a}\_exp}, the required exponent. @math{\Delta{}p = \tilde{a}\_exp - a\_exp}
+ * is the required change in exponent.
+ * 
+ * If @math{\Delta{}p = 0}, the BFP vector is left unmodified.
+ * 
+ * If @math{\Delta{}p > 0}, the required exponent is larger than the current exponent and an
+ * arithmetic right-shift of @math{\Delta{}p} bits is applied to the mantissas @vector{a}. When
+ * applying a right-shift, precision may be lost by discarding the @math{\Delta{}p} least
+ * significant bits.
+ * 
+ * If @math{\Delta{}p < 0}, the required exponent is smaller than the current exponent and a
+ * left-shift of @math{\Delta{}p} bits is applied to the mantissas @vector{a}. When left-shifting,
+ * saturation logic will be applied such that any element that can't be represented exactly with
+ * the new exponent will saturate to the 16-bit saturation bounds.
+ * 
+ * The exponent and headroom of `a` are updated by this function.
+ * 
+ * @operation{
+ * &    \Delta{}p = \tilde{a}\_exp - a\_exp
+ * &    \tilde{a_k} \leftarrow sat_{16}( a_k \cdot 2^{-\Delta{}p} )   \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                     \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{A} \text{ (in elements) }
+ * }
+ * 
+ * @param[inout]  a     Input BFP vector @vector{A} / Output BFP vector @vector{\tilde{A}}
+ * @param[in]     exp   The required exponent, @math{\tilde{a}\_exp}
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+void bfp_complex_s16_use_exponent(
+    bfp_complex_s16_t* a,
+    const exponent_t exp);
+
+
 /** 
  * @brief Get the headroom of a complex 16-bit BFP vector.
  * 

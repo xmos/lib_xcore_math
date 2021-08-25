@@ -9,26 +9,24 @@
 
 #include "bfp_math.h"
 
-#include "../tst_common.h"
+#include "../../tst_common.h"
 
 #include "unity_fixture.h"
 
-
-TEST_GROUP_RUNNER(bfp_argmax) {
-  RUN_TEST_CASE(bfp_argmax, bfp_s16_argmax);
-  RUN_TEST_CASE(bfp_argmax, bfp_s32_argmax);
+TEST_GROUP_RUNNER(bfp_argmin) {
+  RUN_TEST_CASE(bfp_argmin, bfp_s16_argmin);
+  RUN_TEST_CASE(bfp_argmin, bfp_s32_argmin);
 }
-TEST_GROUP(bfp_argmax);
-TEST_SETUP(bfp_argmax) {}
-TEST_TEAR_DOWN(bfp_argmax) {}
+TEST_GROUP(bfp_argmin);
+TEST_SETUP(bfp_argmin) {}
+TEST_TEAR_DOWN(bfp_argmin) {}
 
 #define REPS        1000
 #define MAX_LEN     1024 
 
 
-TEST(bfp_argmax, bfp_s16_argmax)
+TEST(bfp_argmin, bfp_s16_argmin)
 {
-
 
     unsigned seed = SEED_FROM_FUNC_NAME();
     int16_t dataB[MAX_LEN];
@@ -42,20 +40,16 @@ TEST(bfp_argmax, bfp_s16_argmax)
         unsigned exp = 0;
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
-            exp = (B.data[exp] >= B.data[i])? exp : i;
+            exp = (B.data[exp] <= B.data[i])? exp : i;
         }
         bfp_s16_headroom(&B);
-        unsigned result = bfp_s16_argmax(&B);
-
-        if(result != exp){
-            printf("B.data[%u] = %d //expected\n", exp, B.data[exp]);
-            printf("B.data[%u] = %d //result\n", result, B.data[result]);
-        }
+        unsigned result = bfp_s16_argmin(&B);
         TEST_ASSERT_EQUAL(exp, result);
     }
 }
 
-TEST(bfp_argmax, bfp_s32_argmax)
+
+TEST(bfp_argmin, bfp_s32_argmin)
 {
 
     unsigned seed = SEED_FROM_FUNC_NAME();
@@ -69,10 +63,10 @@ TEST(bfp_argmax, bfp_s32_argmax)
         unsigned exp = 0;
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
-            exp = (B.data[exp] >= B.data[i])? exp : i;
+            exp = (B.data[exp] <= B.data[i])? exp : i;
         }
         bfp_s32_headroom(&B);
-        unsigned result = bfp_s32_argmax(&B);
+        unsigned result = bfp_s32_argmin(&B);
         TEST_ASSERT_EQUAL(exp, result);
     }
 }

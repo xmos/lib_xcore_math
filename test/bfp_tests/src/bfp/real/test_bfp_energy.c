@@ -9,28 +9,26 @@
 
 #include "bfp_math.h"
 
-#include "../tst_common.h"
+#include "../../tst_common.h"
 
 #include "unity_fixture.h"
 
 
-TEST_GROUP_RUNNER(bfp_mean) {
-  RUN_TEST_CASE(bfp_mean, bfp_s16_mean);
-  RUN_TEST_CASE(bfp_mean, bfp_s32_mean);
+TEST_GROUP_RUNNER(bfp_energy) {
+  RUN_TEST_CASE(bfp_energy, bfp_s16_energy);
+  RUN_TEST_CASE(bfp_energy, bfp_s32_energy);
 }
 
-TEST_GROUP(bfp_mean);
-TEST_SETUP(bfp_mean) {}
-TEST_TEAR_DOWN(bfp_mean) {}
+TEST_GROUP(bfp_energy);
+TEST_SETUP(bfp_energy) {}
+TEST_TEAR_DOWN(bfp_energy) {}
 
 #define REPS        1000
 #define MAX_LEN     1024 
 
 
-TEST(bfp_mean, bfp_s16_mean)
+TEST(bfp_energy, bfp_s16_energy)
 {
-
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     int16_t dataB[MAX_LEN];
@@ -42,34 +40,31 @@ TEST(bfp_mean, bfp_s16_mean)
         setExtraInfo_RS(r, seed);
 
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-        B.exp = pseudo_rand_int(&seed, -100, 100);
+        B.exp = pseudo_rand_int(&seed, -5, 5);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
 
-
-        double sum = 0;
+        int64_t sum64 = 0;
 
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
 
-            sum += B.data[i];
+            sum64 += ((int32_t)B.data[i]) * B.data[i];
         }
 
         bfp_s16_headroom(&B);
 
-        float_s16_t result = bfp_s16_mean(&B);
+        float_s64_t result = bfp_s16_energy(&B);
 
-        double meanf = ldexp(sum, B.exp) / B.length;
-        
-        double diff = meanf - ldexp(result.mant, result.exp);
+        double expf = ldexp(sum64, 2*B.exp);
+        double resf = ldexp(result.mant, result.exp);
 
-        TEST_ASSERT( fabs(diff) <= ldexp(1, result.exp) );
+        TEST_ASSERT(expf == resf);
     }
 }
 
-TEST(bfp_mean, bfp_s32_mean)
+
+TEST(bfp_energy, bfp_s32_energy)
 {
-
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     int32_t dataB[MAX_LEN];
@@ -80,24 +75,27 @@ TEST(bfp_mean, bfp_s32_mean)
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
 
-        B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-        B.exp = pseudo_rand_int(&seed, -100, 100);
-        B.hr = pseudo_rand_uint(&seed, 0, 31);
+        bfp_s32_init(&B, dataB, pseudo_rand_int(&seed, -5, 5),
+                            pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
-        double sum = 0;
+        B.hr = pseudo_rand_uint(&seed, 0, 28);
+
+        double expected = 0;
 
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
 
-            sum += B.data[i];
+            expected += pow(ldexp(B.data[i], B.exp), 2);
         }
 
         bfp_s32_headroom(&B);
+        
+        float_s64_t result = bfp_s32_energy(&B);
 
-        float_s32_t result = bfp_s32_mean(&B);
-        double meanf = ldexp(sum, B.exp) / B.length;
-        double diff = meanf - ldexp(result.mant, result.exp);
+        double diff = expected-ldexp(result.mant, result.exp);
+        double error = fabs(diff/expected);
 
-        TEST_ASSERT( fabs(diff) <= ldexp(1, result.exp) );
+        TEST_ASSERT( error < ldexp(1,-20) );
     }
 }
+

@@ -9,18 +9,18 @@
 
 #include "bfp_math.h"
 
-#include "../tst_common.h"
+#include "../../tst_common.h"
 
 #include "unity_fixture.h"
 
 
-TEST_GROUP_RUNNER(bfp_rect) {
-  RUN_TEST_CASE(bfp_rect, bfp_s16_rect);
-  RUN_TEST_CASE(bfp_rect, bfp_s32_rect);
+TEST_GROUP_RUNNER(bfp_abs) {
+  RUN_TEST_CASE(bfp_abs, bfp_s16_abs);
+  RUN_TEST_CASE(bfp_abs, bfp_s32_abs);
 }
-TEST_GROUP(bfp_rect);
-TEST_SETUP(bfp_rect) {}
-TEST_TEAR_DOWN(bfp_rect) {}
+TEST_GROUP(bfp_abs);
+TEST_SETUP(bfp_abs) {}
+TEST_TEAR_DOWN(bfp_abs) {}
 
 #define REPS        1000
 #define MAX_LEN     256
@@ -34,7 +34,7 @@ static char msg_buff[200];
     }} while(0)
 
 
-TEST(bfp_rect, bfp_s16_rect)
+TEST(bfp_abs, bfp_s16_abs)
 {
 
 
@@ -51,21 +51,22 @@ TEST(bfp_rect, bfp_s16_rect)
         setExtraInfo_RS(r, seed);
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, &A, 0);
-        bfp_s16_rect(&A, &B);
+        bfp_s16_abs(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, B.length);
-        TEST_ASSERT_EQUAL(B.exp, A.exp);
         TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
+        
+        TEST_ASSERT_EQUAL(B.exp,  A.exp );
 
         for(int i = 0; i < A.length; i++){
-            int16_t expected = (B.data[i] < 0)? 0 : B.data[i];
+            int16_t expected = abs(B.data[i]);
             TEST_ASSERT_EQUAL(expected, A.data[i]);
         }
     }
 }
 
 
-TEST(bfp_rect, bfp_s32_rect)
+TEST(bfp_abs, bfp_s32_abs)
 {
 
 
@@ -82,16 +83,16 @@ TEST(bfp_rect, bfp_s32_rect)
         setExtraInfo_RS(r, seed);
 
         test_random_bfp_s32(&B, MAX_LEN, &seed, &A, 0);
-        bfp_s32_rect(&A, &B);
+        bfp_s32_abs(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, B.length);
-        TEST_ASSERT_EQUAL(B.exp, A.exp);
         TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
+        
+        TEST_ASSERT_EQUAL(B.exp,  A.exp );
 
         for(int i = 0; i < A.length; i++){
-            int32_t expected = (B.data[i] < 0)? 0 : B.data[i];
+            int32_t expected = abs(B.data[i]);
             TEST_ASSERT_EQUAL(expected, A.data[i]);
         }
     }
 }
-

@@ -16,6 +16,8 @@ int main(int argc, const char* argv[])
 
     RUN_TEST_GROUP(bfp_set);
     RUN_TEST_GROUP(bfp_headroom);
+    RUN_TEST_GROUP(bfp_use_exponent);
+    RUN_TEST_GROUP(bfp_complex_use_exponent);
     RUN_TEST_GROUP(bfp_shl);
 
     RUN_TEST_GROUP(bfp_add);

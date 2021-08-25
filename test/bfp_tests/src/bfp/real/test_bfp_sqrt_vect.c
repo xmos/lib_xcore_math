@@ -10,7 +10,7 @@
 
 #include "bfp_math.h"
 
-#include "../tst_common.h"
+#include "../../tst_common.h"
 #include "xs3_vpu_scalar_ops.h"
 
 #include "unity_fixture.h"

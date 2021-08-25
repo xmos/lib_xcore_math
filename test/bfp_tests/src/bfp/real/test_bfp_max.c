@@ -9,23 +9,24 @@
 
 #include "bfp_math.h"
 
-#include "../tst_common.h"
+#include "../../tst_common.h"
 
 #include "unity_fixture.h"
 
-TEST_GROUP_RUNNER(bfp_argmin) {
-  RUN_TEST_CASE(bfp_argmin, bfp_s16_argmin);
-  RUN_TEST_CASE(bfp_argmin, bfp_s32_argmin);
+
+TEST_GROUP_RUNNER(bfp_max) {
+  RUN_TEST_CASE(bfp_max, bfp_s16_max);
+  RUN_TEST_CASE(bfp_max, bfp_s32_max);
 }
-TEST_GROUP(bfp_argmin);
-TEST_SETUP(bfp_argmin) {}
-TEST_TEAR_DOWN(bfp_argmin) {}
+TEST_GROUP(bfp_max);
+TEST_SETUP(bfp_max) {}
+TEST_TEAR_DOWN(bfp_max) {}
 
 #define REPS        1000
 #define MAX_LEN     1024 
 
 
-TEST(bfp_argmin, bfp_s16_argmin)
+TEST(bfp_max, bfp_s16_max)
 {
 
     unsigned seed = SEED_FROM_FUNC_NAME();
@@ -37,19 +38,27 @@ TEST(bfp_argmin, bfp_s16_argmin)
         B.length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         B.exp = pseudo_rand_int(&seed, -5, 5);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
-        unsigned exp = 0;
+
+        float_s16_t expected = {
+            .mant = INT16_MIN,
+            .exp = B.exp,
+        };
+
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
-            exp = (B.data[exp] <= B.data[i])? exp : i;
+            expected.mant = MAX(expected.mant, B.data[i]);
         }
         bfp_s16_headroom(&B);
-        unsigned result = bfp_s16_argmin(&B);
-        TEST_ASSERT_EQUAL(exp, result);
+
+        float_s16_t result = bfp_s16_max(&B);
+
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT16(expected.mant, result.mant);
     }
 }
 
 
-TEST(bfp_argmin, bfp_s32_argmin)
+TEST(bfp_max, bfp_s32_max)
 {
 
     unsigned seed = SEED_FROM_FUNC_NAME();
@@ -60,13 +69,23 @@ TEST(bfp_argmin, bfp_s32_argmin)
         bfp_s32_init(&B, dataB, pseudo_rand_int(&seed, -5, 5),
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
         B.hr = pseudo_rand_uint(&seed, 0, 28);
-        unsigned exp = 0;
+
+        float_s32_t expected = {
+            .mant = INT32_MIN,
+            .exp = B.exp,
+        };
+        
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
-            exp = (B.data[exp] <= B.data[i])? exp : i;
+            expected.mant = MAX(expected.mant, B.data[i]);
         }
         bfp_s32_headroom(&B);
-        unsigned result = bfp_s32_argmin(&B);
-        TEST_ASSERT_EQUAL(exp, result);
+
+        float_s32_t result = bfp_s32_max(&B);
+
+        TEST_ASSERT_EQUAL(expected.exp, result.exp);
+        TEST_ASSERT_EQUAL_INT32(expected.mant, result.mant);
     }
 }
+
+

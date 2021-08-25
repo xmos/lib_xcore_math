@@ -40,6 +40,7 @@ New Functions
     * (and various others)
   
   * `bfp_complex_sXX_conjugate()` -- Get the complex conjugate of a vector
+  * `bfp_complex_sXX_energy()` -- Compute the sum of a complex vector's elements' squared magnitudes.
     
 
 * Low-level API
@@ -49,9 +50,10 @@ New Functions
   * `xs3_vect_s8_is_negative()` -- Determine whether each element of an 8-bit vector is negative.
   * `xs3_vect_s16_extract_high_byte()` -- Extract the most significant byte of each element of a 16-bit vector.
   * `xs3_vect_s16_extract_low_byte()` -- Extract the least significant byte of each element of a 16-bit vector.
-  * `xs3_vect_s32_zip()` -- Interleave elements from two `int32_t` vectors
-  * `xs3_vect_s32_unzip()` -- De-interleave elements from a `int32_t` vector
-  * `xs3_vect_s32_copy()` -- Copy an `int32_t` vector
+  * `xs3_vect_s32_zip()` -- Interleave elements from two `int32_t` vectors.
+  * `xs3_vect_s32_unzip()` -- De-interleave elements from a `int32_t` vector.
+  * `xs3_vect_s32_copy()` -- Copy an `int32_t` vector.
+  * Various low-level functions used in the implementation of the high-level multiply-accumulate functions (e.g. `xs3_vect_s32_macc()`).
 
 Miscellaneous
 *************
