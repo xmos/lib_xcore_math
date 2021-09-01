@@ -71,3 +71,28 @@
     }                                                                                   \
   } while(0)
     
+
+
+#define XTEST_ASSERT_VECT_C32_WITHIN(THRESH, EXPECTED, ACTUAL, LEN, FMT, ...)           \
+  do {                                                                                  \
+    for(int i = 0; i < (LEN); i++) {                                                    \
+      int32_t d_re = abs(((int32_t)(EXPECTED)[i].re) - ((int32_t)(ACTUAL)[i].re));      \
+      int32_t d_im = abs(((int32_t)(EXPECTED)[i].im) - ((int32_t)(ACTUAL)[i].im));      \
+      if(d_re > (THRESH)){                                                              \
+        printf("\n*** abs(%s[%d].re - %s[%d].re) > %d ***\n",                           \
+            #EXPECTED, i, #ACTUAL, i, (THRESH));                                        \
+        printf("Actual delta: %d\n", d_re);                                             \
+        printf(FMT, __VA_ARGS__ );                                                      \
+      } else if(d_im > (THRESH)) {                                                      \
+        printf("\n*** abs(%s[%d].im - %s[%d].im) > %d ***\n",                           \
+            #EXPECTED, i, #ACTUAL, i, (THRESH));                                        \
+        printf("Actual delta: %d\n", d_im);                                             \
+        printf(FMT, __VA_ARGS__ );                                                      \
+      }                                                                                 \
+      TEST_ASSERT_INT32_WITHIN_MESSAGE((THRESH),                                        \
+          (EXPECTED)[i].re, (ACTUAL)[i].re,"");                                         \
+      TEST_ASSERT_INT32_WITHIN_MESSAGE((THRESH),                                        \
+          (EXPECTED)[i].im, (ACTUAL)[i].im,"");                                         \
+    }                                                                                   \
+  } while(0)
+    

@@ -77,20 +77,6 @@ void xs3_mat_mul_s8_x_s16_yield_s32 (
   xs3_mat_mul_s8_x_s8_yield_s32(accs, weights, scratch, M_rows, N_cols);
   xs3_mat_mul_s8_x_s8_yield_s32(accs, weights, scratch, M_rows, N_cols);
 
-  // for(int out_group = 0; out_group < out_groups; out_group++){
-  //   for(int offset = 0; offset < VPU_INT8_ACC_PERIOD; offset++){
-  //     const int row = out_group * VPU_INT8_ACC_PERIOD + offset;
-
-  //     int adj = 0;
-  //     for(int col = 0; col < N_cols; col++)
-  //       adj += scratch[col] * weights[row * N_cols + col];
-      
-  //     int32_t acc32 = merge_acc(accs[out_group].vD[offset], accs[out_group].vR[offset]);
-  //     acc32 += 256 * adj;
-  //     split_acc(&accs[out_group].vD[offset], &accs[out_group].vR[offset], acc32);
-  //   }
-  // }
-
   // Finally, turn the split accumulators into proper int32s
   
   for(int out_group = 0; out_group < out_groups; out_group++){

@@ -58,6 +58,8 @@ int main(int argc, const char* argv[])
     
     RUN_TEST_GROUP(bfp_depth_convert);
     RUN_TEST_GROUP(bfp_complex_depth_convert);
+
+    RUN_TEST_GROUP(bfp_gradient_constraint);
     
     return UNITY_END();
 }

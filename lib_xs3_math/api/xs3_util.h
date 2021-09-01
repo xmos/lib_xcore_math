@@ -226,3 +226,26 @@ static inline unsigned cls(
 
 #endif //__XS3A__
 }
+
+
+
+static inline unsigned bitrev(
+    const unsigned index,
+    const unsigned bits)
+{
+  unsigned rev_index = 0;
+#ifdef __xcore__
+
+  const unsigned shifted_index = index << (32 - bits);
+  asm( "bitrev %0, %1" : "=r"(rev_index) : "r"(shifted_index) );
+
+#else
+  for(int bit = bits-1; bit; bit--){
+    unsigned p = (index & (1<<bit)) != 0;
+    rev_index = (rev_index | p) << 1;
+  }
+#endif
+
+
+  return rev_index;
+}
