@@ -61,8 +61,8 @@ void bfp_complex_s32_set(
  * resulting mantissas, then the associated exponent (and value for parameter `exp`) is `-Y`.
  * 
  * `a` points to input BFP vector @vector{A}, with complex mantissa vector @vector{a} and exponent
- * @math{a\_exp}. `a` is updated in place to produce resulting BFP vector @vector{\tilde{A}} with
- * complex mantissa vector @vector{\tilde{a}} and exponent @math{\tilde{a}\_exp}.
+ * @math{a\_exp}. `a` is updated in place to produce resulting BFP vector @math{ \tilde{A} } with
+ * complex mantissa vector @math{ \tilde{a} } and exponent @math{\tilde{a}\_exp}.
  * 
  * `exp` is @math{\tilde{a}\_exp}, the required exponent. @math{\Delta{}p = \tilde{a}\_exp - a\_exp}
  * is the required change in exponent.
@@ -88,7 +88,7 @@ void bfp_complex_s32_set(
  * &        \qquad\text{where } N \text{ is the length of } \bar{A} \text{ (in elements) }
  * }
  * 
- * @param[inout]  a     Input BFP vector @vector{A} / Output BFP vector @vector{\tilde{A}}
+ * @param[inout]  a     Input BFP vector @vector{A} / Output BFP vector @math{\tilde{A}}
  * @param[in]     exp   The required exponent, @math{\tilde{a}\_exp}
  * 
  * @ingroup bfp32_func

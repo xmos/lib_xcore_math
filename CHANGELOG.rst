@@ -42,6 +42,7 @@ New Functions
   * `bfp_complex_sXX_conjugate()` -- Get the complex conjugate of a vector
   * `bfp_complex_sXX_energy()` -- Compute the sum of a complex vector's elements' squared magnitudes.
   * `bfp_sXX_use_exponent()` / `bfp_complex_sXX_use_exponent()` -- Force BFP vector to encode mantissas using specified exponent (i.e. convert to specified Q-format)
+  * `bfp_s32_convolve_valid()` / `bfp_complex_s32_convolve_same()` -- Filter a 32-bit signal using a short convolution kernel. Both "valid" and "same" padding modes are supported.
     
 
 * Low-level API
@@ -55,6 +56,7 @@ New Functions
   * `xs3_vect_s32_unzip()` -- De-interleave elements from a `int32_t` vector.
   * `xs3_vect_s32_copy()` -- Copy an `int32_t` vector.
   * Various low-level functions used in the implementation of the high-level multiply-accumulate functions (e.g. `xs3_vect_s32_macc()`).
+  * `xs2_vect_s32_convolve_valid()` / `xs3_vect_complex_s32_convolve_same()` -- Filter a 32-bit signal using a short convolution kernel. Both "valid" and "same" padding modes are supported.
 
 Miscellaneous
 *************

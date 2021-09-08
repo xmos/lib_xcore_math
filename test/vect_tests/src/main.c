@@ -73,5 +73,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_mat_mul_s8_x_s16_yield_s32);
     RUN_TEST_GROUP(xs3_vect_boolean);
 
+    RUN_TEST_GROUP(xs3_vect_convolve);
+
     return UNITY_END();
 }

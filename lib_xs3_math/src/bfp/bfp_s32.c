@@ -460,3 +460,41 @@ void bfp_s32_nmacc(
     acc->hr = xs3_vect_s32_nmacc(acc->data, b->data, c->data, 
                                  b->length, acc_shr, b_shr, c_shr);
 }
+
+
+void bfp_s32_convolve_valid(
+  bfp_s32_t* a,
+  const bfp_s32_t* b,
+  const int32_t filter_q30[],
+  const unsigned filter_tap_count)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length >= filter_tap_count);
+    const unsigned P = filter_tap_count >> 1;
+    assert(a->length == (b->length - 2*P));
+    assert((filter_tap_count > 0) && (filter_tap_count <= VPU_INT32_EPV) && (filter_tap_count & 1));
+#endif
+
+  a->hr = xs3_vect_s32_convolve_valid(a->data, b->data, filter_q30, b->length, filter_tap_count);
+  a->exp = b->exp;
+}
+
+
+void bfp_s32_convolve_same(
+  bfp_s32_t* a,
+  const bfp_s32_t* b,
+  const int32_t filter_q30[],
+  const unsigned filter_tap_count,
+  const pad_mode_e padding_mode)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length >= filter_tap_count);
+    const unsigned P = filter_tap_count >> 1;
+    assert(a->length == b->length);
+    assert((filter_tap_count > 0) && (filter_tap_count <= VPU_INT32_EPV) && (filter_tap_count & 1));
+#endif
+
+  a->hr = xs3_vect_s32_convolve_same(a->data, b->data, filter_q30, b->length, filter_tap_count, padding_mode);
+  a->exp = b->exp;
+
+}

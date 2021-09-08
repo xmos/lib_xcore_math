@@ -1873,6 +1873,211 @@ void xs3_vect_s32_unzip(
     const complex_s32_t c[],
     const unsigned length);
 
+
+/**
+ * @brief Convolve a 32-bit vector with a short kernel.
+ * 
+ * 32-bit input vector @vector{x} is convolved with a short fixed-point kernel @vector{b} to produce
+ * 32-bit output vector @vector{y}.  In other words, this function applies the @math{K}th-order FIR
+ * filter with coefficients given by @vector{b} to the input signal @vector{x}.  The convolution is
+ * "valid" in the sense that no output elements are emitted where the filter taps extend beyond the
+ * bounds of the input vector, resulting in an output vector @vector{y} with fewer elements.
+ * 
+ * The maximum filter order @math{K} supported by this function is @math{7}.
+ * 
+ * `y[]` is the output vector @vector{y}.  If input @vector{x} has @math{N} elements, and the filter
+ * has @math{K} elements, then @vector{y} has @math{N-2P} elements, where 
+ * @math{P = \lfloor K / 2 \rfloor}.
+ * 
+ * `x[]` is the input vector @vector{x} with length @math{N}.
+ * 
+ * `b_q30[]` is the vector @vector{b} of filter coefficients. The coefficients of @vector{b} are
+ * encoded in a Q2.30 fixed-point format. The effective value of the @math{i}th coefficient is then
+ * @math{b_i \cdot 2^{-30}}.
+ * 
+ * `x_length` is the length @math{N} of @vector{x} in elements.
+ * 
+ * `b_length` is the length @math{K} of @vector{b} in elements (i.e. the number of filter taps).
+ * `b_length` must be one of @math{ \\{ 1, 3, 5, 7 \\} }. 
+ *
+ *
+ * @operation{
+ * &    y_k \leftarrow  \sum_{l=0}^{K-1} (x_{(k+l)} \cdot b_l \cdot 2^{-30} )   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (N-2P)                              \\
+ * &         \qquad\text{ where }P = \lfloor K/2 \rfloor 
+ * }
+ * 
+ * @par Additional Details
+ * @parblock
+ * 
+ * To avoid the possibility of saturating any output elements, @vector{b} may be constrained such
+ * that @math{ \sum_{i=0}^{K-1} \left|b_i\right| \leq 2^{30} }.
+ * 
+ * This operation can be applied safely in-place on `x[]`.
+ * 
+ * @endparblock
+ *
+ * @param[out]  y           Output vector @vector{y}
+ * @param[in]   x           Input vector @vector{x}
+ * @param[in]   b_q30       Filter coefficient vector @vector{b}
+ * @param[in]   x_length    The number of elements @math{N} in vector @vector{x}
+ * @param[in]   b_length    The number of elements @math{K} in @vector{b}
+ *
+ * @exception ET_LOAD_STORE Raised if `x` or `y` or `b_q30` is not word-aligned (See @ref note_vector_alignment)
+ *
+ * @ingroup xs3_vect32_func
+ */
+C_API
+headroom_t xs3_vect_s32_convolve_valid(
+    int32_t y[],
+    const int32_t x[],
+    const int32_t b_q30[],
+    const unsigned x_length,
+    const unsigned b_length);
+
+
+/**
+ * @brief Supported padding modes for convolutions in "same" mode.
+ * 
+ * @see xs3_vect_s32_convolve_same(), bfp_s32_convolve_same()
+ * 
+ * @ingroup xs3_vect32_func
+ */
+typedef enum {
+  /**
+   * Vector is reflected at its boundaries, such that
+   * 
+   *  @math{ \tilde{x}_i \begin\{cases\}
+   *           x_{-i} & i \lt 0                           \\
+   *           x_{2N - 2 - i} & i \ge N                   \\
+   *           x_i & otherwise 
+   *          \end\{cases\} }
+   * 
+   * For example, if the length @math{N} of input vector @vector{x} is @math{7} and the order 
+   * @math{K} of the filter is @math{5}, then
+   * 
+   * @math{ \bar{x} = [x_0, x_1, x_2, x_3, x_4, x_5, x_6] }
+   * 
+   * @math{ \tilde{x} = [x_2, x_1, x_0, x_1, x_2, x_3, x_4, x_5, x_6, x_5, x_4] }
+   * 
+   * Note that by convention the first element of @math{\tilde{x}} is considered to be at index 
+   * @math{-P}, where @math{P = \lfloor K/2 \rfloor}.
+   */
+  PAD_MODE_REFLECT = (INT32_MAX-0),
+
+  /**
+   * Vector is padded using the value of the bounding elements.
+   * 
+   *  @math{ \tilde{x}_i \begin\{cases\}
+   *           x_{0} & i \lt 0            \\
+   *           x_{N-1} & i \ge N          \\
+   *           x_i & otherwise 
+   *          \end\{cases\} }
+   * 
+   * For example, if the length @math{N} of input vector @vector{x} is @math{7} and the order 
+   * @math{K} of the filter is @math{5}, then
+   * 
+   * @math{ \bar{x} = [x_0, x_1, x_2, x_3, x_4, x_5, x_6] }
+   * 
+   * @math{ \tilde{x} = [x_0, x_0, x_0, x_1, x_2, x_3, x_4, x_5, x_6, x_6, x_6] }
+   * 
+   * Note that by convention the first element of @math{\tilde{x}} is considered to be at index 
+   * @math{-P}, where @math{P = \lfloor K/2 \rfloor}.
+   */
+  PAD_MODE_EXTEND  = (INT32_MAX-1),
+
+  /**
+   * Vector is padded with zeroes.
+   * 
+   *  @math{ \tilde{x}_i \begin\{cases\}
+   *           0 & i \lt 0            \\
+   *           0 & i \ge N            \\
+   *           x_i & otherwise 
+   *          \end\{cases\} }
+   * 
+   * For example, if the length @math{N} of input vector @vector{x} is @math{7} and the order 
+   * @math{K} of the filter is @math{5}, then
+   * 
+   * @math{ \bar{x} = [x_0, x_1, x_2, x_3, x_4, x_5, x_6] }
+   * 
+   * @math{ \tilde{x} = [0, 0, x_0, x_1, x_2, x_3, x_4, x_5, x_6, 0, 0] }
+   * 
+   * Note that by convention the first element of @math{\tilde{x}} is considered to be at index 
+   * @math{-P}, where @math{P = \lfloor K/2 \rfloor}.
+   */
+  PAD_MODE_ZERO = 0,
+} pad_mode_e;
+
+
+/**
+ * @brief Convolve a 32-bit vector with a short kernel.
+ * 
+ * 32-bit input vector @vector{x} is convolved with a short fixed-point kernel @vector{b} to produce
+ * 32-bit output vector @vector{y}.  In other words, this function applies the @math{K}th-order FIR
+ * filter with coefficients given by @vector{b} to the input signal @vector{x}.  The convolution
+ * mode is "same" in that the input vector is effectively padded such that the input and output
+ * vectors are the same length.  The padding behavior is one of those given by @ref pad_mode_e.
+ * 
+ * The maximum filter order @math{K} supported by this function is @math{7}.
+ * 
+ * `y[]` and `x[]` are the output and input vectors @vector{y} and @vector{x} respectively.
+ * 
+ * `b_q30[]` is the vector @vector{b} of filter coefficients. The coefficients of @vector{b} are
+ * encoded in a Q2.30 fixed-point format. The effective value of the @math{i}th coefficient is then
+ * @math{b_i \cdot 2^{-30}}.
+ * 
+ * `x_length` is the length @math{N} of @vector{x} and @vector{y} in elements.
+ * 
+ * `b_length` is the length @math{K} of @vector{b} in elements (i.e. the number of filter taps).
+ * `b_length` must be one of @math{ \\{ 1, 3, 5, 7 \\} }. 
+ *  
+ * `padding_mode` is one of the values from the @ref pad_mode_e enumeration. The padding mode 
+ * indicates the filter input values for filter taps that have extended beyond the bounds of the
+ * input vector @vector{x}. See @ref pad_mode_e for a list of supported padding modes and associated
+ * behaviors.
+ *
+ * @operation{
+ * &    \tilde{x}_i = \begin\{cases\}
+ *           \text{determined by padding mode} & i \lt 0                                  \\
+ *           \text{determined by padding mode} & i \ge N                                  \\
+ *           x_i & otherwise \end\{cases\}                                                \\
+ * &    y_k \leftarrow  \sum_{l=0}^{K-1} (\tilde{x}_{(k+l-P)} \cdot b_l \cdot 2^{-30} )   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (N-2P)                                        \\
+ * &         \qquad\text{ where }P = \lfloor K/2 \rfloor 
+ * }
+ * 
+ * 
+ * @par Additional Details
+ * @parblock
+ * 
+ * To avoid the possibility of saturating any output elements, @vector{b} may be constrained such
+ * that @math{ \sum_{i=0}^{K-1} \left|b_i\right| \leq 2^{30} }.
+ * @endparblock
+ * 
+ * @note Unlike xs3_vect_s32_convolve_valid(), this operation _cannot_ be performed safely in-place
+ * on `x[]`
+ *
+ * @param[out]  y               Output vector @vector{y}
+ * @param[in]   x               Input vector @vector{x}
+ * @param[in]   b_q30           Filter coefficient vector @vector{b}
+ * @param[in]   x_length        The number of elements @math{N} in vector @vector{x}
+ * @param[in]   b_length        The number of elements @math{K} in @vector{b}
+ * @param[in]   padding_mode    The padding mode to be applied at signal boundaries
+ *
+ * @exception ET_LOAD_STORE Raised if `x` or `y` or `b_q30` is not word-aligned (See @ref note_vector_alignment)
+ *
+ * @ingroup xs3_vect32_func
+ */
+C_API
+headroom_t xs3_vect_s32_convolve_same(
+    int32_t y[],
+    const int32_t x[],
+    const int32_t b_q30[],
+    const unsigned x_length,
+    const unsigned b_length,
+    const pad_mode_e padding_mode);
+
+
 #ifdef __XC__
 }   //extern "C"
 #endif
