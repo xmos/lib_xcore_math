@@ -8,6 +8,7 @@ Major Changes
 *************
 
 * Support for channel-pair related types and operations has been dropped. These were considered to be too narrowly focused on making use of a single optimization (stereo FFT).
+* Added various scalar arithmetic functions for `float_s32_t` type.
 
 Bugfixes
 ********
