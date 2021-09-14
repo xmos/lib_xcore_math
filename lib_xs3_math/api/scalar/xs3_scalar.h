@@ -3,21 +3,12 @@
 
 #pragma once
 
-#include "xs3_math_types.h"
+#include "../xs3_math_types.h"
 
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
 
-/**
- * @page page_xs3_scalar_h  xs3_scalar.h
- * 
- * This header contains XS3 scalar functions.
- * 
- * @note This header is included automatically through `xs3_math.h` or `bfp_math.h`.
- * 
- * @ingroup xs3_math_header_file
- */
 
 
 /**
@@ -30,7 +21,94 @@
  * 
  * @ingroup xs3_scalar_funcs
  */
-#define XS3_SQRT_S32_MAX_DEPTH     (31)
+#define XS3_S32_SQRT_MAX_DEPTH     (31)
+
+
+/**
+ * @brief Pack a floating point value into an IEEE 754 single-precision float.
+ * 
+ * The value returned is the nearest representable approximation to @math{ m \cdot 2^{p} } where
+ * @math{m} is `mantissa` and @math{p} is `exp`.
+ * 
+ * @note This operation may result in a loss of precision.
+ * 
+ * @par Example
+ * @code{.c}
+ *    // Pack -12345678 * 2^{-13} into a float
+ *    int32_t mant = -12345678;
+ *    exponent_t exp = -13;
+ *    float val = xs3_pack_float(mant, exp);
+ *    
+ *    printf("%e <-- %ld * 2^(%d)\n", val, mant, exp);
+ * @endcode
+ * 
+ * @param[in] mantissa    Mantissa of value to be packed
+ * @param[in] exp         Exponent of value to be packed
+ * 
+ * @returns   `float` representation of input value
+ * 
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+float xs3_pack_float(
+    const int32_t mantissa,
+    const exponent_t exp);
+
+
+/**
+ * @brief Unpack an IEEE 754 single-precision float into a 32-bit mantissa and exponent.
+ * 
+ * @par Example
+ * @code{.c}
+ *    // Unpack 1.52345246 * 10^(-5)
+ *    float val = 1.52345246e-5;
+ *    int32_t mant;
+ *    exponent_t exp;
+ *    xs3_unpack_float(&mant, &exp, val);
+ *    
+ *    printf("%ld * 2^(%d) <-- %e\n", mant, exp, val);
+ * @endcode
+ * 
+ * @param[out]  mantissa    Unpacked output mantissa
+ * @param[out]  exp         Unpacked output exponent
+ * @param[in]   input       Float value to be unpacked
+ * 
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+void xs3_unpack_float(
+    int32_t* mantissa,
+    exponent_t* exp,
+    const float input);
+
+
+/**
+ * @brief Unpack an IEEE 754 single-precision float into a 16-bit mantissa and exponent.
+ * 
+ * @par Example
+ * @code{.c}
+ *    // Unpack 1.52345246 * 10^(-5)
+ *    float val = 1.52345246e-5;
+ *    int16_t mant;
+ *    exponent_t exp;
+ *    xs3_unpack_float_s16(&mant, &exp, val);
+ *    
+ *    printf("%ld * 2^(%d) <-- %e\n", mant, exp, val);
+ * @endcode
+ * 
+ * @note This operation may result in a loss of precision.
+ * 
+ * @param[out]  mantissa    Unpacked output mantissa
+ * @param[out]  exp         Unpacked output exponent
+ * @param[in]   input       Float value to be unpacked
+ * 
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+void xs3_unpack_float_s16(
+    int16_t* mantissa,
+    exponent_t* exp,
+    const float input);
 
 /**
  * @brief Convert a 64-bit floating-point scalar to a 32-bit floating-point scalar.
@@ -106,7 +184,7 @@ int32_t xs3_scalar_s16_to_s32(
  * 
  * `depth` indicates the number of MSb's which will be calculated. Smaller values here will
  * execute more quickly at the cost of reduced precision. The maximum valid value for `depth`
- * is @ref XS3_SQRT_S32_MAX_DEPTH.
+ * is @ref XS3_S_32_SQRT_MAX_DEPTH.
  * 
  * @operation{
  *    a \cdot 2^{a\_exp} \leftarrow \sqrt{\left( b \cdot 2^{b\_exp} \right)}
@@ -119,12 +197,10 @@ int32_t xs3_scalar_s16_to_s32(
  * 
  * @returns Output mantissa @math{a}
  * 
- * @todo Rename this to xs3_s32_sqrt()
- * 
  * @ingroup xs3_scalar_funcs
  */
 C_API
-int32_t xs3_sqrt_s32(
+int32_t xs3_s32_sqrt(
     exponent_t* a_exp,
     const int32_t b,
     const exponent_t b_exp,
@@ -145,14 +221,67 @@ int32_t xs3_sqrt_s32(
  * 
  * @returns Output mantissa @math{a}
  * 
- * @todo Rename this to xs3_s32_inverse()
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+int32_t xs3_s32_inverse(
+    exponent_t* a_exp,
+    const int32_t b);
+    
+
+/**
+ * @brief Compute the inverse of a 16-bit integer.
+ * 
+ * `b` represents the integer @math{b}. `a` and `a_exp` together represent the 
+ * result @math{a \cdot 2^{a\_exp}}.
+ * 
+ * @operation{
+ *    a \cdot 2^{a\_exp} \leftarrow \frac{1}{b}
+ * }
+ * 
+ * @param[out] a_exp    Output exponent @math{a\_exp}
+ * @param[in]  b        Input integer @math{b}
+ * 
+ * @returns Output mantissa @math{a}
  * 
  * @ingroup xs3_scalar_funcs
  */
 C_API
-int32_t xs3_inverse_s32(
+int16_t xs3_s16_inverse(
     exponent_t* a_exp,
-    const int32_t b);
+    const int16_t b);
+
+/**
+ * @brief Compute the product of two 16-bit floating-point scalars.
+ * 
+ * `a` and `a_exp` together represent the result @math{a \cdot 2^{a\_exp}}.
+ * 
+ * `b` and `b_exp` together represent the result @math{b \cdot 2^{b\_exp}}.
+ * 
+ * `c` and `c_exp` together represent the result @math{c \cdot 2^{c\_exp}}.
+ * 
+ * @operation{
+ *    a \cdot 2^{a\_exp} \leftarrow \left( b\cdot 2^{b\_exp} \right) \cdot
+ *                                  \left( c\cdot 2^{c\_exp} \right)
+ * }
+ * 
+ * @param[out] a_exp  Output exponent @math{a\_exp}
+ * @param[in]  b      First input mantissa @math{b}
+ * @param[in]  c      Second input mantissa @math{c}
+ * @param[in]  b_exp  First input exponent @math{b\_exp}
+ * @param[in]  c_exp  Second input exponent @math{c\_exp}
+ * 
+ * @returns Output mantissa @math{a}
+ * 
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+int16_t xs3_s16_mul(
+    exponent_t* a_exp,
+    const int16_t b,
+    const int16_t c,
+    const exponent_t b_exp,
+    const exponent_t c_exp);
 
 /**
  * @brief Compute the product of two 32-bit floating-point scalars.
@@ -176,12 +305,10 @@ int32_t xs3_inverse_s32(
  * 
  * @returns Output mantissa @math{a}
  * 
- * @todo Rename this to xs3_s32_mul()
- * 
  * @ingroup xs3_scalar_funcs
  */
 C_API
-int32_t xs3_mul_s32(
+int32_t xs3_s32_mul(
     exponent_t* a_exp,
     const int32_t b,
     const int32_t c,

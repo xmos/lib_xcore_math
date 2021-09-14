@@ -391,7 +391,7 @@ C_API
 void bfp_complex_s16_real_scale(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
-    const float_s16_t alpha);
+    const float alpha);
 
 
 /** 

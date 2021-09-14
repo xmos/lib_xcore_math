@@ -343,7 +343,7 @@ C_API
 void bfp_s16_scale(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
-    const float_s16_t alpha);
+    const float alpha);
 
 
 /** 
@@ -623,7 +623,7 @@ float_s32_t bfp_s16_abs_sum(
  * @ingroup bfp16_func
  */
 C_API
-float_s16_t bfp_s16_mean(
+float bfp_s16_mean(
     const bfp_s16_t* b);
 
 
@@ -697,7 +697,7 @@ float_s32_t bfp_s16_rms(
  * @ingroup bfp16_func
  */
 C_API
-float_s16_t bfp_s16_max(
+float bfp_s16_max(
     const bfp_s16_t* b);
 
 
@@ -721,7 +721,7 @@ float_s16_t bfp_s16_max(
  * @ingroup bfp16_func
  */
 C_API
-float_s16_t bfp_s16_min(
+float bfp_s16_min(
     const bfp_s16_t* b);
 
 

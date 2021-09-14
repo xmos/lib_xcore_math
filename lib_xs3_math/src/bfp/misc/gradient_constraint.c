@@ -54,7 +54,7 @@ void bfp_complex_s32_gradient_constraint_mono(
 
   // This takes care of  td[(frame_advance/2):(FFT_N/4)] = 0
   for(unsigned i = frame_advance/2; i < FREQ_BINS/2; i++){
-    const unsigned ri = bitrev(i, FFT_N_LOG2-1);
+    const unsigned ri = n_bitrev(i, FFT_N_LOG2-1);
     X->data[ri].re = X->data[ri].im = 0;
   }
 
@@ -148,7 +148,7 @@ void bfp_complex_s32_gradient_constraint_stereo(
   // But I'm not sure whether we'll need to deal with cases where (FFT_N/2)-frame_advance is not
   // a power of 2, so I'll just do it the straight-forward way.
   for(unsigned i = frame_advance; i < FFT_N/2; i++){
-    const unsigned ri = bitrev(i, FFT_N_LOG2);
+    const unsigned ri = n_bitrev(i, FFT_N_LOG2);
     X1->data[ri].re = X1->data[ri].im = 0;
   }
 

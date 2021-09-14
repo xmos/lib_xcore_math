@@ -56,13 +56,17 @@ TEST(bfp_mean, bfp_s16_mean)
 
         bfp_s16_headroom(&B);
 
-        float_s16_t result = bfp_s16_mean(&B);
+        float result = bfp_s16_mean(&B);
+
+        int16_t Q;
+        exponent_t R;
+        xs3_unpack_float_s16(&Q, &R, result);
 
         double meanf = ldexp(sum, B.exp) / B.length;
         
-        double diff = meanf - ldexp(result.mant, result.exp);
+        double diff = meanf - result;
 
-        TEST_ASSERT( fabs(diff) <= ldexp(1, result.exp) );
+        TEST_ASSERT( fabs(diff) <= ldexp(1, R) );
     }
 }
 

@@ -118,19 +118,23 @@ void bfp_s16_mul(
 void bfp_s16_scale(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 
-    const float_s16_t alpha)
+    const float alpha)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length != 0);
 #endif
 
+    int16_t alpha_mant;
+    exponent_t alpha_exp;
+    xs3_unpack_float_s16(&alpha_mant, &alpha_exp, alpha);
+
     right_shift_t a_shr;
-    headroom_t alpha_hr = HR_S16(alpha.mant);
+    headroom_t alpha_hr = HR_S16(alpha_mant);
 
-    xs3_vect_s16_scale_prepare(&a->exp, &a_shr, b->exp, alpha.exp, b->hr, alpha_hr);
+    xs3_vect_s16_scale_prepare(&a->exp, &a_shr, b->exp, alpha_exp, b->hr, alpha_hr);
 
-    a->hr = xs3_vect_s16_scale(a->data, b->data, b->length, alpha.mant, a_shr);
+    a->hr = xs3_vect_s16_scale(a->data, b->data, b->length, alpha_mant, a_shr);
 }
 
 
@@ -288,14 +292,12 @@ float_s32_t bfp_s16_abs_sum(
 }
 
 
-float_s16_t bfp_s16_mean(
+float bfp_s16_mean(
     const bfp_s16_t* b)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length != 0);
 #endif
-
-    float_s16_t a;
 
     int32_t sum = xs3_vect_s16_sum(b->data, b->length);
 
@@ -304,13 +306,13 @@ float_s16_t bfp_s16_mean(
     int64_t mean64 = sum64 / ((int)b->length);
     right_shift_t shr = MAX(0, 48 - HR_S64(mean64));
 
+    //TODO: astew: there's no reason to force the precision down to 16 bits after
+    //             getting rid of float_s16_t because xs3_pack_float handles 32 bits
     if(shr > 0) 
         mean64 += 1 << (shr-1);
 
-    a.mant = mean64 >> shr;
-    a.exp = b->exp - hr + shr;
-
-    return a;
+    return xs3_pack_float(mean64 >> shr, 
+                          b->exp - hr + shr);
 }
 
 
@@ -340,40 +342,36 @@ float_s32_t bfp_s16_rms(
     exponent_t exp, len_inv_exp;
     const float_s64_t energy64 = bfp_s16_energy(b);
     const int32_t energy32 = xs3_scalar_s64_to_s32(&exp, energy64.mant, energy64.exp);
-    const int32_t len_inv = xs3_inverse_s32(&len_inv_exp, b->length);
-    const int32_t mean_energy = xs3_mul_s32(&exp, energy32, len_inv, exp, len_inv_exp);
+    const int32_t len_inv = xs3_s32_inverse(&len_inv_exp, b->length);
+    const int32_t mean_energy = xs3_s32_mul(&exp, energy32, len_inv, exp, len_inv_exp);
 
-    a.mant = xs3_sqrt_s32(&a.exp, mean_energy, exp, XS3_BFP_SQRT_DEPTH_S32);
+    a.mant = xs3_s32_sqrt(&a.exp, mean_energy, exp, XS3_BFP_SQRT_DEPTH_S32);
 
     return a;
 }
 
 
-float_s16_t bfp_s16_max(
+float bfp_s16_max(
     const bfp_s16_t* b)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length != 0);
 #endif
 
-    float_s16_t a;
-    a.mant = xs3_vect_s16_max(b->data, b->length);
-    a.exp = b->exp;
-    return a;
+    return xs3_pack_float(xs3_vect_s16_max(b->data, b->length), 
+                          b->exp);
 }
 
 
-float_s16_t bfp_s16_min(
+float bfp_s16_min(
     const bfp_s16_t* b)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length != 0);
 #endif
 
-    float_s16_t a;
-    a.mant = xs3_vect_s16_min(b->data, b->length);
-    a.exp = b->exp;
-    return a;
+    return xs3_pack_float(xs3_vect_s16_min(b->data, b->length), 
+                          b->exp);
 }
 
 

@@ -8,6 +8,7 @@
 
 .text
 
+.align 4;
 .issue_mode dual
 /*  
 void xs3_unpack_float(
@@ -48,34 +49,31 @@ FUNCTION_NAME:
 
 /*  
 float xs3_pack_float(
-    const int64_t mantissa,
+    const int32_t mantissa,
     const exponent_t exp);
 */
 #define FUNCTION_NAME   xs3_pack_float
 #define NSTACKWORDS     (0)
 
-#define a   r0
-#define b   r1
-#define c   r2
-#define d   r3
-#define e   r11
+#define mant        r0
+#define exp         r1
+#define sign        r2
+#define zero        r3
+#define tmp         r11
 
-#define mant_hi     a
-#define mant_lo     b
-#define exp         c
-
+.align 4;
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
 FUNCTION_NAME:
+  
     dualentsp NSTACKWORDS
+    ashr sign, mant, 32
+  { ldc tmp, 23                 ; ldc zero, 0                 }  
+  { add exp, exp, tmp           ; bf sign, .L_pack_not_neg    }
+    neg mant, mant
+  .L_pack_not_neg:
+    fmake mant, sign, exp, zero, mant
+  {                             ; retsp NSTACKWORDS           }
 
-//Extract sign bit from mantissa. Add 23 to exponent
-
-    ldc d, 0
-    ecallf d
-    lss d, mant_hi, d
-    bf d, .L_xpf_lblA
-.L_xpf_lblA:
-    retsp NSTACKWORDS
 .L_func_end_pack:
 .cc_bottom FUNCTION_NAME.function
 

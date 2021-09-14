@@ -33,7 +33,7 @@ static int32_t isqrt_s64(
 
 
 
-int32_t xs3_sqrt_s32(
+int32_t xs3_s32_sqrt(
     exponent_t* a_exp,
     const int32_t B,
     const exponent_t b_exp,

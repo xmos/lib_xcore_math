@@ -58,7 +58,7 @@ TEST(bfp_scale, bfp_s16_scale)
             Af[i] = Bf[i] * alpha_f;
         }
 
-        float_s16_t alpha = {alpha_mant, alpha_exp};
+        float alpha = xs3_pack_float(alpha_mant, alpha_exp);
         
         bfp_s16_scale(&A, &B, alpha);
 
@@ -66,7 +66,7 @@ TEST(bfp_scale, bfp_s16_scale)
 
         XTEST_ASSERT_VECT_S16_WITHIN(1, expA, A.data, A.length,
             "Expected: %d  <-- %d * 2^(%d)  * %d * 2^(%d) \nActual: %d * 2^(%d)\n",
-            expA[i], B.data[i], B.exp, alpha.mant, alpha.exp, A.data[i], A.exp);
+            expA[i], B.data[i], B.exp, alpha_mant, alpha_exp, A.data[i], A.exp);
 
     }
 }

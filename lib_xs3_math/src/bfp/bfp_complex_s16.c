@@ -174,19 +174,24 @@ void bfp_complex_s16_conj_mul(
 void bfp_complex_s16_real_scale(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
-    const float_s16_t alpha)
+    const float alpha)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length != 0);
 #endif
 
+    int16_t alpha_mant;
+    exponent_t alpha_exp;
+    xs3_unpack_float_s16(&alpha_mant, &alpha_exp, alpha);
+
     right_shift_t a_shr;
-    headroom_t s_hr = HR_S16(alpha.mant);
+    headroom_t s_hr = HR_S16(alpha_mant);
 
-    xs3_vect_complex_s16_real_scale_prepare(&a->exp, &a_shr, b->exp, alpha.exp, b->hr, s_hr);
+    xs3_vect_complex_s16_real_scale_prepare(&a->exp, &a_shr, b->exp, alpha_exp, b->hr, s_hr);
 
-    a->hr = xs3_vect_complex_s16_real_scale(a->real, a->imag, b->real, b->imag, alpha.mant, b->length, a_shr);
+    a->hr = xs3_vect_complex_s16_real_scale(a->real, a->imag, b->real, b->imag, 
+                                            alpha_mant, b->length, a_shr);
 }
 
 

@@ -11,18 +11,6 @@ int main(int argc, const char* argv[])
     UnityGetCommandLineOptions(argc, argv);
     UnityBegin(argv[0]);
 
-    // macro
-    RUN_TEST_GROUP(CLS_macro);
-    RUN_TEST_GROUP(HR_macro);
-
-    // scalar
-    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s8);
-    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s16);
-    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s32);
-    RUN_TEST_GROUP(xs3_sqrt_s32);
-    RUN_TEST_GROUP(xs3_inverse_s32);
-    RUN_TEST_GROUP(xs3_mul_s32);
-
     // real vector
     RUN_TEST_GROUP(xs3_vect_copy);
     RUN_TEST_GROUP(xs3_vect_headroom);

@@ -14,18 +14,18 @@
 
 #include "unity_fixture.h"
 
-TEST_GROUP_RUNNER(xs3_sqrt_s32) {
-  RUN_TEST_CASE(xs3_sqrt_s32, xs3_sqrt_s32);
+TEST_GROUP_RUNNER(xs3_s32_sqrt) {
+  RUN_TEST_CASE(xs3_s32_sqrt, xs3_s32_sqrt);
 }
 
-TEST_GROUP(xs3_sqrt_s32);
-TEST_SETUP(xs3_sqrt_s32) {}
-TEST_TEAR_DOWN(xs3_sqrt_s32) {}
+TEST_GROUP(xs3_s32_sqrt);
+TEST_SETUP(xs3_s32_sqrt) {}
+TEST_TEAR_DOWN(xs3_s32_sqrt) {}
 
 
 #define N        1000
 
-TEST(xs3_sqrt_s32, xs3_sqrt_s32)
+TEST(xs3_s32_sqrt, xs3_s32_sqrt)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
     int32_t cases[] = { 0, 1, 4, 16, 100, 0x4000 };
@@ -36,7 +36,7 @@ TEST(xs3_sqrt_s32, xs3_sqrt_s32)
 
         exponent_t b_exp = 0, a_exp;
 
-        int32_t res = xs3_sqrt_s32(&a_exp, cases[i], b_exp, 31);
+        int32_t res = xs3_s32_sqrt(&a_exp, cases[i], b_exp, 31);
 
         int64_t p = ((int64_t)res) * res;
         p = p >> 30;

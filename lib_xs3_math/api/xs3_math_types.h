@@ -110,29 +110,41 @@ typedef int right_shift_t;
 typedef int left_shift_t;
 
 
-
-
 /**
- * @brief A floating-point scalar with a 16-bit mantissa.
+ * @brief A 32-bit fixed-point scalar.
  * 
- * Represents a (non-standard) floating-point value given by @math{ M \cdot 2^{x} }, where @math{M} is the 16-bit 
- * mantissa `mant`, and @math{x} is the exponent `exp`.
+ * Represents a 32-bit fixed-point scalar with a Q-format implied by the context in which it occurs.
+ * Typically this type will be used for fixed-point function parameters as a hint to the user to
+ * check the documentation for the required Q-format.
  * 
- * To convert a `float_s16_t` to a standard IEEE754 single-precision floating-point value:
- * 
- * @code{.c}
- *  float to_ieee_float(float_s16_t x) {
- *      return ldexpf(x.mant, x.exp);
- *  }
- * @endcode
+ * If a function has a `fixed_s32_t` parameter ending with `_qXX` (where the `X` are digits), the
+ * `XX` typically indicates the number of fractional bits. For example, a `fixed_s32_t` parameter
+ * called `coef_q30` would imply 30 fractional bits and an associated exponent of -30.  This is just
+ * a convention, however, and this interpretation should be verified in the function's
+ * documentation.
  * 
  * @ingroup type_scalar
  */
-C_TYPE
-typedef struct {
-    int16_t mant;       ///< 16-bit mantissa
-    exponent_t exp;     ///< exponent
-} float_s16_t;
+typedef int32_t fixed_s32_t;
+
+/**
+ * @brief A 16-bit fixed-point scalar.
+ * 
+ * Represents a 16-bit fixed-point scalar with a Q-format implied by the context in which it occurs.
+ * Typically this type will be used for fixed-point function parameters as a hint to the user to
+ * check the documentation for the required Q-format.
+ * 
+ * If a function has a `fixed_s16_t` parameter ending with `_qXX` (where the `X` are digits), the
+ * `XX` typically indicates the number of fractional bits. For example, a `fixed_s16_t` parameter
+ * called `coef_q14` would imply 14 fractional bits and an associated exponent of -14.  This is just
+ * a convention, however, and this interpretation should be verified in the function's
+ * documentation.
+ * 
+ * @ingroup type_scalar
+ */
+typedef int16_t fixed_s16_t;
+
+
 
 /**
  * @brief A floating-point scalar with a 32-bit mantissa.
@@ -140,7 +152,7 @@ typedef struct {
  * Represents a (non-standard) floating-point value given by @math{ M \cdot 2^{x} }, where @math{M} is the 32-bit 
  * mantissa `mant`, and @math{x} is the exponent `exp`.
  * 
- * To convert a `float_s16_t` to a standard IEEE754 single-precision floating-point value (which may result in a loss of
+ * To convert a `float_s32_t` to a standard IEEE754 single-precision floating-point value (which may result in a loss of
  * precision):
  * 
  * @code{.c}

@@ -229,7 +229,7 @@ static inline unsigned cls(
 
 
 
-static inline unsigned bitrev(
+static inline unsigned n_bitrev(
     const unsigned index,
     const unsigned bits)
 {

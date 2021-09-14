@@ -39,21 +39,17 @@ TEST(bfp_min, bfp_s16_min)
         B.exp = pseudo_rand_int(&seed, -5, 5);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
         
-        float_s16_t expected = {
-            .mant = INT16_MAX,
-            .exp = B.exp,
-        };
+        float expected = xs3_pack_float(INT16_MAX, B.exp);
 
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
-            expected.mant = MIN(expected.mant, B.data[i]);
+            expected = MIN(expected, xs3_pack_float(B.data[i], B.exp));
         }
         bfp_s16_headroom(&B);
 
-        float_s16_t result = bfp_s16_min(&B);
+        float result = bfp_s16_min(&B);
 
-        TEST_ASSERT_EQUAL(expected.exp, result.exp);
-        TEST_ASSERT_EQUAL_INT16(expected.mant, result.mant);
+        TEST_ASSERT_EQUAL_FLOAT(expected, result);
     }
 }
 

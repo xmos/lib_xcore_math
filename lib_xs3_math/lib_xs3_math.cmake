@@ -1,5 +1,5 @@
 ## Source files
-file( GLOB_RECURSE    LIB_XS3_MATH_C_SOURCES       "src/bfp/*.c" "src/vect/*.c"   )
+file( GLOB_RECURSE    LIB_XS3_MATH_C_SOURCES       "src/bfp/*.c" "src/vect/*.c" "src/scalar/*.c"   )
 file( GLOB_RECURSE    LIB_XS3_MATH_CPP_SOURCES     src/*.cpp )
 file( GLOB_RECURSE    LIB_XS3_MATH_ASM_SOURCES     src/*.S   )
 

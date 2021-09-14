@@ -8,7 +8,7 @@
 
 #include "xs3_vpu_scalar_ops.h"
 
-static unsigned bitrev(unsigned index, size_t bit_width)
+static unsigned n_bitrev(unsigned index, size_t bit_width)
 {
     unsigned res = 0;
     for(int i = 0; i < bit_width; i++, index >>= 1){
@@ -36,7 +36,7 @@ void xs3_fft_index_bit_reversal(
     size_t logn = ceil_log2(length);
     for(int i = 0; i < length; i++){
         
-        unsigned rev = bitrev(i, logn);
+        unsigned rev = n_bitrev(i, logn);
         if(rev < i) continue;
 
         complex_s32_t tmp = a[i];
