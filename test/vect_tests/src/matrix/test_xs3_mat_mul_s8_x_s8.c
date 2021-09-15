@@ -21,12 +21,10 @@ TEST_GROUP(xs3_mat_mul_s8_x_s8_yield_s32);
 TEST_SETUP(xs3_mat_mul_s8_x_s8_yield_s32) {}
 TEST_TEAR_DOWN(xs3_mat_mul_s8_x_s8_yield_s32) {}
 
-
 static char detail_buff[200];
 
-
-#define MAX_OUT_GROUPS  (6)
-#define MAX_IN_GROUPS   (6)
+#define MAX_OUT_GROUPS  (16)
+#define MAX_IN_GROUPS   (16)
 #define REPS            (1000)
 
 #define MAX_ROWS        (MAX_OUT_GROUPS * VPU_INT8_ACC_PERIOD)
@@ -42,42 +40,47 @@ TEST(xs3_mat_mul_s8_x_s8_yield_s32, xs3_mat_mul_s8_x_s8_yield_s32)
 
     for(int v = 0; v < REPS; v++){
 
-        unsigned out_groups = pseudo_rand_uint(&seed, 1, MAX_OUT_GROUPS+1);
-        unsigned in_groups = pseudo_rand_uint(&seed, 1, MAX_IN_GROUPS+1);
+        unsigned M_rows = pseudo_rand_uint(&seed, 1, MAX_ROWS + 1);
+        unsigned N_cols = (pseudo_rand_uint(&seed, 1, MAX_COLS + 1) >> 2) << 2;
 
-        if(v == 0){
-          out_groups = 1;
-          in_groups = 1;
-        }
-        
-        const unsigned rows = out_groups * VPU_INT8_ACC_PERIOD;
-        const unsigned cols = in_groups * VPU_INT8_EPV;
+        // M_rows = 216;
+        // N_cols = 252;
 
-        sprintf(detail_buff, "( rep: %d; seed: 0x%08X; rows: %u; cols: %u )", v, seed, rows, cols);
+        // printf("\n\n\n"
+        //        "M_rows = %u\n"
+        //        "N_cols = %u\n"
+        //        "\n\n", M_rows, N_cols);
+
+        TEST_ASSERT(N_cols > 0);
+
+
+        sprintf(detail_buff, "( rep: %d; seed: 0x%08X; rows: %u; cols: %u )", v, seed, M_rows, N_cols);
         UNITY_SET_DETAIL(detail_buff);
 
-        for(int row = 0; row < rows; row++){
-          for(int col = 0; col < cols; col++){
-            matrix[row * cols + col] = pseudo_rand_int8(&seed);
+        for(int row = 0; row < M_rows; row++){
+          for(int col = 0; col < N_cols; col++){
+            matrix[row * N_cols + col] = pseudo_rand_int8(&seed);
           }
         }
         pseudo_rand_int8(&seed);
 
-        for(int col = 0; col < cols; col++)
+        memset(vector, 0, sizeof(vector));
+        for(int col = 0; col < N_cols; col++)
           vector[col] = pseudo_rand_int8(&seed);
 
         memset(accumulators, 0xFF, sizeof(accumulators));
 
-        xs3_mat_mul_s8_x_s8_yield_s32(accumulators, matrix, vector, rows, cols);
+        xs3_mat_mul_s8_x_s8_yield_s32(accumulators, matrix, vector, M_rows, N_cols);
 
-        for(int row = 0; row < rows; row++) {
+
+        for(int row = 0; row < M_rows; row++) {
           int grp = row / VPU_INT8_ACC_PERIOD;
           int offset = row % VPU_INT8_ACC_PERIOD;
           
           int32_t expected = -1; // They were initialized to -1
 
-          for(int col = 0; col < cols; col++){
-            expected += ((int32_t)matrix[row * cols + col]) * vector[col];
+          for(int col = 0; col < N_cols; col++){
+            expected += ((int32_t)matrix[row * N_cols + col]) * vector[col];
           } 
 
           int32_t actual = (((int32_t)accumulators[grp].vD[offset]) << VPU_INT8_ACC_VR_BITS) 

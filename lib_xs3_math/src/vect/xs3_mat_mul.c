@@ -43,10 +43,19 @@ void xs3_mat_mul_s8_x_s16_yield_s32 (
     const unsigned N_cols,
     int8_t scratch[])
 {
-  const int out_groups = M_rows >> VPU_INT8_ACC_PERIOD_LOG2;
+
+  const int out_groups = (M_rows + VPU_INT8_ACC_PERIOD - 1) >> VPU_INT8_ACC_PERIOD_LOG2;
+  const int in_groups = (N_cols + VPU_INT8_EPV - 1) >> VPU_INT8_EPV_LOG2;
+
+  // M_ceil is M_rows rounded up to the nearest multiple of 16
+  const unsigned M_ceil = out_groups << VPU_INT8_ACC_PERIOD_LOG2;
+  // N_ceil is N_cols rounded up to the nearest multiple of 32
+  const unsigned N_ceil = in_groups << VPU_INT8_EPV_LOG2;
+
   xs3_split_acc_s32_t* accs = (xs3_split_acc_s32_t*) output;
 
-  memset(output, 0, sizeof(int32_t) * M_rows);
+  memset(output, 0, sizeof(xs3_split_acc_s32_t) * out_groups);
+  memset(scratch, 0, sizeof(int8_t) * N_ceil);
 
   // Multiply-accumulate the high words onto the accumulators
   xs3_vect_s16_extract_high_byte(scratch, input, N_cols);
@@ -55,6 +64,7 @@ void xs3_mat_mul_s8_x_s16_yield_s32 (
   // Shift accumulators left 8 bits.  (Should I just have the assembly convert them to not be split..?)
   for(int out_group = 0; out_group < out_groups; out_group++){
     for(int offset = 0; offset < VPU_INT8_ACC_PERIOD; offset++){
+      if( (out_group * VPU_INT8_ACC_PERIOD + offset) >= M_rows ) continue;
       int32_t acc32 = merge_acc(accs[out_group].vD[offset], accs[out_group].vR[offset]);
       acc32 = acc32 << 8;
       split_acc(&accs[out_group].vD[offset], &accs[out_group].vR[offset], acc32);
