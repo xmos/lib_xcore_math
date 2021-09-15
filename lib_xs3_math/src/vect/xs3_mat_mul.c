@@ -35,7 +35,8 @@ void xs3_mat_mul_s8_x_s16_yield_s32_ref (
   }
 }
 
-void xs3_mat_mul_s8_x_s16_yield_s32 (
+
+void xs3_mat_mul_s8_x_s16_yield_s32_inner (
     int32_t output[],
     const int8_t weights[],
     const int16_t input[],
@@ -47,8 +48,6 @@ void xs3_mat_mul_s8_x_s16_yield_s32 (
   const int out_groups = (M_rows + VPU_INT8_ACC_PERIOD - 1) >> VPU_INT8_ACC_PERIOD_LOG2;
   const int in_groups = (N_cols + VPU_INT8_EPV - 1) >> VPU_INT8_EPV_LOG2;
 
-  // M_ceil is M_rows rounded up to the nearest multiple of 16
-  const unsigned M_ceil = out_groups << VPU_INT8_ACC_PERIOD_LOG2;
   // N_ceil is N_cols rounded up to the nearest multiple of 32
   const unsigned N_ceil = in_groups << VPU_INT8_EPV_LOG2;
 
@@ -97,4 +96,40 @@ void xs3_mat_mul_s8_x_s16_yield_s32 (
     }
   }
   
+}
+
+
+
+
+void xs3_mat_mul_s8_x_s16_yield_s32 (
+    int32_t output[],
+    const int8_t weights[],
+    const int16_t input[],
+    const unsigned M_rows,
+    const unsigned N_cols,
+    int8_t scratch[])
+{
+
+  const unsigned M_tail = M_rows % VPU_INT8_ACC_PERIOD;
+  const unsigned M_body = M_rows - M_tail;
+
+  if(M_body){
+    xs3_mat_mul_s8_x_s16_yield_s32_inner(&output[0], weights, input, M_body, N_cols, scratch);
+  }
+
+  if(M_tail){
+      // Here we need to write to a temp buffer and copy over as needed.
+      int32_t WORD_ALIGNED tmp_buff[VPU_INT8_ACC_PERIOD];
+
+    xs3_mat_mul_s8_x_s16_yield_s32_inner(tmp_buff, 
+                                         &weights[M_body * N_cols], 
+                                         input, M_tail, N_cols, scratch);
+
+      for(int k = 0; k < M_tail; k++){
+        output[M_body + k] = tmp_buff[k];
+      }
+  }
+
+
+
 }

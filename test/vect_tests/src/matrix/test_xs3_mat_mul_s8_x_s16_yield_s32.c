@@ -69,23 +69,7 @@ TEST(xs3_mat_mul_s8_x_s16_yield_s32, xs3_mat_mul_s8_x_s16_yield_s32)
       unsigned M_rows = pseudo_rand_uint(&seed, 1, MAX_ROWS+1);
       unsigned N_cols = (pseudo_rand_uint(&seed, 4, MAX_COLS+1) >> 2) << 2;
 
-      
-
-      // unsigned out_groups = pseudo_rand_uint(&seed, 1, MAX_OUT_GROUPS+1);
-      // unsigned in_groups = pseudo_rand_uint(&seed, 1, MAX_IN_GROUPS+1);
-
-      // if(v == 0){
-      //   out_groups = 1;
-      //   in_groups = 1;
-      // } else if(v == REPS-1){
-      //   out_groups = MAX_OUT_GROUPS;
-      //   in_groups = MAX_IN_GROUPS; 
-      // }
-      
-      // const unsigned rows = out_groups * VPU_INT8_ACC_PERIOD;
-      // const unsigned cols = in_groups * VPU_INT8_EPV;
-
-      printf("\trep % 3d...\t(seed: 0x%08X) (rows, cols: %u, %u)\n", v, seed, M_rows, N_cols);
+      // printf("\trep % 3d...\t(seed: 0x%08X) (rows, cols: %u, %u)\n", v, seed, M_rows, N_cols);
 
       for(int row = 0; row < M_rows; row++){
         for(int col = 0; col < N_cols; col++){
