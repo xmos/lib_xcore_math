@@ -27,7 +27,7 @@ static char detail_buff[200];
 
 #define MAX_OUT_GROUPS  (16)
 #define MAX_IN_GROUPS   (16)
-#define REPS            (1000)
+#define REPS            (10)
 
 #define MAX_ROWS        (MAX_OUT_GROUPS * VPU_INT8_ACC_PERIOD)
 #define MAX_COLS        (MAX_IN_GROUPS * VPU_INT8_EPV)
@@ -55,14 +55,16 @@ TEST(xs3_mat_mul_s8_x_s16_yield_s32, xs3_mat_mul_s8_x_s16_yield_s32)
   unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-  int32_t WORD_ALIGNED output[MAX_ROWS];
-  int32_t WORD_ALIGNED output_ref[MAX_ROWS];
-  int8_t WORD_ALIGNED matrix[MAX_ROWS*MAX_COLS];
-  int16_t WORD_ALIGNED vector[MAX_COLS];
+  int32_t DWORD_ALIGNED output[MAX_ROWS];
+  int32_t DWORD_ALIGNED output_ref[MAX_ROWS];
+  int8_t DWORD_ALIGNED matrix[MAX_ROWS*MAX_COLS];
+  int16_t DWORD_ALIGNED vector[MAX_COLS];
 
-  int8_t WORD_ALIGNED scratch[MAX_COLS];
+  int8_t DWORD_ALIGNED scratch[MAX_COLS];
 
   float max_ratio = 0;
+
+  printf("\n\n\n");
 
   for(int v = 0; v < REPS; v++){
 
@@ -82,23 +84,25 @@ TEST(xs3_mat_mul_s8_x_s16_yield_s32, xs3_mat_mul_s8_x_s16_yield_s32)
       for(int col = 0; col < N_cols; col++)
         vector[col] = pseudo_rand_int16(&seed);
 
-      // unsigned opt_start, opt_end;
+      unsigned opt_start, opt_end;
       // unsigned ref_start, ref_end;
 
-      // opt_start = getTimestamp();
+      opt_start = getTimestamp();
       xs3_mat_mul_s8_x_s16_yield_s32(output, matrix, vector, M_rows, N_cols, scratch);
-      // opt_end = getTimestamp();
+      opt_end = getTimestamp();
       // ref_start = getTimestamp();
       xs3_mat_mul_s8_x_s16_yield_s32_ref(output_ref, matrix, vector, M_rows, N_cols);
       // ref_end = getTimestamp();
 
-      // unsigned opt_ns = 10 * (opt_end - opt_start);
+      unsigned opt_ns = 10 * (opt_end - opt_start);
+
       // unsigned ref_ns = 10 * (ref_end - ref_start);
       // float ratio = (ref_ns + 0.0f) / opt_ns;
 
       // max_ratio = (ratio > max_ratio)? ratio : max_ratio;
 
       // printf("%d x %d:  %0.02f\n", M_rows, N_cols, ratio);
+      printf("% 3d x % 3d:  %f us\n", M_rows, N_cols, opt_ns / 1000.0f);
 
       for(int row = 0; row < M_rows; row++) {
 
