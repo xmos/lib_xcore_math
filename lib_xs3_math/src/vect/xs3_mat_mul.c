@@ -53,8 +53,6 @@ void xs3_mat_mul_s8_x_s16_yield_s32_inner (
   const unsigned N_ceil = in_groups << VPU_INT8_EPV_LOG2;
 
   xs3_split_acc_s32_t* accs = (xs3_split_acc_s32_t*) output;
-  xs3_split_acc_s32_t* buff_accs = (xs3_split_acc_s32_t*) buffer;
-
 
   memset(output, 0, sizeof(xs3_split_acc_s32_t) * out_groups);
   memset(scratch, 0, sizeof(int8_t) * N_ceil);

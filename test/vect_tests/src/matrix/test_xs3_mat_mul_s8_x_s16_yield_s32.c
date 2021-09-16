@@ -27,7 +27,7 @@ static char detail_buff[200];
 
 #define MAX_OUT_GROUPS  (16)
 #define MAX_IN_GROUPS   (16)
-#define REPS            (10)
+#define REPS            (1000)
 
 #define MAX_ROWS        (MAX_OUT_GROUPS * VPU_INT8_ACC_PERIOD)
 #define MAX_COLS        (MAX_IN_GROUPS * VPU_INT8_EPV)
