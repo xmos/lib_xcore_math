@@ -40,25 +40,14 @@ void xs3_mat_mul_s8_x_s8_yield_s32 (
 #define mat_stride_B    r7
 #define mat_stride_C    r8
 
+#define K               r10
+
 .text
 .issue_mode dual
 .align 4
 
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
 
-
-//// The first matrix stride is just the number of columns, because we move back (i.e. lower addresses) one row
-//// between each VLMACCR
-
-//// The second matrix stride is to move from the end of one input group to the beginning of the next. The delta
-//// between two input groups is 32 bytes, and in between N_cols will have been subtracted 15 times. So the second
-//// stride ends up being:  mat_stride_B = 15 * N_cols + 32 =  (N_cols << 4) + (32 - N_cols)
-
-//// The third stride is to move from the end of one output group to the beginning of the next.
-//// After the final application of mat_stride_B, the matrix pointer will be pointing just AFTER the last element
-//// of the last row of the current output group... which is the same as the first element of the next input group.
-//// Because of the direction in which the accumulators rotate, we need to start an output group pointing at
-//// the beginning of the last row. So:  mat_stride_C = 15 * N_cols
 
 FUNCTION_NAME:
     dualentsp NSTACKWORDS
@@ -67,17 +56,25 @@ FUNCTION_NAME:
     std r6, r7, sp[2]
     std r8, r9, sp[3]
   { ldc _32, 32                               ; stw r10, sp[1]                            }
-  {                                           ; vsetc r11                                 }
+  { ldc r10, 15                               ; vsetc r11                                 }
+    add rows_left, rows_left, r10
   { shr rows_left, rows_left, 4               ; ldw N_cols, sp[STACK_N_COLS]              }
-  { shl mat_stride_B, N_cols, 4               ; stw vector, sp[STACK_INPUT_VECT]          }
-  { sub mat_stride_C, mat_stride_B, N_cols    ; stw N_cols, sp[STACK_N_COLS]              }
-  { add mat_stride_B, mat_stride_C, _32       ;                                           }
+  { shl mat_stride_B, N_cols, 4               ; mov K, N_cols                             }
+  { sub mat_stride_C, mat_stride_B, N_cols    ; ldc r9, 31                                }
+  { add mat_stride_B, mat_stride_C, _32       ; stw vector, sp[STACK_INPUT_VECT]          }
+
+  { zext K, 5                                 ; add r9, N_cols, r9                        }
+  { sub K, _32, K                             ; shr r9, r9, 5                             }
+  { zext K, 5                                 ;                                           }
+  { add matrix, matrix, K                     ; sub mat_stride_C, mat_stride_C, K         }
+  { shl K, r9, 5                              ; stw N_cols, sp[STACK_N_COLS]              }
+  
   { add matrix, matrix, mat_stride_C          ; bu .L_output_group_top                    }
 
   .align 16
   .L_output_group_top:
     { add r11, accs, _32                        ; vldd accs[0]                              }
-    { mov cols_left, N_cols                     ; vldr r11[0]                               }
+    { mov cols_left, K                          ; vldr r11[0]                               }
     { sub rows_left, rows_left, 1               ; ldw vector, sp[STACK_INPUT_VECT]          }
     
     .L_input_group_top:
