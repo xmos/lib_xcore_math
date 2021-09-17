@@ -9,34 +9,6 @@
 
 
 
-void xs3_vect_s32_merge_accs(
-    int32_t a[],
-    xs3_split_acc_s32_t b[],
-    const unsigned length);
-
-void xs3_vect_s32_split_accs(
-    xs3_split_acc_s32_t a[],
-    const int32_t b[],
-    const unsigned length);
-
-
-void xs3_mat_mul_s8_x_s16_yield_s32_ref (
-    int32_t output[],
-    const int8_t weights[],
-    const int16_t input[],
-    const unsigned M_rows,
-    const unsigned N_cols)
-{
-  for(int row = 0; row < M_rows; row++){
-
-    output[row] = 0;
- 
-    for(int col = 0; col < N_cols; col++){
-      output[row] += ((int32_t)weights[row * N_cols + col]) * ((int32_t)input[col]);
-    }
-  }
-}
-
 
 void xs3_mat_mul_s8_x_s16_yield_s32_inner (
     int32_t output[],

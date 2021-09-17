@@ -2078,6 +2078,63 @@ headroom_t xs3_vect_s32_convolve_same(
     const pad_mode_e padding_mode);
 
 
+/**
+ * @brief Merge a vector of split 32-bit accumulators into a vector of int32_t's.
+ * 
+ * Convert a vector of @ref xs3_split_acc_s32_t into a vector of `int32_t`. This is useful when
+ * a function (e.g. `xs3_mat_mul_s8_x_s8_yield_s32`) outputs a vector of accumulators in the XS3
+ * VPU's native split 32-bit format, which has the upper half of each accumulator in the first 32
+ * bytes and the lower half in the following 32 bytes.
+ * 
+ * This function is most efficient (in terms of cycles/accumulator) when `length` is a multiple of
+ * 16. In any case, `length` will be rounded up such that a multiple of 16 accumulators will always
+ * be merged.
+ * 
+ * This function can safely merge accumulators in-place.
+ * 
+ * @param[out]  a       Output vector of int32_t
+ * @param[in]   b       Input vector of xs3_split_acc_s32_t
+ * @param[in]   length  Number of accumulators to merge
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_s32_merge_accs(
+    int32_t a[],
+    const xs3_split_acc_s32_t b[],
+    const unsigned length);
+
+
+/**
+ * @brief Split a vector of `int32_t`'s into a vector of `xs3_split_acc_s32_t`.
+ * 
+ * Convert a vector of `int32_t` into a vector of @ref xs3_split_acc_s32_t, the native format
+ * for the XS3 VPU's 32-bit accumulators. This is useful when a function (e.g.
+ * `xs3_mat_mul_s8_x_s8_yield_s32`) takes in a vector of accumulators in that native format.
+ * 
+ * This function is most efficient (in terms of cycles/accumulator) when `length` is a multiple of
+ * 16. In any case, `length` will be rounded up such that a multiple of 16 accumulators will always
+ * be merged.
+ * 
+ * This function can safely split accumulators in-place.
+ * 
+ * @param[out]  a       Output vector of xs3_split_acc_s32_t 
+ * @param[in]   b       Input vector of int32_t
+ * @param[in]   length  Number of accumulators to merge
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_s32_split_accs(
+    xs3_split_acc_s32_t a[],
+    const int32_t b[],
+    const unsigned length);
+
+
 #ifdef __XC__
 }   //extern "C"
 #endif
