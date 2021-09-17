@@ -184,7 +184,7 @@ int32_t xs3_scalar_s16_to_s32(
  * 
  * `depth` indicates the number of MSb's which will be calculated. Smaller values here will
  * execute more quickly at the cost of reduced precision. The maximum valid value for `depth`
- * is @ref XS3S_32_SQRT_MAX_DEPTH.
+ * is @ref XS3_S32_SQRT_MAX_DEPTH.
  * 
  * @operation{
  *    a \cdot 2^{a\_exp} \leftarrow \sqrt{\left( b \cdot 2^{b\_exp} \right)}
