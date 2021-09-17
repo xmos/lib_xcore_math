@@ -17,7 +17,9 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_set);
     RUN_TEST_GROUP(xs3_vect_shr);
     RUN_TEST_GROUP(xs3_vect_shl);
+
     RUN_TEST_GROUP(xs3_vect_add);
+    RUN_TEST_GROUP(xs3_vect_add_scalar);
     RUN_TEST_GROUP(xs3_vect_sub);
     RUN_TEST_GROUP(xs3_vect_mul);
     RUN_TEST_GROUP(xs3_vect_scale);
@@ -40,6 +42,7 @@ int main(int argc, const char* argv[])
 
     // complex vector
     RUN_TEST_GROUP(xs3_vect_complex_add);
+    RUN_TEST_GROUP(xs3_vect_complex_add_scalar);
     RUN_TEST_GROUP(xs3_vect_complex_sub);
     RUN_TEST_GROUP(xs3_vect_complex_mul);
     RUN_TEST_GROUP(xs3_vect_complex_conj_mul);

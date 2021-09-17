@@ -385,6 +385,24 @@ void xs3_mat_mul_s8_x_s16_yield_s32 (
     const unsigned N_cols,
     int8_t scratch[]);
 
+
+/**
+ * @brief Add a scalar to a vector.
+ * 
+ * Add a scalar to a vector. This works for 8, 16 or 32 bits, real or complex.
+ * !!DOCUMENT_THIS!!
+ * @ingroup xs3_mixed_vect_func
+ */
+C_API
+unsigned xs3_vect_sXX_add_scalar(
+    int32_t a[],
+    const int32_t b[],
+    const unsigned length_bytes,
+    const int32_t c,
+    const int32_t d,
+    const right_shift_t b_shr,
+    const unsigned mode_bits);
+
 #ifdef __XC__
 }   //extern "C"
 #endif

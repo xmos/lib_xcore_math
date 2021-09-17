@@ -199,3 +199,65 @@ headroom_t xs3_vect_s32_shr(
 {
     return xs3_vect_s32_shl(a, b, length, -shr);
 }
+
+
+
+
+headroom_t xs3_vect_s32_add_scalar(
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c,
+    const unsigned length,
+    const right_shift_t b_shr)
+{
+  return 31 - xs3_vect_sXX_add_scalar(a, b, (length<<2), c, c, b_shr, 0x0000);
+}
+
+headroom_t xs3_vect_s16_add_scalar(
+    int16_t a[],
+    const int16_t b[],
+    const int16_t c,
+    const unsigned length,
+    const right_shift_t b_shr)
+{
+  int32_t cc = c;
+  cc = (cc << 16) | (cc & 0x0000FFFF);
+  return 15 - xs3_vect_sXX_add_scalar((int32_t*) a, (int32_t*)  b, 
+                                      (length<<1), cc, cc, b_shr, 0x0100);
+}
+
+
+headroom_t xs3_vect_complex_s32_add_scalar(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const complex_s32_t c,
+    const unsigned length,
+    const right_shift_t b_shr)
+{
+  return 31 - xs3_vect_sXX_add_scalar((int32_t*) a,(int32_t*)  b, 
+                                      (length<<3), c.re, c.im, b_shr, 0x0000);
+}
+
+
+headroom_t xs3_vect_complex_s16_add_scalar(
+    int16_t a_real[],
+    int16_t a_imag[],
+    const int16_t b_real[],
+    const int16_t b_imag[],
+    const complex_s16_t c,
+    const unsigned length,
+    const right_shift_t b_shr)
+{
+  int32_t cc = c.re;
+  cc = (cc << 16) | (cc & 0x0000FFFF);
+
+  unsigned mask_re = xs3_vect_sXX_add_scalar((int32_t*) a_real, (int32_t*)  b_real, 
+                                             (length<<1), cc, cc, b_shr, 0x0100);
+
+  cc = c.im;
+  cc = (cc << 16) | (cc & 0x0000FFFF);
+  unsigned mask_im = xs3_vect_sXX_add_scalar((int32_t*) a_imag, (int32_t*) b_imag, 
+                                             (length<<1), cc, cc, b_shr, 0x0100);
+
+  return 15 - MAX(mask_re, mask_im);
+}

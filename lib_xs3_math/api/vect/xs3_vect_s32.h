@@ -307,6 +307,24 @@ void xs3_vect_s32_add_prepare(
 
 
 /**
+ * !!DOCUMENT_THIS!!
+ */
+C_API
+headroom_t xs3_vect_s32_add_scalar(
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c,
+    const unsigned length,
+    const right_shift_t b_shr);
+
+
+/**
+ * !!DOCUMENT_THIS!!
+ */
+#define xs3_vect_s32_add_scalar_prepare xs3_vect_s32_add_prepare
+
+
+/**
  * @brief Obtain the array index of the maximum element of a 32-bit vector.
  * 
  * `b[]` represents the 32-bit input vector @vector{b}. It must begin at a word-aligned address.

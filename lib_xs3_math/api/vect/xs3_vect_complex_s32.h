@@ -101,6 +101,23 @@ headroom_t xs3_vect_complex_s32_add(
 
 
 /**
+ * !!DOCUMENT_THIS!!
+ */
+C_API
+headroom_t xs3_vect_complex_s32_add_scalar(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const complex_s32_t c,
+    const unsigned length,
+    const right_shift_t b_shr);
+
+
+/**
+ * !!DOCUMENT_THIS!!
+ */
+#define xs3_vect_complex_s32_add_scalar_prepare xs3_vect_s32_add_prepare
+
+/**
  * @brief Multiply one complex 32-bit vector element-wise by the complex conjugate of another.
  * 
  * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} respectively. 
