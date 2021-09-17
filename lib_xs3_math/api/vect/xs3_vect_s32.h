@@ -1851,8 +1851,8 @@ void xs3_vect_s32_zip(
  * of `complex_s32_t` in @vector{c}.
  *
  * @operation{
- * &    a_k = Re\{c_k}                              \\
- * &    b_k = Im\{c_k}                              \\
+ * &    a_k = Re\\{c_k\\}                              \\
+ * &    b_k = Im\\{c_k\\}                              \\
  * &         \qquad\text{ for }k\in 0\ ...\ (N-1) 
  * }
  *
