@@ -82,6 +82,31 @@ void bfp_complex_s16_add(
 }
 
 
+void bfp_complex_s16_add_scalar(
+    bfp_complex_s16_t* a, 
+    const bfp_complex_s16_t* b,
+    const float_complex_s16_t c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == a->length);
+    assert(b->length != 0);
+#endif
+
+    right_shift_t b_shr, c_shr;
+
+    xs3_vect_complex_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, 
+                                            c.exp, b->hr, HR_C16(c.mant));
+
+    complex_s16_t cc = {
+      .re = (c_shr >= 0)? (c.mant.re >> c_shr) : (c.mant.re << -c_shr),
+      .im = (c_shr >= 0)? (c.mant.im >> c_shr) : (c.mant.im << -c_shr),
+    };
+
+    a->hr = xs3_vect_complex_s16_add_scalar(a->real, a->imag, b->real,
+                                            b->imag, cc, b->length, b_shr);
+}
+
+
 void bfp_complex_s16_sub(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 

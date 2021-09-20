@@ -170,9 +170,15 @@ TEST(float_convert, float_to_float_s32)
 
     float_s32_t actual = float_to_float_s32(x);
 
-    float actual_f = ldexpf(actual.mant, actual.exp);
-    
-    TEST_ASSERT_FLOAT_WITHIN_MESSAGE(ldexpf(1, actual.exp), x, actual_f, "");
+    if(x != 0.0)
+      TEST_ASSERT_LESS_OR_EQUAL(1, HR_S32(actual.mant));
+
+    float diff  = fabsf(x - ldexpf(actual.mant + 0, actual.exp));
+    float diffP = fabsf(x - ldexpf(actual.mant + 1, actual.exp));
+    float diffM = fabsf(x - ldexpf(actual.mant - 1, actual.exp));
+
+    TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(diff, diffP, "");
+    TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(diff, diffM, "");
 
   }
 }
@@ -193,9 +199,14 @@ TEST(float_convert, double_to_float_s32)
 
     float_s32_t actual = double_to_float_s32(x);
 
-    double actual_f = ldexp(actual.mant, actual.exp);
-    
-    TEST_ASSERT_FLOAT_WITHIN_MESSAGE(ldexp(1, actual.exp), x, actual_f, "");
+    if(x != 0.0)
+      TEST_ASSERT_LESS_OR_EQUAL(1, HR_S32(actual.mant));
 
+    double diff  = fabs(x - ldexp(actual.mant + 0, actual.exp));
+    double diffP = fabs(x - ldexp(actual.mant + 2, actual.exp));
+    double diffM = fabs(x - ldexp(actual.mant - 2, actual.exp));
+
+    TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(diff, diffP, "");
+    TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(diff, diffM, "");
   }
 }

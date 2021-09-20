@@ -76,6 +76,32 @@ void bfp_s16_add(
 }
 
 
+void bfp_s16_add_scalar(
+    bfp_s16_t* a, 
+    const bfp_s16_t* b, 
+    const float c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == a->length);
+    assert(b->length != 0);
+#endif
+
+    right_shift_t b_shr, c_shr;
+
+    int16_t c_mant;
+    exponent_t c_exp;
+    xs3_unpack_float_s16(&c_mant, &c_exp, c);
+
+    xs3_vect_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp, 
+                                    b->hr, HR_S16(c_mant));
+
+    int32_t cc = (c_shr >= 0)? (c_mant >> c_shr) : (c_mant << -c_shr);
+
+    a->hr = xs3_vect_s16_add_scalar(a->data, b->data, cc, b->length, 
+                                    b_shr);
+}
+
+
 void bfp_s16_sub(
     bfp_s16_t* a, 
     const bfp_s16_t* b, 

@@ -390,7 +390,21 @@ void xs3_mat_mul_s8_x_s16_yield_s32 (
  * @brief Add a scalar to a vector.
  * 
  * Add a scalar to a vector. This works for 8, 16 or 32 bits, real or complex.
- * !!DOCUMENT_THIS!!
+ * 
+ * `length_bytes` is the total number of bytes to be output. So, for 16-bit vectors, `length_bytes`
+ * is twice the number of elements, whereas for complex 32-bit vectors, `length_bytes` is 8 times
+ * the number of elements.
+ * 
+ * `c` and `d` are the values that populate the internal buffer to be added to the input vector as
+ * follows:  Internally an 8 word (32 byte) buffer is allocated (on the stack).  Even-indexed words
+ * are populated with `c` and odd-indexed words are populated with `d`.  For real vectors, `c` and
+ * `d` should be the same value -- the reason for `d` is to allow this same function to work for
+ * complex 32-bit vectors.  This also means that for 16-bit vectors, the value to be added needs to
+ * be duplicated in both the higher 2 bytes and lower 2 bytes of the word.
+ * 
+ * `mode_bits` should be `0x0000` for 32-bit mode, `0x0100` for 16-bit mode or `0x0200` for 8-bit
+ * mode.
+ * 
  * @ingroup xs3_mixed_vect_func
  */
 C_API

@@ -45,7 +45,8 @@ float_s32_t float_to_float_s32(
     const float x)
 {
   float_s32_t res;
-  res.mant = frexpf(x, &res.exp);
+  res.mant = round(INT32_MAX * frexpf(x, &res.exp));
+  res.exp -= 31;
   return res;
 }
 
@@ -62,19 +63,9 @@ float_s32_t double_to_float_s32(
     const double x)
 {
   float_s32_t res;
-
-  int64_t mant64 = frexp(x, &res.exp);
-
-  headroom_t hr64 = HR_S64(mant64);
-
-  if(hr64 < 32){
-    right_shift_t shr = 32 - hr64;
-    res.mant = mant64 >> shr;
-    res.exp += shr;
-  } else {
-    res.mant = mant64;
-  }
-
+  double tmp = frexp(x, &res.exp);
+  res.mant = round(INT32_MAX * tmp);
+  res.exp -= 31;
   return res;
 }
 

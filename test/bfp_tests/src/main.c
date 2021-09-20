@@ -21,6 +21,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(bfp_shl);
 
     RUN_TEST_GROUP(bfp_add);
+    RUN_TEST_GROUP(bfp_add_scalar);
     RUN_TEST_GROUP(bfp_sub);
     RUN_TEST_GROUP(bfp_mul);
     RUN_TEST_GROUP(bfp_scale);
@@ -42,6 +43,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(bfp_macc);
 
     RUN_TEST_GROUP(bfp_complex_add);
+    RUN_TEST_GROUP(bfp_complex_add_scalar);
     RUN_TEST_GROUP(bfp_complex_sub);
     RUN_TEST_GROUP(bfp_complex_mul);
     RUN_TEST_GROUP(bfp_complex_real_mul);

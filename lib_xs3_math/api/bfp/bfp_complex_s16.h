@@ -452,6 +452,34 @@ void bfp_complex_s16_add(
     
 
 /** 
+ * @brief Add a complex scalar to a complex 16-bit BFP vector.
+ * 
+ * Add a real scalar @math{c} to input BFP vector @vector{B} and store the result in BFP vector
+ * @vector{A}. 
+ * 
+ * `a`, and `b` must have been initialized (see bfp_complex_s16_init()), and must be the same
+ * length.
+ * 
+ * This operation can be performed safely in-place on `b`.
+ * 
+ * @operation{
+ *      \bar{A} \leftarrow \bar{B} + c  
+ * }
+ * 
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input complex scalar @math{c}
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+void bfp_complex_s16_add_scalar(
+    bfp_complex_s16_t* a, 
+    const bfp_complex_s16_t* b,
+    const float_complex_s16_t c);
+
+
+/** 
  * @brief Subtract one complex 16-bit BFP vector from another.
  * 
  * Each complex output element @math{A_k} of complex output BFP vector @vector{A} is set to the difference between 

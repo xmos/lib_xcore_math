@@ -210,6 +210,33 @@ void bfp_s32_add(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
+    
+
+/**
+ * @brief Add a scalar to a 32-bit BFP vector.
+ * 
+ * Add a real scalar @math{c} to input BFP vector @vector{B} and store the result in BFP vector
+ * @vector{A}. 
+ * 
+ * `a`, and `b` must have been initialized (see bfp_s32_init()), and must be the same length.
+ * 
+ * This operation can be performed safely in-place on `b`.
+ * 
+ * @operation{
+ *      \bar{A} \leftarrow \bar{B} + c  
+ * }
+ * 
+ * @param[out] a     Output BFP vector @vector{A}
+ * @param[in]  b     Input BFP vector @vector{B}
+ * @param[in]  c     Input scalar @math{c}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_s32_add_scalar(
+    bfp_s32_t* a, 
+    const bfp_s32_t* b, 
+    const float_s32_t c);
 
 
 /** 

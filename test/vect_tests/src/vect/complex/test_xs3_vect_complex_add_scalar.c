@@ -27,7 +27,7 @@ TEST_TEAR_DOWN(xs3_vect_complex_add_scalar) {}
 
 
 #define MAX_LEN     256
-#define REPS        100
+#define REPS        1000
 
 
 
