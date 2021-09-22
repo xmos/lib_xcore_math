@@ -35,7 +35,8 @@ FUNCTION_NAME:
     { add a, a, r11                 ; bt tmp, .L_loop_top           }
   .L_loop_bot:
   { mkmsk len, len                ; bf len, .L_finish             }
-  {                               ; vldr b[0]                     }
+  { mov r11, b                    ;                               }
+  {                               ; vldr r11[0]                   }
     vstrpv a[0], len
 .L_finish:
     retsp NSTACKWORDS
