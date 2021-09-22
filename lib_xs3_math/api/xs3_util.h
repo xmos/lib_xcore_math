@@ -184,6 +184,23 @@
  */
 #define HR_C16(X)   (CLS_C16(X)-1)
 
+
+/**
+ * @brief VPU-based memcpy implementation.
+ * 
+ * Same as standard `memcpy()` except for an extra constraint that both `dst and 
+ * `src` must be word-aligned addresses.
+ * 
+ * @param[out]  dst   Destination address
+ * @param[in]   src   Source address
+ * @param[in]   bytes Number of bytes to copy
+ */
+void xs3_memcpy(
+    void* dst,
+    const void* src,
+    unsigned bytes);
+
+
 /**
  * @brief Count leading sign bits of `int32_t`.
  * 
