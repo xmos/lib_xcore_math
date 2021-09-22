@@ -184,6 +184,23 @@
  */
 #define HR_C16(X)   (CLS_C16(X)-1)
 
+
+/**
+ * @brief VPU-based memcpy implementation.
+ * 
+ * Same as standard `memcpy()` except for an extra constraint that both `dst and 
+ * `src` must be word-aligned addresses.
+ * 
+ * @param[out]  dst   Destination address
+ * @param[in]   src   Source address
+ * @param[in]   bytes Number of bytes to copy
+ */
+void xs3_memcpy(
+    void* dst,
+    const void* src,
+    unsigned bytes);
+
+
 /**
  * @brief Count leading sign bits of `int32_t`.
  * 
@@ -225,4 +242,27 @@ static inline unsigned cls(
     return 0;
 
 #endif //__XS3A__
+}
+
+
+
+static inline unsigned n_bitrev(
+    const unsigned index,
+    const unsigned bits)
+{
+  unsigned rev_index = 0;
+#ifdef __xcore__
+
+  const unsigned shifted_index = index << (32 - bits);
+  asm( "bitrev %0, %1" : "=r"(rev_index) : "r"(shifted_index) );
+
+#else
+  for(int bit = bits-1; bit; bit--){
+    unsigned p = (index & (1<<bit)) != 0;
+    rev_index = (rev_index | p) << 1;
+  }
+#endif
+
+
+  return rev_index;
 }

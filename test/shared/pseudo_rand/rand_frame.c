@@ -6,6 +6,81 @@
 #include <math.h>
 
 
+unsigned test_random_vect_s16(
+    int16_t vect[],
+    unsigned* seed,
+    const unsigned min_length,
+    const unsigned max_length,
+    const unsigned min_headroom,
+    const unsigned max_headroom)
+{
+  unsigned length = pseudo_rand_uint(seed, min_length, max_length+1);
+  right_shift_t shr = pseudo_rand_uint(seed, min_headroom, max_headroom+1);
+  
+  for(int k = 0; k < length; k++){
+    vect[k] = pseudo_rand_int16(seed) >> shr;
+  }
+
+  return length;
+}
+
+unsigned test_random_vect_s32(
+    int32_t vect[],
+    unsigned* seed,
+    const unsigned min_length,
+    const unsigned max_length,
+    const unsigned min_headroom,
+    const unsigned max_headroom)
+{
+  unsigned length = pseudo_rand_uint(seed, min_length, max_length+1);
+  right_shift_t shr = pseudo_rand_uint(seed, min_headroom, max_headroom+1);
+  
+  for(int k = 0; k < length; k++){
+    vect[k] = pseudo_rand_int32(seed) >> shr;
+  }
+
+  return length;
+}
+
+unsigned test_random_vect_complex_s16(
+    int16_t vect_re[],
+    int16_t vect_im[],
+    unsigned* seed,
+    const unsigned min_length,
+    const unsigned max_length,
+    const unsigned min_headroom,
+    const unsigned max_headroom)
+{
+  unsigned length = pseudo_rand_uint(seed, min_length, max_length+1);
+  right_shift_t shr = pseudo_rand_uint(seed, min_headroom, max_headroom+1);
+  
+  for(int k = 0; k < length; k++){
+    vect_re[k] = pseudo_rand_int16(seed) >> shr;
+    vect_im[k] = pseudo_rand_int16(seed) >> shr;
+  }
+
+  return length;
+}
+
+unsigned test_random_vect_complex_s32(
+    complex_s32_t vect[],
+    unsigned* seed,
+    const unsigned min_length,
+    const unsigned max_length,
+    const unsigned min_headroom,
+    const unsigned max_headroom)
+{
+  unsigned length = pseudo_rand_uint(seed, min_length, max_length+1);
+  right_shift_t shr = pseudo_rand_uint(seed, min_headroom, max_headroom+1);
+  
+  for(int k = 0; k < length; k++){
+    vect[k].re = pseudo_rand_int32(seed) >> shr;
+    vect[k].im = pseudo_rand_int32(seed) >> shr;
+  }
+
+  return length;
+}
+
 void test_random_bfp_s16(
     bfp_s16_t* B, 
     unsigned max_len, 

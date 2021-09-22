@@ -16,9 +16,12 @@ int main(int argc, const char* argv[])
 
     RUN_TEST_GROUP(bfp_set);
     RUN_TEST_GROUP(bfp_headroom);
+    RUN_TEST_GROUP(bfp_use_exponent);
+    RUN_TEST_GROUP(bfp_complex_use_exponent);
     RUN_TEST_GROUP(bfp_shl);
 
     RUN_TEST_GROUP(bfp_add);
+    RUN_TEST_GROUP(bfp_add_scalar);
     RUN_TEST_GROUP(bfp_sub);
     RUN_TEST_GROUP(bfp_mul);
     RUN_TEST_GROUP(bfp_scale);
@@ -40,6 +43,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(bfp_macc);
 
     RUN_TEST_GROUP(bfp_complex_add);
+    RUN_TEST_GROUP(bfp_complex_add_scalar);
     RUN_TEST_GROUP(bfp_complex_sub);
     RUN_TEST_GROUP(bfp_complex_mul);
     RUN_TEST_GROUP(bfp_complex_real_mul);
@@ -52,9 +56,13 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(bfp_complex_macc);
     RUN_TEST_GROUP(bfp_complex_conj_macc);
     RUN_TEST_GROUP(bfp_complex_conjugate);
+    RUN_TEST_GROUP(bfp_complex_energy);
     
     RUN_TEST_GROUP(bfp_depth_convert);
     RUN_TEST_GROUP(bfp_complex_depth_convert);
+
+    RUN_TEST_GROUP(bfp_gradient_constraint);
+    RUN_TEST_GROUP(bfp_convolve);
     
     return UNITY_END();
 }

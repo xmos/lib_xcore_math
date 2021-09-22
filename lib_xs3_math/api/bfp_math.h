@@ -34,6 +34,8 @@ extern "C" {
 #include "bfp/bfp_complex_s16.h"
 #include "bfp/bfp_fft.h"
 
+#include "bfp/bfp_misc.h"
+
 #ifdef __XC__
 } // extern "C"
 #endif

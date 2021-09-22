@@ -21,6 +21,84 @@
  */
 
 
+/**
+ * @brief Set all elements of a complex 32-bit BFP vector to a specified value.
+ * 
+ * The exponent of `a` is set to `exp`, and each element's mantissa is set to `b`.
+ * 
+ * After performing this operation, all elements will represent the same value @math{b \cdot 2^{exp}}.
+ * 
+ * `a` must have been initialized (see bfp_complex_s32_init()).
+ * 
+ * @param[out] a         BFP vector to update
+ * @param[in]  b         New value each complex mantissa is set to
+ * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_complex_s32_set(
+    bfp_complex_s32_t* a,
+    const complex_s32_t b,
+    const exponent_t exp);
+
+
+/**
+ * @brief Modify a complex 32-bit BFP vector to use a specified exponent.
+ * 
+ * This function forces complex BFP vector @vector{A} to use a specified exponent. The mantissa
+ * vector @vector{a} will be bit-shifted left or right to compensate for the changed exponent.
+ * 
+ * This function can be used, for example, before calling a fixed-point arithmetic function to 
+ * ensure the underlying mantissa vector has the needed Q-format. As another example, this may be
+ * useful when communicating with peripheral devices (e.g. via I2S) that require sample data to
+ * be in a specified format.
+ * 
+ * Note that this sets the _current_ encoding, and does not _fix_ the exponent permanently (i.e.
+ * subsequent operations may change the exponent as usual).
+ * 
+ * If the required fixed-point Q-format is `QX.Y`, where `Y` is the number of fractional bits in the
+ * resulting mantissas, then the associated exponent (and value for parameter `exp`) is `-Y`.
+ * 
+ * `a` points to input BFP vector @vector{A}, with complex mantissa vector @vector{a} and exponent
+ * @math{a\_exp}. `a` is updated in place to produce resulting BFP vector @math{ \tilde{A} } with
+ * complex mantissa vector @math{ \tilde{a} } and exponent @math{\tilde{a}\_exp}.
+ * 
+ * `exp` is @math{\tilde{a}\_exp}, the required exponent. @math{\Delta{}p = \tilde{a}\_exp - a\_exp}
+ * is the required change in exponent.
+ * 
+ * If @math{\Delta{}p = 0}, the BFP vector is left unmodified.
+ * 
+ * If @math{\Delta{}p > 0}, the required exponent is larger than the current exponent and an
+ * arithmetic right-shift of @math{\Delta{}p} bits is applied to the mantissas @vector{a}. When
+ * applying a right-shift, precision may be lost by discarding the @math{\Delta{}p} least
+ * significant bits.
+ * 
+ * If @math{\Delta{}p < 0}, the required exponent is smaller than the current exponent and a
+ * left-shift of @math{\Delta{}p} bits is applied to the mantissas @vector{a}. When left-shifting,
+ * saturation logic will be applied such that any element that can't be represented exactly with
+ * the new exponent will saturate to the 32-bit saturation bounds.
+ * 
+ * The exponent and headroom of `a` are updated by this function.
+ * 
+ * @operation{
+ * &    \Delta{}p = \tilde{a}\_exp - a\_exp
+ * &    \tilde{a_k} \leftarrow sat_{32}( a_k \cdot 2^{-\Delta{}p} )   \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                     \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{A} \text{ (in elements) }
+ * }
+ * 
+ * @param[inout]  a     Input BFP vector @vector{A} / Output BFP vector @math{\tilde{A}}
+ * @param[in]     exp   The required exponent, @math{\tilde{a}\_exp}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_complex_s32_use_exponent(
+    bfp_complex_s32_t* a,
+    const exponent_t exp);
+
+
 /** 
  * @brief Get the headroom of a complex 32-bit BFP vector.
  * 
@@ -374,6 +452,34 @@ void bfp_complex_s32_add(
     const bfp_complex_s32_t* c);
     
 
+/**
+ * @brief Add a complex scalar to a complex 32-bit BFP vector.
+ * 
+ * Add a real scalar @math{c} to input BFP vector @vector{B} and store the result in BFP vector
+ * @vector{A}. 
+ * 
+ * `a`, and `b` must have been initialized (see bfp_complex_s32_init()), and must be the same
+ * length.
+ * 
+ * This operation can be performed safely in-place on `b`.
+ * 
+ * @operation{
+ *      \bar{A} \leftarrow \bar{B} + c  
+ * }
+ * 
+ * @param[out] a     Output complex BFP vector @vector{A}
+ * @param[in]  b     Input complex BFP vector @vector{B}
+ * @param[in]  c     Input complex scalar @math{c}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_complex_s32_add_scalar(
+    bfp_complex_s32_t* a, 
+    const bfp_complex_s32_t* b, 
+    const float_complex_s32_t c);
+
+
 /** 
  * @brief Subtract one complex 32-bit BFP vector from another.
  * 
@@ -529,4 +635,27 @@ float_complex_s64_t bfp_complex_s32_sum(
 C_API
 void bfp_complex_s32_conjugate(
     bfp_complex_s32_t* a, 
+    const bfp_complex_s32_t* b);
+
+
+/**
+ * @brief Get the energy of a complex 32-bit BFP vector.
+ *
+ * The energy of a complex 32-bit BFP vector here is the sum of the squared magnitudes of each of
+ * the vector's elements.
+ * 
+ * @operation{
+ * &    a \leftarrow \sum_{k=0}^{N-1} \left( \left|b_k \cdot 2^{B\_exp}\right|^2 \right)    \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                                           \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}
+ * }
+ * 
+ * @param[in] b   Input complex BFP vector @vector{B}
+ * 
+ * @returns     @math{a}, the energy of vector @vector{B}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+float_s64_t bfp_complex_s32_energy(
     const bfp_complex_s32_t* b);

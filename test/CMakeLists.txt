@@ -5,6 +5,7 @@ add_subdirectory( shared )
 
 ## The unit test apps
 
+add_subdirectory( scalar_tests )
 add_subdirectory( vect_tests )
 add_subdirectory( bfp_tests  )
 add_subdirectory( fft_tests  )

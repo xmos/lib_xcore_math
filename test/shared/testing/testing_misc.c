@@ -7,6 +7,10 @@
 #include <math.h>
 #include <stdio.h>
 
+#ifdef __xcore__
+ #include "xcore/hwtimer.h"
+#endif
+
 
 unsigned get_seed(
     const char* str, 
@@ -23,4 +27,13 @@ unsigned get_seed(
   }
 
   return seed;
+}
+
+unsigned getTimestamp()
+{
+#if __xcore__
+  return get_reference_time();
+#else
+  return 0;
+#endif
 }

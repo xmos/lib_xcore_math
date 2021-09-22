@@ -25,6 +25,23 @@ headroom_t bfp_complex_s16_headroom(
     return a->hr;
 }
 
+    
+void bfp_complex_s16_use_exponent(
+    bfp_complex_s16_t* a,
+    const exponent_t exp)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+  assert(a->length != 0);
+#endif
+
+  right_shift_t delta_p = exp - a->exp;
+
+  if(delta_p == 0) return;
+
+  a->hr = xs3_vect_complex_s16_shr(a->real, a->imag, a->real, a->imag, a->length, delta_p);
+  a->exp = exp;
+}
+
 
 void bfp_complex_s16_shl(
     bfp_complex_s16_t* a,
@@ -62,6 +79,31 @@ void bfp_complex_s16_add(
     
     a->hr = xs3_vect_complex_s16_add(a->real, a->imag, b->real, b->imag, c->real, c->imag, 
                                      b->length, b_shr, c_shr);
+}
+
+
+void bfp_complex_s16_add_scalar(
+    bfp_complex_s16_t* a, 
+    const bfp_complex_s16_t* b,
+    const float_complex_s16_t c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == a->length);
+    assert(b->length != 0);
+#endif
+
+    right_shift_t b_shr, c_shr;
+
+    xs3_vect_complex_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, 
+                                            c.exp, b->hr, HR_C16(c.mant));
+
+    complex_s16_t cc = {
+      .re = (c_shr >= 0)? (c.mant.re >> c_shr) : (c.mant.re << -c_shr),
+      .im = (c_shr >= 0)? (c.mant.im >> c_shr) : (c.mant.im << -c_shr),
+    };
+
+    a->hr = xs3_vect_complex_s16_add_scalar(a->real, a->imag, b->real,
+                                            b->imag, cc, b->length, b_shr);
 }
 
 
@@ -157,19 +199,24 @@ void bfp_complex_s16_conj_mul(
 void bfp_complex_s16_real_scale(
     bfp_complex_s16_t* a, 
     const bfp_complex_s16_t* b, 
-    const float_s16_t alpha)
+    const float alpha)
 {
 #if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
     assert(b->length == a->length);
     assert(b->length != 0);
 #endif
 
+    int16_t alpha_mant;
+    exponent_t alpha_exp;
+    xs3_unpack_float_s16(&alpha_mant, &alpha_exp, alpha);
+
     right_shift_t a_shr;
-    headroom_t s_hr = HR_S16(alpha.mant);
+    headroom_t s_hr = HR_S16(alpha_mant);
 
-    xs3_vect_complex_s16_real_scale_prepare(&a->exp, &a_shr, b->exp, alpha.exp, b->hr, s_hr);
+    xs3_vect_complex_s16_real_scale_prepare(&a->exp, &a_shr, b->exp, alpha_exp, b->hr, s_hr);
 
-    a->hr = xs3_vect_complex_s16_real_scale(a->real, a->imag, b->real, b->imag, alpha.mant, b->length, a_shr);
+    a->hr = xs3_vect_complex_s16_real_scale(a->real, a->imag, b->real, b->imag, 
+                                            alpha_mant, b->length, a_shr);
 }
 
 
@@ -362,4 +409,16 @@ void bfp_complex_s16_conjugate(
       memcpy(a->real, b->real, b->length * sizeof(int16_t));
 
     xs3_vect_s16_scale(a->imag, b->imag, b->length, -1, 0);
+}
+
+
+float_s64_t bfp_complex_s16_energy(
+    const bfp_complex_s16_t* b)
+{
+    float_s64_t a;
+    a.exp = 2*b->exp;
+    a.mant = 0;
+    a.mant += xs3_vect_s16_dot(b->real, b->real, b->length);
+    a.mant += xs3_vect_s16_dot(b->imag, b->imag, b->length);
+    return a;
 }

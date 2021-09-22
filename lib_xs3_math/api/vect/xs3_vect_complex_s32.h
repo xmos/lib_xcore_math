@@ -101,6 +101,85 @@ headroom_t xs3_vect_complex_s32_add(
 
 
 /**
+ * @brief Add a scalar to a complex 32-bit vector.
+ * 
+ * `a[]` and `b[]`represent the complex 32-bit mantissa vectors @vector{a} and @vector{b}
+ * respectively. Each must begin at a word-aligned address. This operation can be performed safely
+ * in-place on `b[]`.
+ *
+ * `c` is the complex scalar @math{c}to be added to each element of @vector{b}.
+ *
+ * `length` is the number of elements in each of the vectors.
+ *
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * 
+ * @operation{ 
+ * &     b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ * &     Re\\{a_k\\} \leftarrow Re\\{b_k'\\} + Re\\{c\\}                     \\
+ * &     Im\\{a_k\\} \leftarrow Im\\{b_k'\\} + Im\\{c\\}                     \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * }
+ * 
+ * @par Block Floating-Point
+ * @parblock
+ * 
+ * If elements of @vector{b} are the complex mantissas of BFP vector @math{ \bar{b} \cdot
+ * 2^{b\_exp}}, and @math{c} is the mantissa of floating-point value @math{c \cdot 2^{c\_exp}}, then
+ * the resulting vector @vector{a} are the mantissas of BFP vector @math{\bar{a} \cdot 2^{a\_exp}}. 
+ *
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
+ * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes
+ * sense if they are associated with the same exponent.
+ *
+ * The function xs3_vect_complex_s32_add_scalar_prepare() can be used to obtain values for
+ * @math{a\_exp}, @math{b\_shr} and @math{c\_shr} based on the input exponents @math{b\_exp} and
+ * @math{c\_exp} and the input headrooms @math{b\_hr} and @math{c\_hr}.
+ *
+ * Note that @math{c\_shr} is an output of `xs3_vect_complex_s32_add_scalar_prepare()`, but is not a
+ * parameter to this function. The @math{c\_shr} produced by
+ * `xs3_vect_complex_s32_add_scalar_prepare()` is to be applied by the user, and the result passed
+ * as input `c`.
+ * @endparblock
+ * 
+ * @param[out]      a           Complex output vector @vector{a}
+ * @param[in]       b           Complex input vector @vector{b}
+ * @param[in]       c           Complex input scalar @math{c}
+ * @param[in]       length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]       b_shr       Right-shift applied to @vector{b}
+ * 
+ * @returns     Headroom of output vector @vector{a}.
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @see xs3_vect_complex_s32_add_scalar_prepare
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+headroom_t xs3_vect_complex_s32_add_scalar(
+    complex_s32_t a[],
+    const complex_s32_t b[],
+    const complex_s32_t c,
+    const unsigned length,
+    const right_shift_t b_shr);
+
+
+/**
+ * @brief Obtain the output exponent and shifts required for a call to
+ * `xs3_vect_complex_s32_add_scalar()`.
+ * 
+ * The logic for computing the shifts and exponents of `xs3_vect_complex_s32_add_scalar()` is
+ * identical to that for `xs3_vect_s32_add()`.
+ * 
+ * This macro is provided as a convenience to developers and to make the code more readable.
+ * 
+ * @see xs3_vect_s32_add_prepare()
+ * 
+ * @ingroup xs3_vect32_prepare
+ */
+#define xs3_vect_complex_s32_add_scalar_prepare xs3_vect_s32_add_prepare
+
+/**
  * @brief Multiply one complex 32-bit vector element-wise by the complex conjugate of another.
  * 
  * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a}, @vector{b} and @vector{c} respectively. 

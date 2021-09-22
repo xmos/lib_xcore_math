@@ -160,13 +160,6 @@
   :content-only:
 
 
-`xs3_scalar.h`
---------------
-
-.. doxygenpage:: page_xs3_scalar_h
-  :content-only:
-
-
 `xs3_vpu_info.h`
 ----------------
 

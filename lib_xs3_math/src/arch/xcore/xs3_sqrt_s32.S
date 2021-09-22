@@ -11,7 +11,7 @@
 .align 4
 
 /*  
-int32_t xs3_sqrt_s32( 
+int32_t xs3_s32_sqrt( 
     exponent_t* y_exp,
     const int32_t X,
     const exponent_t x_exp,
@@ -22,7 +22,7 @@ int32_t xs3_sqrt_s32(
            byte mask) and a way to load each vR[k] from a single register.
 */
 
-#define FUNCTION_NAME   xs3_sqrt_s32
+#define FUNCTION_NAME   xs3_s32_sqrt
 #define NSTACKWORDS     (8)
 
 
@@ -88,7 +88,7 @@ ldaw r11, cp[vpu_vec_0x80000000]
 
 .L_loop_top:
     {   mov acc_hi, targ_hi         ;   mov acc_lo, targ_lo         }
-    {   add tmp, result, base       ;   sub depth, depth, 1                 }
+    {   add tmp, result, base       ;   sub depth, depth, 1         }
         maccs acc_hi, acc_lo, tmp, tmp
     {   clz acc_hi, acc_hi          ;                               }
     {   shr base, base, 1           ;   bt acc_hi, .L_too_large     }

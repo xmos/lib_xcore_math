@@ -11,25 +11,15 @@ int main(int argc, const char* argv[])
     UnityGetCommandLineOptions(argc, argv);
     UnityBegin(argv[0]);
 
-    // macro
-    RUN_TEST_GROUP(CLS_macro);
-    RUN_TEST_GROUP(HR_macro);
-
-    // scalar
-    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s8);
-    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s16);
-    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s32);
-    RUN_TEST_GROUP(xs3_sqrt_s32);
-    RUN_TEST_GROUP(xs3_inverse_s32);
-    RUN_TEST_GROUP(xs3_mul_s32);
-
     // real vector
     RUN_TEST_GROUP(xs3_vect_copy);
     RUN_TEST_GROUP(xs3_vect_headroom);
     RUN_TEST_GROUP(xs3_vect_set);
     RUN_TEST_GROUP(xs3_vect_shr);
     RUN_TEST_GROUP(xs3_vect_shl);
+
     RUN_TEST_GROUP(xs3_vect_add);
+    RUN_TEST_GROUP(xs3_vect_add_scalar);
     RUN_TEST_GROUP(xs3_vect_sub);
     RUN_TEST_GROUP(xs3_vect_mul);
     RUN_TEST_GROUP(xs3_vect_scale);
@@ -52,6 +42,7 @@ int main(int argc, const char* argv[])
 
     // complex vector
     RUN_TEST_GROUP(xs3_vect_complex_add);
+    RUN_TEST_GROUP(xs3_vect_complex_add_scalar);
     RUN_TEST_GROUP(xs3_vect_complex_sub);
     RUN_TEST_GROUP(xs3_vect_complex_mul);
     RUN_TEST_GROUP(xs3_vect_complex_conj_mul);
@@ -72,6 +63,8 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_mat_mul_s8_x_s8_yield_s32);
     RUN_TEST_GROUP(xs3_mat_mul_s8_x_s16_yield_s32);
     RUN_TEST_GROUP(xs3_vect_boolean);
+
+    RUN_TEST_GROUP(xs3_vect_convolve);
 
     return UNITY_END();
 }

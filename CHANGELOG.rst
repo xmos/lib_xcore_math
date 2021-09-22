@@ -8,6 +8,7 @@ Major Changes
 *************
 
 * Support for channel-pair related types and operations has been dropped. These were considered to be too narrowly focused on making use of a single optimization (stereo FFT).
+* Added various scalar arithmetic functions for `float_s32_t` type.
 
 Bugfixes
 ********
@@ -40,6 +41,9 @@ New Functions
     * (and various others)
   
   * `bfp_complex_sXX_conjugate()` -- Get the complex conjugate of a vector
+  * `bfp_complex_sXX_energy()` -- Compute the sum of a complex vector's elements' squared magnitudes.
+  * `bfp_sXX_use_exponent()` / `bfp_complex_sXX_use_exponent()` -- Force BFP vector to encode mantissas using specified exponent (i.e. convert to specified Q-format)
+  * `bfp_s32_convolve_valid()` / `bfp_complex_s32_convolve_same()` -- Filter a 32-bit signal using a short convolution kernel. Both "valid" and "same" padding modes are supported.
     
 
 * Low-level API
@@ -49,9 +53,11 @@ New Functions
   * `xs3_vect_s8_is_negative()` -- Determine whether each element of an 8-bit vector is negative.
   * `xs3_vect_s16_extract_high_byte()` -- Extract the most significant byte of each element of a 16-bit vector.
   * `xs3_vect_s16_extract_low_byte()` -- Extract the least significant byte of each element of a 16-bit vector.
-  * `xs3_vect_s32_zip()` -- Interleave elements from two `int32_t` vectors
-  * `xs3_vect_s32_unzip()` -- De-interleave elements from a `int32_t` vector
-  * `xs3_vect_s32_copy()` -- Copy an `int32_t` vector
+  * `xs3_vect_s32_zip()` -- Interleave elements from two `int32_t` vectors.
+  * `xs3_vect_s32_unzip()` -- De-interleave elements from a `int32_t` vector.
+  * `xs3_vect_s32_copy()` -- Copy an `int32_t` vector.
+  * Various low-level functions used in the implementation of the high-level multiply-accumulate functions (e.g. `xs3_vect_s32_macc()`).
+  * `xs2_vect_s32_convolve_valid()` / `xs3_vect_complex_s32_convolve_same()` -- Filter a 32-bit signal using a short convolution kernel. Both "valid" and "same" padding modes are supported.
 
 Miscellaneous
 *************

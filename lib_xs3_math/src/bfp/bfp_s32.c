@@ -24,6 +24,23 @@ headroom_t bfp_s32_headroom(
      return a->hr;
 }
 
+    
+void bfp_s32_use_exponent(
+    bfp_s32_t* a,
+    const exponent_t exp)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+  assert(a->length != 0);
+#endif
+
+  right_shift_t delta_p = exp - a->exp;
+
+  if(delta_p == 0) return;
+
+  a->hr = xs3_vect_s32_shr(a->data, a->data, a->length, delta_p);
+  a->exp = exp;
+}
+
 
 void bfp_s32_shl(
     bfp_s32_t* a,
@@ -56,6 +73,28 @@ void bfp_s32_add(
     xs3_vect_s32_add_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->hr = xs3_vect_s32_add(a->data, b->data, c->data, b->length, b_shr, c_shr);
+}
+
+
+void bfp_s32_add_scalar(
+    bfp_s32_t* a, 
+    const bfp_s32_t* b, 
+    const float_s32_t c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length == a->length);
+    assert(b->length != 0);
+#endif
+
+    right_shift_t b_shr, c_shr;
+
+    xs3_vect_s32_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp, 
+                                    b->hr, HR_S32(c.mant));
+
+    int32_t cc = (c_shr >= 0)? (c.mant >> c_shr) : (c.mant << -c_shr);
+
+    a->hr = xs3_vect_s32_add_scalar(a->data, b->data, cc, b->length, 
+                                    b_shr);
 }
 
 
@@ -324,10 +363,10 @@ float_s32_t bfp_s32_rms(
     exponent_t exp, len_inv_exp;
     const float_s64_t energy64 = bfp_s32_energy(b);
     const int32_t energy32 = xs3_scalar_s64_to_s32(&exp, energy64.mant, energy64.exp);
-    const int32_t len_inv = xs3_inverse_s32(&len_inv_exp, b->length);
-    const int32_t mean_energy = xs3_mul_s32(&exp, energy32, len_inv, exp, len_inv_exp);
+    const int32_t len_inv = xs3_s32_inverse(&len_inv_exp, b->length);
+    const int32_t mean_energy = xs3_s32_mul(&exp, energy32, len_inv, exp, len_inv_exp);
 
-    a.mant = xs3_sqrt_s32(&a.exp, mean_energy, exp, XS3_BFP_SQRT_DEPTH_S32);
+    a.mant = xs3_s32_sqrt(&a.exp, mean_energy, exp, XS3_BFP_SQRT_DEPTH_S32);
     return a;
 }
 
@@ -442,4 +481,42 @@ void bfp_s32_nmacc(
 
     acc->hr = xs3_vect_s32_nmacc(acc->data, b->data, c->data, 
                                  b->length, acc_shr, b_shr, c_shr);
+}
+
+
+void bfp_s32_convolve_valid(
+  bfp_s32_t* a,
+  const bfp_s32_t* b,
+  const int32_t filter_q30[],
+  const unsigned filter_tap_count)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length >= filter_tap_count);
+    const unsigned P = filter_tap_count >> 1;
+    assert(a->length == (b->length - 2*P));
+    assert((filter_tap_count > 0) && (filter_tap_count <= VPU_INT32_EPV) && (filter_tap_count & 1));
+#endif
+
+  a->hr = xs3_vect_s32_convolve_valid(a->data, b->data, filter_q30, b->length, filter_tap_count);
+  a->exp = b->exp;
+}
+
+
+void bfp_s32_convolve_same(
+  bfp_s32_t* a,
+  const bfp_s32_t* b,
+  const int32_t filter_q30[],
+  const unsigned filter_tap_count,
+  const pad_mode_e padding_mode)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length >= filter_tap_count);
+    const unsigned P = filter_tap_count >> 1;
+    assert(a->length == b->length);
+    assert((filter_tap_count > 0) && (filter_tap_count <= VPU_INT32_EPV) && (filter_tap_count & 1));
+#endif
+
+  a->hr = xs3_vect_s32_convolve_same(a->data, b->data, filter_q30, b->length, filter_tap_count, padding_mode);
+  a->exp = b->exp;
+
 }

@@ -36,6 +36,85 @@
  */
 
 
+
+/**
+ * @brief Set all elements of a 32-bit BFP vector to a specified value.
+ * 
+ * The exponent of `a` is set to `exp`, and each element's mantissa is set to `b`.
+ * 
+ * After performing this operation, all elements will represent the same value @math{b \cdot 2^{exp}}.
+ * 
+ * `a` must have been initialized (see bfp_s32_init()).
+ * 
+ * @param[out] a         BFP vector to update
+ * @param[in]  b         New value each mantissa is set to
+ * @param[in]  exp       New exponent for the BFP vector
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_s32_set(
+    bfp_s32_t* a,
+    const int32_t b,
+    const exponent_t exp);
+
+
+/**
+ * @brief Modify a 32-bit BFP vector to use a specified exponent.
+ * 
+ * This function forces BFP vector @vector{A} to use a specified exponent. The mantissa vector
+ * @vector{a} will be bit-shifted left or right to compensate for the changed exponent.
+ * 
+ * This function can be used, for example, before calling a fixed-point arithmetic function to 
+ * ensure the underlying mantissa vector has the needed Q-format. As another example, this may be
+ * useful when communicating with peripheral devices (e.g. via I2S) that require sample data to
+ * be in a specified format.
+ * 
+ * Note that this sets the _current_ encoding, and does not _fix_ the exponent permanently (i.e.
+ * subsequent operations may change the exponent as usual).
+ * 
+ * If the required fixed-point Q-format is `QX.Y`, where `Y` is the number of fractional bits in the
+ * resulting mantissas, then the associated exponent (and value for parameter `exp`) is `-Y`.
+ * 
+ * `a` points to input BFP vector @vector{A}, with mantissa vector @vector{a} and exponent
+ * @math{a\_exp}. `a` is updated in place to produce resulting BFP vector @math{\tilde{A}} with
+ * mantissa vector @math{\tilde{a}} and exponent @math{\tilde{a}\_exp}.
+ * 
+ * `exp` is @math{\tilde{a}\_exp}, the required exponent. @math{\Delta{}p = \tilde{a}\_exp - a\_exp}
+ * is the required change in exponent.
+ * 
+ * If @math{\Delta{}p = 0}, the BFP vector is left unmodified.
+ * 
+ * If @math{\Delta{}p > 0}, the required exponent is larger than the current exponent and an
+ * arithmetic right-shift of @math{\Delta{}p} bits is applied to the mantissas @vector{a}. When
+ * applying a right-shift, precision may be lost by discarding the @math{\Delta{}p} least
+ * significant bits.
+ * 
+ * If @math{\Delta{}p < 0}, the required exponent is smaller than the current exponent and a
+ * left-shift of @math{\Delta{}p} bits is applied to the mantissas @vector{a}. When left-shifting,
+ * saturation logic will be applied such that any element that can't be represented exactly with
+ * the new exponent will saturate to the 32-bit saturation bounds.
+ * 
+ * The exponent and headroom of `a` are updated by this function.
+ * 
+ * @operation{
+ * &    \Delta{}p = \tilde{a}\_exp - a\_exp
+ * &    \tilde{a_k} \leftarrow sat_{32}( a_k \cdot 2^{-\Delta{}p} )   \\
+ * &        \qquad\text{for } k \in 0\ ...\ (N-1)                     \\
+ * &        \qquad\text{where } N \text{ is the length of } \bar{A} \text{ (in elements) }
+ * }
+ * 
+ * @param[inout]  a     Input BFP vector @vector{A} / Output BFP vector @math{\tilde{A}}
+ * @param[in]     exp   The required exponent, @math{\tilde{a}\_exp}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_s32_use_exponent(
+    bfp_s32_t* a,
+    const exponent_t exp);
+
+
 /** 
  * @brief Get the headroom of a 32-bit BFP vector.
  * 
@@ -131,6 +210,33 @@ void bfp_s32_add(
     bfp_s32_t* a, 
     const bfp_s32_t* b, 
     const bfp_s32_t* c);
+    
+
+/**
+ * @brief Add a scalar to a 32-bit BFP vector.
+ * 
+ * Add a real scalar @math{c} to input BFP vector @vector{B} and store the result in BFP vector
+ * @vector{A}. 
+ * 
+ * `a`, and `b` must have been initialized (see bfp_s32_init()), and must be the same length.
+ * 
+ * This operation can be performed safely in-place on `b`.
+ * 
+ * @operation{
+ *      \bar{A} \leftarrow \bar{B} + c  
+ * }
+ * 
+ * @param[out] a     Output BFP vector @vector{A}
+ * @param[in]  b     Input BFP vector @vector{B}
+ * @param[in]  c     Input scalar @math{c}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_s32_add_scalar(
+    bfp_s32_t* a, 
+    const bfp_s32_t* b, 
+    const float_s32_t c);
 
 
 /** 
@@ -704,3 +810,103 @@ unsigned bfp_s32_argmax(
 C_API
 unsigned bfp_s32_argmin(
     const bfp_s32_t* b);
+
+
+/**
+ * @brief Convolve a 32-bit BFP vector with a short convolution kernel ("valid" mode).
+ * 
+ * Input BFP vector @vector{X} is convolved with a short fixed-point convolution kernel @vector{b}
+ * to produce output BFP vector @vector{Y}. In other words, this function applies the 
+ * @math{K}th-order FIR filter with coefficients given by @vector{b} to the input signal @vector{X}.
+ * The convolution is "valid" in the sense that no output elements are emitted where the filter taps
+ * extend beyond the bounds of the input vector, resulting in an output vector @vector{Y} with fewer
+ * elements.
+ * 
+ * The maximum filter order @math{K} supported by this function is @math{7}.
+ * 
+ * `y` is the output vector @vector{Y}. If input @vector{X} has @math{N} elements, and the filter
+ * has @math{K} coefficients, then @vector{Y} has @math{N-2P} elements, where 
+ * @math{P = \lfloor K / 2 \rfloor}. 
+ * 
+ * `x` is the input vector @vector{X} with length @math{N} and elements.
+ * 
+ * `b_q30[]` is the vector @vector{b} of filter coefficients. The coefficients of @vector{b} are
+ * encoded in a Q2.30 fixed-point format. The effective value of the @math{i}th coefficient is then
+ * @math{b_i \cdot 2^{-30}}.
+ * 
+ * `b_length` is the length @math{K} of @vector{b} in elements (i.e. the number of filter taps).
+ * `b_length` must be one of @math{ \\{ 1, 3, 5, 7 \\} }. 
+ * 
+ * @operation{
+ * &    Y_k \leftarrow  \sum_{l=0}^{K-1} (X_{(k+l)} \cdot b_l \cdot 2^{-30} )   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (N-2P)                              \\
+ * &         \qquad\text{ where }P = \lfloor K/2 \rfloor 
+ * }
+ * 
+ * @param[out]  y           Output BFP vector @vector{Y}
+ * @param[in]   x           Input BFP vector @vector{X}
+ * @param[in]   b_q30       Convolution kernel @vector{b}
+ * @param[in]   b_length    The number of elements @math{K} in @vector{b}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_s32_convolve_valid(
+  bfp_s32_t* y,
+  const bfp_s32_t* x,
+  const int32_t b_q30[],
+  const unsigned b_length);
+  
+
+/**
+ * @brief Convolve a 32-bit BFP vector with a short convolution kernel ("same" mode).
+ * 
+ * Input BFP vector @vector{X} is convolved with a short fixed-point convolution kernel @vector{b} to produce output BFP vector @vector{Y}.  In other words, this function applies the @math{K}th-order FIR
+ * filter with coefficients given by @vector{b} to the input signal @vector{X}.  The convolution
+ * mode is "same" in that the input vector is effectively padded such that the input and output
+ * vectors are the same length.  The padding behavior is one of those given by @ref pad_mode_e.
+ * 
+ * The maximum filter order @math{K} supported by this function is @math{7}.
+ * 
+ * `y` and `x` are the output and input BFP vectors @vector{Y} and @vector{X} respectively.
+ * 
+ * `b_q30[]` is the vector @vector{b} of filter coefficients. The coefficients of @vector{b} are
+ * encoded in a Q2.30 fixed-point format. The effective value of the @math{i}th coefficient is then
+ * @math{b_i \cdot 2^{-30}}.
+ * 
+ * `b_length` is the length @math{K} of @vector{b} in elements (i.e. the number of filter taps).
+ * `b_length` must be one of @math{ \\{ 1, 3, 5, 7 \\} }. 
+ *  
+ * `padding_mode` is one of the values from the @ref pad_mode_e enumeration. The padding mode 
+ * indicates the filter input values for filter taps that have extended beyond the bounds of the
+ * input vector @vector{X}. See @ref pad_mode_e for a list of supported padding modes and associated
+ * behaviors.
+ * 
+ * @operation{
+ * &    \tilde{x}_i = \begin\{cases\}
+ *           \text{determined by padding mode} & i \lt 0                                  \\
+ *           \text{determined by padding mode} & i \ge N                                  \\
+ *           x_i & otherwise \end\{cases\}                                                \\
+ * &    y_k \leftarrow  \sum_{l=0}^{K-1} (\tilde{x}_{(k+l-P)} \cdot b_l \cdot 2^{-30} )   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (N-2P)                                        \\
+ * &         \qquad\text{ where }P = \lfloor K/2 \rfloor 
+ * }
+ * 
+ * @note Unlike bfp_s32_convolve_valid(), this operation _cannot_ be performed safely in-place
+ * on `x`
+ * 
+ * @param[out]  y               Output BFP vector @vector{Y}
+ * @param[in]   x               Input BFP vector @vector{X}
+ * @param[in]   b_q30           Convolution kernel @vector{b}
+ * @param[in]   b_length        The number of elements @math{K} in @vector{b}
+ * @param[in]   padding_mode    The padding mode to be applied at signal boundaries
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_s32_convolve_same(
+  bfp_s32_t* y,
+  const bfp_s32_t* x,
+  const int32_t b_q30[],
+  const unsigned b_length,
+  const pad_mode_e padding_mode);

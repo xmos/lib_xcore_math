@@ -63,9 +63,9 @@ void xs3_fft_index_bit_reversal(
  * 
  * All remaining elements can be calculated using the following properties of the DFT of a real signal:
  * 
- * @math{G[-k] = G^*[f]}
+ * @math{G[-f] = G^*[f]}
  * and
- * @math{G[f] = G[k+N]}
+ * @math{G[f] = G[f+N]}
  * 
  * where @math{G^*[f]} is the complex conjugate of @math{G[f]}.
  * 

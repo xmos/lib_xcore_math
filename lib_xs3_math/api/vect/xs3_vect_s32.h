@@ -201,7 +201,7 @@ int64_t xs3_vect_s32_abs_sum(
  * 
  * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
  * 
- * @see xs3_vect_s32_prepare()
+ * @see xs3_vect_s32_add_prepare()
  * 
  * @ingroup xs3_vect32_func
  */
@@ -304,6 +304,85 @@ void xs3_vect_s32_add_prepare(
     const exponent_t c_exp,
     const headroom_t b_hr,
     const headroom_t c_hr);
+
+
+/**
+ * @brief Add a scalar to a 32-bit vector.
+ * 
+ * `a[]`, `b[]` represent the 32-bit mantissa vectors @vector{a} and @vector{b} respectively. Each
+ * must begin at a word-aligned address. This operation can be performed safely in-place on `b[]`.
+ * 
+ * `c` is the scalar @math{c} to be added to each element of @vector{b}.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_shr` is the signed arithmetic right-shift applied to each element of @vector{b}.
+ * 
+ * @operation{ 
+ * &     b_k' = sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)  \\
+ * &     a_k \leftarrow sat_{32}\!\left( b_k' + c \right)        \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * }
+ * 
+ * @par Block Floating-Point
+ * @parblock
+ * 
+ * If elements of @vector{b} are the mantissas of BFP vector @math{ \bar{b} \cdot 2^{b\_exp} }, and 
+ * @math{c} is the mantissa of floating-point value @math{c \cdot 2^{c\_exp}}, then the resulting
+ * vector @vector{a} are the mantissas of BFP vector 
+ * @math{\bar{a} \cdot 2^{a\_exp}}. 
+ *
+ * In this case, @math{b\_shr} and @math{c\_shr} **must** be chosen so that 
+ * @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}. Adding or subtracting mantissas only makes
+ * sense if they are associated with the same exponent.
+ *
+ * The function xs3_vect_s32_add_scalar_prepare() can be used to obtain values for @math{a\_exp},
+ * @math{b\_shr} and 
+ * @math{c\_shr} based on the input exponents @math{b\_exp} and @math{c\_exp} and the input
+ * headrooms @math{b\_hr} and 
+ * @math{c\_hr}.
+ *
+ * Note that @math{c\_shr} is an output of `xs3_vect_s32_add_scalar_prepare()`, but is not a
+ * parameter to this function. The @math{c\_shr} produced by `xs3_vect_s32_add_scalar_prepare()` is
+ * to be applied by the user, and the result passed as input `c`.
+ * @endparblock
+ * 
+ * @param[out]      a           Output vector @vector{a}
+ * @param[in]       b           Input vector @vector{b}
+ * @param[in]       c           Input scalar @math{c}
+ * @param[in]       length      Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]       b_shr       Right-shift appled to @vector{b}
+ * 
+ * @returns     Headroom of the output vector @vector{a}.
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @see xs3_vect_s32_add_scalar_prepare()
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+headroom_t xs3_vect_s32_add_scalar(
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c,
+    const unsigned length,
+    const right_shift_t b_shr);
+
+
+/**
+ * @brief Obtain the output exponent and shifts required for a call to `xs3_vect_s32_add_scalar()`.
+ * 
+ * The logic for computing the shifts and exponents of `xs3_vect_s32_add_scalar()` is identical to
+ * that for `xs3_vect_s32_add()`.
+ * 
+ * This macro is provided as a convenience to developers and to make the code more readable.
+ * 
+ * @see xs3_vect_s32_add_prepare()
+ * 
+ * @ingroup xs3_vect32_prepare
+ */
+#define xs3_vect_s32_add_scalar_prepare xs3_vect_s32_add_prepare
 
 
 /**
@@ -1851,8 +1930,8 @@ void xs3_vect_s32_zip(
  * of `complex_s32_t` in @vector{c}.
  *
  * @operation{
- * &    a_k = Re\{c_k}                              \\
- * &    b_k = Im\{c_k}                              \\
+ * &    a_k = Re\\{c_k\\}                              \\
+ * &    b_k = Im\\{c_k\\}                              \\
  * &         \qquad\text{ for }k\in 0\ ...\ (N-1) 
  * }
  *
@@ -1872,6 +1951,268 @@ void xs3_vect_s32_unzip(
     int32_t b[],
     const complex_s32_t c[],
     const unsigned length);
+
+
+/**
+ * @brief Convolve a 32-bit vector with a short kernel.
+ * 
+ * 32-bit input vector @vector{x} is convolved with a short fixed-point kernel @vector{b} to produce
+ * 32-bit output vector @vector{y}.  In other words, this function applies the @math{K}th-order FIR
+ * filter with coefficients given by @vector{b} to the input signal @vector{x}.  The convolution is
+ * "valid" in the sense that no output elements are emitted where the filter taps extend beyond the
+ * bounds of the input vector, resulting in an output vector @vector{y} with fewer elements.
+ * 
+ * The maximum filter order @math{K} supported by this function is @math{7}.
+ * 
+ * `y[]` is the output vector @vector{y}.  If input @vector{x} has @math{N} elements, and the filter
+ * has @math{K} elements, then @vector{y} has @math{N-2P} elements, where 
+ * @math{P = \lfloor K / 2 \rfloor}.
+ * 
+ * `x[]` is the input vector @vector{x} with length @math{N}.
+ * 
+ * `b_q30[]` is the vector @vector{b} of filter coefficients. The coefficients of @vector{b} are
+ * encoded in a Q2.30 fixed-point format. The effective value of the @math{i}th coefficient is then
+ * @math{b_i \cdot 2^{-30}}.
+ * 
+ * `x_length` is the length @math{N} of @vector{x} in elements.
+ * 
+ * `b_length` is the length @math{K} of @vector{b} in elements (i.e. the number of filter taps).
+ * `b_length` must be one of @math{ \\{ 1, 3, 5, 7 \\} }. 
+ *
+ *
+ * @operation{
+ * &    y_k \leftarrow  \sum_{l=0}^{K-1} (x_{(k+l)} \cdot b_l \cdot 2^{-30} )   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (N-2P)                              \\
+ * &         \qquad\text{ where }P = \lfloor K/2 \rfloor 
+ * }
+ * 
+ * @par Additional Details
+ * @parblock
+ * 
+ * To avoid the possibility of saturating any output elements, @vector{b} may be constrained such
+ * that @math{ \sum_{i=0}^{K-1} \left|b_i\right| \leq 2^{30} }.
+ * 
+ * This operation can be applied safely in-place on `x[]`.
+ * 
+ * @endparblock
+ *
+ * @param[out]  y           Output vector @vector{y}
+ * @param[in]   x           Input vector @vector{x}
+ * @param[in]   b_q30       Filter coefficient vector @vector{b}
+ * @param[in]   x_length    The number of elements @math{N} in vector @vector{x}
+ * @param[in]   b_length    The number of elements @math{K} in @vector{b}
+ *
+ * @exception ET_LOAD_STORE Raised if `x` or `y` or `b_q30` is not word-aligned (See @ref note_vector_alignment)
+ *
+ * @ingroup xs3_vect32_func
+ */
+C_API
+headroom_t xs3_vect_s32_convolve_valid(
+    int32_t y[],
+    const int32_t x[],
+    const int32_t b_q30[],
+    const unsigned x_length,
+    const unsigned b_length);
+
+
+/**
+ * @brief Supported padding modes for convolutions in "same" mode.
+ * 
+ * @see xs3_vect_s32_convolve_same(), bfp_s32_convolve_same()
+ * 
+ * @ingroup xs3_vect32_func
+ */
+typedef enum {
+  /**
+   * Vector is reflected at its boundaries, such that
+   * 
+   *  @math{ \tilde{x}_i \begin\{cases\}
+   *           x_{-i} & i \lt 0                           \\
+   *           x_{2N - 2 - i} & i \ge N                   \\
+   *           x_i & otherwise 
+   *          \end\{cases\} }
+   * 
+   * For example, if the length @math{N} of input vector @vector{x} is @math{7} and the order 
+   * @math{K} of the filter is @math{5}, then
+   * 
+   * @math{ \bar{x} = [x_0, x_1, x_2, x_3, x_4, x_5, x_6] }
+   * 
+   * @math{ \tilde{x} = [x_2, x_1, x_0, x_1, x_2, x_3, x_4, x_5, x_6, x_5, x_4] }
+   * 
+   * Note that by convention the first element of @math{\tilde{x}} is considered to be at index 
+   * @math{-P}, where @math{P = \lfloor K/2 \rfloor}.
+   */
+  PAD_MODE_REFLECT = (INT32_MAX-0),
+
+  /**
+   * Vector is padded using the value of the bounding elements.
+   * 
+   *  @math{ \tilde{x}_i \begin\{cases\}
+   *           x_{0} & i \lt 0            \\
+   *           x_{N-1} & i \ge N          \\
+   *           x_i & otherwise 
+   *          \end\{cases\} }
+   * 
+   * For example, if the length @math{N} of input vector @vector{x} is @math{7} and the order 
+   * @math{K} of the filter is @math{5}, then
+   * 
+   * @math{ \bar{x} = [x_0, x_1, x_2, x_3, x_4, x_5, x_6] }
+   * 
+   * @math{ \tilde{x} = [x_0, x_0, x_0, x_1, x_2, x_3, x_4, x_5, x_6, x_6, x_6] }
+   * 
+   * Note that by convention the first element of @math{\tilde{x}} is considered to be at index 
+   * @math{-P}, where @math{P = \lfloor K/2 \rfloor}.
+   */
+  PAD_MODE_EXTEND  = (INT32_MAX-1),
+
+  /**
+   * Vector is padded with zeroes.
+   * 
+   *  @math{ \tilde{x}_i \begin\{cases\}
+   *           0 & i \lt 0            \\
+   *           0 & i \ge N            \\
+   *           x_i & otherwise 
+   *          \end\{cases\} }
+   * 
+   * For example, if the length @math{N} of input vector @vector{x} is @math{7} and the order 
+   * @math{K} of the filter is @math{5}, then
+   * 
+   * @math{ \bar{x} = [x_0, x_1, x_2, x_3, x_4, x_5, x_6] }
+   * 
+   * @math{ \tilde{x} = [0, 0, x_0, x_1, x_2, x_3, x_4, x_5, x_6, 0, 0] }
+   * 
+   * Note that by convention the first element of @math{\tilde{x}} is considered to be at index 
+   * @math{-P}, where @math{P = \lfloor K/2 \rfloor}.
+   */
+  PAD_MODE_ZERO = 0,
+} pad_mode_e;
+
+
+/**
+ * @brief Convolve a 32-bit vector with a short kernel.
+ * 
+ * 32-bit input vector @vector{x} is convolved with a short fixed-point kernel @vector{b} to produce
+ * 32-bit output vector @vector{y}.  In other words, this function applies the @math{K}th-order FIR
+ * filter with coefficients given by @vector{b} to the input signal @vector{x}.  The convolution
+ * mode is "same" in that the input vector is effectively padded such that the input and output
+ * vectors are the same length.  The padding behavior is one of those given by @ref pad_mode_e.
+ * 
+ * The maximum filter order @math{K} supported by this function is @math{7}.
+ * 
+ * `y[]` and `x[]` are the output and input vectors @vector{y} and @vector{x} respectively.
+ * 
+ * `b_q30[]` is the vector @vector{b} of filter coefficients. The coefficients of @vector{b} are
+ * encoded in a Q2.30 fixed-point format. The effective value of the @math{i}th coefficient is then
+ * @math{b_i \cdot 2^{-30}}.
+ * 
+ * `x_length` is the length @math{N} of @vector{x} and @vector{y} in elements.
+ * 
+ * `b_length` is the length @math{K} of @vector{b} in elements (i.e. the number of filter taps).
+ * `b_length` must be one of @math{ \\{ 1, 3, 5, 7 \\} }. 
+ *  
+ * `padding_mode` is one of the values from the @ref pad_mode_e enumeration. The padding mode 
+ * indicates the filter input values for filter taps that have extended beyond the bounds of the
+ * input vector @vector{x}. See @ref pad_mode_e for a list of supported padding modes and associated
+ * behaviors.
+ *
+ * @operation{
+ * &    \tilde{x}_i = \begin\{cases\}
+ *           \text{determined by padding mode} & i \lt 0                                  \\
+ *           \text{determined by padding mode} & i \ge N                                  \\
+ *           x_i & otherwise \end\{cases\}                                                \\
+ * &    y_k \leftarrow  \sum_{l=0}^{K-1} (\tilde{x}_{(k+l-P)} \cdot b_l \cdot 2^{-30} )   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (N-2P)                                        \\
+ * &         \qquad\text{ where }P = \lfloor K/2 \rfloor 
+ * }
+ * 
+ * 
+ * @par Additional Details
+ * @parblock
+ * 
+ * To avoid the possibility of saturating any output elements, @vector{b} may be constrained such
+ * that @math{ \sum_{i=0}^{K-1} \left|b_i\right| \leq 2^{30} }.
+ * @endparblock
+ * 
+ * @note Unlike xs3_vect_s32_convolve_valid(), this operation _cannot_ be performed safely in-place
+ * on `x[]`
+ *
+ * @param[out]  y               Output vector @vector{y}
+ * @param[in]   x               Input vector @vector{x}
+ * @param[in]   b_q30           Filter coefficient vector @vector{b}
+ * @param[in]   x_length        The number of elements @math{N} in vector @vector{x}
+ * @param[in]   b_length        The number of elements @math{K} in @vector{b}
+ * @param[in]   padding_mode    The padding mode to be applied at signal boundaries
+ *
+ * @exception ET_LOAD_STORE Raised if `x` or `y` or `b_q30` is not word-aligned (See @ref note_vector_alignment)
+ *
+ * @ingroup xs3_vect32_func
+ */
+C_API
+headroom_t xs3_vect_s32_convolve_same(
+    int32_t y[],
+    const int32_t x[],
+    const int32_t b_q30[],
+    const unsigned x_length,
+    const unsigned b_length,
+    const pad_mode_e padding_mode);
+
+
+/**
+ * @brief Merge a vector of split 32-bit accumulators into a vector of int32_t's.
+ * 
+ * Convert a vector of @ref xs3_split_acc_s32_t into a vector of `int32_t`. This is useful when
+ * a function (e.g. `xs3_mat_mul_s8_x_s8_yield_s32`) outputs a vector of accumulators in the XS3
+ * VPU's native split 32-bit format, which has the upper half of each accumulator in the first 32
+ * bytes and the lower half in the following 32 bytes.
+ * 
+ * This function is most efficient (in terms of cycles/accumulator) when `length` is a multiple of
+ * 16. In any case, `length` will be rounded up such that a multiple of 16 accumulators will always
+ * be merged.
+ * 
+ * This function can safely merge accumulators in-place.
+ * 
+ * @param[out]  a       Output vector of int32_t
+ * @param[in]   b       Input vector of xs3_split_acc_s32_t
+ * @param[in]   length  Number of accumulators to merge
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_s32_merge_accs(
+    int32_t a[],
+    const xs3_split_acc_s32_t b[],
+    const unsigned length);
+
+
+/**
+ * @brief Split a vector of `int32_t`'s into a vector of `xs3_split_acc_s32_t`.
+ * 
+ * Convert a vector of `int32_t` into a vector of @ref xs3_split_acc_s32_t, the native format
+ * for the XS3 VPU's 32-bit accumulators. This is useful when a function (e.g.
+ * `xs3_mat_mul_s8_x_s8_yield_s32`) takes in a vector of accumulators in that native format.
+ * 
+ * This function is most efficient (in terms of cycles/accumulator) when `length` is a multiple of
+ * 16. In any case, `length` will be rounded up such that a multiple of 16 accumulators will always
+ * be merged.
+ * 
+ * This function can safely split accumulators in-place.
+ * 
+ * @param[out]  a       Output vector of xs3_split_acc_s32_t 
+ * @param[in]   b       Input vector of int32_t
+ * @param[in]   length  Number of accumulators to merge
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_s32_split_accs(
+    xs3_split_acc_s32_t a[],
+    const int32_t b[],
+    const unsigned length);
+
 
 #ifdef __XC__
 }   //extern "C"
