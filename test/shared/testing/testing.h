@@ -7,16 +7,12 @@
 #include "xs3_math_types.h"
 
 
-#ifdef __xcore__
-
-C_API unsigned getTimestamp();
-
-#else
-
-// Stub for getTimestamp() when building for non-xcore (where we don't care about timing)
-static inline unsigned getTimestamp() { return 0; }
-
-#endif
+/**
+ * xCore: Get 100MHz reference clock timestamp
+ * x86: Return 0
+ */
+C_API 
+unsigned getTimestamp();
 
 
 /*
