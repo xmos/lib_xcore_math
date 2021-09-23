@@ -1462,8 +1462,8 @@ headroom_t xs3_vect_complex_s32_shr(
 /**
  * @brief Computes the squared magnitudes of elements of a complex 32-bit vector.
  * 
- * `a[]` represents the complex 32-bit mantissa vector @vector{a}. `b[]` represents the real 32-bit mantissa vector
- * @vector{b}. Each must begin at a word-aligned address.
+ * `a[]` represents the complex 32-bit mantissa vector @vector{a}. `b[]` represents the real 32-bit
+ * mantissa vector @vector{b}. Each must begin at a word-aligned address.
  * 
  * `length` is the number of elements in each of the vectors.
  * 
@@ -1491,7 +1491,7 @@ headroom_t xs3_vect_complex_s32_shr(
  * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
  * @param[in]   b_shr       Right-shift appled to @vector{b}
  * 
- * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * @exception ET_LOAD_STORE Raised if `a` is not double word-aligned or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @see xs3_vect_complex_s32_squared_mag_prepare
  * 

@@ -8,14 +8,6 @@
 
 #include "xs3_vpu_scalar_ops.h"
 
-static unsigned n_bitrev(unsigned index, size_t bit_width)
-{
-    unsigned res = 0;
-    for(int i = 0; i < bit_width; i++, index >>= 1){
-        res = ((res<<1) | (index & 0x1));
-    }
-    return res;
-}
 
 //load 4 complex 32-bit values into a buffer
 static void load_vec(
