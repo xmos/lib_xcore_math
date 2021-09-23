@@ -1,4 +1,4 @@
-VERSION = 1.0.0
+VERSION = 2.0.0
 
 DEPENDENT_MODULES =
 
@@ -6,7 +6,7 @@ MODULE_XCC_FLAGS = $(XCC_FLAGS)
 
 EXPORT_INCLUDE_DIRS = api 
 
-INCLUDE_DIRS = $(EXPORT_INCLUDE_DIRS) api/vect api/bfp src/arch/xcore src/vect
+INCLUDE_DIRS = $(EXPORT_INCLUDE_DIRS) api/vect api/bfp api/scalar src/arch/xcore src/vect
 
 SOURCE_DIRS = src \
               src/arch/xcore \
@@ -15,4 +15,5 @@ SOURCE_DIRS = src \
               src/arch/xcore/filter \
               src/arch/xcore/stat \
               src/bfp \
-              src/vect
+              src/vect \
+              src/scalar
