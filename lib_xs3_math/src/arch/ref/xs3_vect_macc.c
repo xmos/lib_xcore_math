@@ -21,7 +21,6 @@ headroom_t xs3_vect_s16_macc(
     const right_shift_t acc_shr,
     const right_shift_t bc_shr)
 {
-
     for(int k = 0; k < length; k++){
         acc[k] = vlashr16(acc[k], acc_shr);
         const vpu_int16_acc_t tmp = vlmacc16(0, b[k], c[k]);

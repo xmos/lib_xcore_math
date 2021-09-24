@@ -288,11 +288,19 @@ void test_complex_s16_from_double(
 
         mant = frexp(d_in_real[i], &exp);
         mant = mant * ldexp(1, exp - use_exp);
-        d_out_real[i] = (int16_t) mant;
+
+        if(((int32_t)mant) == -INT16_MIN)
+          d_out_real[i] = INT16_MAX;
+        else
+          d_out_real[i] = (int16_t) mant;
         
         mant = frexp(d_in_imag[i], &exp);
         mant = mant * ldexp(1, exp - use_exp);
-        d_out_imag[i] = (int16_t) mant;
+
+        if(((int32_t)mant) == -INT16_MIN)
+          d_out_imag[i] = INT16_MAX;
+        else
+          d_out_imag[i] = (int16_t) mant;
     }
 }
 

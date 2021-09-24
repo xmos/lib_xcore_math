@@ -6,7 +6,7 @@
 #include "../asm_helper.h"
 
 /*  
-void xs3_vect_complex_s32_conjugate(
+headroom_t xs3_vect_complex_s32_conjugate(
     complex_s32_t* a,
     const complex_s32_t* b,
     const unsigned length);
@@ -16,7 +16,10 @@ void xs3_vect_complex_s32_conjugate(
 .issue_mode dual
 .align 4
 
-#define NSTACKWORDS     (2)
+#define NSTACKVECTS     (1)
+#define NSTACKWORDS     (2 + 8*(NSTACKVECTS))
+
+#define STACK_VEC_TMP   (NSTACKWORDS - 8)
 
 #define a           r0 
 #define b           r1 
@@ -32,33 +35,36 @@ FUNCTION_NAME:
   dualentsp NSTACKWORDS
   std r4, r5, sp[0]
     
-  { ldc _32, 32                               ; ldc r11, 0                                }
-  { shl tail, len, 3                          ; vsetc r11                                 }
+  { ldc _32, 32                 ; ldc r11, 0                  }
+  { shl tail, len, 3            ; vsetc r11                   }
     ldaw r11, cp[vpu_vec_complex_conj_op]
 
-  { zext tail, 5                              ; shr len, len, 2                           }
-  { mkmsk tail, tail                          ; bf len, .L_loop_bot                       }
+  { zext tail, 5                ; shr len, len, 2             }
+  { mkmsk tail, tail            ; bf len, .L_loop_bot         }
     
   .L_loop_top:
-    { sub len, len, 1                           ; vldr r11[0]                               }
-    { add b, b, _32                             ; vlmul b[0]                                }
-    { add a, a, _32                             ; vstr a[0]                                 }
-    {                                           ; bt len, .L_loop_top                       }
+    { sub len, len, 1             ; vldr r11[0]                 }
+    { add b, b, _32               ; vlmul b[0]                  }
+    { add a, a, _32               ; vstr a[0]                   }
+    {                             ; bt len, .L_loop_top         }
   .L_loop_bot:
+  {                             ; bf tail, .L_done            }
+  {                             ; vclrdr                      }
+  {                             ; vldr r11[0]                 }
+  { ldaw r11, sp[STACK_VEC_TMP] ; vlmul b[0]                  }
+    vstrpv a[0], tail
 
-  {;entsp 0}
-
-.issue_mode single
-
-  bf tail, .L_done
-  vldr r11[0]
-  vlmul b[0]
-  vstrpv a[0], tail
+  // To make sure the tail is captured in the headroom..
+  {                             ; vstd r11[0]                 }
+    vstrpv r11[0], tail
+  {                             ; vldd r11[0]                 }
+  {                             ; vstd r11[0]                 }
 
 .L_done:
-
-  ldd r4, r5, sp[0]
-  retsp NSTACKWORDS
+    ldd r4, r5, sp[0]
+  {   ldc r0, 31                ;   vgetc r11                 }
+  {   zext r11, 5               ;                             }
+  {   sub r0, r0, r11           ;   retsp NSTACKWORDS         }
   
 .L_func_end:
 .cc_bottom FUNCTION_NAME.function

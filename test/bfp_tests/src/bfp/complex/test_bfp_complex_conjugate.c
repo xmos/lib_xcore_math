@@ -99,8 +99,8 @@ TEST(bfp_complex_conjugate, bfp_complex_s32_conjugate)
 
         bfp_complex_s32_conjugate(&A, &B);
 
-        TEST_ASSERT_EQUAL(bfp_complex_s32_headroom(&A), A.hr);
-        TEST_ASSERT_EQUAL(B.exp, A.exp);
+        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr, "");
+        TEST_ASSERT_EQUAL_MESSAGE(B.exp, A.exp, "");
 
         for(int k = 0; k < B.length; k++){
           TEST_ASSERT_INT32_WITHIN(1, B.data[k].re, A.data[k].re);

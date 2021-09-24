@@ -33,20 +33,16 @@ void xs3_mat_mul_s8_x_s16_yield_s32_inner (
   xs3_vect_s16_extract_high_byte(scratch, input, N_cols);
   xs3_mat_mul_s8_x_s8_yield_s32(accs, weights, scratch, M_rows, N_cols);
 
-
   xs3_vect_s16_extract_low_byte(scratch, input, N_cols);
   xs3_vect_s8_is_negative(scratch, scratch, N_cols);
   xs3_mat_mul_s8_x_s8_yield_s32(accs, weights, scratch, M_rows, N_cols);
 
-
   xs3_vect_s32_merge_accs(output, accs, M_rows);
   xs3_vect_s32_shl(output, output, M_rows, 8);
   xs3_vect_s32_split_accs(accs, output, M_rows);
-  
 
   xs3_vect_s16_extract_low_byte(scratch, input, N_cols);
   xs3_mat_mul_s8_x_s8_yield_s32(accs, weights, scratch, M_rows, N_cols);
-
 
   xs3_vect_s32_merge_accs(output, accs, M_rows);
   

@@ -75,7 +75,7 @@ TEST(bfp_rms, bfp_s16_rms)
 
 
         TEST_ASSERT_INT32_WITHIN(3, ideal_result.exp, result.exp);
-        TEST_ASSERT_INT32_WITHIN(3, ideal_result.mant, result.mant);
+        TEST_ASSERT_INT32_WITHIN(4, ideal_result.mant, result.mant);
     }
 }
 
@@ -124,7 +124,7 @@ TEST(bfp_rms, bfp_s32_rms)
             .exp = floor( log2(expectedF) ) - 30 };
 
         TEST_ASSERT_INT32_WITHIN(3, ideal_result.exp, result.exp);
-        TEST_ASSERT_INT32_WITHIN(3, ideal_result.mant, result.mant);
+        TEST_ASSERT_INT32_WITHIN(4, ideal_result.mant, result.mant);
     }
 }
 

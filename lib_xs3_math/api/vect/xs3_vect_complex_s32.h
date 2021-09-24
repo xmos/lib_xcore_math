@@ -1819,12 +1819,14 @@ void xs3_vect_complex_s32_tail_reverse(
  * @param[in]   b       Complex 32-bit input vector @vector{b}
  * @param[in]   length  Number of elements in vectors @vector{a} and @vector{b}
  * 
+ * @returns     Headroom of the output vector @vector{a}.
+ * 
  * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup xs3_vect32_func
  */
 C_API
-void xs3_vect_complex_s32_conjugate(
+headroom_t xs3_vect_complex_s32_conjugate(
     complex_s32_t a[],
     const complex_s32_t b[],
     const unsigned length);

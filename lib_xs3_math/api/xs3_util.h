@@ -250,6 +250,7 @@ static inline unsigned n_bitrev(
     const unsigned index,
     const unsigned bits)
 {
+  unsigned dex = index;
   unsigned rev_index = 0;
 #ifdef __xcore__
 
@@ -257,10 +258,11 @@ static inline unsigned n_bitrev(
   asm( "bitrev %0, %1" : "=r"(rev_index) : "r"(shifted_index) );
 
 #else
-  for(int bit = bits-1; bit; bit--){
-    unsigned p = (index & (1<<bit)) != 0;
-    rev_index = (rev_index | p) << 1;
+  
+  for(int i = 0; i < bits; i++, dex >>= 1){
+      rev_index = ((rev_index<<1) | (dex & 0x1));
   }
+  return rev_index;
 #endif
 
 

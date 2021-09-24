@@ -84,7 +84,8 @@ TEST(xs3_vect_macc, xs3_vect_s16_macc)
 
 #define THRESHOLD  2
           if(expected - A[i] > THRESHOLD || A[i] - expected > THRESHOLD){
-            printf("[%d]  exp.a = %d; expected[%d] = %d  ( %f );   A[%d] = %d\n", v, exp.a, i, expected, expected_fp, i, A[i]);
+            printf("[rep %d]  exp.a = %d; expected[%d] = %d  ( %f );   A[%d] = %d\n", 
+              v, exp.a, i, expected, expected_fp, i, A[i]);
           }
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected, A[i], "Error not within threshold.");
 #undef THRESHOLD

@@ -21,8 +21,8 @@ void xs3_vect_s32_zip(
   for(int i = 0; i < length; i++){
     const int32_t B = b[i];
     const int32_t C = c[i];
-    a[i].re = (b_shr >= 0)? (B >> b_shr) : (B << -b_shr);
-    a[i].im = (c_shr >= 0)? (C >> c_shr) : (C << -c_shr);
+    a[i].re = vlashr32(B, b_shr);
+    a[i].im = vlashr32(C, c_shr);
   }
 }
 

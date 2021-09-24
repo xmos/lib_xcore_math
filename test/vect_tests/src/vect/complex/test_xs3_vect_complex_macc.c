@@ -97,7 +97,7 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_macc)
           if(error) printf("Conversion error: %d\n", error);
           TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error.");
 
-#define THRESHOLD  2
+#define THRESHOLD  3
           if(expected.re - A.re[i] > THRESHOLD || A.re[i] - expected.re > THRESHOLD)
             printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A.re[%d] = %d\n", v, exp.a, i, expected.re, expected_fp.re, i, A.re[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.re, A.re[i], "Error not within threshold. (real)");
@@ -177,7 +177,7 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_nmacc)
           if(error) printf("Conversion error: %d\n", error);
           TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error.");
 
-#define THRESHOLD  2
+#define THRESHOLD  3
           if(expected.re - A.re[i] > THRESHOLD || A.re[i] - expected.re > THRESHOLD)
             printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A.re[%d] = %d\n", v, exp.a, i, expected.re, expected_fp.re, i, A.re[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.re, A.re[i], "Error not within threshold. (real)");
@@ -254,7 +254,7 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s32_macc)
           if(error) printf("Conversion error: %d\n", error);
           TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error.");
 
-#define THRESHOLD  2
+#define THRESHOLD  3
           if(expected.re - A[i].re > THRESHOLD || A[i].re - expected.re > THRESHOLD)
             printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A[%d].re = %ld\n", v, exp.a, i, expected.re, expected_fp.re, i, A[i].re);
           
@@ -333,7 +333,7 @@ TEST(xs3_vect_complex_macc, xs3_vect_complex_s32_nmacc)
           if(error) printf("Conversion error: %d\n", error);
           TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error.");
 
-#define THRESHOLD  2
+#define THRESHOLD  3
           if(expected.re - A[i].re > THRESHOLD || A[i].re - expected.re > THRESHOLD)
             printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A[%d].re = %ld\n", v, exp.a, i, expected.re, expected_fp.re, i, A[i].re);
           

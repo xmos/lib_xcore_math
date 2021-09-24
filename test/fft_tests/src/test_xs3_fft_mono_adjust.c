@@ -33,8 +33,10 @@ TEST_TEAR_DOWN(xs3_fft_mono_adjust) {}
 
 TEST(xs3_fft_mono_adjust, xs3_fft_mono_adjust_forward)
 {
+#define FUNC_NAME "xs3_fft_mono_adjust_forward"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 436554;
@@ -116,24 +118,28 @@ TEST(xs3_fft_mono_adjust, xs3_fft_mono_adjust_forward)
         }
         
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, N, worst_error);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, N, worst_error);
 #endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
         fprintf(perf_file, "%s, %u, %u, %0.02f, (forward)\n", TESTING_FUNC_NAME, N, worst_error, worst_timing);
 #endif
+
+#undef FUNC_NAME
     }
 }
 
 
 TEST(xs3_fft_mono_adjust, xs3_fft_mono_adjust_inverse)
 {
+#define FUNC_NAME "xs3_fft_mono_adjust_inverse"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 656556;
@@ -184,16 +190,18 @@ TEST(xs3_fft_mono_adjust, xs3_fft_mono_adjust_inverse)
         }
         
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, N, worst_error);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, N, worst_error);
 #endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
         fprintf(perf_file, "%s, %u, %u, %0.02f, (inverse)\n", TESTING_FUNC_NAME, N, worst_error, worst_timing);
 #endif
+
+#undef FUNC_NAME
     }
 }
 
