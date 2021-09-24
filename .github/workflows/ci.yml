@@ -51,7 +51,7 @@ jobs:
           docker run --user $(id -u) --rm -w /lib_xs3_math -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/sdk_app_builder:develop bash -l .github/scripts/build_tests_xcore.sh
 
   build_tests:
-    name: Build tests (x86)
+    name: Build & Run Tests (x86)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -74,6 +74,10 @@ jobs:
       - name: Build
         run: |
           docker run --user $(id -u) --rm -w /lib_xs3_math -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/sdk_app_builder:develop bash -l .github/scripts/build_tests_x86.sh
+
+      - name: Run Tests
+        run: |
+          docker run --user $(id -u) --rm -w /lib_xs3_math -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/sdk_app_builder:develop bash -l .github/scripts/run_tests_x86.sh
 
   build_documentation:
     name: Build and package documentation
