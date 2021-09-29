@@ -23,12 +23,17 @@ TEST_GROUP_RUNNER(xs3_vect_headroom) {
 }
 
 TEST_GROUP(xs3_vect_headroom);
-TEST_SETUP(xs3_vect_headroom) {}
+TEST_SETUP(xs3_vect_headroom) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_headroom) {}
 
 
-#define MAX_LEN     1024
-#define REPS        (1000)
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (1024)
+#endif
 
 
 TEST(xs3_vect_headroom, xs3_vect_s16_headroom)

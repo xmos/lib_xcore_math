@@ -20,12 +20,18 @@ TEST_GROUP_RUNNER(xs3_vect_extract) {
 }
 
 TEST_GROUP(xs3_vect_extract);
-TEST_SETUP(xs3_vect_extract) {}
+TEST_SETUP(xs3_vect_extract) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_extract) {}
 
 
-#define MAX_LEN     1023
-#define REPS        (1000)
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (127)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (1023)
+#endif
 
 
 TEST(xs3_vect_extract, xs3_vect_s16_extract_high_byte)

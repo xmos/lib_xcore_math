@@ -10,6 +10,7 @@
 #include "bfp_math.h"
 
 #include "../../tst_common.h"
+#include "../src/vect/vpu_helper.h"
 
 #include "unity_fixture.h"
 
@@ -20,11 +21,16 @@ TEST_GROUP_RUNNER(bfp_complex_conjugate) {
 }
 
 TEST_GROUP(bfp_complex_conjugate);
-TEST_SETUP(bfp_complex_conjugate) {}
+TEST_SETUP(bfp_complex_conjugate) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_complex_conjugate) {}
 
-#define REPS        (100)
-#define MAX_LEN     158
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_complex_conjugate, bfp_complex_s16_conjugate)
@@ -59,12 +65,19 @@ TEST(bfp_complex_conjugate, bfp_complex_s16_conjugate)
 
         bfp_complex_s16_conjugate(&A, &B);
 
-        TEST_ASSERT_EQUAL(bfp_complex_s16_headroom(&A), A.hr);
+        // headroom might not be exactly correct, since this won't recalculate it for the real part
+        // of the vector. It does update it if the new imag has less HR, though
+        headroom_t exp_hr = xs3_vect_complex_s16_headroom(A.real, A.imag, A.length);
+        if(exp_hr <= B.hr)
+          TEST_ASSERT_EQUAL(exp_hr, A.hr);
+        else
+          TEST_ASSERT_EQUAL(B.hr, A.hr);
         TEST_ASSERT_EQUAL(B.exp, A.exp);
 
         for(int k = 0; k < B.length; k++){
-          TEST_ASSERT_INT16_WITHIN(1, B_data.real[k], A_data.real[k]);
-          TEST_ASSERT_INT16_WITHIN(1, -((int32_t)B_data.imag[k]), A_data.imag[k]);
+          
+          TEST_ASSERT_INT16_WITHIN(1, SAT(16)(B_data.real[k]), A_data.real[k]);
+          TEST_ASSERT_INT16_WITHIN(1, -SAT(16)(B_data.imag[k]), A_data.imag[k]);
         }
     }
 }
@@ -103,8 +116,8 @@ TEST(bfp_complex_conjugate, bfp_complex_s32_conjugate)
         TEST_ASSERT_EQUAL_MESSAGE(B.exp, A.exp, "");
 
         for(int k = 0; k < B.length; k++){
-          TEST_ASSERT_INT32_WITHIN(1, B.data[k].re, A.data[k].re);
-          TEST_ASSERT_INT32_WITHIN(1, -((int64_t)B.data[k].im), A.data[k].im);
+          TEST_ASSERT_INT32_WITHIN(1, SAT(32)(B.data[k].re), A.data[k].re);
+          TEST_ASSERT_INT32_WITHIN(1, -SAT(32)(B.data[k].im), A.data[k].im);
         }
     }
 }

@@ -22,11 +22,16 @@ TEST_GROUP_RUNNER(bfp_depth_convert) {
 }
 
 TEST_GROUP(bfp_depth_convert);
-TEST_SETUP(bfp_depth_convert) {}
+TEST_SETUP(bfp_depth_convert) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_depth_convert) {}
 
-#define REPS        (1000)
-#define MAX_LEN     256  //Smaller lengths mean larger variance w.r.t. individual element headroom
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_depth_convert, bfp_s32_to_s16) 

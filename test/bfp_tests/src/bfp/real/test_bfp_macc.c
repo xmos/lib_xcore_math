@@ -22,12 +22,16 @@ TEST_GROUP_RUNNER(bfp_macc) {
 }
 
 TEST_GROUP(bfp_macc);
-TEST_SETUP(bfp_macc) {}
+TEST_SETUP(bfp_macc) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_macc) {}
 
-
-#define REPS    1000
-#define LEN     257
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define LEN        (128)
+#else
+#  define REPS       (1000)
+#  define LEN        (512)
+#endif
 
 
 

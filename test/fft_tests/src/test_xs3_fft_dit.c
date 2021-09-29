@@ -18,7 +18,7 @@ TEST_GROUP_RUNNER(xs3_fft_dit) {
 }
 
 TEST_GROUP(xs3_fft_dit);
-TEST_SETUP(xs3_fft_dit) {}
+TEST_SETUP(xs3_fft_dit) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_fft_dit) {}
 
 

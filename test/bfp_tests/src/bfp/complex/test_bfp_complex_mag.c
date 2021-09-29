@@ -20,11 +20,16 @@ TEST_GROUP_RUNNER(bfp_complex_mag) {
 }
 
 TEST_GROUP(bfp_complex_mag);
-TEST_SETUP(bfp_complex_mag) {}
+TEST_SETUP(bfp_complex_mag) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_complex_mag) {}
 
-#define REPS        100
-#define MAX_LEN     40 
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 static char msg_buff[200];
@@ -83,7 +88,7 @@ TEST(bfp_complex_mag, bfp_complex_s16_mag)
 
         test_s16_from_double(expA, Af, A.length, A.exp);
 
-        XTEST_ASSERT_VECT_S16_WITHIN(8, expA, A.data, A.length,
+        XTEST_ASSERT_VECT_S16_WITHIN(9, expA, A.data, A.length,
             "Expected: %d <-- mag( %d + %dj )\n"
             "Actual: %d\n"
             "B.hr = %u\n"
@@ -140,7 +145,7 @@ TEST(bfp_complex_mag, bfp_complex_s32_mag)
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
         for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT32_WITHIN(7, expA[i], A.data[i]);
+            TEST_ASSERT_INT32_WITHIN(8, expA[i], A.data[i]);
         }
     }
 }

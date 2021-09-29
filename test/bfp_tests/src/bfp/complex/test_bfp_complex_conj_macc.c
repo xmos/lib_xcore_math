@@ -22,12 +22,16 @@ TEST_GROUP_RUNNER(bfp_complex_conj_macc) {
 }
 
 TEST_GROUP(bfp_complex_conj_macc);
-TEST_SETUP(bfp_complex_conj_macc) {}
+TEST_SETUP(bfp_complex_conj_macc) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_complex_conj_macc) {}
 
-
-#define REPS    100
-#define LEN     257
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define LEN        (128)
+#else
+#  define REPS       (1000)
+#  define LEN        (512)
+#endif
 
 
 TEST(bfp_complex_conj_macc, bfp_complex_s16_conj_macc)

@@ -17,7 +17,7 @@ TEST_GROUP_RUNNER(xs3_fft_mono_adjust) {
 }
 
 TEST_GROUP(xs3_fft_mono_adjust);
-TEST_SETUP(xs3_fft_mono_adjust) {}
+TEST_SETUP(xs3_fft_mono_adjust) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_fft_mono_adjust) {}
 
 
@@ -25,7 +25,11 @@ TEST_TEAR_DOWN(xs3_fft_mono_adjust) {}
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
 
-#define LOOPS_LOG2  (8)
+#if SMOKE_TEST
+#  define LOOPS_LOG2       (2)
+#else
+#  define LOOPS_LOG2       (8)
+#endif
 
 #define TESTING_FUNC_NAME "xs3_fft_mono_adjust"
 

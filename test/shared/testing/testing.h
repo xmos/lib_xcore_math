@@ -52,10 +52,12 @@ C_API uint32_t conv_double_to_u32(double d, const exponent_t d_exp, conv_error_e
 C_API int64_t conv_double_to_s64 (double d, const exponent_t d_exp, conv_error_e *error);
 C_API uint64_t conv_double_to_u64(double d, const exponent_t d_exp, conv_error_e *error);
 
+
 C_API complex_double_t conv_complex_s16_to_complex_double(complex_s16_t x, const exponent_t x_exp, conv_error_e *error);
 C_API complex_double_t conv_complex_s32_to_complex_double(complex_s32_t x, const exponent_t x_exp, conv_error_e *error);
 C_API complex_s16_t conv_complex_double_to_complex_s16(complex_double_t x, const exponent_t x_exp, conv_error_e *error);
 C_API complex_s32_t conv_complex_double_to_complex_s32(complex_double_t x, const exponent_t x_exp, conv_error_e *error);
+C_API complex_s64_t conv_complex_double_to_complex_s64(complex_double_t x, const exponent_t x_exp, conv_error_e* error);
 
 
 C_API void conv_vect_s16_to_double(double output[], const int16_t input[], const unsigned length, const exponent_t input_exp, conv_error_e *error);

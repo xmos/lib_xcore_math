@@ -21,11 +21,16 @@ TEST_GROUP_RUNNER(bfp_complex_use_exponent) {
 }
 
 TEST_GROUP(bfp_complex_use_exponent);
-TEST_SETUP(bfp_complex_use_exponent) {}
+TEST_SETUP(bfp_complex_use_exponent) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_complex_use_exponent) {}
 
-#define REPS        (1000)
-#define MAX_LEN     1024
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_complex_use_exponent, bfp_complex_s16_use_exponent)

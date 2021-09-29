@@ -20,11 +20,16 @@ TEST_GROUP_RUNNER(bfp_complex_real_mul) {
 }
 
 TEST_GROUP(bfp_complex_real_mul);
-TEST_SETUP(bfp_complex_real_mul) {}
+TEST_SETUP(bfp_complex_real_mul) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_complex_real_mul) {}
 
-#define REPS        1000
-#define MAX_LEN     40 
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 static char msg_buff[200];

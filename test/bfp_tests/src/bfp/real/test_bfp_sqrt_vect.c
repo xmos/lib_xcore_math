@@ -22,11 +22,16 @@ TEST_GROUP_RUNNER(bfp_sqrt) {
 }
 
 TEST_GROUP(bfp_sqrt);
-TEST_SETUP(bfp_sqrt) {}
+TEST_SETUP(bfp_sqrt) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_sqrt) {}
 
-#define MAX_LEN     100
-#define REPS        1000
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 TEST(bfp_sqrt, bfp_s16_sqrt)
 {

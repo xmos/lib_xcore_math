@@ -21,7 +21,7 @@ TEST_GROUP_RUNNER(xs3_vect_clip) {
 }
 
 TEST_GROUP(xs3_vect_clip);
-TEST_SETUP(xs3_vect_clip) {}
+TEST_SETUP(xs3_vect_clip) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_clip) {}
 
 static char msg_buff[200];
@@ -33,8 +33,14 @@ static char msg_buff[200];
     }} while(0)
 
 
-#define MAX_LEN     256
-#define REPS        1000
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 
 TEST(xs3_vect_clip, xs3_vect_s16_clip_basic) //

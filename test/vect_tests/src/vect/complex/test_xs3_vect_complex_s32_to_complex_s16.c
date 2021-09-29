@@ -20,7 +20,7 @@ TEST_GROUP_RUNNER(xs3_vect_complex_s32_to_complex_s16) {
 }
 
 TEST_GROUP(xs3_vect_complex_s32_to_complex_s16);
-TEST_SETUP(xs3_vect_complex_s32_to_complex_s16) {}
+TEST_SETUP(xs3_vect_complex_s32_to_complex_s16) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_complex_s32_to_complex_s16) {}
 
 

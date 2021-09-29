@@ -23,12 +23,18 @@ TEST_GROUP_RUNNER(xs3_vect_argmax) {
 }
 
 TEST_GROUP(xs3_vect_argmax);
-TEST_SETUP(xs3_vect_argmax) {}
+TEST_SETUP(xs3_vect_argmax) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_argmax) {}
 
 
-#define MAX_LEN     256
-#define REPS        1000
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 
 TEST(xs3_vect_argmax, xs3_vect_s16_argmax_A)

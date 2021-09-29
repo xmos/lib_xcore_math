@@ -20,7 +20,7 @@ TEST_GROUP_RUNNER(bfp_gradient_constraint) {
   RUN_TEST_CASE(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_B);
 }
 TEST_GROUP(bfp_gradient_constraint);
-TEST_SETUP(bfp_gradient_constraint) {}
+TEST_SETUP(bfp_gradient_constraint) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_gradient_constraint) {}
 
 #define MIN_FFT_N_LOG2    (6)

@@ -22,11 +22,16 @@ TEST_GROUP_RUNNER(bfp_set) {
 }
 
 TEST_GROUP(bfp_set);
-TEST_SETUP(bfp_set) {}
+TEST_SETUP(bfp_set) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_set) {}
 
-#define REPS        (50)
-#define MAX_LEN     (300)
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_set, bfp_s16_set) 

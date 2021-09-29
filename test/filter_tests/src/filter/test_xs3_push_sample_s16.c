@@ -21,7 +21,7 @@ TEST_GROUP_RUNNER(xs3_push_sample) {
 }
 
 TEST_GROUP(xs3_push_sample);
-TEST_SETUP(xs3_push_sample) {}
+TEST_SETUP(xs3_push_sample) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_push_sample) {}
 
 
@@ -40,7 +40,12 @@ void xs3_push_sample_up_s16(
 
 
 #define MAX_LEN     100
-#define REPS        1000
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#else
+#  define REPS       (1000)
+#endif
 TEST(xs3_push_sample, xs3_push_sample_down_s16)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
@@ -52,8 +57,10 @@ TEST(xs3_push_sample, xs3_push_sample_down_s16)
         unsigned old_seed = seed;
         unsigned length = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
 
+#if !SMOKE_TEST
         sprintf(msg_buff, "( rep: %d; seed: 0x%08X; length: %u )", v, old_seed, length);
         UNITY_SET_DETAIL(msg_buff);
+#endif
 
         for(int i = 0; i < length; i++){
             buff[i] = pseudo_rand_int16(&seed);
@@ -75,7 +82,12 @@ TEST(xs3_push_sample, xs3_push_sample_down_s16)
 #undef REPS
 
 
-#define MAX_LEN     1000
+
+#if SMOKE_TEST
+#  define MAX_LEN       (100)
+#else
+#  define MAX_LEN       (1000)
+#endif
 TEST(xs3_push_sample, xs3_push_sample_up_s16)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
@@ -84,8 +96,11 @@ TEST(xs3_push_sample, xs3_push_sample_up_s16)
     int16_t buff_exp[MAX_LEN];
 
     for(unsigned length = 1; length <= MAX_LEN; length++){
+      
+#if !SMOKE_TEST
         sprintf(msg_buff, "( Length: %u )", length);
         UNITY_SET_DETAIL(msg_buff);
+#endif
 
         for(int i = 0; i < length; i++){
             buff[i] = pseudo_rand_int16(&seed);

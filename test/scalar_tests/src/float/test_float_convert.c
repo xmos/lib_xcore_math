@@ -26,13 +26,15 @@ TEST_GROUP_RUNNER(float_convert) {
 }
 
 TEST_GROUP(float_convert);
-TEST_SETUP(float_convert) {}
+TEST_SETUP(float_convert) { fflush(stdout); }
 TEST_TEAR_DOWN(float_convert) {}
 
 
-#define REPS        1000
-
-
+#if SMOKE_TEST
+#  define REPS       (100)
+#else
+#  define REPS       (1000)
+#endif
 
 
 TEST(float_convert, float_s32_to_float_s64)

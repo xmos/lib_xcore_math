@@ -19,11 +19,16 @@ TEST_GROUP_RUNNER(bfp_clip) {
   RUN_TEST_CASE(bfp_clip, bfp_s32_clip);
 }
 TEST_GROUP(bfp_clip);
-TEST_SETUP(bfp_clip) {}
+TEST_SETUP(bfp_clip) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_clip) {}
 
-#define REPS        1000
-#define MAX_LEN     256
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 static char msg_buff[200];
 

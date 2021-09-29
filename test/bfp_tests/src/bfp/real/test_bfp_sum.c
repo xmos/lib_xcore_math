@@ -20,11 +20,16 @@ TEST_GROUP_RUNNER(bfp_sum) {
 }
 
 TEST_GROUP(bfp_sum);
-TEST_SETUP(bfp_sum) {}
+TEST_SETUP(bfp_sum) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_sum) {}
 
-#define REPS        (100)
-#define MAX_LEN     256 
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_sum, bfp_s16_sum)

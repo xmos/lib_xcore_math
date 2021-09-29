@@ -22,12 +22,17 @@ TEST_GROUP_RUNNER(xs3_vect_set) {
 }
 
 TEST_GROUP(xs3_vect_set);
-TEST_SETUP(xs3_vect_set) {}
+TEST_SETUP(xs3_vect_set) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_set) {}
 
 
-#define MAX_LEN     1024
-#define REPS        (1000)
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (1024)
+#endif
 
 
 TEST(xs3_vect_set, xs3_vect_s16_set)

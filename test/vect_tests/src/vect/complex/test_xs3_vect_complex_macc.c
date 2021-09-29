@@ -24,12 +24,18 @@ TEST_GROUP_RUNNER(xs3_vect_complex_macc) {
 }
 
 TEST_GROUP(xs3_vect_complex_macc);
-TEST_SETUP(xs3_vect_complex_macc) {}
+TEST_SETUP(xs3_vect_complex_macc) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_complex_macc) {}
 
 
-#define REPS    1000
-#define LEN     257
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define LEN        (65)
+#else
+#  define REPS       (1000)
+#  define LEN        (257)
+#endif
 
 
 TEST(xs3_vect_complex_macc, xs3_vect_complex_s16_macc)

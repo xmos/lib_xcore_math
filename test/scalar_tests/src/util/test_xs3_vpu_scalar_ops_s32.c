@@ -36,11 +36,26 @@ TEST_GROUP_RUNNER(xs3_vpu_scalar_ops_s32) {
 }
 
 TEST_GROUP(xs3_vpu_scalar_ops_s32);
-TEST_SETUP(xs3_vpu_scalar_ops_s32) {}
+TEST_SETUP(xs3_vpu_scalar_ops_s32) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vpu_scalar_ops_s32) {}
 
 
-#define REPS        (1000)
+#if SMOKE_TEST
+#  define REPS       (100)
+#else
+#  define REPS       (1000)
+#endif
+
+const int STEP_DIV = (SMOKE_TEST)? 101 : 10001;
+
+
+static int64_t mul_Q30(int32_t x, int32_t y)
+{
+  return ((((int64_t)x) * y) + (1LL << 29)) >> 30;
+}
+
+
+
 
 
 TEST(xs3_vpu_scalar_ops_s32, vladd32)
@@ -175,10 +190,10 @@ TEST(xs3_vpu_scalar_ops_s32, vpos32)
 {
     
 
-    for(int64_t k = 0; k < INT32_MAX; k+= (UINT32_MAX/10001))
+    for(int64_t k = 0; k < INT32_MAX; k+= (UINT32_MAX/STEP_DIV))
         TEST_ASSERT_EQUAL_INT32( k, vpos32( (int32_t) k));
     
-    for(int64_t k = INT32_MIN; k < 0; k+=(UINT32_MAX/10001))
+    for(int64_t k = INT32_MIN; k < 0; k+=(UINT32_MAX/STEP_DIV))
         TEST_ASSERT_EQUAL_INT32( 0, vpos32( (int32_t) k));
     
 }
@@ -189,10 +204,10 @@ TEST(xs3_vpu_scalar_ops_s32, vsign32)
     
 
 
-    for(int64_t k = 0; k < INT32_MAX; k+=(UINT32_MAX/10001))
+    for(int64_t k = 0; k < INT32_MAX; k+=(UINT32_MAX/STEP_DIV))
         TEST_ASSERT_EQUAL_INT32(  ((int32_t)  0x40000000), vsign32( (int32_t) k)  );
     
-    for(int64_t k = INT32_MIN; k < 0; k+=(UINT32_MAX/10001))
+    for(int64_t k = INT32_MIN; k < 0; k+=(UINT32_MAX/STEP_DIV))
         TEST_ASSERT_EQUAL_INT32(  ((int32_t) -0x40000000), vsign32( (int32_t) k)  );
 
 }
@@ -202,10 +217,10 @@ TEST(xs3_vpu_scalar_ops_s32, vdepth1_32)
 {
     
 
-    for(int64_t k = 0; k < INT32_MAX; k+=(UINT32_MAX/10001))
+    for(int64_t k = 0; k < INT32_MAX; k+=(UINT32_MAX/STEP_DIV))
         TEST_ASSERT_EQUAL_INT( 0, vdepth1_32( (int32_t) k));
     
-    for(int64_t k = INT32_MIN; k < 0; k+=(UINT32_MAX/10001))
+    for(int64_t k = INT32_MIN; k < 0; k+=(UINT32_MAX/STEP_DIV))
         TEST_ASSERT_EQUAL_INT( 1, vdepth1_32( (int32_t) k));
 
 }
@@ -227,7 +242,7 @@ TEST(xs3_vpu_scalar_ops_s32, vdepth8_32)
     TEST_ASSERT_EQUAL_INT8(     -3, vdepth8_32(    -0x02810000));
     TEST_ASSERT_EQUAL_INT8(  -0x7F, vdepth8_32(    -0x7FFFFFFF));
 
-    for(int64_t k = INT32_MIN; k < INT32_MAX; k += (UINT32_MAX/10001))
+    for(int64_t k = INT32_MIN; k < INT32_MAX; k += (UINT32_MAX/STEP_DIV))
     {
 
         int8_t res = vdepth8_32( (int32_t) k );
@@ -259,7 +274,7 @@ TEST(xs3_vpu_scalar_ops_s32, vdepth16_32)
     TEST_ASSERT_EQUAL_INT8(       -3, vdepth16_32(    -0x028100));
     TEST_ASSERT_EQUAL_INT8(  -0x7FFF, vdepth16_32(  -0x7FFFFFFF));
 
-    for(int64_t k = INT32_MIN; k < INT32_MAX; k += (UINT32_MAX/10001))
+    for(int64_t k = INT32_MIN; k < INT32_MAX; k += (UINT32_MAX/STEP_DIV))
     {
 
         int8_t res = vdepth16_32( (int32_t) k );
@@ -363,7 +378,6 @@ TEST(xs3_vpu_scalar_ops_s32, vlmaccr32)
     
     unsigned seed = SEED_FROM_FUNC_NAME();
 
-
     for(int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
@@ -371,37 +385,20 @@ TEST(xs3_vpu_scalar_ops_s32, vlmaccr32)
         int32_t x[VPU_INT32_EPV];
         int32_t y[VPU_INT32_EPV];
 
-        double s = acc;
+        int64_t s = acc;
 
         for(int i = 0; i < VPU_INT32_EPV; i++){
             x[i] = pseudo_rand_int32(&seed);
             y[i] = pseudo_rand_int32(&seed);
 
-            
-            s += round( x[i] * ldexp(y[i], -30) + ldexp(1,-41) );
+            s += mul_Q30(x[i], y[i]);
 
         }
 
         s = MIN(s, VPU_INT40_MAX);
         s = MAX(s, VPU_INT40_MIN);
 
-        // vpu_int32_acc_t exp = s;
-
         vpu_int32_acc_t res = vlmaccr32(acc, x, y);
-
-        // if(s != res){
-        //     printf("rep: %d \t\tseed: 0x%08X\n", v, seed);
-        //     printf("acc = %ld\n", acc);
-        //     printf("x = [ ");
-        //     for(int i = 0; i < 32; i++)
-        //         printf("%d, ", x[i]);
-        //     printf(" ]\n");
-            
-        //     printf("y = [ ");
-        //     for(int i = 0; i < 32; i++)
-        //         printf("%d, ", y[i]);
-        //     printf(" ]\n");
-        // }
 
         TEST_ASSERT_EQUAL(s, res);
     }
@@ -478,14 +475,14 @@ TEST(xs3_vpu_scalar_ops_s32, vcmr32)
         y.re = pseudo_rand_int32(&seed);
         y.im = pseudo_rand_int32(&seed);
 
-        double a = round( x.re * ldexp(y.re, -30) + ldexp(1,-40) );
-        double b = round( x.im * ldexp(y.im, -30) + ldexp(1,-40) );
+        int64_t a = mul_Q30(x.re, y.re);
+        int64_t b = mul_Q30(x.im, y.im);
 
-        double fexp = a - b;
-        fexp = MIN(fexp, VPU_INT32_MAX);
-        fexp = MAX(fexp, VPU_INT32_MIN);
+        int64_t exp64 = a - b;
+        exp64 = MIN(exp64, VPU_INT32_MAX);
+        exp64 = MAX(exp64, VPU_INT32_MIN);
 
-        int32_t exp = fexp;
+        int32_t exp = exp64;
 
         int32_t res = vcmr32(x, y);
 
@@ -511,14 +508,14 @@ TEST(xs3_vpu_scalar_ops_s32, vcmi32)
         y.re = pseudo_rand_int32(&seed);
         y.im = pseudo_rand_int32(&seed);
 
-        double a = round( x.re * ldexp(y.im, -30) + ldexp(1,-40) );
-        double b = round( x.im * ldexp(y.re, -30) + ldexp(1,-40) );
+        int64_t a = mul_Q30(x.re, y.im);
+        int64_t b = mul_Q30(x.im, y.re);
 
-        double fexp = a + b;
-        fexp = MIN(fexp, VPU_INT32_MAX);
-        fexp = MAX(fexp, VPU_INT32_MIN);
+        int64_t exp64 = a + b;
+        exp64 = MIN(exp64, VPU_INT32_MAX);
+        exp64 = MAX(exp64, VPU_INT32_MIN);
 
-        int32_t exp = fexp;
+        int32_t exp = exp64;
 
         int32_t res = vcmi32(x, y);
 
@@ -544,14 +541,14 @@ TEST(xs3_vpu_scalar_ops_s32, vcmcr32)
         y.re = pseudo_rand_int32(&seed);
         y.im = pseudo_rand_int32(&seed);
 
-        double a = round( x.re * ldexp(y.re, -30) + ldexp(1,-40) );
-        double b = round( x.im * ldexp(y.im, -30) + ldexp(1,-40) );
+        int64_t a = mul_Q30(x.re, y.re);
+        int64_t b = mul_Q30(x.im, y.im);
 
-        double fexp = a + b;
-        fexp = MIN(fexp, VPU_INT32_MAX);
-        fexp = MAX(fexp, VPU_INT32_MIN);
+        int64_t exp64 = a + b;
+        exp64 = MIN(exp64, VPU_INT32_MAX);
+        exp64 = MAX(exp64, VPU_INT32_MIN);
 
-        int32_t exp = fexp;
+        int32_t exp = exp64;
 
         int32_t res = vcmcr32(x, y);
 
@@ -577,14 +574,14 @@ TEST(xs3_vpu_scalar_ops_s32, vcmci32)
         y.re = pseudo_rand_int32(&seed);
         y.im = pseudo_rand_int32(&seed);
 
-        double a = round( x.re * ldexp(y.im, -30) + ldexp(1,-40) );
-        double b = round( x.im * ldexp(y.re, -30) + ldexp(1,-40) );
+        int64_t a = mul_Q30(x.re, y.im);
+        int64_t b = mul_Q30(x.im, y.re);
 
-        double fexp = b - a;
-        fexp = MIN(fexp, VPU_INT32_MAX);
-        fexp = MAX(fexp, VPU_INT32_MIN);
+        int64_t exp64 = b - a;
+        exp64 = MIN(exp64, VPU_INT32_MAX);
+        exp64 = MAX(exp64, VPU_INT32_MIN);
 
-        int32_t exp = fexp;
+        int32_t exp = exp64;
 
         int32_t res = vcmci32(x, y);
 

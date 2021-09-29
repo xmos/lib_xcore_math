@@ -24,7 +24,7 @@ TEST_GROUP_RUNNER(xs3_vect_complex_sum) {
 }
 
 TEST_GROUP(xs3_vect_complex_sum);
-TEST_SETUP(xs3_vect_complex_sum) {}
+TEST_SETUP(xs3_vect_complex_sum) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_complex_sum) {}
 
 
@@ -38,14 +38,17 @@ static char msg_buff[200];
     }} while(0)
 
 
-#define MAX_LEN     1024
-#define REPS        (1000)
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (500)
+#endif
 
 
 TEST(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_prepare)
 {
-    
-
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     
@@ -60,10 +63,15 @@ TEST(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_prepare)
         headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 20);
         unsigned b_length = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
 
+        if(r == REPS-1)
+          b_length = MAX_LEN;
+
         for(int i = 0; i < MAX_LEN; i++){
             B[i].re = 0x40000000 >> b_hr;
             B[i].im = INT32_MIN >> b_hr;
         }
+
+        b_hr = xs3_vect_complex_s32_headroom(B, b_length);
  
         complex_s64_t A;
         exponent_t a_exp;
@@ -89,7 +97,9 @@ TEST(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_prepare)
 
     }
 
-    TEST_ASSERT_TRUE(some_shr);
+    if(!(SMOKE_TEST)){
+      TEST_ASSERT_TRUE(some_shr);
+    }
 
 }
 #undef REPS
@@ -154,8 +164,13 @@ TEST(xs3_vect_complex_sum, xs3_vect_complex_s16_sum_basic)
 }
 
 
-#define MAX_LEN     200
-#define REPS        (100)
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_complex_sum, xs3_vect_complex_s16_sum_random)
 {
@@ -249,8 +264,13 @@ TEST(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_basic)
 }
 
 
-#define MAX_LEN     1000
-#define REPS        (100)
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_complex_sum, xs3_vect_complex_s32_sum_random)
 {

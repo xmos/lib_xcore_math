@@ -28,12 +28,17 @@ TEST_GROUP_RUNNER(bfp_dealloc) {
 
 
 TEST_GROUP(bfp_dealloc);
-TEST_SETUP(bfp_dealloc) {}
+TEST_SETUP(bfp_dealloc) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_dealloc) {}
 
 
-#define REPS        (50)
-#define MAX_LEN     (300)
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_dealloc, bfp_s32_dealloc) 

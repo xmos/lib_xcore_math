@@ -15,7 +15,7 @@ TEST_GROUP_RUNNER(bfp_fft_packing) {
 }
 
 TEST_GROUP(bfp_fft_packing);
-TEST_SETUP(bfp_fft_packing) {}
+TEST_SETUP(bfp_fft_packing) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_fft_packing) {}
 
 #define FFT_N   (512)

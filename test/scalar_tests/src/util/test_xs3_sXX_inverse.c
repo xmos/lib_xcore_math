@@ -20,11 +20,14 @@ TEST_GROUP_RUNNER(xs3_sXX_inverse) {
 }
 
 TEST_GROUP(xs3_sXX_inverse);
-TEST_SETUP(xs3_sXX_inverse) {}
+TEST_SETUP(xs3_sXX_inverse) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_sXX_inverse) {}
 
-
-#define REPS        10000
+#if SMOKE_TEST
+#  define REPS       (100)
+#else
+#  define REPS       (1000)
+#endif
 
 TEST(xs3_sXX_inverse, xs3_s16_inverse)
 {

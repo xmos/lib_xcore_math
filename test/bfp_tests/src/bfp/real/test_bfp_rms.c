@@ -20,11 +20,16 @@ TEST_GROUP_RUNNER(bfp_rms) {
 }
 
 TEST_GROUP(bfp_rms);
-TEST_SETUP(bfp_rms) {}
+TEST_SETUP(bfp_rms) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_rms) {}
 
-#define REPS        100
-#define MAX_LEN     100
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 static unsigned seed;

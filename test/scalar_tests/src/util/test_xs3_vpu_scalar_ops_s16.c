@@ -32,12 +32,18 @@ TEST_GROUP_RUNNER(xs3_vpu_scalar_ops_s16) {
 }
 
 TEST_GROUP(xs3_vpu_scalar_ops_s16);
-TEST_SETUP(xs3_vpu_scalar_ops_s16) {}
+TEST_SETUP(xs3_vpu_scalar_ops_s16) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vpu_scalar_ops_s16) {}
 
 
-#define REPS        (1000)
+#if SMOKE_TEST
+#  define REPS       (100)
+#else
+#  define REPS       (1000)
+#endif
 
+const int STEP_A = (SMOKE_TEST)? 137 : 13;
+const int STEP_B = (SMOKE_TEST)? 173 : 17;
 
 TEST(xs3_vpu_scalar_ops_s16, vladd16)
 {
@@ -166,41 +172,31 @@ TEST(xs3_vpu_scalar_ops_s16, vlashr16)
 
 TEST(xs3_vpu_scalar_ops_s16, vpos16)
 {
-    
-
-    for(int k = 0; k < INT16_MAX; k+= 13)
-        TEST_ASSERT_EQUAL_INT16( k, vpos16( (int16_t) k));
-    
-    for(int k = INT16_MIN; k < 0; k+=17)
-        TEST_ASSERT_EQUAL_INT16( 0, vpos16( (int16_t) k));
-    
+  for(int k = 0; k < INT16_MAX; k+=STEP_A)
+      TEST_ASSERT_EQUAL_INT16( k, vpos16( (int16_t) k));
+  
+  for(int k = INT16_MIN; k < 0; k+=STEP_B)
+      TEST_ASSERT_EQUAL_INT16( 0, vpos16( (int16_t) k));
 }
 
 
 TEST(xs3_vpu_scalar_ops_s16, vsign16)
 {
-    
-
-
-    for(int k = 0; k < INT16_MAX; k+=13)
-        TEST_ASSERT_EQUAL_INT16(  ((int16_t)  0x4000), vsign16( (int16_t) k)  );
-    
-    for(int k = INT16_MIN; k < 0; k+=17)
-        TEST_ASSERT_EQUAL_INT16(  ((int16_t) -0x4000), vsign16( (int16_t) k)  );
-
+  for(int k = 0; k < INT16_MAX; k+=STEP_A)
+      TEST_ASSERT_EQUAL_INT16(  ((int16_t)  0x4000), vsign16( (int16_t) k)  );
+  
+  for(int k = INT16_MIN; k < 0; k+=STEP_B)
+      TEST_ASSERT_EQUAL_INT16(  ((int16_t) -0x4000), vsign16( (int16_t) k)  );
 }
 
 
 TEST(xs3_vpu_scalar_ops_s16, vdepth1_16)
 {
-    
-
-    for(int k = 0; k < INT16_MAX; k+=13)
-        TEST_ASSERT_EQUAL_INT( 0, vdepth1_16( (int16_t) k));
-    
-    for(int k = INT16_MIN; k < 0; k+=17)
-        TEST_ASSERT_EQUAL_INT( 1, vdepth1_16( (int16_t) k));
-
+  for(int k = 0; k < INT16_MAX; k+=STEP_A)
+      TEST_ASSERT_EQUAL_INT( 0, vdepth1_16( (int16_t) k));
+  
+  for(int k = INT16_MIN; k < 0; k+=STEP_B)
+      TEST_ASSERT_EQUAL_INT( 1, vdepth1_16( (int16_t) k));
 }
 
 
@@ -220,9 +216,8 @@ TEST(xs3_vpu_scalar_ops_s16, vdepth8_16)
     TEST_ASSERT_EQUAL_INT8(     -3, vdepth8_16(    -0x0281));
     TEST_ASSERT_EQUAL_INT8(  -0x7F, vdepth8_16(    -0x7FFF));
 
-    for(int k = INT16_MIN; k < INT16_MAX; k += 13)
+    for(int k = INT16_MIN; k < INT16_MAX; k += STEP_A)
     {
-
         int8_t res = vdepth8_16( (int16_t) k );
 
         int32_t exp = round(ldexp( k, -8) + ldexp(1, -30));
@@ -230,7 +225,6 @@ TEST(xs3_vpu_scalar_ops_s16, vdepth8_16)
         exp = MAX(exp, VPU_INT8_MIN);
 
         TEST_ASSERT_EQUAL_INT8( exp, res );
-
     }
 
 }

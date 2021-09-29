@@ -30,11 +30,15 @@ TEST_GROUP_RUNNER(xs3_vpu_scalar_ops_s8) {
 }
 
 TEST_GROUP(xs3_vpu_scalar_ops_s8);
-TEST_SETUP(xs3_vpu_scalar_ops_s8) {}
+TEST_SETUP(xs3_vpu_scalar_ops_s8) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vpu_scalar_ops_s8) {}
 
 
-#define REPS        (1000)
+#if SMOKE_TEST
+#  define REPS       (100)
+#else
+#  define REPS       (1000)
+#endif
 
 
 TEST(xs3_vpu_scalar_ops_s8, vladd8)

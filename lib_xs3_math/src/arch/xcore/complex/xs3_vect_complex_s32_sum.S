@@ -112,10 +112,14 @@ FUNCTION_NAME:
     {   ldc num, 2                              ;   vstd r11[0]                             }
         ldd tmp_im, tmp_re, r11[0]
     {   add real_hi, real_hi, tmp_re            ;   add imag_hi, imag_hi, tmp_im            }
-    {   shr tmp_re, real_lo, 1                  ;   zext real_lo, 1                         }
-    {   shr tmp_im, imag_lo, 1                  ;   zext imag_lo, 1                         }
-        maccs real_hi, real_lo, num, tmp_re
-        maccs imag_hi, imag_lo, num, tmp_im
+
+    // astew [2021-09-28]: ... what was the purpose of these next 4 instructions..?
+    //                     maybe at the time I was thinking the lower word should be
+    //                     interpreted as signed?
+    // {   shr tmp_re, real_lo, 1                  ;   zext real_lo, 1                         }
+    // {   shr tmp_im, imag_lo, 1                  ;   zext imag_lo, 1                         }
+    //     maccs real_hi, real_lo, num, tmp_re
+    //     maccs imag_hi, imag_lo, num, tmp_im
     {                                           ;   ldw tmp, sp[STACK_RES]                  }
         std real_hi, real_lo, tmp[0]
         std imag_hi, imag_lo, tmp[1]

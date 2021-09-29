@@ -20,11 +20,16 @@ TEST_GROUP_RUNNER(bfp_scale) {
 }
 
 TEST_GROUP(bfp_scale);
-TEST_SETUP(bfp_scale) {}
+TEST_SETUP(bfp_scale) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_scale) {}
 
-#define REPS        1000
-#define MAX_LEN     256
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_scale, bfp_s16_scale)

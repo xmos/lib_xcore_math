@@ -10,6 +10,8 @@ project(xmos-lib_xs3_math)
 set(BUILD_TESTS    ON CACHE BOOL "Include unit tests as CMake targets." )
 set(BUILD_EXAMPLES ON CACHE BOOL "Include examples as CMake targets."   )
 
+option(SMOKE_TEST "Build unit tests in 'smoke test' mode. This mostly just reduces the number of repetitions to reduce simulation time." OFF)
+
 ## fetch dependencies
 include(FetchContent)
 
