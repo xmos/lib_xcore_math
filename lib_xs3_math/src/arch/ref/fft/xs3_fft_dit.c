@@ -6,7 +6,7 @@
 
 #include "xs3_math.h"
 #include "../../../vect/vpu_helper.h"
-#include "../../../vect/xs3_fft_lut.h"
+#include "xs3_fft_lut.h"
 
 //load 4 complex 32-bit values into a buffer
 static void load_vec(

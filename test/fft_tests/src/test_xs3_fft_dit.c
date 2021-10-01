@@ -8,7 +8,7 @@
 #include "tst_common.h"
 #include "fft.h"
 #include "unity_fixture.h"
-#include "../src/vect/xs3_fft_lut.h"
+#include "xs3_fft_lut.h"
 
 TEST_GROUP_RUNNER(xs3_fft_dit) {
   RUN_TEST_CASE(xs3_fft_dit, xs3_fft_dit_forward);

@@ -4,7 +4,7 @@
 #include "xs3_math.h"
 #include "../../../vect/vpu_helper.h"
 #include "../../../vect/vpu_const_vects.h"
-#include "../../../vect/xs3_fft_lut.h"
+#include "xs3_fft_lut.h"
 
 #include "xs3_vpu_scalar_ops.h"
 

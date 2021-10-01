@@ -8,7 +8,7 @@
 #include "tst_common.h"
 #include "fft.h"
 #include "unity_fixture.h"
-#include "../src/vect/xs3_fft_lut.h"
+#include "xs3_fft_lut.h"
 
 
 TEST_GROUP_RUNNER(xs3_fft_mono_adjust) {
