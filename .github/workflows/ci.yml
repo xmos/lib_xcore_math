@@ -74,6 +74,7 @@ jobs:
       
       - name: Build Tests
         run: |
+          cd ~
           cmake -B build.x86
           cmake --build build.x86
 
