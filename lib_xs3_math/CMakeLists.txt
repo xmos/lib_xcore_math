@@ -17,8 +17,8 @@ if ( ${GEN_FFT_LUT} )
   # Auto-generate the FFT LUT
 
   if( NOT ${Python3_FOUND} )
-    message(FATAL_ERROR "FFT LUT generation enabled, but Python3 not found." 
-                        "Disable the GEN_FFT_LUT option to use the version included with the repository (max FFT length=1024)."
+    message(FATAL_ERROR "FFT LUT generation enabled, but Python3 not found. " 
+                        "Disable the GEN_FFT_LUT option to use the version included with the repository (max FFT length=1024). "
                         "Disable the USE_DEFAULT_FFT_LUT option if you've manually generated the LUT.")
   endif()
 
@@ -33,13 +33,8 @@ if ( ${GEN_FFT_LUT} )
   list(APPEND FFT_SCRIPT_ARGS --out_file ${FFT_LUT_FILE})
   list(APPEND FFT_SCRIPT_ARGS --out_dir ${XS3_MATH_AUTOGEN_DIR})
   list(APPEND FFT_SCRIPT_ARGS --max_fft_log2 ${MAX_FFT_LEN_LOG2})
-  
-  if( ${GEN_FFT_LUT_DIT} )
-    list(APPEND FFT_SCRIPT_ARGS --dit)
-  endif()
-  if( ${GEN_FFT_LUT_DIF} )
-    list(APPEND FFT_SCRIPT_ARGS --dif)
-  endif()
+  list(APPEND FFT_SCRIPT_ARGS --dit)
+  list(APPEND FFT_SCRIPT_ARGS --dif)
 
   add_custom_command(
     OUTPUT ${FFT_LUT_BYPRODUCTS}

@@ -26,11 +26,11 @@ set( USE_DEFAULT_FFT_LUT  ON CACHE BOOL "Use default provided FFT look-up table.
 ## The maximum FFT length supported by the LUT (log2)
 set( MAX_FFT_LEN_LOG2 "10" CACHE STRING "Maximum FFT length to be supported by generated look-up tables. Must be a positive integer." )
 
-## Generate decimation-in-time FFT LUTs   (only enabled if GEN_FFT_LUT is ON)
-cmake_dependent_option( GEN_FFT_LUT_DIT "Generate decimation-in-time FFT look-up table." ON "GEN_FFT_LUT" OFF ) 
+# ## Generate decimation-in-time FFT LUTs   (only enabled if GEN_FFT_LUT is ON)
+# cmake_dependent_option( GEN_FFT_LUT_DIT "Generate decimation-in-time FFT look-up table." ON "GEN_FFT_LUT" OFF ) 
 
-## Generate decimation-in-frequency FFT LUTs   (only enabled if GEN_FFT_LUT is ON)
-cmake_dependent_option( GEN_FFT_LUT_DIF "Generate decimation-in-frequency FFT look-up table." ON "GEN_FFT_LUT" OFF ) 
+# ## Generate decimation-in-frequency FFT LUTs   (only enabled if GEN_FFT_LUT is ON)
+# cmake_dependent_option( GEN_FFT_LUT_DIF "Generate decimation-in-frequency FFT look-up table." ON "GEN_FFT_LUT" OFF ) 
 
 
 #### PRINT OPTIONS ####
@@ -42,8 +42,8 @@ message(STATUS "SMOKE_TEST:     ${SMOKE_TEST}")
 message(STATUS "GEN_FFT_LUT:    ${GEN_FFT_LUT}")
 if(${GEN_FFT_LUT})
   message(STATUS "  MAX_FFT_LEN_LOG2:   ${MAX_FFT_LEN_LOG2}")
-  message(STATUS "  GEN_FFT_LUT_DIT:    ${GEN_FFT_LUT_DIF}")
-  message(STATUS "  GEN_FFT_LUT_DIF:    ${GEN_FFT_LUT_DIF}")
+  # message(STATUS "  GEN_FFT_LUT_DIT:    ${GEN_FFT_LUT_DIF}")
+  # message(STATUS "  GEN_FFT_LUT_DIF:    ${GEN_FFT_LUT_DIF}")
 else()
   message(STATUS "USE_DEFAULT_FFT_LUT:    ${USE_DEFAULT_FFT_LUT}")
 endif()
