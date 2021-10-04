@@ -82,19 +82,19 @@ jobs:
         working-directory: ~
         run: ./build.x86/test/scalar_tests/scalar_tests -v
 
-      - name: Run vect_tests
+      - name: Run Tests: vect_tests
         working-directory: ~
         run: ./build.x86/test/vect_tests/vect_tests     -v
 
-      - name: Run bfp_tests
+      - name: Run Tests: bfp_tests
         working-directory: ~
         run: ./build.x86/test/bfp_tests/bfp_tests       -v
 
-      - name: Run fft_tests
+      - name: Run Tests: fft_tests
         working-directory: ~
         run: ./build.x86/test/fft_tests/fft_tests       -v
 
-      - name: Run filter_tests
+      - name: Run Tests: filter_tests
         working-directory: ~
         run: ./build.x86/test/filter_tests/filter_tests -v
 
