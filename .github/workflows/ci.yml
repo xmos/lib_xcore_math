@@ -78,14 +78,25 @@ jobs:
           cmake -B build.x86 $GITHUB_WORKSPACE
           cmake --build build.x86
 
-      - name: Run Tests
+      - name: Run scalar_tests
         working-directory: ~
-        run: |
-          ./build.x86/test/scalar_tests/scalar_tests -s
-          ./build.x86/test/vect_tests/vect_tests     -s
-          ./build.x86/test/bfp_tests/bfp_tests       -s
-          ./build.x86/test/fft_tests/fft_tests       -s
-          ./build.x86/test/filter_tests/filter_tests -s
+        run: ./build.x86/test/scalar_tests/scalar_tests -v
+
+      - name: Run vect_tests
+        working-directory: ~
+        run: ./build.x86/test/vect_tests/vect_tests     -v
+
+      - name: Run bfp_tests
+        working-directory: ~
+        run: ./build.x86/test/bfp_tests/bfp_tests       -v
+
+      - name: Run fft_tests
+        working-directory: ~
+        run: ./build.x86/test/fft_tests/fft_tests       -v
+
+      - name: Run filter_tests
+        working-directory: ~
+        run: ./build.x86/test/filter_tests/filter_tests -v
 
   build_documentation:
     name: Build and package documentation
