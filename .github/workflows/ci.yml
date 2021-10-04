@@ -73,7 +73,6 @@ jobs:
           pip install numpy
       
       - name: Build Tests
-        working-directory: ~/
         run: |
           cd ~
           cmake -B build.x86 ${{ github.workspace }}
