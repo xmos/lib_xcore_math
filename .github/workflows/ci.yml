@@ -75,8 +75,7 @@ jobs:
       - name: Build Tests
         working-directory: ~/
         run: |
-          echo w1.. $GITHUB_WORKSPACE
-          echo w2.. ${{ github.workspace }}
+          cd ~
           cmake -B build.x86 ${{ github.workspace }}
           cmake --build build.x86
 
