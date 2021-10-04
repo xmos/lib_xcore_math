@@ -75,7 +75,7 @@ jobs:
       - name: Build Tests
         run: |
           cd ~
-          cmake -B build.x86
+          cmake -B build.x86 $GITHUB_WORKSPACE
           cmake --build build.x86
 
       - name: Run Tests

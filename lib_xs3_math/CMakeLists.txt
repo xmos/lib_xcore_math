@@ -53,7 +53,7 @@ else()
     set( FFT_LUT_FILE_HEADER  ${XS3_FFT_LUT_FALLBACK_DIR}/${FFT_LUT_FILE}.h )
 
     list( APPEND LIB_XS3_MATH_SOURCES  ${FFT_LUT_FILE_SOURCE} )
-    list( APPEND LIB_XS3_MATH_INCLUDES ${XS3_MATH_AUTOGEN_DIR} )
+    list( APPEND LIB_XS3_MATH_INCLUDES ${XS3_FFT_LUT_FALLBACK_DIR} )
   else()
     # Otherwise, the user must use the provided python script to generate their own. See the Notes
     # section in the documentation for details.
