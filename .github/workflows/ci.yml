@@ -73,20 +73,14 @@ jobs:
           pip install numpy
       
       - name: Build Tests
+        working-directory: ~
         run: |
-          cd ~
-          echo workspace: $GITHUB_WORKSPACE
-          pwd
           cmake -B build.x86 $GITHUB_WORKSPACE
           cmake --build build.x86
-          pwd
 
       - name: Run Tests
+        working-directory: ~
         run: |
-          pwd
-          ls -l ~
-          ls -l ~/work
-          ls -R build.x86
           ./build.x86/test/scalar_tests/scalar_tests -s
           ./build.x86/test/vect_tests/vect_tests     -s
           ./build.x86/test/bfp_tests/bfp_tests       -s
