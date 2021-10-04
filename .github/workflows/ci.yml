@@ -81,7 +81,8 @@ jobs:
       - name: Run Tests
         run: |
           pwd
-          ls -l
+          ls -l ~
+          ls -l work
           ls -R build.x86
           ./build.x86/test/scalar_tests/scalar_tests -s
           ./build.x86/test/vect_tests/vect_tests     -s
