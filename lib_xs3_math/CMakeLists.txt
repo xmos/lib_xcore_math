@@ -10,8 +10,7 @@ include(lib_xs3_math.cmake)
 
 #### Generate FFT Look-up Tables ####
 
-message(WARNING  "!!${CMAKE_CURRENT_BUILD_DIR}!!")
-set( XS3_MATH_AUTOGEN_DIR  ${CMAKE_CURRENT_BUILD_DIR}/src.gen )
+set( XS3_MATH_AUTOGEN_DIR  ${CMAKE_CURRENT_BINARY_DIR}/src.gen )
 
 
 if ( ${GEN_FFT_LUT} )
