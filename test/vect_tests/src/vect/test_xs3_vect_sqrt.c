@@ -26,15 +26,21 @@ TEST_GROUP_RUNNER(xs3_vect_sqrt) {
 }
 
 TEST_GROUP(xs3_vect_sqrt);
-TEST_SETUP(xs3_vect_sqrt) {}
+TEST_SETUP(xs3_vect_sqrt) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_sqrt) {}
 
 
 static char msg_buff[200];
 
 
-#define MAX_LEN     100
-#define REPS        1000
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 
 TEST(xs3_vect_sqrt, xs3_vect_s32_sqrt_prepare)

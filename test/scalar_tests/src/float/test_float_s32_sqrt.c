@@ -20,11 +20,15 @@ TEST_GROUP_RUNNER(float_sXX_sqrt) {
 }
 
 TEST_GROUP(float_sXX_sqrt);
-TEST_SETUP(float_sXX_sqrt) {}
+TEST_SETUP(float_sXX_sqrt) { fflush(stdout); }
 TEST_TEAR_DOWN(float_sXX_sqrt) {}
 
 
-#define REPS        1000
+#if SMOKE_TEST
+#  define REPS       (100)
+#else
+#  define REPS       (1000)
+#endif
 
 
 
@@ -43,7 +47,8 @@ TEST(float_sXX_sqrt, float_s32_sqrt)
 
     right_shift_t x_shr = pseudo_rand_uint(&seed, 0, 14);
 
-    x.mant = pseudo_rand_int32(&seed) >> x_shr;
+    // Mantissa must be positive for this to make sense
+    x.mant = pseudo_rand_uint32(&seed) >> (1+x_shr);
 
     double expected_f = sqrt( ldexp(x.mant, x.exp) );
 

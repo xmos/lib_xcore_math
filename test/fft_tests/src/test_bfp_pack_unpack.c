@@ -15,7 +15,7 @@ TEST_GROUP_RUNNER(bfp_fft_packing) {
 }
 
 TEST_GROUP(bfp_fft_packing);
-TEST_SETUP(bfp_fft_packing) {}
+TEST_SETUP(bfp_fft_packing) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_fft_packing) {}
 
 #define FFT_N   (512)
@@ -23,8 +23,10 @@ TEST_TEAR_DOWN(bfp_fft_packing) {}
 
 TEST(bfp_fft_packing, bfp_fft_mono_unpack_pack)
 {
+#define FUNC_NAME "bfp_fft_mono_unpack_pack"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
   unsigned seed = SEED_FROM_FUNC_NAME();
@@ -63,5 +65,7 @@ TEST(bfp_fft_packing, bfp_fft_mono_unpack_pack)
 
   }
 }
+
+#undef FUNC_NAME
 
 

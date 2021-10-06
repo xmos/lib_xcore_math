@@ -8,7 +8,9 @@
 #include "tst_common.h"
 #include "fft.h"
 #include "unity_fixture.h"
-#include "../src/vect/xs3_fft_lut.h"
+#include "xs3_fft_lut.h"
+
+#include <string.h>
 
 TEST_GROUP_RUNNER(xs3_fft_helpers) {
   RUN_TEST_CASE(xs3_fft_helpers, xs3_fft_index_bit_reversal);
@@ -18,22 +20,29 @@ TEST_GROUP_RUNNER(xs3_fft_helpers) {
 }
 
 TEST_GROUP(xs3_fft_helpers);
-TEST_SETUP(xs3_fft_helpers) {}
+TEST_SETUP(xs3_fft_helpers) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_fft_helpers) {}
 
 
 #define MAX_PROC_FRAME_LENGTH_LOG2 (MAX_DIT_FFT_LOG2)
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
-#define LOOPS_LOG2  (8)
+
+#if SMOKE_TEST
+#  define LOOPS_LOG2       (2)
+#else
+#  define LOOPS_LOG2       (8)
+#endif
 
 #define MIN_N_LOG2  (2)
 
 
 TEST(xs3_fft_helpers, xs3_fft_index_bit_reversal)
 {
+#define FUNC_NAME "xs3_fft_index_bit_reversal"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 1;
@@ -48,16 +57,11 @@ TEST(xs3_fft_helpers, xs3_fft_index_bit_reversal)
         for(unsigned t = 0; t <= (1<<LOOPS_LOG2); t++){
 
             complex_s32_t DWORD_ALIGNED a[MAX_PROC_FRAME_LENGTH];
-            complex_double_t DWORD_ALIGNED A[MAX_PROC_FRAME_LENGTH];
-
-            conv_error_e error = 0;
-            exponent_t exponent = sext(pseudo_rand_int32(&r), 5);
+            complex_s32_t a_copy[MAX_PROC_FRAME_LENGTH];
 
             rand_vect_complex_s32(a, N, 0, &r);
-            conv_vect_complex_s32_to_complex_double(A, a, N, exponent, &error);
-            TEST_ASSERT_CONVERSION(error);
 
-            flt_bit_reverse_indexes_double(A, N);
+            memcpy(a_copy, a, sizeof(a));
 
             unsigned ts1 = getTimestamp();
             xs3_fft_index_bit_reversal(a, N);
@@ -66,33 +70,34 @@ TEST(xs3_fft_helpers, xs3_fft_index_bit_reversal)
             float timing = (ts2-ts1)/100.0;
             if(timing > worst_timing) worst_timing = timing;
 
-            unsigned diff = abs_diff_vect_complex_s32(a, exponent, A, N, &error);
-            TEST_ASSERT_CONVERSION(error);
-            TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k, diff, "Output delta is too large");
-
-            if(diff > worst_error) worst_error = diff;
+            for(int i = 0; i < N; i++){
+              int dex = n_bitrev(i, k);
+              TEST_ASSERT_EQUAL_INT32(a_copy[dex].re, a[i].re);
+              TEST_ASSERT_EQUAL_INT32(a_copy[dex].re, a[i].re);
+            }
         }
-        
-#if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, N, worst_error);
-#endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
         fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), N, worst_error, worst_timing);
 #endif
     }
+
+#undef FUNC_NAME
 }
 
 
 TEST(xs3_fft_helpers, xs3_vect_complex_s32_tail_reverse)
 {
+#define FUNC_NAME "xs3_vect_complex_s32_tail_reverse"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
+
     unsigned r = 1;
 
     for(unsigned k = MAX(MIN_N_LOG2, 3); k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
@@ -121,21 +126,35 @@ TEST(xs3_fft_helpers, xs3_vect_complex_s32_tail_reverse)
         }
 
 #if TIME_FUNCS
-        printf("    %s (N=%u): %f us\n", __func__, N, worst_timing);
+        printf("    %s (N=%u): %f us\n", FUNC_NAME, N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
         fprintf(perf_file, "%s, %u, 0, %0.02f,\n", &(__func__[5]), N, worst_timing);
 #endif
     }
+
+#undef FUNC_NAME
 }
 
 
+#undef LOOPS_LOG2
+
+
+#if SMOKE_TEST
+#  define LOOPS_LOG2       (0)
+#else
+#  define LOOPS_LOG2       (8)
+#endif
+
 TEST(xs3_fft_helpers, xs3_fft_spectra_split)
 {
+#define FUNC_NAME "xs3_fft_spectra_split"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
+
 
     unsigned r = 1;
     conv_error_e error = 0;
@@ -176,25 +195,30 @@ TEST(xs3_fft_helpers, xs3_fft_spectra_split)
         }
         
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, N, worst_case);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, N, worst_case);
 #endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
         fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), N, worst_error, worst_timing);
 #endif
     }
+
+#undef FUNC_NAME
 }
 
 
 TEST(xs3_fft_helpers, xs3_fft_spectra_merge)
 {
+#define FUNC_NAME "xs3_fft_spectra_merge"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
+
 
     unsigned r = 1;
     conv_error_e error = 0;
@@ -234,15 +258,17 @@ TEST(xs3_fft_helpers, xs3_fft_spectra_merge)
         }
         
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, N, worst_case);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, N, worst_case);
 #endif
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
         fprintf(perf_file, "%s, %u, %u, %0.02f,\n", &(__func__[5]), N, worst_error, worst_timing);
 #endif
     }
+
+#undef FUNC_NAME
 }

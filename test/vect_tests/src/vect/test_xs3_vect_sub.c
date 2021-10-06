@@ -22,7 +22,7 @@ TEST_GROUP_RUNNER(xs3_vect_sub) {
 }
 
 TEST_GROUP(xs3_vect_sub);
-TEST_SETUP(xs3_vect_sub) {}
+TEST_SETUP(xs3_vect_sub) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_sub) {}
 
 
@@ -82,8 +82,14 @@ static int32_t sub_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 }
 
 
-#define MAX_LEN     256
-#define REPS        1000
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 
 TEST(xs3_vect_sub, xs3_vect_s16_sub_basic)

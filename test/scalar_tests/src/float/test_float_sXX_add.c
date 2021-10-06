@@ -19,11 +19,15 @@ TEST_GROUP_RUNNER(float_sXX_add) {
 }
 
 TEST_GROUP(float_sXX_add);
-TEST_SETUP(float_sXX_add) {}
+TEST_SETUP(float_sXX_add) { fflush(stdout); }
 TEST_TEAR_DOWN(float_sXX_add) {}
 
 
-#define REPS        1000
+#if SMOKE_TEST
+#  define REPS       (100)
+#else
+#  define REPS       (1000)
+#endif
 
 
 

@@ -403,12 +403,13 @@ void bfp_complex_s16_conjugate(
 #endif
 
     a->exp = b->exp;
-    a->hr = b->hr;
     
     if(a != b)
       memcpy(a->real, b->real, b->length * sizeof(int16_t));
 
-    xs3_vect_s16_scale(a->imag, b->imag, b->length, -1, 0);
+    headroom_t im_hr = xs3_vect_s16_scale(a->imag, b->imag, b->length, -1, 0);
+
+    a->hr = MIN(b->hr, im_hr);
 }
 
 

@@ -21,12 +21,18 @@ TEST_GROUP_RUNNER(xs3_vect_min) {
 }
 
 TEST_GROUP(xs3_vect_min);
-TEST_SETUP(xs3_vect_min) {}
+TEST_SETUP(xs3_vect_min) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_min) {}
 
 
-#define MAX_LEN     256
-#define REPS        1000
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 
 TEST(xs3_vect_min, xs3_vect_s16_min_random)

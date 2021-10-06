@@ -26,7 +26,7 @@ TEST_GROUP_RUNNER(xs3_vect_complex_mul) {
 }
 
 TEST_GROUP(xs3_vect_complex_mul);
-TEST_SETUP(xs3_vect_complex_mul) {}
+TEST_SETUP(xs3_vect_complex_mul) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_complex_mul) {}
 
 
@@ -100,7 +100,7 @@ static complex_s32_t mul_complex_s32(complex_s32_t b, complex_s32_t c, int b_shr
 }
 
 
-#define REPS        1000
+#define REPS        ((SMOKE_TEST)?100:1000)
 TEST(xs3_vect_complex_mul, xs3_vect_complex_s16_mul_prepare)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
@@ -141,7 +141,7 @@ TEST(xs3_vect_complex_mul, xs3_vect_complex_s16_mul_prepare)
 #undef REPS
 
 
-#define REPS        1000
+#define REPS        ((SMOKE_TEST)?100:1000)
 
 
 TEST(xs3_vect_complex_mul, xs3_vect_complex_s32_mul_prepare)
@@ -274,8 +274,13 @@ TEST(xs3_vect_complex_mul, xs3_vect_complex_s16_mul_basic)
 }
 
 
-#define MAX_LEN     100
-#define REPS        1000
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_complex_mul, xs3_vect_complex_s16_mul_random)
 {
@@ -463,8 +468,13 @@ TEST(xs3_vect_complex_mul, xs3_vect_complex_s32_mul_basic)
 }
 
 
-#define MAX_LEN     100
-#define REPS        1000
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_complex_mul, xs3_vect_complex_s32_mul_random)
 {

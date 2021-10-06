@@ -23,11 +23,15 @@ TEST_GROUP_RUNNER(HR_macro) {
 }
 
 TEST_GROUP(HR_macro);
-TEST_SETUP(HR_macro) {}
+TEST_SETUP(HR_macro) { fflush(stdout); }
 TEST_TEAR_DOWN(HR_macro) {}
 
 
-#define N        1024
+#if SMOKE_TEST
+#  define N       (128)
+#else
+#  define N       (1024)
+#endif
 
 TEST(HR_macro, HR_S32)
 {

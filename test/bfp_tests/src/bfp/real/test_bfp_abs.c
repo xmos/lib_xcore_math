@@ -19,11 +19,17 @@ TEST_GROUP_RUNNER(bfp_abs) {
   RUN_TEST_CASE(bfp_abs, bfp_s32_abs);
 }
 TEST_GROUP(bfp_abs);
-TEST_SETUP(bfp_abs) {}
+TEST_SETUP(bfp_abs) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_abs) {}
 
-#define REPS        1000
-#define MAX_LEN     256
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 static char msg_buff[200];
 

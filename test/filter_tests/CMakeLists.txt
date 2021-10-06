@@ -24,7 +24,7 @@ list( APPEND  SOURCES   ${SOURCES_${CMAKE_SYSTEM_NAME}} )
 
 
 # set( XSCOPE_CONFIG config.xscope )
-get_filename_component(XSCOPE_CONFIG config.xscope ABSOLUTE)
+get_filename_component(XSCOPE_CONFIG ../etc/config.xscope ABSOLUTE)
 
 ## Compile flags
 unset(COMPILE_FLAGS)
@@ -37,6 +37,8 @@ unset(COMPILE_FLAGS_Linux)
 list( APPEND  COMPILE_FLAGS_Linux   "" )
 
 list( APPEND  COMPILE_FLAGS ${COMPILE_FLAGS_${CMAKE_SYSTEM_NAME}} )
+
+list(APPEND   COMPILE_FLAGS ${TEST_DEFS} )
 
 ## Linker flags
 unset(LINKER_FLAGS)
@@ -55,35 +57,36 @@ list( APPEND  LINKER_FLAGS ${LINKER_FLAGS_${CMAKE_SYSTEM_NAME}} )
 
 #########
 
-find_package( Python3 COMPONENTS Interpreter )
 
 if ( ${Python3_FOUND} )
 
   # Run the python scripts for filter generation. This is just to ensure that the script runs
   # correctly and produces code that compiles correctly.
 
+  set( SCRIPT_DIR  ${CMAKE_SOURCE_DIR}/lib_xs3_math/script   )
+  set( GEN_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local )
+  set( COEF_DIR    ${CMAKE_CURRENT_SOURCE_DIR}/etc           )
+
   list( APPEND SOURCES_C  ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.c
                           ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.c
                           ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.c )
 
-  add_custom_target(
-    generate_filter_fir_s32
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_fir_filter_s32.py test_fir_s32 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/coefs.txt
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.c
+  add_custom_command(
+    OUTPUT ${GEN_DIR}/test_fir_s32.h ${GEN_DIR}/test_fir_s32.c
+    COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_fir_filter_s32.py test_fir_s32 --out-dir ${GEN_DIR} ${COEF_DIR}/coefs.txt
+    DEPENDS ${COEF_DIR}/coefs.txt
     COMMENT "Generating test_fir_s32 from script" )
 
-    
-  add_custom_target(
-    generate_filter_fir_s16
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_fir_filter_s16.py test_fir_s16 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/coefs.txt
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.c
+  add_custom_command(
+    OUTPUT ${GEN_DIR}/test_fir_s16.h ${GEN_DIR}/test_fir_s16.c
+    COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_fir_filter_s16.py test_fir_16 --out-dir ${GEN_DIR} ${COEF_DIR}/coefs.txt
+    DEPENDS ${COEF_DIR}/coefs.txt
     COMMENT "Generating test_fir_s16 from script" )
 
-    
-  add_custom_target(
-    generate_filter_biquad_s32
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/lib_xs3_math/script/gen_biquad_filter_s32.py test_biquad_s32 --out-dir ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local ${CMAKE_CURRENT_SOURCE_DIR}/biquad_coefs.csv
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.c
+  add_custom_command(
+    OUTPUT ${GEN_DIR}/test_biquad_s32.h ${GEN_DIR}/test_biquad_s32.c
+    COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_biquad_filter_s32.py test_biquad_s32 --out-dir ${GEN_DIR} ${COEF_DIR}/biquad_coefs.csv
+    DEPENDS ${COEF_DIR}/coefs.txt
     COMMENT "Generating test_biquad_s32 from script" )
 
 endif()
@@ -109,11 +112,3 @@ if ( XCORE )
 endif()
 
 add_unity_to_target( ${APP_NAME} CONFIG)
-
-if ( ${Python3_FOUND} )
-
-  add_dependencies( ${APP_NAME} generate_filter_fir_s32
-                                generate_filter_fir_s16
-                                generate_filter_biquad_s32 )
-
-endif()

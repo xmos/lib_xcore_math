@@ -22,11 +22,16 @@ TEST_GROUP_RUNNER(bfp_dot) {
 }
 
 TEST_GROUP(bfp_dot);
-TEST_SETUP(bfp_dot) {}
+TEST_SETUP(bfp_dot) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_dot) {}
 
-#define REPS        (1000)
-#define MAX_LEN     1024
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_dot, bfp_s16_dot)
@@ -129,6 +134,8 @@ TEST(bfp_dot, bfp_s32_dot)
         setExtraInfo_R(v);
 
         test_case_t* casse = &casses[v];
+        
+        if(casse->length > MAX_LEN) continue;
 
         C.length = B.length = casse->length;
         B.exp = casse->b.exp;
@@ -155,7 +162,6 @@ TEST(bfp_dot, bfp_s32_dot)
 TEST(bfp_dot, bfp_s32_dot_2)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
-    seed = 0x1AC68E1C;
 
     int32_t dataB[MAX_LEN];
     int32_t dataC[MAX_LEN];

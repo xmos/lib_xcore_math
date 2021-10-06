@@ -22,7 +22,7 @@ TEST_GROUP_RUNNER(bfp_inverse) {
 }
 
 TEST_GROUP(bfp_inverse);
-TEST_SETUP(bfp_inverse) {}
+TEST_SETUP(bfp_inverse) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_inverse) {}
 
 

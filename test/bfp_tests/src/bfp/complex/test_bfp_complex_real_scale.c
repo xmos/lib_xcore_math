@@ -20,11 +20,16 @@ TEST_GROUP_RUNNER(bfp_complex_real_scale) {
 }
 
 TEST_GROUP(bfp_complex_real_scale);
-TEST_SETUP(bfp_complex_real_scale) {}
+TEST_SETUP(bfp_complex_real_scale) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_complex_real_scale) {}
 
-#define REPS        (100)
-#define MAX_LEN     40 
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 static char msg_buff[200];
@@ -87,8 +92,8 @@ TEST(bfp_complex_real_scale, bfp_complex_s16_real_scale)
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
         for(int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT16_WITHIN(1, expA.real[i], A.real[i]);
-            TEST_ASSERT_INT16_WITHIN(1, expA.imag[i], A.imag[i]);
+            TEST_ASSERT_INT16_WITHIN_MESSAGE(1, expA.real[i], A.real[i], "");
+            TEST_ASSERT_INT16_WITHIN_MESSAGE(1, expA.imag[i], A.imag[i], "");
         }
 
         
@@ -112,11 +117,13 @@ TEST(bfp_complex_real_scale, bfp_complex_s32_real_scale)
     complex_s32_t expA[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        setExtraInfo_RS(r, seed);
+        const unsigned old_seed = seed;
 
         bfp_complex_s32_init(&B, B_data,
             pseudo_rand_int(&seed, -100, 100),
             pseudo_rand_int(&seed, 1, MAX_LEN+1), 0);
+
+        setExtraInfo_RSL(r, old_seed, B.length);
 
         bfp_complex_s32_init(&A, A_data, 0, B.length, 0);
 
@@ -143,7 +150,8 @@ TEST(bfp_complex_real_scale, bfp_complex_s32_real_scale)
         
         TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
         
-        TEST_ASSERT_LESS_OR_EQUAL_MESSAGE(2, A.hr, "[A.hr is too large.]");
+        if(C.mant != 0)
+          TEST_ASSERT_LESS_OR_EQUAL_MESSAGE(2, A.hr, "[A.hr is too large.]");
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, MAX_LEN, A.exp);
 

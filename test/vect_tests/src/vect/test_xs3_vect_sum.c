@@ -22,7 +22,7 @@ TEST_GROUP_RUNNER(xs3_vect_sum) {
 }
 
 TEST_GROUP(xs3_vect_sum);
-TEST_SETUP(xs3_vect_sum) {}
+TEST_SETUP(xs3_vect_sum) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_sum) {}
 
 
@@ -86,8 +86,14 @@ TEST(xs3_vect_sum, xs3_vect_s16_sum_basic)
 }
 
 
-#define MAX_LEN     200
-#define REPS        (100)
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_sum, xs3_vect_s16_sum_random)
 {
@@ -173,8 +179,14 @@ TEST(xs3_vect_sum, xs3_vect_s32_sum_basic)
 }
 
 
-#define MAX_LEN     200
-#define REPS        (100)
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_sum, xs3_vect_s32_sum_random)
 {

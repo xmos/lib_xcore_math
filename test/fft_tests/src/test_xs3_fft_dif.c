@@ -7,7 +7,7 @@
 #include "tst_common.h"
 #include "fft.h"
 #include "unity_fixture.h"
-#include "../src/vect/xs3_fft_lut.h"
+#include "xs3_fft_lut.h"
 
 
 TEST_GROUP_RUNNER(xs3_fft_dif) {
@@ -18,7 +18,7 @@ TEST_GROUP_RUNNER(xs3_fft_dif) {
 }
 
 TEST_GROUP(xs3_fft_dif);
-TEST_SETUP(xs3_fft_dif) {}
+TEST_SETUP(xs3_fft_dif) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_fft_dif) {}
 
 
@@ -38,8 +38,10 @@ TEST_TEAR_DOWN(xs3_fft_dif) {}
 
 TEST(xs3_fft_dif, xs3_fft_dif_forward_complete)
 {
+#define FUNC_NAME "xs3_fft_dif_forward_complete"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 0x6999B20C;
@@ -96,20 +98,24 @@ TEST(xs3_fft_dif, xs3_fft_dif_forward_complete)
         }
 
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, FFT_N, worst_case);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, FFT_N, worst_case);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
         fprintf(perf_file, "%s, %u, %u, -,\n", "xs3_fft_dif_forward", FFT_N, worst_case);
 #endif
+
+#undef FUNC_NAME
     }
 }
 
 
 TEST(xs3_fft_dif, xs3_fft_dif_inverse_complete)
 {
+#define FUNC_NAME "xs3_fft_dif_inverse_complete"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 1;
@@ -173,20 +179,24 @@ TEST(xs3_fft_dif, xs3_fft_dif_inverse_complete)
 
 
 #if PRINT_ERRORS
-        printf("    %s worst error (%u-point): %u\n", __func__, FFT_N, worst_case);
+        printf("    %s worst error (%u-point): %u\n", FUNC_NAME, FFT_N, worst_case);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
         fprintf(perf_file, "%s, %u, %u, -,\n", "xs3_fft_dif_inverse", FFT_N, worst_case);
 #endif
+
+#undef FUNC_NAME
     }
 }
 
 
 TEST(xs3_fft_dif, xs3_fft_dif_forward)
 {
+#define FUNC_NAME "xs3_fft_dif_forward"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 1;
@@ -233,20 +243,24 @@ TEST(xs3_fft_dif, xs3_fft_dif_forward)
         }
 
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, FFT_N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, FFT_N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
         fprintf(perf_file, "%s, %u,, %0.02f,\n", &(__func__[5]), FFT_N, worst_timing);
 #endif
+
+#undef FUNC_NAME
     }
 }
 
 
 TEST(xs3_fft_dif, xs3_fft_dif_inverse)
 {
+#define FUNC_NAME "xs3_fft_dif_inverse"
+
 #if PRINT_FUNC_NAMES
-    printf("%s..\n", __func__);
+    printf("\n%s..\n", FUNC_NAME);
 #endif
 
     unsigned r = 1;
@@ -292,11 +306,13 @@ TEST(xs3_fft_dif, xs3_fft_dif_inverse)
             TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(a, FFT_N), headroom, "Reported headroom was incorrect.");
         }
 #if TIME_FUNCS
-        printf("    %s (%u-point): %f us\n", __func__, FFT_N, worst_timing);
+        printf("    %s (%u-point): %f us\n", FUNC_NAME, FFT_N, worst_timing);
 #endif
 
 #if WRITE_PERFORMANCE_INFO
         fprintf(perf_file, "%s, %u,, %0.02f,\n", &(__func__[5]), FFT_N, worst_timing);
 #endif
     }
+
+#undef FUNC_NAME
 }

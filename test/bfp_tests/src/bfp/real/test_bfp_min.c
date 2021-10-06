@@ -19,11 +19,16 @@ TEST_GROUP_RUNNER(bfp_min) {
   RUN_TEST_CASE(bfp_min, bfp_s32_min);
 }
 TEST_GROUP(bfp_min);
-TEST_SETUP(bfp_min) {}
+TEST_SETUP(bfp_min) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_min) {}
 
-#define REPS        1000
-#define MAX_LEN     1024 
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_min, bfp_s16_min)

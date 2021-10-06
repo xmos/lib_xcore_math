@@ -22,11 +22,16 @@ TEST_GROUP_RUNNER(bfp_headroom) {
 }
 
 TEST_GROUP(bfp_headroom);
-TEST_SETUP(bfp_headroom) {}
+TEST_SETUP(bfp_headroom) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_headroom) {}
 
-#define REPS        (1000)
-#define MAX_LEN     1024
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_headroom, bfp_s16_headroom)

@@ -14,23 +14,35 @@
 #define SET_TEST_FILE()     Unity.TestFile = __FILE__
 
 #ifndef PRINT_FUNC_NAMES
-#define PRINT_FUNC_NAMES 1
+# ifdef __xcore__
+#  define PRINT_FUNC_NAMES 1
+# else
+#  define PRINT_FUNC_NAMES 0
+# endif
 #endif
 
 #ifndef PRINT_ERRORS
-#define PRINT_ERRORS 0
+# define PRINT_ERRORS 0
 #endif
 
 #ifndef TIME_FUNCS
-#define TIME_FUNCS 1
+# ifdef __xcore__
+#  define TIME_FUNCS 1
+# else
+#  define TIME_FUNCS 0
+# endif
 #endif
 
 #ifndef WRITE_PERFORMANCE_INFO
-#define WRITE_PERFORMANCE_INFO 1
+# ifdef __xcore__
+#  define WRITE_PERFORMANCE_INFO 1
+# else
+#  define WRITE_PERFORMANCE_INFO 0
+# endif
 #endif
 
 #ifndef PERFORMANCE_INFO_FILENAME
-#define PERFORMANCE_INFO_FILENAME  "perf_info.csv"
+# define PERFORMANCE_INFO_FILENAME  "perf_info.csv"
 #endif
 
 #define TEST_ASSERT_CONVERSION(V) do{ \

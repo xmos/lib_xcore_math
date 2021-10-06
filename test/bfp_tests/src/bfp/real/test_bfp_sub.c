@@ -20,7 +20,7 @@ TEST_GROUP_RUNNER(bfp_sub) {
 }
 
 TEST_GROUP(bfp_sub);
-TEST_SETUP(bfp_sub) {}
+TEST_SETUP(bfp_sub) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_sub) {}
 
 #define REPS        1000

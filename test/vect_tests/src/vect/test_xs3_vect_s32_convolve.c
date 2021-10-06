@@ -25,13 +25,18 @@ TEST_GROUP_RUNNER(xs3_vect_convolve) {
 }
 
 TEST_GROUP(xs3_vect_convolve);
-TEST_SETUP(xs3_vect_convolve) {}
+TEST_SETUP(xs3_vect_convolve) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_convolve) {}
 
 
-#define MAX_LEN     255
 
-#define REPS        100
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (63)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (255)
+#endif
 
 
 TEST(xs3_vect_convolve, xs3_vect_s32_convolve_valid)

@@ -23,7 +23,7 @@ TEST_GROUP_RUNNER(xs3_filter_fir_s32) {
 }
 
 TEST_GROUP(xs3_filter_fir_s32);
-TEST_SETUP(xs3_filter_fir_s32) {}
+TEST_SETUP(xs3_filter_fir_s32) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_filter_fir_s32) {}
 
 static char msg_buff[200];
@@ -162,7 +162,12 @@ TEST(xs3_filter_fir_s32, case2)
           are nearly maximum magnitude. Samples probably wouldn't be either.
 */
 #define MAX_TAPS    128
-#define REPS        500
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#else
+#  define REPS       (1000)
+#endif
 TEST(xs3_filter_fir_s32, case3)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();

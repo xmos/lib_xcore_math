@@ -25,7 +25,7 @@ TEST_GROUP_RUNNER(xs3_vect_complex_squared_mag) {
 }
 
 TEST_GROUP(xs3_vect_complex_squared_mag);
-TEST_SETUP(xs3_vect_complex_squared_mag) {}
+TEST_SETUP(xs3_vect_complex_squared_mag) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_complex_squared_mag) {}
 
 

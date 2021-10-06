@@ -25,7 +25,7 @@ TEST_GROUP_RUNNER(xs3_vect_shr) {
 }
 
 TEST_GROUP(xs3_vect_shr);
-TEST_SETUP(xs3_vect_shr) {}
+TEST_SETUP(xs3_vect_shr) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_shr) {}
 
 
@@ -38,8 +38,13 @@ static char msg_buff[200];
     }} while(0)
 
 
-#define MAX_LEN     256
-#define REPS        1000
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(xs3_vect_shr, xs3_vect_s16_shr_basic)

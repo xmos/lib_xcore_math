@@ -11,7 +11,7 @@
 
 static int32_t merge_acc(const int16_t high, const uint16_t low)
 {
-  return (((int32_t)high) << 16) + low;
+  return (((int32_t)high) << 16) | (0x0000FFFF & low);
 }
 
 static void split_acc(int16_t* high, uint16_t* low, const int32_t acc)
@@ -28,7 +28,8 @@ void xs3_mat_mul_s8_x_s8_yield_s32 (
     const unsigned M_rows,
     const unsigned N_cols)
 {
-  const int acc_groups = M_rows >> VPU_INT8_ACC_PERIOD_LOG2;
+  const int acc_groups = (M_rows + VPU_INT8_ACC_PERIOD - 1) 
+                            >> VPU_INT8_ACC_PERIOD_LOG2;
 
   for(int ag = 0; ag < acc_groups; ag++){
     for(int o = 0; o < VPU_INT8_ACC_PERIOD; o++){
@@ -45,3 +46,4 @@ void xs3_mat_mul_s8_x_s8_yield_s32 (
     }
   }
 }
+

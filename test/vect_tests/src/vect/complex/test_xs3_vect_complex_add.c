@@ -22,7 +22,7 @@ TEST_GROUP_RUNNER(xs3_vect_complex_add) {
 }
 
 TEST_GROUP(xs3_vect_complex_add);
-TEST_SETUP(xs3_vect_complex_add) {}
+TEST_SETUP(xs3_vect_complex_add) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_complex_add) {}
 
 

@@ -7,20 +7,14 @@ endif()
 
 project(xmos-lib_xs3_math)
 
-set(BUILD_TESTS    ON CACHE BOOL "Include unit tests as CMake targets." )
-set(BUILD_EXAMPLES ON CACHE BOOL "Include examples as CMake targets."   )
+## Set up the build options
+include(etc/build_options.cmake)
 
-## fetch dependencies
-include(FetchContent)
+## Fetch the Unity repo as a dependency
+include(etc/fetch_unity.cmake)
 
-FetchContent_Declare(
-  unity
-  GIT_REPOSITORY https://github.com/ThrowTheSwitch/Unity.git
-  GIT_TAG        v2.5.2
-  GIT_SHALLOW    TRUE
-  SOURCE_DIR     unity
-)
-FetchContent_Populate(unity)
+
+find_package( Python3 COMPONENTS Interpreter )
 
 ## Compile flags for C/C++ for all libs and apps (for all platforms)
 list(APPEND   COMPILE_FLAGS        -Os -g -MMD   )
@@ -34,8 +28,6 @@ list(APPEND   COMPILE_FLAGS ${COMPILE_FLAGS_${CMAKE_SYSTEM_NAME}} )
 
 
 ## CMake configuration stuff
-
-# list( APPEND  CMAKE_C_SOURCE_FILE_EXTENSIONS  xc )
 
 enable_language( C CXX ASM )
 

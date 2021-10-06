@@ -3,7 +3,7 @@
 
 
 #include "bfp_math.h"
-#include "../vect/xs3_fft_lut.h"
+#include "xs3_fft_lut.h"
 
 #include <assert.h>
 #include <stdio.h>

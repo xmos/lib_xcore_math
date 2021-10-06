@@ -25,13 +25,16 @@ TEST_GROUP_RUNNER(bfp_convolve) {
 }
 
 TEST_GROUP(bfp_convolve);
-TEST_SETUP(bfp_convolve) {}
+TEST_SETUP(bfp_convolve) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_convolve) {}
 
-
-#define MAX_LEN     255
-
-#define REPS        100
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_convolve, xs3_vect_s32_convolve_valid)

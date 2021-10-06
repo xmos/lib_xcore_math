@@ -24,7 +24,7 @@ list( APPEND  SOURCES_XCORE   ${SOURCES_XC}    )
 list( APPEND  SOURCES         ${SOURCES_${CMAKE_SYSTEM_NAME}} )
 
 # set( XSCOPE_CONFIG config.xscope )
-get_filename_component(XSCOPE_CONFIG config.xscope ABSOLUTE)
+get_filename_component(XSCOPE_CONFIG ../etc/config.xscope ABSOLUTE)
 
 ## Compile flags
 unset(COMPILE_FLAGS)
@@ -37,6 +37,8 @@ unset(COMPILE_FLAGS_Linux)
 list( APPEND  COMPILE_FLAGS_Linux   "" )
 
 list( APPEND  COMPILE_FLAGS ${COMPILE_FLAGS_${CMAKE_SYSTEM_NAME}} )
+
+list(APPEND   COMPILE_FLAGS ${TEST_DEFS} )
 
 ## Linker flags
 unset(LINKER_FLAGS)

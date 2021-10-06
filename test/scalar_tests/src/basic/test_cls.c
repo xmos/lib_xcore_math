@@ -24,14 +24,17 @@ TEST_GROUP_RUNNER(CLS_macro) {
 }
 
 TEST_GROUP(CLS_macro);
-TEST_SETUP(CLS_macro) {}
+TEST_SETUP(CLS_macro) { fflush(stdout); }
 TEST_TEAR_DOWN(CLS_macro) {}
 
 
 static char msg_buff[200];
 
-
-#define N        (1000)
+#if SMOKE_TEST
+#  define N       (100)
+#else
+#  define N       (1000)
+#endif
 
 TEST(CLS_macro, cls)
 {

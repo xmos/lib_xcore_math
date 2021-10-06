@@ -117,6 +117,8 @@ int8_t vlsat8(
 {
     vpu_int8_acc_t s = acc;
 
+    if(sat >= 32) return (acc >= 0)? 0 : -1;
+
     if(sat > 0)
         s = ((acc >> (sat-1)) + 1) >> 1;
 
@@ -225,6 +227,8 @@ int16_t vlsat16(
     const unsigned sat)
 {
     vpu_int16_acc_t s = acc;
+
+    if(sat >= 32) return (acc >= 0)? 0 : -1;
 
     if(sat > 0)
         s = ((acc >> (sat-1)) + 1) >> 1;
@@ -362,6 +366,8 @@ int32_t vlsat32(
     const unsigned sat)
 {
     vpu_int32_acc_t s = acc;
+
+    if(sat >= 39) return (acc >= 0)? 0 : -1;
 
     if(sat > 0)
         s = ((acc >> (sat-1)) + 1) >> 1;

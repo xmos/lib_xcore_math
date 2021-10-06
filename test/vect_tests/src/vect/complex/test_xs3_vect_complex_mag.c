@@ -25,7 +25,7 @@ TEST_GROUP_RUNNER(xs3_vect_complex_mag) {
 }
 
 TEST_GROUP(xs3_vect_complex_mag);
-TEST_SETUP(xs3_vect_complex_mag) {}
+TEST_SETUP(xs3_vect_complex_mag) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_complex_mag) {}
 
 
@@ -94,7 +94,7 @@ static int32_t mag_complex_s32(complex_s32_t b, right_shift_t b_shr)
 }
 
 
-#define REPS        1000
+#define REPS        ((SMOKE_TEST)?100:1000)
 TEST(xs3_vect_complex_mag, xs3_vect_complex_s32_mag_prepare)
 {
     
@@ -226,8 +226,15 @@ TEST(xs3_vect_complex_mag, xs3_vect_complex_s16_mag_basic)
 #undef THRESHOLD
 
 
-#define MAX_LEN     100
-#define REPS        1000
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
+
 #define THRESHOLD   10
 
 TEST(xs3_vect_complex_mag, xs3_vect_complex_s16_mag_random)
@@ -380,8 +387,15 @@ TEST(xs3_vect_complex_mag, xs3_vect_complex_s32_mag_basic)
 #undef THRESHOLD
 
 
-#define MAX_LEN     100
-#define REPS        1000
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
+
 #define THRESHOLD   7
 
 TEST(xs3_vect_complex_mag, xs3_vect_complex_s32_mag_random)

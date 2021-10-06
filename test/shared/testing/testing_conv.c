@@ -274,6 +274,18 @@ complex_s32_t conv_complex_double_to_complex_s32(
     return r;
 }
 
+complex_s64_t conv_complex_double_to_complex_s64(
+    complex_double_t x, 
+    const exponent_t x_exp, 
+    conv_error_e* error)
+{
+    complex_s64_t r;
+    r.re = conv_double_to_s64(x.re, x_exp, error);
+    r.im = conv_double_to_s64(x.im, x_exp, error);
+
+    return r;
+}
+
 
 /*
     Vector conversions

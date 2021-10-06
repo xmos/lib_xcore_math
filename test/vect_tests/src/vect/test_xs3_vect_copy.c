@@ -14,7 +14,7 @@
 #include "unity_fixture.h"
 
 TEST_GROUP(xs3_vect_copy);
-TEST_SETUP(xs3_vect_copy) {}
+TEST_SETUP(xs3_vect_copy) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_copy) {}
 
 TEST_GROUP_RUNNER(xs3_vect_copy) {
@@ -22,8 +22,15 @@ TEST_GROUP_RUNNER(xs3_vect_copy) {
 }
 
 
-#define REPS        100
-#define MAX_VECTS    40
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_VECTS  (10)
+#else
+#  define REPS       (1000)
+#  define MAX_VECTS  (40)
+#endif
+
 #define MAX_LEN     (MAX_VECTS * 8)
 
 TEST(xs3_vect_copy, xs3_vect_s32_copy)

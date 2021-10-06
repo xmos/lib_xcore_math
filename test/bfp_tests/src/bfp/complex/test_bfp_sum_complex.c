@@ -20,11 +20,16 @@ TEST_GROUP_RUNNER(bfp_complex_sum) {
 }
 
 TEST_GROUP(bfp_complex_sum);
-TEST_SETUP(bfp_complex_sum) {}
+TEST_SETUP(bfp_complex_sum) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_complex_sum) {}
 
-#define REPS        (100)
-#define MAX_LEN     1024 
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_complex_sum, bfp_complex_s16_sum)
@@ -74,44 +79,45 @@ TEST(bfp_complex_sum, bfp_complex_s32_sum)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
+    conv_error_e error = 0;
+
     complex_s32_t B_data[MAX_LEN];
     
     bfp_complex_s32_t B;
 
 
     for(int r = 0; r < REPS; r++){
-        setExtraInfo_RS(r, seed);
+        const unsigned old_seed = seed;
 
         bfp_complex_s32_init(&B, B_data, pseudo_rand_int(&seed, -100, 100),
-            pseudo_rand_uint(&seed, 0, MAX_LEN+1), 0);
+            pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
+            
+        setExtraInfo_RSL(r, old_seed, B.length);
 
         B.hr = pseudo_rand_uint(&seed, 0, 6);
 
-        complex_double_t expected = {0, 0};
-
         for(int i = 0; i < B.length; i++){
-
             // Use only positive values so that they tend not to cancel out (which they might in practice)
             B.data[i].re = pseudo_rand_int(&seed, 0, INT32_MAX) >> B.hr;
             B.data[i].im = pseudo_rand_int(&seed, 0, INT32_MAX) >> B.hr;
-
-            expected.re += ldexp(B.data[i].re, B.exp);
-            expected.im += ldexp(B.data[i].im, B.exp);
         }
 
         bfp_complex_s32_headroom(&B);
 
         float_complex_s64_t result = bfp_complex_s32_sum(&B);
-
+      
         TEST_ASSERT_GREATER_OR_EQUAL(B.exp, result.exp);
 
-        complex_double_t fl = { ldexp(result.mant.re, result.exp), ldexp(result.mant.im, result.exp) };
+        right_shift_t shr = result.exp - B.exp;
+        
+        complex_s64_t expected = {0, 0};
 
-        complex_double_t ds = { 
-            fabs((expected.re - fl.re) / expected.re),
-            fabs((expected.im - fl.im) / expected.im) };
+        for(int i = 0; i < B.length; i++){
+          expected.re += (B.data[i].re + (shr? (1<<(shr-1)) : 0)) >> shr;
+          expected.im += (B.data[i].im + (shr? (1<<(shr-1)) : 0)) >> shr;
+        }
 
-        TEST_ASSERT(ds.re <= ldexp(1, -20));
-        TEST_ASSERT(ds.im <= ldexp(1, -20));
+        TEST_ASSERT_INT64_WITHIN_MESSAGE(1, expected.re, result.mant.re, "Real Part");
+        TEST_ASSERT_INT64_WITHIN_MESSAGE(1, expected.im, result.mant.im, "Imag Part");
     }
 }

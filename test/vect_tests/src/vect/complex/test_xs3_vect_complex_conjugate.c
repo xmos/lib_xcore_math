@@ -21,13 +21,19 @@ TEST_GROUP_RUNNER(xs3_vect_complex_conjugate) {
 }
 
 TEST_GROUP(xs3_vect_complex_conjugate);
-TEST_SETUP(xs3_vect_complex_conjugate) {}
+TEST_SETUP(xs3_vect_complex_conjugate) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_complex_conjugate) {}
 
 
 
-#define REPS        100
-#define MAX_LEN     257
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (65)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (257)
+#endif
 
 TEST(xs3_vect_complex_conjugate, xs3_vect_complex_s32_conjugate)
 {

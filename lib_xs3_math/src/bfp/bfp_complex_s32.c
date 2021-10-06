@@ -388,9 +388,7 @@ void bfp_complex_s32_conjugate(
 #endif
 
     a->exp = b->exp;
-    a->hr = b->hr;
-
-    xs3_vect_complex_s32_conjugate(a->data, b->data, b->length);
+    a->hr = xs3_vect_complex_s32_conjugate(a->data, b->data, b->length);
 }
 
 

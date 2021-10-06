@@ -14,7 +14,7 @@
 #include "unity_fixture.h"
 
 TEST_GROUP(xs3_vect_mul);
-TEST_SETUP(xs3_vect_mul) {}
+TEST_SETUP(xs3_vect_mul) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_mul) {}
 
 TEST_GROUP_RUNNER(xs3_vect_mul) {
@@ -80,8 +80,14 @@ static int32_t mul_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 }
 
 
-#define REPS        1000
-#define MAX_LEN     256
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 
 TEST(xs3_vect_mul, xs3_vect_s16_mul_prepare)
@@ -238,7 +244,6 @@ TEST(xs3_vect_mul, xs3_vect_s16_mul_basic)
 TEST(xs3_vect_mul, xs3_vect_s16_mul_random)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
-    seed = 0xC18211F2;
 
     headroom_t hr;
     int16_t A[MAX_LEN];

@@ -24,7 +24,7 @@ TEST_GROUP_RUNNER(xs3_vect_complex_real_mul) {
 }
 
 TEST_GROUP(xs3_vect_complex_real_mul);
-TEST_SETUP(xs3_vect_complex_real_mul) {}
+TEST_SETUP(xs3_vect_complex_real_mul) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_complex_real_mul) {}
 
 
@@ -79,7 +79,7 @@ static complex_s32_t mul_complex_s32(
 }
 
 
-#define REPS   (1000)
+#define REPS        ((SMOKE_TEST)?100:1000)
 
 
 TEST(xs3_vect_complex_real_mul, xs3_vect_complex_s16_real_mul_prepare)
@@ -216,8 +216,13 @@ TEST(xs3_vect_complex_real_mul, xs3_vect_complex_s16_real_mul_basic)
 }
 
 
-#define MAX_LEN     100
-#define REPS        (100)
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_complex_real_mul, xs3_vect_complex_s16_real_mul_random)
 {
@@ -366,8 +371,13 @@ TEST(xs3_vect_complex_real_mul, xs3_vect_complex_s32_real_mul_basic)
 }
 
 
-#define MAX_LEN     100
-#define REPS        (100)
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_complex_real_mul, xs3_vect_complex_s32_real_mul_random)
 {

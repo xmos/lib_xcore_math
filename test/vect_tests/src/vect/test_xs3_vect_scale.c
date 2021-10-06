@@ -23,7 +23,7 @@ TEST_GROUP_RUNNER(xs3_vect_scale) {
 }
 
 TEST_GROUP(xs3_vect_scale);
-TEST_SETUP(xs3_vect_scale) {}
+TEST_SETUP(xs3_vect_scale) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_scale) {}
 
 
@@ -50,8 +50,14 @@ static int32_t scalar_mul_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 }
 
 
-#define REPS        1000
-#define MAX_LEN     256
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 
 TEST(xs3_vect_scale, xs3_vect_s16_scale_prepare)

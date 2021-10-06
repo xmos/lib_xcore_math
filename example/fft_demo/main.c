@@ -80,8 +80,11 @@ void fft_mono_example()
 
   // bfp_fft_forward_mono() operates on data in-place. We'll print out the buffer address before
   // and after the transformation to convince ourselves of this.
+#ifdef __xcore__
   printf("&x.data[0] --> 0x%08X\n", (unsigned) &x.data[0]);
+#endif
   printf("x.length --> %u\n\n", x.length);
+
 
   // Apply the FFT.
   // This function takes a pointer to the input (time-domain, usually) BFP vector, and returns
@@ -123,7 +126,9 @@ void fft_mono_example()
   }
 
   // Print out the buffer address and vector length of X, the frequency-domain signal
+#ifdef __xcore__
   printf("&X->data[0] --> 0x%08X\n", (unsigned) &X->data[0]);
+#endif
   printf("X->length --> %u\n\n", X->length);
 
   // Print out the complex BFP vector X  
@@ -375,7 +380,9 @@ void fft_complex_example()
 
   // bfp_fft_forward_complex() operates on data in-place. We'll print out the buffer address before
   // and after the transformation to convince ourselves of this.
+#ifdef __xcore__
   printf("&x.data[0] --> 0x%08X\n", (unsigned) &x.data[0]);
+#endif
   printf("x.length --> %u\n\n", x.length);
 
   // Apply the FFT.
@@ -408,7 +415,9 @@ void fft_complex_example()
   bfp_complex_s32_t* X = &x;
 
   // Print out the address and length of the complex frequency spectrum
+#ifdef __xcore__
   printf("&X->data[0] --> 0x%08X\n", (unsigned) &X->data[0]);
+#endif
   printf("X->length --> %u\n\n", X->length);
   
   // Print out the floating-point equivalent of the complex frequency spectrum

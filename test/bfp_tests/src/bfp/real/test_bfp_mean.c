@@ -20,11 +20,16 @@ TEST_GROUP_RUNNER(bfp_mean) {
 }
 
 TEST_GROUP(bfp_mean);
-TEST_SETUP(bfp_mean) {}
+TEST_SETUP(bfp_mean) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_mean) {}
 
-#define REPS        1000
-#define MAX_LEN     1024 
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_mean, bfp_s16_mean)

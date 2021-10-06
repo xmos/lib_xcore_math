@@ -18,14 +18,14 @@ TEST_GROUP_RUNNER(xs3_mat_mul_s8_x_s8_yield_s32) {
 }
 
 TEST_GROUP(xs3_mat_mul_s8_x_s8_yield_s32);
-TEST_SETUP(xs3_mat_mul_s8_x_s8_yield_s32) {}
+TEST_SETUP(xs3_mat_mul_s8_x_s8_yield_s32) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_mat_mul_s8_x_s8_yield_s32) {}
 
 static char detail_buff[200];
 
 #define MAX_OUT_GROUPS  (16)
 #define MAX_IN_GROUPS   (16)
-#define REPS            (1000)
+#define REPS            ((SMOKE_TEST)?100:1000)
 
 #define MAX_ROWS        (MAX_OUT_GROUPS * VPU_INT8_ACC_PERIOD)
 #define MAX_COLS        (MAX_IN_GROUPS * VPU_INT8_EPV)

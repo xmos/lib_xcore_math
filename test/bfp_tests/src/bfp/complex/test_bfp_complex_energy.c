@@ -20,11 +20,16 @@ TEST_GROUP_RUNNER(bfp_complex_energy) {
 }
 
 TEST_GROUP(bfp_complex_energy);
-TEST_SETUP(bfp_complex_energy) {}
+TEST_SETUP(bfp_complex_energy) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_complex_energy) {}
 
-#define REPS        (100)
-#define MAX_LEN     1024 
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_complex_energy, bfp_complex_s16_energy)
@@ -75,7 +80,6 @@ TEST(bfp_complex_energy, bfp_complex_s16_energy)
 TEST(bfp_complex_energy, bfp_complex_s32_energy)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
-    seed = 0x79657C78;
 
     complex_s32_t B_data[MAX_LEN];
     

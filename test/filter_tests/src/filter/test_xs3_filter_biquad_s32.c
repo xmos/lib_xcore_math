@@ -20,7 +20,7 @@ TEST_GROUP_RUNNER(xs3_filter_biquad_s32) {
 }
 
 TEST_GROUP(xs3_filter_biquad_s32);
-TEST_SETUP(xs3_filter_biquad_s32) {}
+TEST_SETUP(xs3_filter_biquad_s32) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_filter_biquad_s32) {}
 
 static char msg_buff[200];

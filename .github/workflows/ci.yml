@@ -25,8 +25,8 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  build_tests:
-    name: Build tests
+  build_tests_xcore:
+    name: Build tests (XCore)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -48,7 +48,58 @@ jobs:
 
       - name: Build
         run: |
-          docker run --user $(id -u) --rm -w /lib_xs3_math -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/sdk_app_builder:develop bash -l .github/scripts/build_tests.sh
+          mkdir ~/artifacts
+          docker run --user $(id -u) --rm -w /lib_xs3_math -v ${{ github.workspace }}:/lib_xs3_math -v ~/artifacts:/artifacts ghcr.io/xmos/sdk_app_builder:develop bash -l .github/scripts/build_tests_xcore.sh
+
+      - name: Save Unit Test Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit_tests
+          path: ~/artifacts
+          retention-days: 5
+
+  build_tests_x86:
+    name: Build & Run Tests (x86)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
+      
+      - name: Build Tests
+        working-directory: ~
+        run: |
+          cmake -B build.x86 ${{ github.workspace }}
+          cmake --build build.x86
+
+      - name: "Run Tests: scalar_tests"
+        working-directory: ~
+        run: ./build.x86/test/scalar_tests/scalar_tests -v
+
+      - name: "Run Tests: vect_tests"
+        working-directory: ~
+        run: ./build.x86/test/vect_tests/vect_tests     -v
+
+      - name: "Run Tests: bfp_tests"
+        working-directory: ~
+        run: ./build.x86/test/bfp_tests/bfp_tests       -v
+
+      - name: "Run Tests: fft_tests"
+        working-directory: ~
+        run: ./build.x86/test/fft_tests/fft_tests       -v
+
+      - name: "Run Tests: filter_tests"
+        working-directory: ~
+        run: ./build.x86/test/filter_tests/filter_tests -v
 
   build_documentation:
     name: Build and package documentation

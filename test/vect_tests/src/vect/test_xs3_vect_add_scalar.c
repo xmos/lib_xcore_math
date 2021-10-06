@@ -22,14 +22,18 @@ TEST_GROUP_RUNNER(xs3_vect_add_scalar) {
 }
 
 TEST_GROUP(xs3_vect_add_scalar);
-TEST_SETUP(xs3_vect_add_scalar) {}
+TEST_SETUP(xs3_vect_add_scalar) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_add_scalar) {}
 
 
-#define MAX_LEN     256
-#define REPS        1000
 
-
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_add_scalar, xs3_vect_s16_add_scalar)
 {

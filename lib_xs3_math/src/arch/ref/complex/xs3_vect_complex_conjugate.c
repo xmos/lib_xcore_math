@@ -10,7 +10,7 @@
 
 
 
-void xs3_vect_complex_s32_conjugate(
+headroom_t xs3_vect_complex_s32_conjugate(
     complex_s32_t a[],
     const complex_s32_t b[],
     const unsigned length)
@@ -19,6 +19,8 @@ void xs3_vect_complex_s32_conjugate(
         a[k].re = vlmul32(b[k].re,  0x40000000);
         a[k].im = vlmul32(b[k].im, -0x40000000);
     }
+
+    return xs3_vect_complex_s32_headroom(a, length);
 }
 
 

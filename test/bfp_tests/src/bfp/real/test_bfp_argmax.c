@@ -19,11 +19,17 @@ TEST_GROUP_RUNNER(bfp_argmax) {
   RUN_TEST_CASE(bfp_argmax, bfp_s32_argmax);
 }
 TEST_GROUP(bfp_argmax);
-TEST_SETUP(bfp_argmax) {}
+TEST_SETUP(bfp_argmax) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_argmax) {}
 
-#define REPS        1000
-#define MAX_LEN     1024 
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
+#endif
 
 
 TEST(bfp_argmax, bfp_s16_argmax)

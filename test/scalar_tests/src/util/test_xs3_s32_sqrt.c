@@ -19,11 +19,16 @@ TEST_GROUP_RUNNER(xs3_s32_sqrt) {
 }
 
 TEST_GROUP(xs3_s32_sqrt);
-TEST_SETUP(xs3_s32_sqrt) {}
+TEST_SETUP(xs3_s32_sqrt) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_s32_sqrt) {}
 
 
-#define N        1000
+
+#if SMOKE_TEST
+#  define N       (100)
+#else
+#  define N       (1000)
+#endif
 
 TEST(xs3_s32_sqrt, xs3_s32_sqrt)
 {

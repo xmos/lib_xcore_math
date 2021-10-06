@@ -20,7 +20,7 @@ TEST_GROUP_RUNNER(bfp_fft) {
 }
 
 TEST_GROUP(bfp_fft);
-TEST_SETUP(bfp_fft) {}
+TEST_SETUP(bfp_fft) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_fft) {}
 
 

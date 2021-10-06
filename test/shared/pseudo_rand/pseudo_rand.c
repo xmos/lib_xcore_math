@@ -84,8 +84,9 @@ uint32_t pseudo_rand_uint(
 
 
 void pseudo_rand_bytes(unsigned *r, char* buffer, unsigned size){
-
+#ifdef __xcore__
     assert((((unsigned)buffer) & 0x3) == 0);
+#endif
 
     unsigned b = 0;
 

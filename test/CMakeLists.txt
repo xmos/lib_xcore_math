@@ -1,4 +1,13 @@
-## Just adds more subdirs to the cmake build.
+
+## Defines for tests
+
+unset(TEST_DEFS)
+if( ${SMOKE_TEST} )
+  list(APPEND   TEST_DEFS      -DSMOKE_TEST=1  )
+else()
+  list(APPEND   TEST_DEFS      -DSMOKE_TEST=0  )
+endif()
+
 
 ## Some simple local libraries used by unit test apps
 add_subdirectory( shared )

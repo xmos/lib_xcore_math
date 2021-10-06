@@ -33,6 +33,31 @@ list( APPEND  LIB_XS3_MATH_COMPILE_FLAGS    ${LIB_XS3_MATH_COMPILE_FLAGS_${CMAKE
 
 list( APPEND  LIB_XS3_MATH_SOURCES  ${LIB_XS3_MATH_SOURCES_${CMAKE_SYSTEM_NAME}}        )
 
+
+
+if ( NOT ${GEN_FFT_LUT} )
+  # Don't auto-generate the FFT LUT
+  if( ${USE_DEFAULT_FFT_LUT} )
+    # Use the FFT LUT stored in the repository
+    set( XS3_FFT_LUT_FALLBACK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/etc/xs3_fft_lut )
+    set( FFT_LUT_FILE "xs3_fft_lut" )
+    set( FFT_LUT_FILE_SOURCE  ${XS3_FFT_LUT_FALLBACK_DIR}/${FFT_LUT_FILE}.c )
+    set( FFT_LUT_FILE_HEADER  ${XS3_FFT_LUT_FALLBACK_DIR}/${FFT_LUT_FILE}.h )
+
+    list( APPEND LIB_XS3_MATH_SOURCES  ${FFT_LUT_FILE_SOURCE} )
+    list( APPEND LIB_XS3_MATH_INCLUDES ${XS3_FFT_LUT_FALLBACK_DIR} )
+  else()
+    # Otherwise, the user must use the provided python script to generate their own. See the Notes
+    # section in the documentation for details.
+  endif()
+endif()   
+
+
+
+
+
+
+
 ## cmake doesn't recognize .S files as assembly by default
 set_source_files_properties( ${LIB_XS3_MATH_ASM_SOURCES} PROPERTIES LANGUAGE ASM )
 

@@ -24,7 +24,7 @@ TEST_GROUP_RUNNER(xs3_vect_complex_conj_mul) {
 }
 
 TEST_GROUP(xs3_vect_complex_conj_mul);
-TEST_SETUP(xs3_vect_complex_conj_mul) {}
+TEST_SETUP(xs3_vect_complex_conj_mul) { fflush(stdout); }
 TEST_TEAR_DOWN(xs3_vect_complex_conj_mul) {}
 
 
@@ -197,8 +197,14 @@ TEST(xs3_vect_complex_conj_mul, xs3_vect_complex_s16_conj_mul_basic)
 }
 
 
-#define MAX_LEN     100
-#define REPS        (100)
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_complex_conj_mul, xs3_vect_complex_s16_conj_mul_random)
 {
@@ -360,8 +366,14 @@ TEST(xs3_vect_complex_conj_mul, xs3_vect_complex_s32_conj_mul_basic)
 }
 
 
-#define MAX_LEN     100
-#define REPS        (100)
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (64)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (256)
+#endif
 
 TEST(xs3_vect_complex_conj_mul, xs3_vect_complex_s32_conj_mul_random)
 {
