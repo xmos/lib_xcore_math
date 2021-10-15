@@ -16,6 +16,7 @@ SOURCE_DIRS = src \
               src/arch/xcore/filter \
               src/arch/xcore/stat \
               src/bfp \
+              src/bfp/misc \
               src/vect \
               src/scalar \
               src/etc/xs3_fft_lut
