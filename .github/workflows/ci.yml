@@ -110,7 +110,7 @@ jobs:
       
       - name: Pull doc_builder container
         run: |
-          docker pull ghcr.io/xmos/sdk_doc_builder:develop 
+          docker pull ghcr.io/xmos/doc_builder 
       
       - name: Build documentation
         run: |
