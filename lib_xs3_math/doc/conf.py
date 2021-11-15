@@ -49,7 +49,7 @@ extensions = [
 ]
 
 # Breathe Configuration
-breathe_projects = {"lib_xs3_math": "_doxygen/xml/"}
+breathe_projects = {"lib_xs3_math": "_build/_doxygen/xml/"}
 breathe_default_project = "lib_xs3_math"
 
 breathe_domain_by_extension = { "h" : "c" }

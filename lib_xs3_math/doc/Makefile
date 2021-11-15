@@ -1,8 +1,10 @@
 # Makefile to build the Sphinx and Doxygen documentation
-# for the XCore SDK
 #
 
-DOXYGEN_OUTPUT_DIR=_doxygen/xml
+DOXYGEN_OUTPUT=_build/_doxygen
+export DOXYGEN_OUTPUT # this is needed for the doxyfile OUTPUT_DIRECTORY
+
+DOXYGEN_OUTPUT_DIR="$(DOXYGEN_OUTPUT)/xml"
 BREATHE_PROJECT=lib_xs3_math
 
 # You can set these variables from the command line, and also
@@ -22,6 +24,7 @@ doxy:
 	doxygen
 
 $(DOXYGEN_OUTPUT_DIR)/index.xml: Doxyfile
+	mkdir -p $(DOXYGEN_OUTPUT)
 	doxygen
 
 # Catch-all target: route all unknown targets to Sphinx using the new

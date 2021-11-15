@@ -110,11 +110,11 @@ jobs:
       
       - name: Pull doc_builder container
         run: |
-          docker pull ghcr.io/xmos/doc_builder 
+          docker pull ghcr.io/xmos/doc_builder:main 
       
       - name: Build documentation
         run: |
-          docker run --user $(id -u) --rm -w /lib_xs3_math/lib_xs3_math/doc -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/doc_builder make clean html linkcheck SPHINXOPTS="-W --keep-going"
+          docker run --user $(id -u) --rm -w /lib_xs3_math/lib_xs3_math/doc -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/doc_builder:main make clean html linkcheck SPHINXOPTS="-W --keep-going"
           
       - name: Save documentation artifacts
         uses: actions/upload-artifact@v2
