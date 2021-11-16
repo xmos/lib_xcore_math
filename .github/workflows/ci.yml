@@ -100,25 +100,3 @@ jobs:
       - name: "Run Tests: filter_tests"
         working-directory: ~
         run: ./build.x86/test/filter_tests/filter_tests -v
-
-  build_documentation:
-    name: Build and package documentation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      
-      - name: Pull doc_builder container
-        run: |
-          docker pull ghcr.io/xmos/doc_builder:main 
-      
-      - name: Build documentation
-        run: |
-          docker run --rm -t -u "$(id -u):$(id -g)" -v ${{ github.workspace }}/lib_xs3_math:/build -e REPO:/build -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc ghcr.io/xmos/doc_builder:main
-          
-      - name: Save documentation artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: lib_xs3_math_docs
-          path: ./lib_xs3_math/doc/_build/html
-          retention-days: 5
