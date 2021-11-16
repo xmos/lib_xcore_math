@@ -114,7 +114,7 @@ jobs:
       
       - name: Build documentation
         run: |
-          docker run --user $(id -u) --rm -w /lib_xs3_math/lib_xs3_math/doc -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/doc_builder:main make clean html linkcheck SPHINXOPTS="-W --keep-going"
+          docker run --rm -t -u "$(id -u):$(id -g)" -v ${{ github.workspace }}/lib_xs3_math:/build -e REPO:/build -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc ghcr.io/xmos/doc_builder:main
           
       - name: Save documentation artifacts
         uses: actions/upload-artifact@v2

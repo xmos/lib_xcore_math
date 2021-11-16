@@ -37,7 +37,7 @@ Build documentation:
 
 .. code-block:: console
 
-    $ docker run --rm -t -v $(pwd)/lib_xs3_math:/build -u "$(id -u):$(id -g)" -e REPO:/build -e DOXYGEN_CONFIG=/build/doc/Doxyfile ghcr.io/xmos/doc_builder:main
+    $ docker run --rm -t -u "$(id -u):$(id -g)" -v $(pwd)/lib_xs3_math:/build -e REPO:/build -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc ghcr.io/xmos/doc_builder:main
 
 ********************
 Without Using Docker
