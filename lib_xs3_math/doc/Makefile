@@ -1,6 +1,9 @@
 # Makefile to build the Sphinx and Doxygen documentation
 #
 
+DOXYGEN_INCLUDE=Doxyfile.inc
+export DOXYGEN_INCLUDE # this is needed for the doxyfile @INCLUDE
+
 DOXYGEN_OUTPUT=_build/_doxygen
 export DOXYGEN_OUTPUT # this is needed for the doxyfile OUTPUT_DIRECTORY
 
