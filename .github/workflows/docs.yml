@@ -44,6 +44,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lib_xs3_math_docs
-          path: ./lib_xs3_math/doc/_build/html
+          path: ./lib_xs3_math/doc/_build/latest/html
           if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
           retention-days: 5
