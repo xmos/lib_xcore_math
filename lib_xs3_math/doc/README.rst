@@ -37,25 +37,7 @@ Build documentation:
 
 .. code-block:: console
 
-    $ docker run --user $(id -u) --rm -w /xcore_sdk/documents -v ${XCORE_SDK_PATH}:/xcore_sdk ghcr.io/xmos/doc_builder:main make html
-
-Launch sphinx-autobuild server:
-
-.. code-block:: console
-
-    $ docker run --user $(id -u) --rm -w /xcore_sdk/documents -v ${XCORE_SDK_PATH}:/xcore_sdk ghcr.io/xmos/doc_builder:main make livehtml
-
-Clean documentation:
-
-.. code-block:: console
-
-    $ docker run --user $(id -u) --rm -w /xcore_sdk/documents -v ${XCORE_SDK_PATH}:/xcore_sdk ghcr.io/xmos/doc_builder:main make clean
-
-Clean and build documentation with link check:
-
-.. code-block:: console
-
-    $ docker run --user $(id -u) --rm -w /xcore_sdk/documents -v ${XCORE_SDK_PATH}:/xcore_sdk ghcr.io/xmos/doc_builder:main make clean html linkcheck SPHINXOPTS="-W --keep-going"
+    $ docker run --rm -t -u "$(id -u):$(id -g)" -v $(pwd)/lib_xs3_math:/build -e REPO:/build -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc ghcr.io/xmos/doc_builder:main
 
 ********************
 Without Using Docker

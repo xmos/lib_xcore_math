@@ -206,7 +206,7 @@ void xs3_memcpy(
  * 
  * This function returns the number of most-significant bits in `a` which are equal to its sign bit.
  * 
- * @note This is teh total number of leading sign bits, not _redundant_ leading sign bits.
+ * @note This is the total number of leading sign bits, not _redundant_ leading sign bits.
  * 
  * @param[in] a Input value
  * 

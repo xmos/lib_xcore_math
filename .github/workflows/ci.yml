@@ -100,25 +100,3 @@ jobs:
       - name: "Run Tests: filter_tests"
         working-directory: ~
         run: ./build.x86/test/filter_tests/filter_tests -v
-
-  build_documentation:
-    name: Build and package documentation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      
-      - name: Pull doc_builder container
-        run: |
-          docker pull ghcr.io/xmos/sdk_doc_builder:develop 
-      
-      - name: Build documentation
-        run: |
-          docker run --user $(id -u) --rm -w /lib_xs3_math/lib_xs3_math/doc -v ${{ github.workspace }}:/lib_xs3_math ghcr.io/xmos/sdk_doc_builder:develop make clean html linkcheck SPHINXOPTS="-W --keep-going"
-          
-      - name: Save documentation artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: lib_xs3_math_docs
-          path: ./lib_xs3_math/doc/_build/html
-          retention-days: 5
