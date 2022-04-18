@@ -4,7 +4,7 @@ set( APP_NAME  scalar_tests )
 include( ${CMAKE_CURRENT_SOURCE_DIR}/../etc/Unity/Unity.cmake )
 
 ## Depends on libraries
-list( APPEND  DEP_LIBS_XCORE  ""  )
+list( APPEND  DEP_LIBS_XCORE_XS3A  ""  )
 list( APPEND  DEP_LIBS_Linux  m   )
 
 list( APPEND  DEP_LIBS        
@@ -20,7 +20,7 @@ file( GLOB_RECURSE SOURCES_C  src/*.c )
 file( GLOB_RECURSE SOURCES_XC src/*.xc )
 
 list( APPEND  SOURCES         ${SOURCES_C}     )
-list( APPEND  SOURCES_XCORE   ${SOURCES_XC}    )
+list( APPEND  SOURCES_XCORE_XS3A   ${SOURCES_XC}    )
 list( APPEND  SOURCES         ${SOURCES_${CMAKE_SYSTEM_NAME}} )
 
 # set( XSCOPE_CONFIG config.xscope )
@@ -30,8 +30,8 @@ get_filename_component(XSCOPE_CONFIG ../etc/config.xscope ABSOLUTE)
 unset(COMPILE_FLAGS)
 list( APPEND  COMPILE_FLAGS   -Wno-unused-variable )
 
-unset(COMPILE_FLAGS_XCORE)
-list( APPEND  COMPILE_FLAGS_XCORE   "" )
+unset(COMPILE_FLAGS_XCORE_XS3A)
+list( APPEND  COMPILE_FLAGS_XCORE_XS3A   "" )
 
 unset(COMPILE_FLAGS_Linux)
 list( APPEND  COMPILE_FLAGS_Linux   "" )
@@ -44,11 +44,11 @@ list(APPEND   COMPILE_FLAGS ${TEST_DEFS} )
 unset(LINKER_FLAGS)
 list( APPEND  LINKER_FLAGS  "" )
 
-unset(LINKER_FLAGS_XCORE)
-list( APPEND  LINKER_FLAGS_XCORE  "-target=${XCORE_TARGET}"     )
-list( APPEND  LINKER_FLAGS_XCORE  "-report"                     )
-list( APPEND  LINKER_FLAGS_XCORE  "-fcmdline-buffer-bytes=1024" )
-list( APPEND  LINKER_FLAGS_XCORE  "${XSCOPE_CONFIG}"            )
+unset(LINKER_FLAGS_XCORE_XS3A)
+list( APPEND  LINKER_FLAGS_XCORE_XS3A  "-target=${XCORE_TARGET}"     )
+list( APPEND  LINKER_FLAGS_XCORE_XS3A  "-report"                     )
+list( APPEND  LINKER_FLAGS_XCORE_XS3A  "-fcmdline-buffer-bytes=1024" )
+list( APPEND  LINKER_FLAGS_XCORE_XS3A  "${XSCOPE_CONFIG}"            )
 
 unset(LINKER_FLAGS_Linux)
 list( APPEND  LINKER_FLAGS_Linux  ""                            )

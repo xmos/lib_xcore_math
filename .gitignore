@@ -11,7 +11,7 @@ Pipfile.lock
 
 # build cruft
 _build
-**/.build/
+**/.build*/
 **/build*/
 **/bin/
 lib_xs3_math/lib/

@@ -4,7 +4,7 @@ set( APP_NAME  fft_demo )
 ## Depends on libraries
 list( APPEND  DEP_LIBS        lib_xs3_math )
 
-list( APPEND  DEP_LIBS_XCORE  ""  )
+list( APPEND  DEP_LIBS_XCORE_XS3A  ""  )
 list( APPEND  DEP_LIBS_Linux  m   )
 
 ## Sources
@@ -17,20 +17,20 @@ get_filename_component(XSCOPE_CONFIG config.xscope ABSOLUTE)
 unset(COMPILE_FLAGS)
 list( APPEND  COMPILE_FLAGS   -Wno-unused-variable )
 
-unset(COMPILE_FLAGS_XCORE)
-list( APPEND  COMPILE_FLAGS_XCORE    )
+unset(COMPILE_FLAGS_XCORE_XS3A)
+list( APPEND  COMPILE_FLAGS_XCORE_XS3A    )
 
 unset(COMPILE_FLAGS_Linux)
-list( APPEND  COMPILE_FLAGS_XCORE   "" )
+list( APPEND  COMPILE_FLAGS_XCORE_XS3A   "" )
 
 ## Linker flags
 unset(LINKER_FLAGS)
 list( APPEND  LINKER_FLAGS  "" )
 
-unset(LINKER_FLAGS_XCORE)
-list( APPEND  LINKER_FLAGS_XCORE  -target=${XCORE_TARGET} )
-list( APPEND  LINKER_FLAGS_XCORE  -report                 )
-list( APPEND  LINKER_FLAGS_XCORE  ${XSCOPE_CONFIG}        )
+unset(LINKER_FLAGS_XCORE_XS3A)
+list( APPEND  LINKER_FLAGS_XCORE_XS3A  -target=${XCORE_TARGET} )
+list( APPEND  LINKER_FLAGS_XCORE_XS3A  -report                 )
+list( APPEND  LINKER_FLAGS_XCORE_XS3A  ${XSCOPE_CONFIG}        )
 
 unset(LINKER_FLAGS_Linux)
 list( APPEND  LINKER_FLAGS_Linux  ""                      )
@@ -39,7 +39,7 @@ list( APPEND  LINKER_FLAGS_Linux  ""                      )
 #########
 
 list( APPEND  SOURCES         ${SOURCES_C}     )
-list( APPEND  SOURCES_XCORE   ${SOURCES_XC}    )
+list( APPEND  SOURCES_XCORE_XS3A   ${SOURCES_XC}    )
 list( APPEND  SOURCES   ${SOURCES_${CMAKE_SYSTEM_NAME}} )
 
 list( APPEND  COMPILE_FLAGS ${COMPILE_FLAGS_${CMAKE_SYSTEM_NAME}} )
