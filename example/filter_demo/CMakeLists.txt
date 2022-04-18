@@ -1,6 +1,11 @@
 ## App name
 set( APP_NAME  filter_demo )
 
+## If XCORE_TARGET hasn't been specified, default to XCORE-AI-EXPLORER
+if( NOT DEFINED XCORE_TARGET )
+  set( XCORE_TARGET XCORE-AI-EXPLORER )
+endif()
+
 ## Depends on libraries
 list( APPEND  DEP_LIBS        lib_xs3_math )
 

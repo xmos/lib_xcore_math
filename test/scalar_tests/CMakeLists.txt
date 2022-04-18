@@ -3,6 +3,11 @@ set( APP_NAME  scalar_tests )
 
 include( ${CMAKE_CURRENT_SOURCE_DIR}/../etc/Unity/Unity.cmake )
 
+## If XCORE_TARGET hasn't been specified, default to XCORE-AI-EXPLORER
+if( NOT DEFINED XCORE_TARGET )
+  set( XCORE_TARGET XCORE-AI-EXPLORER )
+endif()
+
 ## Depends on libraries
 list( APPEND  DEP_LIBS_XCORE_XS3A  ""  )
 list( APPEND  DEP_LIBS_Linux  m   )
