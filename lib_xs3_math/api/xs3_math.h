@@ -51,6 +51,7 @@ extern "C" {
 #include "scalar/xs3_scalar.h"
 #include "scalar/scalar_float.h"
 #include "xs3_util.h"
+#include "q_format.h"
 
 #include "xs3_vpu_info.h"
 
