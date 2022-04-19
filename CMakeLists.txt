@@ -7,6 +7,8 @@ endif()
 
 project(xmos-lib_xs3_math)
 
+cmake_policy(SET CMP0057 NEW)
+
 ## Set up the build options
 include(etc/build_options.cmake)
 
