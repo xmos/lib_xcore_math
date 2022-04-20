@@ -84,7 +84,7 @@ if ( ${Python3_FOUND} )
 
   add_custom_command(
     OUTPUT ${GEN_DIR}/test_fir_s16.h ${GEN_DIR}/test_fir_s16.c
-    COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_fir_filter_s16.py test_fir_16 --out-dir ${GEN_DIR} ${COEF_DIR}/coefs.txt
+    COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_fir_filter_s16.py test_fir_s16 --out-dir ${GEN_DIR} ${COEF_DIR}/coefs.txt
     DEPENDS ${COEF_DIR}/coefs.txt
     COMMENT "Generating test_fir_s16 from script" )
 
