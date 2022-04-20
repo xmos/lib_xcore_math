@@ -19,8 +19,12 @@ include(etc/fetch_unity.cmake)
 find_package( Python3 COMPONENTS Interpreter )
 
 ## Compile flags for C/C++ for all libs and apps (for all platforms)
-list(APPEND   COMPILE_FLAGS        -Os -g -MMD   )
+list(APPEND   COMPILE_FLAGS        -Os -g        )
 list(APPEND   COMPILE_FLAGS        -Wno-format   )
+
+if( ${CMAKE_SYSTEM_NAME} STREQUAL "XCORE_XS3A" )
+  list(APPEND COMPILE_FLAGS -MMD)
+endif()
 
 ## Platform-specific C/C++ compile flags
 list(APPEND   COMPILE_FLAGS_Linux  -DUSE_REF=1   )
