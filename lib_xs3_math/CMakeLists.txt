@@ -50,9 +50,6 @@ if ( NOT DEFINED XS3_MATH_USE_DEFAULT_FFT_LUT )
   set( XS3_MATH_USE_DEFAULT_FFT_LUT true )
 endif()
 
-
-
-
 if ( ${XS3_MATH_GEN_FFT_LUT} )
   # Auto-generate the FFT LUT
 
@@ -94,7 +91,7 @@ if ( ${XS3_MATH_GEN_FFT_LUT} )
 
 else()
   # Don't auto-generate the FFT LUT
-  if( ${USE_DEFAULT_FFT_LUT} )
+  if( ${XS3_MATH_USE_DEFAULT_FFT_LUT} )
     # Use the FFT LUT stored in the repository
     set( XS3_FFT_LUT_FALLBACK_DIR ${CMAKE_CURRENT_LIST_DIR}/src/etc/xs3_fft_lut )
     set( FFT_LUT_FILE "xs3_fft_lut" )
