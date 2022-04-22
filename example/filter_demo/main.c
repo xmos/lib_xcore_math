@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <xscope.h>
 
 void filter_32bit_fir();
 void filter_16bit_fir();
@@ -12,6 +13,7 @@ void filter_32bit_biquad();
 
 int main(int argc, char** argv)
 {
+  xscope_config_io(XSCOPE_IO_BASIC);
 
   // Seed the random number generator, using a constant for reproducibility
   srand(RAND_SEED);

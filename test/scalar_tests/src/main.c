@@ -3,11 +3,14 @@
 
 
 #include <stdio.h>
+#include <xscope.h>
 
 #include "unity_fixture.h"
 
 int main(int argc, const char* argv[])
 {
+    xscope_config_io(XSCOPE_IO_BASIC);
+    
     UnityGetCommandLineOptions(argc, argv);
     UnityBegin(argv[0]);
 

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <xscope.h>
 
 #include "bfp_math.h"
 
@@ -16,6 +17,7 @@ void fft_complex_example();
 
 int main(int argc, char** argv)
 {
+  xscope_config_io(XSCOPE_IO_BASIC);
 
   // Seed the random number generator, using a constant for reproducibility
   srand(RAND_SEED);

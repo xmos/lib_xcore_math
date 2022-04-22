@@ -6,65 +6,34 @@ if( NOT DEFINED XCORE_TARGET )
   set( XCORE_TARGET XCORE-AI-EXPLORER )
 endif()
 
-## Depends on libraries
-list( APPEND  DEP_LIBS        lib_xs3_math )
+add_executable( ${APP_NAME} )
 
-list( APPEND  DEP_LIBS_XCORE_XS3A  ""  )
-list( APPEND  DEP_LIBS_Linux  m   )
+target_sources( ${APP_NAME}
+  PRIVATE
+    main.c 
+)
 
-## Sources
-file( GLOB_RECURSE SOURCES_C  main.c )
+target_compile_options( ${APP_NAME}
+  PRIVATE 
+    -Os -g -Wno-format -Wno-unused-variable
+    $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
+)
 
-# set( XSCOPE_CONFIG config.xscope )
-get_filename_component(XSCOPE_CONFIG config.xscope ABSOLUTE)
+target_link_options( ${APP_NAME}
+  PRIVATE
+    $<$<PLATFORM_ID:XCORE_XS3A>:-target=${XCORE_TARGET}>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-report>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
+)
 
-## Compile flags
-unset(COMPILE_FLAGS)
-list( APPEND  COMPILE_FLAGS   -Wno-unused-variable )
+target_compile_definitions( ${APP_NAME}
+  PRIVATE
+    $<$<PLATFORM_ID:Linux>:USE_REF=1>
+)
 
-unset(COMPILE_FLAGS_XCORE_XS3A)
-list( APPEND  COMPILE_FLAGS_XCORE_XS3A    )
+target_link_libraries( ${APP_NAME}
+  lib_xs3_math
+  $<$<PLATFORM_ID:Linux>:m>
+)
 
-unset(COMPILE_FLAGS_Linux)
-list( APPEND  COMPILE_FLAGS_XCORE_XS3A   "" )
-
-## Linker flags
-unset(LINKER_FLAGS)
-list( APPEND  LINKER_FLAGS  "" )
-
-unset(LINKER_FLAGS_XCORE_XS3A)
-list( APPEND  LINKER_FLAGS_XCORE_XS3A  -target=${XCORE_TARGET} )
-list( APPEND  LINKER_FLAGS_XCORE_XS3A  -report                 )
-list( APPEND  LINKER_FLAGS_XCORE_XS3A  ${XSCOPE_CONFIG}        )
-
-unset(LINKER_FLAGS_Linux)
-list( APPEND  LINKER_FLAGS_Linux  ""                      )
-
-
-#########
-
-list( APPEND  SOURCES         ${SOURCES_C}     )
-list( APPEND  SOURCES_XCORE_XS3A   ${SOURCES_XC}    )
-list( APPEND  SOURCES   ${SOURCES_${CMAKE_SYSTEM_NAME}} )
-
-list( APPEND  COMPILE_FLAGS ${COMPILE_FLAGS_${CMAKE_SYSTEM_NAME}} )
-
-list( APPEND  LINKER_FLAGS ${LINKER_FLAGS_${CMAKE_SYSTEM_NAME}} )
-
-list( APPEND  DEP_LIBS ${DEP_LIBS_${CMAKE_SYSTEM_NAME}} )
-
-add_executable( ${APP_NAME} ${SOURCES} )
-
-target_link_libraries( ${APP_NAME} ${DEP_LIBS})
-
-target_compile_options( ${APP_NAME} PRIVATE ${COMPILE_FLAGS} )
-
-#(because otherwise the set_target_properties command fails)
-string(REPLACE ";" " " LINKER_FLAGS_STR "${LINKER_FLAGS}")
-
-
-set_target_properties( ${APP_NAME} PROPERTIES LINK_FLAGS "${LINKER_FLAGS_STR}" )
-
-if ( XCORE )
-  set_target_properties( ${APP_NAME} PROPERTIES   SUFFIX ".xe" )
-endif()
+add_dependencies( lib_xs3_math-examples  ${APP_NAME} )
