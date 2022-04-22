@@ -10,6 +10,7 @@ find_package( Python3 COMPONENTS Interpreter )
 
 if( PROJECT_IS_TOP_LEVEL )
   project(xmos-lib_xs3_math)
+  set( DEV_LIB_XS3_MATH ON )
 endif()
 
 
