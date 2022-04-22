@@ -13,7 +13,7 @@ set(DEV_LIB_XS3_MATH OFF CACHE BOOL "Include unit tests and examples as CMake Ta
 option(XS3_MATH_SMOKE_TEST "Build unit tests in 'smoke test' mode. This mostly just reduces the number of repetitions to reduce simulation time." OFF)
 
 ## If enabled, the FFT look-up tables will be auto-generated at build time (requires Python 3 and numpy)
-set( XS3_MATH_GEN_FFT_LUT  ON CACHE BOOL "Auto-generate FFT look-up tables." )
+set( XS3_MATH_GEN_FFT_LUT  OFF CACHE BOOL "Auto-generate FFT look-up tables." )
 
 ## If enabled (and GEN_FFT_LUT disabled), use the FFT look-up tables provided with the repository.
 ## If both GEN_FFT_LUT and USE_DEFAULT_FFT_LUT are disabled, it is assumed that the user has manually

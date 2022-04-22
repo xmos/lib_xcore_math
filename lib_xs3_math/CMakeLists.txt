@@ -43,11 +43,11 @@ target_compile_options( ${LIB_NAME}
 
 # Set defaults for generating the FFT LUT if they are not already defined
 if ( NOT DEFINED XS3_MATH_GEN_FFT_LUT )
-  set( XS3_MATH_GEN_FFT_LUT false )
+  set( XS3_MATH_GEN_FFT_LUT OFF )
 endif()
 
 if ( NOT DEFINED XS3_MATH_USE_DEFAULT_FFT_LUT )
-  set( XS3_MATH_USE_DEFAULT_FFT_LUT true )
+  set( XS3_MATH_USE_DEFAULT_FFT_LUT ON )
 endif()
 
 if ( ${XS3_MATH_GEN_FFT_LUT} )
@@ -55,8 +55,8 @@ if ( ${XS3_MATH_GEN_FFT_LUT} )
 
   if( NOT ${Python3_FOUND} )
     message(FATAL_ERROR "FFT LUT generation enabled, but Python3 not found. " 
-                        "Disable the GEN_FFT_LUT option to use the version included with the repository (max FFT length=1024). "
-                        "Disable the USE_DEFAULT_FFT_LUT option if you've manually generated the LUT.")
+                        "Disable the XS3_MATH_GEN_FFT_LUT option to use the version included with the repository (max FFT length=1024). "
+                        "Disable the XS3_MATH_USE_DEFAULT_FFT_LUT option if you've manually generated the LUT.")
   endif()
   
   set( XS3_MATH_AUTOGEN_DIR  ${CMAKE_CURRENT_BINARY_DIR}/src.gen )
