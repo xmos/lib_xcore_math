@@ -3,7 +3,7 @@
 PROJECT_NAME           = lib_xs3_math
 PROJECT_BRIEF          = "VPU-optimized math for the XMOS XS3 architecture"
 
-INPUT                  = ../api  ../doc/src
+INPUT                  = ../lib_xs3_math/api  ../doc/src
 
 PREDEFINED             = C_API= EXTERN_C= 
 
