@@ -3,10 +3,18 @@
 
 #include <stdio.h>
 
+#ifdef __XS3A__
+# include <xscope.h>
+#endif
+
 #include "unity_fixture.h"
 
 int main(int argc, const char* argv[])
 {
+#ifdef __XS3A__
+  xscope_config_io(XSCOPE_IO_BASIC);
+#endif
+
     UnityGetCommandLineOptions(argc, argv);
     UnityBegin(argv[0]);
 

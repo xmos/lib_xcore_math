@@ -3,7 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <xscope.h>
+
+#ifdef __XS3A__
+# include <xscope.h>
+#endif
 
 void vect_s32_example();
 void vect_complex_s16_example();
@@ -12,7 +15,9 @@ void vect_complex_s16_example();
 
 int main(int argc, char** argv)
 {
+#ifdef __XS3A__
   xscope_config_io(XSCOPE_IO_BASIC);
+#endif
 
   // Seed the random number generator, using a constant for reproducibility
   srand(RAND_SEED);
