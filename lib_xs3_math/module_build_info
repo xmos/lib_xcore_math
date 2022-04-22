@@ -13,6 +13,8 @@ SOURCE_DIRS = src \
               src/arch/xcore \
               src/arch/xcore/complex \
               src/arch/xcore/fft \
+              src/arch/xcore/matrix \
+              src/arch/xcore/bool \
               src/arch/xcore/filter \
               src/arch/xcore/stat \
               src/bfp \
