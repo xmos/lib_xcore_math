@@ -940,7 +940,8 @@ void xs3_vect_s32_inverse_prepare(
 /**
  * @brief Find the maximum value in a 32-bit vector.
  * 
- * `b[]` represents the 32-bit vector @vector{b}. It must begin at a word-aligned address.
+ * `b[]` represents the 32-bit vector @vector{b}. It must begin at a
+ * word-aligned address.
  * 
  * `length` is the number of elements in @vector{b}.
  * 
@@ -951,8 +952,9 @@ void xs3_vect_s32_inverse_prepare(
  * @par Block Floating-Point
  * @parblock
  * 
- * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot 2^{b\_exp}}, then the returned value @math{a} is 
- * the 32-bit mantissa of floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
+ * If @vector{b} are the mantissas of BFP vector @math{\bar{b} \cdot
+ * 2^{b\_exp}}, then the returned value @math{a} is the 32-bit mantissa of
+ * floating-point value @math{a \cdot 2^{a\_exp}}, where @math{a\_exp = b\_exp}.
  * @endparblock
  * 
  * @param[in]   b           Input vector @vector{b}     
@@ -968,6 +970,67 @@ C_API
 int32_t xs3_vect_s32_max(
     const int32_t b[],
     const unsigned length);
+
+
+/**
+ * @brief Get the element-wise maximum of two 32-bit vectors.
+ * 
+ * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a},
+ * @vector{b} and @vector{c} respectively. Each must begin at a word-aligned
+ * address. This operation can be performed safely in-place on `b[]`, but @a not
+ * on `c[]`.
+ *
+ * `length` is the number of elements in each of the vectors.
+ *
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each
+ * element of @vector{b} and @vector{c} respectively.
+ * 
+ * @operation{
+ * &     b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ * &     c_k' \leftarrow sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)     \\
+ * &     a_k \leftarrow max(b_k', c_k')                                      \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @par Block Floating-Point
+ * @parblock
+ * 
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b}
+ * \cdot 2^{b\_exp} } and @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting
+ * vector @vector{a} are the mantissas of BFP vector @math{\bar{a} \cdot
+ * 2^{a\_exp}}, where @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}.
+ * 
+ * The function xs3_vect_2vec_prepare() can be used to obtain values for
+ * @math{a\_exp}, @math{b\_shr} and @math{c\_shr} based on the input exponents
+ * @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and
+ * @math{c\_hr}. 
+ * @endparblock
+ * 
+ * @warning For correct operation, this function requires at least 1 bit of 
+ *          headroom in each mantissa vector @a after the shifts have been 
+ *          applied.
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input vector @vector{b}
+ * @param[in]  c        Input vector @vector{c}
+ * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]  b_shr    Right-shift appled to @vector{b}
+ * @param[in]  c_shr    Right-shift appled to @vector{c}
+ * 
+ * @returns  Headroom of vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+headroom_t xs3_vect_s32_max_elementwise(
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -1001,6 +1064,67 @@ C_API
 int32_t xs3_vect_s32_min(
     const int32_t b[],
     const unsigned length);
+
+
+/**
+ * @brief Get the element-wise minimum of two 32-bit vectors.
+ * 
+ * `a[]`, `b[]` and `c[]` represent the 32-bit mantissa vectors @vector{a},
+ * @vector{b} and @vector{c} respectively. Each must begin at a word-aligned
+ * address. This operation can be performed safely in-place on `b[]`, but @a not
+ * on `c[]`.
+ *
+ * `length` is the number of elements in each of the vectors.
+ *
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each
+ * element of @vector{b} and @vector{c} respectively.
+ * 
+ * @operation{
+ * &     b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ * &     c_k' \leftarrow sat_{32}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)     \\
+ * &     a_k \leftarrow min(b_k', c_k')                                      \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @par Block Floating-Point
+ * @parblock
+ * 
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b}
+ * \cdot 2^{b\_exp} } and @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting
+ * vector @vector{a} are the mantissas of BFP vector @math{\bar{a} \cdot
+ * 2^{a\_exp}}, where @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}.
+ * 
+ * The function xs3_vect_2vec_prepare() can be used to obtain values for
+ * @math{a\_exp}, @math{b\_shr} and @math{c\_shr} based on the input exponents
+ * @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and
+ * @math{c\_hr}. 
+ * @endparblock
+ * 
+ * @warning For correct operation, this function requires at least 1 bit of 
+ *          headroom in each mantissa vector @a after the shifts have been 
+ *          applied.
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input vector @vector{b}
+ * @param[in]  c        Input vector @vector{c}
+ * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]  b_shr    Right-shift appled to @vector{b}
+ * @param[in]  c_shr    Right-shift appled to @vector{c}
+ * 
+ * @returns  Headroom of vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+headroom_t xs3_vect_s32_min_elementwise(
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**
@@ -2213,6 +2337,111 @@ void xs3_vect_s32_split_accs(
     const int32_t b[],
     const unsigned length);
 
+/**
+ * @brief Obtain the output exponent and input shifts required to perform a
+ *        binary add-like operation.
+ * 
+ * This function computes the output exponent and input shifts required for 
+ * BFP operations which take two vectors as input, where the operation is
+ * "add-like".  
+ * 
+ * Here, "add-like" operations are loosely defined as those which require input
+ * vectors to share an exponent before their mantissas can be meaningfully used
+ * to perform that operation. 
+ * 
+ * For example, consider adding @math{ 3 \cdot 2^{x} + 4 \cdot 2^{y} }. If
+ * @math{x = y}, then the mantissas can be added directly to get a meaningful 
+ * result @math{ (3+4) \cdot 2^{x} }. If @math{x \ne y} however, adding the
+ * mantissas together is meaningless.  Before the mantissas can be added in this
+ * case, one or both of the input mantissas must be shifted so that the
+ * representations correspond to the same exponent.  Likewise, similar logic
+ * applies to binary comparisons.
+ * 
+ * This is in contrast to a "multiply-like" operation, which does not have this
+ * same requirement (e.g. 
+ * @math{a \cdot 2^x \cdot b \cdot 2^y = ab \cdot 2^{x+y}}, regardless of 
+ * whether @math{x=y}).
+ * 
+ * For a general operation like:
+ * 
+ * @math{ 
+ *      \bar{a} \cdot 2^{a\_exp} = \bar{b}\cdot 2^{b\_exp} 
+ *                          \oplus \bar{c}\cdot 2^{c\_exp} 
+ * }
+ * 
+ * @vector{b} and @vector{c} are the input mantissa vectors with exponents
+ * @math{b\_exp} and @math{c\_exp}, which are shared by each element of their
+ * respective vectors. @vector{a} is the output mantissa vector with exponent 
+ * @math{a\_exp}. Two additional properties, @math{b\_hr} and @math{c\_hr},
+ * which are the headroom of mantissa vectors @vector{b} and @vector{c}
+ * respectively, are required by this function.
+ * 
+ * In addition to @math{a\_exp}, this function computes @math{b\_shr} and 
+ * @math{c\_shr}, signed arithmetic right-shifts applied to the mantissa vectors
+ * @vector{b} and @vector{c} so that the add-like @math{\oplus} operation can
+ * be applied.
+ * 
+ * This function chooses @math{a\_exp} to be the minimum exponent which can be
+ * used to express both @vector{B} and @vector{C} without saturation of their
+ * mantissas, and which leaves both @vector{b} and @vector{c} with at least 
+ * `extra_operand_hr` bits of headroom. The shifts @math{b\_shr} and 
+ * @math{c\_shr} are derived from @math{a\_exp} using @math{b\_exp} and 
+ * @math{c\_exp}.
+ * 
+ * @par Adjusting Output Exponents
+ * @parblock
+ * 
+ * If a specific output exponent `desired_exp` is needed for the result (e.g.
+ * for emulating fixed-point arithmetic), the `b_shr` and `c_shr` produced by
+ * this function can be adjusted according to the following:
+ * \code{.c}
+ *      exponent_t desired_exp = ...; // Value known a priori
+ *      right_shift_t new_b_shr = b_shr + (desired_exp - a_exp);
+ *      right_shift_t new_c_shr = c_shr + (desired_exp - a_exp);
+ * \endcode
+ * 
+ * When applying the above adjustment, the following conditions should be
+ * maintained:
+ * * `b_hr + b_shr >= 0`
+ * * `c_hr + c_shr >= 0`
+ * 
+ * Be aware that using smaller values than strictly necessary for `b_shr` and
+ * `c_shr` can result in saturation, and using larger values may result in
+ * unnecessary underflows or loss of precision.
+ * @endparblock
+ * 
+ * @par Notes
+ * @parblock
+ * 
+ * * If @math{b\_hr} or @math{c\_hr} are unknown, they can be calculated using
+ *   the appropriate headroom function (e.g. xs3_vect_complex_s16_headroom() for
+ *   complex 16-bit vectors) or the value `0` can always be safely used (but may
+ *   result in reduced precision).
+ * @endparblock
+ *
+ * @param[out] a_exp    Output exponent associated with output mantissa vector @vector{a}
+ * @param[out] b_shr    Signed arithmetic right-shift to be applied to elements of @vector{b}. Used by the function 
+ *                      which computes the output mantissas @vector{a}
+ * @param[out] c_shr    Signed arithmetic right-shift to be applied to elements of @vector{c}. Used by the function 
+ *                      which computes the output mantissas @vector{a}
+ * @param[in]  b_exp    Exponent of BFP vector @vector{b}
+ * @param[in]  c_exp    Exponent of BFP vector @vector{c}
+ * @param[in]  b_hr     Headroom of BFP vector @vector{b} 
+ * @param[in]  c_hr     Headroom of BFP vector @vector{c}
+ * @param[in]  extra_operand_hr  The minimum amount of headroom that will be left in the mantissa vectors following the arithmetic right-shift, as required by some operations.
+ * 
+ * @ingroup xs3_vect32_prepare
+ */
+C_API
+void xs3_vect_2vec_prepare(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const headroom_t extra_operand_hr);
 
 #ifdef __XC__
 }   //extern "C"

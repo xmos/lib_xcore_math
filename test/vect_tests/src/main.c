@@ -38,6 +38,8 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_abs_sum);
     RUN_TEST_GROUP(xs3_vect_dot);
     RUN_TEST_GROUP(xs3_vect_max);
+    RUN_TEST_GROUP(xs3_vect_max_elementwise);
+    RUN_TEST_GROUP(xs3_vect_min_elementwise);
     RUN_TEST_GROUP(xs3_vect_min);
     RUN_TEST_GROUP(xs3_vect_argmax);
     RUN_TEST_GROUP(xs3_vect_argmin);

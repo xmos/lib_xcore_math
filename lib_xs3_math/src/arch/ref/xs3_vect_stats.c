@@ -23,6 +23,19 @@ int16_t xs3_vect_s16_max(
 }
 
 
+void xs3_vect_s16_max_elementwise(
+    int16_t a[],
+    const int16_t b[],
+    const int16_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
+{
+  for(int k = 0; k < length; k++)
+    a[] = MAX( vlashr16(b[k], b_shr), vlashr16(c[k], c_shr));
+}
+
+
 
 int32_t xs3_vect_s32_max(
     const int32_t b[],
@@ -33,6 +46,19 @@ int32_t xs3_vect_s32_max(
         cur_max = MAX(cur_max, b[k]);
     }
     return cur_max;
+}
+
+
+void xs3_vect_s32_max_elementwise(
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
+{
+  for(int k = 0; k < length; k++)
+    a[] = MAX(vlashr32(b[k], b_shr), vlashr32(c[k], c_shr));
 }
 
 
@@ -48,6 +74,19 @@ int16_t xs3_vect_s16_min(
 }
 
 
+void xs3_vect_s16_min_elementwise(
+    int16_t a[],
+    const int16_t b[],
+    const int16_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
+{
+  for(int k = 0; k < length; k++)
+    a[] = MIN(vlashr16(b[k], b_shr), vlashr16(c[k], c_shr));
+}
+
+
 
 int32_t xs3_vect_s32_min(
     const int32_t b[],
@@ -58,6 +97,19 @@ int32_t xs3_vect_s32_min(
         cur_min = MIN(cur_min, b[k]);
     }
     return cur_min;
+}
+
+
+void xs3_vect_s32_min_elementwise(
+    int32_t a[],
+    const int32_t b[],
+    const int32_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr)
+{
+  for(int k = 0; k < length; k++)
+    a[] = MIN(vlashr32(b[k], b_shr), vlashr32(c[k], c_shr));
 }
 
 
