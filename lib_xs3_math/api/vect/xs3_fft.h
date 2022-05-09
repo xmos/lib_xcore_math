@@ -345,3 +345,21 @@ void xs3_fft_dif_inverse (
     const unsigned N, 
     headroom_t* hr, 
     exponent_t* exp);
+
+
+/**
+ * 
+ */
+C_API
+void xs3_vect_f32_fft_forward(
+    float a[],
+    const unsigned length);
+
+
+/**
+ * 
+ */
+C_API
+void xs3_vect_f32_fft_inverse(
+    float a[],
+    const unsigned length);
