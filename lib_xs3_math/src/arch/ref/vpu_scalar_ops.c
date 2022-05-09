@@ -2,6 +2,7 @@
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdio.h>
+#include <math.h>
 
 #include "../../vect/vpu_helper.h"
 
@@ -437,4 +438,14 @@ int32_t vcmci32(
     a = b - a;
 
     return SAT(32)(a);
+}
+
+
+float fmacc(
+  const float acc,
+  const float b,
+  const float c)
+{
+  double bc = ((double)b) * ((double)c);
+  return ((double)acc) + bc;
 }
