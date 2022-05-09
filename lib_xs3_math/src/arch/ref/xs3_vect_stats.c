@@ -23,7 +23,7 @@ int16_t xs3_vect_s16_max(
 }
 
 
-void xs3_vect_s16_max_elementwise(
+headroom_t xs3_vect_s16_max_elementwise(
     int16_t a[],
     const int16_t b[],
     const int16_t c[],
@@ -32,7 +32,9 @@ void xs3_vect_s16_max_elementwise(
     const right_shift_t c_shr)
 {
   for(int k = 0; k < length; k++)
-    a[] = MAX( vlashr16(b[k], b_shr), vlashr16(c[k], c_shr));
+    a[k] = MAX( vlashr16(b[k], b_shr), vlashr16(c[k], c_shr));
+  
+  return xs3_vect_s16_headroom(a, length);
 }
 
 
@@ -49,7 +51,7 @@ int32_t xs3_vect_s32_max(
 }
 
 
-void xs3_vect_s32_max_elementwise(
+headroom_t xs3_vect_s32_max_elementwise(
     int32_t a[],
     const int32_t b[],
     const int32_t c[],
@@ -58,7 +60,9 @@ void xs3_vect_s32_max_elementwise(
     const right_shift_t c_shr)
 {
   for(int k = 0; k < length; k++)
-    a[] = MAX(vlashr32(b[k], b_shr), vlashr32(c[k], c_shr));
+    a[k] = MAX(vlashr32(b[k], b_shr), vlashr32(c[k], c_shr));
+
+  return xs3_vect_s32_headroom(a, length);
 }
 
 
@@ -74,7 +78,7 @@ int16_t xs3_vect_s16_min(
 }
 
 
-void xs3_vect_s16_min_elementwise(
+headroom_t xs3_vect_s16_min_elementwise(
     int16_t a[],
     const int16_t b[],
     const int16_t c[],
@@ -83,7 +87,9 @@ void xs3_vect_s16_min_elementwise(
     const right_shift_t c_shr)
 {
   for(int k = 0; k < length; k++)
-    a[] = MIN(vlashr16(b[k], b_shr), vlashr16(c[k], c_shr));
+    a[k] = MIN(vlashr16(b[k], b_shr), vlashr16(c[k], c_shr));
+    
+  return xs3_vect_s16_headroom(a, length);
 }
 
 
@@ -100,7 +106,7 @@ int32_t xs3_vect_s32_min(
 }
 
 
-void xs3_vect_s32_min_elementwise(
+headroom_t xs3_vect_s32_min_elementwise(
     int32_t a[],
     const int32_t b[],
     const int32_t c[],
@@ -109,7 +115,9 @@ void xs3_vect_s32_min_elementwise(
     const right_shift_t c_shr)
 {
   for(int k = 0; k < length; k++)
-    a[] = MIN(vlashr32(b[k], b_shr), vlashr32(c[k], c_shr));
+    a[k] = MIN(vlashr32(b[k], b_shr), vlashr32(c[k], c_shr));
+    
+  return xs3_vect_s32_headroom(a, length);
 }
 
 
