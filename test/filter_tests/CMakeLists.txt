@@ -59,39 +59,39 @@ add_dependencies( lib_xs3_math-tests  ${APP_NAME} )
 #########
 
 
-if ( ${Python3_FOUND} )
+# if ( ${Python3_FOUND} )
 
-  # Run the python scripts for filter generation. This is just to ensure that
-  # the script runs correctly and produces code that compiles correctly.
+#   # Run the python scripts for filter generation. This is just to ensure that
+#   # the script runs correctly and produces code that compiles correctly.
 
-  set( SCRIPT_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/../../lib_xs3_math/script    )
-  set( GEN_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local                )
-  set( COEF_DIR    ${CMAKE_CURRENT_SOURCE_DIR}/etc                          )
+#   set( SCRIPT_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/../../lib_xs3_math/script    )
+#   set( GEN_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local                )
+#   set( COEF_DIR    ${CMAKE_CURRENT_SOURCE_DIR}/etc                          )
 
-  target_sources( ${APP_NAME}
-    PRIVATE
-      ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.c
-      ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.c
-      ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.c 
-  )
+#   target_sources( ${APP_NAME}
+#     PRIVATE
+#       ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s32.c
+#       ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_fir_s16.c
+#       ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local/test_biquad_s32.c 
+#   )
 
-  add_custom_command(
-    OUTPUT ${GEN_DIR}/test_fir_s32.h ${GEN_DIR}/test_fir_s32.c
-    COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_fir_filter_s32.py test_fir_s32 --out-dir ${GEN_DIR} ${COEF_DIR}/coefs.txt
-    DEPENDS ${COEF_DIR}/coefs.txt
-    COMMENT "Generating test_fir_s32 from script" )
+#   add_custom_command(
+#     OUTPUT ${GEN_DIR}/test_fir_s32.h ${GEN_DIR}/test_fir_s32.c
+#     COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_fir_filter_s32.py test_fir_s32 --out-dir ${GEN_DIR} ${COEF_DIR}/coefs.txt
+#     DEPENDS ${COEF_DIR}/coefs.txt
+#     COMMENT "Generating test_fir_s32 from script" )
 
-  add_custom_command(
-    OUTPUT ${GEN_DIR}/test_fir_s16.h ${GEN_DIR}/test_fir_s16.c
-    COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_fir_filter_s16.py test_fir_s16 --out-dir ${GEN_DIR} ${COEF_DIR}/coefs.txt
-    DEPENDS ${COEF_DIR}/coefs.txt
-    COMMENT "Generating test_fir_s16 from script" )
+#   add_custom_command(
+#     OUTPUT ${GEN_DIR}/test_fir_s16.h ${GEN_DIR}/test_fir_s16.c
+#     COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_fir_filter_s16.py test_fir_s16 --out-dir ${GEN_DIR} ${COEF_DIR}/coefs.txt
+#     DEPENDS ${COEF_DIR}/coefs.txt
+#     COMMENT "Generating test_fir_s16 from script" )
 
-  add_custom_command(
-    OUTPUT ${GEN_DIR}/test_biquad_s32.h ${GEN_DIR}/test_biquad_s32.c
-    COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_biquad_filter_s32.py test_biquad_s32 --out-dir ${GEN_DIR} ${COEF_DIR}/biquad_coefs.csv
-    DEPENDS ${COEF_DIR}/coefs.txt
-    COMMENT "Generating test_biquad_s32 from script" )
+#   add_custom_command(
+#     OUTPUT ${GEN_DIR}/test_biquad_s32.h ${GEN_DIR}/test_biquad_s32.c
+#     COMMAND ${Python3_EXECUTABLE} ${SCRIPT_DIR}/gen_biquad_filter_s32.py test_biquad_s32 --out-dir ${GEN_DIR} ${COEF_DIR}/biquad_coefs.csv
+#     DEPENDS ${COEF_DIR}/coefs.txt
+#     COMMENT "Generating test_biquad_s32 from script" )
 
-endif()
+# endif()
 #########
