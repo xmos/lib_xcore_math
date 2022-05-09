@@ -67,6 +67,12 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_complex_conj_macc);
     RUN_TEST_GROUP(xs3_vect_complex_conjugate);
 
+    // float vector
+    RUN_TEST_GROUP(xs3_vect_f32_max_exponent);
+    RUN_TEST_GROUP(xs3_vect_f32_to_s32);
+    RUN_TEST_GROUP(xs3_vect_s32_to_f32);
+    RUN_TEST_GROUP(xs3_vect_f32_dot);
+
     // misc
     RUN_TEST_GROUP(xs3_vect_extract);
     RUN_TEST_GROUP(xs3_mat_mul_s8_x_s8_yield_s32);

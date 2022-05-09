@@ -45,6 +45,7 @@ extern "C" {
 #include "vect/xs3_vect_s16.h"
 #include "vect/xs3_vect_complex_s16.h"
 #include "vect/xs3_vect_s8.h"
+#include "vect/xs3_vect_f32.h"
 #include "vect/xs3_mixed.h"
 #include "vect/xs3_fft.h"
 #include "vect/xs3_filters.h"
