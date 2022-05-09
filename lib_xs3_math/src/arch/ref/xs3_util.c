@@ -9,7 +9,7 @@
 #include "../../vect/vpu_helper.h"
 #include "xs3_vpu_scalar_ops.h"
 #include "../../vect/vpu_const_vects.h"
-#include "xs3_scalar.h"
+#include "scalar/xs3_scalar.h"
 
 
 

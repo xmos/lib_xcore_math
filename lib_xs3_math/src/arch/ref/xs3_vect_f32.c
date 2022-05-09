@@ -18,9 +18,10 @@ float xs3_vect_f32_dot(
     const unsigned length)
 {
   float acc = 0.0f;
-  for(int k = length-1; k >= 0; k--){
+  for(int k = 0; k < length; k++){
     acc = fmacc(acc, b[k], c[k]);
   }
+  return acc;
 }
 
 
@@ -33,12 +34,11 @@ exponent_t xs3_vect_f32_max_exponent(
     int tmp;
     frexpf(b[k], &tmp);
     tmp -= 31;
-    res = (tmp > res)? tmp, res;
+    res = (tmp > res)? tmp : res;
   }
 
   return res;
 }
-
 
 
 void xs3_vect_f32_to_s32(
@@ -49,13 +49,11 @@ void xs3_vect_f32_to_s32(
 {
   for(int k = 0; k < length; k++){
     const float B = b[k];
-    int32_t mantissa;
-    exponent_t x;
-    xs3_unpack_float(&mantissa, &x, B);
-    int tmp = exp - x;
-    a[k] = vlashr32(mantissa, tmp);
+    const float_s32_t C = float_to_float_s32(B);
+    a[k] = vlashr32(C.mant, exp - C.exp);
   }
 } 
+
 
 void xs3_vect_s32_to_f32(
     float a[],

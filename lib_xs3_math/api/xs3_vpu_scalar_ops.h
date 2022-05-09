@@ -300,7 +300,7 @@ int32_t vcmci32(
  * Implements the logic of the FMACC instruction for IEEE754 single-precision
  * floats.
  */
-int32_t fmacc(
+float fmacc(
     const float acc,
     const float b,
     const float c);

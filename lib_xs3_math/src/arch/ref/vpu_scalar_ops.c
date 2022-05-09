@@ -447,5 +447,7 @@ float fmacc(
   const float c)
 {
   double bc = ((double)b) * ((double)c);
-  return ((double)acc) + bc;
+  double res = ((double)acc) + bc;
+  float res2 = (float)res;
+  return res2;
 }
