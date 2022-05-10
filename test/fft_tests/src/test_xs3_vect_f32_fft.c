@@ -62,8 +62,6 @@ TEST(xs3_vect_f32_fft, xs3_vect_f32_fft_forward)
       DWORD_ALIGNED
       complex_double_t ref[MAX_PROC_FRAME_LENGTH];
 
-      complex_float_t* a_fft = (complex_float_t*) &a[0];
-
       const exponent_t initial_exponent = sext(pseudo_rand_int32(&r), EXPONENT_SIZE);
 
       for(unsigned i = 0; i < FFT_N; i++){
@@ -77,7 +75,7 @@ TEST(xs3_vect_f32_fft, xs3_vect_f32_fft_forward)
       ref[0].im = ref[FFT_N/2].re;
 
       unsigned ts1 = getTimestamp();
-      xs3_vect_f32_fft_forward(&a[0], FFT_N);
+      complex_float_t* a_fft = xs3_vect_f32_fft_forward(&a[0], FFT_N);
       unsigned ts2 = getTimestamp();
       
       float timing = (ts2-ts1)/100.0;
@@ -148,8 +146,6 @@ TEST(xs3_vect_f32_fft, xs3_vect_f32_fft_inverse)
       complex_double_t ref[MAX_PROC_FRAME_LENGTH];
       DWORD_ALIGNED
       double ref_real[MAX_PROC_FRAME_LENGTH];
-
-      float* a = (float*) &a_fft[0];
       
       const exponent_t initial_exponent = sext(pseudo_rand_int32(&r), EXPONENT_SIZE);
       
@@ -170,7 +166,7 @@ TEST(xs3_vect_f32_fft, xs3_vect_f32_fft_inverse)
       flt_fft_inverse_double(ref, FFT_N, sine_table);
 
       unsigned ts1 = getTimestamp();
-      xs3_vect_f32_fft_inverse(&a[0], FFT_N);
+      float* a = xs3_vect_f32_fft_inverse(&a_fft[0], FFT_N);
       unsigned ts2 = getTimestamp();
       
       float timing = (ts2-ts1)/100.0;

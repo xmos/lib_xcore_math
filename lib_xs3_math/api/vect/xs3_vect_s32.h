@@ -2444,17 +2444,6 @@ void xs3_vect_2vec_prepare(
     const headroom_t extra_operand_hr);
 
 
-/**
- * 
- */
-C_API
-void xs3_vect_s32_to_f32(
-    float a[],
-    const int32_t b[], 
-    const unsigned length, 
-    const exponent_t b_exp);
-
-
 
 #ifdef __XC__
 }   //extern "C"

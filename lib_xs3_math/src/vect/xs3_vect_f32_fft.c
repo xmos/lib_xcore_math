@@ -10,39 +10,45 @@
 
 
 
-void xs3_vect_f32_fft_forward(
-    float a[],
-    const unsigned length)
+complex_float_t* xs3_vect_f32_fft_forward(
+    float x[],
+    const unsigned fft_length)
 {
-  int32_t* buffer_s32 = (int32_t*) a;
+  int32_t* x_s32 = (int32_t*) &x[0];
+  complex_float_t* X = (complex_float_t*) &x[0];
 
-  exponent_t exp = xs3_vect_f32_max_exponent(a, length) + 2;
-  xs3_vect_f32_to_s32(buffer_s32, a, length, exp);
+  exponent_t exp = xs3_vect_f32_max_exponent(x, fft_length) + 2;
+  xs3_vect_f32_to_s32(x_s32, x, fft_length, exp);
 
   // Now call the three functions to do an FFT
-  xs3_fft_index_bit_reversal((complex_s32_t*) (void*) buffer_s32, length/2);
+  xs3_fft_index_bit_reversal((complex_s32_t*) x_s32, fft_length/2);
   headroom_t hr = 2;
-  xs3_fft_dit_forward((complex_s32_t*) (void*) buffer_s32, length/2, &hr, &exp);
-  xs3_fft_mono_adjust((complex_s32_t*) (void*) buffer_s32, length, 0);
+  xs3_fft_dit_forward((complex_s32_t*) x_s32, fft_length/2, &hr, &exp);
+  xs3_fft_mono_adjust((complex_s32_t*) x_s32, fft_length, 0);
 
   // And unpack back to floating point values
-  xs3_vect_s32_to_f32(a, buffer_s32, length, exp);
+  xs3_vect_s32_to_f32(x, x_s32, fft_length, exp);
+
+  return X;
 }
 
 
-void xs3_vect_f32_fft_inverse(
-    float buffer[],
-    const unsigned length)
+float* xs3_vect_f32_fft_inverse(
+    complex_float_t X[],
+    const unsigned fft_length)
 {
-  int32_t* buffer_s32 = (int32_t*) buffer;
+  int32_t* x_s32 = (int32_t*) &X[0];
+  float* x = (float*) &X[0];
   
-  exponent_t exp = xs3_vect_f32_max_exponent(buffer, length) + 2;
-  xs3_vect_f32_to_s32(buffer_s32, buffer, length, exp);
+  exponent_t exp = xs3_vect_f32_max_exponent(x, fft_length) + 2;
+  xs3_vect_f32_to_s32(x_s32, x, fft_length, exp);
 
-  xs3_fft_mono_adjust((complex_s32_t*) (void*) buffer_s32, length, 1);
-  xs3_fft_index_bit_reversal((complex_s32_t*) (void*) buffer_s32, length/2);
+  xs3_fft_mono_adjust((complex_s32_t*) x_s32, fft_length, 1);
+  xs3_fft_index_bit_reversal((complex_s32_t*) x_s32, fft_length/2);
   headroom_t hr = 2;
-  xs3_fft_dit_inverse((complex_s32_t*) (void*) buffer_s32, length/2, &hr, &exp);
+  xs3_fft_dit_inverse((complex_s32_t*) x_s32, fft_length/2, &hr, &exp);
 
-  xs3_vect_s32_to_f32(buffer, buffer_s32, length, exp);
+  xs3_vect_s32_to_f32(x, x_s32, fft_length, exp);
+
+  return x;
 }

@@ -25,6 +25,7 @@ extern "C" {
  * @defgroup xs3_vect8_func       XS3 16-Bit Vector Functions
  * @defgroup xs3_vect16_func      XS3 16-Bit Vector Functions
  * @defgroup xs3_vect32_func      XS3 32-Bit Vector Functions
+ * @defgroup xs3_vect_f32_func    XS3 IEEE754 Single-Precision Vector Functions
  * @defgroup xs3_fft_func         XS3 FFT-Related Functions
  * @defgroup xs3_mixed_vect_func  XS3 Mixed-Depth Vector Functions
  * 
