@@ -49,7 +49,7 @@ jobs:
       - name: Build
         run: |
           mkdir ~/artifacts
-          docker run --user $(id -u) --rm -w /lib_xs3_math -v ${{ github.workspace }}:/lib_xs3_math -v ~/artifacts:/artifacts ghcr.io/xmos/sdk_app_builder:develop bash -l .github/scripts/build_tests_xcore.sh
+          docker run --rm -w /lib_xs3_math -v ${{ github.workspace }}:/lib_xs3_math -v ~/artifacts:/artifacts ghcr.io/xmos/sdk_app_builder:develop bash -l .github/scripts/build_tests_xcore.sh
 
       - name: Save Unit Test Artifacts
         uses: actions/upload-artifact@v2
