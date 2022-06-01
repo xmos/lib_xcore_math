@@ -385,6 +385,30 @@ float_s32_t bfp_s32_max(
 }
 
 
+void bfp_s32_max_elementwise(
+    bfp_s32_t* a, 
+    const bfp_s32_t* b, 
+    const bfp_s32_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+  assert(b->length == c->length);
+  assert(b->length == a->length);
+  assert(b->length != 0);
+#endif
+
+  // The elements of b[] and c[] need to have the same exponent when compared.
+  // We'll choose the smallest exponent that leaves at least 1 bit of headroom.
+  const unsigned min_required_operand_headroom = 1;
+  right_shift_t b_shr, c_shr;
+  xs3_vect_2vec_prepare(&a->exp, &b_shr, &c_shr, 
+                        b->exp, c->exp, b->hr, c->hr, 
+                        min_required_operand_headroom);
+
+  a->hr = xs3_vect_s32_max_elementwise(a->data, b->data, c->data, 
+                                       b->length, b_shr, c_shr);
+}
+
+
 float_s32_t bfp_s32_min(
     const bfp_s32_t* b)
 {
@@ -396,6 +420,30 @@ float_s32_t bfp_s32_min(
     a.mant = xs3_vect_s32_min(b->data, b->length);
     a.exp = b->exp;
     return a;
+}
+
+
+void bfp_s32_min_elementwise(
+    bfp_s32_t* a, 
+    const bfp_s32_t* b, 
+    const bfp_s32_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+  assert(b->length == c->length);
+  assert(b->length == a->length);
+  assert(b->length != 0);
+#endif
+
+  // The elements of b[] and c[] need to have the same exponent when compared.
+  // We'll choose the smallest exponent that leaves at least 1 bit of headroom.
+  const unsigned min_required_operand_headroom = 1;
+  right_shift_t b_shr, c_shr;
+  xs3_vect_2vec_prepare(&a->exp, &b_shr, &c_shr, 
+                        b->exp, c->exp, b->hr, c->hr, 
+                        min_required_operand_headroom);
+
+  a->hr = xs3_vect_s32_min_elementwise(a->data, b->data, c->data, 
+                                       b->length, b_shr, c_shr);
 }
 
 

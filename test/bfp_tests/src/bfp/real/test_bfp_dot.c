@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -199,7 +199,8 @@ TEST(bfp_dot, bfp_s32_dot_2)
 
         double diff = expected - ldexp(result.mant, result.exp);
         double error = fabs(diff/expected);
-        double thresh = ldexp(1, -19);
+        int extr = (int) floor(log2(B.length));
+        double thresh = ldexp(extr, -20);
         XTEST_ASSERT( error < thresh, 
           "\n%e not less than %e\n"
           "B.hr = %u\n"

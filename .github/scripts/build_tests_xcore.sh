@@ -3,7 +3,7 @@ set -e
 
 pwd
 
-cmake -B build.xcore -DSMOKE_TEST=ON -DGEN_FFT_LUT=OFF -DCMAKE_TOOLCHAIN_FILE=etc/xmos_toolchain.cmake
+cmake -B build.xcore -DXS3_MATH_SMOKE_TEST=ON -DCMAKE_TOOLCHAIN_FILE=etc/xmos_cmake_toolchain/xs3a.cmake
 cmake --build build.xcore
 
 cp build.xcore/test/vect_tests/vect_tests.xe /artifacts

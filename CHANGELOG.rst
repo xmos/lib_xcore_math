@@ -1,13 +1,16 @@
 lib_xs3_math change log
 =======================
 
-2.0.0 (UPCOMING)
-----------------
+2.0.0
+-----
 
 Major Changes
 *************
 
 * Support for channel-pair related types and operations has been dropped. These were considered to be too narrowly focused on making use of a single optimization (stereo FFT).
+
+  * This is a backwards compatibility-breaking change, requiring a major version increment.
+
 * Added various scalar arithmetic functions for `float_s32_t` type.
 
 Bugfixes
@@ -44,20 +47,38 @@ New Functions
   * `bfp_complex_sXX_energy()` -- Compute the sum of a complex vector's elements' squared magnitudes.
   * `bfp_sXX_use_exponent()` / `bfp_complex_sXX_use_exponent()` -- Force BFP vector to encode mantissas using specified exponent (i.e. convert to specified Q-format)
   * `bfp_s32_convolve_valid()` / `bfp_complex_s32_convolve_same()` -- Filter a 32-bit signal using a short convolution kernel. Both "valid" and "same" padding modes are supported.
+  * `xs3_vect_sXX_add_scalar()` / `xs3_vect_complex_sXX_add_scalar()` -- Functions to add scalar to a vector (16/32-bit real/complex)
     
 
 * Low-level API
   
-  * `xs3_mat_mul_s8_x_s8_yield_s32()` -- Multiply-accumulate an 8-bit vector by an 8-bit matrix into 32-bit accumulators.
-  * `xs3_mat_mul_s8_x_s16_yield_s32()` -- Multiply a 16-bit vector by an 8-bit matrix for a 32-bit result.
-  * `xs3_vect_s8_is_negative()` -- Determine whether each element of an 8-bit vector is negative.
-  * `xs3_vect_s16_extract_high_byte()` -- Extract the most significant byte of each element of a 16-bit vector.
-  * `xs3_vect_s16_extract_low_byte()` -- Extract the least significant byte of each element of a 16-bit vector.
-  * `xs3_vect_s32_zip()` -- Interleave elements from two `int32_t` vectors.
-  * `xs3_vect_s32_unzip()` -- De-interleave elements from a `int32_t` vector.
-  * `xs3_vect_s32_copy()` -- Copy an `int32_t` vector.
+  * Functions supporting mixed-depth operations
+
+    * `xs3_mat_mul_s8_x_s8_yield_s32()` -- Multiply-accumulate an 8-bit vector by an 8-bit matrix into 32-bit accumulators.
+    * `xs3_mat_mul_s8_x_s16_yield_s32()` -- Multiply a 16-bit vector by an 8-bit matrix for a 32-bit result.
+    * `xs3_vect_s8_is_negative()` -- Determine whether each element of an 8-bit vector is negative.
+    * `xs3_vect_s16_extract_high_byte()` -- Extract the most significant byte of each element of a 16-bit vector.
+    * `xs3_vect_s16_extract_low_byte()` -- Extract the least significant byte of each element of a 16-bit vector.
+
+  * Memory ops
+
+    * `xs3_vect_s32_zip()` -- Interleave elements from two `int32_t` vectors.
+    * `xs3_vect_s32_unzip()` -- De-interleave elements from a `int32_t` vector.
+    * `xs3_vect_s32_copy()` -- Copy an `int32_t` vector.
+    * `xs3_memcpy()` -- Quickly copy word-aligned vector to another word-aligned vector.
   * Various low-level functions used in the implementation of the high-level multiply-accumulate functions (e.g. `xs3_vect_s32_macc()`).
   * `xs2_vect_s32_convolve_valid()` / `xs3_vect_complex_s32_convolve_same()` -- Filter a 32-bit signal using a short convolution kernel. Both "valid" and "same" padding modes are supported.
+  * `xs3_vect_sXX_add_scalar()` / `xs3_vect_complex_sXX_add_scalar()` -- Add a scalar to a 16- or 32-bit real or complex vector.
+
+  * IEEE754 single-precision float vector functions
+
+    * `xs3_vect_f32_fft_forward()` / `xs3_vect_f32_fft_inverse()` -- Forward/Inverse FFT functions for vectors of floats.
+    * `xs3_vect_f32_max_exponent()` -- Get maximum exponent from vector of floats.
+    * `xs3_vect_f32_to_s32()` / `xs3_vect_s32_to_f32()` -- Convert between float vector and BFP vector.
+    * `xs3_vect_f32_dot()` -- Inner product between two float vectors.
+
+  * `xs3_vect_sXX_max_elementwise()` / `xs3_vect_sXX_min_elementwise()` -- Element-wise maximum and minimum between two 16-/32-bit vectors.
+
 
 Miscellaneous
 *************
@@ -65,6 +86,7 @@ Miscellaneous
 * Unit tests have been refactored to make use of Unity fixtures.
 * Added example apps: `vect_demo`, `bfp_demo`, `fft_demo` and `filter_demo`
 * Removed configuration support for `XS3_MATH_VECTOR_TAIL_SUPPORT`
+* Added `QXX()` and `FXX()` macros (e.g. `Q24()`; taken from `lib_dsp`) for converting (constants) between floating-point and fixed-point values.
 * Added python scripts to generate code for filters
 
   * `lib_xs3_math/script/gen_fir_filter_s16.py`

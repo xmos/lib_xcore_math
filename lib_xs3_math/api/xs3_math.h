@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #ifndef XS3_MATH_H_
@@ -25,6 +25,7 @@ extern "C" {
  * @defgroup xs3_vect8_func       XS3 16-Bit Vector Functions
  * @defgroup xs3_vect16_func      XS3 16-Bit Vector Functions
  * @defgroup xs3_vect32_func      XS3 32-Bit Vector Functions
+ * @defgroup xs3_vect_f32_func    XS3 IEEE754 Single-Precision Vector Functions
  * @defgroup xs3_fft_func         XS3 FFT-Related Functions
  * @defgroup xs3_mixed_vect_func  XS3 Mixed-Depth Vector Functions
  * 
@@ -45,12 +46,14 @@ extern "C" {
 #include "vect/xs3_vect_s16.h"
 #include "vect/xs3_vect_complex_s16.h"
 #include "vect/xs3_vect_s8.h"
+#include "vect/xs3_vect_f32.h"
 #include "vect/xs3_mixed.h"
 #include "vect/xs3_fft.h"
 #include "vect/xs3_filters.h"
 #include "scalar/xs3_scalar.h"
 #include "scalar/scalar_float.h"
 #include "xs3_util.h"
+#include "q_format.h"
 
 #include "xs3_vpu_info.h"
 

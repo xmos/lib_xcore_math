@@ -728,6 +728,36 @@ float bfp_s16_max(
     const bfp_s16_t* b);
 
 
+/**
+ * @brief Get the element-wise maximum of two 16-bit BFP vectors.
+ * 
+ * Each element of output vector @vector{A} is set to the maximum of the 
+ * corresponding elements in the input vectors @vector{B} and @vector{C}.
+ * 
+ * `a`, `b` and `c` must have been initialized (see bfp_s16_init()), and must be
+ * the same length.
+ * 
+ * This operation can be performed safely in-place on `b`, but @a not on `c`.
+ * 
+ * @operation{ 
+ * &     A_k \leftarrow max(B_k, C_k)                             \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)                \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
+ * 
+ * @param a     Output BFP vector @vector{A}
+ * @param b     Input BFP vector @vector{B}
+ * @param c     Input BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+void bfp_s16_max_elementwise(
+    bfp_s16_t* a, 
+    const bfp_s16_t* b, 
+    const bfp_s16_t* c);
+
+
 /** 
  * @brief Get the minimum value of a 16-bit BFP vector.
  * 
@@ -750,6 +780,36 @@ float bfp_s16_max(
 C_API
 float bfp_s16_min(
     const bfp_s16_t* b);
+
+
+/**
+ * @brief Get the element-wise minimum of two 16-bit BFP vectors.
+ * 
+ * Each element of output vector @vector{A} is set to the minimum of the 
+ * corresponding elements in the input vectors @vector{B} and @vector{C}.
+ * 
+ * `a`, `b` and `c` must have been initialized (see bfp_s16_init()), and must be
+ * the same length.
+ * 
+ * This operation can be performed safely in-place on `b`, but @a not on `c`.
+ * 
+ * @operation{ 
+ * &     A_k \leftarrow min(B_k, C_k)                             \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)                \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * }
+ * 
+ * @param a     Output BFP vector @vector{A}
+ * @param b     Input BFP vector @vector{B}
+ * @param c     Input BFP vector @vector{C}
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+void bfp_s16_min_elementwise(
+    bfp_s16_t* a, 
+    const bfp_s16_t* b, 
+    const bfp_s16_t* c);
 
 
 /** 

@@ -3,10 +3,18 @@
 
 #include <stdio.h>
 
+#ifdef __XS3A__
+# include <xscope.h>
+#endif
+
 #include "unity_fixture.h"
 
 int main(int argc, const char* argv[])
 {
+#ifdef __XS3A__
+  xscope_config_io(XSCOPE_IO_BASIC);
+#endif
+
     UnityGetCommandLineOptions(argc, argv);
     UnityBegin(argv[0]);
 
@@ -30,6 +38,8 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_abs_sum);
     RUN_TEST_GROUP(xs3_vect_dot);
     RUN_TEST_GROUP(xs3_vect_max);
+    RUN_TEST_GROUP(xs3_vect_max_elementwise);
+    RUN_TEST_GROUP(xs3_vect_min_elementwise);
     RUN_TEST_GROUP(xs3_vect_min);
     RUN_TEST_GROUP(xs3_vect_argmax);
     RUN_TEST_GROUP(xs3_vect_argmin);
@@ -56,6 +66,12 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_complex_macc);
     RUN_TEST_GROUP(xs3_vect_complex_conj_macc);
     RUN_TEST_GROUP(xs3_vect_complex_conjugate);
+
+    // float vector
+    RUN_TEST_GROUP(xs3_vect_f32_max_exponent);
+    RUN_TEST_GROUP(xs3_vect_f32_to_s32);
+    RUN_TEST_GROUP(xs3_vect_s32_to_f32);
+    RUN_TEST_GROUP(xs3_vect_f32_dot);
 
     // misc
     RUN_TEST_GROUP(xs3_vect_extract);

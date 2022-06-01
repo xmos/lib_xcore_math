@@ -1,65 +1,38 @@
-## App name
 set( APP_NAME  fft_demo )
 
-## Depends on libraries
-list( APPEND  DEP_LIBS        lib_xs3_math )
-
-list( APPEND  DEP_LIBS_XCORE  ""  )
-list( APPEND  DEP_LIBS_Linux  m   )
-
-## Sources
-file( GLOB_RECURSE SOURCES_C  main.c )
-
-# set( XSCOPE_CONFIG config.xscope )
-get_filename_component(XSCOPE_CONFIG config.xscope ABSOLUTE)
-
-## Compile flags
-unset(COMPILE_FLAGS)
-list( APPEND  COMPILE_FLAGS   -Wno-unused-variable )
-
-unset(COMPILE_FLAGS_XCORE)
-list( APPEND  COMPILE_FLAGS_XCORE    )
-
-unset(COMPILE_FLAGS_Linux)
-list( APPEND  COMPILE_FLAGS_XCORE   "" )
-
-## Linker flags
-unset(LINKER_FLAGS)
-list( APPEND  LINKER_FLAGS  "" )
-
-unset(LINKER_FLAGS_XCORE)
-list( APPEND  LINKER_FLAGS_XCORE  -target=${XCORE_TARGET} )
-list( APPEND  LINKER_FLAGS_XCORE  -report                 )
-list( APPEND  LINKER_FLAGS_XCORE  ${XSCOPE_CONFIG}        )
-
-unset(LINKER_FLAGS_Linux)
-list( APPEND  LINKER_FLAGS_Linux  ""                      )
-
-
-#########
-
-list( APPEND  SOURCES         ${SOURCES_C}     )
-list( APPEND  SOURCES_XCORE   ${SOURCES_XC}    )
-list( APPEND  SOURCES   ${SOURCES_${CMAKE_SYSTEM_NAME}} )
-
-list( APPEND  COMPILE_FLAGS ${COMPILE_FLAGS_${CMAKE_SYSTEM_NAME}} )
-
-list( APPEND  LINKER_FLAGS ${LINKER_FLAGS_${CMAKE_SYSTEM_NAME}} )
-
-list( APPEND  DEP_LIBS ${DEP_LIBS_${CMAKE_SYSTEM_NAME}} )
-
-add_executable( ${APP_NAME} ${SOURCES} )
-
-target_link_libraries( ${APP_NAME} ${DEP_LIBS})
-
-target_compile_options( ${APP_NAME} PRIVATE ${COMPILE_FLAGS} )
-
-#(because otherwise the set_target_properties command fails)
-string(REPLACE ";" " " LINKER_FLAGS_STR "${LINKER_FLAGS}")
-
-
-set_target_properties( ${APP_NAME} PROPERTIES LINK_FLAGS "${LINKER_FLAGS_STR}" )
-
-if ( XCORE )
-  set_target_properties( ${APP_NAME} PROPERTIES   SUFFIX ".xe" )
+## If XCORE_TARGET hasn't been specified, default to XCORE-AI-EXPLORER
+if( NOT DEFINED XCORE_TARGET )
+  set( XCORE_TARGET XCORE-AI-EXPLORER )
 endif()
+
+add_executable( ${APP_NAME} )
+
+target_sources( ${APP_NAME}
+  PRIVATE
+    main.c 
+)
+
+target_compile_options( ${APP_NAME}
+  PRIVATE 
+    -Os -g -Wno-format -Wno-unused-variable
+    $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
+)
+
+target_link_options( ${APP_NAME}
+  PRIVATE
+    $<$<PLATFORM_ID:XCORE_XS3A>:-target=${XCORE_TARGET}>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-report>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
+)
+
+target_compile_definitions( ${APP_NAME}
+  PRIVATE
+    $<$<PLATFORM_ID:Linux>:USE_REF=1>
+)
+
+target_link_libraries( ${APP_NAME}
+  lib_xs3_math
+  $<$<PLATFORM_ID:Linux>:m>
+)
+
+add_dependencies( lib_xs3_math-examples  ${APP_NAME} )

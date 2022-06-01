@@ -674,6 +674,67 @@ int16_t xs3_vect_s16_max(
 
 
 /**
+ * @brief Get the element-wise maximum of two 16-bit vectors.
+ * 
+ * `a[]`, `b[]` and `c[]` represent the 16-bit mantissa vectors @vector{a},
+ * @vector{b} and @vector{c} respectively. Each must begin at a word-aligned
+ * address. This operation can be performed safely in-place on `b[]`, but @a not
+ * on `c[]`.
+ *
+ * `length` is the number of elements in each of the vectors.
+ *
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each
+ * element of @vector{b} and @vector{c} respectively.
+ * 
+ * @operation{
+ * &     b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ * &     c_k' \leftarrow sat_{16}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)     \\
+ * &     a_k \leftarrow max(b_k', c_k')                                      \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @par Block Floating-Point
+ * @parblock
+ * 
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b}
+ * \cdot 2^{b\_exp} } and @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting
+ * vector @vector{a} are the mantissas of BFP vector @math{\bar{a} \cdot
+ * 2^{a\_exp}}, where @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}.
+ * 
+ * The function xs3_vect_2vec_prepare() can be used to obtain values for
+ * @math{a\_exp}, @math{b\_shr} and @math{c\_shr} based on the input exponents
+ * @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and
+ * @math{c\_hr}. 
+ * @endparblock
+ * 
+ * @warning For correct operation, this function requires at least 1 bit of 
+ *          headroom in each mantissa vector @a after the shifts have been 
+ *          applied.
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input vector @vector{b}
+ * @param[in]  c        Input vector @vector{c}
+ * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]  b_shr    Right-shift appled to @vector{b}
+ * @param[in]  c_shr    Right-shift appled to @vector{c}
+ * 
+ * @returns  Headroom of vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect16_func
+ */
+C_API
+headroom_t xs3_vect_s16_max_elementwise(
+    int16_t a[],
+    const int16_t b[],
+    const int16_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
+
+
+/**
  * @brief Find the minimum value in a 16-bit vector.
  * 
  * `b[]` represents the 16-bit vector @vector{b}. It must begin at a word-aligned address.
@@ -704,6 +765,67 @@ C_API
 int16_t xs3_vect_s16_min(
     const int16_t b[], 
     const unsigned length);
+
+
+/**
+ * @brief Get the element-wise minimum of two 16-bit vectors.
+ * 
+ * `a[]`, `b[]` and `c[]` represent the 16-bit mantissa vectors @vector{a},
+ * @vector{b} and @vector{c} respectively. Each must begin at a word-aligned
+ * address. This operation can be performed safely in-place on `b[]`, but @a not
+ * on `c[]`.
+ *
+ * `length` is the number of elements in each of the vectors.
+ *
+ * `b_shr` and `c_shr` are the signed arithmetic right-shifts applied to each
+ * element of @vector{b} and @vector{c} respectively.
+ * 
+ * @operation{
+ * &     b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
+ * &     c_k' \leftarrow sat_{16}(\lfloor c_k \cdot 2^{-c\_shr} \rfloor)     \\
+ * &     a_k \leftarrow min(b_k', c_k')                                      \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @par Block Floating-Point
+ * @parblock
+ * 
+ * If @vector{b} and @vector{c} are the mantissas of BFP vectors @math{ \bar{b}
+ * \cdot 2^{b\_exp} } and @math{\bar{c} \cdot 2^{c\_exp}}, then the resulting
+ * vector @vector{a} are the mantissas of BFP vector @math{\bar{a} \cdot
+ * 2^{a\_exp}}, where @math{a\_exp = b\_exp + b\_shr = c\_exp + c\_shr}.
+ * 
+ * The function xs3_vect_2vec_prepare() can be used to obtain values for
+ * @math{a\_exp}, @math{b\_shr} and @math{c\_shr} based on the input exponents
+ * @math{b\_exp} and @math{c\_exp} and the input headrooms @math{b\_hr} and
+ * @math{c\_hr}. 
+ * @endparblock
+ * 
+ * @warning For correct operation, this function requires at least 1 bit of 
+ *          headroom in each mantissa vector @a after the shifts have been 
+ *          applied.
+ * 
+ * @param[out] a        Output vector @vector{a}
+ * @param[in]  b        Input vector @vector{b}
+ * @param[in]  c        Input vector @vector{c}
+ * @param[in]  length   Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * @param[in]  b_shr    Right-shift appled to @vector{b}
+ * @param[in]  c_shr    Right-shift appled to @vector{c}
+ * 
+ * @returns  Headroom of vector @vector{a}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect16_func
+ */
+C_API
+headroom_t xs3_vect_s16_min_elementwise(
+    int16_t a[],
+    const int16_t b[],
+    const int16_t c[],
+    const unsigned length,
+    const right_shift_t b_shr,
+    const right_shift_t c_shr);
 
 
 /**

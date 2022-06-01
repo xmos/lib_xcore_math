@@ -704,3 +704,21 @@ void xs3_vect_s32_clip_prepare(
     *upper_bound = ub;
     *lower_bound = lb;
 }
+
+
+void xs3_vect_2vec_prepare(
+    exponent_t* a_exp,
+    right_shift_t* b_shr,
+    right_shift_t* c_shr,
+    const exponent_t b_exp,
+    const exponent_t c_exp,
+    const headroom_t b_hr,
+    const headroom_t c_hr,
+    const headroom_t extra_operand_hr)
+{ 
+  const exponent_t b_min_exp = b_exp - b_hr + extra_operand_hr;
+  const exponent_t c_min_exp = c_exp - c_hr + extra_operand_hr;
+  *a_exp = (b_min_exp > c_min_exp)? b_min_exp : c_min_exp;
+  *b_shr = *a_exp - b_exp;
+  *c_shr = *a_exp - c_exp;
+}
