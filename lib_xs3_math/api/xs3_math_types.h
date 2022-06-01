@@ -24,15 +24,17 @@
 
 
 /**
- * @defgroup type_scalar  lib_xs3_math Scalar Types
- * @defgroup type_bfp     lib_xs3_math Block Floating-Point Types
- * @defgroup type_misc    lib_xs3_math Misc Types
+ * @defgroup type_scalar_int  lib_xs3_math Scalar Types (Integer)
+ * @defgroup type_scalar_float lib_xs3_math Scalar Types (Floating-point)
+ * @defgroup type_scalar_fixed lib_xs3_math Scalar Types (Fixed-point)
+ * @defgroup type_bfp          lib_xs3_math Block Floating-Point Types
+ * @defgroup type_misc         lib_xs3_math Misc Types
  */
 
 /** 
  * @brief A complex number with a 64-bit real part and 64-bit imaginary part.
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_int
  */
 C_TYPE
 typedef struct {
@@ -43,7 +45,7 @@ typedef struct {
 /** 
  * @brief A complex number with a 32-bit real part and 32-bit imaginary part.
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_int
  */
 C_TYPE
 typedef struct {
@@ -54,7 +56,7 @@ typedef struct {
 /** 
  * @brief A complex number with a 16-bit real part and 16-bit imaginary part.
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_int
  */
 C_TYPE
 typedef struct {
@@ -71,7 +73,7 @@ typedef struct {
  * 
  * For a floating-point value @math{x \cdot 2^p}, @math{p} is the exponent, and may usually be positive or negative.
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_int
  */
 typedef int exponent_t;
 
@@ -81,7 +83,7 @@ typedef int exponent_t;
  * Represents the headroom of a signed or unsigned integer, complex integer or channel pair, or the headroom of the 
  * mantissa array of a block floating-point vector.
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_int
  */
 typedef unsigned headroom_t;
 
@@ -93,7 +95,7 @@ typedef unsigned headroom_t;
  * 
  * @see left_shift_t
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_int
  */
 typedef int right_shift_t;
 
@@ -105,44 +107,9 @@ typedef int right_shift_t;
  * 
  * @see right_shift_t
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_int
  */
 typedef int left_shift_t;
-
-
-/**
- * @brief A 32-bit fixed-point scalar.
- * 
- * Represents a 32-bit fixed-point scalar with a Q-format implied by the context in which it occurs.
- * Typically this type will be used for fixed-point function parameters as a hint to the user to
- * check the documentation for the required Q-format.
- * 
- * If a function has a `fixed_s32_t` parameter ending with `_qXX` (where the `X` are digits), the
- * `XX` typically indicates the number of fractional bits. For example, a `fixed_s32_t` parameter
- * called `coef_q30` would imply 30 fractional bits and an associated exponent of -30.  This is just
- * a convention, however, and this interpretation should be verified in the function's
- * documentation.
- * 
- * @ingroup type_scalar
- */
-typedef int32_t fixed_s32_t;
-
-/**
- * @brief A 16-bit fixed-point scalar.
- * 
- * Represents a 16-bit fixed-point scalar with a Q-format implied by the context in which it occurs.
- * Typically this type will be used for fixed-point function parameters as a hint to the user to
- * check the documentation for the required Q-format.
- * 
- * If a function has a `fixed_s16_t` parameter ending with `_qXX` (where the `X` are digits), the
- * `XX` typically indicates the number of fractional bits. For example, a `fixed_s16_t` parameter
- * called `coef_q14` would imply 14 fractional bits and an associated exponent of -14.  This is just
- * a convention, however, and this interpretation should be verified in the function's
- * documentation.
- * 
- * @ingroup type_scalar
- */
-typedef int16_t fixed_s16_t;
 
 
 
@@ -161,7 +128,7 @@ typedef int16_t fixed_s16_t;
  *  }
  * @endcode
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_float
  */
 C_TYPE
 typedef struct {
@@ -184,7 +151,7 @@ typedef struct {
  *  }
  * @endcode
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_float
  */
 C_TYPE
 typedef struct {
@@ -199,7 +166,7 @@ typedef struct {
  * is `mant.re`, the 16-bit real part of the mantissa, @math{B} is `mant.im`, the 16-bit imaginary part of the mantissa,
  * and @math{x} is the exponent `exp`.
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_float
  */
 C_TYPE
 typedef struct {
@@ -214,7 +181,7 @@ typedef struct {
  * is `mant.re`, the 32-bit real part of the mantissa, @math{B} is `mant.im`, the 32-bit imaginary part of the mantissa,
  * and @math{x} is the exponent `exp`.
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_float
  */
 C_TYPE
 typedef struct {
@@ -229,7 +196,7 @@ typedef struct {
  * is `mant.re`, the 64-bit real part of the mantissa, @math{B} is `mant.im`, the 64-bit imaginary part of the mantissa,
  * and @math{x} is the exponent `exp`.
  * 
- * @ingroup type_scalar
+ * @ingroup type_scalar_float
  */
 C_TYPE
 typedef struct {
@@ -389,9 +356,10 @@ typedef struct {
 
 
 /**
- * @brief A complex number with a single-precision floating-point real part and a single-precision floating-point imaginary part.
+ * @brief A complex number with a single-precision floating-point real part and a single-precision
+ * floating-point imaginary part.
  * 
- * @ingroup type_misc
+ * @ingroup type_scalar_float
  */
 C_TYPE
 typedef struct {
@@ -401,9 +369,10 @@ typedef struct {
 
 
 /**
- * @brief A complex number with a double-precision floating-point real part and a double-precision floating-point imaginary part.
+ * @brief A complex number with a double-precision floating-point real part and a double-precision
+ * floating-point imaginary part.
  * 
- * @ingroup type_misc
+ * @ingroup type_scalar_float
  */
 C_TYPE
 typedef struct {
@@ -432,13 +401,135 @@ typedef struct {
 } xs3_split_acc_s32_t;
 
 
+/**
+ * @brief Q1.31 (Signed) Fixed-point value.
+ * 
+ * Represents a signed, 32-bit, real, fixed-point value with 31 fractional bits (i.e. an implicit 
+ * exponent of @math{-31}).
+ * 
+ * Capable of representing values in the range @math{\left[-1.0, 1.0\right)}
+ * 
+ * @ingroup type_scalar_fixed
+ */
 typedef int32_t q1_31;
+
+/**
+ * @brief Q2.30 (Signed) Fixed-point value.
+ * 
+ * Represents a signed, 32-bit, real, fixed-point value with 30 fractional bits (i.e. an implicit 
+ * exponent of @math{-30}).
+ * 
+ * Capable of representing values in the range @math{\left[-2.0, 2.0\right)}
+ * 
+ * @ingroup type_scalar_fixed
+ */
 typedef int32_t q2_30;
+
+/**
+ * @brief Q4.28 (Signed) Fixed-point value.
+ * 
+ * Represents a signed, 32-bit, real, fixed-point value with 28 fractional bits (i.e. an implicit 
+ * exponent of @math{-28}).
+ * 
+ * Capable of representing values in the range @math{\left[-8.0, 8.0\right)}
+ * 
+ * @ingroup type_scalar_fixed
+ */
 typedef int32_t q4_28;
+
+/**
+ * @brief Q8.24 (Signed) Fixed-point value.
+ * 
+ * Represents a signed, 32-bit, real, fixed-point value with 24 fractional bits (i.e. an implicit 
+ * exponent of @math{-24}).
+ * 
+ * Capable of representing values in the range @math{\left[-128.0, 128.0\right)}
+ * 
+ * @ingroup type_scalar_fixed
+ */
 typedef int32_t q8_24;
 
+
+/**
+ * @brief UQ0.32 (Unsigned) Fixed-point value.
+ * 
+ * Represents an unsigned, 32-bit, real, fixed-point value with 32 fractional bits (i.e. an implicit 
+ * exponent of @math{-32}).
+ * 
+ * Capable of representing values in the range @math{\left[0, 1.0\right)}
+ * 
+ * @ingroup type_scalar_fixed
+ */
 typedef uint32_t uq0_32;
+
+
+/**
+ * @brief UQ1.31 (Unsigned) Fixed-point value.
+ * 
+ * Represents an unsigned, 32-bit, real, fixed-point value with 31 fractional bits (i.e. an implicit 
+ * exponent of @math{-31}).
+ * 
+ * Capable of representing values in the range @math{\left[0, 2.0\right)}
+ * 
+ * @ingroup type_scalar_fixed
+ */
 typedef uint32_t uq1_31;
+
+
+/**
+ * @brief UQ2.30 (Unsigned) Fixed-point value.
+ * 
+ * Represents an unsigned, 32-bit, real, fixed-point value with 30 fractional bits (i.e. an implicit 
+ * exponent of @math{-30}).
+ * 
+ * Capable of representing values in the range @math{\left[0, 4.0\right)}
+ * 
+ * @ingroup type_scalar_fixed
+ */
 typedef uint32_t uq2_30;
+
+
+/**
+ * @brief UQ4.28 (Unsigned) Fixed-point value.
+ * 
+ * Represents an unsigned, 32-bit, real, fixed-point value with 28 fractional bits (i.e. an implicit 
+ * exponent of @math{-28}).
+ * 
+ * Capable of representing values in the range @math{\left[0, 16.0\right)}
+ * 
+ * @ingroup type_scalar_fixed
+ */
 typedef uint32_t uq4_28;
+
+
+/**
+ * @brief UQ8.24 (Unsigned) Fixed-point value.
+ * 
+ * Represents an unsigned, 32-bit, real, fixed-point value with 24 fractional bits (i.e. an implicit 
+ * exponent of @math{-24}).
+ * 
+ * Capable of representing values in the range @math{\left[0, 256.0\right)}
+ * 
+ * @ingroup type_scalar_fixed
+ */
 typedef uint32_t uq8_24;
+
+
+/**
+ * @brief Specialized angular unit used by this library.
+ * 
+ * 'sbrad' is a kind of modified [binary radian](https://en.wikipedia.org/wiki/Binary_angular_measurement)
+ * (hence 'brad') which takes into account the symmetries of @math{sin(\theta)}.
+ * 
+ * Use @ref xs3_radians_to_sbrads() to convert from radians to `sbrad_t`.
+ * 
+ * @ingroup type_scalar_fixed
+ */
+typedef q1_31 sbrad_t;
+
+/**
+ * @brief Angle measurement in radians using a Q8.24 representation.
+ * 
+ * @ingroup type_scalar_fixed
+ */
+typedef q8_24 radian_q24_t;

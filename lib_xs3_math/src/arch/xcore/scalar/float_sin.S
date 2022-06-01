@@ -4,7 +4,7 @@
 #if defined(__XS3A__)
 #ifndef XS3_MATH_NO_ASM
 
-#include "asm_helper.h"
+#include "../asm_helper.h"
 
 .text
 .issue_mode dual
@@ -15,7 +15,7 @@ float float_sin(
     const float theta);
 */
 
-#define FUNCTION_NAME   float_sin2
+#define FUNCTION_NAME   float_sin
 #define NSTACKWORDS     (8)
 
 
@@ -29,8 +29,12 @@ float float_sin(
 #define _1          r10
 
 
-
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
+
+.L_sin_coef:
+.word 
+.L_two_over_pi:
+
 FUNCTION_NAME:
   dualentsp NSTACKWORDS
   std r4, r5, sp[1]

@@ -286,8 +286,8 @@ unsigned float_s32_gte(
  * taken as the previous EMA state, with @math{y} as the new sample. The EMA coefficient
  * @math{\alpha} is applied to the term including @math{x}.
  * 
- * `coef_q30` is a fixed-point value in a Q30 format (i.e. has an implied exponent of @math{-30}),
- * and should be in the range @math{0 \leq \alpha \leq 1}.
+ * `coef` is a fixed-point value in a UQ2.30 format (i.e. has an implied exponent of
+ * @math{-30}), and should be in the range @math{0 \leq \alpha \leq 1}.
  * 
  * @operation{ 
  * &     a \leftarrow \alpha \cdot x + (1 - \alpha) \cdot y
@@ -295,7 +295,7 @@ unsigned float_s32_gte(
  * 
  * @param[in] x           Input operand @math{x}
  * @param[in] y           Input operand @math{y}
- * @param[in] coef_q30    EMA coefficient @math{\alpha} encoded in Q30 format
+ * @param[in] coef        EMA coefficient @math{\alpha} encoded in UQ2.30 format
  * 
  * @returns The new EMA state
  * 
@@ -305,7 +305,7 @@ C_API
 float_s32_t float_s32_ema(
     const float_s32_t x,
     const float_s32_t y,
-    const fixed_s32_t coef_q30);
+    const uq2_30 coef);
 
 
 /**
@@ -335,25 +335,43 @@ float_s32_t float_s32_sqrt(
     const float_s32_t x);
 
 
+/**
+ * @brief Get the sine of a specified angle.
+ * 
+ * Computes @math{sin(\theta)} using the power series expansion of @math{sin()} 
+ * truncated to 8 terms.
+ * 
+ * This implementation is meant to make optimal use of the XS3 floating-point unit.
+ * 
+ * @param[in] theta   Angle @math{\theta} to compute the sine of (in radians)
+ * 
+ * @returns Sine of the angle @math{\theta}
+ * 
+ * @exception ET_ARITHMETIC Raised if @math{\theta} is infinite or NaN
+ * 
+ * @ingroup scalar_float_funcs
+ */
 C_API
 float float_sin(
     const float theta);
+
+
+/**
+ * @brief Get the cosine of a specified angle.
+ * 
+ * Computes @math{cos(\theta) = sin(\theta+\frac{\pi}{2}} using the power series expansion of 
+ * @math{sin()} truncated to 8 terms.
+ * 
+ * This implementation is meant to make optimal use of the XS3 floating-point unit.
+ * 
+ * @param[in] theta   Angle @math{\theta} to compute the cosine of (in radians)
+ * 
+ * @returns Cosine of the angle @math{\theta}
+ * 
+ * @exception ET_ARITHMETIC Raised if @math{\theta} is infinite or NaN
+ * 
+ * @ingroup scalar_float_funcs
+ */
 C_API
-float float_sin2(
+float float_cos(
     const float theta);
-    
-C_API
-q1_31 xs3_norm_angle(
-    const q8_24 theta_q24);
-
-C_API
-q2_30 xs3_norm_sin(
-    const q1_31 theta_q31);
-
-C_API
-q2_30 xs3_scalar_cos(
-    const q8_24 theta_q24);
-
-C_API
-q1_31 xs3_norm_tan(
-    const q1_31 theta_q31);

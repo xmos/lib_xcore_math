@@ -177,7 +177,7 @@ unsigned float_s32_gte(
 float_s32_t float_s32_ema(
     const float_s32_t x,
     const float_s32_t y,
-    const fixed_s32_t coef_q30)
+    const uq2_30 coef_q30)
 {
   float_s32_t t = {
     .exp = -30,
@@ -202,7 +202,7 @@ float_s32_t float_s32_sqrt(
 }
 
 
-// The coefficients for the power series of sin(x)
+// The coefficients for the power series of sin(x). Currently used by float_sin.S
 const float sin_coef[] = {
   1.570796326795e+00, -6.459640975062e-01, 7.969262624617e-02, -4.681754135319e-03,
   1.604411847874e-04, -3.598843235212e-06, 5.692172921968e-08, -6.688035109811e-10,
@@ -210,92 +210,33 @@ const float sin_coef[] = {
 
 const float two_over_pi = 6.366197723676e-01;
 
-float float_sin(
+float float_cos(
     const float theta)
 {
-  const int N = 8;
-
-  // alpha = 2 / pi
-  const float alpha = two_over_pi;
-
-  // r is effectively the number of quarter-circles represented by the angle theta,
-  // so pi/2 radians (90 deg) becomes 1.0,  2*pi becomes 4.0, etc.
-  float r = theta * alpha;
-
-  int out_mul = 1;
-
-  // sin(-x) = -sin(x)
-  if(r < 0){
-    r = -r;
-    out_mul *= -1;
-  }
-  // now:  r >= 0.0
-
-  // sin(x + k*2*pi) = sin(x)   for int k
-  // sin(r + k*4) = sin(r)      for int k
-  r -=  4 * ((int)(r*0.25f));
-  // now:  0.0 <= r < 4.0
-
-  // sin(pi + x) = -sin(x)
-  // sin(2 + r) = -sin(r)
-  if(r > 2){
-    r -= 2;
-    out_mul *= -1;
-  }
-  // now: 0.0 <= r < 2.0
-
-  // sin(pi/2 + x) = sin(pi - x)
-  if(r > 1) r = 2.0f - r;
-  // now: 0.0 <= r <= 1.0
-  // this means we only need to worry about the first quadrant
-
-  /*
-    The remaining steps are based on the power series expansion of sin(x):
-
-    sin(x) = x - (x^3)/(3!) + (x^5)/(5!) - (x^7)/(7!) + ...
-
-    r = x * alpha = x * 2 / pi
-    beta = 1/alpha = pi/2
-    x = r*beta
-
-    sin(x) = r*beta - (beta^3)(r^3)/(3!) + (beta^5)(r^5)/(5!) - (beta^7)(r^7)/7! + ...
-           = beta * r - ((beta^3)/(3!)) * r^3 + ((beta^5)/(5!)) * r^5 - ((beta^7)/(7!)) * r^7 + ...
-
-    So the solution is the inner product of two vectors:
-
-    R[] = [r, r^3, r^5, r^7, ...]
-    C[] = [beta, (beta^3)/(3!), (beta^5)/(5!), (beta^7)/(7!), ...]
-
-    The coefficient vector C[] has been precomputed and is in the array sin_coef[]
-
-    Each successive term in the R[] vector is just multiplying by another r^2
-
-    phi = r^2
-    R[] = [r, r*phi, r*phi*phi, r*phi*phi*phi, ...]
-  */
-  const float phi = r*r;
-  float total = r * sin_coef[0];
-
-  for(int k = 1; k < N; k++) {
-    r *= phi;
-    total += r * sin_coef[k];
-  }
-
-  return out_mul * total;
+  return float_sin(theta + (((float)M_PI)/2));
 }
+
+
+q2_30 xs3_q24_sin(
+    const radian_q24_t theta)
+{
+  const sbrad_t alpha = xs3_radians_to_sbrads(theta);
+  return xs3_sbrad_sin(alpha);
+}
+
 
 #define PI_HALF_Q24   Q24(M_PI / 2.0)
 #define THREE_PI_OVER_TWO_Q24   Q24(3.0 * M_PI / 2.0)
 
-int32_t xs3_scalar_cos(
-    const int32_t theta_q24)
+q2_30 xs3_q24_cos(
+    const radian_q24_t theta)
 {
   // cos(x) = sin(x + pi/2) = sin(x - 3*pi/2)
   // BUT the span of a Q24 ( [-128, 128) --> 256 ) is not an 
   //  integer multiple of 2*pi, so we can't let the angle overflow
   //  always adding pi/2
-  const int32_t theta_mod_q24 = theta_q24 
-            + ((theta_q24 >= 0)? (-THREE_PI_OVER_TWO_Q24) : (PI_HALF_Q24));
-  const int32_t alpha_q31 = xs3_norm_angle(theta_mod_q24);
-  return xs3_norm_sin(alpha_q31);
+  const radian_q24_t theta_mod = theta 
+            + ((theta >= 0)? (-THREE_PI_OVER_TWO_Q24) : (PI_HALF_Q24));
+  const sbrad_t alpha = xs3_radians_to_sbrads(theta_mod);
+  return xs3_sbrad_sin(alpha);
 }

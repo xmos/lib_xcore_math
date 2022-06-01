@@ -344,3 +344,117 @@ static inline unsigned ceil_log2(
     return 32-cls(N-1);
 }
 
+
+/**
+ * @brief Convert angle from radians to a modified binary representation.
+ *
+ * Some trig functions, such as @ref xs3_sbrad_sin() and @ref xs3_sbrad_tan(), rather than taking an
+ * angle specified in radians (e.g. @ref radian_q24_t), require their argument to be a modified
+ * representation of the angle, as an @ref sbrad_t. The modified binary representation takes into
+ * account various properies of the @math{sin(\theta)} function to simplify certain operations.
+ * 
+ * For any angle @math{\theta} there is a unique angle @math{\alpha} where 
+ * @math{-1\le\alpha\le1} and @math{sin(\frac{\pi}{2}\alpha) = sin(\theta)}. This function
+ * essentially just maps the input angle @math{\theta} onto the corresponding angle @math{\alpha} in
+ * that region and returns the result in a Q1.31 format.
+ * 
+ * In this library, the unit of the resulting angle @math{\alpha} is referred to as an 'sbrad'.
+ * 'brad' because @math{\alpha} is a kind of 
+ * [binary angular measurement](https://en.wikipedia.org/wiki/Binary_angular_measurement), and 's'
+ * because the symmetries of @math{sin(\theta)} are what's being accounted for.
+ * 
+ * @param[in] theta Input angle @math{\theta}, in radians (Q8.24)
+ * 
+ * @returns Output angle @math{\alpha}, in sbrads
+ * 
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+sbrad_t xs3_radians_to_sbrads(
+    const radian_q24_t theta);
+
+
+/**
+ * @brief Compute the sine of the specified angle.
+ * 
+ * This function computes @math{sin(\frac{\pi}{2}\theta)}, returning the result in Q2.30 format.
+ * 
+ * The input angle @math{\theta} must be expressed in sbrads (@ref sbrad_t), and must
+ * represent a value between @math{\pm 0.5} (inclusive) (as a Q1.31).
+ * 
+ * @operation{ 
+ * &     sin(\frac{\pi}{2}\theta)
+ * }
+ * 
+ * @param[in] theta Input angle @math{\theta}, in sbrads (see @ref xs3_radians_to_sbrads)
+ * 
+ * @returns Sine of the specified angle in Q2.30 format.
+ * 
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+q2_30 xs3_sbrad_sin(
+    const sbrad_t theta);
+
+
+/**
+ * @brief Compute the tangent of the specified angle.
+ * 
+ * This function computes @math{tan(\frac{\pi}{2}\theta)}, returning the result in Q2.30 format.
+ * 
+ * The input angle @math{\theta} must be expressed in sbrads (@ref sbrad_t), and must
+ * represent a value between @math{\pm 0.25} (inclusive) (as a Q1.31).
+ * 
+ * @operation{ 
+ * &     tan(\frac{\pi}{2}\theta)
+ * }
+ * 
+ * @param[in] theta Input angle @math{\theta}, in sbrads (see @ref xs3_radians_to_sbrads)
+ * 
+ * @returns Tangent of the specified angle in Q2.30 format.
+ * 
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+q2_30 xs3_sbrad_tan(
+    const sbrad_t theta);
+
+
+/**
+ * @brief Compute the sine of the specified angle.
+ * 
+ * This function computes @math{sin(\theta)}, returning the result in Q2.30 format.
+ * 
+ * @operation{ 
+ * &     sin(\theta)
+ * }
+ * 
+ * @param[in] theta Input angle @math{\theta}, in radians (Q8.24)
+ * 
+ * @returns @math{sin(\theta)} as a Q2.30
+ * 
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+q2_30 xs3_q24_sin(
+    const radian_q24_t theta);
+    
+
+/**
+ * @brief Compute the cosine of the specified angle.
+ * 
+ * This function computes @math{cos(\theta)}, returning the result in Q2.30 format.
+ * 
+ * @operation{ 
+ * &     cos(\theta)
+ * }
+ * 
+ * @param[in] theta Input angle @math{\theta}, in radians (Q8.24)
+ * 
+ * @returns @math{cos(\theta)} as a Q2.30
+ * 
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+q2_30 xs3_q24_cos(
+    const radian_q24_t theta);

@@ -45,6 +45,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(float_sXX_sqrt);
 
     RUN_TEST_GROUP(float_trig);
+    RUN_TEST_GROUP(fixed_trig);
     
 
     return UNITY_END();

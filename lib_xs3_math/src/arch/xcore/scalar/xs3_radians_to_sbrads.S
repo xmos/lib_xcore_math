@@ -4,15 +4,15 @@
 #if defined(__XS3A__)
 #ifndef XS3_MATH_NO_ASM
 
-#include "asm_helper.h"
+#include "../asm_helper.h"
 
 /*  
 C_API
-int32_t xs3_norm_angle(
-    const int32_t theta_q24);
+sbrad_t xs3_radians_to_sbrads(
+    const radian_q24_t theta);
 */
 
-#define FUNCTION_NAME   xs3_norm_angle
+#define FUNCTION_NAME   xs3_radians_to_sbrads
 #define NSTACKWORDS     (0)
 
 #define theta       r0

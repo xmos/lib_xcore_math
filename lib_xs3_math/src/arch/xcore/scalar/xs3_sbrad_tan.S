@@ -4,18 +4,21 @@
 #if defined(__XS3A__)
 #ifndef XS3_MATH_NO_ASM
 
-#include "asm_helper.h"
+#include "../asm_helper.h"
 
 
 /*  
-Takes a normalized angle between 0.0 and 1.0 in Q31 format
-and returns sin of that angle in Q30.
+  Takes a normalized angle between -0.5 and 0.5 in Q31 format  (corresponds to -pi/4 to pi/4)
+  and returns tan() of that angle in Q30.
 
-int32 xs3_norm_sin(
-    const int32_t theta_q31);
+  tangent of any angle outside [-pi/4, pi/4] can be derived from a value within that range based on 
+  the identities of the tangent function.
+
+  q2_30 xs3_sbrad_tan(
+      const sbrad_t theta);
 */
 
-#define FUNCTION_NAME   xs3_norm_sin
+#define FUNCTION_NAME   xs3_sbrad_tan
 #define NSTACKWORDS     (14)
 
 #define VEC_R           (NSTACKWORDS - 8)
@@ -26,20 +29,40 @@ int32 xs3_norm_sin(
 #define vec_r     r3
 #define tmpA      r4
 #define tmpB      r5
-#define _31       r6
+#define _30       r6
 
 .text
 .issue_mode dual
 .align 16
 
 .L_vec_b:
-  .word 0x6487ed51, -0x52aef399, 0x519af19d, -0x4cb4b33a
-  .word 0x541e0d21, -0x78c1d3f8, 0x7a3d0d34, -0x5beb6e7d
+.word 0x6487ED51, 0x52AEF398, 0x519AF19D, 0x517FFE6D
+.word 0x517D1CB8, 0x517CCBC9, 0x517CC2D5
+
+// The final element of vec_b[] is the tail term that includes the convergent sum
+// of the geometric series [1, alpha^2, alpha^4, alpha^6, ...]. In my notes I designated
+// this coefficient as  (4/3)*beta, where beta = 1.27323954.
+// When you normalize angles by multiplying by 2/pi and look at the power series about 0 of
+// the function tan(theta), the (constant) coefficients with each term converge asymptotically
+// (as term index increases) towards the value beta.
+// (4/3) is because R = alpha^2, where 0 <= alpha <= 0.5, so 0 <= R <= 0.25, and the
+// convergent geometric series is in R --> [1, R, R^2, R^3, ...], which converges to
+// (1/(1-R)). Given the bounds for R,    1 <= (1/(1-R)) <= (4/3).
+
+// Specifically, the final term is  (1/(1-R))*beta*(alpha^15), but we don't want to do a division,
+// so by just picking a value of R and always using that, we should significantly improve our
+// absolute error (compared to not including the final convergent sum term at all). We should prefer
+// larger values of R because the absolute error is greater there, but it looks like we get the
+// best results when we haven't gone quite all the way to (4/3).
+
+// I've experimentally found that the following seems to give the lowest absolute error in the test.
+.word 0x6b6cb9bd // Q30( beta * (4/3)^( 0.9605835543766578 ) )
+// .word 0x6ca65798 // Q30( beta * (4/3)^(1) )
 .L_vec_s_hat:
-  .word 1, 2, 5, 9, 14, 20, 26, 32
+  .word 1,3,5,7,9,11,13,15
 .L_weights:
   .word 0x40000000, 0x40000000, 0x40000000, 0x40000000
-  .word 0x40000000, 0x40000000, 0x00000000, 0x00000000
+  .word 0x40000000, 0x40000000, 0x40000000, 0x40000000
   
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
 FUNCTION_NAME:
@@ -48,39 +71,43 @@ FUNCTION_NAME:
   std r6, r7, sp[2]
 { ldc r11, 0                  ; ldaw vec_r, sp[VEC_R]       }
 { lss out_mul, a, r11         ; vsetc r11                   }
-{ ldc _31, 31                 ; bf out_mul, .L_hgfd         }
+{ ldc _30, 30                 ; bf out_mul, .L_hgfd         }
 { neg a, a                    ;                             }
 .L_hgfd:
 
   lmul tmpA, tmpB, a, a, r11, r11
-  lextract r, tmpA, tmpB, _31, 32
+  lextract r, tmpA, tmpB, _30, 32
   lmul tmpA, tmpB, a, r, r11, r11
-  lextract tmpA, tmpA, tmpB, _31, 32
+  lextract tmpA, tmpA, tmpB, _30, 32
   std tmpA, a, vec_r[0]
 
 #undef a  // no longer needed
 #define tmpC     r0
 
   lmul tmpA, tmpB, tmpA, r, r11, r11
-  lextract tmpB, tmpA, tmpB, _31, 32
+  lextract tmpB, tmpA, tmpB, _30, 32
   lmul tmpA, tmpC, tmpB, r, r11, r11
-  lextract tmpA, tmpA, tmpC, _31, 32
+  lextract tmpA, tmpA, tmpC, _30, 32
   std tmpA, tmpB, vec_r[1]
-
+ 
   lmul tmpA, tmpB, tmpA, r, r11, r11
-  lextract tmpB, tmpA, tmpB, _31, 32
+  lextract tmpB, tmpA, tmpB, _30, 32
   // stw tmpB, vec_r[4] // if we only wanted 5 terms
   lmul tmpA, tmpC, tmpB, r, r11, r11
-  lextract tmpA, tmpA, tmpC, _31, 32
+  lextract tmpA, tmpA, tmpC, _30, 32
   std tmpA, tmpB, vec_r[2]
 
-  // lmul tmpA, tmpB, tmpA, r, r11, r11
-  // lextract tmpB, tmpA, tmpB, _31, 32
-  // lmul tmpA, tmpC, tmpB, r, r11, r11
-  // lextract tmpA, tmpA, tmpC, _31, 32
-  // std tmpA, tmpB, vec_r[3]
+  lmul tmpA, tmpB, tmpA, r, r11, r11
+  lextract tmpB, tmpA, tmpB, _30, 32
+  lmul tmpA, tmpC, tmpB, r, r11, r11
+  lextract tmpA, tmpA, tmpC, _30, 32
+  std tmpA, tmpB, vec_r[3]
 
 // Now that we've filled in vec_R[], we just need to do the VPU stuff.
+// Note: All coefficients are positive and so are all elements or vec_r[],
+//       and we know they can't add to more than 1.0, AND we know that
+//       they're all already in a q31 format, so we don't need a VLSAT
+
 { ldap r11, .L_vec_b          ; vclrdr                      }
 { ldap r11, .L_vec_s_hat      ; vldc r11[0]                 }
 {                             ; vlmacc vec_r[0]             }
