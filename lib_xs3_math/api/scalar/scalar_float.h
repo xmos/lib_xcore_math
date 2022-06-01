@@ -333,3 +333,27 @@ float_s32_t float_s32_ema(
 C_API
 float_s32_t float_s32_sqrt(
     const float_s32_t x);
+
+
+C_API
+float float_sin(
+    const float theta);
+C_API
+float float_sin2(
+    const float theta);
+    
+C_API
+q1_31 xs3_norm_angle(
+    const q8_24 theta_q24);
+
+C_API
+q2_30 xs3_norm_sin(
+    const q1_31 theta_q31);
+
+C_API
+q2_30 xs3_scalar_cos(
+    const q8_24 theta_q24);
+
+C_API
+q1_31 xs3_norm_tan(
+    const q1_31 theta_q31);

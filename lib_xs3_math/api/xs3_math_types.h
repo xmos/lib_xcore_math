@@ -430,3 +430,15 @@ typedef struct {
   int16_t vD[16];   ///< Most significant 16 bits of accumulators
   uint16_t vR[16];  ///< Least significant 16 bits of accumulators
 } xs3_split_acc_s32_t;
+
+
+typedef int32_t q1_31;
+typedef int32_t q2_30;
+typedef int32_t q4_28;
+typedef int32_t q8_24;
+
+typedef uint32_t uq0_32;
+typedef uint32_t uq1_31;
+typedef uint32_t uq2_30;
+typedef uint32_t uq4_28;
+typedef uint32_t uq8_24;
