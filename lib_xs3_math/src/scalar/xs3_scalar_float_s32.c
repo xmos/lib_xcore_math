@@ -217,6 +217,8 @@ float float_cos(
 }
 
 
+
+
 q2_30 xs3_q24_sin(
     const radian_q24_t theta)
 {
@@ -239,4 +241,52 @@ q2_30 xs3_q24_cos(
             + ((theta >= 0)? (-THREE_PI_OVER_TWO_Q24) : (PI_HALF_Q24));
   const sbrad_t alpha = xs3_radians_to_sbrads(theta_mod);
   return xs3_sbrad_sin(alpha);
+}
+
+
+/**
+ * Like xs3_radians_to_sbrads, except it takes advantage of the symmetries of
+ * tan(theta) instead of sin(theta).
+ */
+static inline 
+q1_31 xs3_radians_to_tbrads(
+    const radian_q24_t theta)
+{
+  const q1_31 inv_rho = 0x517cc1b7;
+  int64_t acc = ((int64_t)inv_rho) * theta;
+  q1_31 alpha = acc >> 24;
+  return alpha;
+}
+
+
+float_s32_t xs3_q24_tan(
+    const radian_q24_t theta)
+{
+  q1_31 alpha = xs3_radians_to_tbrads(theta);
+
+  // xs3_sbrad_tan() requires the input to be within the range
+  //   -0.5 <= alpha <= 0.5
+  // If it isn't, we'll reflect across +/- 0.5, compute the tan() of that,
+  // and then return the reciprocal.
+
+  const int32_t hi =  0x40000000;
+  const int32_t lo = -0x40000000;
+
+  unsigned inv = (alpha > hi) || (alpha < lo);
+
+  // This should correctly reflect across 0.5 or -0.5 because 0x80000000 = -0x80000000
+  if(inv) alpha = 0x80000000 - alpha;
+
+  q2_30 tmp = xs3_sbrad_tan(alpha);
+
+  float_s32_t res;
+  if(!inv){
+    res.mant = tmp;
+    res.exp = -30;
+  } else {
+    res.mant = xs3_s32_inverse(&res.exp, tmp);
+    res.exp += 30;
+  }
+
+  return res;
 }

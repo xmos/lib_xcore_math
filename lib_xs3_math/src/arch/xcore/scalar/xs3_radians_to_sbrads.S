@@ -36,9 +36,10 @@ sbrad_t xs3_radians_to_sbrads(
 
   The LEXTRACT instruction chooses to extract so that the bit 
   corresponding to one period (of 4.0) is just above the MSb, so that
-  extra periods are ignored.
+  extra periods are ignored. This number should be thought of as an 
+  unsigned 32-bit integer.
 
-  theta is then in a Q30 format, where the output is specified to be
+  theta is then in a UQ30 format, where the output is specified to be
   in Q31 format.
 
   A left-shift takes care of subtracting 2.0 (if needed) and converting

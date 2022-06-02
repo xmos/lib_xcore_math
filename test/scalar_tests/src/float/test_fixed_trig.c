@@ -16,7 +16,7 @@ TEST_GROUP_RUNNER(fixed_trig) {
   RUN_TEST_CASE(fixed_trig, xs3_sbrad_tan);
   RUN_TEST_CASE(fixed_trig, xs3_q24_sin);
   RUN_TEST_CASE(fixed_trig, xs3_q24_cos);
-  // RUN_TEST_CASE(fixed_trig, xs3_q24_tan);
+  RUN_TEST_CASE(fixed_trig, xs3_q24_tan);
 }
 
 TEST_GROUP(fixed_trig);
@@ -25,9 +25,9 @@ TEST_TEAR_DOWN(fixed_trig) {}
 
 
 #if SMOKE_TEST
-#  define REPS       (100)
-#else
 #  define REPS       (1000)
+#else
+#  define REPS       (10000)
 #endif
 
 
@@ -36,7 +36,7 @@ TEST(fixed_trig, xs3_radians_to_sbrads)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
-  for(int v = 0; v < 10*REPS; v++){
+  for(int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
@@ -101,7 +101,7 @@ TEST(fixed_trig, xs3_sbrad_sin)
 
   int32_t max_error = 0;
   double max_error_pct = 0.0f;
-  for(int v = 0; v < 10*REPS; v++){
+  for(int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
@@ -152,7 +152,7 @@ TEST(fixed_trig, xs3_sbrad_tan)
 
   int32_t max_error = 0;
   double max_error_pct = 0.0f;
-  for(int v = 0; v < 10*REPS; v++){
+  for(int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
@@ -218,27 +218,27 @@ TEST(fixed_trig, xs3_q24_sin)
 
   int32_t max_error = 0;
   double max_error_pct = 0.0f;
-  for(int v = 0; v < 10*REPS; v++){
+  for(int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
     double theta = ldexp(pseudo_rand_int32(&seed), -24);
 
-    int32_t theta_q24 = floor(ldexp(theta, 24));
+    q8_24 theta_q24 = floor(ldexp(theta, 24));
 
     double exp = sin(theta);
-    float theta_flt = theta;
+
     volatile uint32_t t0 = get_reference_time();
-    volatile float just_for_timing = sinf(theta_flt);
+    volatile float just_for_timing = sinf(theta);
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    volatile int32_t result_q30 = xs3_q24_sin(theta_q24);
+    volatile q2_30 result_q30 = xs3_q24_sin(theta_q24);
     volatile uint32_t t3 = get_reference_time();
 
-    int32_t exp_q30 = round(ldexp(exp,30));
+    q2_30 exp_q30 = round(ldexp(exp,30));
 
-    int32_t er = exp_q30 - result_q30;
+    q2_30 er = exp_q30 - result_q30;
     er = (er < 0)? -er : er;
     max_error = (er > max_error)? er : max_error;
 
@@ -266,29 +266,28 @@ TEST(fixed_trig, xs3_q24_cos)
 
   int32_t max_error = 0;
   double max_error_pct = 0.0f;
-  for(int v = 0; v < 10*REPS; v++){
+  for(int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
     double theta = ldexp(pseudo_rand_int32(&seed), -24);
 
     // xs3_sbrad_sin() takes q31's in the range -1 to 1
-    int32_t theta_q24 = floor(ldexp(theta, 24));
+    q8_24 theta_q24 = floor(ldexp(theta, 24));
 
 
     double exp = cos(theta);
-    float theta_flt = theta;
     volatile uint32_t t0 = get_reference_time();
-    volatile float just_for_timing = cosf(theta_flt);
+    volatile float just_for_timing = cosf(theta);
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    volatile int32_t result_q30 = xs3_q24_cos(theta_q24);
+    volatile q2_30 result_q30 = xs3_q24_cos(theta_q24);
     volatile uint32_t t3 = get_reference_time();
 
-    int32_t exp_q30 = round(ldexp(exp,30));
+    q2_30 exp_q30 = round(ldexp(exp,30));
 
-    int32_t er = exp_q30 - result_q30;
+    q2_30 er = exp_q30 - result_q30;
     er = (er < 0)? -er : er;
     max_error = (er > max_error)? er : max_error;
 
@@ -310,51 +309,67 @@ TEST(fixed_trig, xs3_q24_cos)
 }
 
 
-// TEST(fixed_trig, xs3_q24_tan)
-// {
-//   unsigned seed = SEED_FROM_FUNC_NAME();
+TEST(fixed_trig, xs3_q24_tan)
+{
+  unsigned seed = SEED_FROM_FUNC_NAME();
 
-//   int32_t max_error = 0;
-//   double max_error_pct = 0.0f;
-//   for(int v = 0; v < 10*REPS; v++){
+  int32_t max_error = 0;
+  double max_error_pct = 0.0f;
+  for(int v = 0; v < REPS; v++){
 
-//     setExtraInfo_RS(v, seed);
+    setExtraInfo_RS(v, seed);
 
-//     double theta = ldexp(pseudo_rand_int32(&seed), -24);
+    double theta = ldexp(pseudo_rand_int32(&seed), -24);
 
-//     // xs3_sbrad_sin() takes q31's in the range -1 to 1
-//     int32_t theta_q24 = floor(ldexp(theta, 24));
+    q8_24 theta_q24 = floor(ldexp(theta, 24));
 
+    double exp = tan(theta);
+    volatile uint32_t t0 = get_reference_time();
+    volatile float just_for_timing = tanf(theta);
+    volatile uint32_t t1 = get_reference_time();
 
-//     double exp = cos(theta);
-//     float theta_flt = theta;
-//     volatile uint32_t t0 = get_reference_time();
-//     volatile float just_for_timing = cosf(theta_flt);
-//     volatile uint32_t t1 = get_reference_time();
+    volatile uint32_t t2 = get_reference_time();
+    volatile float_s32_t result = xs3_q24_tan(theta_q24);
+    volatile uint32_t t3 = get_reference_time();
 
-//     volatile uint32_t t2 = get_reference_time();
-//     volatile int32_t result_q30 = xs3_q24_cos(theta_q24);
-//     volatile uint32_t t3 = get_reference_time();
+    int32_t exp_fixed = round(ldexp(exp,-result.exp));
 
-//     int32_t exp_q30 = round(ldexp(exp,30));
+    if(result.exp != -30)
+      TEST_ASSERT_LESS_THAN_INT32(2, HR_S32(result.mant));
 
-//     int32_t er = exp_q30 - result_q30;
-//     er = (er < 0)? -er : er;
-//     max_error = (er > max_error)? er : max_error;
+    if(fabs(exp) < 1000) {
+      // Unless we're very near the singular point, check that we're not far off
+      TEST_ASSERT_INT32_WITHIN(10000, exp_fixed, result.mant);
+      
+      int32_t er = exp_fixed - result.mant;
+      er = (er < 0)? -er : er;
+      max_error = (er > max_error)? er : max_error;
 
-//     double erp = ((double)er) / abs(exp_q30);
-//     max_error_pct = (erp > max_error_pct)? erp : max_error_pct;
+      double erp = ((double)er) / abs(exp_fixed);
+      max_error_pct = (erp > max_error_pct)? erp : max_error_pct;
+    } else {
+      // If we're really that close to the singular point, let's invert both the
+      // expected result and actual result to see whether the output of xs3_sbrad_tan()
+      // was very close to what it should have been.
+      int32_t exp_inv_q30 = round(ldexp(1/exp, 30));
+      int32_t act_inv_q30 = round(ldexp(1/ldexp(result.mant, result.exp), 30));
 
-//     TEST_ASSERT_INT32_WITHIN(10000, exp_q30, result_q30);
+      TEST_ASSERT_INT32_WITHIN(100, exp_inv_q30, act_inv_q30);
+      
+      int32_t er = exp_inv_q30 - act_inv_q30;
+      er = (er < 0)? -er : er;
+      max_error = (er > max_error)? er : max_error;
 
-//     float ref  = (t1-t0) / 100.0f;
-//     float mine = (t3-t2) / 100.0f;
+      double erp = ((double)er) / abs(exp_inv_q30);
+      max_error_pct = (erp > max_error_pct)? erp : max_error_pct;
+    }
 
-//     just_for_timing;
-//     // printf("[timing] Mine: %0.02f us\tRef: %0.02f us\n", mine, ref);
-//   }
+    float ref  = (t1-t0) / 100.0f;
+    float mine = (t3-t2) / 100.0f;
 
-//   // printf("max_error = %d\n", max_error);
-//   // printf("max_error = %0.04f%%\n", 100.0f*max_error_pct);
+    just_for_timing;
+  }
 
-// }
+  // printf("max_error = %d\n", max_error);
+  // printf("max_error = %0.04f%%\n", 100.0f*max_error_pct);
+}

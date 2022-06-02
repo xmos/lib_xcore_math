@@ -216,6 +216,19 @@ int32_t xs3_s32_sqrt(
  *    a \cdot 2^{a\_exp} \leftarrow \frac{1}{b}
  * }
  * 
+ * @par Fixed- or Floating-point
+ * 
+ * If @math{b} is the mantissa of a fixed- or floating-point value with an implicit or explicit
+ * exponent @math{b\_exp}, then 
+ * 
+ * @math{
+ *   \frac{1}{b \cdot 2^{b\_exp}} &= \frac{1}{b} \cdot 2^{-b\_exp}
+ *                                &= a \cdot 2^{a\_exp} \cdot 2^{-b\_exp}
+ *                                &= a \cdot 2^{a\_exp - b\_exp}
+ * }
+ * 
+ * and so @math{b\_exp} should be subtracted from the output exponent @math{a\_exp}.
+ * 
  * @param[out] a_exp    Output exponent @math{a\_exp}
  * @param[in]  b        Input integer @math{b}
  * 
@@ -348,7 +361,7 @@ static inline unsigned ceil_log2(
 /**
  * @brief Convert angle from radians to a modified binary representation.
  *
- * Some trig functions, such as @ref xs3_sbrad_sin() and @ref xs3_sbrad_tan(), rather than taking an
+ * Some trig functions, such as @ref xs3_sbrad_sin(), rather than taking an
  * angle specified in radians (e.g. @ref radian_q24_t), require their argument to be a modified
  * representation of the angle, as an @ref sbrad_t. The modified binary representation takes into
  * account various properies of the @math{sin(\theta)} function to simplify certain operations.
@@ -372,7 +385,6 @@ static inline unsigned ceil_log2(
 C_API
 sbrad_t xs3_radians_to_sbrads(
     const radian_q24_t theta);
-
 
 /**
  * @brief Compute the sine of the specified angle.
@@ -457,4 +469,30 @@ q2_30 xs3_q24_sin(
  */
 C_API
 q2_30 xs3_q24_cos(
+    const radian_q24_t theta);
+
+
+/**
+ * @brief Compute the tangent of the specified angle.
+ * 
+ * This function computes @math{tan(\theta)}. The result is returned as a @ref float_s32_t 
+ * containing a mantissa and exponent.
+ * 
+ * The value of @math{tan(\theta)} is considered undefined where @math{theta=\frac{\pi}{2}+k\pi} for
+ * any integer @math{k}. An exception will be raised if @math{\theta} meets this condition.
+ * 
+ * @operation{ 
+ * &     tan(\theta)
+ * }
+ * 
+ * @param[in] theta Input angle @math{\theta}, in radians (Q8.24)
+ * 
+ * @returns @math{tan(\theta)} as a @ref float_s32_t
+ * 
+ * @exception ET_ARITHMETIC Raised if @math{tan(\theta)} is undefined.
+ * 
+ * @ingroup xs3_scalar_funcs
+ */
+C_API
+float_s32_t xs3_q24_tan(
     const radian_q24_t theta);
