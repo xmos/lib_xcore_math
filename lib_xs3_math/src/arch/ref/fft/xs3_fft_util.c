@@ -167,7 +167,7 @@ void xs3_fft_mono_adjust(
     // Assembly only supports FFT_N >= 16
     assert(FFT_N >= 16);
 
-    const int VEC_ELMS = 4; //complex elements per vector
+    #define VEC_ELMS 4 //complex elements per vector
 
     const complex_s32_t* W = XS3_DIT_REAL_FFT_LUT(FFT_N);
     
