@@ -45,6 +45,8 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_argmin);
     RUN_TEST_GROUP(xs3_vect_energy);
     RUN_TEST_GROUP(xs3_vect_sqrt);
+    RUN_TEST_GROUP(xs3_vect_log);
+    RUN_TEST_GROUP(xs3_vect_exp);
     RUN_TEST_GROUP(xs3_vect_bitdepth_convert);
     RUN_TEST_GROUP(xs3_vect_macc);
     RUN_TEST_GROUP(xs3_vect_zip);

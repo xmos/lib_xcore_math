@@ -30,6 +30,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_s32_sqrt);
     RUN_TEST_GROUP(xs3_sXX_inverse);
     RUN_TEST_GROUP(xs3_sXX_mul);
+    RUN_TEST_GROUP(xs3_q30_powers);
 
     // scalar ops
     RUN_TEST_GROUP(float_convert);
@@ -42,10 +43,14 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(float_sXX_div);
     RUN_TEST_GROUP(float_sXX_ema);
     
+    
     RUN_TEST_GROUP(float_sXX_sqrt);
 
     RUN_TEST_GROUP(float_trig);
     RUN_TEST_GROUP(fixed_trig);
+    RUN_TEST_GROUP(float_log);
+    RUN_TEST_GROUP(float_exp);
+    RUN_TEST_GROUP(float_logistic);
     
 
     return UNITY_END();

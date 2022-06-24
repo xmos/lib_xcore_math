@@ -11,11 +11,11 @@
 .align 4
 
 /*  
-float float_sin(
+float xs3_f32_sin(
     const float theta);
 */
 
-#define FUNCTION_NAME   float_sin
+#define FUNCTION_NAME   xs3_f32_sin
 #define NSTACKWORDS     (8)
 
 

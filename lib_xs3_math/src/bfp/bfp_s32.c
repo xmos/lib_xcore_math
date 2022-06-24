@@ -362,7 +362,7 @@ float_s32_t bfp_s32_rms(
     float_s32_t a;
     exponent_t exp, len_inv_exp;
     const float_s64_t energy64 = bfp_s32_energy(b);
-    const int32_t energy32 = xs3_scalar_s64_to_s32(&exp, energy64.mant, energy64.exp);
+    const int32_t energy32 = xs3_s64_to_s32(&exp, energy64.mant, energy64.exp);
     const int32_t len_inv = xs3_s32_inverse(&len_inv_exp, b->length);
     const int32_t mean_energy = xs3_s32_mul(&exp, energy32, len_inv, exp, len_inv_exp);
 

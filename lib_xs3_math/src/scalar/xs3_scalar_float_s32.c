@@ -35,20 +35,18 @@ float_s64_t float_s32_to_float_s64(
 }
 
 
-float float_s32_to_float(
-    const float_s32_t x)
+float xs3_s32_to_f32(
+    const int32_t mantissa,
+    const exponent_t exp)
 {
-  return xs3_pack_float(x.mant, x.exp);
+  return ldexp(mantissa, exp);
 }
 
 
-float_s32_t float_to_float_s32(
-    const float x)
+float float_s32_to_float(
+    const float_s32_t x)
 {
-  float_s32_t res;
-  res.mant = round(INT32_MAX * frexpf(x, &res.exp));
-  res.exp -= 31;
-  return res;
+  return xs3_s32_to_f32(x.mant, x.exp);
 }
 
 
@@ -57,19 +55,6 @@ double float_s32_to_double(
 {
   return ldexp(x.mant, x.exp);
 }
-
-
-
-float_s32_t double_to_float_s32(
-    const double x)
-{
-  float_s32_t res;
-  double tmp = frexp(x, &res.exp);
-  res.mant = round(INT32_MAX * tmp);
-  res.exp -= 31;
-  return res;
-}
-
 
 
 float_s32_t float_s32_mul(
@@ -200,22 +185,6 @@ float_s32_t float_s32_sqrt(
   res.mant = xs3_s32_sqrt(&res.exp, x.mant, x.exp, XS3_S32_SQRT_MAX_DEPTH);
   return res;
 }
-
-
-// The coefficients for the power series of sin(x). Currently used by float_sin.S
-const float sin_coef[] = {
-  1.570796326795e+00, -6.459640975062e-01, 7.969262624617e-02, -4.681754135319e-03,
-  1.604411847874e-04, -3.598843235212e-06, 5.692172921968e-08, -6.688035109811e-10,
-};
-
-const float two_over_pi = 6.366197723676e-01;
-
-float float_cos(
-    const float theta)
-{
-  return float_sin(theta + (((float)M_PI)/2));
-}
-
 
 
 

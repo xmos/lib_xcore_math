@@ -2444,6 +2444,293 @@ void xs3_vect_2vec_prepare(
     const headroom_t extra_operand_hr);
 
 
+/**
+ * @brief Compute a power series sum on a vector of Q2.30 values.
+ * 
+ * This function is used to compute a power series summation on a vector @vector{b}. @vector{b} 
+ * contains Q2.30 values. @vector{c} is a vector containing coefficients to be multiplied by powers 
+ * of @vector{b}, and may have any associated exponent. The output is vector @vector{a} and has the 
+ * same exponent as @vector{c}.
+ * 
+ * `c[]` is an array with shape `(term_count, VPU_INT32_EPV)`, where the second axis contains the 
+ * same value replicated across all `VPU_INT32_EPV` elements. That is, `c[k][i] = c[k][j]` for `i` 
+ * and `j` in `0..(VPU_INT32_EPV-1)`. This is for performance reasons. (For the purpose of this 
+ * explanation, @vector{c} is considered to be single-dimensional, without redundancy.)
+ * 
+ * @operation{
+ * &    b_{k,0} = 2^{30}                                                                   \\
+ * &    b_{k,i} = round\left(\frac{b_{k,i-1}\cdot{}b_k}{2^{30}}\right)\qquad\text{for }i \in \{1..(N-1)\}    \\
+ * &    a_k \leftarrow  \sum_{i=0}^{N-1}  round\left( \frac{b_{k,i}\cdot c_i}{2^{30}}  \right) \\
+ * &    \qquad\text{for }k \in \{0..\mathtt{length}-1\}
+ * }
+ * 
+ * @param[out]  a           Output vector @vector{a}
+ * @param[in]   b           Input vector @vector{b}
+ * @param[in]   c           Coefficient vector @vector{c}
+ * @param[in]   term_count  Number of power series terms, @math{N}
+ * @param[in]   length      Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_q30_power_series(
+    int32_t a[],
+    const q2_30 b[],
+    const int32_t c[],
+    const unsigned term_count,
+    const unsigned length);
+ 
+
+/**
+ * @brief Compute the logarithm (in the specified base) of a vector of `float_s32_t`.
+ * 
+ * This function computes the logarithm of a vector @vector{b} of `float_s32_t` values. The base of
+ * the computed logarithm is given by parameter `inv_ln_base_q30`. The result is written to output
+ * @vector{a}, a vector of Q8.24 values.
+ * 
+ * If the desired base is @math{D}, then `inv_ln_base_q30`, represented here by @math{R}, should be 
+ * @math{\mathtt{Q30}\left(\frac{1}{ln\left(D\right)}\right)}. That is: the inverse of the natural
+ * logarithm of the desired base, expressed as a Q2.30 value. Typically the desired base is known
+ * at compile time, so this value will usually be a precomputed constant.
+ * 
+ * The resulting @math{a_k} for @math{b_k \le 0} is undefined.
+ * 
+ * @operation{
+ * &    a_k \leftarrow  log_{D}\left(b_k\right)   \\
+ * &    \qquad\text{for }k \in \{0..\mathtt{length}-1\}
+ * }
+ * 
+ * @param[out]  a         Output Q8.24 vector @vector{a}
+ * @param[in]   b         Input vector @vector{b}
+ * @param[in]   inv_ln_base_q30   Coefficient @math{R} converting from natural log to desired base @math{D}
+ * @param[in]   length    Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not double word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_float_s32_log_base(
+    q8_24 a[],
+    const float_s32_t b[],
+    const q2_30 inv_ln_base_q30,
+    const unsigned length);
+
+
+/**
+ * @brief Compute the natural logarithm of a vector of `float_s32_t`.
+ * 
+ * This function computes the natural logarithm of a vector @vector{b} of `float_s32_t` values. The 
+ * result is written to output @vector{a}, a vector of Q8.24 values.
+ * 
+ * The resulting @math{a_k} for @math{b_k \le 0} is undefined.
+ * 
+ * @operation{
+ * &    a_k \leftarrow  ln\left(b_k\right)   \\
+ * &    \qquad\text{for }k \in \{0..\mathtt{length}-1\}
+ * }
+ * 
+ * @param[out]  a         Output Q8.24 vector @vector{a}
+ * @param[in]   b         Input vector @vector{b}
+ * @param[in]   length    Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not double word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_float_s32_log(
+    q8_24 a[],
+    const float_s32_t b[],
+    const unsigned length);
+
+
+/**
+ * @brief Compute the base 2 logarithm of a vector of `float_s32_t`.
+ * 
+ * This function computes the base 2 logarithm of a vector @vector{b} of `float_s32_t` values. The 
+ * result is written to output @vector{a}, a vector of Q8.24 values.
+ * 
+ * The resulting @math{a_k} for @math{b_k \le 0} is undefined.
+ * 
+ * @operation{
+ * &    a_k \leftarrow  log_2\left(b_k\right)   \\
+ * &    \qquad\text{for }k \in \{0..\mathtt{length}-1\}
+ * }
+ * 
+ * @param[out]  a         Output Q8.24 vector @vector{a}
+ * @param[in]   b         Input vector @vector{b}
+ * @param[in]   length    Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not double word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_float_s32_log2(
+    q8_24 a[],
+    const float_s32_t b[],
+    const unsigned length);
+
+
+/**
+ * @brief Compute the base 10 logarithm of a vector of `float_s32_t`.
+ * 
+ * This function computes the base 10 logarithm of a vector @vector{b} of `float_s32_t` values. The 
+ * result is written to output @vector{a}, a vector of Q8.24 values.
+ * 
+ * The resulting @math{a_k} for @math{b_k \le 0} is undefined.
+ * 
+ * @operation{
+ * &    a_k \leftarrow  log_{10}\left(b_k\right)   \\
+ * &    \qquad\text{for }k \in \{0..\mathtt{length}-1\}
+ * }
+ * 
+ * @param[out]  a         Output Q8.24 vector @vector{a}
+ * @param[in]   b         Input vector @vector{b}
+ * @param[in]   length    Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not double word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_float_s32_log10(
+    q8_24 a[],
+    const float_s32_t b[],
+    const unsigned length);
+
+
+/**
+ * @brief Compute the logarithm (in the specified base) of a block floating-point vector.
+ * 
+ * This function computes the logarithm of the block floating-point vector 
+ * @math{\bar{b}\cdot 2^{b\_exp}}. The base of the computed logarithm is given by parameter 
+ * `inv_ln_base_q30`. The result is written to output @vector{a}, a vector of Q8.24 values.
+ * 
+ * If the desired base is @math{D}, then `inv_ln_base_q30`, represented here by @math{R}, should be 
+ * @math{\mathtt{Q30}\left(\frac{1}{ln\left(D\right)}\right)}. That is: the inverse of the natural
+ * logarithm of the desired base, expressed as a Q2.30 value. Typically the desired base is known
+ * at compile time, so this value will usually be a precomputed constant.
+ * 
+ * The resulting @math{a_k} for @math{b_k \le 0} is undefined.
+ * 
+ * @operation{
+ * &    a_k \leftarrow  log_{D}\left(b_k\cdot 2^{b\_exp}\right)   \\
+ * &    \qquad\text{for }k \in \{0..\mathtt{length}-1\}
+ * }
+ * 
+ * @param[out]  a         Output Q8.24 vector @vector{a}
+ * @param[in]   b         Input mantissa vector @vector{b}
+ * @param[in]   b_exp     Exponent associated with @vector{b}
+ * @param[in]   inv_ln_base_q30   Coefficient @math{R} converting from natural log to desired base @math{D}
+ * @param[in]   length    Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not double word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_s32_log_base(
+    q8_24 a[],
+    const int32_t b[],
+    const exponent_t b_exp,
+    const q2_30 inv_ln_base_q30,
+    const unsigned length);
+
+
+/**
+ * @brief Compute the natural logarithm of a block floating-point vector.
+ * 
+ * This function computes the natural logarithm of the block floating-point vector 
+ * @math{\bar{b}\cdot 2^{b\_exp}}. The result is written to output @vector{a}, a vector of Q8.24 
+ * values.
+ * 
+ * The resulting @math{a_k} for @math{b_k \le 0} is undefined.
+ * 
+ * @operation{
+ * &    a_k \leftarrow  ln\left(b_k\cdot 2^{b\_exp}\right)   \\
+ * &    \qquad\text{for }k \in \{0..\mathtt{length}-1\}
+ * }
+ * 
+ * @param[out]  a         Output Q8.24 vector @vector{a}
+ * @param[in]   b         Input mantissa vector @vector{b}
+ * @param[in]   b_exp     Exponent associated with @vector{b}
+ * @param[in]   length    Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not double word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_s32_log(
+    q8_24 a[],
+    const int32_t b[],
+    const exponent_t b_exp,
+    const unsigned length);
+
+
+/**
+ * @brief Compute the base 2 logarithm of a block floating-point vector.
+ * 
+ * This function computes the base 2 logarithm of the block floating-point vector 
+ * @math{\bar{b}\cdot 2^{b\_exp}}. The result is written to output @vector{a}, a vector of Q8.24 
+ * values.
+ * 
+ * The resulting @math{a_k} for @math{b_k \le 0} is undefined.
+ * 
+ * @operation{
+ * &    a_k \leftarrow  log_2\left(b_k\cdot 2^{b\_exp}\right)   \\
+ * &    \qquad\text{for }k \in \{0..\mathtt{length}-1\}
+ * }
+ * 
+ * @param[out]  a         Output Q8.24 vector @vector{a}
+ * @param[in]   b         Input mantissa vector @vector{b}
+ * @param[in]   b_exp     Exponent associated with @vector{b}
+ * @param[in]   length    Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not double word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_s32_log2(
+    q8_24 a[],
+    const int32_t b[],
+    const exponent_t b_exp,
+    const unsigned length);
+
+
+/**
+ * @brief Compute the base 10 logarithm of a block floating-point vector.
+ * 
+ * This function computes the base 10 logarithm of the block floating-point vector 
+ * @math{\bar{b}\cdot 2^{b\_exp}}. The result is written to output @vector{a}, a vector of Q8.24 
+ * values.
+ * 
+ * The resulting @math{a_k} for @math{b_k \le 0} is undefined.
+ * 
+ * @operation{
+ * &    a_k \leftarrow  log_{10}\left(b_k\cdot 2^{b\_exp}\right)   \\
+ * &    \qquad\text{for }k \in \{0..\mathtt{length}-1\}
+ * }
+ * 
+ * @param[out]  a         Output Q8.24 vector @vector{a}
+ * @param[in]   b         Input mantissa vector @vector{b}
+ * @param[in]   b_exp     Exponent associated with @vector{b}
+ * @param[in]   length    Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @exception ET_LOAD_STORE Raised if `b` or `a` is not double word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_s32_log10(
+    q8_24 a[],
+    const int32_t b[],
+    const exponent_t b_exp,
+    const unsigned length);
+
 
 #ifdef __XC__
 }   //extern "C"

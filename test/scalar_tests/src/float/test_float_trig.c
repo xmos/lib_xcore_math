@@ -15,8 +15,8 @@
 #include "unity_fixture.h"
 
 TEST_GROUP_RUNNER(float_trig) {
-  RUN_TEST_CASE(float_trig, float_sin);
-  RUN_TEST_CASE(float_trig, float_cos);
+  RUN_TEST_CASE(float_trig, xs3_f32_sin);
+  RUN_TEST_CASE(float_trig, xs3_f32_cos);
 }
 
 TEST_GROUP(float_trig);
@@ -31,7 +31,7 @@ TEST_TEAR_DOWN(float_trig) {}
 #endif
 
 
-TEST(float_trig, float_sin)
+TEST(float_trig, xs3_f32_sin)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -51,7 +51,7 @@ TEST(float_trig, float_sin)
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    float result = float_sin(x);
+    float result = xs3_f32_sin(x);
     volatile uint32_t t3 = get_reference_time();
 
 
@@ -70,7 +70,7 @@ TEST(float_trig, float_sin)
 }
 
 
-TEST(float_trig, float_cos)
+TEST(float_trig, xs3_f32_cos)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -90,7 +90,7 @@ TEST(float_trig, float_cos)
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    float result = float_cos(x);
+    float result = xs3_f32_cos(x);
     volatile uint32_t t3 = get_reference_time();
 
 

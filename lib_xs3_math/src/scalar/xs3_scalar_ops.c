@@ -7,17 +7,17 @@
 #include "xs3_math.h"
 #include "xs3_vpu_scalar_ops.h"
 
-void xs3_unpack_float_s16(
+void xs3_f32_unpack_s16(
     int16_t* mantissa,
     exponent_t* exp,
     const float input)
 {
     int32_t mant32;
     xs3_unpack_float(&mant32, exp, input);
-    *mantissa = xs3_scalar_s32_to_s16(exp, mant32, *exp);
+    *mantissa = xs3_s32_to_s16(exp, mant32, *exp);
 }
 
-int32_t xs3_scalar_s64_to_s32(
+int32_t xs3_s64_to_s32(
     exponent_t* a_exp,
     const int64_t b,
     const exponent_t b_exp)
@@ -29,7 +29,7 @@ int32_t xs3_scalar_s64_to_s32(
 }
 
 
-int16_t xs3_scalar_s32_to_s16(
+int16_t xs3_s32_to_s16(
     exponent_t* a_exp,
     const int32_t b,
     const exponent_t b_exp)

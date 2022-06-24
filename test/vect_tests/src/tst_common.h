@@ -37,3 +37,13 @@ void setExtraInfo_RSL(
     int rep, 
     unsigned seed, 
     unsigned length);
+
+#define TIME_STATEMENT(STATEMENT, OUTPUT_FLOAT_US)        \
+  float OUTPUT_FLOAT_US;                                  \
+  do {                                                    \
+    volatile uint32_t t_start = get_reference_time();     \
+    STATEMENT;                                            \
+    volatile uint32_t t_end = get_reference_time();       \
+    uint32_t delta_ticks = t_end - t_start;               \
+    OUTPUT_FLOAT_US = delta_ticks / 100.0;                \
+  } while(0)

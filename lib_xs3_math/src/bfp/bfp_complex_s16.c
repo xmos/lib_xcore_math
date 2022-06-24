@@ -208,7 +208,7 @@ void bfp_complex_s16_real_scale(
 
     int16_t alpha_mant;
     exponent_t alpha_exp;
-    xs3_unpack_float_s16(&alpha_mant, &alpha_exp, alpha);
+    xs3_f32_unpack_s16(&alpha_mant, &alpha_exp, alpha);
 
     right_shift_t a_shr;
     headroom_t s_hr = HR_S16(alpha_mant);

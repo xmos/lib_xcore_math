@@ -90,7 +90,7 @@ void bfp_s16_add_scalar(
 
     int16_t c_mant;
     exponent_t c_exp;
-    xs3_unpack_float_s16(&c_mant, &c_exp, c);
+    xs3_f32_unpack_s16(&c_mant, &c_exp, c);
 
     xs3_vect_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp, 
                                     b->hr, HR_S16(c_mant));
@@ -153,7 +153,7 @@ void bfp_s16_scale(
 
     int16_t alpha_mant;
     exponent_t alpha_exp;
-    xs3_unpack_float_s16(&alpha_mant, &alpha_exp, alpha);
+    xs3_f32_unpack_s16(&alpha_mant, &alpha_exp, alpha);
 
     right_shift_t a_shr;
     headroom_t alpha_hr = HR_S16(alpha_mant);
@@ -333,11 +333,11 @@ float bfp_s16_mean(
     right_shift_t shr = MAX(0, 48 - HR_S64(mean64));
 
     //TODO: astew: there's no reason to force the precision down to 16 bits after
-    //             getting rid of float_s16_t because xs3_pack_float handles 32 bits
+    //             getting rid of float_s16_t because xs3_float_s32_to_f32 handles 32 bits
     if(shr > 0) 
         mean64 += 1 << (shr-1);
 
-    return xs3_pack_float(mean64 >> shr, 
+    return xs3_s32_to_f32(mean64 >> shr, 
                           b->exp - hr + shr);
 }
 
@@ -367,7 +367,7 @@ float_s32_t bfp_s16_rms(
 
     exponent_t exp, len_inv_exp;
     const float_s64_t energy64 = bfp_s16_energy(b);
-    const int32_t energy32 = xs3_scalar_s64_to_s32(&exp, energy64.mant, energy64.exp);
+    const int32_t energy32 = xs3_s64_to_s32(&exp, energy64.mant, energy64.exp);
     const int32_t len_inv = xs3_s32_inverse(&len_inv_exp, b->length);
     const int32_t mean_energy = xs3_s32_mul(&exp, energy32, len_inv, exp, len_inv_exp);
 
@@ -384,7 +384,7 @@ float bfp_s16_max(
     assert(b->length != 0);
 #endif
 
-    return xs3_pack_float(xs3_vect_s16_max(b->data, b->length), 
+    return xs3_s32_to_f32(xs3_vect_s16_max(b->data, b->length), 
                           b->exp);
 }
 
@@ -420,7 +420,7 @@ float bfp_s16_min(
     assert(b->length != 0);
 #endif
 
-    return xs3_pack_float(xs3_vect_s16_min(b->data, b->length), 
+    return xs3_s32_to_f32(xs3_vect_s16_min(b->data, b->length), 
                           b->exp);
 }
 

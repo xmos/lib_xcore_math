@@ -7,6 +7,6 @@ Scalar Float API
              is it the logical value :math:`x \cdot 2^{x\_exp}` where :math:`x` is the mantissa and
              :math:`x\_exp` the exponent?
 
-.. doxygengroup:: scalar_float_funcs
+.. doxygengroup:: xs3_float_s32_funcs
     :members:
     :content-only:

@@ -11,3 +11,4 @@ XS3 Low-level Vector API
     xs3_vect_mixed
     xs3_fft
     xs3_filters
+    xs3_chunk_32bit
