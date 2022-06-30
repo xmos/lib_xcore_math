@@ -265,8 +265,8 @@ float xs3_f32_power_series(
  * certain purposes.
  * 
  * In particular, this function behaves much like `frexpf()`, where it is guaranteed that the 
- * returned value @math{a} is either @math{0} or that  @math{0.5 \le \lfloor a \rfloor \lt 1.0}, and
- * the output exponent @math{p} is such that @math{x = a\,2^{p}}.
+ * returned value @math{a} is either @math{0} or that  @math{0.5 \le \left| a \right| \lt 1.0}, and
+ * the output exponent @math{p} is such that @math{x = a \cdot 2^{p}}.
  * 
  * In anticipation that future work may require alternative "normalized" representations, this form
  * is being defined here as form A.

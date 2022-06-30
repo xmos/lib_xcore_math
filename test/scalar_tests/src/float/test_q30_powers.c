@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <xcore/hwtimer.h>
 #include "xs3_math.h"
 #include "../tst_common.h"
 #include "unity_fixture.h"
@@ -31,7 +30,7 @@ TEST_TEAR_DOWN(xs3_q30_powers) {}
 TEST(xs3_q30_powers, xs3_q30_powers)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
-  printf("\n");
+  // printf("\n");
   q2_30 B;
   q2_30 A[32];
   q2_30 expected[32];

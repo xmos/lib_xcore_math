@@ -41,15 +41,7 @@ TEST(xs3_mat_mul_s8_x_s8_yield_s32, xs3_mat_mul_s8_x_s8_yield_s32)
     for(int v = 0; v < REPS; v++){
 
         unsigned M_rows = pseudo_rand_uint(&seed, 1, MAX_ROWS + 1);
-        unsigned N_cols = (pseudo_rand_uint(&seed, 1, MAX_COLS + 1) >> 2) << 2;
-
-        // M_rows = 216;
-        // N_cols = 252;
-
-        // printf("\n\n\n"
-        //        "M_rows = %u\n"
-        //        "N_cols = %u\n"
-        //        "\n\n", M_rows, N_cols);
+        unsigned N_cols = 4 * pseudo_rand_uint(&seed, 1, (MAX_COLS/4) + 1);
 
         TEST_ASSERT(N_cols > 0);
 

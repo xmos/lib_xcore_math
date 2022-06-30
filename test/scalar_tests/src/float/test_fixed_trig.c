@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <xcore/hwtimer.h>
 #include "xs3_math.h"
 #include "../tst_common.h"
 #include "unity_fixture.h"

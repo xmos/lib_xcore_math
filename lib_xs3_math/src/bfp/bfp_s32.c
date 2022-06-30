@@ -196,7 +196,6 @@ float_s64_t bfp_s32_dot(
     right_shift_t b_shr, c_shr;
 
     xs3_vect_s32_dot_prepare(&a.exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr, b->length);
-
     a.mant = xs3_vect_s32_dot(b->data, c->data, b->length, b_shr, c_shr);
     return a;
 }

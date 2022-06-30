@@ -10,9 +10,6 @@
 .align 4;
 .issue_mode dual
 
-//////////// NOTE: BECAUSE THIS DOES A BRANCH AND LINK TO A FUNCTION THAT
-////////////       USES STACK SPACE, I NEED TO CORRECT THE MAX STACK USAGE SYMBOL!!!
-
 /*  
 void xs3_float_s32_exp(
     float_s32_t* a,
@@ -70,7 +67,7 @@ FUNCTION_NAME:
 //// Compute y = x * log2(e)
 { mov y, tmp1                 ;                             }
 { ldc tmp1, 0                 ; ldw r11, consts[3]          }
-  maccs tmp1, y, r11, y
+  maccs tmp1, y, r11, y /// astew: Is this correct... isn't this doing  acc = y + log2(e) * y ??
 { ldc r11, 30                 ;                             }
   lextract y, tmp1, y, r11, 32
 

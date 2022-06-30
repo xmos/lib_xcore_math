@@ -6,8 +6,6 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <xcore/hwtimer.h>
-
 #include "xs3_math.h"
 
 #include "../tst_common.h"
@@ -15,6 +13,7 @@
 #include "unity_fixture.h"
 
 TEST_GROUP_RUNNER(float_log) {
+  RUN_TEST_CASE(float_log, xs3_f32_normA);
   RUN_TEST_CASE(float_log, xs3_f32_log2);
 }
 
@@ -28,6 +27,55 @@ TEST_TEAR_DOWN(float_log) {}
 #else
 #  define REPS       (1000)
 #endif
+
+TEST(float_log, xs3_f32_normA)
+{
+  unsigned seed = SEED_FROM_FUNC_NAME();
+
+  for(int v = 0; v < REPS; v++){
+    setExtraInfo_RS(v, seed);
+
+    float x = ldexp(pseudo_rand_uint(&seed, 1, INT32_MAX), 
+                    pseudo_rand_int(&seed, -10, 10));
+
+    int expected_exp;
+    float expected_f = frexpf(x, &expected_exp);
+
+    while(fabsf(expected_f) >= 1.0f){
+      expected_f /= 2;
+      expected_exp++;
+    }
+
+    while(fabsf(expected_f) < 0.5f){
+      expected_f *= 2;
+      expected_exp--;
+    }
+
+    exponent_t actual_exp;
+    float actual_f = xs3_f32_normA(&actual_exp, x);
+    
+
+    double diff = fabs(expected_f - actual_f);
+    double ratio = fabs(diff / expected_f); 
+
+    if( ratio > ldexp(1, -18)){
+      printf("x = %f\n", x);
+      printf("expected_exp = %d\n", expected_exp);
+      printf("actual_exp = %d\n", actual_exp);
+      printf("expected_f = %f\n", expected_f);
+      printf("actual_f = %f\n", actual_f);
+      printf("ratio = %e\n", ratio);
+    }
+
+    TEST_ASSERT_EQUAL_INT32(expected_exp, actual_exp);
+
+    TEST_ASSERT_FLOAT_WITHIN(ldexpf(1,-18), x, ldexpf(expected_f, expected_exp));
+    TEST_ASSERT_FLOAT_WITHIN(ldexpf(1,-18), x, ldexpf(actual_f, actual_exp));
+
+
+  }
+}
+
 
 
 TEST(float_log, xs3_f32_log2)

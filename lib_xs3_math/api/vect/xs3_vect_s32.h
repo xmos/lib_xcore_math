@@ -2732,6 +2732,32 @@ void xs3_vect_s32_log10(
     const unsigned length);
 
 
+/**
+ * @brief Compute @math{e^x} for Q2.30 value near @math{0}.
+ * 
+ * This function computes @math{e^{b_k \cdot 2^{-30}}} for each @math{b_k} in input vector 
+ * @vector{b}. The results are placed in output vector @vector{a} as Q2.30 values.
+ * 
+ * This function is meant to compute @math{e^x} for values of @math{x} in the interval 
+ * @math{ \left[-0.5, 0.5\right] }. The error grows quickly outside of this range.
+ * 
+ * @operation{
+ * &  a_k \leftarrow  \frac{ e^{b_k \cdot 2^{-30}} }{ 2^{30} } \\
+ * &      \qquad\text{for }k \in \{0..(\mathtt{length}-1)\}
+ * }
+ * 
+ * @param[out]  a       Output vector @vector{a}
+ * @param[in]   b       Input vector @vector{b}
+ * @param[in]   length  Number of elements in vectors @vector{a} and @vector{b}
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_q30_exp_small(
+    q2_30 a[],
+    const q2_30 b[],
+    const unsigned length);
+
 #ifdef __XC__
 }   //extern "C"
 #endif

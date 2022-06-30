@@ -200,6 +200,10 @@ TEST(bfp_dot, bfp_s32_dot_2)
         double diff = expected - ldexp(result.mant, result.exp);
         double error = fabs(diff/expected);
         int extr = (int) floor(log2(B.length));
+        // astew: 2022/06/30 -- if B.length == 1, log2(B.length) = 0, which means ldexp(extr,-20) = 0.0
+        //        and any amount of error would cause a failure.
+        if(extr == 0) extr = 1; // for when B.length == 0
+
         double thresh = ldexp(extr, -20);
         XTEST_ASSERT( error < thresh, 
           "\n%e not less than %e\n"

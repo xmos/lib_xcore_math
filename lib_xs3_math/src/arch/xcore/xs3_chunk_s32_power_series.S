@@ -12,8 +12,8 @@
 
 /*  
     void xs3_chunk_q30_power_series(
-        int32_t a[],
-        const q2_30 b[],
+        int32_t a[VPU_INT32_EPV],
+        const q2_30 b[VPU_INT32_EPV],
         const int32_t coef[],
         const unsigned term_count);
 */

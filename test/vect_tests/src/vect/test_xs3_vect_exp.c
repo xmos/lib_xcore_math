@@ -9,7 +9,6 @@
 #include <math.h>
 #include <stdarg.h>
 #include "xs3_math.h"
-#include <xcore/hwtimer.h>
 #include "../tst_common.h"
 #include "xs3_vpu_scalar_ops.h"
 #include "unity_fixture.h"
@@ -33,18 +32,10 @@ TEST_TEAR_DOWN(xs3_vect_exp) {}
 #endif
     
 
-void xs3_vect_q30_exp_small(
-    q2_30 a[],
-    const q2_30 b[],
-    const unsigned length);
-
-
 
 TEST(xs3_vect_exp, xs3_chunk_q30_exp_small_RANDOM)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
-
-  printf("\n");
 
   int32_t B[VPU_INT32_EPV];
   int32_t A[VPU_INT32_EPV];
@@ -110,8 +101,6 @@ TEST(xs3_vect_exp, xs3_vect_q30_exp_small_RANDOM)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
-  printf("\n");
-
   int32_t B[MAX_LEN];
   int32_t A[MAX_LEN];
 
@@ -153,7 +142,7 @@ TEST(xs3_vect_exp, xs3_vect_q30_exp_small_RANDOM)
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 
-      TEST_ASSERT_INT32_WITHIN(3, expected[i], A[i]);
+      TEST_ASSERT_INT32_WITHIN(4, expected[i], A[i]);
     }
 
     // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n", 

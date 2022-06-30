@@ -31,10 +31,6 @@ float xs3_f32_sin(
 
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
 
-.L_sin_coef:
-.word 
-.L_two_over_pi:
-
 FUNCTION_NAME:
   dualentsp NSTACKWORDS
   std r4, r5, sp[1]

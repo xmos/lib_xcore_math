@@ -11,7 +11,7 @@
 Takes a normalized angle between 0.0 and 1.0 in Q31 format
 and returns sin of that angle in Q30.
 
-int32 xs3_sbrad_sin(
+int32_t xs3_sbrad_sin(
     const sbrad_t theta);
 */
 
@@ -56,7 +56,7 @@ FUNCTION_NAME:
   lextract r, tmpA, tmpB, _31, 32
   lmul tmpA, tmpB, a, r, r11, r11
   lextract tmpA, tmpA, tmpB, _31, 32
-  std tmpA, a, vec_r[0]
+  std tmpA, a, vec_r[0] // a, a^3
 
 #undef a  // no longer needed
 #define tmpC     r0
@@ -65,14 +65,14 @@ FUNCTION_NAME:
   lextract tmpB, tmpA, tmpB, _31, 32
   lmul tmpA, tmpC, tmpB, r, r11, r11
   lextract tmpA, tmpA, tmpC, _31, 32
-  std tmpA, tmpB, vec_r[1]
+  std tmpA, tmpB, vec_r[1] // a^5, a^7
 
   lmul tmpA, tmpB, tmpA, r, r11, r11
   lextract tmpB, tmpA, tmpB, _31, 32
   // stw tmpB, vec_r[4] // if we only wanted 5 terms
   lmul tmpA, tmpC, tmpB, r, r11, r11
   lextract tmpA, tmpA, tmpC, _31, 32
-  std tmpA, tmpB, vec_r[2]
+  std tmpA, tmpB, vec_r[2] // a^9, 1^11
 
   // lmul tmpA, tmpB, tmpA, r, r11, r11
   // lextract tmpB, tmpA, tmpB, _31, 32

@@ -248,19 +248,21 @@ void  bfp_fft_inverse_stereo(
     // the length of a or b (which must have the same length)
     const unsigned FFT_N = 2*a_fft->length;
 
-    // 2 bits of headroom are required by xs3_fft_dit_inverse()
-    right_shift_t a_shr = 2 - a_fft->hr;
-    right_shift_t b_shr = 2 - b_fft->hr;
-
-    // Both input vectors need to be copied to the scratch buffer.
-    xs3_vect_complex_s32_shr(&scratch[0], a_fft->data, FFT_N/2, a_shr);
-    xs3_vect_complex_s32_shr(&scratch[FFT_N/2], b_fft->data, FFT_N/2, b_shr);
+    // 2 bits of headroom are required by xs3_fft_dit_inverse(),
+    // which means we need 3 bits here, because the headroom can be
+    // reduced when merging spectra
+    right_shift_t a_shr = 3 - a_fft->hr;
+    right_shift_t b_shr = 3 - b_fft->hr;
     
     a_fft->exp += a_shr;
     b_fft->exp += b_shr;
 
     a_fft->hr += a_shr;
     b_fft->hr += b_shr;
+
+    // Both input vectors need to be copied to the scratch buffer.
+    xs3_vect_complex_s32_shr(&scratch[0], a_fft->data, FFT_N/2, a_shr);
+    xs3_vect_complex_s32_shr(&scratch[FFT_N/2], b_fft->data, FFT_N/2, b_shr);
 
     headroom_t hr = 2;
     exponent_t exp_diff = 0;
@@ -271,7 +273,7 @@ void  bfp_fft_inverse_stereo(
 
     // Undo the bit-reversed indexing
     xs3_fft_index_bit_reversal(scratch, FFT_N);
-
+    
     // Do the actual IFFT
     xs3_fft_dit_inverse(scratch, FFT_N, &hr, &exp_diff);
 

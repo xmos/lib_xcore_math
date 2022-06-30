@@ -9,7 +9,6 @@
 #include <math.h>
 #include <stdarg.h>
 #include "xs3_math.h"
-#include <xcore/hwtimer.h>
 #include "../tst_common.h"
 #include "xs3_vpu_scalar_ops.h"
 #include "unity_fixture.h"
@@ -39,18 +38,14 @@ TEST_TEAR_DOWN(xs3_vect_log) {}
 
 
 
-
+#define COUNT       (4)
 
 TEST(xs3_vect_log, xs3_chunk_float_s32_log_CORRECTNESS)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   // If it gets these correct it will probably get everything else correct.
-
-  const unsigned CHUNK_SIZE=8;
-  const unsigned COUNT=4;
-
-  float_s32_t DWORD_ALIGNED B[CHUNK_SIZE] = {
+  float_s32_t DWORD_ALIGNED B[VPU_INT32_EPV] = {
     { Q28(0.0), -28  },
     { Q28(1.0), -28  },
     { Q28(M_E), -28  },
@@ -61,9 +56,9 @@ TEST(xs3_vect_log, xs3_chunk_float_s32_log_CORRECTNESS)
     { Q24((M_E * M_E)), -24  },
   };
 
-  q8_24 DWORD_ALIGNED A[CHUNK_SIZE];
+  q8_24 DWORD_ALIGNED A[VPU_INT32_EPV];
 
-  q8_24 expected[CHUNK_SIZE] = {
+  q8_24 expected[VPU_INT32_EPV] = {
     INT32_MIN,           // ln(0.0) is defined here to yield INT32_MIN
     Q24(0.0),             // ln(1.0) = 0.0
     Q24(1.0),             // ln(e) = 1.0
@@ -89,7 +84,7 @@ TEST(xs3_vect_log, xs3_chunk_float_s32_log_CORRECTNESS)
   TEST_ASSERT_INT32_WITHIN(10,    expected[7], A[7]);
 }
 
-
+#undef COUNT
 
 
 
@@ -104,10 +99,10 @@ TEST(xs3_vect_log, xs3_chunk_float_s32_log_RANDOM)
   // printf("\n");
 
 
-  float_s32_t DWORD_ALIGNED B[8];
-  q8_24 DWORD_ALIGNED A[8];
+  float_s32_t DWORD_ALIGNED B[VPU_INT32_EPV];
+  q8_24 DWORD_ALIGNED A[VPU_INT32_EPV];
 
-  q8_24 expected[8];
+  q8_24 expected[VPU_INT32_EPV];
 
   unsigned max_max_error = 0;
 
@@ -161,6 +156,7 @@ TEST(xs3_vect_log, xs3_chunk_float_s32_log_RANDOM)
 
 
 
+#define COUNT       (4)
 
 TEST(xs3_vect_log, xs3_chunk_s32_log_correctness)
 {
@@ -168,11 +164,8 @@ TEST(xs3_vect_log, xs3_chunk_s32_log_correctness)
 
   // If it gets these correct it will probably get everything else correct.
 
-  const unsigned CHUNK_SIZE=8;
-  const unsigned COUNT=4;
-
   exponent_t b_exp = -28;
-  int32_t DWORD_ALIGNED B[CHUNK_SIZE] = {
+  int32_t DWORD_ALIGNED B[VPU_INT32_EPV] = {
     Q28(0.0),
     Q28(1.0),
     Q28(M_E),               
@@ -180,9 +173,9 @@ TEST(xs3_vect_log, xs3_chunk_s32_log_correctness)
     0,0,0,0,                
   };
 
-  q8_24 DWORD_ALIGNED A[CHUNK_SIZE];
+  q8_24 DWORD_ALIGNED A[VPU_INT32_EPV];
 
-  q8_24 expected[CHUNK_SIZE] = {
+  q8_24 expected[VPU_INT32_EPV] = {
     INT32_MIN,           // ln(0.0) is defined here to yield INT32_MIN
     Q24(0.0),             // ln(1.0) = 0.0
     Q24(1.0),             // ln(e) = 1.0
@@ -200,7 +193,7 @@ TEST(xs3_vect_log, xs3_chunk_s32_log_correctness)
   TEST_ASSERT_INT32_WITHIN(10,    expected[3], A[3]);
 }
 
-
+#undef COUNT
 
 
 
@@ -213,10 +206,10 @@ TEST(xs3_vect_log, xs3_chunk_s32_log)
   // printf("\n");
 
 
-  int32_t DWORD_ALIGNED B[8];
-  q8_24 DWORD_ALIGNED A[8];
+  int32_t DWORD_ALIGNED B[VPU_INT32_EPV];
+  q8_24 DWORD_ALIGNED A[VPU_INT32_EPV];
 
-  q8_24 expected[8];
+  q8_24 expected[VPU_INT32_EPV];
 
   unsigned max_max_error = 0;
 

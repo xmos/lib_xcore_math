@@ -12,8 +12,8 @@
 
 /*  
 int32_t xs3_chunk_s32_dot(
-    const int32_t b[8],
-    const q2_30 c[8]);
+    const int32_t b[VPU_INT32_EPV],
+    const q2_30 c[VPU_INT32_EPV]);
 */
 #define FUNCTION_NAME   xs3_chunk_s32_dot
 #define NSTACKWORDS     (2)

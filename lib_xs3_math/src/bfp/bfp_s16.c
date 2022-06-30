@@ -333,7 +333,7 @@ float bfp_s16_mean(
     right_shift_t shr = MAX(0, 48 - HR_S64(mean64));
 
     //TODO: astew: there's no reason to force the precision down to 16 bits after
-    //             getting rid of float_s16_t because xs3_float_s32_to_f32 handles 32 bits
+    //             getting rid of float_s16_t because xs3_s32_to_f32 handles 32 bits
     if(shr > 0) 
         mean64 += 1 << (shr-1);
 

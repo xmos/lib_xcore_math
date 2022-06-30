@@ -70,52 +70,51 @@ FUNCTION_NAME:
   std r4, r5, sp[1]
   std r6, r7, sp[2]
 { ldc r11, 0                  ; ldaw vec_r, sp[VEC_R]       }
-{ lss out_mul, a, r11         ; vsetc r11                   }
-{ ldc _30, 30                 ; bf out_mul, .L_hgfd         }
+{ lss out_mul, a, r11         ; vsetc r11                   } // Result gets multiplied by -1 if
+{ ldc _30, 30                 ; bf out_mul, .L_hgfd         } // the input was negative
 { neg a, a                    ;                             }
 .L_hgfd:
 
   lmul tmpA, tmpB, a, a, r11, r11
-  lextract r, tmpA, tmpB, _30, 32
-  lmul tmpA, tmpB, a, r, r11, r11
-  lextract tmpA, tmpA, tmpB, _30, 32
-  std tmpA, a, vec_r[0]
+  lextract r, tmpA, tmpB, _30, 32  // extract theta^2
+  lmul tmpA, tmpB, a, r, r11, r11 // theta * theta^2
+  lextract tmpA, tmpA, tmpB, _30, 32 
+  std tmpA, a, vec_r[0]   // theta, theta^3
 
 #undef a  // no longer needed
 #define tmpC     r0
 
   lmul tmpA, tmpB, tmpA, r, r11, r11
-  lextract tmpB, tmpA, tmpB, _30, 32
+  lextract tmpB, tmpA, tmpB, _30, 32 // theta^5
   lmul tmpA, tmpC, tmpB, r, r11, r11
-  lextract tmpA, tmpA, tmpC, _30, 32
-  std tmpA, tmpB, vec_r[1]
+  lextract tmpA, tmpA, tmpC, _30, 32 // theta^7
+  std tmpA, tmpB, vec_r[1] // theta^5, theta^7
  
   lmul tmpA, tmpB, tmpA, r, r11, r11
-  lextract tmpB, tmpA, tmpB, _30, 32
+  lextract tmpB, tmpA, tmpB, _30, 32 // theta^9
   // stw tmpB, vec_r[4] // if we only wanted 5 terms
   lmul tmpA, tmpC, tmpB, r, r11, r11
-  lextract tmpA, tmpA, tmpC, _30, 32
-  std tmpA, tmpB, vec_r[2]
+  lextract tmpA, tmpA, tmpC, _30, 32 // theta^11
+  std tmpA, tmpB, vec_r[2] // theta^9, theta^11
 
   lmul tmpA, tmpB, tmpA, r, r11, r11
-  lextract tmpB, tmpA, tmpB, _30, 32
+  lextract tmpB, tmpA, tmpB, _30, 32 // theta^13
   lmul tmpA, tmpC, tmpB, r, r11, r11
-  lextract tmpA, tmpA, tmpC, _30, 32
-  std tmpA, tmpB, vec_r[3]
+  lextract tmpA, tmpA, tmpC, _30, 32 // theta^15
+  std tmpA, tmpB, vec_r[3] // theta^13, theta^15
 
 // Now that we've filled in vec_R[], we just need to do the VPU stuff.
 // Note: All coefficients are positive and so are all elements or vec_r[],
-//       and we know they can't add to more than 1.0, AND we know that
-//       they're all already in a q31 format, so we don't need a VLSAT
+//       and we know they can't add to more than 1.0
 
 { ldap r11, .L_vec_b          ; vclrdr                      }
-{ ldap r11, .L_vec_s_hat      ; vldc r11[0]                 }
-{                             ; vlmacc vec_r[0]             }
-{ mov r11, vec_r              ; vlsat r11[0]                }
-{                             ; vstr r11[0]                 }
+{ ldap r11, .L_vec_s_hat      ; vldc r11[0]                 } // vC[] <-- P.S. coefficients
+{                             ; vlmacc vec_r[0]             } // inner product with power vect
+{ mov r11, vec_r              ; vlsat r11[0]                } // ensure they're all in the same q-format
+{                             ; vstr r11[0]                 } 
 { ldap r11, .L_weights        ; vclrdr                      }
-{                             ; vldc r11[0]                 }
-{ mov r11, vec_r              ; vlmaccr vec_r[0]            }
+{                             ; vldc r11[0]                 } 
+{ mov r11, vec_r              ; vlmaccr vec_r[0]            } // add them together
 {                             ; vstr r11[0]                 }
 {                             ; ldw r0, vec_r[0]            }
   ldd r4, r5, sp[1]

@@ -6,8 +6,6 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <xcore/hwtimer.h>
-
 #include "xs3_math.h"
 
 #include "../tst_common.h"
@@ -54,8 +52,8 @@ TEST(float_logistic, xs3_q24_logistic)
     }
     TEST_ASSERT_INT32_WITHIN(100, expected_q24, y);
   }
-  printf("max_time: %f us\n", max_time);
-  printf("max_error: %u\n", max_error);
+  // printf("max_time: %f us\n", max_time);
+  // printf("max_error: %u\n", max_error);
 }
 
 
@@ -82,6 +80,6 @@ TEST(float_logistic, xs3_q24_logistic_fast)
     }
     TEST_ASSERT_INT32_WITHIN(112000, expected_q24, y);
   }
-  printf("max_time: %f us\n", max_time);
-  printf("max_error: %u\n", max_error);
+  // printf("max_time: %f us\n", max_time);
+  // printf("max_error: %u\n", max_error);
 }
