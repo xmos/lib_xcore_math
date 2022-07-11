@@ -54,6 +54,8 @@ extern "C" {
 #include "vect/xs3_filters.h"
 #include "scalar/xs3_scalar.h"
 #include "scalar/xs3_float_s32.h"
+#include "scalar/xs3_float_complex_s16.h"
+#include "scalar/xs3_float_complex_s32.h"
 #include "scalar/xs3_f32.h"
 #include "xs3_util.h"
 #include "q_format.h"
