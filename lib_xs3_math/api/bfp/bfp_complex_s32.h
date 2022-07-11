@@ -659,3 +659,76 @@ void bfp_complex_s32_conjugate(
 C_API
 float_s64_t bfp_complex_s32_energy(
     const bfp_complex_s32_t* b);
+
+
+
+/**
+ * @brief Create complex 32-bit BFP vector from real and imaginary parts.
+ * 
+ * Create a complex 32-bit BFP vector as the sum of a real vector @vector{B} and imaginary vector
+ * @math{\bar{C} i}. 
+ * 
+ * `a`, `b` and `c` must have been initialized (see bfp_complex_s32_init() and bfp_s32_init()), must
+ * be the same length. `&a->data[0]` must be a double-word-aligned address.
+ * 
+ * @operation{
+ * & \bar{A} \leftarrow  \bar{B} + \bar{C} i
+ * }
+ * 
+ * @param[out]  a   Complex BFP output vector @vector{A}
+ * @param[in]   b   Real BFP input vector @vector{B}
+ * @param[in]   c   Real BFP input vector @vector{C}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_complex_s32_make(
+    bfp_complex_s32_t* a,
+    const bfp_s32_t* b,
+    const bfp_s32_t* c);
+
+
+/**
+ * @brief Extract the real part of a complex 32-bit BFP vector.
+ * 
+ * This function populates the real 32-bit BFP vector @vector{A} with the real part of complex 
+ * 32-bit BFP vector @vector{B}.
+ * 
+ * `&b->data[0]` must be a double-word-aligned address.
+ * 
+ * @operation{
+ * &  \bar{A} \leftarrow  {Real}\\{\bar{B}\\}
+ * } 
+ * 
+ * @param[out]  a   Real BFP output vector @vector{A}
+ * @param[in]   b   Complex BFP input vector @vector{B}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_complex_s32_real_part(
+    bfp_s32_t* a,
+    const bfp_complex_s32_t* b);
+
+
+/**
+ * @brief Extract the imaginary part of a complex 32-bit BFP vector.
+ * 
+ * This function populates the real 32-bit BFP vector @vector{A} with the imaginary part of complex 
+ * 32-bit BFP vector @vector{B}.
+ * 
+ * `&b->data[0]` must be a double-word-aligned address.
+ * 
+ * @operation{
+ * &  \bar{A} \leftarrow  {Imag}\\{\bar{B}\\}
+ * } 
+ * 
+ * @param[out]  a   Real BFP output vector @vector{A}
+ * @param[in]   b   Complex BFP input vector @vector{B}
+ * 
+ * @ingroup bfp32_func
+ */
+C_API
+void bfp_complex_s32_imag_part(
+    bfp_s32_t* a,
+    const bfp_complex_s32_t* b);

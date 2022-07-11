@@ -404,3 +404,64 @@ float_s64_t bfp_complex_s32_energy(
 
   return a;
 }
+
+
+
+void bfp_complex_s32_make(
+    bfp_complex_s32_t* a,
+    const bfp_s32_t* b,
+    const bfp_s32_t* c)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+  assert(b->length == a->length);
+  assert(b->length == c->length);
+  assert(b->length != 0);
+#endif
+
+  const exponent_t b_min_exp = b->exp - b->hr;
+  const exponent_t c_min_exp = c->exp - c->hr;
+  a->exp = MAX(b_min_exp, c_min_exp);
+  a->hr = 0;
+
+  const right_shift_t b_shr = a->exp - b->exp;
+  const right_shift_t c_shr = a->exp - c->exp;
+  
+  xs3_vect_s32_zip(&a->data[0], &b->data[0], &c->data[0], 
+                    b->length, b_shr, c_shr);
+}
+
+
+void bfp_complex_s32_real_part(
+    bfp_s32_t* a,
+    const bfp_complex_s32_t* b)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+  assert(b->length == a->length);
+  assert(b->length != 0);
+#endif
+
+  a->exp = b->exp;
+  a->hr = b->hr; // not necessarily correct, but safe
+
+  for(int k = 0; k < b->length; k++){
+    a->data[k] = b->data[k].re;
+  }
+}
+
+
+void bfp_complex_s32_imag_part(
+    bfp_s32_t* a,
+    const bfp_complex_s32_t* b)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+  assert(b->length == a->length);
+  assert(b->length != 0);
+#endif
+
+  a->exp = b->exp;
+  a->hr = b->hr; // not necessarily correct, but safe
+
+  for(int k = 0; k < b->length; k++){
+    a->data[k] = b->data[k].im;
+  }
+}
