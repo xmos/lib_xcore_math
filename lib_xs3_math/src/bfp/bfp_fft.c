@@ -56,6 +56,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
     // using a half-length FFT)
     xs3_fft_mono_adjust(X->data, FFT_N, 0);
 
+    X->hr = xs3_vect_complex_s32_headroom(&X->data[0], X->length);
     return X;
 }
 
