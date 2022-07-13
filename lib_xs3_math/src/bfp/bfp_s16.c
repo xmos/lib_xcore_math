@@ -11,6 +11,19 @@
 #include <stdio.h>
 
 
+static inline 
+int16_t safe_ashr16(int16_t x, right_shift_t shr)
+{
+  if(shr >= 16){
+    return (x >= 0)? 0 : -1;
+  } else if(shr >= 0){
+    return x >> shr;
+  } else {
+    return x << (-shr);
+  }
+}
+
+
     
 headroom_t bfp_s16_headroom(
     bfp_s16_t* a)
@@ -95,7 +108,7 @@ void bfp_s16_add_scalar(
     xs3_vect_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp, 
                                     b->hr, HR_S16(c_mant));
 
-    int32_t cc = (c_shr >= 0)? (c_mant >> c_shr) : (c_mant << -c_shr);
+    int16_t cc = safe_ashr16(c_mant, c_shr);
 
     a->hr = xs3_vect_s16_add_scalar(a->data, b->data, cc, b->length, 
                                     b_shr);
