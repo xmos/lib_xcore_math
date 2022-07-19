@@ -19,6 +19,8 @@ unsigned xs3_chunk_s16_accumulate(
     const right_shift_t b_shr,
     const unsigned vpu_ctrl)
 {
+  unsigned vc = vpu_ctrl & 0x1F;
+
   for(int k = 0; k < VPU_INT16_EPV; k++){
     int32_t hi = acc->vD[k];
     uint32_t lo = acc->vR[k];
@@ -34,7 +36,11 @@ unsigned xs3_chunk_s16_accumulate(
 
      acc->vD[k] = (acc32 >> 16) & 0xFFFF;
      acc->vR[k] = acc32 & 0xFFFF;
+
+     unsigned tmp = 15 - HR_S16(acc->vD[k]);
+     vc = MAX(vc, tmp);
   }
+  return vc;
 }
 
 
