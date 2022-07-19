@@ -9,6 +9,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 
 static inline 
@@ -537,4 +538,42 @@ void bfp_s16_nmacc(
     xs3_vect_s16_macc_prepare(&acc->exp, &acc_shr, &bc_shr, acc->exp, b->exp, c->exp, acc->hr, b->hr, c->hr);
 
     acc->hr = xs3_vect_s16_nmacc(acc->data, b->data, c->data, b->length, acc_shr, bc_shr);
+}
+
+
+headroom_t bfp_s16_accumulate(
+    xs3_split_acc_s32_t acc[],
+    const exponent_t acc_exp,
+    const bfp_s16_t* b)
+{
+#if (XS3_BFP_DEBUG_CHECK_LENGTHS) // See xs3_math_conf.h
+    assert(b->length != 0);
+#endif
+
+  const unsigned chunks = b->length >> VPU_INT16_EPV_LOG2;
+  const unsigned tail = b->length & (VPU_INT16_EPV - 1);
+
+  const right_shift_t b_shr = acc_exp - b->exp;
+
+  unsigned vpu_ctrl = VPU_INT16_CTRL_INIT; // VPU 16-bit mode with zeroed headroom
+
+  for(int k = 0; k < chunks; k++){
+    vpu_ctrl = xs3_chunk_s16_accumulate(
+        &acc[k], &b->data[k << VPU_INT16_EPV_LOG2], b_shr, vpu_ctrl);
+  }
+
+  if(tail){
+    int16_t b_tmp[VPU_INT16_EPV] = {0};
+    memcpy(&b_tmp[0], &b->data[chunks << VPU_INT16_EPV_LOG2], sizeof(int16_t) * tail);
+    
+    // for(int k = 0; k < VPU_INT16_EPV; k++){
+    //   printf("!! acc[%d].vD[%d] = 0x%04X\n", chunks, k, acc[chunks].vD[k]);
+    //   printf("@@ b_tmp[%d] = 0x%04X\n", k, b_tmp[k]);
+    // }
+
+    vpu_ctrl = xs3_chunk_s16_accumulate(
+       &acc[chunks], &b_tmp[0], b_shr, vpu_ctrl);
+  }
+
+  return VPU_INT16_HEADROOM_FROM_CTRL(vpu_ctrl);
 }

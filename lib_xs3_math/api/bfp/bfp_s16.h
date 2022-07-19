@@ -870,3 +870,73 @@ unsigned bfp_s16_argmax(
 C_API
 unsigned bfp_s16_argmin(
     const bfp_s16_t* b);
+
+
+/**
+ * @brief Accumulate a 16-bit BFP vector into a 32-bit accumulator vector.
+ * 
+ * This function is used for efficiently accumulating a series of 16-bit BFP vectors into a 32-bit 
+ * vector. Each call to this function adds a BFP vector @vector{B} into the persistent 32-bit 
+ * accumulator vector @vector{A}.
+ * 
+ * Eventually the value of @vector{A} will be needed for something other than simple accumulation,
+ * which requires converting from the XS3-native split accumulator representation given by the 
+ * @ref `xs3_split_acc_s32_t` struct, into a standard vector of `int32_t`. This can be accomplished
+ * using xs3_vect_s32_merge_accs(). From there, the `int32_t` vector can be dropped to a 16-bit
+ * vector with xs3_vect_s32_to_s16() if needed.
+ * 
+ * Note, in order for this operation to work, @math{\mathtt{b\_exp} - \mathtt{a\_exp}} must be no 
+ * greater than @math{14}.
+ * 
+ * @operation{
+ *    \bar{A} \leftarrow \bar{A} + \bar{B}
+ * }
+ * 
+ * @par Usage
+ * 
+ * Proper use of this function requires some book-keeping on the part of the caller. In particular,
+ * the caller is responsible for tracking the exponent and monitoring the headroom of the 
+ * accumulator vector @vector{A}.
+ * 
+ * To begin a sequence of accumulation, start by clearing the contents of @vector{A} to all zeros.
+ * Then, an appropriate exponent for @vector{A} must be chosen. The only hard constraint is that the
+ * accumulator exponent, @math{\mathtt{a\_exp}} must be within @math{14} of @vector{B}'s exponent,
+ * @math{\mathtt{b\_exp}}. If @math{\mathtt{b\_exp}} is unknown, the caller may choose to wait until
+ * the first @vector{B} is available before initializing @math{\mathtt{a\_exp}}.
+ * 
+ * As vectors are accumulated into @vector{A} with multiple calls to this function, it becomes 
+ * possible for @vector{A} to saturate for some element. Each call to this function returns the 
+ * headroom of @vector{A} (note: no more than 15 bits of headroom will be reported). If @vector{A} 
+ * has at least 1 bit of headroom, then a call to this function is guarranteed not to saturate.
+ * 
+ * The larger @math{\mathtt{a\_exp}} is compared to each @math{\mathtt{b\_exp}}, the more 16-bit 
+ * vectors can be accumulated before saturation becomes possible (and by virtue of that, the more 
+ * efficiently accumulation can take place.). On the other hand, as long as 
+ * @math{\mathtt{a\_exp} \le \mathtt{b\_exp}}, there is no precision loss during accumulation. It
+ * is the responsibility of the caller to manage this trade-off.
+ * 
+ * If and when this function reports that @vector{A} has 0 headroom, if further accumulation is 
+ * needed, the caller can handle this by increasing @math{\mathtt{a\_exp}}. Increasing 
+ * @math{\mathtt{a\_exp}} will require that the contents of the mantissa vector @vector{a}  be
+ * right-shifted to avoid corrupting the value of @vector{A}, making room for further accumulation
+ * in the process. Shifting the split accumulators can be accomplished with a call to 
+ * xs3_vect_split_acc_s32_shr().
+ * 
+ * Finally, when accumulation is complete or the accumulator values must be used elsewhere, the 
+ * split accumulator vector can be converted to simple `int32_t` vector with a call to 
+ * xs3_vect_s32_merge_accs().
+ * 
+ * 
+ * @param[inout]  a       Mantissas of accumulator vector @vector{A}
+ * @param[in]     a_exp   Exponent of accumulator vector @vector{A}
+ * @param[in]     b       Input vector @vector{B}
+ * 
+ * @returns Headroom of @vector{A} (up to 15 bits)
+ * 
+ * @ingroup bfp16_func
+ */
+C_API
+headroom_t bfp_s16_accumulate(
+    xs3_split_acc_s32_t a[],
+    const exponent_t a_exp,
+    const bfp_s16_t* b);

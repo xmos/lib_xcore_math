@@ -2337,6 +2337,29 @@ void xs3_vect_s32_split_accs(
     const int32_t b[],
     const unsigned length);
 
+    
+/**
+ * @brief Apply a right-shift to the elements of a 32-bit split accumulator vector.
+ * 
+ * This function may be used in conjunction with xs3_chunk_s16_accumulate() or bfp_s16_accumulate()
+ * to avoid saturation of accumulators.
+ * 
+ * This function updates @vector{a} in-place.
+ * 
+ * @param[inout]  a       Accumulator vector @vector{a}
+ * @param[in]     length  Number of elements of @vector{a}
+ * @param[in]     shr     Number of bits to right-shift the elements of @vector{a}
+ *  
+ * @exception ET_LOAD_STORE Raised if `a` is not double-word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect32_func
+ */
+C_API
+void xs3_vect_split_acc_s32_shr(
+    xs3_split_acc_s32_t a[],
+    const unsigned length,
+    const right_shift_t shr);
+
 /**
  * @brief Obtain the output exponent and input shifts required to perform a
  *        binary add-like operation.

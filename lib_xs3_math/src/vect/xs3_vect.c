@@ -413,3 +413,14 @@ void xs3_vect_s32_log10(
 {
   xs3_vect_s32_log_base(a, b, b_exp, 0x1bcb7b15, length);
 }
+
+
+void xs3_vect_split_acc_s32_shr(
+    xs3_split_acc_s32_t a[],
+    const unsigned length,
+    const right_shift_t shr)
+{
+  xs3_vect_s32_merge_accs((int32_t*) &a[0], &a[0], length);
+  xs3_vect_s32_shr((int32_t*) &a[0], (int32_t*) &a[0], length, shr);
+  xs3_vect_s32_split_accs(&a[0], (int32_t*) &a[0], length);
+}

@@ -22,6 +22,7 @@ TEST_GROUP_RUNNER(xs3_vect_shr) {
   RUN_TEST_CASE(xs3_vect_shr, xs3_vect_s32_shr_random);
   RUN_TEST_CASE(xs3_vect_shr, xs3_vect_complex_s16_shr);
   RUN_TEST_CASE(xs3_vect_shr, xs3_vect_complex_s32_shr);
+  RUN_TEST_CASE(xs3_vect_shr, xs3_vect_split_acc_s32_shr);
 }
 
 TEST_GROUP(xs3_vect_shr);
@@ -309,7 +310,7 @@ TEST(xs3_vect_shr, xs3_vect_complex_s16_shr)
 
         setExtraInfo_R(v);
 
-        const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
+        const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         const headroom_t hr = pseudo_rand_uint(&seed, 0, 12);
 
@@ -353,7 +354,7 @@ TEST(xs3_vect_shr, xs3_vect_complex_s32_shr)
 
         setExtraInfo_R(v);
 
-        const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
+        const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         const headroom_t hr = pseudo_rand_uint(&seed, 0, 28);
 
@@ -380,6 +381,50 @@ TEST(xs3_vect_shr, xs3_vect_complex_s32_shr)
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].im, shr), A[i].im );
         }
     }
+}
+
+
+
+TEST(xs3_vect_shr, xs3_vect_split_acc_s32_shr)
+{
+    
+  unsigned seed = SEED_FROM_FUNC_NAME();
+
+  int32_t DWORD_ALIGNED acc_s32[MAX_LEN];
+  int32_t expected[MAX_LEN];
+  xs3_split_acc_s32_t DWORD_ALIGNED acc[(MAX_LEN + (VPU_INT16_EPV-1)) / VPU_INT16_EPV];
+
+  for(int v = 0; v < REPS; v++){
+
+    setExtraInfo_R(v);
+
+    const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+
+    headroom_t hr = pseudo_rand_uint(&seed, 0, 8);
+    
+    for(int i = 0; i < length; i++){
+      acc_s32[i] = pseudo_rand_int32(&seed) >> hr;
+    }
+
+    xs3_vect_s32_split_accs(acc, acc_s32, length);
+
+    hr = xs3_vect_s32_headroom(acc_s32, length);
+    
+    const right_shift_t shr = pseudo_rand_int(&seed, -hr, (20-hr));
+
+    for(int k = 0; k < length; k++){
+      if(shr >= 0)
+        expected[k] = acc_s32[k] >> shr;
+      else
+        expected[k] = acc_s32[k] << (-shr);
+    }
+
+    xs3_vect_split_acc_s32_shr(acc, length, shr);
+
+    xs3_vect_s32_merge_accs(acc_s32, acc, length);
+
+    TEST_ASSERT_EQUAL_INT32_ARRAY(expected, acc_s32, length);
+  }
 }
 
 

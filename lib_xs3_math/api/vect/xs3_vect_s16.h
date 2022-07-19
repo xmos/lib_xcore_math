@@ -1711,6 +1711,101 @@ int32_t xs3_vect_s16_sum(
     const unsigned length);
 
 
+/**
+ * @brief VPU Control Register initialization value.
+ * 
+ * This value is used with xs3_chunk_s16_accumulate(). It is the value `vpu_ctrl` should be
+ * initialized to.
+ * 
+ * Setting the VPU control register to this value puts it in 16-bit mode and clears the headroom
+ * register.
+ */
+#define VPU_INT16_CTRL_INIT   0x0100
+
+/**
+ * @brief Derive 16-bit headroom from VPU control register value.
+ * 
+ * Used in conjunction with `xs3_chunk_s16_accumulate()` to compute final headroom.
+ */
+#define VPU_INT16_HEADROOM_FROM_CTRL(X)   ((15)-(X & 0x1F))
+
+/**
+ * @brief Accumulate a 16-bit vector chunk into a 32-bit accumulator chunk.
+ * 
+ * 16-bit vector chunk @vector{b} is shifted and accumulated into 32-bit accumulator vector chunk
+ * @vector{a} (`acc`). This function is used for efficiently accumulating multiple (possibly 
+ * many) 16-bit vectors together. 
+ * 
+ * The accumulator vector @vector{a} stores its elements across two 16-bit vector chunks, which
+ * corresponds to how the accumulators are stored internally across VPU registers `vD` and `vR`.
+ * See @ref xs3_split_acc_s32_t for details about the accumulator structure.
+ * 
+ * The signed arithmetic right-shift `b_shr` is applied to @vector{b} prior to being 
+ * accumulated into @vector{a}. When @vector{b} and @vector{a}, are the mantissas of block floating
+ * point vectors, using `b_shr` allows those vectors to have different exponents. This is also 
+ * important when this function is to be called periodically where each @vector{b} may have a 
+ * different exponent.
+ * 
+ * `b_shr` must meet the condition `-14 <= b_shr <= 14` or the behavior of this function is 
+ * undefined.
+ * 
+ * @operation{
+ * &  a_k \leftarrow  a_k  +  floor( \frac{b_k}{2^{-\mathtt{b\_shr}}} )
+ * }
+ * 
+ * @par VPU Control Value
+ * 
+ * The input `vpu_ctrl` tracks the VPU's control register state during accumulation. In particular,
+ * it is used for keeping track of the headroom of the accumulator vector @vector{a}. When beginning
+ * a sequence of accumulation calls, the value passed in should be initialized to
+ * `VPU_INT16_CTRL_INIT`. On completion, this function returns the updated VPU control register
+ * state, which should be passed in as `vpu_ctrl` on the next accumulation call.
+ * 
+ * The idea is that each call to this function processes only a single 'chunk' (in 16-bit mode, a
+ * 16-element block) at a time, but the caller usually wants to know the headroom of a whole vector,
+ * which may comprise many such chunks. So `vpu_ctrl` is a value which persists through each of 
+ * these calls to track the whole vector.
+ * 
+ * Once all chunks have been accumulated, the `VPU_INT16_HEADROOM_FROM_CTRL()` macro can be used to
+ * get the headroom of the accumulator vector. Note that this will produce a maximum value of `15`.
+ * 
+ * @par Accumulating Many Values
+ * 
+ * If many vector chunks @vector{b} are accumulated into the same accumulators (when using block
+ * floating-point, it may be only a few accumulations if the exponent associated with @vector{b} is
+ * significantly larger than that associated with @vector{a}), saturation becomes possible.
+ * 
+ * When saturation is possible, the user must monitor the headroom of @vector{a} (using the returned
+ * value and `VPU_INT16_HEADROOM_FROM_CTRL()`) to detect when there is no further headroom. As long
+ * as there is at least 1 bit of headroom, a call to this function cannot saturate.
+ * 
+ * Typically, when using block floating-point, this will be handled by:
+ * 
+ * * Converting @vector{a} to a standard vector of `int32_t` using xs3_vect_s32_merge_accs()
+ * * Right-shift the values of @vector{a} using xs3_vect_s32_shr()
+ * * Increment the exponent associated with @vector{a} by the same amount right-shifted
+ * * Convert @vector{a} back into the split accumulator format using xs3_vect_s32_split_accs()
+ * 
+ * When accumulating, setting `b_shr` to the exponent associated with @vector{b} minus the exponent
+ * associated with @vector{a} will automatically adjust for the new exponent of @vector{a}.
+ * 
+ * @param[inout]  acc       b
+ * @param[in]     b         v
+ * @param[in]     b_shr     v
+ * @param[in]     vpu_ctrl  e
+ * 
+ * @returns Current state of VPU control register.
+ * 
+ * @exception ET_LOAD_STORE Raised if `acc` or `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup xs3_vect16_func
+ */
+C_API
+unsigned xs3_chunk_s16_accumulate(
+    xs3_split_acc_s32_t* acc,
+    const int16_t b[VPU_INT16_EPV],
+    const right_shift_t b_shr,
+    const unsigned vpu_ctrl);
 
 #ifdef __XC__
 }   //extern "C"
