@@ -102,3 +102,7 @@ jobs:
       - name: "Run Tests: filter_tests"
         working-directory: ~
         run: ./build.x86/test/filter_tests/filter_tests -v
+
+      - name: "Run Tests: dct_tests"
+        working-directory: ~
+        run: ./build.x86/test/dct_tests/dct_tests -v
