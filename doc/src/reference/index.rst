@@ -11,6 +11,7 @@ API Reference
     :maxdepth: 1
 
     bfp/index
+    dct/index
     vect/index
     scalar/index
     utils

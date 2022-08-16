@@ -27,6 +27,7 @@ add_subdirectory( scalar_tests )
 add_subdirectory( vect_tests )
 add_subdirectory( bfp_tests  )
 add_subdirectory( fft_tests  )
+add_subdirectory( dct_tests  )
 add_subdirectory( filter_tests  )
 
 

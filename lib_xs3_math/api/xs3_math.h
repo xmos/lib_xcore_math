@@ -51,6 +51,7 @@ extern "C" {
 #include "vect/xs3_vect_f32.h"
 #include "vect/xs3_mixed.h"
 #include "vect/xs3_fft.h"
+#include "vect/dct.h"
 #include "vect/xs3_filters.h"
 #include "scalar/xs3_scalar.h"
 #include "scalar/xs3_float_s32.h"

@@ -10,6 +10,7 @@ set( LIB_NAME   lib_xs3_math  )
 ## Source files
 file( GLOB_RECURSE    SOURCES_C   "src/bfp/*.c" 
                                   "src/vect/*.c" 
+                                  "src/dct/*.c"
                                   "src/scalar/*.c" )
 file( GLOB_RECURSE    SOURCES_CPP "src/*.cpp" )
 file( GLOB_RECURSE    SOURCES_ASM "src/*.S"   )

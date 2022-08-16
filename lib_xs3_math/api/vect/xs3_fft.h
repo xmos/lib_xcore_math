@@ -48,6 +48,7 @@ C_API
 void xs3_fft_index_bit_reversal(
     complex_s32_t x[],
     const unsigned length);
+    
 
 /**
  * @brief Splits the merged spectrum that results from DFTing a pair of real signals together.

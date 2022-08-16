@@ -280,7 +280,6 @@ float* xs3_vect_f32_fft_inverse(
     complex_float_t X[],
     const unsigned fft_length);
 
-
 #ifdef __XC__
 }   //extern "C"
 #endif
