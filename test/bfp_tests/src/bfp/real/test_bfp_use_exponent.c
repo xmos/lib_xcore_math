@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,8 +7,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
-#include "xs3_vpu_scalar_ops.h"
+#include "xmath/xmath.h"
+#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../../tst_common.h"
 
@@ -68,7 +68,7 @@ TEST(bfp_use_exponent, bfp_s16_use_exponent)
 
     bfp_s16_use_exponent(&A, end_exp);
 
-    TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_s16_headroom(dataA, len), A.hr, "HR is wrong.");
+    TEST_ASSERT_EQUAL_MESSAGE(vect_s16_headroom(dataA, len), A.hr, "HR is wrong.");
     TEST_ASSERT_EQUAL_MESSAGE(end_exp, A.exp, "Exponent is wrong.");
 
     XTEST_ASSERT_VECT_S16_EQUAL(expected, dataA, len,
@@ -117,7 +117,7 @@ TEST(bfp_use_exponent, bfp_s32_use_exponent)
 
     bfp_s32_use_exponent(&A, end_exp);
 
-    TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_s32_headroom(dataA, len), A.hr, "HR is wrong.");
+    TEST_ASSERT_EQUAL_MESSAGE(vect_s32_headroom(dataA, len), A.hr, "HR is wrong.");
     TEST_ASSERT_EQUAL_MESSAGE(end_exp, A.exp, "Exponent is wrong.");
 
     XTEST_ASSERT_VECT_S32_EQUAL(expected, dataA, len, 

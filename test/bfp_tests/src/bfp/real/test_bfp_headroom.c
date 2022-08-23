@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -52,7 +52,7 @@ TEST(bfp_headroom, bfp_s16_headroom)
         for(int i = 0; i < length; i++)
             data[i] = pseudo_rand_int16(&seed) >> shr;
         
-        headroom_t exp_hr = xs3_vect_s16_headroom(data, length);
+        headroom_t exp_hr = vect_s16_headroom(data, length);
 
         bfp_s16_t A;
 
@@ -90,7 +90,7 @@ TEST(bfp_headroom, bfp_s32_headroom)
         for(int i = 0; i < length; i++)
             data[i] = pseudo_rand_int32(&seed) >> shr;
         
-        headroom_t exp_hr = xs3_vect_s32_headroom(data, length);
+        headroom_t exp_hr = vect_s32_headroom(data, length);
 
         bfp_s32_t A;
 
@@ -131,8 +131,8 @@ TEST(bfp_headroom, bfp_complex_s16_headroom)
             imag[i] = pseudo_rand_int16(&seed) >> shr;
         }
         
-        headroom_t exp_hr_a = xs3_vect_s16_headroom(real, length);
-        headroom_t exp_hr_b = xs3_vect_s16_headroom(imag, length);
+        headroom_t exp_hr_a = vect_s16_headroom(real, length);
+        headroom_t exp_hr_b = vect_s16_headroom(imag, length);
         headroom_t exp_hr = exp_hr_a < exp_hr_b?
                             exp_hr_a : exp_hr_b;
 
@@ -176,7 +176,7 @@ TEST(bfp_headroom, bfp_complex_s32_headroom)
             data[i].im = pseudo_rand_int32(&seed) >> shr;
         }
         
-        headroom_t exp_hr = xs3_vect_s32_headroom((int32_t*)data, length*2);
+        headroom_t exp_hr = vect_s32_headroom((int32_t*)data, length*2);
 
         bfp_complex_s32_t A;
 

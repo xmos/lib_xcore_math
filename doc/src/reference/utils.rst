@@ -1,7 +1,10 @@
 
-XS3 Util Functions and Macros
-=============================
+XMath Util Functions and Macros
+===============================
 
-.. doxygengroup:: xs3_util_macros
+.. doxygengroup:: util_macros
     :members:
     :content-only:
+
+
+

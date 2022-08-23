@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -67,7 +67,7 @@ TEST(bfp_depth_convert, bfp_s32_to_s16)
 
         bfp_s32_to_s16(&A, &B);
 
-        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_s16_headroom(A.data, A.length), A.hr);
 
         conv_error_e err = 0;
         double Bf[MAX_LEN];
@@ -115,7 +115,7 @@ TEST(bfp_depth_convert, bfp_s16_to_s32)
 
         TEST_ASSERT_EQUAL(B.length, A.length);
         TEST_ASSERT_EQUAL(B.hr + 8, A.hr);
-        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_s32_headroom(A.data, A.length), A.hr);
         
         TEST_ASSERT_EQUAL(B.exp-8, A.exp);
 

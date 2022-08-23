@@ -1,11 +1,11 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 
 
 // Prints a BFP vector both in its mantissa-exponent form and as a floating point vector. Also prints headroom.
@@ -45,11 +45,11 @@ void vect_s32_example()
   printf("========================\n");
 
   /*
-    Here we'll look at the function xs3_vect_s32_mul()
+    Here we'll look at the function vect_s32_mul()
 
-    xs3_vect_s32_mul() is an element-wise real multiply for vectors of 32-bit elements. Its prototype is:
+    vect_s32_mul() is an element-wise real multiply for vectors of 32-bit elements. Its prototype is:
 
-      headroom_t xs3_vect_s32_mul(
+      headroom_t vect_s32_mul(
         int32_t a[],
         const int32_t b[],
         const int32_t c[],
@@ -67,11 +67,11 @@ void vect_s32_example()
     multiplication. These are the levers used to simultaneously prevent overflows/saturation in the result and to 
     minimize the headroom of the result (which has the effect of maximizing the precision of the result).
 
-    What values to use for b_shr and c_shr? The xs3_vect_* functions which take shift parameters as arguments each
+    What values to use for b_shr and c_shr? The vect_* functions which take shift parameters as arguments each
     have an associated helper function whose name is the same as that of the operator function with "_prepare" at 
-    the end. So, for xs3_vect_s32_mul() the corresponding prepare function is xs3_vect_s32_mul_prepare().
+    the end. So, for vect_s32_mul() the corresponding prepare function is vect_s32_mul_prepare().
 
-      void xs3_vect_s32_mul_prepare(
+      void vect_s32_mul_prepare(
         exponent_t* a_exp,
         right_shift_t* b_shr,
         right_shift_t* c_shr,
@@ -81,7 +81,7 @@ void vect_s32_example()
         const headroom_t c_hr);
 
     Most of the prepare functions look similar to this. Here a_exp, b_shr and c_shr are the parameters to be output 
-    by this function. b_shr and c_shr are the shift parameters to be passed on to xs3_vect_s32_mul() and a_exp is
+    by this function. b_shr and c_shr are the shift parameters to be passed on to vect_s32_mul() and a_exp is
     the exponent that should be associated with the product vector a[]. The inputs b_exp and c_exp are the exponents
     associated with input vectors b[] and c[] respectively. 
     
@@ -95,7 +95,7 @@ void vect_s32_example()
     elements, it is the minimum number of _redundant_ leading sign bits among the individual elements. This is important
     because it tells us about the range of values actually held in a vector of integers.
     
-    Returning to xs3_vect_s32_mul(), note that its return value is also of type headroom_t. The XS3 VPU has hardware
+    Returning to vect_s32_mul(), note that its return value is also of type headroom_t. The XS3 VPU has hardware
     features that allow it to track the headroom of data being processed. The returned value is the headroom of the
     output vector a[] (which may be needed for subsequent processing steps).
 
@@ -138,8 +138,8 @@ void vect_s32_example()
   {
     printf("\n\n\n============ Step 2 ============\n");
 
-    B.hr = xs3_vect_s32_headroom(B.data, LENGTH);
-    C.hr = xs3_vect_s32_headroom(C.data, LENGTH);
+    B.hr = vect_s32_headroom(B.data, LENGTH);
+    C.hr = vect_s32_headroom(C.data, LENGTH);
     printf("B.hr --> %u\n", B.hr);
     printf("C.hr --> %u\n", C.hr);
   }
@@ -150,13 +150,13 @@ void vect_s32_example()
 
     right_shift_t b_shr;
     right_shift_t c_shr;
-    xs3_vect_s32_mul_prepare(&A.exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr);
+    vect_s32_mul_prepare(&A.exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr);
 
     printf("A.exp --> %d  (output exponent)\n", A.exp);
     printf("b_shr --> %d\n", b_shr);
     printf("c_shr --> %d\n", c_shr);
 
-    A.hr = xs3_vect_s32_mul(A.data, B.data, C.data, LENGTH, b_shr, c_shr);
+    A.hr = vect_s32_mul(A.data, B.data, C.data, LENGTH, b_shr, c_shr);
 
     PRINT_VECT_S32(A);
     printf("A.hr --> %u\n", A.hr);
@@ -174,7 +174,7 @@ void vect_s32_example()
       ... //continued from above
       const exponent_t required_exponent = -24;
       right_shift_t q_shr = required_exponent - A.exp;
-      xs3_vect_s32_shr(A.data, A.data, LENGTH, q_shr);
+      vect_s32_shr(A.data, A.data, LENGTH, q_shr);
       A.hr += q_shr;
       A.exp += q_shr;
 
@@ -187,7 +187,7 @@ void vect_s32_example()
 
     right_shift_t b_shr;
     right_shift_t c_shr;
-    xs3_vect_s32_mul_prepare(&A.exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr);
+    vect_s32_mul_prepare(&A.exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr);
 
     // This is the required exponent
     const exponent_t required_exponent = -24;
@@ -212,7 +212,7 @@ void vect_s32_example()
     A.exp += adjustment;
 
     // The remaining steps are identical to the pure block floating-point case above.
-    A.hr = xs3_vect_s32_mul(A.data, B.data, C.data, LENGTH, b_shr, c_shr);
+    A.hr = vect_s32_mul(A.data, B.data, C.data, LENGTH, b_shr, c_shr);
 
     PRINT_VECT_S32(A); 
     // Note that the printed floating point output values are (nearly) the same as above, indicating we've done 
@@ -264,13 +264,13 @@ void vect_s32_example()
     // Now that we've guaranteed one bit of headroom, we can apply the usual logic
     right_shift_t b_shr;
     right_shift_t c_shr;
-    xs3_vect_s32_mul_prepare(&A.exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr);
+    vect_s32_mul_prepare(&A.exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr);
 
     printf("A.exp --> %d\n", A.exp);
     printf("b_shr --> %d\n", b_shr);
     printf("c_shr --> %d\n", c_shr);
 
-    A.hr = xs3_vect_s32_mul(A.data, B.data, C.data, LENGTH, b_shr, c_shr);
+    A.hr = vect_s32_mul(A.data, B.data, C.data, LENGTH, b_shr, c_shr);
     PRINT_VECT_S32(A);
     printf("A.hr --> %u\n", A.hr);
 

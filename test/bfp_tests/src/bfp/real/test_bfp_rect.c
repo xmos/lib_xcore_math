@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -60,7 +60,7 @@ TEST(bfp_rect, bfp_s16_rect)
 
         TEST_ASSERT_EQUAL(B.length, B.length);
         TEST_ASSERT_EQUAL(B.exp, A.exp);
-        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_s16_headroom(A.data, A.length), A.hr);
 
         for(int i = 0; i < A.length; i++){
             int16_t expected = (B.data[i] < 0)? 0 : B.data[i];
@@ -91,7 +91,7 @@ TEST(bfp_rect, bfp_s32_rect)
 
         TEST_ASSERT_EQUAL(B.length, B.length);
         TEST_ASSERT_EQUAL(B.exp, A.exp);
-        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_s32_headroom(A.data, A.length), A.hr);
 
         for(int i = 0; i < A.length; i++){
             int32_t expected = (B.data[i] < 0)? 0 : B.data[i];

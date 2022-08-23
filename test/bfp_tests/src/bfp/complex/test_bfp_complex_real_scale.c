@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -71,7 +71,7 @@ TEST(bfp_complex_real_scale, bfp_complex_s16_real_scale)
         headroom_t c_hr = pseudo_rand_uint(&seed, 0, 12);
 
 
-        float C = xs3_s32_to_f32( pseudo_rand_int16(&seed) >> c_hr,
+        float C = s32_to_f32( pseudo_rand_int16(&seed) >> c_hr,
                                   pseudo_rand_int(&seed, -100, 100) );
 
         for(int i = 0; i < B.length; i++){
@@ -86,7 +86,7 @@ TEST(bfp_complex_real_scale, bfp_complex_s16_real_scale)
 
         bfp_complex_s16_real_scale(&A, &B, C);
 
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr, 
+        TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr, 
                       "[A.hr is wrong.]");
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
@@ -148,7 +148,7 @@ TEST(bfp_complex_real_scale, bfp_complex_s32_real_scale)
 
         bfp_complex_s32_real_scale(&A, &B, C);
         
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
+        TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
         
         if(C.mant != 0)
           TEST_ASSERT_LESS_OR_EQUAL_MESSAGE(2, A.hr, "[A.hr is too large.]");

@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -84,7 +84,7 @@ TEST(bfp_complex_mag, bfp_complex_s16_mag)
 
         bfp_complex_s16_mag(&A, &B);
 
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_s16_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
+        TEST_ASSERT_EQUAL_MESSAGE(vect_s16_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
 
         test_s16_from_double(expA, Af, A.length, A.exp);
 
@@ -138,7 +138,7 @@ TEST(bfp_complex_mag, bfp_complex_s32_mag)
 
         bfp_complex_s32_mag(&A, &B);
         
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_s32_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
+        TEST_ASSERT_EQUAL_MESSAGE(vect_s32_headroom(A.data, A.length), A.hr, "[A.hr is wrong.]");
 
         TEST_ASSERT_LESS_OR_EQUAL_MESSAGE(3, A.hr, "[A.hr is too large.]");
 

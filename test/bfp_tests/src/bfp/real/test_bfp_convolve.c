@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,9 +7,9 @@
 #include <string.h>
 #include <assert.h>
 
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 
-#include "xs3_vpu_scalar_ops.h"
+#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../src/vect/vpu_helper.h"
 
@@ -18,10 +18,10 @@
 #include "unity_fixture.h"
 
 TEST_GROUP_RUNNER(bfp_convolve) {
-  RUN_TEST_CASE(bfp_convolve, xs3_vect_s32_convolve_valid);
-  RUN_TEST_CASE(bfp_convolve, xs3_vect_s32_convolve_same_reflected);
-  RUN_TEST_CASE(bfp_convolve, xs3_vect_s32_convolve_same_zero);
-  RUN_TEST_CASE(bfp_convolve, xs3_vect_s32_convolve_same_extend);
+  RUN_TEST_CASE(bfp_convolve, vect_s32_convolve_valid);
+  RUN_TEST_CASE(bfp_convolve, vect_s32_convolve_same_reflected);
+  RUN_TEST_CASE(bfp_convolve, vect_s32_convolve_same_zero);
+  RUN_TEST_CASE(bfp_convolve, vect_s32_convolve_same_extend);
 }
 
 TEST_GROUP(bfp_convolve);
@@ -37,7 +37,7 @@ TEST_TEAR_DOWN(bfp_convolve) {}
 #endif
 
 
-TEST(bfp_convolve, xs3_vect_s32_convolve_valid)
+TEST(bfp_convolve, vect_s32_convolve_valid)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -70,7 +70,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_valid)
     for(int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
-    int64_t tap_total = xs3_vect_s32_sum(taps, tap_count);
+    int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
@@ -90,7 +90,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_valid)
 
     TEST_ASSERT_EQUAL_MESSAGE(bfp_in.exp, bfp_out.exp, "");
 
-    TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_s32_headroom(signal_out, out_length), bfp_out.hr, "");
+    TEST_ASSERT_EQUAL_MESSAGE(vect_s32_headroom(signal_out, out_length), bfp_out.hr, "");
 
     XTEST_ASSERT_VECT_S32_EQUAL(expected, signal_out, out_length,
       "%s", "wrong");
@@ -99,7 +99,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_valid)
 }
 
 
-TEST(bfp_convolve, xs3_vect_s32_convolve_same_reflected)
+TEST(bfp_convolve, vect_s32_convolve_same_reflected)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -132,7 +132,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_same_reflected)
     for(int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
-    int64_t tap_total = xs3_vect_s32_sum(taps, tap_count);
+    int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
@@ -155,7 +155,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_same_reflected)
 
     TEST_ASSERT_EQUAL_MESSAGE(bfp_in.exp, bfp_out.exp, "");
 
-    TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_s32_headroom(signal_out, length), bfp_out.hr, "");
+    TEST_ASSERT_EQUAL_MESSAGE(vect_s32_headroom(signal_out, length), bfp_out.hr, "");
 
     XTEST_ASSERT_VECT_S32_EQUAL(expected, signal_out, length,
       "%s", "wrong");
@@ -164,7 +164,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_same_reflected)
 }
 
 
-TEST(bfp_convolve, xs3_vect_s32_convolve_same_zero)
+TEST(bfp_convolve, vect_s32_convolve_same_zero)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -200,7 +200,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_same_zero)
     for(int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
-    int64_t tap_total = xs3_vect_s32_sum(taps, tap_count);
+    int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
@@ -225,7 +225,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_same_zero)
 
     TEST_ASSERT_EQUAL_MESSAGE(bfp_in.exp, bfp_out.exp, "");
 
-    TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_s32_headroom(signal_out, length), bfp_out.hr, "");
+    TEST_ASSERT_EQUAL_MESSAGE(vect_s32_headroom(signal_out, length), bfp_out.hr, "");
 
     XTEST_ASSERT_VECT_S32_EQUAL(expected, signal_out, length,
       "Tap count: %u\n\n", tap_count);
@@ -234,7 +234,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_same_zero)
 }
 
 
-TEST(bfp_convolve, xs3_vect_s32_convolve_same_extend)
+TEST(bfp_convolve, vect_s32_convolve_same_extend)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -270,7 +270,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_same_extend)
     for(int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
-    int64_t tap_total = xs3_vect_s32_sum(taps, tap_count);
+    int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
@@ -295,7 +295,7 @@ TEST(bfp_convolve, xs3_vect_s32_convolve_same_extend)
 
     TEST_ASSERT_EQUAL_MESSAGE(bfp_in.exp, bfp_out.exp, "");
 
-    TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_s32_headroom(signal_out, length), bfp_out.hr, "");
+    TEST_ASSERT_EQUAL_MESSAGE(vect_s32_headroom(signal_out, length), bfp_out.hr, "");
 
     XTEST_ASSERT_VECT_S32_EQUAL(expected, signal_out, length,
       "Tap count: %u\n\n", tap_count);

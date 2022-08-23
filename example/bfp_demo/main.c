@@ -9,7 +9,7 @@
 # include <xscope.h>
 #endif
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 void bfp_s32_example();
 

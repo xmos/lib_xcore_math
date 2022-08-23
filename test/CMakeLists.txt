@@ -29,6 +29,7 @@ add_subdirectory( bfp_tests  )
 add_subdirectory( fft_tests  )
 add_subdirectory( dct_tests  )
 add_subdirectory( filter_tests  )
+add_subdirectory( xs3_tests  )
 
 
 add_dependencies( lib_xs3_math-all lib_xs3_math-tests )

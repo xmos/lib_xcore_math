@@ -24,13 +24,10 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(HR_macro);
 
     // scalar utils
-    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s8);
-    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s16);
-    RUN_TEST_GROUP(xs3_vpu_scalar_ops_s32);
-    RUN_TEST_GROUP(xs3_s32_sqrt);
-    RUN_TEST_GROUP(xs3_sXX_inverse);
-    RUN_TEST_GROUP(xs3_sXX_mul);
-    RUN_TEST_GROUP(xs3_q30_powers);
+    RUN_TEST_GROUP(s32_sqrt);
+    RUN_TEST_GROUP(sXX_inverse);
+    RUN_TEST_GROUP(sXX_mul);
+    RUN_TEST_GROUP(q30_powers);
 
     // scalar ops
     RUN_TEST_GROUP(float_convert);

@@ -29,11 +29,6 @@ On GitHub
 
 Get the latest version of ``lib_xs3_math`` at https://github.com/xmos/lib_xs3_math.
 
-API
----
-
-To use the functions in this library in an application, include :ref:`bfp_math_h` for the high-level block floating-point 
-functions, or :ref:`xs3_math_h` for only the low-level functions.
 
 
 Indices and tables

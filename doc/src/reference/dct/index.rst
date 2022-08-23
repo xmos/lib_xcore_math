@@ -1,7 +1,7 @@
 
-Discrete Cosine Transform Functions
-===================================
+Discrete Cosine Transform API
+=============================
 
-.. doxygengroup:: dct_func
+.. doxygengroup:: dct_api
     :content-only:
 

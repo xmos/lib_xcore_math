@@ -2,7 +2,7 @@
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -13,7 +13,7 @@ void bfp_complex_s32_gradient_constraint_mono(
     bfp_complex_s32_t* X,
     const unsigned frame_advance)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XMATH_BFP_DEBUG_CHECK_LENGTHS)
     // Length must be 2^p where p is a non-negative integer
     assert(X->length != 0);
     // for a positive power of 2, subtracting 1 should increase its headroom.
@@ -21,7 +21,7 @@ void bfp_complex_s32_gradient_constraint_mono(
 #endif
 
   const unsigned FFT_N = 2 * X->length;
-  const unsigned FFT_N_LOG2 = ceil_log2(FFT_N);
+  const unsigned FFT_N_LOG2 = u32_ceil_log2(FFT_N);
   const unsigned FREQ_BINS = FFT_N/2;
   bfp_s32_t* x = (bfp_s32_t*)X;
 
@@ -29,12 +29,12 @@ void bfp_complex_s32_gradient_constraint_mono(
   bfp_complex_s32_use_exponent(X, X->exp - X->hr + 2 );
 
   // mono IFFT requires a spectrum adjustment
-  xs3_fft_mono_adjust(X->data, FFT_N, 1);
+  fft_mono_adjust(X->data, FFT_N, 1);
 
   // The DIT I/FFT requires indices to be bit-reverse prior to the tranform, whereas DIF I/FFT
   // requires it after. If we use the inverse DIF and forward DIT, then both bit-reversals will
   // happen in the time domain.  This allows us to forego the index bit-reversals altogether.
-  xs3_fft_dif_inverse(X->data, FREQ_BINS, &x->hr, &x->exp);
+  fft_dif_inverse(X->data, FREQ_BINS, &x->hr, &x->exp);
 
   // The time-domain indices to be zeroed out are 'frame_advance' and everything that follows.
   // Because we still have the indices out of order, we need to figure out the correct indices
@@ -60,8 +60,8 @@ void bfp_complex_s32_gradient_constraint_mono(
 
   // Now reverse the above stuff.
   bfp_complex_s32_use_exponent(X, X->exp - X->hr + 2 );
-  xs3_fft_dit_forward(X->data, FREQ_BINS, &X->hr, &X->exp);
-  xs3_fft_mono_adjust(X->data, FFT_N, 0);
+  fft_dit_forward(X->data, FREQ_BINS, &X->hr, &X->exp);
+  fft_mono_adjust(X->data, FFT_N, 0);
   bfp_complex_s32_headroom(X);
 }
 
@@ -73,7 +73,7 @@ void bfp_complex_s32_gradient_constraint_stereo(
     bfp_complex_s32_t* X2,
     const unsigned frame_advance)
 {
-#if (XS3_BFP_DEBUG_CHECK_LENGTHS)
+#if (XMATH_BFP_DEBUG_CHECK_LENGTHS)
     assert(X1->length != 0 && X2->length != 0);
     assert(cls(X1->length - 1) > cls(X1->length)); 
     assert(cls(X2->length - 1) > cls(X2->length)); 
@@ -96,21 +96,21 @@ void bfp_complex_s32_gradient_constraint_stereo(
   // Can do it faster by doing a stereo FFT.
 
   const unsigned FFT_N = 2 * X1->length;
-  const unsigned FFT_N_LOG2 = ceil_log2(FFT_N);
+  const unsigned FFT_N_LOG2 = u32_ceil_log2(FFT_N);
 
   // IFFT requires 2 bits of headroom. Change exponent so we have exactly 2.
   bfp_complex_s32_use_exponent(X1, X1->exp - X1->hr + 2 );
   bfp_complex_s32_use_exponent(X2, X2->exp - X2->hr + 2 );
 
   // stereo IFFT requires that the spectra be merged
-  xs3_fft_spectra_merge(X1->data, FFT_N);
+  fft_spectra_merge(X1->data, FFT_N);
 
   // The DIT I/FFT requires indices to be bit-reverse prior to the tranform, whereas DIF I/FFT
   // requires it after. If we use the inverse DIF and forward DIT, then both bit-reversals will
   // happen in the time domain.  This allows us to forego the index bit-reversals altogether.
   exponent_t exp = 0;
   headroom_t hr  = 2;
-  xs3_fft_dif_inverse(X1->data, FFT_N, &hr, &exp);
+  fft_dif_inverse(X1->data, FFT_N, &hr, &exp);
 
 
   // Now we need to basically do:    X[frame_advance:] = 0  
@@ -153,15 +153,15 @@ void bfp_complex_s32_gradient_constraint_stereo(
   }
 
   // Now reverse the above stuff.
-  hr = xs3_vect_complex_s32_headroom(X1->data, FFT_N);
+  hr = vect_complex_s32_headroom(X1->data, FFT_N);
   if(hr != 2) {
     right_shift_t delta_p = 2 - hr;
-    hr = xs3_vect_complex_s32_shr(X1->data, X1->data, FFT_N, delta_p);
+    hr = vect_complex_s32_shr(X1->data, X1->data, FFT_N, delta_p);
     exp += delta_p;
   }
 
-  xs3_fft_dit_forward(X1->data, FFT_N, &hr, &exp);
-  hr = xs3_fft_spectra_split(X1->data, FFT_N);
+  fft_dit_forward(X1->data, FFT_N, &hr, &exp);
+  hr = fft_spectra_split(X1->data, FFT_N);
 
   // printf("\n\n\n exp = %d\n\n\n", exp);
 

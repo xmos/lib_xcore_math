@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -6,15 +6,15 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 
 #include "../tst_common.h"
 
 #include "unity_fixture.h"
 
 TEST_GROUP_RUNNER(float_logistic) {
-  RUN_TEST_CASE(float_logistic, xs3_q24_logistic);
-  RUN_TEST_CASE(float_logistic, xs3_q24_logistic_fast);
+  RUN_TEST_CASE(float_logistic, q24_logistic);
+  RUN_TEST_CASE(float_logistic, q24_logistic_fast);
 }
 
 TEST_GROUP(float_logistic);
@@ -29,7 +29,7 @@ TEST_TEAR_DOWN(float_logistic) {}
 #endif
 
 
-TEST(float_logistic, xs3_q24_logistic)
+TEST(float_logistic, q24_logistic)
 {
   q8_24 incr = Q24(20.0 / 1000.0);
   unsigned max_error = 0;
@@ -40,7 +40,7 @@ TEST(float_logistic, xs3_q24_logistic)
     double xf = F24(x);
     double expected_f = 1.0 / (1 + exp(-xf));
     q8_24 expected_q24 = Q24(expected_f);
-    TIME_STATEMENT(y = xs3_q24_logistic(x), timing);
+    TIME_STATEMENT(y = q24_logistic(x), timing);
     unsigned error = abs(expected_q24 - y);
     max_error = (error > max_error)? error : max_error;
     max_time = (timing > max_time)? timing : max_time;
@@ -57,7 +57,7 @@ TEST(float_logistic, xs3_q24_logistic)
 }
 
 
-TEST(float_logistic, xs3_q24_logistic_fast)
+TEST(float_logistic, q24_logistic_fast)
 {
   q8_24 incr = Q24(20.0 / 1000.0);
   unsigned max_error = 0;
@@ -68,7 +68,7 @@ TEST(float_logistic, xs3_q24_logistic_fast)
     double xf = F24(x);
     double expected_f = 1.0 / (1 + exp(-xf));
     q8_24 expected_q24 = Q24(expected_f);
-    TIME_STATEMENT(y = xs3_q24_logistic_fast(x), timing);
+    TIME_STATEMENT(y = q24_logistic_fast(x), timing);
     unsigned error = abs(expected_q24 - y);
     max_error = (error > max_error)? error : max_error;
     max_time = (timing > max_time)? timing : max_time;

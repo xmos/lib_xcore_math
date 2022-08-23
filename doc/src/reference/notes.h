@@ -184,7 +184,7 @@
  * be added as an include directory when compiling the library's files.
  * 
  * Note that the header file must be named `xs3_fft_lut.h` as it is included via 
- * `#include "xs3_fft_lut.h"`.
+ * `#include "xmath_fft_lut.h"`.
  * 
  * By default the tables contain the coefficients necessary to perform forward or inverse DFTs of up
  * to 1024 points. If larger DFTs are required, or if the maximum required DFT size is known to be
@@ -192,7 +192,7 @@
  * of `10`.
  * 
  * The two look-up tables correspond to the decimation-in-time and decimation-in-frequency FFT
- * algorithms, and the run-time symbols for the tables are `xs3_dit_fft_lut` and `xs3_dif_fft_lut`
+ * algorithms, and the run-time symbols for the tables are `xmath_dit_fft_lut` and `xs3_dif_fft_lut`
  * respectively. Each table contains @math{N-4} complex 32-bit values, with a size of @math{8\cdot
  * (N-4)} bytes each.
  * 

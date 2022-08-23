@@ -1,13 +1,13 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 
-// Each xs3_biquad_filter_s32_t can store (up to) 8 biquad filter sections
+// Each filter_biquad_s32_t can store (up to) 8 biquad filter sections
 #define SECTION_COUNT   8
 #define FILTER_TICKS    120
 
@@ -18,7 +18,7 @@
  * within the filter struct itself.
  * 
  */
-xs3_biquad_filter_s32_t filter = {
+filter_biquad_s32_t filter = {
   // Number of biquad sections in this filter block
   .biquad_count = SECTION_COUNT,
   
@@ -45,7 +45,7 @@ void filter_32bit_biquad()
   /**
    * In this example, we'll look at how to use the 32-bit biquad filtering functions.
    * 
-   * 32-bit biquad filters use the xs3_biquad_filter_s32_t type. Unlike the 16- and 32-bit FIR
+   * 32-bit biquad filters use the filter_biquad_s32_t type. Unlike the 16- and 32-bit FIR
    * filters, the 32-bit biquad filter type carries its own data and need not be initialized.
    * (see above)
    * 
@@ -64,10 +64,10 @@ void filter_32bit_biquad()
    *  respectively, for the kth biquad section. The output y[n] is then also the input to the 
    *  (k+1)th biquad section.
    * 
-   * A single xs3_biquad_filter_s32_t stores coefficients and state information for up to 8 biquad 
+   * A single filter_biquad_s32_t stores coefficients and state information for up to 8 biquad 
    * sections (the optimal block size for computation). If more than 8 biquad sections are required,
-   * an array of xs3_biquad_filter_s32_t structs can be used, and the filter can be executed using
-   * xs3_filter_biquads_s32() instead of xs3_filter_biquad_s32().
+   * an array of filter_biquad_s32_t structs can be used, and the filter can be executed using
+   * filter_biquads_s32() instead of filter_biquad_s32().
    */
 
   // Print out the coefficients for each biquad filter section
@@ -83,11 +83,11 @@ void filter_32bit_biquad()
 
   /**
    * Process random samples.
-   * Because we're only using 1 filter block here, we use xs3_filter_biquad_s32().
+   * Because we're only using 1 filter block here, we use filter_biquad_s32().
    */
   for(int k = 0; k < FILTER_TICKS; k++){
     int32_t input_sample = rand() << 1;
-    int32_t output_sample = xs3_filter_biquad_s32(&filter, input_sample);
+    int32_t output_sample = filter_biquad_s32(&filter, input_sample);
 
     printf("input[% 4d] = % 13ld;  output[% 4d] = % 13d\n", k, input_sample, k, output_sample);
   }

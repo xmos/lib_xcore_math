@@ -8,9 +8,11 @@ set( LIB_NAME   lib_xs3_math  )
 
 
 ## Source files
-file( GLOB_RECURSE    SOURCES_C   "src/bfp/*.c" 
-                                  "src/vect/*.c" 
+file( GLOB_RECURSE    SOURCES_C   "src/vect/*.c"
+                                  "src/bfp/*.c"  
                                   "src/dct/*.c"
+                                  "src/fft/*.c" 
+                                  "src/filter/*.c"
                                   "src/scalar/*.c" )
 file( GLOB_RECURSE    SOURCES_CPP "src/*.cpp" )
 file( GLOB_RECURSE    SOURCES_ASM "src/*.S"   )
@@ -65,7 +67,7 @@ if ( ${XS3_MATH_GEN_FFT_LUT} )
   file(MAKE_DIRECTORY ${XS3_MATH_AUTOGEN_DIR})
 
   set( FFT_LUT_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/script/gen_fft_table.py )
-  set( FFT_LUT_FILE "xs3_fft_lut" )
+  set( FFT_LUT_FILE "xmath_fft_lut" )
   set( FFT_LUT_FILE_SOURCE  ${XS3_MATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.c )
   set( FFT_LUT_FILE_HEADER  ${XS3_MATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.h )
 
@@ -94,8 +96,8 @@ else()
   # Don't auto-generate the FFT LUT
   if( ${XS3_MATH_USE_DEFAULT_FFT_LUT} )
     # Use the FFT LUT stored in the repository
-    set( XS3_FFT_LUT_FALLBACK_DIR ${CMAKE_CURRENT_LIST_DIR}/src/etc/xs3_fft_lut )
-    set( FFT_LUT_FILE "xs3_fft_lut" )
+    set( XS3_FFT_LUT_FALLBACK_DIR ${CMAKE_CURRENT_LIST_DIR}/src/etc/xmath_fft_lut )
+    set( FFT_LUT_FILE "xmath_fft_lut" )
     set( FFT_LUT_FILE_SOURCE  ${XS3_FFT_LUT_FALLBACK_DIR}/${FFT_LUT_FILE}.c )
     set( FFT_LUT_FILE_HEADER  ${XS3_FFT_LUT_FALLBACK_DIR}/${FFT_LUT_FILE}.h )
 

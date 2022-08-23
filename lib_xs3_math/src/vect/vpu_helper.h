@@ -1,11 +1,10 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
-#ifndef VPU_HELPER_H_
-#define VPU_HELPER_H_
+#pragma once
 
-#include "xs3_math.h"
-#include "xs3_vpu_info.h"
+#include "xmath/xmath.h"
+#include "xmath/xs3/vpu_info.h"
 
 
 /**
@@ -58,5 +57,3 @@
 static inline headroom_t hr_from_mask(unsigned hr_mask){
     return 0;
 }
-
-#endif //VPU_HELPER_H_

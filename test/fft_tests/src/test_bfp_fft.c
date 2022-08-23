@@ -1,8 +1,8 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 #include "testing.h"
 #include "floating_fft.h"
 #include "tst_common.h"
@@ -266,8 +266,8 @@ TEST(bfp_fft, bfp_fft_forward_stereo)
             TEST_ASSERT_EQUAL(FFT_N/2, chanB_fd->length);
 
             // headroom is expected to be the minimum of the two channels
-            headroom_t exp_hr = MIN(xs3_vect_complex_s32_headroom(chanA_fd->data, chanA_fd->length), 
-                                    xs3_vect_complex_s32_headroom(chanB_fd->data, chanB_fd->length));
+            headroom_t exp_hr = MIN(vect_complex_s32_headroom(chanA_fd->data, chanA_fd->length), 
+                                    vect_complex_s32_headroom(chanB_fd->data, chanB_fd->length));
 
             TEST_ASSERT_EQUAL(exp_hr, chanA_fd->hr);
             TEST_ASSERT_EQUAL(exp_hr, chanB_fd->hr);
@@ -395,8 +395,8 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
             TEST_ASSERT_EQUAL(FFT_N, B->length);
 
             // headroom is expected to be the minimum of the two channels
-            headroom_t exp_hr = MIN(xs3_vect_s32_headroom(A->data, A->length), 
-                                    xs3_vect_s32_headroom(B->data, B->length));
+            headroom_t exp_hr = MIN(vect_s32_headroom(A->data, A->length), 
+                                    vect_s32_headroom(B->data, B->length));
 
             TEST_ASSERT_EQUAL(exp_hr, A->hr);
             TEST_ASSERT_EQUAL(exp_hr, B->hr);

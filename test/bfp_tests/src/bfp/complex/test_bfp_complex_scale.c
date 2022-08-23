@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -125,12 +125,12 @@ TEST(bfp_complex_scale, bfp_complex_s32_scale_prepare)
         exponent_t a_exp;
         right_shift_t b_shr, c_shr;
 
-        xs3_vect_complex_s32_scale_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
+        vect_complex_s32_scale_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         c_exp += c_shr;
         c_hr += c_shr;
 
-        xs3_vect_complex_s32_scale(&A, &B, C.re, C.im, 1, b_shr, c_shr);
+        vect_complex_s32_scale(&A, &B, C.re, C.im, 1, b_shr, c_shr);
 
         TEST_ASSERT_EQUAL_MSG(0x7FFFFFFF, A.im, "A is wrong (sat)", r);
 

@@ -6,7 +6,7 @@ import argparse
 import io
 import os
 
-import xs3_math_script as xms
+import xmath_script as xms
 
 def main():
   
@@ -105,7 +105,7 @@ def generate_header(args):
   header_text.write(
 f"""#pragma once
 
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 
 // Call to process an input sample and generate an output sample
 C_API
@@ -127,11 +127,11 @@ def generate_source(coefs, args):
 f"""
 #include "{filter}.h"
 
-xs3_biquad_filter_s32_t _{filter}[{N_blocks}] = {all_biquad_blocks(coefs)};
+filter_biquad_s32_t _{filter}[{N_blocks}] = {all_biquad_blocks(coefs)};
 
 int32_t {filter}(int32_t new_sample)
 {{
-  return xs3_filter_biquads_s32(_{filter}, {N_blocks}, new_sample);
+  return filter_biquads_s32(_{filter}, {N_blocks}, new_sample);
 }}
 """)
 

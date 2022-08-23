@@ -1,4 +1,4 @@
-# Copyright 2020-2021 XMOS LIMITED.
+# Copyright 2020-2022 XMOS LIMITED.
 # This Software is subject to the terms of the XMOS Public Licence: Version 1.
 import numpy as np
 import argparse
@@ -11,8 +11,8 @@ def main():
 
     parser.add_argument(
         "--out_file",
-        default="xs3_fft_lut",
-        help="Filename to be used (with '.h' and '.c') for the generated files. (default: 'xs3_fft_lut')",
+        default="xmath_fft_lut",
+        help="Filename to be used (with '.h' and '.c') for the generated files. (default: 'xmath_fft_lut')",
     )
     parser.add_argument(
         "--out_dir", default="./", help="Directory to output generated files to."
@@ -65,7 +65,7 @@ def main():
             )
             header_file.write("// XMOS Public License: Version 1\n")
             header_file.write("#pragma once\n")
-            header_file.write('#include "xs3_math.h"\n\n')
+            header_file.write('#include "xmath/xmath.h"\n\n')
 
             source_file.write(f'#include "{header_filename}"\n\n')
 
@@ -87,7 +87,7 @@ def main():
                 # header_file.write("\t\n")
                 header_file.write("\t@param N\tThe FFT length.\n*/\n")
                 header_file.write(
-                    "#define XS3_DIT_REAL_FFT_LUT(N) &xs3_dit_fft_lut[(N)-8]\n\n"
+                    "#define XMATH_DIT_REAL_FFT_LUT(N) &xmath_dit_fft_lut[(N)-8]\n\n"
                 )
             if args.dif:
                 header_file.write(
@@ -101,11 +101,11 @@ def main():
                     "\tUse this to retrieve the correct address for the DIF FFT look-up table when performing\n"
                 )
                 header_file.write(
-                    "\tan FFT (or IFFT) using the DIF algorithm. (@see xs3_fft_dif_forward).\n\n"
+                    "\tan FFT (or IFFT) using the DIF algorithm. (@see fft_dif_forward).\n\n"
                 )
                 header_file.write("\t@param N\tThe FFT length.\n*/\n")
                 header_file.write(
-                    "#define XS3_DIF_FFT_LUT(N) &xs3_dif_fft_lut[(1<<(MAX_DIF_FFT_LOG2)) - (N)]\n\n"
+                    "#define XMATH_DIF_FFT_LUT(N) &xmath_dif_fft_lut[(1<<(MAX_DIF_FFT_LOG2)) - (N)]\n\n"
                 )
 
             if args.dit:
@@ -142,7 +142,7 @@ def generate_DIT_FFT(N, header_file, source_file, args, M=8 * 4):
     p = 0  # data pointer
     t = 0
 
-    table_name = "xs3_dit_fft_lut"
+    table_name = "xmath_dit_fft_lut"
 
     total_bytes = 4 * twiddle_factor_count * 8
     header_file.write(
@@ -229,7 +229,7 @@ def generate_DIF_FFT(N, header_file, source_file, args, M=8 * 4):
     p = 0  # data pointer
     t = 0
 
-    table_name = "xs3_dif_fft_lut"
+    table_name = "xmath_dif_fft_lut"
 
     total_bytes = 4 * twiddle_factor_count * 8
 

@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -129,7 +129,7 @@ TEST(bfp_complex_energy, bfp_complex_s32_energy)
 
         exponent_t tmp;
         right_shift_t b_shr;
-        xs3_vect_s32_energy_prepare(&tmp, &b_shr, 2 * B.length, B.exp, B.hr);
+        vect_s32_energy_prepare(&tmp, &b_shr, 2 * B.length, B.exp, B.hr);
 
         int32_t error = abs((int32_t)(expected - result.mant));
 

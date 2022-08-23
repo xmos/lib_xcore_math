@@ -5,6 +5,10 @@ Scalar API
 .. toctree::
     :maxdepth: 1
     
-    scalar_float_s32_funcs
-    scalar_funcs
-    scalar_f32_funcs
+    scalar_s16
+    scalar_s32
+    scalar_f32
+    scalar_float_s32
+    scalar_float_complex_s16
+    scalar_float_complex_s32
+    scalar_misc

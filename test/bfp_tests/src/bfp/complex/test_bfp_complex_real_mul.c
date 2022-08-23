@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -98,7 +98,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
 
         bfp_complex_s16_real_mul(&A, &B, &C);
 
-        TEST_ASSERT_EQUAL(xs3_vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr);
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
@@ -167,7 +167,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
 
         bfp_complex_s32_real_mul(&A, &B, &C);
 
-        TEST_ASSERT_EQUAL(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_complex_s32_headroom(A.data, A.length), A.hr);
 
         test_complex_s32_from_double(expected, Af.real, Af.imag, MAX_LEN, A.exp);
 
@@ -187,9 +187,9 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
   *  astew: 2022/07/01 -- Test case comes from Shuchita via issue #102.
   *         Added to unit tests to make sure this loop is closed.
   *  
-  *  This test case demonstrated a bug in the logic of xs3_vect_complex_s32_real_mul_prepare(), 
+  *  This test case demonstrated a bug in the logic of vect_complex_s32_real_mul_prepare(), 
   *   which was allowing the input vectors to be left-shifted more bits than they had headroom.
-  *   xs3_vect_complex_s32_real_mul_prepare() has been fixed, so this should no longer be an issue.
+  *   vect_complex_s32_real_mul_prepare() has been fixed, so this should no longer be an issue.
   */
 TEST(bfp_complex_real_mul, bfp_complex_s32_real_mulB)
 {

@@ -1,11 +1,11 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 
 
 // Prints a BFP vector both in its mantissa-exponent form and as a floating point vector. Also prints headroom.
@@ -45,11 +45,11 @@ void vect_complex_s16_example()
   printf("================================\n");
 
   /*
-    Here we'll look at the functin xs3_vect_complex_s16_add().
+    Here we'll look at the functin vect_complex_s16_add().
 
-    xs3_vect_complex_s16_add() is an element-wise addition of two complex 16-bit vectors.
+    vect_complex_s16_add() is an element-wise addition of two complex 16-bit vectors.
 
-      headroom_t xs3_vect_complex_s16_add(
+      headroom_t vect_complex_s16_add(
           int16_t a_real[],
           int16_t a_imag[],
           const int16_t b_real[],
@@ -79,9 +79,9 @@ void vect_complex_s16_example()
     power of 10 gives a correct solution.
 
     b_shr and c_shr, as well as the exponent associated with the output vector A[] can be
-    calculated using xs3_vect_complex_s16()'s prepare function, xs3_vect_complex_s16_prepare().
+    calculated using vect_complex_s16()'s prepare function, vect_complex_s16_prepare().
 
-      void xs3_vect_complex_s16_prepare(
+      void vect_complex_s16_prepare(
           exponent_t* a_exp,
           right_shift_t* b_shr,
           right_shift_t* c_shr,
@@ -90,18 +90,18 @@ void vect_complex_s16_example()
           const headroom_t b_hr,
           const headroom_t c_hr);
 
-    ASIDE: Technically xs3_vect_complex_s16_add_prepare is a macro which resolves to 
-           xs3_vect_s32_add_prepare. The logic for computing the shifts and output exponent for
-           xs3_vect_complex_s16_add() and xs3_vect_s32_add() is the same. The macro is used to
+    ASIDE: Technically vect_complex_s16_add_prepare is a macro which resolves to 
+           vect_s32_add_prepare. The logic for computing the shifts and output exponent for
+           vect_complex_s16_add() and vect_s32_add() is the same. The macro is used to
            provide a more uniform API for the user (i.e. the prepare function for operation 'X()'
            is 'X_prepare()').
 
     Here, a_exp is an output parameter which is the exponent associated with the ouput vector 
     A[]. b_shr and c_shr are output parameters which correspond to the b_shr and c_shr used
-    for xs3_vect_complex_s16_add(). b_exp and b_hr are the exponent and vector headroom of 
+    for vect_complex_s16_add(). b_exp and b_hr are the exponent and vector headroom of 
     input vector B[]. Likewise with c_exp, c_hr and C[].
 
-    Finally, the output of xs3_vect_complex_s16_add() is the headroom of the complex output
+    Finally, the output of vect_complex_s16_add() is the headroom of the complex output
     vector A[]. For a 16-bit complex BFP vector, the headroom is the minimum of the headroom
     of each of the vector's complex mantissas. The headroom of a complex mantissa is the
     minimum of the headroom of its real part and its imaginary part.
@@ -109,7 +109,7 @@ void vect_complex_s16_example()
   */
 
   // This is the data we'll use for vectors A[], B[] and C[]. Note that the real[] and imag[]
-  // arrays are declared as word-aligned. This is a requirement for most xs3_vect_* functions.
+  // arrays are declared as word-aligned. This is a requirement for most vect_* functions.
   // Also note that this data structure looks very similar to bfp_complex_s16_t, which the
   // high-level BFP API uses for complex 16-bit vectors.
   struct {
@@ -138,13 +138,13 @@ void vect_complex_s16_example()
 
 
   // We haven't yet initialized the headroom of vectors B[] and C[]. Because we need to know their
-  // headroom to properly call xs3_vect_complex_s16_add_prepare(), we need to initialize these. 
-  // xs3_vect_complex_s16_headroom() computes the headroom for a complex 16-bit mantissa vector.
+  // headroom to properly call vect_complex_s16_add_prepare(), we need to initialize these. 
+  // vect_complex_s16_headroom() computes the headroom for a complex 16-bit mantissa vector.
   { 
     printf("\n\n\n============ Step 1 ============\n");
 
-    B.hr = xs3_vect_complex_s16_headroom(B.real, B.imag, LENGTH);
-    C.hr = xs3_vect_complex_s16_headroom(C.real, C.imag, LENGTH);
+    B.hr = vect_complex_s16_headroom(B.real, B.imag, LENGTH);
+    C.hr = vect_complex_s16_headroom(C.real, C.imag, LENGTH);
 
     PRINT_VECT_C16(B);
     PRINT_VECT_C16(C);
@@ -160,9 +160,9 @@ void vect_complex_s16_example()
     printf("\n\n\n============ Step 2 ============\n");
 
     // First, we prepare, which tells us the output exponent A.exp and the shift values
-    // needed by xs3_vect_complex_s16_add()
+    // needed by vect_complex_s16_add()
     right_shift_t b_shr, c_shr;
-    xs3_vect_complex_s16_add_prepare(&A.exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr);
+    vect_complex_s16_add_prepare(&A.exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr);
 
     printf("A.exp --> %d\n", A.exp);
     printf("b_shr --> %d\n", b_shr);
@@ -170,8 +170,8 @@ void vect_complex_s16_example()
 
     // Then we call the operator, making sure that we capture the headroom of A[], returned by
     // the function.
-    A.hr = xs3_vect_complex_s16_add(A.real, A.imag, B.real, B.imag, 
-                                    C.real, C.imag, LENGTH, b_shr, c_shr);
+    A.hr = vect_complex_s16_add(A.real, A.imag, B.real, B.imag, 
+                                C.real, C.imag, LENGTH, b_shr, c_shr);
 
     PRINT_VECT_C16(A);
     printf("A.hr --> %u\n", A.hr);
@@ -187,7 +187,7 @@ void vect_complex_s16_example()
 
     // First, prepare as we did before.
     right_shift_t b_shr, c_shr;
-    xs3_vect_complex_s16_add_prepare(&A.exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr);
+    vect_complex_s16_add_prepare(&A.exp, &b_shr, &c_shr, B.exp, C.exp, B.hr, C.hr);
 
     // The exponent have been chosen to maximize the precision of the result vector
     printf("A.exp --> %d (before adjustment)\n", A.exp);
@@ -203,7 +203,7 @@ void vect_complex_s16_example()
     // exponent.
 
     //  ASIDE: If you've looked at the vect_s32_example() where we enforced an output Q-format of 
-    //         Q8.24 from xs3_vect_s32_mul(), you may notice that the logic here looks different.
+    //         Q8.24 from vect_s32_mul(), you may notice that the logic here looks different.
     //         In particular, in that example, the adjustment was split between b_shr and c_shr, 
     //         whereas here b_shr and c_shr each receive the full adjustment. This is a genuine 
     //         difference in the logic of addition versus multiplication.  To make these sorts of
@@ -217,8 +217,8 @@ void vect_complex_s16_example()
     printf("b_shr --> %d (after adjustment)\n", b_shr);
     printf("c_shr --> %d (after adjustment)\n", c_shr);
 
-    // The the adjustments complete, we call xs3_vect_complex_s16_add() as usual.
-    A.hr = xs3_vect_complex_s16_add(A.real, A.imag, B.real, B.imag, 
+    // The the adjustments complete, we call vect_complex_s16_add() as usual.
+    A.hr = vect_complex_s16_add(A.real, A.imag, B.real, B.imag, 
                                     C.real, C.imag, LENGTH, b_shr, c_shr);
 
     PRINT_VECT_C16(A);

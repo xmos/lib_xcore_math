@@ -1,13 +1,10 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include <stdio.h>
 
-#include "bfp_math.h"
-
-#include "vect/xs3_vect_s32.h"
-#include "vect/xs3_vect_s16.h"
+#include "xmath/xmath.h"
 
 
 void bfp_s16_init(
@@ -90,7 +87,7 @@ void bfp_s16_set(
     a->exp = exp;
     a->hr = HR_S16(value);
 
-    xs3_vect_s16_set(a->data, value, a->length);
+    vect_s16_set(a->data, value, a->length);
 }
 
 
@@ -103,7 +100,7 @@ void bfp_s32_set(
     a->hr = HR_S32(value);
     a->flags = 0;
 
-    xs3_vect_s32_set(a->data, value, a->length);
+    vect_s32_set(a->data, value, a->length);
 }
 
 
@@ -117,8 +114,8 @@ void bfp_complex_s16_set(
     a->hr = HR_C16(value);
     a->flags = 0;
 
-    xs3_vect_s16_set( a->real, value.re, a->length );
-    xs3_vect_s16_set( a->imag, value.im, a->length );
+    vect_s16_set( a->real, value.re, a->length );
+    vect_s16_set( a->imag, value.im, a->length );
 }
 
 
@@ -132,5 +129,5 @@ void bfp_complex_s32_set(
     a->hr = HR_C32(value);
     a->flags = 0;
 
-    xs3_vect_complex_s32_set( a->data, value.re, value.im, a->length);
+    vect_complex_s32_set( a->data, value.re, value.im, a->length);
 }

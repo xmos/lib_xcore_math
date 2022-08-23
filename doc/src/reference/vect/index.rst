@@ -1,14 +1,22 @@
-########################
-XS3 Low-level Vector API
-########################
+##########
+Vector API
+##########
 
 .. toctree::
 
-    xs3_vect_8bit
-    xs3_vect_16bit
-    xs3_vect_32bit
-    xs3_vect_float
-    xs3_vect_mixed
-    xs3_fft
-    xs3_filters
-    xs3_chunk_32bit
+  vect_s8
+  vect_s16
+  vect_s32
+  vect_f32
+  vect_complex_s16
+  vect_complex_s32
+  vect_mixed
+
+.. toctree::
+  vect_s16_prepare
+  vect_s32_prepare
+  vect_complex_s16_prepare
+  vect_complex_s32_prepare
+
+.. toctree::
+  chunk_s32

@@ -6,7 +6,7 @@ import argparse
 import io
 import os
 
-import xs3_math_script as xms
+import lib_xs3_math.script.xmath_script as xms
 
 def main():
   
@@ -117,7 +117,7 @@ def extra_process_args(args):
 
 
 ### Convert user's floating-point filter coefficients to the parameters
-### required for xs3_filter_fir_s16_t
+### required for filter_fir_s16_t
 def find_filter_parameters(args):
   coefs = args.filter_coefficients
 
@@ -169,7 +169,7 @@ def generate_header(args):
   header_text = io.StringIO()
   header_text.write(f"""
 #pragma once
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 
 // Number of filter coefficients 
 #define TAP_COUNT_{filter}\t({args.taps})
@@ -210,22 +210,22 @@ const int16_t WORD_ALIGNED {filter}_coefs[TAP_COUNT_{filter}] = {{
 
 int16_t WORD_ALIGNED {filter}_state[TAP_COUNT_{filter}] = {{0}};
 
-xs3_filter_fir_s16_t _{filter};
+filter_fir_s16_t _{filter};
 
 void {filter}_init()
 {{
-  xs3_filter_fir_s16_init(&_{filter}, {filter}_state, TAP_COUNT_{filter},
+  filter_fir_s16_init(&_{filter}, {filter}_state, TAP_COUNT_{filter},
                           {filter}_coefs, {filter}_shift);
 }}
 
 void {filter}_add_sample(int16_t new_sample)
 {{
-  xs3_filter_fir_s16_add_sample(&_{filter}, new_sample);
+  filter_fir_s16_add_sample(&_{filter}, new_sample);
 }}
 
 int16_t {filter}(int16_t new_sample)
 {{
-  return xs3_filter_fir_s16(&_{filter}, new_sample);
+  return filter_fir_s16(&_{filter}, new_sample);
 }}
 """)
 

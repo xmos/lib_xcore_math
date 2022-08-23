@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
@@ -15,7 +15,7 @@ void flt_bit_reverse_indexes_double(
     complex_double_t a[],
     const unsigned length)
 {
-    size_t logn = ceil_log2(length);
+    size_t logn = u32_ceil_log2(length);
     for(int i = 0; i < length; i++){
         unsigned rev = flt_bitrev(i, logn);
         if(rev < i) continue;

@@ -16,9 +16,9 @@ BFP API
 
 In the high-level API the BFP vectors C structures such as ``bfp_s16_t``, ``bfp_s32_t``, or ``bfp_complex_s32_t``, backed by a memory buffer. These objects contain a pointer to the data carrying the content (mantissas) of the vector, as well as information about the length, headroom and exponent of the BFP vector.
 
-Below is the definition of :c:struct:`bfp_s32_t` from xs3_math_types.h.
+Below is the definition of :c:struct:`bfp_s32_t` from xmath/types.h.
 
-.. @snippet{lineno} api/xs3_math_types.h bfp_s32_t 
+.. @snippet{lineno} api/xmath/types.h bfp_s32_t 
 
 .. code-block:: c
 

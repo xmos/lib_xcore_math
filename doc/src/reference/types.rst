@@ -1,6 +1,15 @@
 
-XS3 Math Types
-==============
+XMath Types
+===========
+
+
+Block Floating-Point Types
+--------------------------
+
+.. doxygengroup:: type_bfp
+  :members:
+  :content-only:
+
 
 Scalar Types (Integer)
 ----------------------
@@ -23,13 +32,6 @@ Scalar Types (Fixed-Point)
 .. doxygengroup:: type_scalar_fixed
     :members:
     :content-only:
-
-Block Floating-Point Types
---------------------------
-
-.. doxygengroup:: type_bfp
-  :members:
-  :content-only:
 
 
 Misc Types

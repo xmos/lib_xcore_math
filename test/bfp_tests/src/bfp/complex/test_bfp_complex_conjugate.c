@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 #include "../src/vect/vpu_helper.h"
@@ -67,7 +67,7 @@ TEST(bfp_complex_conjugate, bfp_complex_s16_conjugate)
 
         // headroom might not be exactly correct, since this won't recalculate it for the real part
         // of the vector. It does update it if the new imag has less HR, though
-        headroom_t exp_hr = xs3_vect_complex_s16_headroom(A.real, A.imag, A.length);
+        headroom_t exp_hr = vect_complex_s16_headroom(A.real, A.imag, A.length);
         if(exp_hr <= B.hr)
           TEST_ASSERT_EQUAL(exp_hr, A.hr);
         else
@@ -112,7 +112,7 @@ TEST(bfp_complex_conjugate, bfp_complex_s32_conjugate)
 
         bfp_complex_s32_conjugate(&A, &B);
 
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr, "");
+        TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(A.data, A.length), A.hr, "");
         TEST_ASSERT_EQUAL_MESSAGE(B.exp, A.exp, "");
 
         for(int k = 0; k < B.length; k++){
