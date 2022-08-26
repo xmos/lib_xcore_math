@@ -307,7 +307,7 @@ float_complex_s32_t bfp_complex_s16_sum(
 }
 
 
-void bfp_complex_s16_to_complex_s32(
+void bfp_complex_s16_to_bfp_complex_s32(
     bfp_complex_s32_t* a, 
     const bfp_complex_s16_t* b)
 {
@@ -316,7 +316,7 @@ void bfp_complex_s16_to_complex_s32(
     assert(b->length != 0);
 #endif
 
-    vect_complex_s16_to_complex_s32(a->data, b->real, b->imag, b->length);
+    vect_complex_s16_to_vect_complex_s32(a->data, b->real, b->imag, b->length);
     
     a->exp = b->exp;
     a->hr = b->hr + 16;

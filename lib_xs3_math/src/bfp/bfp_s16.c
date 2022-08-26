@@ -482,7 +482,7 @@ unsigned bfp_s16_argmin(
 }
 
 
-void bfp_s16_to_s32(
+void bfp_s16_to_bfp_s32(
     bfp_s32_t* a,
     const bfp_s16_t* b)
 {    
@@ -495,7 +495,7 @@ void bfp_s16_to_s32(
 
     a->exp = a_exp - 8;
     a->hr = b->hr + 8;
-    vect_s16_to_s32(a->data, b->data, b->length);
+    vect_s16_to_vect_s32(a->data, b->data, b->length);
 }
 
 

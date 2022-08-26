@@ -1307,13 +1307,13 @@ headroom_t vect_complex_s32_conjugate(
  * 
  * @exception ET_LOAD_STORE Raised if `a_real`, `a_imag` or `b` are not word-aligned (See @ref note_vector_alignment)
  * 
- * @see vect_s32_to_s16, 
- *      vect_complex_s16_to_complex_s32
+ * @see vect_s32_to_vect_s16, 
+ *      vect_complex_s16_to_vect_complex_s32
  * 
  * @ingroup vect_complex_s32_api
  */
 C_API
-void vect_complex_s32_to_complex_s16(
+void vect_complex_s32_to_vect_complex_s16(
     int16_t a_real[],
     int16_t a_imag[],
     const complex_s32_t b[],

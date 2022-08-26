@@ -5,7 +5,7 @@
 
 
 /*  
-headroom_t vect_s16_to_s32(
+headroom_t vect_s16_to_vect_s32(
     int16_t a[],
     const int32_t b[],
     const unsigned length);
@@ -19,7 +19,7 @@ headroom_t vect_s16_to_s32(
 
 #define NSTACKWORDS     (2)
 
-#define FUNCTION_NAME   vect_s16_to_s32
+#define FUNCTION_NAME   vect_s16_to_vect_s32
 
 #define a               r0
 #define b               r1

@@ -12,7 +12,7 @@ Introduction
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
-
+  
    src/getting_started
    src/bfp_background
    src/examples

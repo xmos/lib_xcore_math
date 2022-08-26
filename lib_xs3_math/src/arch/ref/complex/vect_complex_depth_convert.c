@@ -10,7 +10,7 @@
 
 
 
-void vect_complex_s16_to_complex_s32(
+void vect_complex_s16_to_vect_complex_s32(
     complex_s32_t a[],
     const int16_t b_real[],
     const int16_t b_imag[],
@@ -29,7 +29,7 @@ void vect_complex_s16_to_complex_s32(
 
 
 
-void vect_complex_s32_to_complex_s16(
+void vect_complex_s32_to_vect_complex_s16(
     int16_t a_real[],
     int16_t a_imag[],
     const complex_s32_t b[],

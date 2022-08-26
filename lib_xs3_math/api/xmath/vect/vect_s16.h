@@ -1427,7 +1427,7 @@ unsigned chunk_s16_accumulate(
  * @ingroup vect_s16_api
  */
 C_API
-void vect_s16_to_s32(
+void vect_s16_to_vect_s32(
     int32_t a[],
     const int16_t b[],
     const unsigned length);

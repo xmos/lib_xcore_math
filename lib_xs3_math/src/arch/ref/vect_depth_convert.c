@@ -12,7 +12,7 @@
 
 
 
-void vect_s32_to_s16(
+void vect_s32_to_vect_s16(
     int16_t a[],
     const int32_t b[],
     const unsigned length,
@@ -31,7 +31,7 @@ void vect_s32_to_s16(
 
 
 
-void vect_s16_to_s32(
+void vect_s16_to_vect_s32(
     int32_t a[],
     const int16_t b[],
     const unsigned length)

@@ -63,16 +63,16 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(vect_complex_squared_mag);
     RUN_TEST_GROUP(vect_complex_mag);
     RUN_TEST_GROUP(vect_complex_sum);
-    RUN_TEST_GROUP(vect_complex_s32_to_complex_s16);
-    RUN_TEST_GROUP(vect_complex_s16_to_complex_s32);
+    RUN_TEST_GROUP(vect_complex_s32_to_vect_complex_s16);
+    RUN_TEST_GROUP(vect_complex_s16_to_vect_complex_s32);
     RUN_TEST_GROUP(vect_complex_macc);
     RUN_TEST_GROUP(vect_complex_conj_macc);
     RUN_TEST_GROUP(vect_complex_conjugate);
 
     // float vector
     RUN_TEST_GROUP(vect_f32_max_exponent);
-    RUN_TEST_GROUP(vect_f32_to_s32);
-    RUN_TEST_GROUP(vect_s32_to_f32);
+    RUN_TEST_GROUP(vect_f32_to_vect_s32);
+    RUN_TEST_GROUP(vect_s32_to_vect_f32);
     RUN_TEST_GROUP(vect_f32_dot);
 
 

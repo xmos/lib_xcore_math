@@ -15,8 +15,8 @@
 
 
 TEST_GROUP_RUNNER(bfp_complex_depth_convert) {
-  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16);
-  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s16_to_complex_s32);
+  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16);
+  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s16_to_bfp_complex_s32);
 }
 
 TEST_GROUP(bfp_complex_depth_convert);
@@ -42,7 +42,7 @@ static char msg_buff[200];
     }} while(0)
 
 
-TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16)
+TEST(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -78,7 +78,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16)
 
     TEST_ASSERT_EQUAL(14, B.hr);
 
-    bfp_complex_s32_to_complex_s16(&A, &B);
+    bfp_complex_s32_to_bfp_complex_s16(&A, &B);
 
     TEST_ASSERT_EQUAL(2, A.exp);
     TEST_ASSERT_EQUAL(0, A.hr);
@@ -92,7 +92,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16)
 }
 
 
-TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16_2)
+TEST(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16_2)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -150,7 +150,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16_2)
         
         TEST_ASSERT_EQUAL(B.hr, vect_complex_s32_headroom(B.data, B.length));
 
-        bfp_complex_s32_to_complex_s16(&A, &B);
+        bfp_complex_s32_to_bfp_complex_s16(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, A.length);
 
@@ -165,7 +165,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16_2)
 }
 
 
-TEST(bfp_complex_depth_convert, bfp_complex_s16_to_complex_s32)
+TEST(bfp_complex_depth_convert, bfp_complex_s16_to_bfp_complex_s32)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -208,7 +208,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s16_to_complex_s32)
 
         TEST_ASSERT_EQUAL_MESSAGE(B.hr, vect_complex_s16_headroom(B.real, B.imag, B.length), "[Input headroom is wrong]");
 
-        bfp_complex_s16_to_complex_s32(&A, &B);
+        bfp_complex_s16_to_bfp_complex_s32(&A, &B);
 
         TEST_ASSERT_EQUAL_MESSAGE(B.exp, A.exp, "[Output exponent is wrong]");
         

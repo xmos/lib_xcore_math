@@ -5,7 +5,7 @@
 
 
 /*  
-void vect_complex_s16_to_complex_s32(
+void vect_complex_s16_to_vect_complex_s32(
     complex_s32_t* a,
     const int16_t* b_real,
     const int16_t* b_imag,
@@ -17,7 +17,7 @@ void vect_complex_s16_to_complex_s32(
 #define NSTACKVECS      0
 #define NSTACKWORDS     (4 + (8*NSTACKVECS))
 
-#define FUNCTION_NAME   vect_complex_s16_to_complex_s32
+#define FUNCTION_NAME   vect_complex_s16_to_vect_complex_s32
 
 #define VEC_TMP_REAL    (NSTACKWORDS - 8)
 #define VEC_TMP_IMAG    (NSTACKWORDS - 16)

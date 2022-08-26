@@ -611,7 +611,7 @@ void bfp_s32_rect(
  * @ingroup bfp_s32_api
  **/
 C_API
-void bfp_s32_to_s16(
+void bfp_s32_to_bfp_s16(
     bfp_s16_t* a,
     const bfp_s32_t* b);
 

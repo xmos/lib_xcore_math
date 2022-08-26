@@ -8,7 +8,7 @@
 
 /*  
 
-headroom_t vect_complex_s32_to_complex_s16(
+headroom_t vect_complex_s32_to_vect_complex_s16(
     int16_t* a_real,
     int16_t* a_imag,
     const complex_s32_t* b,
@@ -26,7 +26,7 @@ headroom_t vect_complex_s32_to_complex_s16(
 #define NSTACKVECS      (2)
 #define NSTACKWORDS     (6 + (8*NSTACKVECS))
 
-#define FUNCTION_NAME   vect_complex_s32_to_complex_s16
+#define FUNCTION_NAME   vect_complex_s32_to_vect_complex_s16
 
 #define STACK_VEC_TMP  (NSTACKWORDS-16)
 

@@ -292,7 +292,7 @@ float_complex_s64_t bfp_complex_s32_sum(
 }
 
 
-void bfp_complex_s32_to_complex_s16(
+void bfp_complex_s32_to_bfp_complex_s16(
     bfp_complex_s16_t* a, 
     const bfp_complex_s32_t* b)
 {
@@ -303,7 +303,7 @@ void bfp_complex_s32_to_complex_s16(
 
     const right_shift_t b_shr = 16 - b->hr;
 
-    vect_complex_s32_to_complex_s16(a->real, a->imag, b->data, b->length, b_shr);
+    vect_complex_s32_to_vect_complex_s16(a->real, a->imag, b->data, b->length, b_shr);
 
     a->exp = b->exp + b_shr;
     a->hr = 0;

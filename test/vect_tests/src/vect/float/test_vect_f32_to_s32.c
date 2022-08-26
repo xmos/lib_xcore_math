@@ -16,13 +16,13 @@
 
 
 
-TEST_GROUP_RUNNER(vect_f32_to_s32) {
-  RUN_TEST_CASE(vect_f32_to_s32, vect_f32_to_s32);
+TEST_GROUP_RUNNER(vect_f32_to_vect_s32) {
+  RUN_TEST_CASE(vect_f32_to_vect_s32, vect_f32_to_vect_s32);
 }
 
-TEST_GROUP(vect_f32_to_s32);
-TEST_SETUP(vect_f32_to_s32) { fflush(stdout); }
-TEST_TEAR_DOWN(vect_f32_to_s32) {}
+TEST_GROUP(vect_f32_to_vect_s32);
+TEST_SETUP(vect_f32_to_vect_s32) { fflush(stdout); }
+TEST_TEAR_DOWN(vect_f32_to_vect_s32) {}
 
 
 
@@ -36,7 +36,7 @@ TEST_TEAR_DOWN(vect_f32_to_s32) {}
 
 
 
-TEST(vect_f32_to_s32, vect_f32_to_s32)
+TEST(vect_f32_to_vect_s32, vect_f32_to_vect_s32)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -71,7 +71,7 @@ TEST(vect_f32_to_s32, vect_f32_to_s32)
       expected[k] = vlashr32(f32.mant, exp_out - f32.exp);
     }
 
-    vect_f32_to_s32(vec_out, vec_in, len, exp_out);
+    vect_f32_to_vect_s32(vec_out, vec_in, len, exp_out);
 
     TEST_ASSERT_EQUAL_INT32_ARRAY_MESSAGE(expected, vec_out, len, "");
 

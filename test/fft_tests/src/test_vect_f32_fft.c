@@ -13,8 +13,8 @@
 
 
 TEST_GROUP_RUNNER(vect_f32_fft) {
-  RUN_TEST_CASE(vect_f32_fft, vect_f32_fft_forward);
-  RUN_TEST_CASE(vect_f32_fft, vect_f32_fft_inverse);
+  RUN_TEST_CASE(vect_f32_fft, fft_f32_forward);
+  RUN_TEST_CASE(vect_f32_fft, fft_f32_inverse);
 }
 
 TEST_GROUP(vect_f32_fft);
@@ -36,9 +36,9 @@ TEST_TEAR_DOWN(vect_f32_fft) {}
 
 
 
-TEST(vect_f32_fft, vect_f32_fft_forward)
+TEST(vect_f32_fft, fft_f32_forward)
 {
-#define FUNC_NAME "vect_f32_fft_forward"
+#define FUNC_NAME "fft_f32_forward"
 
 #if PRINT_FUNC_NAMES
   printf("\n%s..\n", FUNC_NAME);
@@ -75,7 +75,7 @@ TEST(vect_f32_fft, vect_f32_fft_forward)
       ref[0].im = ref[FFT_N/2].re;
 
       unsigned ts1 = getTimestamp();
-      complex_float_t* a_fft = vect_f32_fft_forward(&a[0], FFT_N);
+      complex_float_t* a_fft = fft_f32_forward(&a[0], FFT_N);
       unsigned ts2 = getTimestamp();
       
       float timing = (ts2-ts1)/100.0;
@@ -118,9 +118,9 @@ TEST(vect_f32_fft, vect_f32_fft_forward)
 
 
 
-TEST(vect_f32_fft, vect_f32_fft_inverse)
+TEST(vect_f32_fft, fft_f32_inverse)
 {
-#define FUNC_NAME "vect_f32_fft_inverse"
+#define FUNC_NAME "fft_f32_inverse"
 
 #if PRINT_FUNC_NAMES
   printf("\n%s..\n", FUNC_NAME);
@@ -166,7 +166,7 @@ TEST(vect_f32_fft, vect_f32_fft_inverse)
       flt_fft_inverse_double(ref, FFT_N, sine_table);
 
       unsigned ts1 = getTimestamp();
-      float* a = vect_f32_fft_inverse(&a_fft[0], FFT_N);
+      float* a = fft_f32_inverse(&a_fft[0], FFT_N);
       unsigned ts2 = getTimestamp();
       
       float timing = (ts2-ts1)/100.0;

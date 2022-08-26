@@ -15,19 +15,19 @@
 #include "unity_fixture.h"
 
 
-TEST_GROUP_RUNNER(vect_complex_s32_to_complex_s16) {
-  RUN_TEST_CASE(vect_complex_s32_to_complex_s16, vect_complex_s32_to_complex_s16_basic);
+TEST_GROUP_RUNNER(vect_complex_s32_to_vect_complex_s16) {
+  RUN_TEST_CASE(vect_complex_s32_to_vect_complex_s16, vect_complex_s32_to_vect_complex_s16_basic);
 }
 
-TEST_GROUP(vect_complex_s32_to_complex_s16);
-TEST_SETUP(vect_complex_s32_to_complex_s16) { fflush(stdout); }
-TEST_TEAR_DOWN(vect_complex_s32_to_complex_s16) {}
+TEST_GROUP(vect_complex_s32_to_vect_complex_s16);
+TEST_SETUP(vect_complex_s32_to_vect_complex_s16) { fflush(stdout); }
+TEST_TEAR_DOWN(vect_complex_s32_to_vect_complex_s16) {}
 
 
 #define MAX_LEN 50
 
 
-TEST(vect_complex_s32_to_complex_s16, vect_complex_s32_to_complex_s16_basic)
+TEST(vect_complex_s32_to_vect_complex_s16, vect_complex_s32_to_vect_complex_s16_basic)
 {
     
 
@@ -91,7 +91,7 @@ TEST(vect_complex_s32_to_complex_s16, vect_complex_s32_to_complex_s16_basic)
                 A.imag[i] = 0xCCCC;
             }
 
-            vect_complex_s32_to_complex_s16(A.real, A.imag, B, len, casse->b_shr);
+            vect_complex_s32_to_vect_complex_s16(A.real, A.imag, B, len, casse->b_shr);
 
             for(int k = 0; k < len; k++) {
                 TEST_ASSERT_EQUAL_MESSAGE(casse->expected.re, A.real[k], buff);

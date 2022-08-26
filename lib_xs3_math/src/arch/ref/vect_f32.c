@@ -41,7 +41,7 @@ exponent_t vect_f32_max_exponent(
 }
 
 
-void vect_f32_to_s32(
+void vect_f32_to_vect_s32(
     int32_t a[],
     const float b[], 
     const unsigned length,
@@ -55,7 +55,7 @@ void vect_f32_to_s32(
 } 
 
 
-void vect_s32_to_f32(
+void vect_s32_to_vect_f32(
     float a[],
     const int32_t b[], 
     const unsigned length, 

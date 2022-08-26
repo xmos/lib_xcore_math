@@ -300,6 +300,8 @@ headroom_t vect_s32_add_scalar(
  *          the maximum value, the lowest tying index is returned.
  * 
  * @exception ET_LOAD_STORE Raised if `b` is not word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup vect_s32_api
  */
 C_API
 unsigned vect_s32_argmax(
@@ -2157,18 +2159,70 @@ void vect_q30_exp_small(
  * @param[in]   length   Number of elements in vectors @vector{a} and @vector{b}
  * @param[in]   b_shr    Right-shift appled to @vector{b}
  * 
- * @see vect_s16_to_s32
+ * @see vect_s16_to_vect_s32
  * 
  * @exception ET_LOAD_STORE Raised if `a` or `b` is not word-aligned (See @ref note_vector_alignment)
  * 
  * @ingroup vect_s32_api
  */
 C_API
-void vect_s32_to_s16(
+void vect_s32_to_vect_s16(
     int16_t a[],
     const int32_t b[],
     const unsigned length,
     const right_shift_t b_shr);
+
+
+/** 
+ * @brief Convert a 32-bit BFP vector into a vector of IEEE754 single-precision floats.
+ * 
+ * This function converts a 32-bit mantissa vector and exponent @math{\bar b \cdot 2^{b\_exp}} 
+ * into a vector of 32-bit IEEE754 single-precision floating-point elements @vector{a}. 
+ * Conceptually, the elements of output vector @vector{a} represent the same values as those of
+ * the input vector.
+ * 
+ * Because IEEE754 single-precision floats hold fewer mantissa bits, this operation may result in
+ * a loss of precision for some elements.
+ * 
+ * @operation{ 
+ * &     a_k \leftarrow b_k \cdot 2^{b\_exp}     \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1) 
+ * }
+ * 
+ * @par Parameter Details
+ * @parblock
+ * 
+ * `a[]` represents the output IEEE754 float vector @vector{a}.
+ * 
+ * `b[]` represents the 32-bit input mantissa vector @vector{b}.
+ * 
+ * `a[]` and `b[]` must each begin at a double-word-aligned address.
+ * 
+ * `b[]` can be safely updated in-place.
+ * 
+ * `length` is the number of elements in each of the vectors.
+ * 
+ * `b_exp` is the exponent associated with the input vector @vector{b}.
+ * @endparblock
+ * 
+ * @param[out]  a        Output vector @vector{a}
+ * @param[in]   b        Input vector @vector{b}
+ * @param[in]   length   Number of elements in vectors @vector{a} and @vector{b}
+ * @param[in]   b_exp    Exponent @math{b\_exp} of input vector @vector{b}
+ * 
+ * @see vect_f32_to_vect_s32
+ * 
+ * @exception ET_LOAD_STORE Raised if `a` or `b` is not double-word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup vect_f32_api
+ */
+C_API
+void vect_s32_to_vect_f32(
+    float a[],
+    const int32_t b[], 
+    const unsigned length, 
+    const exponent_t b_exp);
+
 
 #ifdef __XC__
 }   //extern "C"

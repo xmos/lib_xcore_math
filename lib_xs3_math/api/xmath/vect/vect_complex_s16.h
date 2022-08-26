@@ -1321,7 +1321,7 @@ complex_s32_t vect_complex_s16_sum(
  * @ingroup vect_complex_s16_api
  */
 C_API
-void vect_complex_s16_to_complex_s32(
+void vect_complex_s16_to_vect_complex_s32(
     complex_s32_t a[],
     const int16_t b_real[],
     const int16_t b_imag[],

@@ -619,6 +619,90 @@ void fft_dif_inverse (
     headroom_t* hr, 
     exponent_t* exp);
 
+
+/**
+ * @brief Perform forward FFT on a vector of IEEE754 floats.
+ * 
+ * This function takes real input vector @vector{x} and performs a forward FFT on the signal
+ * in-place to get output vector @math{\bar{X} = FFT\{\bar{x}\}}. This implementation is accelerated
+ * by converting the IEEE754 float vector into a block floating-point representation to compute the
+ * FFT. The resulting BFP spectrum is then converted back to IEEE754 single-precision floats. The
+ * operation is performed in-place on `x[]`.
+ * 
+ * See `bfp_fft_forward_mono()` for the details of the FFT.
+ * 
+ * Whereas the input `x[]` is an array of `fft_length` `float` elements, the output (placed in
+ * `x[]`) is an array of `fft_length/2` `complex_float_t` elements, so the input should be cast
+ * after calling this.
+ * 
+ * @code{.c}
+ *  const unsigned FFT_N = 512
+ *  float time_series[FFT_N] = { ... };
+ *  fft_f32_forward(time_series, FFT_N);
+ *  complex_float_t* freq_spectrum = (complex_float_t*) &time_series[0];
+ *  const unsigned FREQ_BINS = FFT_N/2;
+ *  // e.g.   freq_spectrum[FREQ_BINS-1].re
+ * @endcode
+ * 
+ * `x[]` must begin at a double-word-aligned address.
+ * 
+ * 
+ * @operation{ 
+ * &     \bar{X}  \leftarrow FFT\{\bar{x}\}  
+ * }
+ * 
+ * @param[inout]  x           Input vector @vector{x}
+ * @param[in]     fft_length  The length of @vector{x}
+ * 
+ * @returns Pointer to frequency-domain spectrum (i.e. `((complex_float_t*) &x[0])`)
+ * 
+ * @exception ET_LOAD_STORE Raised if `x` is not double-word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup vect_f32_api
+ */
+C_API
+complex_float_t* fft_f32_forward(
+    float x[],
+    const unsigned fft_length);
+
+
+/**
+ * @brief Perform inverse FFT on a vector of complex_float_t.
+ * 
+ * This function takes complex input vector @vector{X} and performs an inverse real FFT on the
+ * spectrum in-place to get output vector @math{\bar{x} = IFFT\{\bar{X}\}}. This implementation is
+ * accelerated by converting the IEEE754 float vector into a block floating-point representation to
+ * compute the IFFT. The resulting BFP signal is then converted back to IEEE754 single-precision
+ * floats. The operation is performed in-place on `X[]`.
+ * 
+ * See `bfp_fft_inverse_mono()` for the details of the IFFT.
+ * 
+ * Input `X[]` is an array of `fft_length/2` `complex_float_t` elements. The output (placed in 
+ * `X[]`) is an array of `fft_length` `float` elements.
+ * 
+ * @code{.c}
+ *  const unsigned FFT_N = 512
+ *  complex_float_t freq_spectrum[FFT_N/2] = { ... };
+ *  fft_f32_inverse(freq_spectrum, FFT_N);
+ *  float* time_series = (float*) &freq_spectrum[0];
+ * @endcode
+ * 
+ * `X[]` must begin at a double-word-aligned address.
+ * 
+ * @param[inout]  X           Input vector @vector{X}
+ * @param[in]     fft_length  The FFT length. Twice the element count of @vector{X}.
+ * 
+ * @returns Pointer to time-domain signal (i.e. `((float*) &X[0])`)
+ * 
+ * @exception ET_LOAD_STORE Raised if `X` is not double-word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup vect_f32_api
+ */
+C_API
+float* fft_f32_inverse(
+    complex_float_t X[],
+    const unsigned fft_length);
+
     
 #ifdef __XC__
 } // extern "C"

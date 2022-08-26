@@ -631,7 +631,7 @@ void bfp_complex_s32_sub(
  * @ingroup bfp_complex_s32_api
  */
 C_API
-void bfp_complex_s32_to_complex_s16(
+void bfp_complex_s32_to_bfp_complex_s16(
     bfp_complex_s16_t* a, 
     const bfp_complex_s32_t* b);
     

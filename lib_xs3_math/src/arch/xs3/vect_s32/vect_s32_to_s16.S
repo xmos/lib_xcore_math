@@ -7,7 +7,7 @@
 
 
 /*  
-void vect_s32_to_s16(
+void vect_s32_to_vect_s16(
     int16_t a[],
     const int32_t b[],
     const unsigned length,
@@ -23,7 +23,7 @@ void vect_s32_to_s16(
 
 #define NSTACKWORDS     (4)
 
-#define FUNCTION_NAME   vect_s32_to_s16
+#define FUNCTION_NAME   vect_s32_to_vect_s16
 
 #define a           r0
 #define b           r1

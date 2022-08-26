@@ -7,7 +7,7 @@
 
 /*
 
-  void vect_s32_to_f32(
+  void vect_s32_to_vect_f32(
       float a[],
       const int32_t b[], 
       const unsigned length, 
@@ -16,7 +16,7 @@
 */
 
 #define NSTACKWORDS 4
-#define FUNC_NAME vect_s32_to_f32
+#define FUNC_NAME vect_s32_to_vect_f32
     
 .globl	FUNC_NAME
 .type	FUNC_NAME,@function

@@ -72,6 +72,22 @@ int32_t s64_to_s32(
     const exponent_t b_exp);
 
 
+/**
+ * @brief Convert a @ref float_s64_t to a @ref float_s32_t.
+ * 
+ * @note This operation may result in precision loss.
+ * 
+ * @param[in] x Input value
+ * 
+ * @returns `float_s32_t` representation of `x`
+ * 
+ * @ingroup float_s32_api
+ */
+C_API
+float_s32_t float_s64_to_float_s32(
+    const float_s64_t x);
+
+
 #ifdef __XC__
 }   //extern "C"
 #endif

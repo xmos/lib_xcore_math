@@ -15,14 +15,14 @@
 #include "unity_fixture.h"
 
 
-TEST_GROUP_RUNNER(vect_complex_s16_to_complex_s32) {
-  RUN_TEST_CASE(vect_complex_s16_to_complex_s32, vect_complex_s16_to_complex_s32_basic);
-  RUN_TEST_CASE(vect_complex_s16_to_complex_s32, vect_complex_s16_to_complex_s32_random);
+TEST_GROUP_RUNNER(vect_complex_s16_to_vect_complex_s32) {
+  RUN_TEST_CASE(vect_complex_s16_to_vect_complex_s32, vect_complex_s16_to_vect_complex_s32_basic);
+  RUN_TEST_CASE(vect_complex_s16_to_vect_complex_s32, vect_complex_s16_to_vect_complex_s32_random);
 }
 
-TEST_GROUP(vect_complex_s16_to_complex_s32);
-TEST_SETUP(vect_complex_s16_to_complex_s32) { fflush(stdout); }
-TEST_TEAR_DOWN(vect_complex_s16_to_complex_s32) {}
+TEST_GROUP(vect_complex_s16_to_vect_complex_s32);
+TEST_SETUP(vect_complex_s16_to_vect_complex_s32) { fflush(stdout); }
+TEST_TEAR_DOWN(vect_complex_s16_to_vect_complex_s32) {}
 
 static char msg_buff[200];
 
@@ -36,7 +36,7 @@ static char msg_buff[200];
 #define MAX_LEN 50
 
 
-TEST(vect_complex_s16_to_complex_s32, vect_complex_s16_to_complex_s32_basic)
+TEST(vect_complex_s16_to_vect_complex_s32, vect_complex_s16_to_vect_complex_s32_basic)
 {
     
 
@@ -86,7 +86,7 @@ TEST(vect_complex_s16_to_complex_s32, vect_complex_s16_to_complex_s32_basic)
                 A[i].im = 0xCCCCCCCC;
             }
 
-            vect_complex_s16_to_complex_s32(A, B.real, B.imag, len);
+            vect_complex_s16_to_vect_complex_s32(A, B.real, B.imag, len);
 
             for(int k = 0; k < MAX_LEN; k++){
                 complex_s32_t exp = {
@@ -105,7 +105,7 @@ TEST(vect_complex_s16_to_complex_s32, vect_complex_s16_to_complex_s32_basic)
 #define MAX_LEN     68
 #define REPS        (100)
 
-TEST(vect_complex_s16_to_complex_s32, vect_complex_s16_to_complex_s32_random)
+TEST(vect_complex_s16_to_vect_complex_s32, vect_complex_s16_to_vect_complex_s32_random)
 {
     
     unsigned seed = SEED_FROM_FUNC_NAME();
@@ -130,7 +130,7 @@ TEST(vect_complex_s16_to_complex_s32, vect_complex_s16_to_complex_s32_random)
         }
 
         memset(A, 0xCC, sizeof(A));
-        vect_complex_s16_to_complex_s32(A, B.real, B.imag, len);
+        vect_complex_s16_to_vect_complex_s32(A, B.real, B.imag, len);
 
         for(int k = 0; k < MAX_LEN; k++){
                 complex_s32_t exp = {

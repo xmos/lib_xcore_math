@@ -612,7 +612,7 @@ void bfp_s16_rect(
  * @ingroup bfp_s16_api
  **/
 C_API
-void bfp_s16_to_s32(
+void bfp_s16_to_bfp_s32(
     bfp_s32_t* a,
     const bfp_s16_t* b);
 
@@ -962,7 +962,7 @@ unsigned bfp_s16_argmin(
  * which requires converting from the XS3-native split accumulator representation given by the 
  * @ref `split_acc_s32_t` struct, into a standard vector of `int32_t`. This can be accomplished
  * using vect_s32_merge_accs(). From there, the `int32_t` vector can be dropped to a 16-bit
- * vector with vect_s32_to_s16() if needed.
+ * vector with vect_s32_to_vect_s16() if needed.
  * 
  * Note, in order for this operation to work, @math{\mathtt{b\_exp} - \mathtt{a\_exp}} must be no 
  * greater than @math{14}.
