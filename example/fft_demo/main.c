@@ -10,7 +10,7 @@
 # include <xscope.h>
 #endif
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 void fft_mono_example();
 void fft_stereo_example();

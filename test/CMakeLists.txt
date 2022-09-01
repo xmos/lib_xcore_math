@@ -1,5 +1,5 @@
 
-add_custom_target( lib_xs3_math-tests )
+add_custom_target( lib_xcore_math-tests )
 
 
 ## Some of the test applications require the Unity test framework
@@ -29,6 +29,7 @@ add_subdirectory( bfp_tests  )
 add_subdirectory( fft_tests  )
 add_subdirectory( dct_tests  )
 add_subdirectory( filter_tests  )
+add_subdirectory( xs3_tests  )
 
 
-add_dependencies( lib_xs3_math-all lib_xs3_math-tests )
+add_dependencies( lib_xcore_math-all lib_xcore_math-tests )

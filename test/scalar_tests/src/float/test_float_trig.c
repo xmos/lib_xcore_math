@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -6,15 +6,15 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 
 #include "../tst_common.h"
 
 #include "unity_fixture.h"
 
 TEST_GROUP_RUNNER(float_trig) {
-  RUN_TEST_CASE(float_trig, xs3_f32_sin);
-  RUN_TEST_CASE(float_trig, xs3_f32_cos);
+  RUN_TEST_CASE(float_trig, f32_sin);
+  RUN_TEST_CASE(float_trig, f32_cos);
 }
 
 TEST_GROUP(float_trig);
@@ -29,7 +29,7 @@ TEST_TEAR_DOWN(float_trig) {}
 #endif
 
 
-TEST(float_trig, xs3_f32_sin)
+TEST(float_trig, f32_sin)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -49,7 +49,7 @@ TEST(float_trig, xs3_f32_sin)
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    float result = xs3_f32_sin(x);
+    float result = f32_sin(x);
     volatile uint32_t t3 = get_reference_time();
 
 
@@ -68,7 +68,7 @@ TEST(float_trig, xs3_f32_sin)
 }
 
 
-TEST(float_trig, xs3_f32_cos)
+TEST(float_trig, f32_cos)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -88,7 +88,7 @@ TEST(float_trig, xs3_f32_cos)
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    float result = xs3_f32_cos(x);
+    float result = f32_cos(x);
     volatile uint32_t t3 = get_reference_time();
 
 

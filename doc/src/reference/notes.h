@@ -11,8 +11,8 @@
  * @page note_vector_alignment Note: Vector Alignment
  * 
  * 
- * This library utilizes the XMOS XS3 architecture's vector processing unit (VPU). All loads and
- * stores to and from the XS3 VPU have the requirement that the loaded/stored addresses must be 
+ * This library makes use of the XMOS architecture's vector processing unit (VPU). All loads and
+ * stores to and from the XS3 VPU have the requirement that the loaded/stored addresses must be
  * aligned to a 4-byte boundary (word-aligned).
  * 
  * In the current version of the API, this leads to the requirement that most API functions 
@@ -36,14 +36,15 @@
  *  int32_t* integer_array = (int32_t*) &byte_buffer[1];
  * @endcode
  * 
- * .. it is the responsibility of the user to ensure proper alignment of data.
+ * .. the vector may not be word-aligned. It is the responsibility of the user to ensure proper
+ * alignment of data.
  * 
  * For `int16_t` arrays, the compiler does not by default guarantee that the array starts on a 
  * word-aligned address. To force word-alignment on arrays of this type, use 
- * `__attribute__((align 4))` in the variable definition, as in the following.
+ * `__attribute__((aligned (4)))` in the variable definition, as in the following.
  * 
  * @code{.c}
- *     int16_t __attribute__((align 4)) data[100];
+ *     int16_t __attribute__((aligned (4))) data[100];
  * @endcode
  * 
  * Occasionally, 8-byte (double word) alignment is required. In this case, neither `int32_t` nor 
@@ -51,8 +52,11 @@
  * hinted to the compiler as in the following.
  * 
  * @code{.c}
- *     int32_t __attribute__((align 8)) data[100];
+ *     int32_t __attribute__((aligned (8))) data[100];
  * @endcode
+ * 
+ * This library also provides the macros `WORD_ALIGNED` and `DWORD_ALIGNED` which force 4- and
+ * 8-byte alignment respectively as above.
  * 
  * @endparblock
  */
@@ -62,36 +66,36 @@
 /**
  * @page note_symmetric_saturation Note: Symmetrically Saturating Arithmetic
  * 
- * With ordinary integer arithmetic the block floating-point logic chooses exponents and 
- * operand shifts to prevent integer overflow with worst-case input values. However, the XS3 
- * VPU utilizes symmetrically saturating integer arithmetic.
- * 
- * Saturating arithmetic is that where partial results of the applied operation use a bit 
- * depth greater than the output bit depth, and values that can't be properly expressed with 
- * the output bit depth are set to the nearest expressible value. 
- * 
- * For example, in ordinary C integer arithmetic, a function which multiplies two 32-bit 
- * integers may internally compute the full 64-bit product and then clamp values to the 
- * range `(INT32_MIN, INT32_MAX)` before returning a 32-bit result.
- * 
- * Symmetrically saturating arithmetic also includes the property that the lower bound of the 
+ * With ordinary integer arithmetic the block floating-point logic chooses exponents and operand
+ * shifts to prevent integer overflow with worst-case input values. However, the XS3 VPU uses
+ * symmetrically saturating integer arithmetic.
+ *
+ * Saturating arithmetic is that where partial results of the applied operation use a bit depth
+ * greater than the output bit depth, and values that can't be properly expressed with the output
+ * bit depth are set to the nearest expressible value. 
+ *
+ * For example, in ordinary C integer arithmetic, a function which multiplies two 32-bit integers
+ * may internally compute the full 64-bit product and then clamp values to the range `(INT32_MIN,
+ * INT32_MAX)` before returning a 32-bit result.
+ *
+ * Symmetrically saturating arithmetic also includes the property that the lower bound of the
  * expressible range is the negative of the upper bound of the expressible range.
- * 
- * One of the major troubles with non-saturating integer arithmetic is that in a twos 
- * complement encoding, there exists a non-zero integer (e.g. INT16_MIN in 16-bit twos 
- * complement arithmetic) value @math{x} for which  @math{-1 \cdot x = x}. Serious arithmetic 
- * errors can result when this case is not accounted for.
- * 
- * One of the results of _symmetric_ saturation, on the other hand, is that there is a 
- * corner case where (using the same exponent and shift logic as non-saturating arithmetic) 
- * saturation may occur for a particular combination of input mantissas. The corner case is 
- * different for different operations.
- * 
- * When the corner case occurs, the minimum (and largest magnitude) value of the resulting 
- * vector is 1 LSb greater than its ideal value (e.g. `-0x3FFF` instead of `-0x4000` for 
- * 16-bit arithmetic). The error in this output element's mantissa is then 1 LSb, or 
+ *
+ * One of the major troubles with non-saturating integer arithmetic is that in a twos complement
+ * encoding, there exists a non-zero integer (e.g. INT16_MIN in 16-bit twos complement arithmetic)
+ * value @math{x} for which  @math{-1 \cdot x = x}. Serious arithmetic errors can result when this
+ * case is not accounted for.
+ *
+ * One of the results of _symmetric_ saturation, on the other hand, is that there is a corner case
+ * where (using the same exponent and shift logic as non-saturating arithmetic) saturation may occur
+ * for a particular combination of input mantissas. The corner case is different for different
+ * operations.
+ *
+ * When the corner case occurs, the minimum (and largest magnitude) value of the resulting vector is
+ * 1 LSb greater than its ideal value (e.g. `-0x3FFF` instead of `-0x4000` for 16-bit arithmetic).
+ * The error in this output element's mantissa is then 1 LSb, or 
  * @math{2^p}, where @math{p} is the exponent of the resulting BFP vector.
- * 
+ *
  * Of course, the very nature of BFP arithmetic routinely involves errors of this magnitude.
  */
 
@@ -109,7 +113,7 @@
  * @par Complex DFT and IDFT
  * @parblock
  * 
- * In this library, when performing a complex DFT (e.g. using bfp_fft_forward_complex()), the 
+ * In this library, when performing a complex DFT (e.g. using fft_bfp_forward_complex()), the 
  * spectral representation that results in a straight-forward mapping:
  * 
  * `X[f]` @math{\longleftarrow X[f]} for @math{0 \le f \lt N}
@@ -148,7 +152,7 @@
  * imaginary part of @math{X[0]}.
  * 
  * Therefore, the functions in this library that produce the spectra of real signals (such as 
- * bfp_fft_forward_mono() and bfp_fft_forward_stereo()) will pack the spectra in a slightly less 
+ * fft_bfp_forward_mono() and fft_bfp_forward_stereo()) will pack the spectra in a slightly less 
  * straight-forward manner (as compared with the complex DFTs):
  * 
  * `X[f]` @math{\longleftarrow X[f]} for @math{1 \le f \lt N/2}
@@ -158,13 +162,13 @@
  * where `X` is an @math{N/2}-element array of `complex_s32_t`.
  * 
  * Likewise, this is the encoding expected when computing the @math{N}-point inverse DFT, such as by 
- * bfp_fft_inverse_mono() or bfp_fft_inverse_stereo().
+ * fft_bfp_inverse_mono() or fft_bfp_inverse_stereo().
  * 
- * @note One additional note, when performing a stereo DFT or inverse DFT, so as to preserve the 
- * in-place computation of the result, the spectra of the two signals will be encoded into adjacent 
- * blocks of memory, with the second spectrum (i.e. associated with 'channel b') occupying the higher 
- * memory address.
- * 
+ * @note One additional note, when performing a stereo DFT or inverse DFT, so as to preserve the
+ * in-place computation of the result, the spectra of the two signals will be encoded into adjacent
+ * blocks of memory, with the second spectrum (i.e. associated with 'channel b') occupying the
+ * higher memory address.
+ *
  * @endparblock
  */
 
@@ -175,16 +179,16 @@
  * 
  * When computing DFTs this library relies on one or both of a pair of look-up tables which contain 
  * portions of the Discrete Fourier Transform matrix.  Longer FFT lengths require larger look-up
- * tables.  When building using CMake, the maximum FFT length can be specified as a CMake option, 
+ * tables.  When building using CMake, the maximum FFT length can be specified as a CMake option,
  * and these tables are auto-generated at build time.
- * 
+ *
  * If not using CMake, you can manually generate these files using a python script included with the
- * library. The script is located at `lib_xs3_math/scripts/gen_fft_table.py`. If generated manually,
- * you must add the generated .c file as a source, and the directory containing `xs3_fft_lut.h` must
- * be added as an include directory when compiling the library's files.
- * 
- * Note that the header file must be named `xs3_fft_lut.h` as it is included via 
- * `#include "xs3_fft_lut.h"`.
+ * library. The script is located at `lib_xcore_math/scripts/gen_fft_table.py`. If generated
+ * manually, you must add the generated .c file as a source, and the directory containing
+ * `xmath_fft_lut.h` must be added as an include directory when compiling the library's files.
+ *
+ * Note that the header file must be named `xmath_fft_lut.h` as it is included via 
+ * `#include "xmath_fft_lut.h"`.
  * 
  * By default the tables contain the coefficients necessary to perform forward or inverse DFTs of up
  * to 1024 points. If larger DFTs are required, or if the maximum required DFT size is known to be
@@ -192,15 +196,15 @@
  * of `10`.
  * 
  * The two look-up tables correspond to the decimation-in-time and decimation-in-frequency FFT
- * algorithms, and the run-time symbols for the tables are `xs3_dit_fft_lut` and `xs3_dif_fft_lut`
- * respectively. Each table contains @math{N-4} complex 32-bit values, with a size of @math{8\cdot
- * (N-4)} bytes each.
+ * algorithms, and the run-time symbols for the tables are `xmath_dit_fft_lut` and
+ * `xmath_dif_fft_lut` respectively. Each table contains @math{N-4} complex 32-bit values, with a
+ * size of @math{8\cdot (N-4)} bytes each.
  * 
  * To manually regenerate the tables for amaximum FFT length of @math{16384} (@math{=2^{14}}),
  * supporting only the decimation-in-time algorithm, for example, use the following:
  * 
  * @code{.c}
- *     python lib_xs3_math/script/gen_fft_table.py --dit --max_fft_log2 14
+ *     python lib_xcore_math/script/gen_fft_table.py --dit --max_fft_log2 14
  * @endcode
  * 
  * Use the `--help` flag with `gen_fft_table.py` for a more detailed description of its syntax and 
@@ -222,7 +226,7 @@
  * 
  * Each script reads in floating-point filter coefficients from a file and computes a new 
  * representation for the filter with coefficients which attempt to maximize precision and are 
- * compatible with the `lib_xs3_math` filtering API.
+ * compatible with the `lib_xcore_math` filtering API.
  * 
  * Each script outputs two files which can be included in your own xCore application. The first 
  * output is a C source (`.c`) file containing the computed filter parameters and
@@ -236,22 +240,22 @@
  * 
  * As an example, take the following command to generate a 32-bit FIR filter:
  * 
- *    python lib_xs3_math/script/gen_fir_filter_s32.py MyFilter filter_coefs.txt
+ *    python lib_xcore_math/script/gen_fir_filter_s32.py MyFilter filter_coefs.txt
  * 
  * This command creates a filter named "MyFilter", with coefficients taken from a file 
  * `filter_coefs.txt`.  Two output files will be generated, `MyFilter.c` and `MyFilter.h`.
  * Including ``MyFilter.h`` provides access to 3 functions, ``MyFilter_init()``, 
  * `MyFilter_add_sample()`, and `MyFilter()` which correspond to the library functions
- * `xs3_filter_fir_s32_init()`, `xs3_filter_fir_s32_add_sample()` and `xs3_filter_fir_s32()` 
+ * `filter_fir_s32_init()`, `filter_fir_s32_add_sample()` and `filter_fir_s32()` 
  * respectively.
  * 
  * Use the `--help` flag with the scripts for more detailed descriptions of inputs and other 
  * options.
  * 
- * |  Filter Type   | Script                                         |
- * |  -----------   | ------                                         |
- * | 32-bit FIR     | `lib_xs3_math/script/gen_fir_filter_s32.py`    |
- * | 16-bit FIR     | `lib_xs3_math/script/gen_fir_filter_s16.py`    |
- * | 32-bit Biquad  | `lib_xs3_math/script/gen_biquad_filter_s32.py` |
+ * |  Filter Type   | Script                                           |
+ * |  -----------   | ------                                           |
+ * | 32-bit FIR     | `lib_xcore_math/script/gen_fir_filter_s32.py`    |
+ * | 16-bit FIR     | `lib_xcore_math/script/gen_fir_filter_s16.py`    |
+ * | 32-bit Biquad  | `lib_xcore_math/script/gen_biquad_filter_s32.py` |
  * 
  */

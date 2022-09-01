@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -17,8 +17,8 @@
 
 
 TEST_GROUP_RUNNER(bfp_depth_convert) {
-  RUN_TEST_CASE(bfp_depth_convert, bfp_s32_to_s16);
-  RUN_TEST_CASE(bfp_depth_convert, bfp_s16_to_s32);
+  RUN_TEST_CASE(bfp_depth_convert, bfp_s32_to_bfp_s16);
+  RUN_TEST_CASE(bfp_depth_convert, bfp_s16_to_bfp_s32);
 }
 
 TEST_GROUP(bfp_depth_convert);
@@ -34,7 +34,7 @@ TEST_TEAR_DOWN(bfp_depth_convert) {}
 #endif
 
 
-TEST(bfp_depth_convert, bfp_s32_to_s16) 
+TEST(bfp_depth_convert, bfp_s32_to_bfp_s16) 
 {
 
 
@@ -65,9 +65,9 @@ TEST(bfp_depth_convert, bfp_s32_to_s16)
 
         bfp_s32_headroom(&B);
 
-        bfp_s32_to_s16(&A, &B);
+        bfp_s32_to_bfp_s16(&A, &B);
 
-        TEST_ASSERT_EQUAL(xs3_vect_s16_headroom(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_s16_headroom(A.data, A.length), A.hr);
 
         conv_error_e err = 0;
         double Bf[MAX_LEN];
@@ -91,7 +91,7 @@ TEST(bfp_depth_convert, bfp_s32_to_s16)
 #define MAX_LEN     18  //Smaller lengths mean larger variance w.r.t. individual element headroom
 
 
-TEST(bfp_depth_convert, bfp_s16_to_s32) 
+TEST(bfp_depth_convert, bfp_s16_to_bfp_s32) 
 {
 
 
@@ -111,11 +111,11 @@ TEST(bfp_depth_convert, bfp_s16_to_s32)
         test_random_bfp_s16(&B, MAX_LEN, &seed, NULL, 0);
         A.length = B.length;
 
-        bfp_s16_to_s32(&A, &B);
+        bfp_s16_to_bfp_s32(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, A.length);
         TEST_ASSERT_EQUAL(B.hr + 8, A.hr);
-        TEST_ASSERT_EQUAL(xs3_vect_s32_headroom(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_s32_headroom(A.data, A.length), A.hr);
         
         TEST_ASSERT_EQUAL(B.exp-8, A.exp);
 

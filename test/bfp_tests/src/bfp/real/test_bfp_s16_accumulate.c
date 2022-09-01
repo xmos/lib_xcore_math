@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -39,7 +39,7 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   int16_t DWORD_ALIGNED b_data[MAX_LEN];
-  xs3_split_acc_s32_t DWORD_ALIGNED acc[(MAX_LEN+VPU_INT16_EPV-1) / VPU_INT16_EPV];
+  split_acc_s32_t DWORD_ALIGNED acc[(MAX_LEN+VPU_INT16_EPV-1) / VPU_INT16_EPV];
 
   bfp_s16_t B;
 
@@ -67,7 +67,7 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
     }
 
     // Turn the int32_t accs into split_s32 accs
-    xs3_vect_s32_split_accs(&acc[0], expected, B.length);
+    vect_s32_split_accs(&acc[0], expected, B.length);
 
     for(int k = 0; k < B.length; k++){
       expected_f[k] = ldexp(expected[k], acc_exp) 
@@ -83,9 +83,9 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
 
     headroom_t res_hr = bfp_s16_accumulate(acc, acc_exp, &B);
 
-    xs3_vect_s32_merge_accs(actual, &acc[0], B.length);
+    vect_s32_merge_accs(actual, &acc[0], B.length);
 
-    headroom_t exp_hr = xs3_vect_s32_headroom(actual, B.length);
+    headroom_t exp_hr = vect_s32_headroom(actual, B.length);
 
     exp_hr = MIN(15, exp_hr);
 

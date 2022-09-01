@@ -14,7 +14,7 @@ _build
 **/.build*/
 **/build*/
 **/bin/
-lib_xs3_math/lib/
+lib_xcore_math/lib/
 
 # MacOS cruft
 .DS_Store

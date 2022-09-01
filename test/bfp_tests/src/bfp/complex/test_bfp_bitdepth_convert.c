@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -15,8 +15,8 @@
 
 
 TEST_GROUP_RUNNER(bfp_complex_depth_convert) {
-  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16);
-  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s16_to_complex_s32);
+  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16);
+  RUN_TEST_CASE(bfp_complex_depth_convert, bfp_complex_s16_to_bfp_complex_s32);
 }
 
 TEST_GROUP(bfp_complex_depth_convert);
@@ -42,7 +42,7 @@ static char msg_buff[200];
     }} while(0)
 
 
-TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16)
+TEST(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -78,7 +78,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16)
 
     TEST_ASSERT_EQUAL(14, B.hr);
 
-    bfp_complex_s32_to_complex_s16(&A, &B);
+    bfp_complex_s32_to_bfp_complex_s16(&A, &B);
 
     TEST_ASSERT_EQUAL(2, A.exp);
     TEST_ASSERT_EQUAL(0, A.hr);
@@ -92,7 +92,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16)
 }
 
 
-TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16_2)
+TEST(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16_2)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -148,13 +148,13 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16_2)
             if(expected.imag[i] == ((int16_t)-0x8000))  expected.imag[i] = (int16_t) -0x7FFF;
         }
         
-        TEST_ASSERT_EQUAL(B.hr, xs3_vect_complex_s32_headroom(B.data, B.length));
+        TEST_ASSERT_EQUAL(B.hr, vect_complex_s32_headroom(B.data, B.length));
 
-        bfp_complex_s32_to_complex_s16(&A, &B);
+        bfp_complex_s32_to_bfp_complex_s16(&A, &B);
 
         TEST_ASSERT_EQUAL(B.length, A.length);
 
-        TEST_ASSERT_EQUAL(xs3_vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr);
         TEST_ASSERT_EQUAL(0, A.hr);
         
         TEST_ASSERT(ldexp(A.real[0], A.exp) == ldexp(B.data[0].re, B.exp)   );
@@ -165,7 +165,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_complex_s16_2)
 }
 
 
-TEST(bfp_complex_depth_convert, bfp_complex_s16_to_complex_s32)
+TEST(bfp_complex_depth_convert, bfp_complex_s16_to_bfp_complex_s32)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -206,13 +206,13 @@ TEST(bfp_complex_depth_convert, bfp_complex_s16_to_complex_s32)
             expected[i].im = ((int32_t) B.imag[i]);
         }
 
-        TEST_ASSERT_EQUAL_MESSAGE(B.hr, xs3_vect_complex_s16_headroom(B.real, B.imag, B.length), "[Input headroom is wrong]");
+        TEST_ASSERT_EQUAL_MESSAGE(B.hr, vect_complex_s16_headroom(B.real, B.imag, B.length), "[Input headroom is wrong]");
 
-        bfp_complex_s16_to_complex_s32(&A, &B);
+        bfp_complex_s16_to_bfp_complex_s32(&A, &B);
 
         TEST_ASSERT_EQUAL_MESSAGE(B.exp, A.exp, "[Output exponent is wrong]");
         
-        TEST_ASSERT_EQUAL_MESSAGE(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr, "[Output headroom is wrong]");
+        TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(A.data, A.length), A.hr, "[Output headroom is wrong]");
 
         TEST_ASSERT_EQUAL_INT32_ARRAY((int32_t*) &expected, (int32_t*) A.data, 2*A.length);
 

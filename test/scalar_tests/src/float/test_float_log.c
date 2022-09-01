@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -6,15 +6,15 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 
 #include "../tst_common.h"
 
 #include "unity_fixture.h"
 
 TEST_GROUP_RUNNER(float_log) {
-  RUN_TEST_CASE(float_log, xs3_f32_normA);
-  RUN_TEST_CASE(float_log, xs3_f32_log2);
+  RUN_TEST_CASE(float_log, f32_normA);
+  RUN_TEST_CASE(float_log, f32_log2);
 }
 
 TEST_GROUP(float_log);
@@ -28,7 +28,7 @@ TEST_TEAR_DOWN(float_log) {}
 #  define REPS       (1000)
 #endif
 
-TEST(float_log, xs3_f32_normA)
+TEST(float_log, f32_normA)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -52,7 +52,7 @@ TEST(float_log, xs3_f32_normA)
     }
 
     exponent_t actual_exp;
-    float actual_f = xs3_f32_normA(&actual_exp, x);
+    float actual_f = f32_normA(&actual_exp, x);
     
 
     double diff = fabs(expected_f - actual_f);
@@ -78,7 +78,7 @@ TEST(float_log, xs3_f32_normA)
 
 
 
-TEST(float_log, xs3_f32_log2)
+TEST(float_log, f32_log2)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -90,7 +90,7 @@ TEST(float_log, xs3_f32_log2)
 
     float actual, exp;
 
-    TIME_STATEMENT(actual = xs3_f32_log2(x), delta_us);
+    TIME_STATEMENT(actual = f32_log2(x), delta_us);
     TIME_STATEMENT(exp = log2f(x), delta_us_ref);
 
     double diff = fabs(exp - actual);

@@ -48,13 +48,13 @@ target_compile_definitions( ${APP_NAME}
 )
 
 target_link_libraries( ${APP_NAME}
-  lib_xs3_math
+  lib_xcore_math
   test_shared
   unity
   $<$<PLATFORM_ID:Linux>:m>
 )
 
-add_dependencies( lib_xs3_math-tests  ${APP_NAME} )
+add_dependencies( lib_xcore_math-tests  ${APP_NAME} )
 
 #########
 
@@ -64,7 +64,7 @@ add_dependencies( lib_xs3_math-tests  ${APP_NAME} )
 #   # Run the python scripts for filter generation. This is just to ensure that
 #   # the script runs correctly and produces code that compiles correctly.
 
-#   set( SCRIPT_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/../../lib_xs3_math/script    )
+#   set( SCRIPT_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/../../lib_xcore_math/script    )
 #   set( GEN_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/src/gen.local                )
 #   set( COEF_DIR    ${CMAKE_CURRENT_SOURCE_DIR}/etc                          )
 

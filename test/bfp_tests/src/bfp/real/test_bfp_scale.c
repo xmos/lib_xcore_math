@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -63,7 +63,7 @@ TEST(bfp_scale, bfp_s16_scale)
             Af[i] = Bf[i] * alpha_f;
         }
 
-        float alpha = xs3_s32_to_f32(alpha_mant, alpha_exp);
+        float alpha = s32_to_f32(alpha_mant, alpha_exp);
         
         bfp_s16_scale(&A, &B, alpha);
 

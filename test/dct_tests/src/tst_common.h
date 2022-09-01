@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 #include "test_random.h"
 #include "pseudo_rand.h"
 #include "rand_frame.h"

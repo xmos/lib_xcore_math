@@ -1,21 +1,21 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 #include "../tst_common.h"
 #include "unity_fixture.h"
 
 TEST_GROUP_RUNNER(fixed_trig) {
-  RUN_TEST_CASE(fixed_trig, xs3_radians_to_sbrads);
-  RUN_TEST_CASE(fixed_trig, xs3_sbrad_sin);
-  RUN_TEST_CASE(fixed_trig, xs3_sbrad_tan);
-  RUN_TEST_CASE(fixed_trig, xs3_q24_sin);
-  RUN_TEST_CASE(fixed_trig, xs3_q24_cos);
-  RUN_TEST_CASE(fixed_trig, xs3_q24_tan);
+  RUN_TEST_CASE(fixed_trig, radians_to_sbrads);
+  RUN_TEST_CASE(fixed_trig, sbrad_sin);
+  RUN_TEST_CASE(fixed_trig, sbrad_tan);
+  RUN_TEST_CASE(fixed_trig, q24_sin);
+  RUN_TEST_CASE(fixed_trig, q24_cos);
+  RUN_TEST_CASE(fixed_trig, q24_tan);
 }
 
 TEST_GROUP(fixed_trig);
@@ -31,7 +31,7 @@ TEST_TEAR_DOWN(fixed_trig) {}
 
 
 
-TEST(fixed_trig, xs3_radians_to_sbrads)
+TEST(fixed_trig, radians_to_sbrads)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -39,7 +39,7 @@ TEST(fixed_trig, xs3_radians_to_sbrads)
 
     setExtraInfo_RS(v, seed);
 
-    // xs3_sbrad_sin() takes only non-negative q31's in the range [0,1)
+    // sbrad_sin() takes only non-negative q31's in the range [0,1)
 
     int32_t theta_q24 = pseudo_rand_int32(&seed);
     // theta_q24 = 0;
@@ -81,7 +81,7 @@ TEST(fixed_trig, xs3_radians_to_sbrads)
     exp_q31 *= out_mul;
 
     volatile uint32_t t0 = get_reference_time();
-    int32_t actual_q31 = xs3_radians_to_sbrads(theta_q24);
+    int32_t actual_q31 = radians_to_sbrads(theta_q24);
     volatile uint32_t t1 = get_reference_time();
 
     TEST_ASSERT_INT32_WITHIN_MESSAGE(30, exp_q31, actual_q31, "");
@@ -94,7 +94,7 @@ TEST(fixed_trig, xs3_radians_to_sbrads)
 
 
 
-TEST(fixed_trig, xs3_sbrad_sin)
+TEST(fixed_trig, sbrad_sin)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -106,7 +106,7 @@ TEST(fixed_trig, xs3_sbrad_sin)
 
     double theta = ldexp(pseudo_rand_int32(&seed), -24);
 
-    // xs3_sbrad_sin() takes q31's in the range -1 to 1
+    // sbrad_sin() takes q31's in the range -1 to 1
     int32_t theta_q24 = floor(ldexp(theta, 24));
 
 
@@ -117,8 +117,8 @@ TEST(fixed_trig, xs3_sbrad_sin)
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    volatile int32_t alpha = xs3_radians_to_sbrads(theta_q24);
-    volatile int32_t result_q30 = xs3_sbrad_sin(alpha);
+    volatile int32_t alpha = radians_to_sbrads(theta_q24);
+    volatile int32_t result_q30 = sbrad_sin(alpha);
     volatile uint32_t t3 = get_reference_time();
 
     int32_t exp_q30 = round(ldexp(exp,30));
@@ -145,7 +145,7 @@ TEST(fixed_trig, xs3_sbrad_sin)
 }
 
 
-TEST(fixed_trig, xs3_sbrad_tan)
+TEST(fixed_trig, sbrad_tan)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -155,7 +155,7 @@ TEST(fixed_trig, xs3_sbrad_tan)
 
     setExtraInfo_RS(v, seed);
 
-    // xs3_sbrad_tan() takes angles in the interval [0, pi/4]
+    // sbrad_tan() takes angles in the interval [0, pi/4]
     //   which are represented as a normalized angle in interval [0, 0.5] (Q31)
 
     double alpha = ldexp(pseudo_rand_int32(&seed), -32);
@@ -180,8 +180,8 @@ TEST(fixed_trig, xs3_sbrad_tan)
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    volatile q1_31 alpha_q31 = xs3_radians_to_sbrads(theta_q24);
-    volatile q2_30 result_q30 = xs3_sbrad_tan(alpha_q31);
+    volatile q1_31 alpha_q31 = radians_to_sbrads(theta_q24);
+    volatile q2_30 result_q30 = sbrad_tan(alpha_q31);
     volatile uint32_t t3 = get_reference_time();
 
     q2_30 expected_q30 = round(ldexp(expected,30));
@@ -211,7 +211,7 @@ TEST(fixed_trig, xs3_sbrad_tan)
 }
 
 
-TEST(fixed_trig, xs3_q24_sin)
+TEST(fixed_trig, q24_sin)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -232,7 +232,7 @@ TEST(fixed_trig, xs3_q24_sin)
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    volatile q2_30 result_q30 = xs3_q24_sin(theta_q24);
+    volatile q2_30 result_q30 = q24_sin(theta_q24);
     volatile uint32_t t3 = get_reference_time();
 
     q2_30 exp_q30 = round(ldexp(exp,30));
@@ -259,7 +259,7 @@ TEST(fixed_trig, xs3_q24_sin)
 }
 
 
-TEST(fixed_trig, xs3_q24_cos)
+TEST(fixed_trig, q24_cos)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -271,7 +271,7 @@ TEST(fixed_trig, xs3_q24_cos)
 
     double theta = ldexp(pseudo_rand_int32(&seed), -24);
 
-    // xs3_sbrad_sin() takes q31's in the range -1 to 1
+    // sbrad_sin() takes q31's in the range -1 to 1
     q8_24 theta_q24 = floor(ldexp(theta, 24));
 
 
@@ -281,7 +281,7 @@ TEST(fixed_trig, xs3_q24_cos)
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    volatile q2_30 result_q30 = xs3_q24_cos(theta_q24);
+    volatile q2_30 result_q30 = q24_cos(theta_q24);
     volatile uint32_t t3 = get_reference_time();
 
     q2_30 exp_q30 = round(ldexp(exp,30));
@@ -308,7 +308,7 @@ TEST(fixed_trig, xs3_q24_cos)
 }
 
 
-TEST(fixed_trig, xs3_q24_tan)
+TEST(fixed_trig, q24_tan)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -328,7 +328,7 @@ TEST(fixed_trig, xs3_q24_tan)
     volatile uint32_t t1 = get_reference_time();
 
     volatile uint32_t t2 = get_reference_time();
-    volatile float_s32_t result = xs3_q24_tan(theta_q24);
+    volatile float_s32_t result = q24_tan(theta_q24);
     volatile uint32_t t3 = get_reference_time();
 
     int32_t exp_fixed = round(ldexp(exp,-result.exp));
@@ -348,7 +348,7 @@ TEST(fixed_trig, xs3_q24_tan)
       max_error_pct = (erp > max_error_pct)? erp : max_error_pct;
     } else {
       // If we're really that close to the singular point, let's invert both the
-      // expected result and actual result to see whether the output of xs3_sbrad_tan()
+      // expected result and actual result to see whether the output of sbrad_tan()
       // was very close to what it should have been.
       int32_t exp_inv_q30 = round(ldexp(1/exp, 30));
       int32_t act_inv_q30 = round(ldexp(1/ldexp(result.mant, result.exp), 30));

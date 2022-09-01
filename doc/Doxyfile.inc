@@ -1,9 +1,9 @@
 # This file provides overrides to the Doxyfile configuration
 
-PROJECT_NAME           = lib_xs3_math
-PROJECT_BRIEF          = "VPU-optimized math for the XMOS XS3 architecture"
+PROJECT_NAME           = lib_xcore_math
+PROJECT_BRIEF          = "VPU-optimized math for the XMOS xcore architecture"
 
-INPUT                  = ../lib_xs3_math/api  ../doc/src
+INPUT                  = ../lib_xcore_math/api  ../doc/src
 
 PREDEFINED             = C_API= EXTERN_C= 
 

@@ -1,4 +1,4 @@
-# Copyright 2020-2021 XMOS LIMITED.
+# Copyright 2020-2022 XMOS LIMITED.
 # This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 # -*- coding: utf-8 -*-
@@ -21,7 +21,7 @@ from sphinx.builders.html import StandaloneHTMLBuilder
 
 # -- Project information -----------------------------------------------------
 
-project = u"lib_xs3_math"
+project = u"lib_xcore_math"
 copyright = u"2021, XMOS"
 author = "XMOS"
 
@@ -49,8 +49,8 @@ extensions = [
 ]
 
 # Breathe Configuration
-breathe_projects = {"lib_xs3_math": "_build/_doxygen/xml/"}
-breathe_default_project = "lib_xs3_math"
+breathe_projects = {"lib_xcore_math": "_build/_doxygen/xml/"}
+breathe_default_project = "lib_xcore_math"
 
 breathe_domain_by_extension = { "h" : "c" }
 

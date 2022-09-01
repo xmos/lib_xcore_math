@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
@@ -44,11 +44,11 @@ TEST(bfp_min, bfp_s16_min)
         B.exp = pseudo_rand_int(&seed, -5, 5);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
         
-        float expected = xs3_s32_to_f32(INT16_MAX, B.exp);
+        float expected = s32_to_f32(INT16_MAX, B.exp);
 
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
-            expected = MIN(expected, xs3_s32_to_f32(B.data[i], B.exp));
+            expected = MIN(expected, s32_to_f32(B.data[i], B.exp));
         }
         bfp_s16_headroom(&B);
 

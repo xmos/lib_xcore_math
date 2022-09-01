@@ -1,8 +1,8 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 #include "testing.h"
 #include "floating_fft.h"
 #include "tst_common.h"
@@ -89,14 +89,14 @@ int32_t DWORD_ALIGNED issue96_data[514] = {
 /**
  * This test closes the loop on issue #96, identified by Shuchita K.
  * 
- * https://github.com/xmos/lib_xs3_math/issues/96
+ * https://github.com/xmos/lib_xcore_math/issues/96
  */
 TEST(bfp_fft_issue96, bfp_fft_issue96)
 {
   bfp_s32_t input;
   bfp_s32_init(&input, issue96_data, -31, 512, 1);
 
-  headroom_t input_hr = xs3_vect_s32_headroom(&input.data[0], input.length);
+  headroom_t input_hr = vect_s32_headroom(&input.data[0], input.length);
 
   // printf("input.length: %u\n", input.length);
   // printf("input.hr: %u\n", input.hr);
@@ -107,7 +107,7 @@ TEST(bfp_fft_issue96, bfp_fft_issue96)
   // printf("output->length: %u\n", output->length);
   // printf("output->hr: %u\n", output->hr);
 
-  headroom_t output_hr = xs3_vect_complex_s32_headroom(&output->data[0], output->length);
+  headroom_t output_hr = vect_complex_s32_headroom(&output->data[0], output->length);
   // printf("output_hr: %u\n", output_hr);
 
   TEST_ASSERT_EQUAL_INT32_MESSAGE(output_hr, output->hr, 

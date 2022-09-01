@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 #include "../src/vect/vpu_helper.h"
 
 #include "../../tst_common.h"
@@ -73,7 +73,7 @@ TEST(bfp_dot, bfp_s16_dot)
         double diff = expected-ldexp(result.mant, result.exp);
         double error = fabs(diff/expected);
 
-        double max_error = ldexp(1, ceil_log2(B.length) - 8 - (B.hr+C.hr));
+        double max_error = ldexp(1, u32_ceil_log2(B.length) - 8 - (B.hr+C.hr));
 
         TEST_ASSERT( error < max_error );
     }

@@ -45,7 +45,7 @@ jobs:
       - name: Save documentation artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: lib_xs3_math_docs
+          name: lib_xcore_math_docs
           path: ./doc/_build/html
           if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
           retention-days: 5

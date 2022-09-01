@@ -28,15 +28,15 @@ int main(int argc, const char* argv[])
   fprintf(perf_file, "Function, Input Size, Worst Observed Error, Worst Observed Timing, Misc\n");
 #endif
 
-  RUN_TEST_GROUP(xs3_fft_helpers);
-  RUN_TEST_GROUP(xs3_fft_mono_adjust);
-  RUN_TEST_GROUP(xs3_fft_dit);
-  RUN_TEST_GROUP(xs3_fft_dif);
+  RUN_TEST_GROUP(fft_helpers);
+  RUN_TEST_GROUP(fft_mono_adjust);
+  RUN_TEST_GROUP(fft_dit);
+  RUN_TEST_GROUP(fft_dif);
 
   RUN_TEST_GROUP(bfp_fft);
   RUN_TEST_GROUP(bfp_fft_packing);
   
-  RUN_TEST_GROUP(xs3_vect_f32_fft);
+  RUN_TEST_GROUP(vect_f32_fft);
   
   RUN_TEST_GROUP(bfp_fft_issue96);
 

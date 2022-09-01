@@ -1,10 +1,10 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 #pragma once
 
-#include "xs3_math_conf.h"
-#include "xs3_api.h"
-#include "xs3_math_types.h"
+#include "xmath/xmath_conf.h"
+#include "xmath/api.h"
+#include "xmath/types.h"
 
 
 /**

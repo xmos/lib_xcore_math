@@ -28,9 +28,9 @@ int main(int argc, const char* argv[])
   fprintf(perf_file, "Function, Input Size, Worst Observed Error, Worst Observed Timing, Misc\n");
 #endif
 
-  RUN_TEST_GROUP(xs3_vect_s32_dct);
-  RUN_TEST_GROUP(xs3_idct);
-  RUN_TEST_GROUP(xs3_dct8x8);
+  RUN_TEST_GROUP(dctXX_forward);
+  RUN_TEST_GROUP(dctXX_inverse);
+  RUN_TEST_GROUP(dct8x8);
 
 #if WRITE_PERFORMANCE_INFO
   fclose(perf_file);

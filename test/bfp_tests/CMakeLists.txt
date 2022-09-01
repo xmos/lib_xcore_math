@@ -47,10 +47,10 @@ target_compile_definitions( ${APP_NAME}
 )
 
 target_link_libraries( ${APP_NAME}
-  lib_xs3_math
+  lib_xcore_math
   test_shared
   unity
   $<$<PLATFORM_ID:Linux>:m>
 )
 
-add_dependencies( lib_xs3_math-tests  ${APP_NAME} )
+add_dependencies( lib_xcore_math-tests  ${APP_NAME} )

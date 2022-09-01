@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 
 EXTERN_C

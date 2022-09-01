@@ -12,11 +12,13 @@ API Reference
 
     bfp/index
     dct/index
-    vect/index
+    fft/index
+    filter/index
     scalar/index
+    vect/index
+    q_format
     utils
     config_options
-    header_files
 
 .. toctree::
     :maxdepth: 2

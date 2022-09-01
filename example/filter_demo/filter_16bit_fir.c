@@ -1,11 +1,11 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 
 
 #define TAP_COUNT     (35)
@@ -50,12 +50,12 @@ void filter_16bit_fir()
    */
 
   /**
-   * Declare the required filter struct, xs3_filter_fir_s16_t.
+   * Declare the required filter struct, filter_fir_s16_t.
    * 
    * If your application requires multiple 16-bit FIR filters, one of these should be allocated
    * for each such filter.
    */
-  xs3_filter_fir_s16_t filter;
+  filter_fir_s16_t filter;
 
   /**
    * Allocate buffers for the filter coefficients and the filter state.
@@ -116,12 +116,12 @@ void filter_16bit_fir()
   }
 
   /**
-   * Initialize filter with xs3_filter_fir_s16_init().
+   * Initialize filter with filter_fir_s16_init().
    * 
    * The parameters here are straight-forward, given the description of filter behavior
    * above.
    */
-  xs3_filter_fir_s16_init(&filter, sample_buffer, TAP_COUNT, coefficients, filter_shr);
+  filter_fir_s16_init(&filter, sample_buffer, TAP_COUNT, coefficients, filter_shr);
 
   // Print out the filter coefficients
   printf("Filter Coefficients:\n");
@@ -145,7 +145,7 @@ void filter_16bit_fir()
   printf("]\n\n");
 
   /**
-   * Using xs3_filter_s16_add_sample(), supply the filter with random input samples without actually
+   * Using filter_s16_add_sample(), supply the filter with random input samples without actually
    * computing any filtered output.
    * 
    * This may be useful, for example, to quickly fill up a filters state with inputs, without 
@@ -153,19 +153,19 @@ void filter_16bit_fir()
    */
   for(int k = -TAP_COUNT; k < 0; k++) {
     int16_t input_sample = (int16_t) rand();
-    xs3_filter_fir_s16_add_sample(&filter, input_sample);
+    filter_fir_s16_add_sample(&filter, input_sample);
 
     printf("input[% 4d] = % 7d;  output[% 4d] =      (N/A)\n", k, input_sample, k);
   }
   printf("\n");
 
   /**
-   * Using xs3_filter_s16(), supply the filter with new random input samples, computing the filtered
+   * Using filter_fir_s16(), supply the filter with new random input samples, computing the filtered
    * output value each time.
    */
   for(int k = 0; k < FILTER_TICKS; k++){ 
     int16_t input_sample = (int16_t) rand();
-    int16_t output_sample = xs3_filter_fir_s16(&filter, input_sample);
+    int16_t output_sample = filter_fir_s16(&filter, input_sample);
 
     printf("input[% 4d] = % 7d;  output[% 4d] = % 7d\n", k, input_sample, k, output_sample);
   }

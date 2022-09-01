@@ -1,21 +1,21 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "xs3_math.h"
+#include "xmath/xmath.h"
 #include "../tst_common.h"
 #include "unity_fixture.h"
 
-TEST_GROUP_RUNNER(xs3_q30_powers) {
-  RUN_TEST_CASE(xs3_q30_powers, xs3_q30_powers);
+TEST_GROUP_RUNNER(q30_powers) {
+  RUN_TEST_CASE(q30_powers, q30_powers);
 }
 
-TEST_GROUP(xs3_q30_powers);
-TEST_SETUP(xs3_q30_powers) { fflush(stdout); }
-TEST_TEAR_DOWN(xs3_q30_powers) {}
+TEST_GROUP(q30_powers);
+TEST_SETUP(q30_powers) { fflush(stdout); }
+TEST_TEAR_DOWN(q30_powers) {}
 
 
 #if SMOKE_TEST
@@ -27,7 +27,7 @@ TEST_TEAR_DOWN(xs3_q30_powers) {}
 
 
 
-TEST(xs3_q30_powers, xs3_q30_powers)
+TEST(q30_powers, q30_powers)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
   // printf("\n");
@@ -50,7 +50,7 @@ TEST(xs3_q30_powers, xs3_q30_powers)
     }
 
     volatile uint32_t t0 = get_reference_time();
-    xs3_q30_powers(A, B, length);
+    q30_powers(A, B, length);
     volatile uint32_t t1 = get_reference_time();
 
     uint32_t delta_ticks = t1 - t0;
