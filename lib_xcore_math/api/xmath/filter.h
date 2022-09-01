@@ -147,17 +147,17 @@ extern "C" {
  * Suppose you're starting with a floating-point FIR filter model with coefficients `B[k]` which
  * operates on a sequence of 32-bit integer input samples `x[t]` to get a result `Y[t]` where
  * 
- *      Y[t] = x[t-0] * B[0] + x[t-1] * B[1] + ... + x[t-(N-1)] * B[N-1]
+ *     Y[t] = x[t-0] * B[0] + x[t-1] * B[1] + ... + x[t-(N-1)] * B[N-1]
  * 
  * Because of the 30-bit right-shift and the right-shift of the final accumulator by `shift` bits,
- * the coefficients `b[k]` to use with this library can be thought of as fixed-point values with `30
- * + shift` fractional bits.
+ * the coefficients `b[k]` to use with this library can be thought of as fixed-point values with 
+ * `30 + shift` fractional bits.
  *
  * The floating-point coefficients `B[k]` can then be naively converted to fixed-point coefficients
  * `b[k]`
  * 
- *      shift = 0
- *      b[k] = (int32_t) round(ldexp(B[k], 30)
+ *     shift = 0
+ *     b[k] = (int32_t) round(ldexp(B[k], 30)
  * 
  * After this, any further doubling of the coefficients can be compensated for without changing the
  * overall gain by incrementing `shift`.

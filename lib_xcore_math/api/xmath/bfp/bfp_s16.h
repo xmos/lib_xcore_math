@@ -960,7 +960,7 @@ unsigned bfp_s16_argmin(
  * 
  * Eventually the value of @vector{A} will be needed for something other than simple accumulation,
  * which requires converting from the XS3-native split accumulator representation given by the 
- * @ref `split_acc_s32_t` struct, into a standard vector of `int32_t`. This can be accomplished
+ * @ref split_acc_s32_t struct, into a standard vector of `int32_t`. This can be accomplished
  * using vect_s32_merge_accs(). From there, the `int32_t` vector can be dropped to a 16-bit
  * vector with vect_s32_to_vect_s16() if needed.
  * 
