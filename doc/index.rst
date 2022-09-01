@@ -30,7 +30,7 @@ See :ref:`getting_started` to get going.
 On GitHub
 ---------
 
-Get the latest version of ``lib_xcore_math`` at https://github.com/xmos/lib_xcore_math.
+Get the latest version of ``lib_xcore_math`` at https://github.com/xmos/lib_xs3_math.
 
 
 
