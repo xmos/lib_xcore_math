@@ -56,8 +56,8 @@ Building
 --------
 
 This library makes use of the CMake build system. See the 
-`GitHub page <https://xmos/lib_xs3_math#readme>`_ for instructions on obtaining this library's
-source code and including it in your application's build.
+`GitHub page <https://github.com/xmos/lib_xs3_math#readme>`_ for instructions on obtaining this
+library's source code and including it in your application's build.
 
 Usage
 -----
