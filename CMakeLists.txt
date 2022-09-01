@@ -8,11 +8,19 @@ include(etc/build_options.cmake)
 
 find_package( Python3 COMPONENTS Interpreter )
 
-project(xmos-lib_xs3_math)
+project(xmos-lib_xcore_math)
 
 if( PROJECT_IS_TOP_LEVEL )
-  set( DEV_LIB_XS3_MATH ON )
+  message(STATUS "lib_xcore_math is top-level project.")
+  set( DEV_LIB_XCORE_MATH ON )
 endif()
+
+
+# if( UNIX )
+#   message(STATUS "Enabling Linter")
+#   set(CMAKE_C_CLANG_TIDY "clang-tidy;-checks=*")
+#   set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
+# endif()
 
 
 ## CMake configuration stuff
@@ -25,10 +33,11 @@ add_compile_options( ${COMPILE_FLAGS} )
 
 ## Add libs and apps
 
-add_subdirectory( lib_xs3_math )
+add_subdirectory( lib_xcore_math )
 
-if( ${DEV_LIB_XS3_MATH} )
-  add_custom_target( lib_xs3_math-all )
+if( ${DEV_LIB_XCORE_MATH} )
+  message(STATUS "Including test and example build targets.")
+  add_custom_target( lib_xcore_math-all )
   add_subdirectory( test )
   add_subdirectory( example )
 endif()

@@ -1,5 +1,0 @@
-{
-    "title": "VPU-optimized math for the XMOS XS3 architecture",
-    "project": "lib_xs3_math",
-    "version": "1.0.1"
-}

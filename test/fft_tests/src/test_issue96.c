@@ -89,7 +89,7 @@ int32_t DWORD_ALIGNED issue96_data[514] = {
 /**
  * This test closes the loop on issue #96, identified by Shuchita K.
  * 
- * https://github.com/xmos/lib_xs3_math/issues/96
+ * https://github.com/xmos/lib_xcore_math/issues/96
  */
 TEST(bfp_fft_issue96, bfp_fft_issue96)
 {

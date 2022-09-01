@@ -6,7 +6,7 @@ import argparse
 import io
 import os
 
-import lib_xs3_math.script.xmath_script as xms
+import lib_xcore_math.script.xmath_script as xms
 
 def main():
   

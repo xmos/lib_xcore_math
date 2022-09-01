@@ -1,9 +1,7 @@
 // Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
-
-#ifndef XS3_VPU_SCALAR_OPS_H_
-#define XS3_VPU_SCALAR_OPS_H_
+#pragma once
 
 #include <stdint.h>
 
@@ -305,6 +303,3 @@ float fmacc(
     const float b,
     const float c);
 
-
-
-#endif //XS3_VPU_SCALAR_OPS_H_

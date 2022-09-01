@@ -1,3 +1,5 @@
+.. _scalar_api:
+
 ##########
 Scalar API
 ##########

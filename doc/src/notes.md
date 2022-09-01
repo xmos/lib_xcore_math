@@ -1,25 +1,28 @@
 
-Notes for lib_xs3_math                          {#notes}
-======================
+Notes for lib_xcore_math                          {#notes}
+========================
 
 ### &nbsp;
 
 ### Vector Alignment ###                        {#vector_alignment}
 
-This library utilizes the XMOS XS3 architecture's vector processing unit (VPU). All loads and stores
-to and from the XS3 VPU have the requirement that the loaded/stored addresses must be aligned to a
-4-byte boundary (word-aligned).
+This library makes use of the XMOS architecture's vector processing unit (VPU). In the XS3 version
+of the architecture, all loads and stores stores to and from the XS3 VPU have the requirement that
+the loaded/stored addresses must be aligned to a 4-byte boundary (word-aligned).
 
 In the current version of the API, this leads to the requirement that most API functions require
 vectors (or the data backing a BFP vector) to begin at word-aligned addresses. Vectors are *not*
 required, however, to have a size (in bytes) that is a multiple of 4.
 
+Some functions also make use of instructures which require data to be 8-byte-aligned.
+
 #### Writing Alignment-safe Code ####
 
-The alignment requirement is ultimately always on the data that backs a vector. For the low-level
-API, that is the pointers passed to the functions themselves. For the high-level API, that is the
-memory to which the `data` field (or the `real` and `imag` fields in the case of
-`bfp_complex_s16_t`) points, specified when the BFP vector is initialized.
+The alignment requirement is ultimately always on the data that backs a vector. This applies to all
+but the scalar API. For the BFP API, this applies to the memory to which the `data` field (or the
+`real` and `imag` fields in the case of `bfp_complex_s16_t`) points, specified when the BFP vector
+is initialized. A similar constraint applies when initializing filters. For the other APIs, this
+will apply to the pointers that get passed into the API functions.
 
 Arrays of type `int32_t` and `complex_s32_t` will normally be guaranteed to be word-aligned by the
 compiler. However, if the user manually specifies the beginning of an `int32_t` array, as in the
@@ -30,14 +33,15 @@ following..
     int32_t* integer_array = (int32_t*) &byte_buffer[1];
 \endcode
 
-.. it is the responsibility of the user to ensure proper alignment of data.
+.. the vector may not be word-aligned. It is the responsibility of the user to ensure proper
+alignment of data.
 
 For `int16_t` arrays, the compiler does not by default guarantee that the array starts on a
-word-aligned address. To force word-alignment on arrays of this type, use `__attribute__((align 4))`
-in the variable definition, as in the following.
+word-aligned address. To force word-alignment on arrays of this type, use 
+`__attribute__((aligned (4)))` in the variable definition, as in the following.
 
 \code{.c}
-    int16_t __attribute__((align 4)) data[100];
+    int16_t __attribute__((aligned (4))) data[100];
 \endcode
 
 Occasionally, 8-byte (double word) alignment is required. In this case, neither `int32_t` nor
@@ -45,16 +49,18 @@ Occasionally, 8-byte (double word) alignment is required. In this case, neither 
 to the compiler as in the following.
 
 \code{.c}
-    int32_t __attribute__((align 8)) data[100];
+    int32_t __attribute__((aligned (8))) data[100];
 \endcode
 
+This library also provides the macros `WORD_ALIGNED` and `DWORD_ALIGNED` which force 4- and 8-byte
+alignment respectively as above.
 
 ---------
 ### Symmetrically Saturating Arithmetic ###     {#saturation}
 
 With ordinary integer arithmetic the block floating-point logic chooses exponents and operand shifts
-to prevent integer overflow with worst-case input values. However, the XS3 VPU utilizes
-symmetrically saturating integer arithmetic.
+to prevent integer overflow with worst-case input values. However, the XS3 VPU uses symmetrically
+saturating integer arithmetic.
 
 Saturating arithmetic is that where partial results of the applied operation use a bit depth greater
 than the output bit depth, and values that can't be properly expressed with the output bit depth are
@@ -95,7 +101,7 @@ elements.
 
 #### Complex DFT and IDFT ####
 
-In this library, when performing a complex DFT (e.g. using bfp_fft_forward_complex()), the spectral
+In this library, when performing a complex DFT (e.g. using fft_bfp_forward_complex()), the spectral
 representation that results in a straight-forward mapping:
 
 `X[f]` @math{\longleftarrow X[f]} for @math{0 \le f \lt N}
@@ -134,7 +140,7 @@ in-place computation in our representation by packing the real part of @math{X[N
 imaginary part of @math{X[0]}.
 
 Therefore, the functions in this library that produce the spectra of real signals (such as
-bfp_fft_forward_mono() and bfp_fft_forward_stereo()) will pack the spectra in a slightly less
+fft_bfp_forward_mono() and fft_bfp_forward_stereo()) will pack the spectra in a slightly less
 straight-forward manner (as compared with the complex DFTs):
 
 
@@ -145,7 +151,7 @@ straight-forward manner (as compared with the complex DFTs):
 where `X` is an @math{N/2}-element array of `complex_s32_t`.
 
 Likewise, this is the encoding expected when computing the @math{N}-point inverse DFT, such as by
-bfp_fft_inverse_mono() or bfp_fft_inverse_stereo().
+fft_bfp_inverse_mono() or fft_bfp_inverse_stereo().
 
 @note One additional note, when performing a stereo DFT or inverse DFT, so as to preserve the
 in-place computation of the result, the spectra of the two signals will be encoded into adjacent

@@ -1,3 +1,4 @@
+.. _fft_api:
 
 Fast Fourier Transform API
 ==========================

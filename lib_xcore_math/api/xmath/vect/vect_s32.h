@@ -870,7 +870,6 @@ headroom_t vect_s32_min_elementwise(
  * 
  * @ingroup vect_s32_api
  */
-//! [vect_s32_mul]
 C_API
 headroom_t vect_s32_mul(
     int32_t a[],
@@ -879,7 +878,6 @@ headroom_t vect_s32_mul(
     const unsigned length,
     const right_shift_t b_shr,
     const right_shift_t c_shr);
-//! [vect_s32_mul]
 
 
 /**

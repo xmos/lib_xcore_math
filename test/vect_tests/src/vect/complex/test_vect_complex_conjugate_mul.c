@@ -310,7 +310,7 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_basic)
         
         test_case_t* casse = &casses[v];
 
-        //Verify mul__complexs32() is correct. It's used in other test cases.
+        //Verify mul_complex_s32() is correct. It's used in other test cases.
         complex_s32_t tmp = mul_complex_conj_s32(casse->value.b, casse->value.c, casse->shr.b, casse->shr.c);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected.re, tmp.re, casse->line);

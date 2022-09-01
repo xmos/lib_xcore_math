@@ -1,3 +1,4 @@
+.. _dct_api:
 
 Discrete Cosine Transform API
 =============================

@@ -1,0 +1,5 @@
+{
+    "title": "VPU-optimized math for the XMOS architecture",
+    "project": "lib_xcore_math",
+    "version": "2.0.0"
+}

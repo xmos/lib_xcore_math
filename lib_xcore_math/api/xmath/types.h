@@ -229,7 +229,6 @@ typedef enum {
  * 
  * @ingroup type_bfp
  */
-//! [bfp_s32_t]
 C_TYPE
 typedef struct {
     /** Pointer to the underlying element buffer.*/
@@ -243,7 +242,6 @@ typedef struct {
     /** BFP vector flags. Users should not normally modify these manually. */
     bfp_flags_e flags;
 } bfp_s32_t;
-//! [bfp_s32_t]
 
 // astew: The tags around these structs are so that they can be copied into the documentation.
 //        Unfortunately it appears to mess with the documentation in a way that I'm not sure how to

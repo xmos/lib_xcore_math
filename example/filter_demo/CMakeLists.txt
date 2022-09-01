@@ -34,8 +34,8 @@ target_compile_definitions( ${APP_NAME}
 )
 
 target_link_libraries( ${APP_NAME}
-  lib_xs3_math
+  lib_xcore_math
   $<$<PLATFORM_ID:Linux>:m>
 )
 
-add_dependencies( lib_xs3_math-examples  ${APP_NAME} )
+add_dependencies( lib_xcore_math-examples  ${APP_NAME} )

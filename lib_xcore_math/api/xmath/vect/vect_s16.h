@@ -896,7 +896,6 @@ headroom_t vect_s16_nmacc(
  * 
  * @ingroup vect_s16_api
  */
-//! [vect_s16_mul]
 C_API
 headroom_t vect_s16_mul(
     int16_t a[],
@@ -904,7 +903,6 @@ headroom_t vect_s16_mul(
     const int16_t c[],
     const unsigned length,
     const right_shift_t a_shr);
-//! [vect_s16_mul]
 
 
 /** 

@@ -9,7 +9,7 @@ DOXYGEN_OUTPUT      = $(BUILDDIR)/_doxygen
 DOXYGEN_OUTPUT_DIR  = $(DOXYGEN_OUTPUT)/xml
 export DOXYGEN_OUTPUT # this is needed for the doxyfile OUTPUT_DIRECTORY
 
-BREATHE_PROJECT=lib_xs3_math
+BREATHE_PROJECT=lib_xcore_math
 
 # You can set these variables from the command line, and also
 # from the environment for the first two.
