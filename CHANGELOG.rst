@@ -1,7 +1,74 @@
-lib_xs3_math change log
-=======================
+lib_xcore_math change log
+=========================
 
-1.*.*
+2.0.0
+-----
+
+Major, backwards compatibility-breaking update to the library.  
+
+Background
+**********
+
+This update does not add new features (compared to 1.1.0) to the library.  Instead, it is a
+major refactoring of the library in a few different ways.  The overarching purpose of this 
+refactoring is to generalize the library so that when any future xcore ISAs are released, support 
+for those architectures can be included within this library in a minimally disruptive way.  The 
+xcore XS3 architecture currently remains the only xcore ISA officially supported by the library.
+
+Major Changes
+*************
+
+As mentioned, the update from 1.1.0 to 2.0.0 is does not add, remove or functionally change 
+supported features.  Rather, the changes are primarily related to organization and the conventions
+used.  However, these changes do break backwards compatibility; hence the major version increment.
+
+The relevant major changes are:
+
+* **Library name has changed from `lib_xs3_math` to `lib_xcore_math`** 
+
+  * This is to reflect that this library is not intended to be deprecated when future xcore ISA
+    versions are released.
+
+* **Library re-organized into multiple sub-APIs**
+
+  * The organization of the library into the 'high-level' (BFP) and 'low-level' (non-BFP) APIs has
+    grown cumbersome and no longer cleanly fits the content of the library. To this end, the
+    operations made available by this library have been re-organized into several sub-APIs. These
+    APIs are all versioned together and are in many cases interdependent. This new grouping is 
+    primarily for conceptual simplicity.
+
+    * BFP API -- Mostly unchanged from the previous high-level API.
+    * Vector API -- Corresponds to most of the functionality in the previous low-level API, less the
+      operations that were moved to the new APIs.
+    * Filtering API -- Operations related to supported linear filters (FIR and Biquad).
+    * FFT API -- Collects the FFT-related functions (both low-level and high-level) from the 
+      previous API and groups them together.
+    * DCT API -- Like the FFT API, collected DCT-related functions.
+    * Scalar API -- A small API for implementations of scalar operations, with particular emphasis
+      on the non-IEEE 754 floating-point scalars provided (but also includes some ``float`` 
+      operations).
+
+* **Many functions renamed**
+
+  * Previous versions of this library used a function naming convention whereby the majority of 
+    low-level functions (and some types) had names prefixed with ``xs3_``, even where those 
+    functions were written in C (rather than XS3 assembly) and were not intimately related to the
+    specifics of the XS3 hardware (i.e. where the same C implementation could plausibly be used in
+    future ISA versions).  
+  * To that end, most functions prefixed with ``xs3_`` have had that prefix removed. This way, when
+    a future ISA is released (and once support is added to this library), applications can be 
+    retargeted at the newer architecture without the unnecessary effort of going through the code to 
+    rename all the function calls.
+
+    * e.g.  ``xs3_vect_s32_mul() --> vect_s32_mul()``
+    * Note that most BFP function names remain unchanged.
+
+  * The intention going forward is that the public API should avoid ISA version-specific naming when
+    the object being named is not conceptually specific to a particular ISA (except possibly where
+    optimizing different ISA versions necessitates mutually incompatible implementations).
+
+
+1.1.0
 -----
 
 Major Changes
