@@ -25,6 +25,7 @@ extern "C" {
  * @defgroup xs3_vect8_func       XS3 16-Bit Vector Functions
  * @defgroup xs3_vect16_func      XS3 16-Bit Vector Functions
  * @defgroup xs3_vect32_func      XS3 32-Bit Vector Functions
+ * @defgroup xs3_chunk32_func     XS3 32-Bit Chunk (8-element block) Functions
  * @defgroup xs3_vect_f32_func    XS3 IEEE754 Single-Precision Vector Functions
  * @defgroup xs3_fft_func         XS3 FFT-Related Functions
  * @defgroup xs3_mixed_vect_func  XS3 Mixed-Depth Vector Functions
@@ -41,6 +42,7 @@ extern "C" {
 #include "xs3_api.h"
 #include "xs3_math_types.h"
 
+#include "vect/xs3_chunk_s32.h"
 #include "vect/xs3_vect_s32.h"
 #include "vect/xs3_vect_complex_s32.h"
 #include "vect/xs3_vect_s16.h"
@@ -49,9 +51,13 @@ extern "C" {
 #include "vect/xs3_vect_f32.h"
 #include "vect/xs3_mixed.h"
 #include "vect/xs3_fft.h"
+#include "vect/dct.h"
 #include "vect/xs3_filters.h"
 #include "scalar/xs3_scalar.h"
-#include "scalar/scalar_float.h"
+#include "scalar/xs3_float_s32.h"
+#include "scalar/xs3_float_complex_s16.h"
+#include "scalar/xs3_float_complex_s32.h"
+#include "scalar/xs3_f32.h"
 #include "xs3_util.h"
 #include "q_format.h"
 

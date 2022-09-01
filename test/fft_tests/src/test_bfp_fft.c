@@ -374,7 +374,7 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
 
             // Perform inverse FFT and timestamp it
             unsigned ts1 = getTimestamp();
-             bfp_fft_inverse_stereo(&A_fft, &B_fft, scratch);
+            bfp_fft_inverse_stereo(&A_fft, &B_fft, scratch);
             unsigned ts2 = getTimestamp();
 
             // Time domain BFP vectors (aliased from freq domain)

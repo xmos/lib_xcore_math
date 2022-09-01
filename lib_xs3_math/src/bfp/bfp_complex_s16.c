@@ -14,6 +14,24 @@ const extern unsigned rot_table16_rows;
 const extern int16_t rot_table16[14][2][16];
 
 
+static inline 
+complex_s16_t safe_complex_ashr16(complex_s16_t x, right_shift_t shr)
+{
+  complex_s16_t y;
+  if(shr >= 16){
+    y.re = (x.re >= 0)? 0 : -1;
+    y.im = (x.im >= 0)? 0 : -1;
+  } else if(shr >= 0){
+    y.re = x.re >> shr;
+    y.im = x.im >> shr;
+  } else {
+    y.re = x.re << (-shr);
+    y.im = x.im << (-shr);
+  }
+  return y;
+}
+
+
 headroom_t bfp_complex_s16_headroom(
     bfp_complex_s16_t* a)
 {
@@ -97,10 +115,7 @@ void bfp_complex_s16_add_scalar(
     xs3_vect_complex_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, 
                                             c.exp, b->hr, HR_C16(c.mant));
 
-    complex_s16_t cc = {
-      .re = (c_shr >= 0)? (c.mant.re >> c_shr) : (c.mant.re << -c_shr),
-      .im = (c_shr >= 0)? (c.mant.im >> c_shr) : (c.mant.im << -c_shr),
-    };
+    complex_s16_t cc = safe_complex_ashr16(c.mant, c_shr);
 
     a->hr = xs3_vect_complex_s16_add_scalar(a->real, a->imag, b->real,
                                             b->imag, cc, b->length, b_shr);
@@ -208,7 +223,7 @@ void bfp_complex_s16_real_scale(
 
     int16_t alpha_mant;
     exponent_t alpha_exp;
-    xs3_unpack_float_s16(&alpha_mant, &alpha_exp, alpha);
+    xs3_f32_unpack_s16(&alpha_mant, &alpha_exp, alpha);
 
     right_shift_t a_shr;
     headroom_t s_hr = HR_S16(alpha_mant);

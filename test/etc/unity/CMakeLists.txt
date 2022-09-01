@@ -29,5 +29,5 @@ target_compile_definitions( unity
 
 target_compile_options( unity
   INTERFACE
-    -Wno-xcore-fptrgroup
+    $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )

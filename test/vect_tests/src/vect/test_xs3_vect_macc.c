@@ -89,7 +89,7 @@ TEST(xs3_vect_macc, xs3_vect_s16_macc)
             printf("Conversion error: %d\n", error);
           TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error.");
 
-#define THRESHOLD  2
+#define THRESHOLD  3
           if(expected - A[i] > THRESHOLD || A[i] - expected > THRESHOLD){
             printf("[rep %d]  exp.a = %d; expected[%d] = %d  ( %f );   A[%d] = %d\n", 
               v, exp.a, i, expected, expected_fp, i, A[i]);
@@ -151,7 +151,7 @@ TEST(xs3_vect_macc, xs3_vect_s16_nmacc)
             printf("Conversion error: %d\n", error);
           TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error.");
 
-#define THRESHOLD  2
+#define THRESHOLD  3
           if(expected - A[i] > THRESHOLD || A[i] - expected > THRESHOLD){
             printf("[%d]  exp.a = %d; expected[%d] = %d  ( %f );   A[%d] = %d\n", v, exp.a, i, expected, expected_fp, i, A[i]);
           }
@@ -212,7 +212,7 @@ TEST(xs3_vect_macc, xs3_vect_s32_macc)
             printf("Conversion error: %d\n", error);
           TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error.");
 
-#define THRESHOLD  2
+#define THRESHOLD  3
           if(expected - A[i] > THRESHOLD || A[i] - expected > THRESHOLD){
             printf("[%d]  exp.a = %d; expected[%d] = %ld  ( %f );   A[%d] = %ld\n", v, exp.a, i, expected, expected_fp, i, A[i]);
           }
@@ -275,7 +275,7 @@ TEST(xs3_vect_macc, xs3_vect_s32_nmacc)
             printf("Conversion error: %d\n", error);
           TEST_ASSERT_FALSE_MESSAGE(error, "Conversion error.");
 
-#define THRESHOLD  2
+#define THRESHOLD  3
           if(expected - A[i] > THRESHOLD || A[i] - expected > THRESHOLD){
             printf("[%d]  exp.a = %d; expected[%d] = %ld  ( %f );   A[%d] = %ld\n", v, exp.a, i, expected, expected_fp, i, A[i]);
           }

@@ -45,6 +45,8 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_argmin);
     RUN_TEST_GROUP(xs3_vect_energy);
     RUN_TEST_GROUP(xs3_vect_sqrt);
+    RUN_TEST_GROUP(xs3_vect_log);
+    RUN_TEST_GROUP(xs3_vect_exp);
     RUN_TEST_GROUP(xs3_vect_bitdepth_convert);
     RUN_TEST_GROUP(xs3_vect_macc);
     RUN_TEST_GROUP(xs3_vect_zip);
@@ -73,6 +75,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_s32_to_f32);
     RUN_TEST_GROUP(xs3_vect_f32_dot);
 
+
     // misc
     RUN_TEST_GROUP(xs3_vect_extract);
     RUN_TEST_GROUP(xs3_mat_mul_s8_x_s8_yield_s32);
@@ -80,6 +83,8 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(xs3_vect_boolean);
 
     RUN_TEST_GROUP(xs3_vect_convolve);
+
+    RUN_TEST_GROUP(xs3_chunk_s16_accumulate);
 
     return UNITY_END();
 }

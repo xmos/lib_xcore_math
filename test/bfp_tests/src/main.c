@@ -67,12 +67,15 @@ xscope_config_io(XSCOPE_IO_BASIC);
   RUN_TEST_GROUP(bfp_complex_conj_macc);
   RUN_TEST_GROUP(bfp_complex_conjugate);
   RUN_TEST_GROUP(bfp_complex_energy);
+  RUN_TEST_GROUP(bfp_complex_make);
   
   RUN_TEST_GROUP(bfp_depth_convert);
   RUN_TEST_GROUP(bfp_complex_depth_convert);
 
   RUN_TEST_GROUP(bfp_gradient_constraint);
   RUN_TEST_GROUP(bfp_convolve);
+
+  RUN_TEST_GROUP(bfp_s16_accumulate);
   
   return UNITY_END();
 }

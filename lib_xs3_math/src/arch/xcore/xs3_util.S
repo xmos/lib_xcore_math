@@ -48,11 +48,11 @@ FUNCTION_NAME:
 
 
 /*  
-float xs3_pack_float(
+float xs3_float_s32_to_f32(
     const int32_t mantissa,
     const exponent_t exp);
 */
-#define FUNCTION_NAME   xs3_pack_float
+#define FUNCTION_NAME   xs3_float_s32_to_f32
 #define NSTACKWORDS     (0)
 
 #define mant        r0

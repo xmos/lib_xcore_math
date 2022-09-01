@@ -5,13 +5,22 @@
 #include "pseudo_rand.h"
 
 #include <assert.h>
+#include <stdlib.h>
+
+// int pseudo_rand(int* state)
+// {
+//   const int a = 1664525;
+//   const int c = 1013904223;
+//   *state = (int)((long long)a * (*state) + c);
+//   return *state;
+// }
 
 int pseudo_rand(int* state)
 {
-  const int a = 1664525;
-  const int c = 1013904223;
-  *state = (int)((long long)a * (*state) + c);
-  return *state;
+  srand((unsigned) *state);
+  int res = (rand() << 16) ^ rand();
+  *state = res;
+  return res;
 }
 
 

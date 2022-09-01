@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "xs3_math.h"
 
@@ -34,20 +35,18 @@ float_s64_t float_s32_to_float_s64(
 }
 
 
-float float_s32_to_float(
-    const float_s32_t x)
+float xs3_s32_to_f32(
+    const int32_t mantissa,
+    const exponent_t exp)
 {
-  return xs3_pack_float(x.mant, x.exp);
+  return ldexp(mantissa, exp);
 }
 
 
-float_s32_t float_to_float_s32(
-    const float x)
+float float_s32_to_float(
+    const float_s32_t x)
 {
-  float_s32_t res;
-  res.mant = round(INT32_MAX * frexpf(x, &res.exp));
-  res.exp -= 31;
-  return res;
+  return xs3_s32_to_f32(x.mant, x.exp);
 }
 
 
@@ -56,19 +55,6 @@ double float_s32_to_double(
 {
   return ldexp(x.mant, x.exp);
 }
-
-
-
-float_s32_t double_to_float_s32(
-    const double x)
-{
-  float_s32_t res;
-  double tmp = frexp(x, &res.exp);
-  res.mant = round(INT32_MAX * tmp);
-  res.exp -= 31;
-  return res;
-}
-
 
 
 float_s32_t float_s32_mul(
@@ -176,7 +162,7 @@ unsigned float_s32_gte(
 float_s32_t float_s32_ema(
     const float_s32_t x,
     const float_s32_t y,
-    const fixed_s32_t coef_q30)
+    const uq2_30 coef_q30)
 {
   float_s32_t t = {
     .exp = -30,
@@ -197,5 +183,79 @@ float_s32_t float_s32_sqrt(
 {
   float_s32_t res = x;
   res.mant = xs3_s32_sqrt(&res.exp, x.mant, x.exp, XS3_S32_SQRT_MAX_DEPTH);
+  return res;
+}
+
+
+
+q2_30 xs3_q24_sin(
+    const radian_q24_t theta)
+{
+  const sbrad_t alpha = xs3_radians_to_sbrads(theta);
+  return xs3_sbrad_sin(alpha);
+}
+
+
+#define PI_HALF_Q24   Q24(M_PI / 2.0)
+#define THREE_PI_OVER_TWO_Q24   Q24(3.0 * M_PI / 2.0)
+
+q2_30 xs3_q24_cos(
+    const radian_q24_t theta)
+{
+  // cos(x) = sin(x + pi/2) = sin(x - 3*pi/2)
+  // BUT the span of a Q24 ( [-128, 128) --> 256 ) is not an 
+  //  integer multiple of 2*pi, so we can't let the angle overflow
+  //  always adding pi/2
+  const radian_q24_t theta_mod = theta 
+            + ((theta >= 0)? (-THREE_PI_OVER_TWO_Q24) : (PI_HALF_Q24));
+  const sbrad_t alpha = xs3_radians_to_sbrads(theta_mod);
+  return xs3_sbrad_sin(alpha);
+}
+
+
+/**
+ * Like xs3_radians_to_sbrads, except it takes advantage of the symmetries of
+ * tan(theta) instead of sin(theta).
+ */
+static inline 
+q1_31 xs3_radians_to_tbrads(
+    const radian_q24_t theta)
+{
+  const q1_31 inv_rho = 0x517cc1b7;
+  int64_t acc = ((int64_t)inv_rho) * theta;
+  q1_31 alpha = acc >> 24;
+  return alpha;
+}
+
+
+float_s32_t xs3_q24_tan(
+    const radian_q24_t theta)
+{
+  q1_31 alpha = xs3_radians_to_tbrads(theta);
+
+  // xs3_sbrad_tan() requires the input to be within the range
+  //   -0.5 <= alpha <= 0.5
+  // If it isn't, we'll reflect across +/- 0.5, compute the tan() of that,
+  // and then return the reciprocal.
+
+  const int32_t hi =  0x40000000;
+  const int32_t lo = -0x40000000;
+
+  unsigned inv = (alpha > hi) || (alpha < lo);
+
+  // This should correctly reflect across 0.5 or -0.5 because 0x80000000 = -0x80000000
+  if(inv) alpha = 0x80000000 - alpha;
+
+  q2_30 tmp = xs3_sbrad_tan(alpha);
+
+  float_s32_t res;
+  if(!inv){
+    res.mant = tmp;
+    res.exp = -30;
+  } else {
+    res.mant = xs3_s32_inverse(&res.exp, tmp);
+    res.exp += 30;
+  }
+
   return res;
 }

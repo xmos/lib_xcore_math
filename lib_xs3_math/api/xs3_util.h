@@ -56,6 +56,18 @@
 
 
 /**
+ * @brief Count leading sign bits of an `int8_t`.
+ * 
+ * @param[in]   X   Input
+ * 
+ * @returns Leading sign bits of `X`
+ * 
+ * @ingroup xs3_util_macros
+ */
+#define CLS_S8(X)      (cls(X) - 24)
+
+
+/**
  * @brief Count leading sign bits of an `int16_t`.
  * 
  * @param[in]   X   Input
@@ -155,6 +167,17 @@
  * @ingroup xs3_util_macros
  */
 #define HR_S16(X)   (CLS_S16(((int16_t)X))-1)
+
+/**
+ * @brief Get the headroom of an `int8_t`.
+ * 
+ * @param[in] X   Input
+ * 
+ * @returns Headroom of `X`
+ * 
+ * @ingroup xs3_util_macros
+ */
+#define HR_S8(X)   (CLS_S8(((int8_t)X))-1)
 
 /**
  * @brief Get the headroom of a `complex_s32_t`.

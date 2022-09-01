@@ -11,6 +11,19 @@
 #include <stdio.h>
 
 
+static inline 
+int32_t safe_ashr32(int32_t x, right_shift_t shr)
+{
+  if(shr >= 32){
+    return (x >= 0)? 0 : -1;
+  } else if(shr >= 0){
+    return x >> shr;
+  } else {
+    return x << (-shr);
+  }
+}
+
+
     
 headroom_t bfp_s32_headroom(
     bfp_s32_t* a)
@@ -90,8 +103,7 @@ void bfp_s32_add_scalar(
 
     xs3_vect_s32_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp, 
                                     b->hr, HR_S32(c.mant));
-
-    int32_t cc = (c_shr >= 0)? (c.mant >> c_shr) : (c.mant << -c_shr);
+    int32_t cc = safe_ashr32(c.mant, c_shr);
 
     a->hr = xs3_vect_s32_add_scalar(a->data, b->data, cc, b->length, 
                                     b_shr);
@@ -196,7 +208,6 @@ float_s64_t bfp_s32_dot(
     right_shift_t b_shr, c_shr;
 
     xs3_vect_s32_dot_prepare(&a.exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr, b->length);
-
     a.mant = xs3_vect_s32_dot(b->data, c->data, b->length, b_shr, c_shr);
     return a;
 }
@@ -362,7 +373,7 @@ float_s32_t bfp_s32_rms(
     float_s32_t a;
     exponent_t exp, len_inv_exp;
     const float_s64_t energy64 = bfp_s32_energy(b);
-    const int32_t energy32 = xs3_scalar_s64_to_s32(&exp, energy64.mant, energy64.exp);
+    const int32_t energy32 = xs3_s64_to_s32(&exp, energy64.mant, energy64.exp);
     const int32_t len_inv = xs3_s32_inverse(&len_inv_exp, b->length);
     const int32_t mean_energy = xs3_s32_mul(&exp, energy32, len_inv, exp, len_inv_exp);
 

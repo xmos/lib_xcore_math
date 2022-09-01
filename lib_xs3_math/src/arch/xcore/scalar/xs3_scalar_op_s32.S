@@ -4,12 +4,11 @@
 #if defined(__XS3A__)
 #ifndef XS3_MATH_NO_ASM
 
-#include "asm_helper.h"
+#include "../asm_helper.h"
 
 .text
 .issue_mode dual
 .align 4
-
 
 #define CAT_(A, B)    A##B
 #define CAT(A, B)     CAT_(A,B)
@@ -40,23 +39,17 @@
 
 /* *****************************************************
 
-int16_t vladd16(
-    const int16_t x, 
-    const int16_t y);
+int32_t vladd32(
+    const int32_t x, 
+    const int32_t y);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vladd16
+#define FUNCTION_NAME   vladd32
 #define NSTACKWORDS     (2)
-
-// .global FUNCTION_NAME; 
-// .type FUNCTION_NAME,@function;
-// .cc_top FUNCTION_NAME.function, FUNCTION_NAME
-
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-    ldc r11, 0x100    
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
 {                                           ;   vsetc r11                               }
 {   ldaw r11, sp[0]                         ;   stw r0, sp[0]                           }
 {                                           ;   vldr r11[0]                             }
@@ -64,18 +57,8 @@ FUNCTION_NAME:
 {   mkmsk r1, 4                             ;   vladd r11[0]                            }
     vstrpv r11[0], r1
 {                                           ;   ldw r0, sp[0]                           }
-{   sext r0, 16                             ;   retsp NSTACKWORDS                       }
+{                                           ;   retsp NSTACKWORDS                       }
 FUNC_END
-
-// .cc_bottom FUNCTION_NAME.function; 
-// .set FUNCTION_NAME.nstackwords,NSTACKWORDS; .global FUNCTION_NAME.nstackwords; 
-// .set FUNCTION_NAME.maxcores,1;              .global FUNCTION_NAME.maxcores; 
-// .set FUNCTION_NAME.maxtimers,0;             .global FUNCTION_NAME.maxtimers; 
-// .set FUNCTION_NAME.maxchanends,0;           .global FUNCTION_NAME.maxchanends; 
-
-// CAT(.L_size_end_, FUNCTION_NAME): 
-//     .size FUNCTION_NAME, CAT(.L_size_end_, FUNCTION_NAME) - FUNCTION_NAME
-
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
 
@@ -88,18 +71,17 @@ FUNC_END
 
 /* *****************************************************
 
-int16_t vlsub16(
-    const int16_t x, 
-    const int16_t y);
+int32_t vlsub32(
+    const int32_t x, 
+    const int32_t y);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlsub16
+#define FUNCTION_NAME   vlsub32
 #define NSTACKWORDS     (2)
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-    ldc r11, 0x100    
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
 {                                           ;   vsetc r11                               }
 {   ldaw r11, sp[0]                         ;   stw r1, sp[0]                           }
 {                                           ;   vldr r11[0]                             }
@@ -107,7 +89,7 @@ FUNCTION_NAME:
 {   mkmsk r1, 4                             ;   vlsub r11[0]                            }
     vstrpv r11[0], r1
 {                                           ;   ldw r0, sp[0]                           }
-{   sext r0, 16                             ;   retsp NSTACKWORDS                       }
+{                                           ;   retsp NSTACKWORDS                       }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -121,24 +103,23 @@ FUNC_END
 
 /* *****************************************************
 
-int16_t vlashr16(
-    const int16_t x,
+int32_t vlashr32(
+    const int32_t x,
     const right_shift_t shr);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlashr16
+#define FUNCTION_NAME   vlashr32
 #define NSTACKWORDS     (2)
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-    ldc r11, 0x100    
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
 {   mkmsk r2, 4                             ;   vsetc r11                               }
 {   ldaw r11, sp[0]                         ;   stw r0, sp[0]                           }
     vlashr r11[0], r1
     vstrpv r11[0], r2
 {                                           ;   ldw r0, sp[0]                           }
-{   sext r0, 16                             ;   retsp NSTACKWORDS                       }
+{                                           ;   retsp NSTACKWORDS                       }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -152,24 +133,23 @@ FUNC_END
 
 /* *****************************************************
 
-int16_t vpos16(
-    const int16_t x);
+int32_t vpos32(
+    const int32_t x);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vpos16
+#define FUNCTION_NAME   vpos32
 #define NSTACKWORDS     (2)
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-    ldc r11, 0x100    
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
 {                                           ;   vsetc r11                               }
 {   ldaw r11, sp[0]                         ;   stw r0, sp[0]                           }
 {                                           ;   vldr r11[0]                             }
 {   mkmsk r1, 4                             ;   vpos                                    }
     vstrpv r11[0], r1
 {                                           ;   ldw r0, sp[0]                           }
-{   sext r0, 16                             ;   retsp NSTACKWORDS                       }
+{                                           ;   retsp NSTACKWORDS                       }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -183,24 +163,23 @@ FUNC_END
 
 /* *****************************************************
 
-int16_t vsign16(
-    const int16_t x);
+int32_t vsign32(
+    const int32_t x);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vsign16
+#define FUNCTION_NAME   vsign32
 #define NSTACKWORDS     (2)
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-    ldc r11, 0x100    
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
 {                                           ;   vsetc r11                               }
 {   ldaw r11, sp[0]                         ;   stw r0, sp[0]                           }
 {                                           ;   vldr r11[0]                             }
 {   mkmsk r1, 4                             ;   vsign                                   }
     vstrpv r11[0], r1
 {                                           ;   ldw r0, sp[0]                           }
-{   sext r0, 16                             ;   retsp NSTACKWORDS                       }
+{                                           ;   retsp NSTACKWORDS                       }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -214,17 +193,16 @@ FUNC_END
 
 /* *****************************************************
 
-unsigned vdepth1_16(
-    const int16_t x);
+unsigned vdepth1_32(
+    const int32_t x);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vdepth1_16
+#define FUNCTION_NAME   vdepth1_32
 #define NSTACKWORDS     (2)
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-    ldc r11, 0x100    
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
 {                                           ;   vsetc r11                               }
 {   ldaw r11, sp[0]                         ;   stw r0, sp[0]                           }
 {                                           ;   vldr r11[0]                             }
@@ -246,17 +224,16 @@ FUNC_END
 
 /* *****************************************************
 
-int8_t vdepth8_16(
-    const int16_t x);
+int8_t vdepth8_32(
+    const int32_t x);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vdepth8_16
+#define FUNCTION_NAME   vdepth8_32
 #define NSTACKWORDS     (2)
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-    ldc r11, 0x100    
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
 {                                           ;   vsetc r11                               }
 {   ldaw r11, sp[0]                         ;   stw r0, sp[0]                           }
 {                                           ;   vldr r11[0]                             }
@@ -278,18 +255,48 @@ FUNC_END
 
 /* *****************************************************
 
-int16_t vlmul16(
-    const int16_t x,
-    const int16_t y);
+int16_t vdepth16_32(
+    const int32_t x);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlmul16
+#define FUNCTION_NAME   vdepth16_32
 #define NSTACKWORDS     (2)
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-    ldc r11, 0x100    
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
+{                                           ;   vsetc r11                               }
+{   ldaw r11, sp[0]                         ;   stw r0, sp[0]                           }
+{                                           ;   vldr r11[0]                             }
+{   mkmsk r1, 4                             ;   vdepth16                                }
+    vstrpv r11[0], r1
+{                                           ;   ldw r0, sp[0]                           }
+{   sext r0, 16                             ;   retsp NSTACKWORDS                       }
+FUNC_END
+#undef NSTACKWORDS
+#undef FUNCTION_NAME
+
+
+
+
+
+
+
+
+
+/* *****************************************************
+
+int32_t vlmul32(
+    const int32_t x,
+    const int32_t y);
+
+********************************************************/
+
+#define FUNCTION_NAME   vlmul32
+#define NSTACKWORDS     (2)
+FUNC_START
+FUNCTION_NAME:
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
 {                                           ;   vsetc r11                               }
 {   ldaw r11, sp[0]                         ;   stw r0, sp[0]                           }
 {                                           ;   vldr r11[0]                             }
@@ -297,7 +304,7 @@ FUNCTION_NAME:
 {   mkmsk r1, 4                             ;   vlmul r11[0]                            }
     vstrpv r11[0], r1
 {                                           ;   ldw r0, sp[0]                           }
-{   sext r0, 16                             ;   retsp NSTACKWORDS                       }
+{                                           ;   retsp NSTACKWORDS                       }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -312,35 +319,32 @@ FUNC_END
 
 /* *****************************************************
 
-vpu_int16_acc_t vlmacc16(
-    const vpu_int16_acc_t acc,
-    const int16_t x,
-    const int16_t y);
+vpu_int32_acc_t vlmacc32(
+    const vpu_int32_acc_t acc,
+    const int32_t x,
+    const int32_t y);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlmacc16
+#define FUNCTION_NAME   vlmacc32
 #define NSTACKWORDS     (8)
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-    ldc r11, 0x100    
-{                                           ;   vsetc r11                               }
-{   shr r3, r0, 16                          ;   zext r0, 16                             }
-{   ldaw r11, sp[0]                         ;   stw r3, sp[0]                           }
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
+{   ldaw r11, sp[0]                         ;   vsetc r11                               }
+{                                           ;   stw r1, sp[0]                           }
 {                                           ;   vldd r11[0]                             }
 {                                           ;   stw r0, sp[0]                           }
 {                                           ;   vldr r11[0]                             }
-{                                           ;   stw r1, sp[0]                           }
-{                                           ;   vldc r11[0]                             }
 {                                           ;   stw r2, sp[0]                           }
+{                                           ;   vldc r11[0]                             }
+{                                           ;   stw r3, sp[0]                           }
 {                                           ;   vlmacc r11[0]                           }
 {                                           ;   vstd r11[0]                             }
 {                                           ;   ldw r1, sp[0]                           }
-{   shl r1, r1, 16                          ;   vstr r11[0]                             }
+{                                           ;   vstr r11[0]                             }
 {                                           ;   ldw r0, sp[0]                           }
-{   zext r0, 16                             ;                                           }
-{   or r0, r0, r1                           ;   retsp NSTACKWORDS                       }
+{                                           ;   retsp NSTACKWORDS                       }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -355,51 +359,32 @@ FUNC_END
 
 /* *****************************************************
 
-vpu_int16_acc_t vlmaccr16(
-    const vpu_int16_acc_t acc,
-    const int16_t x[VPU_INT16_EPV],
-    const int16_t y[VPU_INT16_EPV]);
+vpu_int32_acc_t vlmaccr32(
+    const vpu_int32_acc_t acc,
+    const int32_t x[VPU_INT32_EPV],
+    const int32_t y[VPU_INT32_EPV]);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlmaccr16
-#define NSTACKWORDS     (10)
+#define FUNCTION_NAME   vlmaccr32
+#define NSTACKWORDS     (8)
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-{   mkmsk r10, 16                           ;   stw r10, sp[8]                          }
-    ldc r11, 0x100    
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
 {   ldaw r11, sp[0]                         ;   vsetc r11                               }
-{                                           ;   vclrdr                                  }
-{                                           ;   vstd r11[0]                             }
 
 // The *last* accumulator is the one that will be added to.
-
-{   shl r3, r0, 16                          ;   andnot r0, r10                          }
-{   ldaw r11, sp[0]                         ;   stw r0, sp[7]                           }
+{                                           ;   stw r1, sp[7]                           }
 {                                           ;   vldd r11[0]                             }
-{                                           ;   stw r3, sp[7]                           }
-{   ldc r3, 15                              ;   vldr r11[0]                             }
-
-.L_vlmaccr16_loop_top1:
-    {                                           ;   ld16s r10, r1[r3]                       }
-        st16 r10, r11[r3]
-    {   sub r3, r3, 1                           ;   bt r3, .L_vlmaccr16_loop_top1           }
-
-{   ldc r3, 15                              ;   vldc r11[0]                             }
-
-.L_vlmaccr16_loop_top2:
-    {                                           ;   ld16s r10, r2[r3]                       }
-        st16 r10, r11[r3]
-    {   sub r3, r3, 1                           ;   bt r3, .L_vlmaccr16_loop_top2           }
-
-{                                           ;   vlmaccr r11[0]                          }
+{                                           ;   stw r0, sp[7]                           }
+{                                           ;   vldr r11[0]                             }
+{                                           ;   vldc r2[0]                              }
+{                                           ;   vlmaccr r3[0]                           }
 {                                           ;   vstd r11[0]                             }
 {                                           ;   ldw r1, sp[0]                           }
 {                                           ;   vstr r11[0]                             }
-{   shl r1, r1, 16                          ;   ldw r0, sp[0]                           }
-{   zext r0, 16                             ;   ldw r10, sp[8]                          }
-{   or r0, r0, r1                           ;   retsp NSTACKWORDS                       }
+{                                           ;   ldw r0, sp[0]                           }
+{                                           ;   retsp NSTACKWORDS                       }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -414,29 +399,27 @@ FUNC_END
 
 /* *****************************************************
 
-int16_t vlsat16(
-    const vpu_int16_acc_t acc,
+int32_t vlsat32(
+    const vpu_int32_acc_t acc,
     const unsigned sat);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlsat16
+#define FUNCTION_NAME   vlsat32
 #define NSTACKWORDS     (2)
 FUNC_START
 FUNCTION_NAME:
-{                                           ;   dualentsp NSTACKWORDS                   }
-    ldc r11, 0x100    
-{                                           ;   vsetc r11                               }
-{   shr r3, r0, 16                          ;   zext r0, 16                             }
-{   ldaw r11, sp[0]                         ;   stw r3, sp[0]                           }
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
+{   ldaw r11, sp[0]                         ;   vsetc r11                               }
+{                                           ;   stw r1, sp[0]                           }
 {                                           ;   vldd r11[0]                             }
 {                                           ;   stw r0, sp[0]                           }
 {                                           ;   vldr r11[0]                             }
-{                                           ;   stw r1, sp[0]                           }
+{                                           ;   stw r2, sp[0]                           }
 {   mkmsk r1, 4                             ;   vlsat r11[0]                            }
     vstrpv r11[0], r1
 {                                           ;   ldw r0, sp[0]                           }
-{   sext r0, 16                             ;   retsp NSTACKWORDS                       }
+{                                           ;   retsp NSTACKWORDS                       }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -451,40 +434,119 @@ FUNC_END
 
 /* *****************************************************
 
-int16_t vadddr16(
-    const vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD]);
+int32_t vcmr32(
+    const complex_s32_t x,
+    const complex_s32_t y);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vadddr16
-#define NSTACKWORDS     (12 + 8*2)
+#define FUNCTION_NAME   vcmr32
+#define NSTACKWORDS     (2)
 FUNC_START
 FUNCTION_NAME:
-{   ldc r1, 8                               ;   dualentsp NSTACKWORDS                   }
-    std r4, r5, sp[1]
-    ldc r11, 0x100    
-{   ldaw r2, sp[4]                          ;   vsetc r11                               }
-{   ldaw r3, sp[12]                         ;   ldc r11, 0                              }
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
+{   ldaw r11, sp[0]                         ;   vsetc r11                               }
+{                                           ;   vldd r0[0]                              }
+{                                           ;   vldc r1[0]                              }
+{   mkmsk r1, 8                             ;   vcmr                                    }
+    vstrpv r11[0], r1
+{                                           ;   ldw r0, sp[0]                           }
+{                                           ;   retsp NSTACKWORDS                       }
+FUNC_END
+#undef NSTACKWORDS
+#undef FUNCTION_NAME
 
-.L_split_loop_top:
-    {                                           ;   ldw r4, r0[0]                           }
-    {   add r0, r0, 8                           ;   ldw r5, r0[1]                           }
-        zip r4, r5, 4
-    {   sub r1, r1, 1                           ;   stw r4, r3[0]                           }
-    {   add r3, r3, 4                           ;   stw r5, r2[0]                           }
-    {   add r2, r2, 4                           ;   bt r1, .L_split_loop_top                }
 
-{   ldaw r3, sp[12]                         ;   ldaw r11, sp[4]                         }
-{                                           ;   vldd r3[0]                              }
-{                                           ;   vldr r11[0]                             }
-{                                           ;   vadddr                                  }
-{                                           ;   vstd r2[0]                              }
-{                                           ;   ldw r4, r2[0]                           }
-{   shl r4, r4, 16                          ;   vstr r2[0]                              }
-{                                           ;   ldw r0, r2[0]                           }
-{   or r0, r0, r4                           ;                                           }
 
-    ldd r4, r5, sp[1]
+
+
+
+
+
+
+/* *****************************************************
+
+int32_t vcmi32(
+    const complex_s32_t x,
+    const complex_s32_t y);
+
+********************************************************/
+
+#define FUNCTION_NAME   vcmi32
+#define NSTACKWORDS     (2)
+FUNC_START
+FUNCTION_NAME:
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
+{   ldaw r11, sp[0]                         ;   vsetc r11                               }
+{                                           ;   vldd r0[0]                              }
+{                                           ;   vldc r1[0]                              }
+{   mkmsk r1, 8                             ;   vcmi                                    }
+    vstrpv r11[0], r1
+{                                           ;   ldw r0, sp[1]                           }
+{                                           ;   retsp NSTACKWORDS                       }
+FUNC_END
+#undef NSTACKWORDS
+#undef FUNCTION_NAME
+
+
+
+
+
+
+
+
+
+/* *****************************************************
+
+int32_t vcmcr32(
+    const complex_s32_t x,
+    const complex_s32_t y);
+
+********************************************************/
+
+#define FUNCTION_NAME   vcmcr32
+#define NSTACKWORDS     (2)
+FUNC_START
+FUNCTION_NAME:
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
+{   ldaw r11, sp[0]                         ;   vsetc r11                               }
+{                                           ;   vldd r0[0]                              }
+{                                           ;   vldc r1[0]                              }
+{   mkmsk r1, 8                             ;   vcmcr                                   }
+    vstrpv r11[0], r1
+{                                           ;   ldw r0, sp[0]                           }
+{                                           ;   retsp NSTACKWORDS                       }
+FUNC_END
+#undef NSTACKWORDS
+#undef FUNCTION_NAME
+
+
+
+
+
+
+
+
+
+/* *****************************************************
+
+int32_t vcmci32(
+    const complex_s32_t x,
+    const complex_s32_t y);
+
+********************************************************/
+
+#define FUNCTION_NAME   vcmci32
+#define NSTACKWORDS     (2)
+FUNC_START
+FUNCTION_NAME:
+{   ldc r11, 0                              ;   dualentsp NSTACKWORDS                   }
+{   ldaw r11, sp[0]                         ;   vsetc r11                               }
+{                                           ;   vldd r0[0]                              }
+{                                           ;   vldc r1[0]                              }
+{   mkmsk r1, 8                             ;   vcmci                                   }
+    vstrpv r11[0], r1
+{                                           ;   ldw r0, sp[1]                           }
 {                                           ;   retsp NSTACKWORDS                       }
 FUNC_END
 #undef NSTACKWORDS

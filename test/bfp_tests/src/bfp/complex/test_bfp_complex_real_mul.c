@@ -17,6 +17,7 @@
 TEST_GROUP_RUNNER(bfp_complex_real_mul) {
   RUN_TEST_CASE(bfp_complex_real_mul, bfp_complex_s16_real_mul);
   RUN_TEST_CASE(bfp_complex_real_mul, bfp_complex_s32_real_mul);
+  RUN_TEST_CASE(bfp_complex_real_mul, bfp_complex_s32_real_mulB);
 }
 
 TEST_GROUP(bfp_complex_real_mul);
@@ -180,5 +181,66 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
             TEST_ASSERT_INT32_WITHIN(1, expected[i].im, A.data[i].im);
         }
     }
+}
+
+/**
+  *  astew: 2022/07/01 -- Test case comes from Shuchita via issue #102.
+  *         Added to unit tests to make sure this loop is closed.
+  *  
+  *  This test case demonstrated a bug in the logic of xs3_vect_complex_s32_real_mul_prepare(), 
+  *   which was allowing the input vectors to be left-shifted more bits than they had headroom.
+  *   xs3_vect_complex_s32_real_mul_prepare() has been fixed, so this should no longer be an issue.
+  */
+TEST(bfp_complex_real_mul, bfp_complex_s32_real_mulB)
+{
+  complex_s32_t DWORD_ALIGNED in_data[10];
+  int32_t DWORD_ALIGNED scale_data[10];
+  bfp_complex_s32_t input;
+  bfp_s32_t scale;
+  bfp_complex_s32_init(&input, in_data, 0, 10, 0);
+  bfp_s32_init(&scale, scale_data, 0, 10, 0);
+
+  in_data[0].re = 53956423;
+  in_data[0].im = 0;
+  in_data[1].re = 62086712;
+  in_data[1].im = -33052879;
+  in_data[2].re = 85460880;
+  in_data[2].im = -60238506;
+  in_data[3].re = 121141046;
+  in_data[3].im = -76358395;
+  in_data[4].re = 164591974;
+  in_data[4].im = -77478642;
+  in_data[5].re = 210181752;
+  in_data[5].im = -61388184;
+  in_data[6].re = 251804911;
+  in_data[6].im = -27869327;
+  in_data[7].re = 283560427;
+  in_data[7].im = 21248980;
+  in_data[8].re = 300411153;
+  in_data[8].im = 82261225;
+  in_data[9].re = 298753162;
+  in_data[9].im = 149960635;
+  input.exp = -34;
+  input.hr = 2;
+
+  for(int i=0; i<10; i++) {
+      scale_data[i] = 8388608;
+  }
+  scale.exp = -23;
+  scale.hr = 7;
+
+  complex_s32_t DWORD_ALIGNED out_data[10];
+  bfp_complex_s32_t output;
+  bfp_complex_s32_init(&output, out_data, 0, 10, 0);
+
+  bfp_complex_s32_real_mul(&output, &input, &scale); // Error_ap[0][f] * 
+
+  bfp_complex_s32_shl(&output, &output, output.hr);
+  bfp_complex_s32_shl(&input, &input, input.hr);
+
+  for(int i=0; i<10; i++) {
+    TEST_ASSERT_EQUAL_INT32(input.data[i].re, output.data[i].re);
+    TEST_ASSERT_EQUAL_INT32(input.data[i].im, output.data[i].im);
+  }
 }
 

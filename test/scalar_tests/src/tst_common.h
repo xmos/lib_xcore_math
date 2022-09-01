@@ -11,6 +11,11 @@
 #include "testing.h"
 #include "tst_asserts.h"
 
+#ifdef __XS3A__
+# include <xcore/hwtimer.h>
+#else
+# define get_reference_time()    (0)
+#endif // __XS3A__
 
 #define INT32_MAX_POS(HEADROOM)    (((int32_t)0x7FFFFFFF) >> ((int)(HEADROOM)))
 #define INT32_MIN_POS(HEADROOM)    (((int32_t)0x40000000) >> ((int)(HEADROOM)))
@@ -39,3 +44,13 @@ void setExtraInfo_RSL(
     unsigned length);
 
 
+
+#define TIME_STATEMENT(STATEMENT, OUTPUT_FLOAT_US)        \
+  float OUTPUT_FLOAT_US;                                  \
+  do {                                                    \
+    volatile uint32_t t_start = get_reference_time();     \
+    STATEMENT;                                            \
+    volatile uint32_t t_end = get_reference_time();       \
+    uint32_t delta_ticks = t_end - t_start;               \
+    OUTPUT_FLOAT_US = delta_ticks / 100.0;                \
+  } while(0)

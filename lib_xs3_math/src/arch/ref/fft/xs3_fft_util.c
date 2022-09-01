@@ -1,6 +1,8 @@
 // Copyright 2020-2021 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
+#include <stdio.h>
+
 #include "xs3_math.h"
 #include "../../../vect/vpu_helper.h"
 #include "../../../vect/vpu_const_vects.h"
@@ -124,7 +126,6 @@ headroom_t xs3_fft_spectra_merge(
         X[0].im =  Ny.re - Ny.im;
         X[K].re =  Ny.re + Ny.im;
         X[K].im = -DC.re + DC.im;
-
     }
 
     for(unsigned f = 0; f < N/2; f++){

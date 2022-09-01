@@ -10,7 +10,7 @@
 #include <math.h>
 
 /**
- * @page page_scalar_float_h  xs3_scalar_float.h
+ * @page page_xs3_float_s32_h  xs3_float_s32.h
  * 
  * The functions contained here are part of the scalar (non-IEEE754) floating-point API.
  * 
@@ -19,7 +19,7 @@
 
 
 /**
- * @defgroup scalar_float_funcs  Scalar floating-point functions
+ * @defgroup xs3_float_s32_funcs   Scalar floating-point functions
  */
 
 
@@ -32,46 +32,12 @@
  * 
  * @returns `float_s32_t` representation of `x`
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 float_s32_t float_s64_to_float_s32(
     const float_s64_t x);
     
-
-/**
- * @brief Convert an IEEE754 `float` to a @ref float_s32_t.
- * 
- * @param[in] x Input value
- * 
- * @returns `float_s32_t` representation of `x` 
- * 
- * @exception ET_ARITHMETIC Raised if `x` is infinite or NaN
- * 
- * @ingroup scalar_float_funcs
- */
-C_API 
-float_s32_t float_to_float_s32(
-    const float x);
-
-
-/**
- * @brief Convert an IEEE754 `double` to a @ref float_s32_t.
- * 
- * @note This operation may result in precision loss.
- * 
- * @param[in] x Input value
- * 
- * @returns `float_s32_t` representation of `x`
- * 
- * @exception ET_ARITHMETIC Raised if `x` is infinite or NaN
- * 
- * @ingroup scalar_float_funcs
- */
-C_API
-float_s32_t double_to_float_s32(
-    const double x);
-
 
 /**
  * @brief Convert a @ref float_s32_t to a @ref float_s64_t.
@@ -80,7 +46,7 @@ float_s32_t double_to_float_s32(
  * 
  * @returns `float_s64_t` representation of `x`
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 float_s64_t float_s32_to_float_s64(
@@ -94,7 +60,7 @@ float_s64_t float_s32_to_float_s64(
  * 
  * @returns `float` representation of `x`
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 float float_s32_to_float(
@@ -108,7 +74,7 @@ float float_s32_to_float(
  * 
  * @returns `double` representation of `x`
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 double float_s32_to_double(
@@ -130,7 +96,7 @@ double float_s32_to_double(
  * 
  * @returns The product of @math{x} and @math{y}
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 float_s32_t float_s32_mul(
@@ -152,7 +118,7 @@ float_s32_t float_s32_mul(
  * 
  * @returns The sum of @math{x} and @math{y}
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 float_s32_t float_s32_add(
@@ -175,7 +141,7 @@ float_s32_t float_s32_add(
  * 
  * @returns The difference of @math{x} and @math{y}
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 float_s32_t float_s32_sub(
@@ -199,7 +165,7 @@ float_s32_t float_s32_sub(
  * 
  * @exception ET_ARITHMETIC if @math{Y} is @math{0}
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 float_s32_t float_s32_div(
@@ -220,7 +186,7 @@ float_s32_t float_s32_div(
  * 
  * @returns The absolute value of @math{x}
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 float_s32_t float_s32_abs(
@@ -245,7 +211,7 @@ float_s32_t float_s32_abs(
  * 
  * @returns 1 iff @math{x \gt y}; 0 otherwise
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 unsigned float_s32_gt(
@@ -271,7 +237,7 @@ unsigned float_s32_gt(
  * 
  * @returns 1 iff @math{x \geq y}; 0 otherwise
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 unsigned float_s32_gte(
@@ -286,8 +252,8 @@ unsigned float_s32_gte(
  * taken as the previous EMA state, with @math{y} as the new sample. The EMA coefficient
  * @math{\alpha} is applied to the term including @math{x}.
  * 
- * `coef_q30` is a fixed-point value in a Q30 format (i.e. has an implied exponent of @math{-30}),
- * and should be in the range @math{0 \leq \alpha \leq 1}.
+ * `coef` is a fixed-point value in a UQ2.30 format (i.e. has an implied exponent of
+ * @math{-30}), and should be in the range @math{0 \leq \alpha \leq 1}.
  * 
  * @operation{ 
  * &     a \leftarrow \alpha \cdot x + (1 - \alpha) \cdot y
@@ -295,17 +261,17 @@ unsigned float_s32_gte(
  * 
  * @param[in] x           Input operand @math{x}
  * @param[in] y           Input operand @math{y}
- * @param[in] coef_q30    EMA coefficient @math{\alpha} encoded in Q30 format
+ * @param[in] coef        EMA coefficient @math{\alpha} encoded in UQ2.30 format
  * 
  * @returns The new EMA state
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 float_s32_t float_s32_ema(
     const float_s32_t x,
     const float_s32_t y,
-    const fixed_s32_t coef_q30);
+    const uq2_30 coef);
 
 
 /**
@@ -328,8 +294,69 @@ float_s32_t float_s32_ema(
  * 
  * @sa XS3_BFP_SQRT_DEPTH_S32
  * 
- * @ingroup scalar_float_funcs
+ * @ingroup xs3_float_s32_funcs
  */
 C_API
 float_s32_t float_s32_sqrt(
+    const float_s32_t x);
+
+
+/**
+ * @brief Fill vector with odd powers of @math{b}.
+ * 
+ * This function populates the elements of output vector @vector{a} with the odd powers of 
+ * input @math{b}. The first `count` odd powers of @math{b} are output. The highest power output
+ * will be @math{2\cdot\mathtt{count}-1}.
+ * 
+ * The 64-bit product of each multiplication is right-shifted by `shr` bits and truncated to the 32
+ * least significant bits. If @math{b} is a fixed-point value with `shr` fractional bits, then each
+ * @math{a_k} will have the same Q-format as input @math{b}. `shr` may not be negative.
+ * 
+ * This function neither rounds nor saturates results. It is up to the user to ensure overflows are
+ * avoided.
+ * 
+ * Typical use-case is computing a power series of a function with odd symmetry.
+ * 
+ * @operation{ 
+ * &     b_{sqr} = \frac{b^2}{2^{\mathtt{shr}}}   \\
+ * &     a_0 \leftarrow b   \\
+ * &     a_k \leftarrow \frac{a_{k-1}\,b_{sqr}}{\mathtt{shr}} \\
+ * &      \qquad\text{for } k \in \{1, 2, 3, ..., \mathtt{count} - 1\}
+ * }
+ * 
+ * @param[out]  a       Output vector @vector{a}
+ * @param[in]   b       Input @math{b}
+ * @param[in]   count   Number of elements to output.
+ * @param[in]   shr     Number of bits to right-shift 64-bit products.
+ * 
+ * @ingroup xs3_float_s32_funcs
+ */
+C_API
+void xs3_s32_odd_powers(
+    int32_t a[],
+    const int32_t b,
+    const unsigned count,
+    const right_shift_t shr);
+
+
+/**
+ * @brief Compute @math{e^x}
+ * 
+ * This function computes @math{e^x} for real input @math{x}.
+ * 
+ * If @math{x} is known to be in the interval @math{\left[-0.5,0.5\right]}, `xs3_q30_exp_small()` 
+ * (which is used internally by this function) may be used instead for a speed boost. 
+ * 
+ * @operation{
+ * &    y \leftarrow e^x
+ * }
+ * 
+ * @param[in]   x     Input @math{x}
+ * 
+ * @returns @math{y}
+ * 
+ * @ingroup xs3_float_s32_funcs
+ */
+C_API
+float_s32_t xs3_float_s32_exp(
     const float_s32_t x);

@@ -21,8 +21,8 @@ TEST_GROUP_RUNNER(float_convert) {
   RUN_TEST_CASE(float_convert, float_s32_to_double);
   RUN_TEST_CASE(float_convert, float_s32_to_float);
 
-  RUN_TEST_CASE(float_convert, float_to_float_s32);
-  RUN_TEST_CASE(float_convert, double_to_float_s32);
+  RUN_TEST_CASE(float_convert, xs3_f32_to_float_s32);
+  RUN_TEST_CASE(float_convert, xs3_f64_to_float_s32);
 }
 
 TEST_GROUP(float_convert);
@@ -158,7 +158,7 @@ TEST(float_convert, float_s32_to_double)
 
 
 
-TEST(float_convert, float_to_float_s32)
+TEST(float_convert, xs3_f32_to_float_s32)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -170,7 +170,7 @@ TEST(float_convert, float_to_float_s32)
 
     x = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 40));
 
-    float_s32_t actual = float_to_float_s32(x);
+    float_s32_t actual = xs3_f32_to_float_s32(x);
 
     if(x != 0.0)
       TEST_ASSERT_LESS_OR_EQUAL(1, HR_S32(actual.mant));
@@ -187,7 +187,7 @@ TEST(float_convert, float_to_float_s32)
 
 
 
-TEST(float_convert, double_to_float_s32)
+TEST(float_convert, xs3_f64_to_float_s32)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -199,7 +199,7 @@ TEST(float_convert, double_to_float_s32)
 
     x = ldexp(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 40));
 
-    float_s32_t actual = double_to_float_s32(x);
+    float_s32_t actual = xs3_f64_to_float_s32(x);
 
     if(x != 0.0)
       TEST_ASSERT_LESS_OR_EQUAL(1, HR_S32(actual.mant));

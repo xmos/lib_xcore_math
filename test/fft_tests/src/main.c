@@ -37,6 +37,8 @@ int main(int argc, const char* argv[])
   RUN_TEST_GROUP(bfp_fft_packing);
   
   RUN_TEST_GROUP(xs3_vect_f32_fft);
+  
+  RUN_TEST_GROUP(bfp_fft_issue96);
 
 #if WRITE_PERFORMANCE_INFO
   fclose(perf_file);

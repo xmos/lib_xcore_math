@@ -71,7 +71,7 @@ TEST(bfp_complex_real_scale, bfp_complex_s16_real_scale)
         headroom_t c_hr = pseudo_rand_uint(&seed, 0, 12);
 
 
-        float C = xs3_pack_float( pseudo_rand_int16(&seed) >> c_hr,
+        float C = xs3_s32_to_f32( pseudo_rand_int16(&seed) >> c_hr,
                                   pseudo_rand_int(&seed, -100, 100) );
 
         for(int i = 0; i < B.length; i++){

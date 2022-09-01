@@ -24,6 +24,8 @@ extern const int32_t vpu_vec_0x00000001[8];
 extern const int32_t vpu_vec_0x00000008[8];
 extern const int32_t vpu_vec_0x40000000[8];
 extern const int32_t vpu_vec_neg_0x40000000[8];
+extern const int32_t vpu_vec_0x20000000[8];
+extern const int32_t vpu_vec_0x10000000[8];
 extern const int32_t vpu_vec_0x80000000[8];
 extern const int32_t vpu_vec_0x7FFFFFFF[8];
 

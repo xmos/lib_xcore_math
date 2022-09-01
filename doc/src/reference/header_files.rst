@@ -67,6 +67,14 @@
 .. doxygenpage:: page_bfp_fft_h
   :content-only:
 
+
+
+`dct.h`
+-----------
+  
+.. doxygenpage:: page_dct_h
+  :content-only:
+
     
     
 `xs3_vect_s8.h`

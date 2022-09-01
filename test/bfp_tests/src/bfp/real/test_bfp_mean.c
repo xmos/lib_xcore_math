@@ -65,7 +65,7 @@ TEST(bfp_mean, bfp_s16_mean)
 
         int16_t Q;
         exponent_t R;
-        xs3_unpack_float_s16(&Q, &R, result);
+        xs3_f32_unpack_s16(&Q, &R, result);
 
         double meanf = ldexp(sum, B.exp) / B.length;
         

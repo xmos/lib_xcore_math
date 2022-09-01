@@ -278,6 +278,7 @@ void xs3_vect_complex_s32_real_mul_prepare(
 {
 
     /*
+      Choose shifts so that most extreme case just hits 2^31. (Saturates to +/- 0x7FFFFFFF)
 
         2^31 = ( -2^31 * 2^-b_hr * 2^-b_shr * -2^31 * 2^-c_hr * 2^-c_shr ) * 2^-30
         2^31 = ( 2^(31+31-b_hr-b_shr-c_hr-c_shr) ) * 2^-30
@@ -290,17 +291,22 @@ void xs3_vect_complex_s32_real_mul_prepare(
         total_shr = (2-1) - total_hr
         total_shr = (1) - total_hr
 
+        So, basically, we get rid of headroom in each vector, and then just choose one to
+        right-shift 1 bit.
     */
-    headroom_t total_hr = b_hr + c_hr;
+    right_shift_t remaining_shr = 1;
 
-    right_shift_t total_shr = 1 - total_hr;
+    *b_shr = -b_hr;
+    *c_shr = -c_hr;
 
-    if(b_hr <= c_hr)
-        *b_shr = total_shr - (total_shr >> 1);
-    else 
-        *b_shr = (total_shr >> 1);
+    // If b had headroom to begin with, then shifting it right 1 more will be lossless.
+    // otherwise shift c right 1 more.
+    if(b_hr > 0){
+      *b_shr += 1;
+      remaining_shr -= 1;
+    }
 
-    *c_shr = total_shr - *b_shr;
+    *c_shr += remaining_shr;
     *a_exp = b_exp + c_exp + *b_shr + *c_shr + 30;
 }
 

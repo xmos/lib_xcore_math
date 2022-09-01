@@ -44,11 +44,11 @@ TEST(bfp_min, bfp_s16_min)
         B.exp = pseudo_rand_int(&seed, -5, 5);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
         
-        float expected = xs3_pack_float(INT16_MAX, B.exp);
+        float expected = xs3_s32_to_f32(INT16_MAX, B.exp);
 
         for(int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
-            expected = MIN(expected, xs3_pack_float(B.data[i], B.exp));
+            expected = MIN(expected, xs3_s32_to_f32(B.data[i], B.exp));
         }
         bfp_s16_headroom(&B);
 

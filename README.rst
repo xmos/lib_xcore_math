@@ -24,6 +24,7 @@ Repository Structure
     * `arch/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/arch/>`_ - Architecture specific (Assembly) source files (with generic C implementations).
     * `bfp/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/bfp/>`_ - Source files for high-level BFP API.
     * `vect/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/vect/>`_- Source files for low-level API.
+    * `scalar/ <https://github.com/xmos/lib_xs3_math/tree/develop/lib_xs3_math/src/scalar/>`_- Source files for scalar API.
 
 * `/test/ <https://github.com/xmos/lib_xs3_math/tree/develop/test/>`_ - Unit test projects for ``lib_xs3_math``.
 

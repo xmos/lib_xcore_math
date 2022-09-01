@@ -2,13 +2,27 @@
 XS3 Math Types
 ==============
 
-Scalar Types
-------------
+Scalar Types (Integer)
+----------------------
 
-.. doxygengroup:: type_scalar
+.. doxygengroup:: type_scalar_int
     :members:
     :content-only:
 
+Scalar Types (Floating-Point)
+-----------------------------
+
+.. doxygengroup:: type_scalar_float
+    :members:
+    :content-only:
+
+
+Scalar Types (Fixed-Point)
+--------------------------
+
+.. doxygengroup:: type_scalar_fixed
+    :members:
+    :content-only:
 
 Block Floating-Point Types
 --------------------------

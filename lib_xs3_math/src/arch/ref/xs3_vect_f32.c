@@ -49,7 +49,7 @@ void xs3_vect_f32_to_s32(
 {
   for(int k = 0; k < length; k++){
     const float B = b[k];
-    const float_s32_t C = float_to_float_s32(B);
+    const float_s32_t C = xs3_f32_to_float_s32(B);
     a[k] = vlashr32(C.mant, exp - C.exp);
   }
 } 

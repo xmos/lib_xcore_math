@@ -63,7 +63,7 @@ TEST(bfp_scale, bfp_s16_scale)
             Af[i] = Bf[i] * alpha_f;
         }
 
-        float alpha = xs3_pack_float(alpha_mant, alpha_exp);
+        float alpha = xs3_s32_to_f32(alpha_mant, alpha_exp);
         
         bfp_s16_scale(&A, &B, alpha);
 

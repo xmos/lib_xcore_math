@@ -67,7 +67,7 @@ TEST(xs3_vect_f32_to_s32, xs3_vect_f32_to_s32)
     exponent_t exp_out = xs3_vect_f32_max_exponent(vec_in, len);
 
     for(int k = 0; k < len; k++){
-      float_s32_t f32 = float_to_float_s32(vec_in[k]);
+      float_s32_t f32 = xs3_f32_to_float_s32(vec_in[k]);
       expected[k] = vlashr32(f32.mant, exp_out - f32.exp);
     }
 
