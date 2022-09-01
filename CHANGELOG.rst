@@ -1,17 +1,22 @@
 lib_xs3_math change log
 =======================
 
-2.0.0
+1.*.*
 -----
 
 Major Changes
 *************
 
-* Support for channel-pair related types and operations has been dropped. These were considered to be too narrowly focused on making use of a single optimization (stereo FFT).
+* Support for channel-pair related types and operations has been dropped. These were considered to
+  be too narrowly focused on making use of a single optimization (stereo FFT).
 
   * This is a backwards compatibility-breaking change, requiring a major version increment.
 
 * Added various scalar arithmetic functions for `float_s32_t` type.
+
+* Adds Discrete Cosine Transform API
+
+* Adds various trig and exponential functions.
 
 Bugfixes
 ********
@@ -50,7 +55,7 @@ New Functions
   * `xs3_vect_sXX_add_scalar()` / `xs3_vect_complex_sXX_add_scalar()` -- Functions to add scalar to a vector (16/32-bit real/complex)
     
 
-* Low-level API
+* Vector API
   
   * Functions supporting mixed-depth operations
 
@@ -78,6 +83,14 @@ New Functions
     * `xs3_vect_f32_dot()` -- Inner product between two float vectors.
 
   * `xs3_vect_sXX_max_elementwise()` / `xs3_vect_sXX_min_elementwise()` -- Element-wise maximum and minimum between two 16-/32-bit vectors.
+
+* DCT API
+
+  * `dctXX_forward()` / `dctXX_inverse()` -- Forward (type-II) and inverse (type-III) `XX`-point DCT implementations.
+  
+    * Current sizes supported are `6`, `8`, `12`, `16`, `24`, `32`, `48` and `64`
+
+  * `dct8x8_forward()` / `dct8x8_inverse()` -- Fast 2D 8-by-8 forward and inverse DCTs.
 
 
 Miscellaneous
