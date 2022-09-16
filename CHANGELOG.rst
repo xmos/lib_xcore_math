@@ -1,6 +1,13 @@
 lib_xcore_math change log
 =========================
 
+2.0.1
+-----
+
+* Bugfix: Fixed issue with including ``xmath/xmath.h`` from XC files.
+* Doc Update: Corrected instructions for configuring CMake using XS3 toolchain.
+
+
 2.0.0
 -----
 
