@@ -73,7 +73,7 @@ to manage build configurations. To configure your CMake build environment for ``
 from the root of the cloned repository, the following command may be used (ensure that the XTC build
 tools are on your path): ::
 
-    mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_toolchain.cmake -G"Unix Makefiles" ..
+    mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Unix Makefiles" ..
 
 Then to actually build the the library as a static binary just use the ``make`` command from the 
 ``build`` directory.
@@ -81,7 +81,7 @@ Then to actually build the the library as a static binary just use the ``make`` 
 To include the unit tests and example applications in your build, use the following command
 instead: ::
 
-    mkdir build && cd build && cmake -DDEV_LIB_XCORE_MATH=1 -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_toolchain.cmake -G"Unix Makefiles" ..
+    mkdir build && cd build && cmake -DDEV_LIB_XCORE_MATH=1 -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Unix Makefiles" ..
 
 If you wish to include ``lib_xcore_math`` in your own application as a static library, the generated
 ``lib_xcore_math.a`` can then be linked into your own application. Be sure to also add
