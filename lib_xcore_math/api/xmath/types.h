@@ -7,9 +7,9 @@
 
 #include "api.h"
 
-
-
-
+#ifdef __XC__
+extern "C" { 
+#endif
 
 /**
  * @defgroup type_scalar_int      xmath Scalar Types (Integer)
@@ -522,3 +522,8 @@ typedef q1_31 sbrad_t;
  * @ingroup type_scalar_fixed
  */
 typedef q8_24 radian_q24_t;
+
+
+#ifdef __XC__
+} 
+#endif

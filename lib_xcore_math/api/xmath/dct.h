@@ -50,7 +50,7 @@ static const exponent_t dct8_exp = 4;
  * 
  * @ingroup dct_api
  */
-static const exponent_t dct12_exp = dct6_exp + 3;
+static const exponent_t dct12_exp = 7;
 
 /**
  * @brief Scaling exponent associated with `dct16_forward()`
@@ -62,7 +62,7 @@ static const exponent_t dct12_exp = dct6_exp + 3;
  * 
  * @ingroup dct_api
  */
-static const exponent_t dct16_exp = dct8_exp + 3;
+static const exponent_t dct16_exp = 7;
 
 /**
  * @brief Scaling exponent associated with `dct24_forward()`
@@ -74,7 +74,7 @@ static const exponent_t dct16_exp = dct8_exp + 3;
  * 
  * @ingroup dct_api
  */
-static const exponent_t dct24_exp = dct12_exp + 3;
+static const exponent_t dct24_exp = 10;
 
 /**
  * @brief Scaling exponent associated with `dct32_forward()`
@@ -86,7 +86,7 @@ static const exponent_t dct24_exp = dct12_exp + 3;
  * 
  * @ingroup dct_api
  */
-static const exponent_t dct32_exp = dct16_exp + 3;
+static const exponent_t dct32_exp = 10;
 
 /**
  * @brief Scaling exponent associated with `dct48_forward()`
@@ -98,7 +98,7 @@ static const exponent_t dct32_exp = dct16_exp + 3;
  * 
  * @ingroup dct_api
  */
-static const exponent_t dct48_exp = dct24_exp + 3;
+static const exponent_t dct48_exp = 13;
 
 /**
  * @brief Scaling exponent associated with `dct64_forward()`
@@ -110,7 +110,7 @@ static const exponent_t dct48_exp = dct24_exp + 3;
  * 
  * @ingroup dct_api
  */
-static const exponent_t dct64_exp = dct32_exp + 3;
+static const exponent_t dct64_exp = 13;
 
 
 /**
