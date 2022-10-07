@@ -1,67 +1,58 @@
-## App name
 set( APP_NAME  vect_tests )
 
-## Depends on libraries
-list( APPEND  DEP_LIBS        lib_xs3_math 
-                              unity 
-                              test_shared )
+## If XCORE_TARGET hasn't been specified, default to XCORE-AI-EXPLORER
+if( NOT DEFINED XCORE_TARGET )
+  set( XCORE_TARGET XCORE-AI-EXPLORER )
+endif()
 
-list( APPEND  DEP_LIBS_XCORE  ""  )
-list( APPEND  DEP_LIBS_Linux  m   )
 
 ## Sources
 file( GLOB_RECURSE SOURCES_C  src/*.c )
 file( GLOB_RECURSE SOURCES_XC src/*.xc )
 
-set( XSCOPE_CONFIG config.xscope )
+add_executable( ${APP_NAME} )
 
-## Compile flags
-unset(COMPILE_FLAGS)
-list( APPEND  COMPILE_FLAGS   -Wno-unused-variable )
+target_sources( ${APP_NAME}
+  PRIVATE
+    ${SOURCES_C}
+    $<$<PLATFORM_ID:XCORE_XS3A>:${SOURCES_XC}>
+)
 
-unset(COMPILE_FLAGS_XCORE)
-list( APPEND  COMPILE_FLAGS_XCORE    )
+target_include_directories( ${APP_NAME} 
+  PRIVATE 
+    src 
+)
 
-unset(COMPILE_FLAGS_Linux)
-list( APPEND  COMPILE_FLAGS_XCORE   "" )
+target_compile_options( ${APP_NAME}
+  PRIVATE 
+    -Os -g -Wno-format -Wno-unused-variable
+    $<$<PLATFORM_ID:XCORE_XS3A>:-MMD>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-mcmodel=large>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
+)
 
-## Linker flags
-unset(LINKER_FLAGS)
-list( APPEND  LINKER_FLAGS  "" )
+target_link_options( ${APP_NAME}
+  PRIVATE
+    $<$<PLATFORM_ID:XCORE_XS3A>:-target=${XCORE_TARGET}>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-report>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-fcmdline-buffer-bytes=1024>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
+)
 
-unset(LINKER_FLAGS_XCORE)
-list( APPEND  LINKER_FLAGS_XCORE  -target=${XCORE_TARGET} )
-list( APPEND  LINKER_FLAGS_XCORE  -report                 )
+target_compile_definitions( ${APP_NAME}
+  PRIVATE
+    $<$<PLATFORM_ID:Linux>:USE_REF=1>
+    $<$<PLATFORM_ID:Darwin>:USE_REF=1>
+    SMOKE_TEST=$<BOOL:${XMATH_SMOKE_TEST}>
+)
 
-unset(LINKER_FLAGS_Linux)
-list( APPEND  LINKER_FLAGS_Linux  ""                      )
+target_link_libraries( ${APP_NAME}
+  lib_xcore_math
+  test_shared
+  unity
+  $<$<PLATFORM_ID:Linux>:m>
+  $<$<PLATFORM_ID:Darwin>:m>
+)
 
-
-#########
-
-list( APPEND  SOURCES         ${SOURCES_C}     )
-list( APPEND  SOURCES_XCORE   ${SOURCES_XC}    )
-list( APPEND  SOURCES_XCORE   ${XSCOPE_CONFIG} )
-list( APPEND  SOURCES   ${SOURCES_${CMAKE_SYSTEM_NAME}} )
-
-list( APPEND  COMPILE_FLAGS ${COMPILE_FLAGS_${CMAKE_SYSTEM_NAME}} )
-
-list( APPEND  LINKER_FLAGS ${LINKER_FLAGS_${CMAKE_SYSTEM_NAME}} )
-
-list( APPEND  DEP_LIBS ${DEP_LIBS_${CMAKE_SYSTEM_NAME}} )
-
-add_executable( ${APP_NAME} ${SOURCES} )
-
-target_link_libraries( ${APP_NAME} ${DEP_LIBS})
-
-target_compile_options( ${APP_NAME} PRIVATE ${COMPILE_FLAGS} )
-
-#(because otherwise the set_target_properties command fails)
-string(REPLACE ";" " " LINKER_FLAGS_STR "${LINKER_FLAGS}")
-
-
-set_target_properties( ${APP_NAME} PROPERTIES LINK_FLAGS "${LINKER_FLAGS_STR}" )
-
-if ( XCORE )
-  set_target_properties( ${APP_NAME} PROPERTIES   SUFFIX ".xe" )
-endif()
+add_dependencies( lib_xcore_math-tests  ${APP_NAME} )

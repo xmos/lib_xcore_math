@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include "testing.h"
@@ -9,28 +9,6 @@
 /*
  * Float/Fixed comparision
  */
-unsigned abs_diff_ch_pair_s16(
-    ch_pair_s16_t B, 
-    const exponent_t B_exp,
-    ch_pair_double_t f, 
-    int channel_index, 
-    conv_error_e* error)
-{
-    return abs_diff_s16(((int16_t*)&B)[channel_index], B_exp,
-            ((double*)&f)[channel_index], error);
-}
-
-unsigned abs_diff_ch_pair_s32(
-    ch_pair_s32_t B, 
-    const exponent_t B_exp,
-    ch_pair_double_t f, 
-    int channel_index, 
-    conv_error_e* error)
-{
-    return abs_diff_s32(((int32_t*)&B)[channel_index], B_exp,
-            ((double*)&f)[channel_index], error);
-}
-
 unsigned abs_diff_complex_s16(
     complex_s16_t B, 
     const exponent_t B_exp, 
@@ -141,43 +119,6 @@ unsigned abs_diff_u32(
 /*
  * Float/Fixed vector comparision
  */
-unsigned abs_diff_vect_ch_pair_s16(
-    ch_pair_s16_t * B, 
-    const exponent_t B_exp,
-    ch_pair_double_t * f, 
-    unsigned length, 
-    int channel_index, 
-    conv_error_e* error)
-{
-    unsigned max_diff = 0;
-
-    for(unsigned i=0;i<length;i++){
-        unsigned diff = abs_diff_ch_pair_s16(B[i], B_exp, f[i], channel_index, error);
-        if( diff > max_diff) {
-            max_diff = diff;
-        }
-    }
-    return max_diff;
-}
-
-unsigned abs_diff_vect_ch_pair_s32(
-    ch_pair_s32_t * B, 
-    const exponent_t B_exp,
-    ch_pair_double_t * f, 
-    unsigned length, 
-    int channel_index, 
-    conv_error_e* error)
-{
-    unsigned max_diff = 0;
-
-    for(unsigned i=0;i<length;i++){
-        unsigned diff = abs_diff_ch_pair_s32(B[i], B_exp, f[i], channel_index, error);
-        if( diff > max_diff) {
-            max_diff = diff;
-        }
-    }
-    return max_diff;
-}
 
 unsigned abs_diff_vect_complex_s16(
     complex_s16_t * B, 

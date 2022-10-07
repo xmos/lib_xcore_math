@@ -1,20 +1,27 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 // XMOS Public License: Version 1
 
 #include "pseudo_rand.h"
 
 #include <assert.h>
+#include <stdlib.h>
+
+// int pseudo_rand(int* state)
+// {
+//   const int a = 1664525;
+//   const int c = 1013904223;
+//   *state = (int)((long long)a * (*state) + c);
+//   return *state;
+// }
 
 int pseudo_rand(int* state)
 {
-  const int a = 1664525;
-  const int c = 1013904223;
-  *state = (int)((long long)a * (*state) + c);
-  return *state;
+  srand((unsigned) *state);
+  int res = (rand() << 16) ^ rand();
+  *state = res;
+  return res;
 }
-
-
 
 
 int8_t  pseudo_rand_int8(unsigned *r){
@@ -85,11 +92,10 @@ uint32_t pseudo_rand_uint(
 }
 
 
-
-
 void pseudo_rand_bytes(unsigned *r, char* buffer, unsigned size){
-
+#ifdef __xcore__
     assert((((unsigned)buffer) & 0x3) == 0);
+#endif
 
     unsigned b = 0;
 

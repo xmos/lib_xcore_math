@@ -1,22 +1,18 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 #pragma once
 
-#include "xs3_math_conf.h"
-#include "xs3_api.h"
-#include "xs3_math_types.h"
+#include "xmath/xmath_conf.h"
+#include "xmath/api.h"
+#include "xmath/types.h"
 
 
-#ifdef __xcore__
-
-C_API unsigned getTimestamp();
-
-#else
-
-// Stub for getTimestamp() when building for non-xcore (where we don't care about timing)
-static inline unsigned getTimestamp() { return 0; }
-
-#endif
+/**
+ * xCore: Get 100MHz reference clock timestamp
+ * x86: Return 0
+ */
+C_API 
+unsigned getTimestamp();
 
 
 /*
@@ -56,14 +52,12 @@ C_API uint32_t conv_double_to_u32(double d, const exponent_t d_exp, conv_error_e
 C_API int64_t conv_double_to_s64 (double d, const exponent_t d_exp, conv_error_e *error);
 C_API uint64_t conv_double_to_u64(double d, const exponent_t d_exp, conv_error_e *error);
 
+
 C_API complex_double_t conv_complex_s16_to_complex_double(complex_s16_t x, const exponent_t x_exp, conv_error_e *error);
 C_API complex_double_t conv_complex_s32_to_complex_double(complex_s32_t x, const exponent_t x_exp, conv_error_e *error);
-C_API ch_pair_double_t conv_ch_pair_s16_to_ch_pair_double(ch_pair_s16_t x, const exponent_t x_exp, conv_error_e *error);
-C_API ch_pair_double_t conv_ch_pair_s32_to_ch_pair_double(ch_pair_s32_t x, const exponent_t x_exp, conv_error_e *error);
 C_API complex_s16_t conv_complex_double_to_complex_s16(complex_double_t x, const exponent_t x_exp, conv_error_e *error);
 C_API complex_s32_t conv_complex_double_to_complex_s32(complex_double_t x, const exponent_t x_exp, conv_error_e *error);
-C_API ch_pair_s16_t conv_ch_pair_double_to_ch_pair_s16(ch_pair_double_t x, const exponent_t x_exp, conv_error_e *error);
-C_API ch_pair_s32_t conv_ch_pair_double_to_ch_pair_s32(ch_pair_double_t x, const exponent_t x_exp, conv_error_e *error);
+C_API complex_s64_t conv_complex_double_to_complex_s64(complex_double_t x, const exponent_t x_exp, conv_error_e* error);
 
 
 C_API void conv_vect_s16_to_double(double output[], const int16_t input[], const unsigned length, const exponent_t input_exp, conv_error_e *error);
@@ -73,13 +67,9 @@ C_API void conv_vect_complex_s32_to_complex_double(complex_double_t output[], co
 C_API void conv_vect_complex_s32_to_complex_double_v2(double out_real[], double out_imag[], const complex_s32_t input[], const unsigned length, const exponent_t input_exp, conv_error_e *error);
 
 
-
-
 /*
  * Float/Fixed comparision
  */
-C_API unsigned abs_diff_ch_pair_s16(ch_pair_s16_t B, const exponent_t B_exp,ch_pair_double_t f, int channel_index, conv_error_e* error);
-C_API unsigned abs_diff_ch_pair_s32(ch_pair_s32_t B, const exponent_t B_exp,ch_pair_double_t f, int channel_index, conv_error_e* error);
 C_API unsigned abs_diff_complex_s16(complex_s16_t B, const exponent_t B_exp, complex_double_t f, conv_error_e* error);
 C_API unsigned abs_diff_complex_s32(complex_s32_t B, const exponent_t B_exp, complex_double_t f, conv_error_e* error);
 C_API unsigned abs_diff_s8(int8_t B, const exponent_t B_exp, double f, conv_error_e* error);
@@ -93,8 +83,6 @@ C_API unsigned abs_diff_u32(uint32_t B, const exponent_t B_exp, double f, conv_e
 /*
  * Float/Fixed vector comparision
  */
-C_API unsigned abs_diff_vect_ch_pair_s16(ch_pair_s16_t * B, const exponent_t B_exp, ch_pair_double_t * f, unsigned length, int channel_index, conv_error_e* error);
-C_API unsigned abs_diff_vect_ch_pair_s32(ch_pair_s32_t * B, const exponent_t B_exp, ch_pair_double_t * f, unsigned length, int channel_index, conv_error_e* error);
 C_API unsigned abs_diff_vect_complex_s16(complex_s16_t * B, const exponent_t B_exp, complex_double_t * f, unsigned length, conv_error_e* error);
 C_API unsigned abs_diff_vect_complex_s32(complex_s32_t * B, const exponent_t B_exp, complex_double_t * f, unsigned length, conv_error_e* error);
 C_API unsigned abs_diff_vect_s8( int8_t * B, const exponent_t B_exp, double * f, unsigned length,conv_error_e* error);
@@ -105,16 +93,10 @@ C_API unsigned abs_diff_vect_u16(uint16_t * B, const exponent_t B_exp, double * 
 C_API unsigned abs_diff_vect_u32(uint32_t * B, const exponent_t B_exp, double * f, unsigned length,conv_error_e* error);
 
 
-
-
-
 #define TESTING_FLOAT_NUM_DIGITS 22
 
 #define PRINT_VAR(VAR, THING)  do{ printf("%s = ", VAR); THING; } while(0)
 
-C_API void print_vect_ch_pair_s16(ch_pair_s16_t * B, const exponent_t B_exp, unsigned length, int channel_index, conv_error_e* error);
-C_API void print_vect_ch_pair_s32(ch_pair_s32_t * B, const exponent_t B_exp,unsigned length, int channel_index, conv_error_e* error);
-C_API void print_vect_ch_pair_double(ch_pair_double_t * B, unsigned length,  int channel_index, conv_error_e* error);
 C_API void print_vect_complex_s16(complex_s16_t * B, const exponent_t B_exp, unsigned length, conv_error_e* error);
 C_API void print_vect_complex_s16_fft(complex_s16_t * B, const exponent_t B_exp, unsigned length, conv_error_e* error);
 C_API void print_vect_complex_s32(complex_s32_t * B, const exponent_t B_exp, unsigned length, conv_error_e* error);
@@ -137,3 +119,9 @@ C_API void print_vect_double(double * B, unsigned length, conv_error_e* error);
     do{ printf("[(plt.plot(np.real(qwer),label='real'),plt.plot(np.imag(qwer),label='imag')) for qwer in [\n"); \
         A; printf(" - \n"); B; printf("]]\n"); } while(0)
         
+
+// Get a (weakly) pseudo-random unsigned integer derived from the name of
+// the containing function. This is intended to provide a unique random seed 
+// for each test case.
+#define SEED_FROM_FUNC_NAME()    get_seed(__func__, sizeof(__func__))
+C_API unsigned get_seed(const char* str, const unsigned len);

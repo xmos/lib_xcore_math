@@ -1,4 +1,4 @@
-// Copyright 2020-2021 XMOS LIMITED.
+// Copyright 2020-2022 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -7,23 +7,30 @@
 #include <string.h>
 #include <assert.h>
 
-#include "bfp_math.h"
+#include "xmath/xmath.h"
 
 #include "../../tst_common.h"
 
-#include "unity.h"
+#include "unity_fixture.h"
 
-#if DEBUG_ON || 0
-#undef DEBUG_ON
-#define DEBUG_ON    (1)
+
+TEST_GROUP_RUNNER(bfp_complex_real_mul) {
+  RUN_TEST_CASE(bfp_complex_real_mul, bfp_complex_s16_real_mul);
+  RUN_TEST_CASE(bfp_complex_real_mul, bfp_complex_s32_real_mul);
+  RUN_TEST_CASE(bfp_complex_real_mul, bfp_complex_s32_real_mulB);
+}
+
+TEST_GROUP(bfp_complex_real_mul);
+TEST_SETUP(bfp_complex_real_mul) { fflush(stdout); }
+TEST_TEAR_DOWN(bfp_complex_real_mul) {}
+
+#if SMOKE_TEST
+#  define REPS       (100)
+#  define MAX_LEN    (128)
+#else
+#  define REPS       (1000)
+#  define MAX_LEN    (512)
 #endif
-
-
-#define REPS        1000
-#define MAX_LEN     40 
-
-
-static unsigned seed = 666;
 
 
 static char msg_buff[200];
@@ -35,14 +42,9 @@ static char msg_buff[200];
     }} while(0)
 
 
-
-
-
-void test_bfp_complex_s16_real_mul()
+TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 546457;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     struct {
         int16_t WORD_ALIGNED real[MAX_LEN];
@@ -67,7 +69,7 @@ void test_bfp_complex_s16_real_mul()
     } expA;
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         bfp_complex_s16_init(&B, B_data.real, B_data.imag, 
             pseudo_rand_int(&seed, -30, 30),
@@ -96,7 +98,7 @@ void test_bfp_complex_s16_real_mul()
 
         bfp_complex_s16_real_mul(&A, &B, &C);
 
-        TEST_ASSERT_EQUAL(xs3_vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr);
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
@@ -113,14 +115,9 @@ void test_bfp_complex_s16_real_mul()
 }
 
 
-
-
-
-void test_bfp_complex_s32_real_mul()
+TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
 {
-    PRINTF("%s...\n", __func__);
-
-    seed = 546457;
+    unsigned seed = SEED_FROM_FUNC_NAME();
 
     complex_s32_t A_data[MAX_LEN], B_data[MAX_LEN];
 
@@ -140,7 +137,7 @@ void test_bfp_complex_s32_real_mul()
     complex_s32_t expected[MAX_LEN];
 
     for(int r = 0; r < REPS; r++){
-        PRINTF("\trep % 3d..\t(seed: 0x%08X)\n", r, seed);
+        setExtraInfo_RS(r, seed);
 
         bfp_complex_s32_init(&B, B_data, 
             pseudo_rand_int(&seed, -30, 30),
@@ -170,7 +167,7 @@ void test_bfp_complex_s32_real_mul()
 
         bfp_complex_s32_real_mul(&A, &B, &C);
 
-        TEST_ASSERT_EQUAL(xs3_vect_complex_s32_headroom(A.data, A.length), A.hr);
+        TEST_ASSERT_EQUAL(vect_complex_s32_headroom(A.data, A.length), A.hr);
 
         test_complex_s32_from_double(expected, Af.real, Af.imag, MAX_LEN, A.exp);
 
@@ -186,13 +183,64 @@ void test_bfp_complex_s32_real_mul()
     }
 }
 
-
-
-
-
-void test_bfp_mul_vect_complex()
+/**
+  *  astew: 2022/07/01 -- Test case comes from Shuchita via issue #102.
+  *         Added to unit tests to make sure this loop is closed.
+  *  
+  *  This test case demonstrated a bug in the logic of vect_complex_s32_real_mul_prepare(), 
+  *   which was allowing the input vectors to be left-shifted more bits than they had headroom.
+  *   vect_complex_s32_real_mul_prepare() has been fixed, so this should no longer be an issue.
+  */
+TEST(bfp_complex_real_mul, bfp_complex_s32_real_mulB)
 {
-    SET_TEST_FILE();
-    RUN_TEST(test_bfp_complex_s16_real_mul);
-    RUN_TEST(test_bfp_complex_s32_real_mul);
+  complex_s32_t DWORD_ALIGNED in_data[10];
+  int32_t DWORD_ALIGNED scale_data[10];
+  bfp_complex_s32_t input;
+  bfp_s32_t scale;
+  bfp_complex_s32_init(&input, in_data, 0, 10, 0);
+  bfp_s32_init(&scale, scale_data, 0, 10, 0);
+
+  in_data[0].re = 53956423;
+  in_data[0].im = 0;
+  in_data[1].re = 62086712;
+  in_data[1].im = -33052879;
+  in_data[2].re = 85460880;
+  in_data[2].im = -60238506;
+  in_data[3].re = 121141046;
+  in_data[3].im = -76358395;
+  in_data[4].re = 164591974;
+  in_data[4].im = -77478642;
+  in_data[5].re = 210181752;
+  in_data[5].im = -61388184;
+  in_data[6].re = 251804911;
+  in_data[6].im = -27869327;
+  in_data[7].re = 283560427;
+  in_data[7].im = 21248980;
+  in_data[8].re = 300411153;
+  in_data[8].im = 82261225;
+  in_data[9].re = 298753162;
+  in_data[9].im = 149960635;
+  input.exp = -34;
+  input.hr = 2;
+
+  for(int i=0; i<10; i++) {
+      scale_data[i] = 8388608;
+  }
+  scale.exp = -23;
+  scale.hr = 7;
+
+  complex_s32_t DWORD_ALIGNED out_data[10];
+  bfp_complex_s32_t output;
+  bfp_complex_s32_init(&output, out_data, 0, 10, 0);
+
+  bfp_complex_s32_real_mul(&output, &input, &scale); // Error_ap[0][f] * 
+
+  bfp_complex_s32_shl(&output, &output, output.hr);
+  bfp_complex_s32_shl(&input, &input, input.hr);
+
+  for(int i=0; i<10; i++) {
+    TEST_ASSERT_EQUAL_INT32(input.data[i].re, output.data[i].re);
+    TEST_ASSERT_EQUAL_INT32(input.data[i].im, output.data[i].im);
+  }
 }
+
