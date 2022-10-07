@@ -26,6 +26,7 @@ target_sources( ${LIB_NAME}
     ${SOURCES_CPP}
     $<$<PLATFORM_ID:XCORE_XS3A>:${SOURCES_ASM}>
     $<$<PLATFORM_ID:Linux>:${SOURCES_REF}>
+    $<$<PLATFORM_ID:Darwin>:${SOURCES_REF}>
 )
 
 target_include_directories( ${LIB_NAME}
