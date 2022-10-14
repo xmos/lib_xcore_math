@@ -27,7 +27,7 @@ Pull the docker container:
 
 .. code-block:: console
 
-    $ docker pull ghcr.io/xmos/doc_builder:main
+    docker pull ghcr.io/xmos/doc_builder:main
 
 ========
 Building
@@ -37,7 +37,7 @@ Build documentation:
 
 .. code-block:: console
 
-    $ docker run --rm -t -u "$(id -u):$(id -g)" -v $(pwd)/lib_xcore_math:/build -e REPO:/build -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc ghcr.io/xmos/doc_builder:main
+    docker run --rm -t -u "$(id -u):$(id -g)" -v $(pwd):/build -e REPO:/build -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc ghcr.io/xmos/doc_builder:latest
 
 ********************
 Without Using Docker
@@ -53,7 +53,7 @@ Install the required Python packages:
 
 .. code-block:: console
 
-    $ pip install -r requirements.txt
+    pip install -r requirements.txt
 
 ========
 Building
@@ -63,22 +63,22 @@ Build documentation:
 
 .. code-block:: console
 
-    $ make html
+    make html
 
 Launch sphinx-autobuild server:
 
 .. code-block:: console
 
-    $ make livehtml
+    make livehtml
 
 Clean documentation:
 
 .. code-block:: console
 
-    $ make clean
+    make clean
 
 Clean and build documentation with link check:
 
 .. code-block:: console
     
-    $ make clean html linkcheck SPHINXOPTS="-W --keep-going"
+    make clean html linkcheck SPHINXOPTS="-W --keep-going"
