@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "../types.h"
-#include "../xs3/vpu_info.h"
+#include "xmath/types.h"
+#include "xmath/xs3/vpu_info.h"
 
 #include <stdio.h>
 #include <assert.h>

@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "bfp_s16.h"
-#include "bfp_s32.h"
-#include "bfp_complex_s16.h"
-#include "bfp_complex_s32.h"
-#include "bfp_misc.h"
+#include "xmath/bfp/bfp_s16.h"
+#include "xmath/bfp/bfp_s32.h"
+#include "xmath/bfp/bfp_complex_s16.h"
+#include "xmath/bfp/bfp_complex_s32.h"
+#include "xmath/bfp/bfp_misc.h"

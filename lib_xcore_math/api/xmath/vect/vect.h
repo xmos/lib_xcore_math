@@ -4,11 +4,11 @@
 #pragma once
 
 
-#include "chunk_s32.h"
-#include "vect_complex_s16.h"
-#include "vect_complex_s32.h"
-#include "vect_f32.h"
-#include "vect_mixed.h"
-#include "vect_s8.h"
-#include "vect_s16.h"
-#include "vect_s32.h"
+#include "xmath/vect/chunk_s32.h"
+#include "xmath/vect/vect_complex_s16.h"
+#include "xmath/vect/vect_complex_s32.h"
+#include "xmath/vect/vect_f32.h"
+#include "xmath/vect/vect_mixed.h"
+#include "xmath/vect/vect_s8.h"
+#include "xmath/vect/vect_s16.h"
+#include "xmath/vect/vect_s32.h"

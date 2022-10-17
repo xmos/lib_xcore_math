@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include "../xmath_conf.h"
-#include "../types.h"
-#include "../util.h"
+#include "xmath/xmath_conf.h"
+#include "xmath/types.h"
+#include "xmath/util.h"
 
 /**
  * @defgroup vect_s8_api   8-bit Vector Functions

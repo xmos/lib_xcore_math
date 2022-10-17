@@ -4,21 +4,21 @@
 #pragma once
 
 
-#include "xmath_conf.h"
-#include "api.h"
-#include "types.h"
+#include "xmath/xmath_conf.h"
+#include "xmath/api.h"
+#include "xmath/types.h"
 
-#include "vect/vect.h"
-#include "scalar/scalar.h"
-#include "bfp/bfp.h"
+#include "xmath/vect/vect.h"
+#include "xmath/scalar/scalar.h"
+#include "xmath/bfp/bfp.h"
 
-#include "dct.h"
-#include "fft.h"
-#include "filter.h"
+#include "xmath/dct.h"
+#include "xmath/fft.h"
+#include "xmath/filter.h"
 
-#include "util.h"
-#include "q_format.h"
+#include "xmath/util.h"
+#include "xmath/q_format.h"
 
 #ifdef __XS3A__
-#include "xs3/vpu_info.h"
+#include "xmath/xs3/vpu_info.h"
 #endif

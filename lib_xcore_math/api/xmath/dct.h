@@ -4,7 +4,7 @@
 #pragma once
 
 #include "xmath/types.h"
-#include "_support/dct_impl.h"
+#include "xmath/_support/dct_impl.h"
 
 /**
  * @defgroup dct_api  XMath DCT API

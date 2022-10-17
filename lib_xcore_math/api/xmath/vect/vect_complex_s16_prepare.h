@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include "../xmath_conf.h"
-#include "../types.h"
-#include "../util.h"
+#include "xmath/xmath_conf.h"
+#include "xmath/types.h"
+#include "xmath/util.h"
 
 /**
  * @defgroup vect_complex_s16_prepare_api   Complex 16-bit Vector Prepare Functions
