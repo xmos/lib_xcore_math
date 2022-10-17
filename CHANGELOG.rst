@@ -1,6 +1,11 @@
 lib_xcore_math change log
 =========================
 
+2.0.2
+-----
+
+* Updated CMake configuration to support Darwin platform.
+
 2.0.1
 -----
 

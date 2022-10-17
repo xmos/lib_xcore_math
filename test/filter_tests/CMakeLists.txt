@@ -44,6 +44,7 @@ target_link_options( ${APP_NAME}
 target_compile_definitions( ${APP_NAME}
   PRIVATE
     $<$<PLATFORM_ID:Linux>:USE_REF=1>
+    $<$<PLATFORM_ID:Darwin>:USE_REF=1>
     SMOKE_TEST=$<BOOL:${XS3_MATH_SMOKE_TEST}>
 )
 
@@ -52,6 +53,7 @@ target_link_libraries( ${APP_NAME}
   test_shared
   unity
   $<$<PLATFORM_ID:Linux>:m>
+  $<$<PLATFORM_ID:Darwin>:m>
 )
 
 add_dependencies( lib_xcore_math-tests  ${APP_NAME} )
