@@ -74,6 +74,10 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(vect_f32_to_vect_s32);
     RUN_TEST_GROUP(vect_s32_to_vect_f32);
     RUN_TEST_GROUP(vect_f32_dot);
+    RUN_TEST_GROUP(vect_f32_add);
+
+    RUN_TEST_GROUP(vect_complex_f32_mul);
+    RUN_TEST_GROUP(vect_complex_f32_macc);
 
 
     // misc

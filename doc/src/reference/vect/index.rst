@@ -461,6 +461,9 @@ the operation takes two vector inputs and a scalar input, and the output is a ve
 | :c:func:`vect_f32_dot()`                        |     | :math:`(\mathbb{V \times V})`            |
 |                                                 |     | :math:`\to \mathbb{s}`                   |
 +-------------------------------------------------+-----+------------------------------------------+
+| :c:func:`vect_f32_add()`                        |  x  | :math:`\mathbb{V \times V}`              |
+|                                                 |     | :math:`\to \mathbb{V}`                   |
++-------------------------------------------------+-----+------------------------------------------+
 | :c:func:`vect_float_s32_log_base()`             |  x  | :math:`(\mathbb{V \times s})`            |
 |                                                 |     | :math:`\to \mathbb{V}`                   |
 +-------------------------------------------------+-----+------------------------------------------+
@@ -474,6 +477,21 @@ the operation takes two vector inputs and a scalar input, and the output is a ve
 |                                                 |     | :math:`\to \mathbb{V}`                   |
 +-------------------------------------------------+-----+------------------------------------------+
 | :c:func:`chunk_float_s32_log()`                 |  x  | :math:`\mathbb{V}`                       |
+|                                                 |     | :math:`\to \mathbb{V}`                   |
++-------------------------------------------------+-----+------------------------------------------+
+| :c:func:`vect_complex_f32_add()`                |  x  | :math:`\mathbb{V \times V}`              |
+|                                                 |     | :math:`\to \mathbb{V}`                   |
++-------------------------------------------------+-----+------------------------------------------+
+| :c:func:`vect_complex_f32_mul()`                |  x  | :math:`\mathbb{V \times V}`              |
+|                                                 |     | :math:`\to \mathbb{V}`                   |
++-------------------------------------------------+-----+------------------------------------------+
+| :c:func:`vect_complex_f32_conj_mul()`           |  x  | :math:`\mathbb{V \times V}`              |
+|                                                 |     | :math:`\to \mathbb{V}`                   |
++-------------------------------------------------+-----+------------------------------------------+
+| :c:func:`vect_complex_f32_macc()`               |  x  | :math:`\mathbb{V \times V \times V}`     |
+|                                                 |     | :math:`\to \mathbb{V}`                   |
++-------------------------------------------------+-----+------------------------------------------+
+| :c:func:`vect_complex_f32_conj_macc()`          |  x  | :math:`\mathbb{V \times V \times V}`     |
 |                                                 |     | :math:`\to \mathbb{V}`                   |
 +-------------------------------------------------+-----+------------------------------------------+
 
