@@ -27,7 +27,7 @@ doxy:
 	doxygen
 
 $(DOXYGEN_OUTPUT_DIR)/index.xml: Doxyfile
-	mkdir -p $(DOXYGEN_OUTPUT)
+	cmake -E make_directory $(DOXYGEN_OUTPUT)
 	doxygen
 
 # Catch-all target: route all unknown targets to Sphinx using the new
