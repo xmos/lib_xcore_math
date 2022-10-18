@@ -55,7 +55,7 @@ FUNCTION_NAME:
 { ldaw vec_pow, sp[VEC_POW]   ; ldw r11, coef[0]            }
   std r11, r11, tmp[0]
 { ldaw vec_acc, sp[VEC_ACC]   ; vldd tmp[0]                 }
-{ ldaw tmp, sp[VEC_COEF2]     ; vfttf                       }
+{ ldaw tmp, sp[VEC_COEF]      ; vfttf                       }
 { add coef, coef, 4           ; vstd vec_coef[0]            }
 {                             ; vldc vec_coef[0]            }
   ldaw r11, cp[vpu_vec_0x40000000]
