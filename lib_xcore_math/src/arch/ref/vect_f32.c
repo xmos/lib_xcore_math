@@ -65,3 +65,85 @@ void vect_s32_to_vect_f32(
     a[k] = (float) ldexp(b[k], b_exp);
   }
 }
+
+
+void vect_f32_add(
+  float a[],
+  const float b[],
+  const float c[],
+  const unsigned length)
+{
+  for(int k = 0; k < length; k++){
+    a[k] = b[k] + c[k];
+  }
+}
+
+  
+void vect_complex_f32_mul(
+  complex_float_t a[],
+  const complex_float_t b[],
+  const complex_float_t c[],
+  const unsigned length)
+{
+  for(int k = 0; k < length; k++){
+    // Must copy to stack in case  a==b or a==c
+    complex_float_t B = b[k];
+    complex_float_t C = c[k];
+
+    a[k].re = B.re * C.re - B.im * C.im;
+    a[k].im = B.im * C.re + B.re * C.im;
+  }
+}
+
+  
+void vect_complex_f32_conj_mul(
+  complex_float_t a[],
+  const complex_float_t b[],
+  const complex_float_t c[],
+  const unsigned length)
+{
+  for(int k = 0; k < length; k++){
+    // Must copy to stack in case  a==b or a==c
+    complex_float_t B = b[k];
+    complex_float_t C = c[k];
+
+    a[k].re = B.re * C.re + B.im * C.im;
+    a[k].im = B.im * C.re - B.re * C.im;
+  }
+}
+
+  
+void vect_complex_f32_macc(
+  complex_float_t a[],
+  const complex_float_t b[],
+  const complex_float_t c[],
+  const unsigned length)
+{
+  for(int k = 0; k < length; k++){
+    // Must copy to stack in case  a==b or a==c
+    complex_float_t A = a[k];
+    complex_float_t B = b[k];
+    complex_float_t C = c[k];
+
+    a[k].re = A.re + B.re * C.re - B.im * C.im;
+    a[k].im = A.im + B.im * C.re + B.re * C.im;
+  }
+}
+  
+
+void vect_complex_f32_conj_macc(
+  complex_float_t a[],
+  const complex_float_t b[],
+  const complex_float_t c[],
+  const unsigned length)
+{
+  for(int k = 0; k < length; k++){
+    // Must copy to stack in case  a==b or a==c
+    complex_float_t A = a[k];
+    complex_float_t B = b[k];
+    complex_float_t C = c[k];
+
+    a[k].re = A.re + B.re * C.re + B.im * C.im;
+    a[k].im = A.im + B.im * C.re - B.re * C.im;
+  }
+}
