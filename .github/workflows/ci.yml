@@ -110,7 +110,7 @@ jobs:
 # Ultimately checks that module_build_info is correct enough to build (with xmake) a trivial app 
 # which uses this library.
   build_legacy_app:
-    name: 
+    name: Build App (xmake)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
