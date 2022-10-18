@@ -1,6 +1,13 @@
 lib_xcore_math change log
 =========================
 
+2.1.0
+-----
+
+* Adds several new operations for IEEE float vectors.
+* Corrects `module_build_info` for legacy build tools.
+* Fixes potential issue with include paths.
+
 2.0.2
 -----
 

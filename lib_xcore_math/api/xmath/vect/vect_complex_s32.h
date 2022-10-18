@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include "../xmath_conf.h"
-#include "../types.h"
-#include "../util.h"
+#include "xmath/xmath_conf.h"
+#include "xmath/types.h"
+#include "xmath/util.h"
 
-#include "vect_complex_s32_prepare.h"
+#include "xmath/vect/vect_complex_s32_prepare.h"
 
 /**
  * @defgroup vect_complex_s32_api   Complex 32-bit Vector Functions

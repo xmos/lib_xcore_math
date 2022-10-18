@@ -4,10 +4,10 @@
 #pragma once
 
 
-#include "f32.h"
-#include "float_complex_s16.h"
-#include "float_complex_s32.h"
-#include "float_s32.h"
-#include "s16.h"
-#include "s32.h"
-#include "scalar_misc.h"
+#include "xmath/scalar/f32.h"
+#include "xmath/scalar/float_complex_s16.h"
+#include "xmath/scalar/float_complex_s32.h"
+#include "xmath/scalar/float_s32.h"
+#include "xmath/scalar/s16.h"
+#include "xmath/scalar/s32.h"
+#include "xmath/scalar/scalar_misc.h"

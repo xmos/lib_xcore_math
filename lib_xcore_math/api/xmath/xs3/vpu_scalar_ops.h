@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 #include "xmath/types.h"
-#include "vpu_info.h" 
+#include "xmath/xs3/vpu_info.h" 
 
 /**
  * The functions in this header are meant to be scalar emulations of the various instructions which

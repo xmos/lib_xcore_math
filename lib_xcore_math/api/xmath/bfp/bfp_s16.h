@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../types.h"
+#include "xmath/types.h"
 
 /**
  * @defgroup bfp_s16_api    16-bit Block Floating-Point API
