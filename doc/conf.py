@@ -22,11 +22,11 @@ from sphinx.builders.html import StandaloneHTMLBuilder
 # -- Project information -----------------------------------------------------
 
 project = u"lib_xcore_math"
-copyright = u"2021, XMOS"
+copyright = u"2022, XMOS"
 author = "XMOS"
 
 # The full version, including alpha/beta/rc tags
-release = "1.0.x"
+release = "2.1.0"
 
 # -- General configuration ---------------------------------------------------
 
