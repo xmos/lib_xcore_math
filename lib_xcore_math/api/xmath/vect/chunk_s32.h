@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include "../xmath_conf.h"
-#include "../types.h"
-#include "../util.h"
-#include "../xs3/vpu_info.h"
+#include "xmath/xmath_conf.h"
+#include "xmath/types.h"
+#include "xmath/util.h"
+#include "xmath/xs3/vpu_info.h"
 
 /**
  * @defgroup chunk32_api   32-bit Vector Chunk (8-Element Vector) Functions

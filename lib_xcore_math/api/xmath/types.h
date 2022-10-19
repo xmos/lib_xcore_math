@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-#include "api.h"
+#include "xmath/api.h"
 
 #ifdef __XC__
 extern "C" { 

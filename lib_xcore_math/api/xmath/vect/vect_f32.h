@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include "../xmath_conf.h"
-#include "../types.h"
-#include "../util.h"
+#include "xmath/xmath_conf.h"
+#include "xmath/types.h"
+#include "xmath/util.h"
 
 /**
  * @defgroup vect_f32_api   32-bit Vector IEEE 754 Floating-Point Functions
@@ -138,6 +138,222 @@ float vect_f32_dot(
     const float b[],
     const float c[],
     const unsigned length);
+
+
+/**
+ * @brief Adds together two IEEE754 float vectors.
+ * 
+ * This function takes two vectors of IEEE754 single-precision floats and computes the element-wise
+ * sum of the two vectors.
+ * 
+ * `a[]` is the output vector @vector{a} into which results are placed.
+ * 
+ * `b[]` and `c[]` are the input vectors @vector{b} and @vector{c} respectively.
+ * 
+ * `a`, `b` and `c` each must begin at a double-word-aligned address.
+ * 
+ * This operation can be performed safely in-place on `b[]` or `c[]`.
+ * 
+ * @operation{ 
+ * &     a_k  \gets b_k + c_k   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @param[out]  a       Output vector @vector{a}
+ * @param[in]   b       Input vector @vector{b}
+ * @param[in]   c       Input vector @vector{c}
+ * @param[in]   length  Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not double-word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup vect_f32_api
+ */
+C_API
+void vect_f32_add(
+  float a[],
+  const float b[],
+  const float c[],
+  const unsigned length);
+  
+
+/**
+ * @brief Adds together two complex IEEE754 float vectors.
+ * 
+ * This function takes two vectors @vector{b} and @vector{c} of complex IEEE754 single-precision
+ * floats and computes the element-wise sum of the two vectors.
+ * 
+ * `a[]` is the output vector @vector{a} into which results are placed.
+ * 
+ * `b[]` and `c[]` are the complex input vectors @vector{b} and @vector{c} respectively.
+ * 
+ * `a`, `b` and `c` each must begin at a double-word-aligned address.
+ * 
+ * This operation can be performed safely in-place on `b[]` or `c[]`.
+ * 
+ * @operation{ 
+ * &     a_k  \gets b_k + c_k   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @param[out]  a       Output vector @vector{a}
+ * @param[in]   b       Input vector @vector{b}
+ * @param[in]   c       Input vector @vector{c}
+ * @param[in]   length  Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not double-word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup vect_f32_api
+ */
+C_API
+void vect_complex_f32_add(
+  complex_float_t a[],
+  const complex_float_t b[],
+  const complex_float_t c[],
+  const unsigned length);
+
+  
+/**
+ * @brief Multiplies together two complex IEEE754 float vectors.
+ * 
+ * This function takes two complex float vectors @vector{b} and @vector{c} as inputs. Each output
+ * element @math{a_k} is computed as @math{b_k} multiplied by @math{c_k} (using complex 
+ * multiplication).
+ * 
+ * `a[]` is the output vector @vector{a} into which results are placed.
+ * 
+ * `b[]` and `c[]` are the complex input vectors @vector{b} and @vector{c} respectively.
+ * 
+ * `a`, `b` and `c` each must begin at a double-word-aligned address.
+ * 
+ * This operation can be performed safely in-place on `b[]` or `c[]`.
+ * 
+ * @operation{ 
+ * &     a_k  \gets b_k \cdot c_k   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @param[out]  a       Output vector @vector{a}
+ * @param[in]   b       Input vector @vector{b}
+ * @param[in]   c       Input vector @vector{c}
+ * @param[in]   length  Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not double-word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup vect_f32_api
+ */
+C_API
+void vect_complex_f32_mul(
+  complex_float_t a[],
+  const complex_float_t b[],
+  const complex_float_t c[],
+  const unsigned length);
+
+  
+/**
+ * @brief Conjugate multiplies together two complex IEEE754 float vectors.
+ * 
+ * This function takes two complex float vectors @vector{b} and @vector{c} as inputs. Each output
+ * element @math{a_k} is computed as @math{b_k} multiplied by the complex conjugate of @math{c_k} 
+ * (using complex multiplication).
+ * 
+ * `a[]` is the output vector @vector{a} into which results are placed.
+ * 
+ * `b[]` and `c[]` are the complex input vectors @vector{b} and @vector{c} respectively.
+ * 
+ * `a`, `b` and `c` each must begin at a double-word-aligned address.
+ * 
+ * This operation can be performed safely in-place on `b[]` or `c[]`.
+ * 
+ * @operation{ 
+ * &     a_k  \gets b_k \cdot (c_k^*)   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @param[out]  a       Output vector @vector{a}
+ * @param[in]   b       Input vector @vector{b}
+ * @param[in]   c       Input vector @vector{c}
+ * @param[in]   length  Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not double-word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup vect_f32_api
+ */
+C_API
+void vect_complex_f32_conj_mul(
+  complex_float_t a[],
+  const complex_float_t b[],
+  const complex_float_t c[],
+  const unsigned length);
+
+  
+/**
+ * @brief Adds the product of two complex IEEE754 float vectors to a third float vector.
+ * 
+ * This function takes three complex float vectors @vector{a}, @vector{b} and @vector{c} as inputs.
+ * Each output element @math{a_k} is computed as input @math{a_k} plus @math{b_k} multiplied by 
+ * @math{c_k}.
+ * 
+ * `a[]` is accumulator vector @vector{a}, serving as both input and output.
+ * 
+ * `b[]` and `c[]` are the complex input vectors @vector{b} and @vector{c} respectively.
+ * 
+ * `a`, `b` and `c` each must begin at a double-word-aligned address.
+ * 
+ * @operation{ 
+ * &     a_k  \gets a_k + b_k \cdot c_k   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @param[inout]  a       Input/Output accumulator vector @vector{a}
+ * @param[in]     b       Input vector @vector{b}
+ * @param[in]     c       Input vector @vector{c}
+ * @param[in]     length  Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not double-word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup vect_f32_api
+ */
+C_API
+void vect_complex_f32_macc(
+  complex_float_t a[],
+  const complex_float_t b[],
+  const complex_float_t c[],
+  const unsigned length);
+
+  
+/**
+ * @brief Adds the product of two complex IEEE754 float vectors to a third float vector.
+ * 
+ * This function takes three complex float vectors @vector{a}, @vector{b} and @vector{c} as inputs.
+ * Each output element @math{a_k} is computed as input @math{a_k} plus @math{b_k} multiplied by the
+ * complex conjugate of @math{c_k}.
+ * 
+ * `a[]` is accumulator vector @vector{a}, serving as both input and output.
+ * 
+ * `b[]` and `c[]` are the complex input vectors @vector{b} and @vector{c} respectively.
+ * 
+ * `a`, `b` and `c` each must begin at a double-word-aligned address.
+ * 
+ * @operation{ 
+ * &     a_k  \gets a_k + b_k \cdot (c_k^*)   \\
+ * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * }
+ * 
+ * @param[inout]  a       Input/Output accumulator vector @vector{a}
+ * @param[in]     b       Input vector @vector{b}
+ * @param[in]     c       Input vector @vector{c}
+ * @param[in]     length  Number of elements in vectors @vector{a}, @vector{b} and @vector{c}
+ * 
+ * @exception ET_LOAD_STORE Raised if `a`, `b` or `c` is not double-word-aligned (See @ref note_vector_alignment)
+ * 
+ * @ingroup vect_f32_api
+ */
+C_API
+void vect_complex_f32_conj_macc(
+  complex_float_t a[],
+  const complex_float_t b[],
+  const complex_float_t c[],
+  const unsigned length);
 
 #ifdef __XC__
 }   //extern "C"

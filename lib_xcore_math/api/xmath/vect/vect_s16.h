@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include "../xmath_conf.h"
-#include "../types.h"
-#include "../util.h"
+#include "xmath/xmath_conf.h"
+#include "xmath/types.h"
+#include "xmath/util.h"
 
-#include "vect_s16_prepare.h"
+#include "xmath/vect/vect_s16_prepare.h"
 
 /**
  * @defgroup vect_s16_api   16-bit Vector Functions

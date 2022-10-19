@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../types.h"
+#include "xmath/types.h"
 
 /**
  * @defgroup bfp_complex_s32_api    Complex 32-bit Block Floating-Point API
