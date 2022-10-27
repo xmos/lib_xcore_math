@@ -168,6 +168,7 @@ FUNCTION_NAME:
         // (from the block above):  r5 = 1      r4 = 1<<(r2-1)
         // adding r4*r5 (=r4) to r1:r0 effectively rounds it when we extract it.
         maccs r1, r0, r4, r5
+        lsats r1, r0, r2
         lextract r0, r1, r0, r2, 32
         bu .L_done
 
