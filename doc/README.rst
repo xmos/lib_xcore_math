@@ -37,7 +37,7 @@ Build documentation:
 
 .. code-block:: console
 
-    docker run --rm -t -u "$(id -u):$(id -g)" -v $(pwd):/build -e REPO:/build -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc ghcr.io/xmos/doc_builder:latest
+    docker run --rm -t -u "$(id -u):$(id -g)" -v $(pwd):/build -e REPO:/build -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc ghcr.io/xmos/doc_builder:main
 
 ********************
 Without Using Docker
