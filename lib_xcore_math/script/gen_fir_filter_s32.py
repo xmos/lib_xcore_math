@@ -7,7 +7,7 @@ import io
 import os.path
 import os
 
-import lib_xcore_math.script.xmath_script as xms
+import xmath_script as xms
 
 def main():
   
