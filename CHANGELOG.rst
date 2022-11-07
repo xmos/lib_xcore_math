@@ -1,6 +1,21 @@
 lib_xcore_math change log
 =========================
 
+2.1.1
+-----
+
+* Fixes bug (issue #116) in `vect_packed_complex_s32_macc()`.
+* Fixes bug (issue #119) in `filter_fir_s32()`.
+* Adds `--scale` option to the filter conversion script `gen_biquad_filter_s32.py`
+
+  * If internal filter states (outputs from internal biquad sections) grow too large
+  integer overflows may occur. Using the `--scale` option can help avoid this by 
+  effectively applying a gain factor to all coefficients.
+
+* Fixes bug (mentioned in issue #119) in the `gen_fir_filter_s32.py` and 
+`gen_fir_filter_s16.py` filter conversion scripts where in a certain corner case 
+filter coefficients can overflow.
+
 2.1.0
 -----
 
