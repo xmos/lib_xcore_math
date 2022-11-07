@@ -78,7 +78,7 @@ FUNCTION_NAME:
 #undef _36
 #define N       r5      // ![%d]
 
-    // Move filter->state[0][] to filter->state[1][]
+    // Move filter->state[0][:] to filter->state[1][:]
 
     {   add tmp, state, _32                     ;   ldc r5, 36                              }
     {   add r11, state, r5                      ;   vldc state[0]                           }
@@ -86,16 +86,30 @@ FUNCTION_NAME:
     {                                           ;   ldw tmp, tmp[0]                         }
     {                                           ;   stw tmp, r11[0]                         }
 
+    // Place the newest input sample in state[0][0]
     {   ldc tmp, 16                             ;   ldw N, filter[FILT_N]                   }
     {   shl N, N, 1                             ;   stw sample, state[0]                    }
+
+    // Overwrite state[0][1:9] with 0's
         ldaw r11, cp[vpu_vec_zero]
     {   add r11, state, 4                       ;   vldc r11[0]                             }
     {   sub N, tmp, N                           ;   vstc r11[0]                             }
+
+    // vC[:] <-- coef[b0][:]
     {                                           ;   vldc coef[0]                            }
 
     // Every element in r11[0:8] except for r11[0] is zero, so a VLMACC shouldn't affect them.
-    // Subsequent VLMACCs will corrupt the accumulators, but The Mask will stop that from being a problem.
+    // Subsequent VLMACCs will corrupt the accumulators, but The Mask will stop that from being a
+    // problem. Smokin'!
 
+    // Let's make this more clear. We still haven't MACCed in the terms corresponding to b0,
+    // but we can't do all of those simultaneously as we did with the others because the x[n-0]
+    // for one section IS the output of the previous section, which we haven't finished calculating
+    // yet. So we need to go up the chain of filter sections, computing the output of each to get
+    // the input to the next. Because we've set the state[0][1:0] to zeros, when we're working on
+    // the k'th filter section, MACCing against that will not affect accumulators > k. Then we write
+    // out the output of section k. We do the MACC again, **which will corrupt the accumulators 
+    // which are LESS THAN k.... but that's FINE because we're not going to write them out again.   
     {   mkmsk tmp, 4                            ;   vlmacc state[0]                         }
         vstrpv r11[0], tmp
     {                                           ;   bru N /* Do N-1 remaining biquads */    }
@@ -115,7 +129,7 @@ FUNCTION_NAME:
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
         vstrpv r11[0], tmp
 
-    // Final vstrpv should have written the output to filt->state[0][9]. filt->state should
+    // Final vstrpv should have written the output to filt->state[0][N]. filt->state should
     // still be pointing at filt->state[0][0]
 
     {                                           ;   ldw N, filter[FILT_N]                   }

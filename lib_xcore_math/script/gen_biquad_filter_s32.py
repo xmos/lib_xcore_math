@@ -23,11 +23,12 @@ This name will be used to initialize and invoke the filter from user code.""")
                       help=
 """File containing the filter coefficients. 
 
-This is the path to a CSV file which contains the floating-point coefficients for the biquad sections.  Each line of
-the CSV file stores the coefficients for one biquad section, with the first biquad section beginning on the first line.
+This is the path to a CSV file which contains the floating-point coefficients for the biquad
+sections.  Each line of the CSV file stores the coefficients for one biquad section, with the first
+biquad section beginning on the first line.
 
-Each line must contain 5 command-separated coefficients, which are the coefficients b[0], b[1], b[2], -a[1], -a[2], in
-that order.
+Each line must contain 5 command-separated coefficients, which are the coefficients b[0], b[1],
+b[2], -a[1], -a[2], in that order.
 """)
 
   parser.add_argument("--sections",
@@ -36,9 +37,9 @@ that order.
                       help=
 """The number of biquad filter sections.
 
-Default behavior is to derive this value from the number of rows found in the filter coefficients CSV file. If this
-option is used, this script will verify that the number of sections found in the file matches the number specified
-here.
+Default behavior is to derive this value from the number of rows found in the filter coefficients
+CSV file. If this option is used, this script will verify that the number of sections found in the
+file matches the number specified here.
 """)
 
   parser.add_argument("--out-dir",
@@ -48,6 +49,14 @@ here.
 """
 (optional) Output directory into which generated files are placed.
 """)
+
+  parser.add_argument("--scale", type=float, default=1.0, help=
+  """
+  Scale factor to be applied to all coefficients.
+
+  In some cases this may be necessary if some filter input sequences result in overflows occurring 
+  in the output of some filter sections.
+  """)
 
   args = extra_process_args(parser.parse_args())
 
@@ -92,7 +101,7 @@ def extra_process_args(args):
 
 ### Convert filter coefficients to Q2.30
 def convert_filter_coefficients(args):
-  coefs = args.filter_coefficients * 2**30
+  coefs = args.filter_coefficients * args.scale * 2**30
   return np.round(coefs).astype(np.int32)
 
 

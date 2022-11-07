@@ -49,8 +49,8 @@ void vect_packed_complex_f32_macc(
   const complex_float_t c[],
   const unsigned length)
 {
-  a[0].re = b[0].re * c[0].re;
-  a[0].im = b[0].im * c[0].im;
+  a[0].re += b[0].re * c[0].re;
+  a[0].im += b[0].im * c[0].im;
 
   vect_complex_f32_macc(&a[1], &b[1], &c[1], length-1);
 }

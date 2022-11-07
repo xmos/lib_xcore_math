@@ -7,7 +7,7 @@ import io
 import os.path
 import os
 
-import lib_xcore_math.script.xmath_script as xms
+import xmath_script as xms
 
 def main():
   
@@ -128,8 +128,18 @@ def find_filter_parameters(args):
   scale = 2**scale_log2
 
   scaled_coefs = np.round(scale * coefs).astype(np.int64)
+
+  # In the corner case where the largest-magnitude coefficient is a positive power
+  # of 2 (or sufficiently close), the largest coefficient may come out as 
+  # 0x80000000, which can't be represented in 32 bits.
+  # If the scaled coefficients don't fit in 32 bits, right-shift them 1 bit
+  while np.any([(np.int32(x) != x) for x in scaled_coefs]):
+    scale_log2 = scale_log2 - 1
+    scale = 2 ** scale_log2
+    scaled_coefs = np.round(scale * coefs).astype(np.int64)
+
   exponent = -scale_log2
-  
+
   # Find maximum possible dot-product of coefs with input (given known input headroom)
   # (also including the 30-bit right-shift)
   dot_prod = max_dot_product(scaled_coefs, args.input_headroom)
@@ -151,7 +161,26 @@ def find_filter_parameters(args):
   # If the user wants guaranteed output headroom, include that as well.
   shift = shift + args.output_headroom
 
-  return scaled_coefs.astype(np.int32), int(shift), int(exponent)
+  # Every bit that we have to right-shift the accumulator (to ensure the output fits in 32 bits) 
+  # means the effective exponent of the output grows by 1.
+  exponent = exponent + shift
+
+  # UPDATE: 11/3/2022 - The exponent that we've been outputting I now realize is only correct if
+  # the exponent associated with the input was -30. Really the generated filter should be agnostic 
+  # to input exponent, because it's a linear filter.  That means the exponent we should be 
+  # outputting is the DIFFERENCE between the output exponent and the input exponent. Because 
+  # the exponent variable above assumes input exponent is -30, we just add 30 to that to get the
+  # difference.
+  exponent_diff = exponent + 30
+
+  scaled_coefs_s32 = scaled_coefs.astype(np.int32)
+  # Before returning, let's do a sanity check to make sure we haven't done
+  # anything egregious. A simple check is to make sure no coefficients changed
+  # sign.
+  assert np.all([(x < 0) for x in coefs] 
+                == [(x < 0) for x in scaled_coefs_s32]), "Some coefficients have changed sign."
+
+  return scaled_coefs_s32, int(shift), int(exponent_diff)
 
 # Compute maximum possible dot-product of coefficients with an input signal (taking
 # input headroom into account)
@@ -175,7 +204,17 @@ def generate_header(args):
 // Number of filter coefficients 
 #define TAP_COUNT_{filter}\t({args.taps})
 
-// Exponent associated with filter outputs
+// The difference between the filter's output exponent and input exponent.
+// For example, if the floating-point equivalent input to the filter is 1.0 in a Q1.30 format 
+// (`((int32_t)ldexpf(1.0, 30)) == 0x40000000`) and the filter happens to output the value 
+// 0x01010101, then the correct floating point conversion of the ouput value is 
+// `ldexpf(0x01010101, -30 + {filter}_exp_diff)`.
+extern const exponent_t {filter}_exp_diff;
+
+// Exponent associated with filter outputs iff the exponent associated with the input is -30
+// [DEPRECATED] This variable should not be used in new applications. `{filter}_exp_diff` gives the
+// difference between the output and input exponents and should be used instead. This exponent is
+// only correct if the fixed-point inputs are in the Q1.30 format.
 extern const exponent_t {filter}_exp;
 
 // Call once to initialize the filter
@@ -194,9 +233,11 @@ int32_t {filter}(int32_t new_sample);
 
 
 ### Generate C source file code using filter parameters ###
-def generate_source(coefs, shift, exponent, args):
+def generate_source(coefs, shift, exponent_diff, args):
   filter = args.filter_name
   coef_string = xms.array_to_str(coefs)
+
+  exponent = exponent_diff - 30
 
   source_text = io.StringIO()
 
@@ -205,6 +246,8 @@ def generate_source(coefs, shift, exponent, args):
 
 const right_shift_t {filter}_shift = {shift};
 const exponent_t {filter}_exp = {exponent};
+const exponent_t {filter}_exp_diff = {exponent_diff};
+
 const int32_t WORD_ALIGNED {filter}_coefs[TAP_COUNT_{filter}] = {{
   {coef_string}
 }};
