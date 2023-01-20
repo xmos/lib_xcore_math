@@ -16,6 +16,7 @@ TEST_GROUP_RUNNER(dct8x8) {
   RUN_TEST_CASE(dct8x8, dct8x8_stageB);
   RUN_TEST_CASE(dct8x8, dct8x8_forward);
   RUN_TEST_CASE(dct8x8, dct8x8_inverse);
+  RUN_TEST_CASE(dct8x8, dct8x8_forward_16bit);
 }
 
 TEST_GROUP(dct8x8);
@@ -551,3 +552,82 @@ TEST(dct8x8, dct8x8_inverse)
 }
 
 
+
+
+TEST(dct8x8, dct8x8_forward_16bit)
+{
+#define FUNC_NAME "dct8x8_forward_16bit"
+
+#if PRINT_FUNC_NAMES
+  printf("\n%s..\n", FUNC_NAME);
+#endif
+
+  unsigned r = 1;
+
+  float worst_timing = 0.0f;
+  
+  DWORD_ALIGNED int8_t x[8][8] = {
+    {-2, 13, 13, 13, 13, 13, 13, 13, },
+    {14, 22, 22, 22, 22, 22, 22, 22, },
+    {14, 22, 22, 22, 22, 22, 22, 22, },
+    {14, 22, 22, 22, 22, 22, 22, 22, },
+    {14, 22, 22, 22, 22, 22, 22, 22, },
+    {14, 22, 22, 22, 22, 22, 22, 22, },
+    {14, 22, 22, 22, 22, 22, 22, 22, },
+    {14, 22, 22, 22, 22, 22, 22, 22, },
+  };
+  DWORD_ALIGNED int16_t y[8][8];
+
+  double ref_in[8][8];
+  double ref_out[8][8];
+
+  int32_t ref_out_s32[8][8];
+
+  for(int row = 0; row < 8; row++){
+    for(unsigned col = 0; col < 8; col++){
+      ref_in[row][col] = x[row][col];
+    }
+  }
+
+  // Compute the reference
+  dbl_dct8x8(ref_out, ref_in, -8);
+  
+  // printf("x = np.array([ \n");
+  // for(int row = 0; row < 8; row++){
+  //   printf("  [ ");
+  //   for(int col = 0; col < 8; col++)  printf("%d, ", x[row][col]);
+  //   printf(" ],\n");
+  // }
+  // printf("])\n");
+
+  // dct8x8_forward_16bit(y, x);
+  
+  // printf("y = np.array([ \n");
+  // for(int row = 0; row < 8; row++){
+  //   printf("  [ ");
+  //   for(int col = 0; col < 8; col++) printf("%d, ", y[row][col]);
+  //   printf(" ],\n");
+  // }
+  // printf("])\n");
+  
+  // printf("ref = np.array([ \n");
+  // for(int row = 0; row < 8; row++){
+  //   printf("  [ ");
+  //   for(int col = 0; col < 8; col++) printf("%0.00f, ", ref_out[row][col]);
+  //   printf(" ],\n");
+  // }
+  // printf("])\n");
+  
+  float max_allowed_diff = 0;
+
+  for(int row = 0; row < 8; row++){
+    for(unsigned col = 0; col < 8; col++){
+      float ref_val = ref_out[row][col];
+      float act_val = y[row][col];
+
+      TEST_ASSERT_FLOAT_WITHIN(max_allowed_diff, ref_val, act_val);
+    }
+  }
+
+#undef FUNC_NAME
+}
