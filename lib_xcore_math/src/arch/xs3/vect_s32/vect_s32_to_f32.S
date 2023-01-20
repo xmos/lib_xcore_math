@@ -45,29 +45,30 @@ FUNC_NAME:
     
     ldd tmp1, tmp0, b[len]
     { lss r11, tmp0, _0           ; shl tmp1, len, 1            }
-    bf r11, .posT
+    bf r11, .L_posT
       neg tmp0, tmp0
-    .posT:
+    .L_posT:
     fmake tmp0, r11, b_exp, _0, tmp0
     stw tmp0, a[tmp1]
 
   .L_pre_loop:
 
   { sub len, len, 1               ; bf len, .L_loop_end           }
-  .loop:
+  
+  .L_loop:
     ldd tmp1, tmp0, b[len]
   { lss r11, tmp1, _0             ;                               }
-    bf r11, .pos1
+    bf r11, .L_pos1
       neg tmp1, tmp1
-    .pos1:
+    .L_pos1:
     fmake tmp1, r11, b_exp, _0, tmp1
     lss r11, tmp0, _0
-    bf r11, .pos0
+    bf r11, .L_pos0
       neg tmp0, tmp0
-    .pos0:
+    .L_pos0:
     fmake tmp0, r11, b_exp, _0, tmp0
     std tmp1, tmp0, a[len]
-    { sub len, len, 1             ; bt len, .loop                 }
+    { sub len, len, 1             ; bt len, .L_loop               }
   .L_loop_end:
     
     ldd r4, r5, sp[0]

@@ -53,25 +53,25 @@ FUNC_NAME:
     stw mant0, a[r11]
 
 .L_pre_loop:
-  { sub len, len, 1             ; bf len, .loop_end           }
+  { sub len, len, 1             ; bf len, .L_loop_end         }
 
-  .loop:
+  .L_loop:
       ldd mant1, mant0, b[len]
       fsexp r11, tmp, mant1
       fmant mant1, mant1
-    { sub tmp, tmp, exp           ; bf r11, .not3               }
+    { sub tmp, tmp, exp           ; bf r11, .L_not3             }
       neg mant1, mant1
-    .not3:
+    .L_not3:
         shl mant1, mant1, tmp
         fsexp r11, tmp, mant0
         fmant mant0, mant0
-      { sub tmp, tmp, exp           ; bf r11, .not4               }
+      { sub tmp, tmp, exp           ; bf r11, .L_not4             }
         neg mant0, mant0
-    .not4:
+    .L_not4:
         shl mant0, mant0, tmp
         std mant1, mant0, a[len]
-      { sub len, len, 1             ; bt  len, .loop              }
-  .loop_end:
+      { sub len, len, 1             ; bt  len, .L_loop            }
+  .L_loop_end:
 
 
       ldd r4, r5, sp[0]
