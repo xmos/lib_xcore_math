@@ -114,13 +114,13 @@ FUNCTION_NAME:
     {   add state_B, state_B, tmp2              ;   vldc r10[0]                             }
     {   add coef_B, coef_B, tmp2                ;   vlmaccr coef_B[0]                       }
 
-
 // Now, go back through and do full vectors.
-
 
 #undef tmp2
 #define _32     r8
 
+    bu .L_part_A_start
+    .align 16
     .L_part_A_start:
         {   ldc _32, 32                             ;   bf N_A, .L_part_A_end                   }
         .L_part_A_loop_top:
