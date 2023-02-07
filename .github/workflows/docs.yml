@@ -36,16 +36,24 @@ jobs:
       
       - name: Pull doc_builder container
         run: |
-          docker pull ghcr.io/xmos/doc_builder:main 
+          docker pull ghcr.io/xmos/doc_builder:v2.0.0
       
       - name: Build documentation
         run: |
-          docker run --rm -t -u "$(id -u):$(id -g)" -v ${{ github.workspace }}:/build -e REPO:/build -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc ghcr.io/xmos/doc_builder:main
+          docker run --rm -t -u "$(id -u):$(id -g)" -v ${{ github.workspace }}:/build -e REPO:/build -e EXCLUDE_PATTERNS=/build/doc/doc_excludes.txt -e DOXYGEN=1 -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc -e PDF=1 ghcr.io/xmos/doc_builder:v2.0.0 || echo "Container always falsely reports an error. Ignoring error."
           
-      - name: Save documentation artifacts
+      - name: Save HTML documentation artifact
         uses: actions/upload-artifact@v2
         with:
-          name: lib_xcore_math_docs
+          name: lib_xcore_math_docs_html
           path: ./doc/_build/html
+          if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
+          retention-days: 5
+          
+      - name: Save PDF documentation artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: lib_xcore_math_docs_pdf
+          path: ./doc/_build/pdf/programming_guide.pdf
           if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
           retention-days: 5

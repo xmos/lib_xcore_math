@@ -40,7 +40,7 @@ extern "C" {
  *
  * Upon completion, the spectrum data is encoded in `x->data` as specified for real DFTs in @ref
  * spectrum_packing. That is, `x->data[f]` for `1 <= f < (x->length)` represent @math{X[f]} for
- * @math{1 \le f \lt (N/2)} and `x->data[0]` represents @math{X[0] + j X[N/2]}.
+ * @math{1 \le f < (N/2)} and `x->data[0]` represents @math{X[0] + j X[N/2]}.
  * 
  * @par Example
  * @code{.c}
@@ -83,7 +83,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
  * The operation performed is:
  * @f[
  *      x[n] = \sum_{f=0}^{N/2} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
- *      \text{ for } 0 \le n \lt N
+ *      \text{ for } 0 \le n < N
  * @f]
  * where @math{X[f]} is the BFP vector initially represented by `x`, and @math{x[n]} is the IDFT of
  * @math{X[f]} represented by the returned pointer.
@@ -98,7 +98,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
  *
  * When calling, the spectrum data must be encoded in `x->data` as specified for real DFTs in @ref
  * spectrum_packing. That is, `x->data[f]` for `1 <= f < (x->length)` represent @math{X[f]} for
- * @math{1 \le f \lt N/2}, and `x->data[0]` represents @math{X[0] + j X[N/2]}.
+ * @math{1 \le f < N/2}, and `x->data[0]` represents @math{X[0] + j X[N/2]}.
  * 
  * @par Example
  * @code
@@ -140,7 +140,7 @@ bfp_s32_t* bfp_fft_inverse_mono(
  * The operation performed is:
  * @f[
  *      X[f] = \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)  \\
- *      \text{ for } 0 \le f \lt N
+ *      \text{ for } 0 \le f < N
  * @f]
  * where @math{x[n]} is the BFP vector initially represented by `x`, and @math{X[f]} is the DFT of
  * @math{x[n]}, also represented by `x` upon completion.
@@ -151,7 +151,7 @@ bfp_s32_t* bfp_fft_inverse_mono(
  * `x->length` (@math{N}) must be a power of 2, and must be no larger than `(1<<MAX_DIT_FFT_LOG2)`.
  *
  * Upon completion, the spectrum data is encoded in `x` as specified in @ref spectrum_packing. That
- * is, `x->data[f]` for `0 <= f < (x->length)` represent @math{X[f]} for @math{0 \le f \lt N}.
+ * is, `x->data[f]` for `0 <= f < (x->length)` represent @math{X[f]} for @math{0 \le f < N}.
  * 
  * @par Example
  * @code
@@ -186,7 +186,7 @@ void bfp_fft_forward_complex(
  * The operation performed is:
  * @f[
  *      x[n] = \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
- *      \text{ for } 0 \le f \lt N
+ *      \text{ for } 0 \le f < N
  * @f]
  * where @math{X[f]} is the BFP vector initially represented by `x`, and @math{x[n]} is the DFT of
  * @math{X[f]}, also represented by `x` upon completion.
@@ -197,7 +197,7 @@ void bfp_fft_forward_complex(
  * `x->length` must be a power of 2, and must be no larger than `(1<<MAX_DIT_FFT_LOG2)`.
  * 
  * The data initially encoded in `x` are interpreted as specified in @ref spectrum_packing. That is,
- * `x->data[f]` for `0 <= f < (x->length)` represent @math{X[f]} for @math{0 \le f \lt N}.
+ * `x->data[f]` for `0 <= f < (x->length)` represent @math{X[f]} for @math{0 \le f < N}.
  * 
  * @par Example
  * @code
@@ -261,7 +261,7 @@ void bfp_fft_inverse_complex(
  *
  * The spectrum data is encoded in `a->data` and `b->data` as specified for real DFTs in @ref
  * spectrum_packing. That is, `a->data[f]` for `1 <= f < (a->length)` represent @math{A[f]} for
- * @math{1 \le f \lt (N/2)} and `a->data[0]` represents @math{A[0] + j A[N/2]}. Likewise for the
+ * @math{1 \le f < (N/2)} and `a->data[0]` represents @math{A[0] + j A[N/2]}. Likewise for the
  * encoding of `b->data`.
  * 
  * This function requires a scratch buffer large enough to contain @math{N} `complex_s32_t`
@@ -332,8 +332,8 @@ void bfp_fft_forward_stereo(
  * 
  * The operation performed is:
  * @f[
- *      a[n] = \sum_{f=0}^{N/2-1} \left( A[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n \lt N \\
- *      b[n] = \sum_{f=0}^{N/2-1} \left( B[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n \lt N
+ *      a[n] = \sum_{f=0}^{N/2-1} \left( A[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n < N \\
+ *      b[n] = \sum_{f=0}^{N/2-1} \left( B[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n < N
  * @f]
  * where @math{A[f]} and @math{B[f]} are the frequency spectra represented by BFP vectors `A_fft`
  * and `B_fft`, and @math{a[n]} and @math{b[n]} are the IDFT of @math{A[f]} and @math{B[f]}.
@@ -348,7 +348,7 @@ void bfp_fft_forward_stereo(
  * 
  * The spectrum data encoded in `A_fft->data` and `A_fft->data` are interpreted as specified for
  * real DFTs in @ref spectrum_packing. That is, `A_fft->data[f]` for `1 <= f < (a->length)`
- * represent @math{A[f]} for @math{1 \le f \lt (N/2)} and `A_fft->data[0]` represents @math{A[0] + j
+ * represent @math{A[f]} for @math{1 \le f < (N/2)} and `A_fft->data[0]` represents @math{A[0] + j
  * A[N/2]}. Likewise for the encoding of `B_fft->data`.
  * 
  * This function requires a scratch buffer large enough to contain @math{2N} `complex_s32_t`
@@ -465,7 +465,7 @@ void bfp_fft_pack_mono(
  * 
  * \f[
  *      X[f] = \frac{1}{2^{\alpha}} \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)
- *      \text{ for } 0 \le f \lt N
+ *      \text{ for } 0 \le f < N
  * \f]
  * 
  * `x[]` is interpreted to be a block floating-point vector with shared exponent `*exp` and with
@@ -506,7 +506,7 @@ void fft_dit_forward (
  * 
  * \f[
  *      x[n] = \frac{1}{2^{\alpha}} \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right)
- *      \text{ for } 0 \le n \lt N
+ *      \text{ for } 0 \le n < N
  * \f]
  * 
  * `x[]` is interpreted to be a block floating-point vector with shared exponent `*exp` and with
@@ -547,7 +547,7 @@ void fft_dit_inverse (
  * 
  * \f[
  *      X[f] = \frac{1}{2^{\alpha}} \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)
- *      \text{ for } 0 \le f \lt N
+ *      \text{ for } 0 \le f < N
  * \f]
  * 
  * `x[]` is interpreted to be a block floating-point vector with shared exponent `*exp` and with
@@ -588,7 +588,7 @@ void fft_dif_forward (
  * 
  * \f[
  *      x[n] = \frac{1}{2^{\alpha}} \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right)
- *      \text{ for } 0 \le n \lt N
+ *      \text{ for } 0 \le n < N
  * \f]
  * 
  * `x[]` is interpreted to be a block floating-point vector with shared exponent `*exp` and with

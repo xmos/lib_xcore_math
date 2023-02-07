@@ -127,9 +127,11 @@ int32_t s32_sqrt(
  * exponent @math{b\_exp}, then 
  * 
  * @math{
- *   \frac{1}{b \cdot 2^{b\_exp}} &= \frac{1}{b} \cdot 2^{-b\_exp}
- *                                &= a \cdot 2^{a\_exp} \cdot 2^{-b\_exp}
+ * \begin{aligned}
+ *   \frac{1}{b \cdot 2^{b\_exp}} &= \frac{1}{b} \cdot 2^{-b\_exp}             \\
+ *                                &= a \cdot 2^{a\_exp} \cdot 2^{-b\_exp}      \\
  *                                &= a \cdot 2^{a\_exp - b\_exp}
+ * \end{aligned}
  * }
  * 
  * and so @math{b\_exp} should be subtracted from the output exponent @math{a\_exp}.

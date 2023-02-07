@@ -1,0 +1,6 @@
+Function, Brief
+:c:func:`f32_sin()`          ,  :math:`sin(x)`
+:c:func:`f32_cos()`          ,  :math:`cos(x)`
+:c:func:`f32_log2()`         ,  :math:`log_2(x)`
+:c:func:`f32_power_series()` ,  Evaluate Power Series
+:c:func:`f32_normA()`        ,  Normalized Form A

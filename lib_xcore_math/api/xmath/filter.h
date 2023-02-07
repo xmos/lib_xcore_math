@@ -388,7 +388,7 @@ int32_t filter_fir_s32(
  *
  * After all taps have been accumulated, a rounding arithmetic right-shift of `shift` bits is
  * applied to the 64-bit sum, and the final result is saturated to the symmetric 16-bit range
- * (`-INT16_MAX` to `INT16_MAX` inclusive).
+ * (the open interval @math{(-2^{15}, 2^{15})}).
  *
  * Below is a more detailed description of the operations performed (not including the saturation
  * logic applied by the accumulators).
