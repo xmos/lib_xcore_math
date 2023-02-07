@@ -31,10 +31,10 @@ extern "C" {
  * `length` is the number of elements in `a[]` and `b[]`.
  * 
  * @operation{
- *      a_k \leftarrow \begin{cases}
- *          1 & b_k \lt 0              \\ 
+ * &    a_k \leftarrow \begin{cases}
+ *          1 & b_k < 0              \\ 
  *          0 & otherwise\end{cases}   \\
- *          \qquad\text{ for }k\in 0\ ...\ (length-1)
+ * &        \qquad\text{ for }k\in 0\ ...\ (length-1)
  *  }
  * 
  * @param[out]  a       Output vector @vector{a}

@@ -29,10 +29,10 @@ extern "C" {
  * `N` is the input @math{N}.
  * 
  * @operation{
- *  a \leftarrow
+ *  a \leftarrow 
  *  \begin{cases}
- *    & 0 && N = 0 \\
- *    & \lceil log_2\left( N \right) \rceil && otherwise
+ *      0 & N = 0 \\
+ *      \lceil log_2\left( N \right) \rceil & otherwise
  *  \end{cases}
  * }
  * 

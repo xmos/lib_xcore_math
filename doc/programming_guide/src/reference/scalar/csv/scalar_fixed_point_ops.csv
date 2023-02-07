@@ -1,0 +1,13 @@
+Function,Input Depth, Fractional Bits, Brief
+:c:func:`s16_inverse()`       ,  16  ,  0   , ":math:`x^{-1}`                "
+:c:func:`s32_inverse()`       ,  32  ,  0   , ":math:`x^{-1}`                "
+:c:func:`sbrad_sin()`         ,  32  ,  31  , ":math:`\sin(x)`               "
+:c:func:`sbrad_tan()`         ,  32  ,  31  , ":math:`\tan(x)`               "
+:c:func:`q24_sin()`           ,  32  ,  24  , ":math:`\sin(x)`               "
+:c:func:`q24_cos()`           ,  32  ,  24  , ":math:`\cos(x)`               "
+:c:func:`q24_tan()`           ,  32  ,  24  , ":math:`\tan(x)`               "
+:c:func:`q30_exp_small()`     ,  32  ,  30  , ":math:`\exp(x)`               "
+:c:func:`q24_logistic()`      ,  32  ,  24  , ":math:`\frac{1}{1+e^{-x}}`    "
+:c:func:`q24_logistic_fast()` ,  32  ,  24  , ":math:`\frac{1}{1+e^{-x}}`    "
+:c:func:`q30_powers()`        ,  32  ,  30  , ":math:`(0,x,x^2,x^3,\dots)`   "
+:c:func:`u32_ceil_log2()`     ,  32  ,  0   , ":math:`\lceil\log_2(x)\rceil` "
