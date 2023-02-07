@@ -159,8 +159,8 @@ void bfp_complex_s16_set(
  * resulting mantissas, then the associated exponent (and value for parameter `exp`) is `-Y`.
  * 
  * `a` points to input BFP vector @vector{A}, with complex mantissa vector @vector{a} and exponent
- * @math{a\_exp}. `a` is updated in place to produce resulting BFP vector @vector{\tilde{A}} with
- * complex mantissa vector @vector{\tilde{a}} and exponent @math{\tilde{a}\_exp}.
+ * @math{a\_exp}. `a` is updated in place to produce resulting BFP vector @math{\bar{\tilde{A}}}
+ * with complex mantissa vector @math{\bar{\tilde{a}}} and exponent @math{\tilde{a}\_exp}.
  * 
  * `exp` is @math{\tilde{a}\_exp}, the required exponent. @math{\Delta{}p = \tilde{a}\_exp - a\_exp}
  * is the required change in exponent.
@@ -180,13 +180,13 @@ void bfp_complex_s16_set(
  * The exponent and headroom of `a` are updated by this function.
  * 
  * @operation{
- * &    \Delta{}p = \tilde{a}\_exp - a\_exp
+ * &    \Delta{}p = \tilde{a}\_exp - a\_exp \\
  * &    \tilde{a_k} \leftarrow sat_{16}( a_k \cdot 2^{-\Delta{}p} )   \\
  * &        \qquad\text{for } k \in 0\ ...\ (N-1)                     \\
  * &        \qquad\text{where } N \text{ is the length of } \bar{A} \text{ (in elements) }
  * }
  * 
- * @param[inout]  a     Input BFP vector @vector{A} / Output BFP vector @vector{\tilde{A}}
+ * @param[inout]  a     Input BFP vector @vector{A} / Output BFP vector @math{\bar{\tilde{A}}}
  * @param[in]     exp   The required exponent, @math{\tilde{a}\_exp}
  * 
  * @ingroup bfp_complex_s16_api
@@ -211,19 +211,19 @@ void bfp_complex_s16_use_exponent(
  * then for any element 
  * @math{x_k} of @vector{x}
  * 
- * @math{-2^{15-N} \le Re\\{x_k\\} \lt 2^{15-N}}
+ * @math{-2^{15-N} \le Re\\{x_k\\} < 2^{15-N}}
  * 
  * and
  * 
- * @math{-2^{15-N} \le Im\\{x_k\\} \lt 2^{15-N}}
+ * @math{-2^{15-N} \le Im\\{x_k\\} < 2^{15-N}}
  * 
  * And for any element @math{X_k = x_k \cdot 2^{x\_exp}} of a complex BFP vector @vector{X}
  * 
- * @math{-2^{15 + x\_exp - N} \le Re\\{X_k\\} \lt 2^{15 + x\_exp - N} }
+ * @math{-2^{15 + x\_exp - N} \le Re\\{X_k\\} < 2^{15 + x\_exp - N} }
  * 
  * and
  * 
- * @math{-2^{15 + x\_exp - N} \le Im\\{X_k\\} \lt 2^{15 + x\_exp - N} }
+ * @math{-2^{15 + x\_exp - N} \le Im\\{X_k\\} < 2^{15 + x\_exp - N} }
  * 
  * This function determines the headroom of `b`, updates `b->hr` with that value, and then returns
  * `b->hr`.
@@ -256,8 +256,8 @@ headroom_t bfp_complex_s16_headroom(
  * This operation can be performed safely in-place on `b`.
  *
  * Note that this operation bypasses the logic protecting the caller from saturation or underflows.
- * Output values saturate to the symmetric 16-bit range (@math{-2^{15} \lt \lt 2^{15}}). To avoid
- * saturation, `b_shl` should be no greater than the headroom of `b` (`b->hr`).
+ * Output values saturate to the symmetric 16-bit range (the open interval @math{(-2^{15},
+ * 2^{15})}). To avoid saturation, `b_shl` should be no greater than the headroom of `b` (`b->hr`).
  * 
  * @operation{
  * &    Re\\{a_k\\} \leftarrow sat_{16}( \lfloor Re\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\

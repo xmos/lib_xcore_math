@@ -57,7 +57,7 @@ int32_t chunk_s32_dot(
  * 
  * @operation{
  * &    a_k  \leftarrow          \
- *      \begin{cases}  log(b_k\cdot{}2^{\mathtt{b\_exp}})   & b_k \gt 0  \\
+ *      \begin{cases}  log(b_k\cdot{}2^{\mathtt{b\_exp}})   & b_k > 0  \\
  *                     \mathtt{INT32\_MIN}  & \text{otherwise} \\
  *      \end{cases} \\ 
  * &    \qquad\text{for }k \in \{0..\mathtt{VPU\_INT32\_EPV}-1\} 
@@ -88,7 +88,7 @@ void chunk_s32_log(
  * 
  * @operation{
  * &    a_k  \leftarrow          \
- *      \begin{cases}  log(b_k)   & b_k \gt 0  \\
+ *      \begin{cases}  log(b_k)   & b_k > 0  \\
  *                     \mathtt{INT32\_MIN}  & \text{otherwise} \\
  *      \end{cases} \\ 
  * &    \qquad\text{for }k \in \{0..\mathtt{VPU\_INT32\_EPV}-1\} 

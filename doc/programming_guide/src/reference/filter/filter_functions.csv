@@ -1,0 +1,9 @@
+Filter,Function,Brief
+32-bit FIR       , :c:func:`filter_fir_s32_init()`                 , Initialize filter                      
+32-bit FIR       , :c:func:`filter_fir_s32_add_sample()`           , Add sample (without computing output)  
+32-bit FIR       , :c:func:`filter_fir_s32()`                      , Process next sample                    
+16-bit FIR       , :c:func:`filter_fir_s16_init()`                 , Initialize filter                      
+16-bit FIR       , :c:func:`filter_fir_s16_add_sample()`           , Add sample (without computing output)  
+16-bit FIR       , :c:func:`filter_fir_s16()`                      , Process next sample                    
+32-bit Biquad    , :c:func:`filter_biquad_s32()`                   , Process next sample (single block)     
+32-bit Biquad    , :c:func:`filter_biquads_s32()`                  , Process next sample (multi block)      

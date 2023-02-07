@@ -141,11 +141,11 @@ void bfp_s16_set(
  * In particular, if the 16-bit mantissa vector @vector{x} has @math{N} bits of headroom, then for
  * any element @math{x_k} of @vector{x}
  *
- * @math{-2^{15-N} \le x_k \lt 2^{15-N}}
+ * @math{-2^{15-N} \le x_k < 2^{15-N}}
  *
  * And for any element @math{X_k = x_k \cdot 2^{x\_exp}} of a complex BFP vector @vector{X}
  *
- * @math{-2^{15 + x\_exp - N} \le X_k \lt 2^{15 + x\_exp - N} }
+ * @math{-2^{15 + x\_exp - N} \le X_k < 2^{15 + x\_exp - N} }
  *
  * This function determines the headroom of `b`, updates `b->hr` with that value, and then returns
  * `b->hr`.
@@ -179,8 +179,8 @@ headroom_t bfp_s16_headroom(
  * resulting mantissas, then the associated exponent (and value for parameter `exp`) is `-Y`.
  * 
  * `a` points to input BFP vector @vector{A}, with mantissa vector @vector{a} and exponent
- * @math{a\_exp}. `a` is updated in place to produce resulting BFP vector @vector{\tilde{A}} with
- * mantissa vector @vector{\tilde{a}} and exponent @math{\tilde{a}\_exp}.
+ * @math{a\_exp}. `a` is updated in place to produce resulting BFP vector @math{\bar{\tilde{A}}}
+ * with mantissa vector @math{\bar{\tilde{a}}} and exponent @math{\tilde{a}\_exp}.
  * 
  * `exp` is @math{\tilde{a}\_exp}, the required exponent. @math{\Delta{}p = \tilde{a}\_exp - a\_exp}
  * is the required change in exponent.
@@ -200,13 +200,13 @@ headroom_t bfp_s16_headroom(
  * The exponent and headroom of `a` are updated by this function.
  * 
  * @operation{
- * &    \Delta{}p = \tilde{a}\_exp - a\_exp
+ * &    \Delta{}p = \tilde{a}\_exp - a\_exp \\
  * &    \tilde{a_k} \leftarrow sat_{16}( a_k \cdot 2^{-\Delta{}p} )   \\
  * &        \qquad\text{for } k \in 0\ ...\ (N-1)                     \\
  * &        \qquad\text{where } N \text{ is the length of } \bar{A} \text{ (in elements) }
  * }
  * 
- * @param[inout]  a     Input BFP vector @vector{A} / Output BFP vector @vector{\tilde{A}}
+ * @param[inout]  a     Input BFP vector @vector{A} / Output BFP vector @math{\bar{\tilde{A}}}
  * @param[in]     exp   The required exponent, @math{\tilde{a}\_exp}
  * 
  * @ingroup bfp_s16_api
@@ -233,8 +233,8 @@ void bfp_s16_use_exponent(
  * This operation can be performed safely in-place on `b`.
  * 
  * Note that this operation bypasses the logic protecting the caller from saturation or underflows.
- * Output values saturate to the symmetric 16-bit range (@math{-2^{15} \lt \lt 2^{15}}). To avoid
- * saturation, `b_shl` should be no greater than the headroom of `b` (`b->hr`).
+ * Output values saturate to the symmetric 16-bit range (the open interval @math{(-2^{15},
+ * 2^{15})}). To avoid saturation, `b_shl` should be no greater than the headroom of `b` (`b->hr`).
  * 
  * 
  * @operation{
@@ -296,7 +296,7 @@ void bfp_s16_add(
  * This operation can be performed safely in-place on `b`.
  * 
  * @operation{
- *      \bar{A} \leftarrow \bar{B} + c  
+ * &     \bar{A} \leftarrow \bar{B} + c   \\
  * }
  * 
  * @param[out] a     Output BFP vector @vector{A}
@@ -533,12 +533,13 @@ float_s64_t bfp_s16_dot(
  * 
  * This operation can be performed safely in-place on `b`.
  * 
+ * 
  * @operation{
  * &     A_k \leftarrow \begin{cases}
- * &         L \cdot 2^{bound\_exp}      &   B_k \lt L \cdot 2^{bound\_exp}  \\
- * &         U \cdot 2^{bound\_exp}      &   B_k \gt U \cdot 2^{bound\_exp}  \\
- * &         B_k                         &   otherwise
- * &     \end{cases}                                     \\
+ *           L \cdot 2^{bound\_exp}      &   B_k < L \cdot 2^{bound\_exp}  \\
+ *           U \cdot 2^{bound\_exp}      &   B_k > U \cdot 2^{bound\_exp}  \\
+ *           B_k                         &   otherwise
+ *       \end{cases}                                     \\
  * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
  * &         \qquad\text{where } N \text{ is the length of } \bar{B}
  * }
@@ -572,9 +573,9 @@ void bfp_s16_clip(
  * 
  * @operation{
  * &     A_k \leftarrow \begin{cases}
- * &         0       &   B_k \lt 0       \\
- * &         B_k     &   otherwise
- * &     \end{cases}                     \\
+ *           0       &   B_k < 0       \\
+ *           B_k     &   otherwise
+ *       \end{cases}                     \\
  * &     \qquad\text{for } k \in 0\ ...\ (N-1)       \\
  * &     \qquad\text{where } N \text{ is the length of } \bar{B}
  * }
@@ -638,7 +639,7 @@ void bfp_s16_to_bfp_s32(
  * * Only the `XMATH_BFP_SQRT_DEPTH_S16` (see xmath_conf.h) most significant bits of each result
  *   are computed.
  *
- * * This function only computes real roots. For any @math{B_k \lt 0}, the corresponding output
+ * * This function only computes real roots. For any @math{B_k < 0}, the corresponding output
  *   @math{A_k} is set to @math{0}.
  * @endparblock
  * 

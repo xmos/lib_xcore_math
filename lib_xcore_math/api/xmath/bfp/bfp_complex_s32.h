@@ -170,7 +170,7 @@ void bfp_complex_s32_set(
  * The exponent and headroom of `a` are updated by this function.
  * 
  * @operation{
- * &    \Delta{}p = \tilde{a}\_exp - a\_exp
+ * &    \Delta{}p = \tilde{a}\_exp - a\_exp \\
  * &    \tilde{a_k} \leftarrow sat_{32}( a_k \cdot 2^{-\Delta{}p} )   \\
  * &        \qquad\text{for } k \in 0\ ...\ (N-1)                     \\
  * &        \qquad\text{where } N \text{ is the length of } \bar{A} \text{ (in elements) }
@@ -201,19 +201,19 @@ void bfp_complex_s32_use_exponent(
  * then for any element 
  * @math{x_k} of @vector{x}
  * 
- * @math{-2^{31-N} \le Re\\{x_k\\} \lt 2^{31-N}}
+ * @math{-2^{31-N} \le Re\\{x_k\\} < 2^{31-N}}
  * 
  * and
  * 
- * @math{-2^{31-N} \le Im\\{x_k\\} \lt 2^{31-N}}
+ * @math{-2^{31-N} \le Im\\{x_k\\} < 2^{31-N}}
  * 
  * And for any element @math{X_k = x_k \cdot 2^{x\_exp}} of a complex BFP vector @vector{X}
  * 
- * @math{-2^{31 + x\_exp - N} \le Re\\{X_k\\} \lt 2^{31 + x\_exp - N} }
+ * @math{-2^{31 + x\_exp - N} \le Re\\{X_k\\} < 2^{31 + x\_exp - N} }
  * 
  * and
  * 
- * @math{-2^{31 + x\_exp - N} \le Im\\{X_k\\} \lt 2^{31 + x\_exp - N} }
+ * @math{-2^{31 + x\_exp - N} \le Im\\{X_k\\} < 2^{31 + x\_exp - N} }
  * 
  * This function determines the headroom of `b`, updates `b->hr` with that value, and then returns
  * `b->hr`.
@@ -246,8 +246,8 @@ headroom_t bfp_complex_s32_headroom(
  * This operation can be performed safely in-place on `b`.
  *
  * Note that this operation bypasses the logic protecting the caller from saturation or underflows.
- * Output values saturate to the symmetric 32-bit range (@math{-2^{31} \lt \lt 2^{31}}). To avoid
- * saturation, `b_shl` should be no greater than the headroom of `b` (`b->hr`).
+ * Output values saturate to the symmetric 32-bit range (the open interval @math{(-2^{31},
+ * 2^{31})}). To avoid saturation, `b_shl` should be no greater than the headroom of `b` (`b->hr`).
  * 
  * @operation{
  * &    Re\\{a_k\\} \leftarrow sat_{32}( \lfloor Re\\{b_k\\} \cdot 2^{b\_shl} \rfloor )     \\

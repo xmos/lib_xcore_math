@@ -921,8 +921,8 @@ headroom_t vect_s16_mul(
  * 
  * @operation{
  * &     a_k \leftarrow \begin{cases}
- *          b_k & b_k \gt 0             \\ 
- * &         0 & b_k \leq 0\end{cases}   \\
+ *          b_k & b_k > 0             \\ 
+ *          0 & b_k \leq 0\end{cases}   \\
  * &         \qquad\text{ for }k\in 0\ ...\ (length-1)
  * }
  * 
@@ -1142,9 +1142,9 @@ headroom_t vect_s16_shr(
  * 
  * @operation{ 
  * &     b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)     \\
- *       a_k \leftarrow \begin{cases}
- * &         \sqrt{ b_k' } & b_k' >= 0                                       \\
- * &         0   &   otherwise\end{cases}                                    \\
+ * &     a_k \leftarrow \begin{cases}
+ *           \sqrt{ b_k' } & b_k' >= 0                                       \\
+ *           0   &   otherwise\end{cases}                                    \\
  * &         \qquad\text{ for }k\in 0\ ...\ (length-1)                       \\
  * &         \qquad\text{ where } \sqrt{\cdot} \text{ computes the most significant } depth 
  *                       \text{ bits of the square root.}

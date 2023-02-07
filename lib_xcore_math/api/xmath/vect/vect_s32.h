@@ -521,7 +521,7 @@ int64_t vect_s32_dot(
  * accumulators (which are all used simultaneously) which apply symmetric 40-bit saturation logic
  * (with bounds @math{\approx 2^{39}}) with each value added. The saturating arithmetic employed is
  * _not associative_ and no indication is given if saturation occurs at an intermediate step. To
- * avoid saturation errors, `length` should be no greater than @math{2^{10+2\cdotb\_hr}}, where
+ * avoid saturation errors, `length` should be no greater than @math{2^{10+2\cdot b\_hr}}, where
  * @math{b\_hr} is the headroom of @vector{b}.
  *
  * If the caller's mantissa vector is longer than that, the full result can be found by calling this
@@ -1031,7 +1031,7 @@ headroom_t vect_s32_nmacc(
  * @operation{
  * &     a_k \leftarrow 
  *           \begin\{cases\}
- *               b_k & b_k \gt 0 \\ 
+ *               b_k & b_k > 0 \\ 
  * &             0 & b_k \leq 0
  *       \end\{cases\}           \\
  * &     \qquad\text{ for }k\in 0\ ...\ (length-1)
@@ -1433,8 +1433,8 @@ int64_t vect_s32_sum(
  *
  * `b[]` and `c[]` are the input vectors @vector{b} and @vector{c} respectively.
  *
- * `a`, `b` and `c` must each begin at a double word-aligned (8 byte) address. (see @ref
- * DWORD_ALIGNED).
+ * `a`, `b` and `c` must each begin at a double word-aligned (8 byte) address. (see
+ * `DWORD_ALIGNED`).
  *
  * `length` is the number @math{N} of `int32_t` elements in @vector{b} and @vector{c}.
  *
@@ -1585,7 +1585,7 @@ typedef enum {
    * Vector is reflected at its boundaries, such that
    * 
    *  @math{ \tilde{x}_i \begin\{cases\}
-   *           x_{-i} & i \lt 0                           \\
+   *           x_{-i} & i < 0                           \\
    *           x_{2N - 2 - i} & i \ge N                   \\
    *           x_i & otherwise 
    *          \end\{cases\} }
@@ -1606,7 +1606,7 @@ typedef enum {
    * Vector is padded using the value of the bounding elements.
    * 
    *  @math{ \tilde{x}_i \begin\{cases\}
-   *           x_{0} & i \lt 0            \\
+   *           x_{0} & i < 0            \\
    *           x_{N-1} & i \ge N          \\
    *           x_i & otherwise 
    *          \end\{cases\} }
@@ -1627,7 +1627,7 @@ typedef enum {
    * Vector is padded with zeroes.
    * 
    *  @math{ \tilde{x}_i \begin\{cases\}
-   *           0 & i \lt 0            \\
+   *           0 & i < 0            \\
    *           0 & i \ge N            \\
    *           x_i & otherwise 
    *          \end\{cases\} }
@@ -1675,7 +1675,7 @@ typedef enum {
  *
  * @operation{
  * &    \tilde{x}_i = \begin\{cases\}
- *           \text{determined by padding mode} & i \lt 0                                  \\
+ *           \text{determined by padding mode} & i < 0                                  \\
  *           \text{determined by padding mode} & i \ge N                                  \\
  *           x_i & otherwise \end\{cases\}                                                \\
  * &    y_k \leftarrow  \sum_{l=0}^{K-1} (\tilde{x}_{(k+l-P)} \cdot b_l \cdot 2^{-30} )   \\
@@ -2137,12 +2137,12 @@ void vect_q30_exp_small(
  * `length` is the number of elements in each of the vectors.
  * 
  * `b_shr` is the signed arithmetic right-shift applied to elements of @vector{b}.
+ * @endparblock
  * 
  * @operation{
  * &     a_k \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor)      \\
  * &         \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * }
- * @endparblock
  * 
  * @par Block Floating-Point
  * @parblock

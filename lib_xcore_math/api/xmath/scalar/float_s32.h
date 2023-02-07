@@ -181,15 +181,15 @@ float_s32_t float_s32_abs(
  * 
  * @operation{ 
  * &     a \leftarrow \begin{cases}
- * &         1  &   x \gt y             \\
- * &         0  &   otherwise
- * &     \end{cases}  
+ *           1  &   x > y             \\
+ *           0  &   otherwise
+ *       \end{cases}  
  * }
  * 
  * @param[in] x   Input operand @math{x}
  * @param[in] y   Input operand @math{y}
  * 
- * @returns 1 iff @math{x \gt y}; 0 otherwise
+ * @returns 1 iff @math{x > y}; 0 otherwise
  * 
  * @ingroup float_s32_api
  */
@@ -207,9 +207,9 @@ unsigned float_s32_gt(
  * 
  * @operation{ 
  * &     a \leftarrow \begin{cases}
- * &         1  &   x \geq y  \\
- * &         0  &   otherwise
- * &     \end{cases}  
+ *           1  &   x \geq y  \\
+ *           0  &   otherwise
+ *       \end{cases}  
  * }
  * 
  * @param[in] x   Input operand @math{x}

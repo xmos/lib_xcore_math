@@ -1,0 +1,26 @@
+Function                                       , EW  ,  Signature                                                  ,  Brief
+:c:func:`bfp_complex_s16_init()`               ,     , ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ",  Initialize (static)
+:c:func:`bfp_complex_s16_alloc()`              ,     , ":math:`\varnothing \to \mathbb{V}`                        ",  Initialize (dynamic)
+:c:func:`bfp_complex_s16_dealloc()`            ,     , ":math:`\mathbb{V} \to \mathbb{\varnothing}`               ",  Deinitialize
+:c:func:`bfp_complex_s16_set()`                ,  x  , ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ",  Set All Elements
+:c:func:`bfp_complex_s16_use_exponent()`       ,     , ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ",  Force Exponent
+:c:func:`bfp_complex_s16_headroom()`           ,     , ":math:`\mathbb{V} \to \mathbb{S}`                         ",  Get Headroom
+:c:func:`bfp_complex_s16_shl()`                ,  x  , ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ",  Shift Mantissas
+:c:func:`bfp_complex_s16_real_mul()`           ,  x  , ":math:`(\mathbb{V \times V}) \to \mathbb{V}`              ",  Real Vector Multiply
+:c:func:`bfp_complex_s16_mul()`                ,  x  , ":math:`(\mathbb{V \times V}) \to \mathbb{V}`              ",  Complex Vector Multiply
+:c:func:`bfp_complex_s16_conj_mul()`           ,  x  , ":math:`(\mathbb{V \times V}) \to \mathbb{V}`              ",  Complex Vector Conjugate Multiply
+:c:func:`bfp_complex_s16_macc()`               ,  x  , ":math:`(\mathbb{V \times V \times V}) \to \mathbb{V}`     ",  Complex Vector Multiply-Accumulate
+:c:func:`bfp_complex_s16_nmacc()`              ,  x  , ":math:`(\mathbb{V \times V \times V}) \to \mathbb{V}`     ",  Complex Vector Negated Multiply-Accumulate
+:c:func:`bfp_complex_s16_conj_macc()`          ,  x  , ":math:`(\mathbb{V \times V \times V}) \to \mathbb{V}`     ",  Complex Vector Conjugate Multiply-Accumulate
+:c:func:`bfp_complex_s16_conj_nmacc()`         ,  x  , ":math:`(\mathbb{V \times V \times V}) \to \mathbb{V}`     ",  Complex Vector Negated Conjugate Multiply-Accumulate
+:c:func:`bfp_complex_s16_real_scale()`         ,     , ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ",  Real Scalar Multiply
+:c:func:`bfp_complex_s16_scale()`              ,     , ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ",  Complex Scalar Multiply
+:c:func:`bfp_complex_s16_add()`                ,  x  , ":math:`(\mathbb{V \times V}) \to \mathbb{V}`              ",  Complex Vector Add
+:c:func:`bfp_complex_s16_add_scalar()`         ,     , ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ",  Complex Scalar Add
+:c:func:`bfp_complex_s16_sub()`                ,     , ":math:`(\mathbb{V \times V}) \to \mathbb{V}`              ",  Complex Vector Subtract
+:c:func:`bfp_complex_s16_to_bfp_complex_s32()` ,  x  , ":math:`\mathbb{V} \to \mathbb{V}`                         ",  Convert to 32-bit
+:c:func:`bfp_complex_s16_squared_mag()`        ,  x  , ":math:`\mathbb{V} \to \mathbb{V}`                         ",  Squared Magnitude
+:c:func:`bfp_complex_s16_sum()`                ,     , ":math:`\mathbb{V} \to \mathbb{S}`                         ",  Vector Sum
+:c:func:`bfp_complex_s16_mag()`                ,  x  , ":math:`\mathbb{V} \to \mathbb{V}`                         ",  Magnitude
+:c:func:`bfp_complex_s16_conjugate()`          ,  x  , ":math:`\mathbb{V} \to \mathbb{V}`                         ",  Complex Conjugate
+:c:func:`bfp_complex_s16_energy()`             ,     , ":math:`\mathbb{V} \to \mathbb{S}`                         ",  Vector Energy
