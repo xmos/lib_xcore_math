@@ -1,6 +1,12 @@
 lib_xcore_math change log
 =========================
 
+2.1.2
+-----
+
+* Optimization fix (issue #128) for `filter_fir_s32()`
+* Documentation improvements.
+
 2.1.1
 -----
 
