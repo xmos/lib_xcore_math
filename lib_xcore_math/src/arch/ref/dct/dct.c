@@ -70,10 +70,13 @@ void dct6_forward(
     const int32_t x[6])
 {
   const unsigned DCT_N = 6;
-  int32_t tmp[6];
+  // initialising 8 element even tho using 6 to fit the vlmaccr32 API
+  int32_t tmp[8];
+  int32_t x_tmp[8];
+  memcpy(x_tmp, x, 6 * sizeof(int32_t));
   for(size_t k = 0; k < DCT_N; k++)
-    tmp[k] = vlmaccr32(0, x, &dct6_matrix[DCT_N-1-k][0]);
-  memcpy(y, tmp, sizeof(tmp));
+    tmp[k] = vlmaccr32(0, x_tmp, &dct6_matrix[DCT_N-1-k][0]);
+  memcpy(y, tmp, 6 * sizeof(int32_t));
 }
 
 
