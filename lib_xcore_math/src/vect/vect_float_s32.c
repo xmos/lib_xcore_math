@@ -19,7 +19,7 @@ void vect_float_s32_log_base(
   const unsigned full_chunks = length >> 3;
   const unsigned tail = length & 0x7;
 
-  for(int k = 0; k < full_chunks; k++)
+  for(size_t k = 0; k < full_chunks; k++)
     chunk_float_s32_log(&a[k<<3], &b[k<<3]);
 
   if(tail){

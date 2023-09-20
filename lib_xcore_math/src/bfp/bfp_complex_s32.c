@@ -459,7 +459,7 @@ void bfp_complex_s32_real_part(
   a->exp = b->exp;
   a->hr = b->hr; // not necessarily correct, but safe
 
-  for(int k = 0; k < b->length; k++){
+  for(size_t k = 0; k < b->length; k++){
     a->data[k] = b->data[k].re;
   }
 }
@@ -477,7 +477,7 @@ void bfp_complex_s32_imag_part(
   a->exp = b->exp;
   a->hr = b->hr; // not necessarily correct, but safe
 
-  for(int k = 0; k < b->length; k++){
+  for(size_t k = 0; k < b->length; k++){
     a->data[k] = b->data[k].im;
   }
 }

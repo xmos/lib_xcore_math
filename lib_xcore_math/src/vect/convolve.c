@@ -13,7 +13,7 @@ static void apply_pad_constant(
     const unsigned P,
     const int32_t pad_value)
 {
-  for(int i = 0; i < P; i++)
+  for(size_t i = 0; i < P; i++)
     buff[i] = pad_value;
 }
 
@@ -25,10 +25,10 @@ static void apply_pad_reflect(
     const unsigned right)
 {
   if(!right){
-    for(int i = 0; i < P; i++)
+    for(size_t i = 0; i < P; i++)
       buff[i] = signal_in[P-i];
   } else {
-    for(int i = 0; i < P; i++)
+    for(size_t i = 0; i < P; i++)
       buff[i] = signal_in[sig_len - 2 - i];
   }
 }
@@ -94,7 +94,7 @@ headroom_t vect_s32_convolve_same(
   res_hr = MIN(res_hr, hr);
 
   ////// Do right tail
-  for(int i  = 0; i < filter_taps - 1; i++)
+  for(size_t i  = 0; i < filter_taps - 1; i++)
     buff[i] = signal_in[signal_in_length + 1 - filter_taps + i];
     
   switch(padding_mode){

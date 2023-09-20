@@ -41,10 +41,11 @@ void vect_q30_power_series(
     const unsigned term_count,
     const unsigned length)
 {
+  (void) coef;
   const unsigned full_chunks = length >> 3;
   const unsigned tail = length & 0x7;
 
-  for(int k = 0; k < full_chunks; k++)
+  for(size_t k = 0; k < full_chunks; k++)
     chunk_q30_power_series(&a[k<<3], &b[k<<3], exp_small_coef, term_count);
 
   if(tail){
@@ -79,7 +80,7 @@ void vect_s32_log_base(
   const unsigned full_chunks = length >> 3;
   const unsigned tail = length & 0x7;
 
-  for(int k = 0; k < full_chunks; k++)
+  for(size_t k = 0; k < full_chunks; k++)
     chunk_s32_log(&a[k<<3], &b[k<<3], b_exp);
 
   if(tail){

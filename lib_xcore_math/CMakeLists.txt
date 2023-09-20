@@ -36,10 +36,10 @@ target_include_directories( ${LIB_NAME}
 
 target_compile_options( ${LIB_NAME}
   PRIVATE
-    -Os -g 
-    -Wno-format 
-    -Wno-unused-variable 
-    -Wno-missing-braces
+    -Os -g
+    -Wall
+    -Wextra
+    -Werror
     $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )
 

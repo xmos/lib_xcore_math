@@ -554,7 +554,7 @@ headroom_t bfp_s16_accumulate(
 
   unsigned vpu_ctrl = VPU_INT16_CTRL_INIT; // VPU 16-bit mode with zeroed headroom
 
-  for(int k = 0; k < chunks; k++){
+  for(size_t k = 0; k < chunks; k++){
     vpu_ctrl = chunk_s16_accumulate(
         &acc[k], &b->data[k << VPU_INT16_EPV_LOG2], b_shr, vpu_ctrl);
   }

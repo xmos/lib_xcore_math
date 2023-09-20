@@ -93,7 +93,7 @@ void vect_s16_clip_prepare(
     const exponent_t bound_exp,
     const headroom_t b_hr)
 {
-
+    (void) b_hr;
     // Suppose we say a->exp = b->exp. Then, we have to shift the bounds so that
     //  they match b->exp. So, bound_shr = b->exp - bound_exp. Two possibilities:
     //  A) bound_shr is negative (gets larger)
@@ -306,7 +306,7 @@ static int16_t min_abs_s16(
 {
     int16_t m = INT16_MAX;
 
-    for(int i = 0; i < length; i++){
+    for(size_t i = 0; i < length; i++){
         int16_t tmp = vlmul16(b[i], vsign16(b[i]));
         m = MIN(m, tmp);
     }
@@ -320,7 +320,7 @@ static int32_t min_abs_s32(
 {
     int32_t m = INT32_MAX;
 
-    for(int i = 0; i < length; i++){
+    for(size_t i = 0; i < length; i++){
         int32_t tmp = vlmul32(b[i], vsign32(b[i]));
         m = MIN(m, tmp);
     }
@@ -486,7 +486,8 @@ void vect_s32_dot_prepare(
 
     if(total_shr < 0){
         // Do nothing. We've already eliminated all our headroom.
-    } else if(total_shr >= total_hr){
+        // we know that total_shr is more than zero, so safely recasting to unsigned
+    } else if((unsigned)total_shr >= total_hr){
 
         *b_shr += b_hr;
         *c_shr += c_hr;
@@ -496,8 +497,8 @@ void vect_s32_dot_prepare(
 
     } else {
 
-        *b_shr += MIN(b_hr, total_shr);
-        *c_shr += total_shr - MIN(b_hr, total_shr);
+        *b_shr += MIN(b_hr, (unsigned)total_shr);
+        *c_shr += total_shr - MIN(b_hr, (unsigned)total_shr);
 
     }
 
@@ -654,7 +655,7 @@ void vect_s32_clip_prepare(
     const exponent_t bound_exp,
     const headroom_t b_hr)
 {
-
+    (void) b_hr;
     // Suppose we say a->exp = b->exp. Then, we have to shift the bounds so that
     //  they match b->exp. So, bound_shr = b->exp - bound_exp. Two possibilities:
     //  A) bound_shr is negative (gets larger)
