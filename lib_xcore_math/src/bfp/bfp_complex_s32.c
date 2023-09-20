@@ -9,8 +9,8 @@
 #include "../vect/vpu_helper.h"
 
 
-const extern unsigned rot_table32_rows;
-const extern complex_s32_t rot_table32[30][4];
+extern const unsigned rot_table32_rows;
+extern const complex_s32_t rot_table32[30][4];
 
 
 static inline 

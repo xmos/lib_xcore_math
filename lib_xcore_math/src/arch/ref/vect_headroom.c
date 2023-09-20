@@ -17,7 +17,7 @@ headroom_t vect_s16_headroom(
     int16_t largest = 0;
     unsigned ldex = 0;
 
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         uint16_t pt =  v[k];
         uint16_t nt = -v[k];
 
@@ -58,7 +58,7 @@ headroom_t vect_s32_headroom(
     int32_t largest = 0;
     unsigned ldex = 0;
 
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         int32_t pt =  v[k];
         int32_t nt = -v[k];
 

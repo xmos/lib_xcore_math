@@ -24,7 +24,7 @@ headroom_t vect_complex_s16_real_mul(
     const unsigned length,
     const right_shift_t sat)
 {
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         
         complex_s32_t B = {b_real[k], b_imag[k]};
         int32_t C = c[k];
@@ -57,7 +57,7 @@ headroom_t vect_complex_s16_mul(
     const unsigned length,
     const right_shift_t sat)
 {
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         
         complex_s32_t B = {b_real[k], b_imag[k]};
         complex_s32_t C = {c_real[k], c_imag[k]};
@@ -90,7 +90,7 @@ headroom_t vect_complex_s16_conj_mul(
     const unsigned length,
     const right_shift_t sat)
 {
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         
         complex_s32_t B = {b_real[k], b_imag[k]};
         complex_s32_t C = {c_real[k], c_imag[k]};
@@ -124,7 +124,7 @@ headroom_t vect_complex_s16_scale(
     const right_shift_t sat)
 {
 
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         
         complex_s32_t B = {b_real[k], b_imag[k]};
 
@@ -164,7 +164,7 @@ headroom_t vect_complex_s32_real_mul(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         
         complex_s32_t B = {
             ASHR(32)(b[k].re, b_shr), 
@@ -192,7 +192,7 @@ headroom_t vect_complex_s32_mul(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         
         complex_s32_t B = {
             ASHR(32)(b[k].re, b_shr), 
@@ -226,7 +226,7 @@ headroom_t vect_complex_s32_conj_mul(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         
         complex_s32_t B = {
             ASHR(32)(b[k].re, b_shr), 
@@ -269,7 +269,7 @@ headroom_t vect_complex_s32_scale(
         vlashr32(c_imag, c_shr),
     };
 
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         
         const complex_s32_t B = {
             vlashr32(b[k].re, b_shr),

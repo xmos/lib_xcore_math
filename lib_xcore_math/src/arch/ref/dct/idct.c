@@ -34,7 +34,7 @@ void idct_scale(
     const unsigned chunks,
     const right_shift_t shr)
 {
-  for(int k = 0; k < 8*chunks; k++){
+  for(size_t k = 0; k < 8*chunks; k++){
     int32_t p = vlmul32(x[k], idct_lut[k]);
     x[k] = vlashr32(p, shr);
   }
@@ -48,7 +48,7 @@ void idct_adsb(
     const unsigned chunks)
 {
   const unsigned length = 8*chunks;
-  for(int k = 0; k < length; k++){
+  for(size_t k = 0; k < length; k++){
     int64_t s_elm = s[k];
     int64_t t_tilde_elm = t_tilde[k];
     sums[k] = (s_elm + t_tilde_elm);
@@ -66,7 +66,7 @@ void dct6_inverse(
   const unsigned DCT_N = 6;
   int32_t buff[6];
 
-  for(int k = 0; k < DCT_N; k++)
+  for(size_t k = 0; k < DCT_N; k++)
     buff[k] = vlsat32(vlmaccr32(0, x, &idct6_matrix[DCT_N-1-k][0]), 2);
   memcpy(y, buff, sizeof(buff));
 }
@@ -79,7 +79,7 @@ void dct8_inverse(
   const unsigned DCT_N = 8;
   int32_t buff[8];
 
-  for(int k = 0; k < DCT_N; k++)
+  for(size_t k = 0; k < DCT_N; k++)
     buff[k] = vlsat32(vlmaccr32(0, x, &idct8_matrix[DCT_N-1-k][0]), 2);
   memcpy(y, buff, sizeof(buff));
 }

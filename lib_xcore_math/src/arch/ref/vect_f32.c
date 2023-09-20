@@ -18,7 +18,7 @@ float vect_f32_dot(
     const unsigned length)
 {
   float acc = 0.0f;
-  for(int k = 0; k < length; k++){
+  for(size_t k = 0; k < length; k++){
     acc = fmacc(acc, b[k], c[k]);
   }
   return acc;
@@ -30,7 +30,7 @@ exponent_t vect_f32_max_exponent(
     const unsigned length)
 {
   exponent_t res = INT32_MIN;
-  for(int k = 0; k < length; k++){
+  for(size_t k = 0; k < length; k++){
     int tmp;
     frexpf(b[k], &tmp);
     tmp -= 31;
@@ -47,7 +47,7 @@ void vect_f32_to_vect_s32(
     const unsigned length,
     const exponent_t exp)
 {
-  for(int k = 0; k < length; k++){
+  for(size_t k = 0; k < length; k++){
     const float B = b[k];
     const float_s32_t C = f32_to_float_s32(B);
     a[k] = vlashr32(C.mant, exp - C.exp);
@@ -61,7 +61,7 @@ void vect_s32_to_vect_f32(
     const unsigned length, 
     const exponent_t b_exp)
 {
-  for(int k = 0; k < length; k++){
+  for(size_t k = 0; k < length; k++){
     a[k] = (float) ldexp(b[k], b_exp);
   }
 }
@@ -73,7 +73,7 @@ void vect_f32_add(
   const float c[],
   const unsigned length)
 {
-  for(int k = 0; k < length; k++){
+  for(size_t k = 0; k < length; k++){
     a[k] = b[k] + c[k];
   }
 }
@@ -85,7 +85,7 @@ void vect_complex_f32_mul(
   const complex_float_t c[],
   const unsigned length)
 {
-  for(int k = 0; k < length; k++){
+  for(size_t k = 0; k < length; k++){
     // Must copy to stack in case  a==b or a==c
     complex_float_t B = b[k];
     complex_float_t C = c[k];
@@ -102,7 +102,7 @@ void vect_complex_f32_conj_mul(
   const complex_float_t c[],
   const unsigned length)
 {
-  for(int k = 0; k < length; k++){
+  for(size_t k = 0; k < length; k++){
     // Must copy to stack in case  a==b or a==c
     complex_float_t B = b[k];
     complex_float_t C = c[k];
@@ -119,7 +119,7 @@ void vect_complex_f32_macc(
   const complex_float_t c[],
   const unsigned length)
 {
-  for(int k = 0; k < length; k++){
+  for(size_t k = 0; k < length; k++){
     // Must copy to stack in case  a==b or a==c
     complex_float_t A = a[k];
     complex_float_t B = b[k];
@@ -137,7 +137,7 @@ void vect_complex_f32_conj_macc(
   const complex_float_t c[],
   const unsigned length)
 {
-  for(int k = 0; k < length; k++){
+  for(size_t k = 0; k < length; k++){
     // Must copy to stack in case  a==b or a==c
     complex_float_t A = a[k];
     complex_float_t B = b[k];

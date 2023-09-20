@@ -84,7 +84,7 @@ void chunk_q30_power_series(
     int32_t acc = 0;
 
     int32_t pow = 0x40000000;
-    for(int i = 0; i < term_count; i++){
+    for(size_t i = 0; i < term_count; i++){
       acc = vlmacc32(acc, pow, coef[8*i]);
       pow = vlmul32(pow, b[k]);
     }

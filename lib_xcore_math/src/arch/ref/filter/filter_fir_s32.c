@@ -25,10 +25,10 @@ int32_t filter_fir_s32(
 
     vpu_int32_acc_t acc = 0;
 
-    for(int i = 0; i < N_A; i++)
+    for(size_t i = 0; i < N_A; i++)
         acc = vlmacc32(acc, filter->state[N_B + i], filter->coef[i]);
 
-    for(int i = 0; i < N_B; i++)
+    for(size_t i = 0; i < N_B; i++)
         acc = vlmacc32(acc, filter->state[i], filter->coef[N_A + i]);
 
 

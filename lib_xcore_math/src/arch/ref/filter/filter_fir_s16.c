@@ -27,7 +27,7 @@ void filter_fir_s16_push_sample_down(
     const unsigned length,
     const int16_t new_value)
 {
-    for(int i = 0; i < length-1; i++)
+    for(size_t i = 0; i < length-1; i++)
         buffer[i] = buffer[i+1];
     
     buffer[length-1] = new_value;
@@ -44,7 +44,7 @@ int16_t filter_fir_s16(
 
     int32_t sum = 0;
 
-    for(int i = 0; i < filter->num_taps; i++){
+    for(size_t i = 0; i < filter->num_taps; i++){
         sum += filter->state[i] * filter->coef[i];
     }
 

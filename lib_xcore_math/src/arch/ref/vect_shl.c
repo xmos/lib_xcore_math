@@ -16,7 +16,7 @@ headroom_t vect_s16_shl(
     const unsigned length,
     const int shl)
 {
-    for(int i = 0; i < length; i++){
+    for(size_t i = 0; i < length; i++){
         a[i] = vlashr16(b[i], -shl);
     }
     return vect_s16_headroom(a, length);
@@ -31,7 +31,7 @@ headroom_t vect_s32_shl(
     const unsigned length,
     const int shl)
 {
-    for(int i = 0; i < length; i++){
+    for(size_t i = 0; i < length; i++){
         a[i] = vlashr32(b[i], -shl);
     }
     return vect_s32_headroom(a, length);

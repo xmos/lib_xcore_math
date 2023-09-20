@@ -28,7 +28,7 @@ void fft_index_bit_reversal(
     const unsigned length)
 {
     size_t logn = u32_ceil_log2(length);
-    for(int i = 0; i < length; i++){
+    for(size_t i = 0; i < length; i++){
         
         unsigned rev = n_bitrev(i, logn);
         if(rev < i) continue;
@@ -187,7 +187,7 @@ void fft_mono_adjust(
         p_X_lo = tmp;
     }
 
-    for(int k = 0; k < (FFT_N/4); k+=4){
+    for(size_t k = 0; k < (FFT_N/4); k+=4){
 
         complex_s32_t X_lo[VEC_ELMS], X_hi[VEC_ELMS], tmp[VEC_ELMS], A[VEC_ELMS], B[VEC_ELMS];
 
@@ -252,7 +252,7 @@ void vect_complex_s32_tail_reverse(
     complex_s32_t x[],
     const unsigned N)
 {
-    for(int i = 1; i < N/2; i++){
+    for(size_t i = 1; i < N/2; i++){
         int k = N-i;
 
         complex_s32_t tmp = x[i];

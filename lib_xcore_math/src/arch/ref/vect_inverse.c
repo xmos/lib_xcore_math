@@ -20,7 +20,7 @@ void vect_s16_inverse(
     const unsigned scale)
 {
     const int32_t dividend = 1 << scale;
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         a[k] = (dividend / b[k]);
     }
 }
@@ -38,7 +38,7 @@ headroom_t vect_s32_inverse(
 
     const int64_t d = (0x1LL << scale);
 
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         a[k] = d / b[k];
         
         // printf("0x%016llX / %ld = %ld\n", (uint64_t) d, b[k], a[k]);

@@ -21,7 +21,7 @@ headroom_t vect_s16_mul(
     const right_shift_t a_shr)
 {
 
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         const vpu_int16_acc_t acc = vlmacc16(0, b[k], c[k]);
         a[k] = vlsat16(acc, a_shr);
     }
@@ -40,7 +40,7 @@ headroom_t vect_s32_mul(
     const right_shift_t c_shr)
 {
 
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         const int32_t B = vlashr32(b[k], b_shr);
         const int32_t C = vlashr32(c[k], c_shr);
         a[k] = vlmul32(B, C);
@@ -58,7 +58,7 @@ headroom_t vect_s16_scale(
     const int16_t c,
     const right_shift_t a_shr)
 {
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         vpu_int16_acc_t acc = vlmacc16(0, b[k], c);
         a[k] = vlsat16(acc, a_shr);
     }
@@ -78,7 +78,7 @@ headroom_t vect_s32_scale(
 {
     int32_t C = vlashr32(c, c_shr);
 
-    for(int k = 0; k < length; k++){
+    for(size_t k = 0; k < length; k++){
         int32_t B = vlashr32(b[k], b_shr);
         a[k] = vlmul32(B, C);
     }

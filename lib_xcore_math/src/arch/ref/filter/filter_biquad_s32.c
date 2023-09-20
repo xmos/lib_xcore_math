@@ -43,7 +43,7 @@ int32_t filter_biquad_s32(
 
     // And calculate each new output
     filter->state[0][0] = new_sample;
-    for(int i = 0; i < filter->biquad_count; i++){
+    for(size_t i = 0; i < filter->biquad_count; i++){
         accs[i] += MUL32(filter->state[0][i], filter->coef[0][i]);
         
         // The output is the input to the next biquad

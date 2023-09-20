@@ -21,7 +21,7 @@ headroom_t vect_s16_sqrt(
 {
     
 
-    for(int i = 0; i < length; i++){
+    for(size_t i = 0; i < length; i++){
 
         int16_t target = vlashr16(b[i], b_shr);
 
@@ -29,7 +29,7 @@ headroom_t vect_s16_sqrt(
 
         int16_t P = 0x4000;
 
-        for(int j = 0; j < depth; j++){
+        for(size_t j = 0; j < depth; j++){
 
             int16_t tmp;
 
@@ -58,7 +58,7 @@ headroom_t vect_s32_sqrt(
     const unsigned depth)
 {
 
-    for(int i = 0; i < length; i++){
+    for(size_t i = 0; i < length; i++){
 
         int32_t target = vlashr32(b[i], b_shr);
 
@@ -66,7 +66,7 @@ headroom_t vect_s32_sqrt(
 
         int32_t P = 0x40000000;
 
-        for(int j = 0; j < depth; j++){
+        for(size_t j = 0; j < depth; j++){
 
             int32_t tmp;
 

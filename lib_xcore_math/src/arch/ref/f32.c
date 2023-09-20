@@ -65,7 +65,7 @@ float f32_power_series(
 {
   float y = x;
   float res = 0;
-  for(int k = 0; k < terms_count; k++){
+  for(size_t k = 0; k < terms_count; k++){
     res += coef[k] * y;
     y *= x;
   }
