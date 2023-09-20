@@ -1,6 +1,12 @@
 lib_xcore_math change log
 =========================
 
+2.1.3
+-----
+
+* Fixes bug (issue #147) in `s16_to_s32()`.
+* Fixes bug (issue #146) in `bfp_s32_macc()` and `bfp_s32_nmacc()`.
+
 2.1.2
 -----
 
