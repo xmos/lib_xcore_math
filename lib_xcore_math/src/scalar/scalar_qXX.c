@@ -34,7 +34,8 @@ q8_24 q24_logistic(
       Q30(-0.00021081349206349207), Q30(2.1356922398589065e-05), 
       Q30(-2.1638758617925286e-06), 0 };
 
-    q8_24 odd_powers[7];
+    // initiating 8 elements even tho only using 7 because of the VPU len
+    q8_24 odd_powers[8] = {0};
 
     result = logi_ps_coef[0] >> 6;
 
