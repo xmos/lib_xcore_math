@@ -65,9 +65,11 @@ void dct6_inverse(
 {
   const unsigned DCT_N = 6;
   int32_t buff[6];
-
+  // initialising 8 element even tho using 6 to fit the vlmaccr32 API
+  int32_t x_temp[8];
+  memcpy(x_temp, x, 6 * sizeof(int32_t));
   for(size_t k = 0; k < DCT_N; k++)
-    buff[k] = vlsat32(vlmaccr32(0, x, &idct6_matrix[DCT_N-1-k][0]), 2);
+    buff[k] = vlsat32(vlmaccr32(0, x_temp, &idct6_matrix[DCT_N-1-k][0]), 2);
   memcpy(y, buff, sizeof(buff));
 }
 
