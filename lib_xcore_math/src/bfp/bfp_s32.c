@@ -498,13 +498,13 @@ void bfp_s32_to_bfp_s16(
 
 
 void bfp_s32_macc(
-    bfp_s32_t* acc, 
+    bfp_s32_t* acc,
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
     assert(b->length == c->length);
-    assert(b->length == a->length);
+    assert(b->length == acc->length);
     assert(b->length != 0);
 #endif
 
@@ -519,13 +519,13 @@ void bfp_s32_macc(
 }
 
 void bfp_s32_nmacc(
-    bfp_s32_t* acc, 
+    bfp_s32_t* acc,
     const bfp_s32_t* b, 
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
     assert(b->length == c->length);
-    assert(b->length == a->length);
+    assert(b->length == acc->length);
     assert(b->length != 0);
 #endif
 

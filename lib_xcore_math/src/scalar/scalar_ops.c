@@ -39,7 +39,7 @@ int16_t s32_to_s16(
   return b >> shr;
 }
     
-int32_t scalar_s16_to_s32(
+int32_t s16_to_s32(
     exponent_t* a_exp,
     const int16_t b,
     const exponent_t b_exp,
