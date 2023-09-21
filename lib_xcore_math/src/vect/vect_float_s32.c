@@ -8,8 +8,6 @@
 #include "xmath/xmath.h"
 
 
-
-
 void vect_float_s32_log_base(
     q8_24 a[],
     const float_s32_t b[],
@@ -19,7 +17,7 @@ void vect_float_s32_log_base(
   const unsigned full_chunks = length >> 3;
   const unsigned tail = length & 0x7;
 
-  for(size_t k = 0; k < full_chunks; k++)
+  for(unsigned k = 0; k < full_chunks; k++)
     chunk_float_s32_log(&a[k<<3], &b[k<<3]);
 
   if(tail){

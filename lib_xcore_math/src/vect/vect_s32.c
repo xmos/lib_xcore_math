@@ -17,9 +17,6 @@ headroom_t vect_s32_shr(
     return vect_s32_shl(a, b, length, -shr);
 }
 
-
-
-
 headroom_t vect_s32_add_scalar(
     int32_t a[],
     const int32_t b[],
@@ -45,7 +42,7 @@ void vect_q30_power_series(
   const unsigned full_chunks = length >> 3;
   const unsigned tail = length & 0x7;
 
-  for(size_t k = 0; k < full_chunks; k++)
+  for(unsigned k = 0; k < full_chunks; k++)
     chunk_q30_power_series(&a[k<<3], &b[k<<3], exp_small_coef, term_count);
 
   if(tail){
@@ -80,7 +77,7 @@ void vect_s32_log_base(
   const unsigned full_chunks = length >> 3;
   const unsigned tail = length & 0x7;
 
-  for(size_t k = 0; k < full_chunks; k++)
+  for(unsigned k = 0; k < full_chunks; k++)
     chunk_s32_log(&a[k<<3], &b[k<<3], b_exp);
 
   if(tail){

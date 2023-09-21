@@ -9,9 +9,6 @@
 #include "xmath/xs3/vpu_scalar_ops.h"
 
 
-
-
-
 void vect_s32_to_vect_s16(
     int16_t a[],
     const int32_t b[],
@@ -22,7 +19,7 @@ void vect_s32_to_vect_s16(
     // that the user doesn't have to care about that.
     const right_shift_t b_shr_mod = b_shr - 16;
 
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         const int32_t B = vlashr32(b[k], b_shr_mod);
         a[k] = vdepth16_32(B);
     }
@@ -36,7 +33,7 @@ void vect_s16_to_vect_s32(
     const int16_t b[],
     const unsigned length)
 {
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         int16_t B = b[k];
         a[k] = B << 8;
     }

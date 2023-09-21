@@ -58,3 +58,4 @@ static inline headroom_t hr_from_mask(unsigned hr_mask){
     (void) hr_mask;
     return 0;
 }
+

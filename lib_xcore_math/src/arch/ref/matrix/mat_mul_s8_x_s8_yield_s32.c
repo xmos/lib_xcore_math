@@ -37,7 +37,7 @@ void mat_mul_s8_x_s8_yield_s32 (
 
       int32_t acc = merge_acc(accumulators[ag].vD[o], accumulators[ag].vR[o]);
 
-      for(size_t k = 0; k < N_cols; k++){
+      for(unsigned k = 0; k < N_cols; k++){
         acc += ((int32_t)input_vect[k]) * matrix[row * N_cols + k];
       }
 

@@ -15,7 +15,7 @@ headroom_t vect_complex_s32_conjugate(
     const complex_s32_t b[],
     const unsigned length)
 {
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         a[k].re = vlmul32(b[k].re,  0x40000000);
         a[k].im = vlmul32(b[k].im, -0x40000000);
     }

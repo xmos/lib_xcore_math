@@ -35,7 +35,7 @@ void vect_complex_s32_sum(
     int64_t sum_real = 0;
     int64_t sum_imag = 0;
 
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         
         complex_s32_t B = {
             ROUND_SHR(b[k].re, b_shr), 

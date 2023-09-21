@@ -9,9 +9,6 @@
 #include "xmath/xs3/vpu_scalar_ops.h"
 
 
-
-
-
 headroom_t vect_s16_sqrt(
     int16_t a[],
     const int16_t b[],
@@ -19,9 +16,7 @@ headroom_t vect_s16_sqrt(
     const right_shift_t b_shr,
     const unsigned depth)
 {
-    
-
-    for(size_t i = 0; i < length; i++){
+    for(unsigned i = 0; i < length; i++){
 
         int16_t target = vlashr16(b[i], b_shr);
 
@@ -29,7 +24,7 @@ headroom_t vect_s16_sqrt(
 
         int16_t P = 0x4000;
 
-        for(size_t j = 0; j < depth; j++){
+        for(unsigned j = 0; j < depth; j++){
 
             int16_t tmp;
 
@@ -58,7 +53,7 @@ headroom_t vect_s32_sqrt(
     const unsigned depth)
 {
 
-    for(size_t i = 0; i < length; i++){
+    for(unsigned i = 0; i < length; i++){
 
         int32_t target = vlashr32(b[i], b_shr);
 
@@ -66,7 +61,7 @@ headroom_t vect_s32_sqrt(
 
         int32_t P = 0x40000000;
 
-        for(size_t j = 0; j < depth; j++){
+        for(unsigned j = 0; j < depth; j++){
 
             int32_t tmp;
 

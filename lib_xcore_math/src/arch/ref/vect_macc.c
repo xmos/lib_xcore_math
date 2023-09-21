@@ -10,10 +10,6 @@
 #include "xmath/xs3/vpu_scalar_ops.h"
 
 
-
-
-
-
 headroom_t vect_s16_macc(
     int16_t acc[],
     const int16_t b[],
@@ -22,7 +18,7 @@ headroom_t vect_s16_macc(
     const right_shift_t acc_shr,
     const right_shift_t bc_shr)
 {
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         acc[k] = vlashr16(acc[k], acc_shr);
         const vpu_int16_acc_t tmp = vlmacc16(0, b[k], c[k]);
         acc[k] = vladd16(acc[k], vlsat16(tmp, bc_shr));
@@ -40,7 +36,7 @@ headroom_t vect_s16_nmacc(
     const right_shift_t bc_shr)
 {
 
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         acc[k] = vlashr16(acc[k], acc_shr);
         const vpu_int16_acc_t tmp = vlmacc16(0, b[k], c[k]);
         acc[k] = vlsub16(acc[k], vlsat16(tmp, bc_shr));
@@ -61,7 +57,7 @@ headroom_t vect_s32_macc(
     const right_shift_t c_shr)
 {
 
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         acc[k] = vlashr32(acc[k], acc_shr);
         const int32_t B = vlashr32(b[k], b_shr);
         const int32_t C = vlashr32(c[k], c_shr);
@@ -82,7 +78,7 @@ headroom_t vect_s32_nmacc(
     const right_shift_t c_shr)
 {
 
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         acc[k] = vlashr32(acc[k], acc_shr);
         const int32_t B = vlashr32(b[k], b_shr);
         const int32_t C = vlashr32(c[k], c_shr);

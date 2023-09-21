@@ -14,7 +14,7 @@ int16_t vect_s16_max(
     const unsigned length)
 {
     int16_t cur_max = INT16_MIN;
-    for(size_t k = 0; k < length; k++)
+    for(unsigned k = 0; k < length; k++)
         cur_max = MAX(cur_max, b[k]);
     return cur_max;
 }
@@ -28,7 +28,7 @@ headroom_t vect_s16_max_elementwise(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-  for(size_t k = 0; k < length; k++)
+  for(unsigned k = 0; k < length; k++)
     a[k] = MAX( vlashr16(b[k], b_shr), vlashr16(c[k], c_shr));
   
   return vect_s16_headroom(a, length);
@@ -41,7 +41,7 @@ int32_t vect_s32_max(
     const unsigned length)
 {
     int32_t cur_max = INT32_MIN;
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         cur_max = MAX(cur_max, b[k]);
     }
     return cur_max;
@@ -56,7 +56,7 @@ headroom_t vect_s32_max_elementwise(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-  for(size_t k = 0; k < length; k++)
+  for(unsigned k = 0; k < length; k++)
     a[k] = MAX(vlashr32(b[k], b_shr), vlashr32(c[k], c_shr));
 
   return vect_s32_headroom(a, length);
@@ -69,7 +69,7 @@ int16_t vect_s16_min(
     const unsigned length)
 {
     int16_t cur_min = INT16_MAX;
-    for(size_t k = 0; k < length; k++)
+    for(unsigned k = 0; k < length; k++)
         cur_min = MIN(cur_min, b[k]);
     return cur_min;
 }
@@ -83,7 +83,7 @@ headroom_t vect_s16_min_elementwise(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-  for(size_t k = 0; k < length; k++)
+  for(unsigned k = 0; k < length; k++)
     a[k] = MIN(vlashr16(b[k], b_shr), vlashr16(c[k], c_shr));
     
   return vect_s16_headroom(a, length);
@@ -96,7 +96,7 @@ int32_t vect_s32_min(
     const unsigned length)
 {
     int32_t cur_min = INT32_MAX;
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         cur_min = MIN(cur_min, b[k]);
     }
     return cur_min;
@@ -111,7 +111,7 @@ headroom_t vect_s32_min_elementwise(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-  for(size_t k = 0; k < length; k++)
+  for(unsigned k = 0; k < length; k++)
     a[k] = MIN(vlashr32(b[k], b_shr), vlashr32(c[k], c_shr));
     
   return vect_s32_headroom(a, length);
@@ -126,7 +126,7 @@ unsigned vect_s16_argmax(
 {
 
     unsigned res = 0;
-    for(size_t k = 1; k < length; k++)
+    for(unsigned k = 1; k < length; k++)
         res = (b[k] > b[res])? k : res;
     return res;
 }
@@ -137,7 +137,7 @@ unsigned vect_s32_argmax(
     const unsigned length)
 {
     unsigned res = 0;
-    for(size_t k = 1; k < length; k++)
+    for(unsigned k = 1; k < length; k++)
         res = (b[k] > b[res])? k : res;
     return res;
 }
@@ -149,7 +149,7 @@ unsigned vect_s16_argmin(
     const unsigned length)
 {
     unsigned res = 0;
-    for(size_t k = 1; k < length; k++)
+    for(unsigned k = 1; k < length; k++)
         res = (b[k] < b[res])? k : res;
     return res;
 }
@@ -160,7 +160,7 @@ unsigned vect_s32_argmin(
     const unsigned length)
 {
     unsigned res = 0;
-    for(size_t k = 1; k < length; k++)
+    for(unsigned k = 1; k < length; k++)
         res = (b[k] < b[res])? k : res;
     return res;
 }
@@ -176,7 +176,7 @@ int32_t vect_s16_abs_sum(
 {
     vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD] = {0};
 
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         const int j = k % VPU_INT16_ACC_PERIOD;
 
         acc[j] = vlmacc16(acc[j], -1, b[k]);
@@ -196,13 +196,13 @@ int64_t vect_s32_abs_sum(
 {
     vpu_int32_acc_t acc[VPU_INT32_ACC_PERIOD] = { 0 };
 
-    for(size_t k = 0; k < length; k++){ 
+    for(unsigned k = 0; k < length; k++){ 
         const int j = k % VPU_INT32_ACC_PERIOD;
         acc[j] = vlmacc32(acc[j], b[k], vsign32(b[k]));
     }
 
     vpu_int32_acc_t total = 0;
-    for(size_t j = 0; j < VPU_INT32_ACC_PERIOD; j++)
+    for(unsigned j = 0; j < VPU_INT32_ACC_PERIOD; j++)
         total += acc[j];
 
     // note: xcore assembly implementation adds together the 40-bit accumulators and doesn't attempt
@@ -221,7 +221,7 @@ int32_t vect_s16_energy(
 
     vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD] = {0};
 
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         const int j = k % VPU_INT16_ACC_PERIOD;
         const int16_t B = vlashr16(b[k], b_shr);
         acc[j] = vlmacc16(acc[j], B, B);
@@ -238,14 +238,14 @@ int64_t vect_s32_energy(
 {
     vpu_int32_acc_t acc[VPU_INT32_ACC_PERIOD] = {0};
 
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         const int j = k % VPU_INT32_ACC_PERIOD;
         const int32_t B = vlashr32(b[k], b_shr);
         acc[j] = vlmacc32(acc[j], B, B);
     }
 
     vpu_int32_acc_t total = 0;
-    for(size_t j = 0; j < VPU_INT32_ACC_PERIOD; j++)
+    for(unsigned j = 0; j < VPU_INT32_ACC_PERIOD; j++)
         total += acc[j];
 
     // note: xcore assembly implementation adds together the 40-bit accumulators and doesn't attempt

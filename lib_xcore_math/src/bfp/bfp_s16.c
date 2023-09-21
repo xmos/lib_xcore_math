@@ -21,8 +21,6 @@ int16_t safe_ashr16(int16_t x, right_shift_t shr)
   }
 }
 
-
-    
 headroom_t bfp_s16_headroom(
     bfp_s16_t* a)
 {
@@ -554,7 +552,7 @@ headroom_t bfp_s16_accumulate(
 
   unsigned vpu_ctrl = VPU_INT16_CTRL_INIT; // VPU 16-bit mode with zeroed headroom
 
-  for(size_t k = 0; k < chunks; k++){
+  for(unsigned k = 0; k < chunks; k++){
     vpu_ctrl = chunk_s16_accumulate(
         &acc[k], &b->data[k << VPU_INT16_EPV_LOG2], b_shr, vpu_ctrl);
   }

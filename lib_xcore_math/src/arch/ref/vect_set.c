@@ -8,14 +8,12 @@
 #include "../../vect/vpu_helper.h"
 
 
-
-
 void vect_s16_set(
     int16_t data[],
     const int16_t value,
     const unsigned length)
 {
-    for(size_t i = 0; i < length; i++)
+    for(unsigned i = 0; i < length; i++)
         data[i] = value;
 }
 
@@ -26,7 +24,7 @@ void vect_s32_set(
     const int32_t value,
     const unsigned length)
 {
-    for(size_t i = 0; i < length; i++)
+    for(unsigned i = 0; i < length; i++)
         data[i] = value;
 }
 
@@ -38,7 +36,7 @@ void vect_complex_s32_set(
     const int32_t imag_part,
     const unsigned length)
 {
-    for(size_t i = 0; i < length; i++){
+    for(unsigned i = 0; i < length; i++){
         data[i].re = real_part;
         data[i].im = imag_part;
     }

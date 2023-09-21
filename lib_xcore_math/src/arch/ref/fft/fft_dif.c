@@ -96,7 +96,7 @@ void fft_dif_forward (
 
     if(N != 4){
 
-        for(size_t n = 0; n < FFT_N_LOG2-2; n++){
+        for(unsigned n = 0; n < FFT_N_LOG2-2; n++){
             
             const int b = 1<<(FFT_N_LOG2-1-n);
             const int a = 1<<(2+n);
@@ -137,7 +137,7 @@ void fft_dif_forward (
     }
     
 
-    for(size_t j = 0; j < (N>>2); j++){
+    for(unsigned j = 0; j < (N>>2); j++){
         load_vec(vR, &x[4*j]);
         vftff(vR, shift_mode);
         load_vec(&x[4*j], vR);
@@ -170,7 +170,7 @@ void fft_dif_inverse (
 
     if(N != 4){
 
-        for(size_t n = 0; n < FFT_N_LOG2-2; n++){
+        for(unsigned n = 0; n < FFT_N_LOG2-2; n++){
             
             const int b = 1<<(FFT_N_LOG2-1-n);
             const int a = 1<<(2+n);
@@ -211,7 +211,7 @@ void fft_dif_inverse (
     }
     
 
-    for(size_t j = 0; j < (N>>2); j++){
+    for(unsigned j = 0; j < (N>>2); j++){
         load_vec(vR, &x[4*j]);
         vftfb(vR, shift_mode);
         load_vec(&x[4*j], vR);

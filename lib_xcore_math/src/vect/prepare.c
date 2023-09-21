@@ -306,7 +306,7 @@ static int16_t min_abs_s16(
 {
     int16_t m = INT16_MAX;
 
-    for(size_t i = 0; i < length; i++){
+    for(unsigned i = 0; i < length; i++){
         int16_t tmp = vlmul16(b[i], vsign16(b[i]));
         m = MIN(m, tmp);
     }
@@ -320,7 +320,7 @@ static int32_t min_abs_s32(
 {
     int32_t m = INT32_MAX;
 
-    for(size_t i = 0; i < length; i++){
+    for(unsigned i = 0; i < length; i++){
         int32_t tmp = vlmul32(b[i], vsign32(b[i]));
         m = MIN(m, tmp);
     }

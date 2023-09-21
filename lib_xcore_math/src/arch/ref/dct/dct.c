@@ -18,7 +18,7 @@ void vect_s32_flip(
     const int32_t b[],
     const unsigned length)
 {
-  for(size_t k = 0; k < (length>>1); k++){
+  for(unsigned k = 0; k < (length>>1); k++){
     int32_t x = b[k];
     int32_t y = b[length-1-k];
     a[k] = y;
@@ -35,7 +35,7 @@ headroom_t dct_adsb_s32(
     const int32_t dct_lut[])
 {
   const unsigned length = 8*chunks;
-  for(size_t k = 0; k < length; k++){
+  for(unsigned k = 0; k < length; k++){
     int64_t h = head[k];
     int64_t t = tail[k];
     int64_t s = h + t;
@@ -56,7 +56,7 @@ void dct_deconvolve_s32(
     const unsigned res_length)
 {
   int32_t prev = D[0] >> 1;
-  for(size_t k = 0; k < (res_length >> 1); k++){
+  for(unsigned k = 0; k < (res_length >> 1); k++){
     int32_t b = B[k];
     int32_t d = D[k];
     res[2*k] = b;
@@ -71,10 +71,10 @@ void dct6_forward(
 {
   const unsigned DCT_N = 6;
   int32_t tmp[6];
-  // initialising 8 element even tho using 6 to fit the vlmaccr32 API
+  // initialising 8 element even though using 6 to fit the vlmaccr32 API
   int32_t x_tmp[8];
   memcpy(x_tmp, x, 6 * sizeof(int32_t));
-  for(size_t k = 0; k < DCT_N; k++)
+  for(unsigned k = 0; k < DCT_N; k++)
     tmp[k] = vlmaccr32(0, x_tmp, &dct6_matrix[DCT_N-1-k][0]);
   memcpy(y, tmp, sizeof(tmp));
 }
@@ -86,7 +86,7 @@ void dct8_forward(
 {
   const unsigned DCT_N = 8;
   int32_t tmp[8];
-  for(size_t k = 0; k < DCT_N; k++)
+  for(unsigned k = 0; k < DCT_N; k++)
     tmp[k] = vlsat32(vlmaccr32(0, x, &dct8_matrix[DCT_N-1-k][0]), 3);
   memcpy(y, tmp, sizeof(tmp));
 }

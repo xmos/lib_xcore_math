@@ -26,7 +26,7 @@ headroom_t vect_complex_s16_conj_macc(
     const right_shift_t acc_shr,
     const right_shift_t bc_sat)
 {
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
 
         acc_real[k] = vlashr16( acc_real[k], acc_shr );
         acc_imag[k] = vlashr16( acc_imag[k], acc_shr );
@@ -60,7 +60,7 @@ headroom_t vect_complex_s16_conj_nmacc(
     const right_shift_t acc_shr,
     const right_shift_t bc_sat)
 {
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
 
         acc_real[k] = vlashr16( acc_real[k], acc_shr );
         acc_imag[k] = vlashr16( acc_imag[k], acc_shr );
@@ -103,7 +103,7 @@ headroom_t vect_complex_s32_conj_macc(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         
         complex_s32_t B = {
             ASHR(32)(b[k].re, b_shr), 
@@ -135,7 +135,7 @@ headroom_t vect_complex_s32_conj_nmacc(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-    for(size_t k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         
         complex_s32_t B = {
             ASHR(32)(b[k].re, b_shr), 

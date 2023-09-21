@@ -15,7 +15,8 @@ void vect_s8_is_negative(
     const int8_t b[],
     const unsigned len)
 {
-  for(size_t k = 0; k < len; k++){
+  for(unsigned k = 0; k < len; k++){
     a[k] = (b[k] < 0)? 1 : 0;
   }
 }
+

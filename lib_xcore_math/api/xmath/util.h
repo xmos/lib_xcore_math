@@ -295,7 +295,7 @@ static inline unsigned n_bitrev(
 #else
   unsigned dex = index;
   
-  for(size_t i = 0; i < bits; i++, dex >>= 1){
+  for(unsigned i = 0; i < bits; i++, dex >>= 1){
       rev_index = ((rev_index<<1) | (dex & 0x1));
   }
   return rev_index;

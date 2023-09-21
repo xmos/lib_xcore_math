@@ -96,7 +96,7 @@ void fft_dit_forward (
     exp_modifier += shift_mode;
 
 
-    for(size_t j = 0; j < (N>>2); j++){
+    for(unsigned j = 0; j < (N>>2); j++){
         load_vec(vD, &x[4*j]);
         vfttf(vD, shift_mode);
         load_vec(&x[4*j], vD);
@@ -106,7 +106,7 @@ void fft_dit_forward (
 
         // int a = N >> 3;
 
-        for(size_t n = 0; n < FFT_N_LOG2-2; n++){
+        for(unsigned n = 0; n < FFT_N_LOG2-2; n++){
             
             int b = 1<<(n+2);
             int a = 1<<((FFT_N_LOG2-3)-n);
@@ -170,7 +170,7 @@ void fft_dit_inverse (
     exp_modifier += shift_mode;
     exp_modifier += -2;
 
-    for(size_t j = 0; j < (N>>2); j++){
+    for(unsigned j = 0; j < (N>>2); j++){
         load_vec(vD, &x[4*j]);
         vfttb(vD, shift_mode);
         load_vec(&x[4*j], vD);
@@ -178,7 +178,7 @@ void fft_dit_inverse (
 
     if(N != 4){
 
-        for(size_t n = 0; n < FFT_N_LOG2-2; n++){
+        for(unsigned n = 0; n < FFT_N_LOG2-2; n++){
             
             int b = 1<<(n+2);
             int a = 1<<((FFT_N_LOG2-3)-n);
