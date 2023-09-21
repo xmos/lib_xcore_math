@@ -61,14 +61,12 @@ pipeline {
                   }
                 }
                 dir('build_x86/test') {
-                  withTools(params.TOOLS_VERSION) {
-                    sh './bfp_tests/bfp_tests        -v'
-                    sh './dct_tests/dct_tests        -v'
-                    sh './fft_tests/fft_tests        -v'
-                    sh './filter_tests/filter_tests  -v'
-                    sh './scalar_tests/scalar_tests  -v'
-                    sh './vect_tests/vect_tests      -v'
-                  }
+                  sh './bfp_tests/bfp_tests        -v'
+                  sh './dct_tests/dct_tests        -v'
+                  sh './fft_tests/fft_tests        -v'
+                  sh './filter_tests/filter_tests  -v'
+                  sh './scalar_tests/scalar_tests  -v'
+                  sh './vect_tests/vect_tests      -v'
                 }
               }
             } // Unit tests
@@ -92,7 +90,8 @@ pipeline {
                 sh """docker run --user "\$(id -u):\$(id -g)" \
                         --rm \
                         -v ${WORKSPACE}:/build \
-                        -e EXCLUDE_PATTERNS="/build/doc/exclude_patterns.inc" \
+                        -e EXCLUDE_PATTERNS="/build/doc/doc_excludes.txt" \
+                        -e DOXYGEN=1 -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.in \
                         -e PDF=1 \
                         ghcr.io/xmos/doc_builder:v3.0.0"""
                 
