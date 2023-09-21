@@ -49,7 +49,7 @@ pipeline {
 
             stage('Unit tests') {
               steps {
-                dir('build_xs3a/test') {
+                dir('lib_xcore_math/build_xs3a/test') {
                   withTools(params.TOOLS_VERSION) {
                     sh 'xrun --xscope bfp_tests/bfp_tests.xe        -v'
                     sh 'xrun --xscope dct_tests/dct_tests.xe        -v'
@@ -60,7 +60,7 @@ pipeline {
                     sh 'xrun --xscope xs3_tests/xs3_tests.xe        -v'
                   }
                 }
-                dir('build_x86/test') {
+                dir('lib_xcore_math/build_x86/test') {
                   sh './bfp_tests/bfp_tests        -v'
                   sh './dct_tests/dct_tests        -v'
                   sh './fft_tests/fft_tests        -v'
@@ -91,7 +91,7 @@ pipeline {
                         --rm \
                         -v ${WORKSPACE}:/build \
                         -e EXCLUDE_PATTERNS="/build/doc/doc_excludes.txt" \
-                        -e DOXYGEN=1 -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.in \
+                        -e DOXYGEN=1 -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc \
                         -e PDF=1 \
                         ghcr.io/xmos/doc_builder:v3.0.0"""
                 
