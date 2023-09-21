@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -21,7 +21,7 @@ void vect_s32_merge_accs(
 
   unsigned N = (length + VPU_INT8_ACC_PERIOD - 1) >> VPU_INT8_ACC_PERIOD_LOG2;
 
-  for(int g = 0; g < N; g++){
+  for(unsigned g = 0; g < N; g++){
     split_acc_s32_t tmp = b[g];
 
     for(int o = 0; o < VPU_INT8_ACC_PERIOD; o++){
@@ -46,7 +46,7 @@ void vect_s32_split_accs(
   // We have to copy b[] in case the split is in-place.
   unsigned N = ((length + VPU_INT8_ACC_PERIOD - 1) >> VPU_INT8_ACC_PERIOD_LOG2);
 
-  for(int g = 0; g < N; g++){
+  for(unsigned g = 0; g < N; g++){
     split_acc_s32_t tmp;
 
     for(int o = 0; o < VPU_INT8_ACC_PERIOD; o++){

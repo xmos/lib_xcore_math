@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -15,7 +15,7 @@ headroom_t vect_complex_s32_conjugate(
     const complex_s32_t b[],
     const unsigned length)
 {
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         a[k].re = vlmul32(b[k].re,  0x40000000);
         a[k].im = vlmul32(b[k].im, -0x40000000);
     }

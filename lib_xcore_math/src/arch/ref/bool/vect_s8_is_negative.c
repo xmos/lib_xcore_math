@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
@@ -15,7 +15,8 @@ void vect_s8_is_negative(
     const int8_t b[],
     const unsigned len)
 {
-  for(int k = 0; k < len; k++){
+  for(unsigned k = 0; k < len; k++){
     a[k] = (b[k] < 0)? 1 : 0;
   }
 }
+

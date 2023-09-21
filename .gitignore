@@ -8,6 +8,7 @@
 **/.ipynb_checkpoints/*
 **/*.egg-info/*
 Pipfile.lock
+.python-version
 
 # build cruft
 _build

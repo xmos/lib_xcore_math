@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -18,7 +18,7 @@ void vect_s32_zip(
   const right_shift_t b_shr,
   const right_shift_t c_shr)
 {
-  for(int i = 0; i < length; i++){
+  for(unsigned i = 0; i < length; i++){
     const int32_t B = b[i];
     const int32_t C = c[i];
     a[i].re = vlashr32(B, b_shr);
@@ -33,7 +33,7 @@ void vect_s32_unzip(
   const complex_s32_t c[],
   const unsigned length)
 {
-  for(int i = 0; i < length; i++){
+  for(unsigned i = 0; i < length; i++){
     const int32_t A = c[i].re;
     const int32_t B = c[i].im;
     a[i] = A;

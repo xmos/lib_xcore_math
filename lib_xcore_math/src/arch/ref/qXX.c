@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -178,7 +178,7 @@ void q30_powers(
     const unsigned length)
 {
   a[0] = 0x40000000;
-  for(int k = 1; k < length; k++){
+  for(unsigned k = 1; k < length; k++){
     a[k] = vlmul32(a[k-1], b);
   }
 }
@@ -195,7 +195,7 @@ void s32_odd_powers(
   int32_t sqr = mul_qXX(b, b, shr, 0);
 
   a[0] = b;
-  for(int k = 1; k < count; k++){
+  for(unsigned k = 1; k < count; k++){
     a[k] = mul_qXX(a[k-1], sqr, shr, 0);
   }
 }

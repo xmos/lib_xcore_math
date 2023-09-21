@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
@@ -255,7 +255,7 @@ static inline unsigned cls(
         }
     } else {
         for(int i = 30; i >= 0; i--){
-            unsigned mask = (1<<i);
+            int32_t mask = (1<<i);
             if((a | mask) != a) return 31-i;
         }
     }
@@ -295,7 +295,7 @@ static inline unsigned n_bitrev(
 #else
   unsigned dex = index;
   
-  for(int i = 0; i < bits; i++, dex >>= 1){
+  for(unsigned i = 0; i < bits; i++, dex >>= 1){
       rev_index = ((rev_index<<1) | (dex & 0x1));
   }
   return rev_index;

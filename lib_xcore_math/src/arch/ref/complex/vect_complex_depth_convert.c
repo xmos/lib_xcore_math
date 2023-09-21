@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -16,7 +16,7 @@ void vect_complex_s16_to_vect_complex_s32(
     const int16_t b_imag[],
     const unsigned length)
 {
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         
         complex_s32_t B = {
             ((int32_t)b_real[k]),
@@ -38,7 +38,7 @@ void vect_complex_s32_to_vect_complex_s16(
 {
     const right_shift_t shr_mod = b_shr - 16;
 
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         a_real[k] = (int16_t) SAT(16)(ROUND_SHR(ASHR(32)(b[k].re, shr_mod), 16));
         a_imag[k] = (int16_t) SAT(16)(ROUND_SHR(ASHR(32)(b[k].im, shr_mod), 16));
     }

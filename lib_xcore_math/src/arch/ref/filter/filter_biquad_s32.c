@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
@@ -43,7 +43,7 @@ int32_t filter_biquad_s32(
 
     // And calculate each new output
     filter->state[0][0] = new_sample;
-    for(int i = 0; i < filter->biquad_count; i++){
+    for(unsigned i = 0; i < filter->biquad_count; i++){
         accs[i] += MUL32(filter->state[0][i], filter->coef[0][i]);
         
         // The output is the input to the next biquad

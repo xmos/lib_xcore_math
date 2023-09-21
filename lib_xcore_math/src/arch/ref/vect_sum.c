@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -17,7 +17,7 @@ int32_t vect_s16_sum(
     const unsigned length)
 {
     vpu_int16_acc_t acc = 0;
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         acc = vlmacc16(acc, b[k], 1);
     }
 
@@ -31,7 +31,7 @@ int64_t vect_s32_sum(
     const unsigned length)
 {
     vpu_int32_acc_t acc = 0;
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         acc = vlmacc32(acc, b[k], one_q30);
     }
 

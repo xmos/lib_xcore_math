@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -21,10 +21,10 @@ headroom_t vect_s32_convolve_valid(
   const unsigned P = b_length >> 1;
   const unsigned y_length = x_length - 2*P;
 
-  for(int k = 0; k < y_length; k++){
+  for(unsigned k = 0; k < y_length; k++){
 
     vpu_int32_acc_t acc = 0;
-    for(int t = 0; t < b_length; t++){
+    for(unsigned t = 0; t < b_length; t++){
       acc = vlmacc32(acc, x[k+t], b_q30[t]);
     }
 

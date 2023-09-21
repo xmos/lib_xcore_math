@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -34,7 +34,7 @@ void idct_scale(
     const unsigned chunks,
     const right_shift_t shr)
 {
-  for(int k = 0; k < 8*chunks; k++){
+  for(unsigned k = 0; k < 8*chunks; k++){
     int32_t p = vlmul32(x[k], idct_lut[k]);
     x[k] = vlashr32(p, shr);
   }
@@ -48,7 +48,7 @@ void idct_adsb(
     const unsigned chunks)
 {
   const unsigned length = 8*chunks;
-  for(int k = 0; k < length; k++){
+  for(unsigned k = 0; k < length; k++){
     int64_t s_elm = s[k];
     int64_t t_tilde_elm = t_tilde[k];
     sums[k] = (s_elm + t_tilde_elm);
@@ -65,9 +65,11 @@ void dct6_inverse(
 {
   const unsigned DCT_N = 6;
   int32_t buff[6];
-
-  for(int k = 0; k < DCT_N; k++)
-    buff[k] = vlsat32(vlmaccr32(0, x, &idct6_matrix[DCT_N-1-k][0]), 2);
+  // initialising 8 element even though using 6 to fit the vlmaccr32 API
+  int32_t x_temp[8];
+  memcpy(x_temp, x, 6 * sizeof(int32_t));
+  for(unsigned k = 0; k < DCT_N; k++)
+    buff[k] = vlsat32(vlmaccr32(0, x_temp, &idct6_matrix[DCT_N-1-k][0]), 2);
   memcpy(y, buff, sizeof(buff));
 }
 
@@ -79,7 +81,7 @@ void dct8_inverse(
   const unsigned DCT_N = 8;
   int32_t buff[8];
 
-  for(int k = 0; k < DCT_N; k++)
+  for(unsigned k = 0; k < DCT_N; k++)
     buff[k] = vlsat32(vlmaccr32(0, x, &idct8_matrix[DCT_N-1-k][0]), 2);
   memcpy(y, buff, sizeof(buff));
 }

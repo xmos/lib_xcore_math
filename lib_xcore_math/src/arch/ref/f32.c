@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -65,7 +65,7 @@ float f32_power_series(
 {
   float y = x;
   float res = 0;
-  for(int k = 0; k < terms_count; k++){
+  for(unsigned k = 0; k < terms_count; k++){
     res += coef[k] * y;
     y *= x;
   }

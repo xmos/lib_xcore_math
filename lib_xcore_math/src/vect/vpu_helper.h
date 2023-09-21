@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
@@ -55,5 +55,7 @@
 
 
 static inline headroom_t hr_from_mask(unsigned hr_mask){
+    (void) hr_mask;
     return 0;
 }
+

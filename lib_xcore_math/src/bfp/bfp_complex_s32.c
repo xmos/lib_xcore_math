@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <assert.h>
@@ -9,8 +9,8 @@
 #include "../vect/vpu_helper.h"
 
 
-const extern unsigned rot_table32_rows;
-const extern complex_s32_t rot_table32[30][4];
+extern const unsigned rot_table32_rows;
+extern const complex_s32_t rot_table32[30][4];
 
 
 static inline 
@@ -459,7 +459,7 @@ void bfp_complex_s32_real_part(
   a->exp = b->exp;
   a->hr = b->hr; // not necessarily correct, but safe
 
-  for(int k = 0; k < b->length; k++){
+  for(unsigned k = 0; k < b->length; k++){
     a->data[k] = b->data[k].re;
   }
 }
@@ -477,7 +477,8 @@ void bfp_complex_s32_imag_part(
   a->exp = b->exp;
   a->hr = b->hr; // not necessarily correct, but safe
 
-  for(int k = 0; k < b->length; k++){
+  for(unsigned k = 0; k < b->length; k++){
     a->data[k] = b->data[k].im;
   }
+
 }

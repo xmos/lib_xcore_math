@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -12,8 +12,8 @@
 
 
 void chunk_float_s32_log(
-    q8_24 a[],
-    const float_s32_t b[])
+    q8_24 a[VPU_INT32_EPV],
+    const float_s32_t b[VPU_INT32_EPV])
 {
   const int32_t coef[6] = {0x01000000, -0x800000, 0x555555, -0x400000, 0x333333, -0x2aaaab };
   const int32_t ln_2 = 0x2c5c85fe;
@@ -50,12 +50,9 @@ void chunk_float_s32_log(
   }
 }
 
-
-
-
 void chunk_s32_log(
-    q8_24 a[],
-    const int32_t b[],
+    q8_24 a[VPU_INT32_EPV],
+    const int32_t b[VPU_INT32_EPV],
     const exponent_t b_exp)
 {
   float_s32_t f[VPU_INT32_EPV];
@@ -66,12 +63,6 @@ void chunk_s32_log(
   
   chunk_float_s32_log(a, f);
 }
-
-
-
-
-
-
 
 void chunk_q30_power_series(
     int32_t a[VPU_INT32_EPV],
@@ -84,7 +75,7 @@ void chunk_q30_power_series(
     int32_t acc = 0;
 
     int32_t pow = 0x40000000;
-    for(int i = 0; i < term_count; i++){
+    for(unsigned i = 0; i < term_count; i++){
       acc = vlmacc32(acc, pow, coef[8*i]);
       pow = vlmul32(pow, b[k]);
     }
@@ -92,10 +83,6 @@ void chunk_q30_power_series(
     a[k] = acc;
   }
 }
-
-
-
-
 
 int32_t chunk_s32_dot(
     const int32_t b[VPU_INT32_EPV],
@@ -108,4 +95,3 @@ int32_t chunk_s32_dot(
   
   return (int32_t) (0xFFFFFFFF & total);
 }
-
