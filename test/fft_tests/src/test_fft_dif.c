@@ -33,8 +33,11 @@ TEST_TEAR_DOWN(fft_dif) {}
 
 #define MIN_FFT_N_LOG2  (2)
 
-#define LOOPS_LOG2 8
-
+#if SMOKE_TEST
+#  define LOOPS_LOG2       (2)
+#else
+#  define LOOPS_LOG2       (8)
+#endif
 
 TEST(fft_dif, fft_dif_forward_complete)
 {

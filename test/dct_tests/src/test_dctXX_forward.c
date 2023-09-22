@@ -27,18 +27,16 @@ TEST_SETUP(dctXX_forward) { fflush(stdout); }
 TEST_TEAR_DOWN(dctXX_forward) {}
 
 
-
 #define MAX_PROC_FRAME_LENGTH_LOG2 9
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
 #define MIN_DCT_N_LOG2  (3)
-#define LOOPS_LOG2  (6)
 
-
-
-
-
-
+#if SMOKE_TEST
+#  define LOOPS_LOG2       (2)
+#else
+#  define LOOPS_LOG2       (8)
+#endif
 
 
 TEST(dctXX_forward, dct6_forward)
