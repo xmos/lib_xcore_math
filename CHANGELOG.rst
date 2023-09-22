@@ -6,6 +6,7 @@ lib_xcore_math change log
 
 * Fixes bug (issue #147) in `s16_to_s32()`.
 * Fixes bug (issue #146) in `bfp_s32_macc()` and `bfp_s32_nmacc()`.
+* Fixes bug with the `vect_s32_prepare_api` not appearing in the documentation.
 
 2.1.2
 -----

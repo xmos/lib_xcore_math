@@ -23,6 +23,8 @@ pipeline {
   } // parameters
   options {
     skipDefaultCheckout()
+    timestamps()
+    buildDiscarder(xmosDiscardBuildSettings())
   } // options
 
   stages {
