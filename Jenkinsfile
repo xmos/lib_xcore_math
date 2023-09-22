@@ -50,7 +50,7 @@ pipeline {
                     // xmake build
                     dir('test/legacy_build') {
                       sh 'xmake -j4'
-                      sh 'xrun --io bin/legacy_build.xe'
+                      sh 'xrun --io --id 0 bin/legacy_build.xe'
                     }
                   }
                 }
@@ -61,13 +61,13 @@ pipeline {
               steps {
                 dir('lib_xcore_math/build_xs3a/test') {
                   withTools(params.TOOLS_VERSION) {
-                    sh 'xrun --xscope --args bfp_tests/bfp_tests.xe        -v'
-                    sh 'xrun --xscope --args dct_tests/dct_tests.xe        -v'
-                    sh 'xrun --xscope --args fft_tests/fft_tests.xe        -v'
-                    sh 'xrun --xscope --args filter_tests/filter_tests.xe  -v'
-                    sh 'xrun --xscope --args scalar_tests/scalar_tests.xe  -v'
-                    sh 'xrun --xscope --args vect_tests/vect_tests.xe      -v'
-                    sh 'xrun --xscope --args xs3_tests/xs3_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args bfp_tests/bfp_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args dct_tests/dct_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args fft_tests/fft_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args filter_tests/filter_tests.xe  -v'
+                    sh 'xrun --xscope --id 0 --args scalar_tests/scalar_tests.xe  -v'
+                    sh 'xrun --xscope --id 0 --args vect_tests/vect_tests.xe      -v'
+                    sh 'xrun --xscope --id 0 --args xs3_tests/xs3_tests.xe        -v'
                   }
                 }
               }
