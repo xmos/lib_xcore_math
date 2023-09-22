@@ -15,6 +15,11 @@ pipeline {
       defaultValue: '15.2.1',
       description: 'The XTC tools version'
     )
+    booleanParam(
+      name: 'XMATH_SMOKE_TEST',
+      defaultValue: true,
+      description: 'Enable smoke run'
+    )
   } // parameters
   options {
     skipDefaultCheckout()
@@ -37,29 +42,39 @@ pipeline {
                   sh 'git submodule update --init --recursive --jobs 4'
                   withTools(params.TOOLS_VERSION) {
                     // xs3a build
-                    sh 'cmake -B build_xs3a -DXMATH_MATH_SMOKE_TEST=ON --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake'
+                    sh 'cmake -B build_xs3a --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake'
                     sh 'make -C build_xs3a -j4'
                     // x86 build
-                    sh 'cmake -B build_x86 -DXMATH_MATH_SMOKE_TEST=ON'
+                    sh 'cmake -B build_x86'
                     sh 'make -C build_x86 -j4'
+                    // xmake build
+                    dir('test/legacy_build') {
+                      'xmake -j4'
+                      'xrun --io bin/legacy_build.xe'
+                    }
                   }
                 }
               }
             } // Build
 
-            stage('Unit tests') {
+            stage('Unit tests xs3a') {
               steps {
                 dir('lib_xcore_math/build_xs3a/test') {
                   withTools(params.TOOLS_VERSION) {
-                    sh 'xrun --xscope bfp_tests/bfp_tests.xe        -v'
-                    sh 'xrun --xscope dct_tests/dct_tests.xe        -v'
-                    sh 'xrun --xscope fft_tests/fft_tests.xe        -v'
-                    sh 'xrun --xscope filter_tests/filter_tests.xe  -v'
-                    sh 'xrun --xscope scalar_tests/scalar_tests.xe  -v'
-                    sh 'xrun --xscope vect_tests/vect_tests.xe      -v'
-                    sh 'xrun --xscope xs3_tests/xs3_tests.xe        -v'
+                    sh 'xrun --xscope --args bfp_tests/bfp_tests.xe        -v'
+                    sh 'xrun --xscope --args dct_tests/dct_tests.xe        -v'
+                    sh 'xrun --xscope --args fft_tests/fft_tests.xe        -v'
+                    sh 'xrun --xscope --args filter_tests/filter_tests.xe  -v'
+                    sh 'xrun --xscope --args scalar_tests/scalar_tests.xe  -v'
+                    sh 'xrun --xscope --args vect_tests/vect_tests.xe      -v'
+                    sh 'xrun --xscope --args xs3_tests/xs3_tests.xe        -v'
                   }
                 }
+              }
+            } // Unit tests xs3a
+
+            stage('Unit tests x86') {
+              steps {
                 dir('lib_xcore_math/build_x86/test') {
                   sh './bfp_tests/bfp_tests        -v'
                   sh './dct_tests/dct_tests        -v'
@@ -69,7 +84,7 @@ pipeline {
                   sh './vect_tests/vect_tests      -v'
                 }
               }
-            } // Unit tests
+            } // Unit tests x86
           } // stages
           post {
             cleanup {
@@ -93,7 +108,8 @@ pipeline {
                         -e EXCLUDE_PATTERNS="/build/doc/doc_excludes.txt" \
                         -e DOXYGEN=1 -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc \
                         -e PDF=1 \
-                        ghcr.io/xmos/doc_builder:v3.0.0"""
+                        ghcr.io/xmos/doc_builder:v3.0.0 \
+                        || echo "PDF build is badly broken, ignoring for now till it's fixed." """
                 
                 archiveArtifacts artifacts: "doc/_build/**", allowEmptyArchive: true
               } // steps

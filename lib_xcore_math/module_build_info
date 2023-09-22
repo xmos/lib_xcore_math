@@ -2,7 +2,7 @@ VERSION = 2.1.2
 
 DEPENDENT_MODULES = 
 
-MODULE_XCC_FLAGS = $(XCC_FLAGS) -g -Os
+MODULE_XCC_FLAGS = $(XCC_FLAGS) -g -Os -Wall -Wextra -Werror
 
 EXPORT_INCLUDE_DIRS = api src/etc
 
