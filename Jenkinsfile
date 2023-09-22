@@ -49,8 +49,8 @@ pipeline {
                     sh 'make -C build_x86 -j4'
                     // xmake build
                     dir('test/legacy_build') {
-                      'xmake -j4'
-                      'xrun --io bin/legacy_build.xe'
+                      sh 'xmake -j4'
+                      sh 'xrun --io bin/legacy_build.xe'
                     }
                   }
                 }
