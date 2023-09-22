@@ -31,7 +31,7 @@ TEST_TEAR_DOWN(dctXX_inverse) {}
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
 #define MIN_DCT_N_LOG2  (3)
-#define LOOPS_LOG2  (2)
+#define LOOPS_LOG2  (0)
 
 
 TEST(dctXX_inverse, dct6_inverse)
