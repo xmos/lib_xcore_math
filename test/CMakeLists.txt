@@ -30,6 +30,7 @@ add_subdirectory( fft_tests  )
 add_subdirectory( dct_tests  )
 add_subdirectory( filter_tests  )
 add_subdirectory( xs3_tests  )
+add_subdirectory( mel_spectrogram_tests  )
 
 
 add_dependencies( lib_xcore_math-all lib_xcore_math-tests )
