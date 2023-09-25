@@ -7,7 +7,7 @@ MODULE_XCC_FLAGS = $(XCC_FLAGS) -g -Os
 EXPORT_INCLUDE_DIRS = api src/etc
 
 # INCLUDE_DIRS = $(EXPORT_INCLUDE_DIRS) api/xmath/vect api/xmath/bfp api/xmath/scalar api/xmath/xs3  \
-#                 src/arch/xs3 src/vect src/etc/xmath_fft_lut 
+#                 src/arch/xs3 src/vect src/etc/xmath_fft_lut api/xmath/mel_spectrogram api/xmath/mel_spectrogram/coeffs
 
 SOURCE_DIRS = src                             \
               src/arch/xs3                    \
@@ -35,4 +35,5 @@ SOURCE_DIRS = src                             \
               src/fft                         \
               src/filter                      \
               src/scalar                      \
-              src/vect                        
+              src/vect                        \
+              src/mel_spectrogram                        
