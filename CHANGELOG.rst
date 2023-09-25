@@ -1,6 +1,11 @@
 lib_xcore_math change log
 =========================
 
+2.2.0
+-----
+
+* ADDED: Melsprectrogram feature extraction audio feature extraction
+
 2.1.3
 -----
 
