@@ -12,6 +12,11 @@
 #include "xmath/mel_spectrogram/coeffs/hann_512.h"
 #include "xmath/mel_spectrogram/coeffs/hann_1024.h"
 
+#ifndef __XS3A__
+#define isnanf isnan
+#define isinff isinf
+#endif
+
 typedef enum
 {
   MEL_SPEC_PAD_MODE_CONSTANT,
@@ -436,7 +441,9 @@ static inline void _get_slice_centre(int16_t *const dst,
 // Naively calculated by looking at the three arrays I'm creating in this func
 // then rounding up for luck.
 // Worth keeping an eye on.
+#ifdef __XS3A__
 #pragma stackfunction 1024
+#endif
 static void x_mel_spec(int8_t *const output,
                        int8_t *const out_trim_top,
                        int8_t *const out_trim_end,
