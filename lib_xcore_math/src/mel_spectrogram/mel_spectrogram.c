@@ -384,7 +384,7 @@ static inline void _get_slice_centre(int16_t *const dst,
   uint32_t wing = opts->n_fft / 2;
   uint32_t arr_size = opts->n_fft - 1;
 
-  uint32_t src_idx = MAX(key - wing, 0);
+  uint32_t src_idx = key - wing;
   uint32_t end_idx = MIN(key + wing, opts->n_samples);
   uint32_t span = end_idx - src_idx;
 
