@@ -18,7 +18,7 @@
 #include <xcore/select.h>
 #include <xcore/hwtimer.h>
 
-#include "mel_spectrogram.h"
+#include "xmath/xmath.h"
 
 #define SETSR(c) asm volatile("setsr %0" \
                               :          \

@@ -1,7 +1,12 @@
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
-if(${CMAKE_SYSTEM_NAME} STREQUAL XCORE_XS3A)
+## If XCORE_TARGET hasn't been specified, default to XCORE-AI-EXPLORER
+if( NOT DEFINED XCORE_TARGET )
+  set( XCORE_TARGET XCORE-AI-EXPLORER )
+endif()
 
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL XCORE_XS3A)
     add_executable(x_melspectrogram_test_c_stream)
 
     file(GLOB_RECURSE SOURCES_C "src/*.c")
@@ -27,7 +32,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL XCORE_XS3A)
     )
     target_link_libraries(x_melspectrogram_test_c_stream 
         PUBLIC
-            x_melspectrogram
+            lib_xcore_math
             )
 
     target_compile_options(x_melspectrogram_test_c_stream
