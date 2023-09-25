@@ -1,3 +1,6 @@
+// Copyright 2023 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
+
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
@@ -5,11 +8,10 @@
 #include <assert.h>
 #include <stdbool.h>
 
-#include "mel_spectrogram.h"
-#include "coeffs/mel_filter_512_64_compressed.h"
-#include "coeffs/mel_filter_1024_128_compressed.h"
-#include "coeffs/hann_512.h"
-#include "coeffs/hann_1024.h"
+#include "xmath/mel_spectrogram/coeffs/mel_filter_512_64_compressed.h"
+#include "xmath/mel_spectrogram/coeffs/mel_filter_1024_128_compressed.h"
+#include "xmath/mel_spectrogram/coeffs/hann_512.h"
+#include "xmath/mel_spectrogram/coeffs/hann_1024.h"
 
 typedef enum
 {

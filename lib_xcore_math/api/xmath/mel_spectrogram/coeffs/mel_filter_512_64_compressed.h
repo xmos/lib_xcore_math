@@ -1,3 +1,5 @@
+// Copyright 2023 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #ifndef _mel_filter_512_64_compressed_h_
 #define _mel_filter_512_64_compressed_h_
