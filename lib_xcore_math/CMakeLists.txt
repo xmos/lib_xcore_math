@@ -13,7 +13,8 @@ file( GLOB_RECURSE    SOURCES_C   "src/vect/*.c"
                                   "src/dct/*.c"
                                   "src/fft/*.c" 
                                   "src/filter/*.c"
-                                  "src/scalar/*.c" )
+                                  "src/scalar/*.c" 
+                                  "src/mel_spectrogram/*.c" )
 file( GLOB_RECURSE    SOURCES_CPP "src/*.cpp" )
 file( GLOB_RECURSE    SOURCES_ASM "src/*.S"   )
 file( GLOB_RECURSE    SOURCES_REF "src/arch/ref/*.c" )

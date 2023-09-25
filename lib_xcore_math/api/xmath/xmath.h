@@ -15,6 +15,7 @@
 #include "xmath/dct.h"
 #include "xmath/fft.h"
 #include "xmath/filter.h"
+#include "xmath/mel_spectrogram/mel_spectrogram.h"
 
 #include "xmath/util.h"
 #include "xmath/q_format.h"
