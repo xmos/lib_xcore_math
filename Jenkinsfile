@@ -44,10 +44,10 @@ pipeline {
                   sh 'git submodule update --init --recursive --jobs 4'
                   withTools(params.TOOLS_VERSION) {
                     // xs3a build
-                    sh 'cmake -B build_xs3a --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake'
+                    sh "cmake -B build_xs3a -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake"
                     sh 'make -C build_xs3a -j4'
                     // x86 build
-                    sh 'cmake -B build_x86'
+                    sh "cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST}"
                     sh 'make -C build_x86 -j4'
                     // xmake build
                     dir('test/legacy_build') {
