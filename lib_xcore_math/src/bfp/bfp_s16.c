@@ -339,12 +339,10 @@ float bfp_s16_mean(
     headroom_t hr = HR_S32(sum) + 32;
     int64_t sum64 = ((int64_t)sum) << hr;
     int64_t mean64 = sum64 / ((int)b->length);
-    right_shift_t shr = MAX(0, 48 - HR_S64(mean64));
+    right_shift_t shr = MAX(0, 32 - HR_S64(mean64));
 
-    //TODO: astew: there's no reason to force the precision down to 16 bits after
-    //             getting rid of float_s16_t because s32_to_f32 handles 32 bits
     if(shr > 0) 
-        mean64 += 1 << (shr-1);
+        mean64 += (uint32_t)(1 << (shr-1));
 
     return s32_to_f32(mean64 >> shr, 
                           b->exp - hr + shr);

@@ -84,6 +84,7 @@ pipeline {
                   sh './filter_tests/filter_tests  -v'
                   sh './scalar_tests/scalar_tests  -v'
                   sh './vect_tests/vect_tests      -v'
+                  sh './xs3_tests/xs3_tests        -v'
                 }
               }
             } // Unit tests x86
