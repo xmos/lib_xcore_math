@@ -342,7 +342,7 @@ float bfp_s16_mean(
     right_shift_t shr = MAX(0, 32 - HR_S64(mean64));
 
     if(shr > 0) 
-        mean64 += (uint32_t)(1 << (shr-1));
+        mean64 += ((uint64_t)1 << (shr-1));
 
     return s32_to_f32(mean64 >> shr, 
                           b->exp - hr + shr);
