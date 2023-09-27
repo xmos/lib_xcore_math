@@ -91,7 +91,7 @@ pipeline {
           } // stages
           post {
             cleanup {
-              cleanWs()
+              xcoreCleanSandbox()
             }
           }
         } // Linux builds and tests
