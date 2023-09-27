@@ -115,7 +115,7 @@ pipeline {
                       bat 'ninja -C build_xs3a -j4'
                       // xmake build
                       dir('test/legacy_build') {
-                        bat 'xmake -j4'
+                        bat 'xmake'
                       }
                     }
                   }
