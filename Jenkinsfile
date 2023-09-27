@@ -101,23 +101,18 @@ pipeline {
             label 'docker'
           }
           environment {
-            XMOSDOC_VERSION = "v3.0.0"
+            XMOSDOC_VERSION = "pr-67"
           }
           stages {
             stage('Build Docs') {
               steps {
                 runningOn(env.NODE_NAME)
                 checkout scm
-                sh "docker pull ghcr.io/xmos/doc_builder:${XMOSDOC_VERSION}"
-                sh """docker run --user "\$(id -u):\$(id -g)" \
-                        --rm \
-                        -v ${WORKSPACE}:/build \
-                        -e EXCLUDE_PATTERNS="/build/doc/doc_excludes.txt" \
-                        -e DOXYGEN=1 -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc \
-                        -e PDF=1 \
-                        ghcr.io/xmos/doc_builder:${XMOSDOC_VERSION} \
-                        || echo "PDF build is badly broken, ignoring for now till it's fixed." """
-                
+                sh "docker pull ghcr.io/xmos/doc_builder:$XMOSDOC_VERSION"
+                sh """docker run -u "\$(id -u):\$(id -g)" \
+                    --rm \
+                    -v ${WORKSPACE}:/build \
+                    ghcr.io/xmos/doc_builder:$XMOSDOC_VERSION -v"""
                 archiveArtifacts artifacts: "doc/_build/**", allowEmptyArchive: true
               } // steps
             } // Build Docs
