@@ -29,10 +29,7 @@ target_sources( ${LIB_NAME}
     $<$<PLATFORM_ID:Darwin>:${SOURCES_REF}>
     $<$<PLATFORM_ID:Windows>:${SOURCES_REF}>
 )
-message(STATUS "\n\n\n\n")
-message(STATUS $<$<{PLATFORM_ID}:Windows>)
-message(STATUS "${PLATFORM_ID}")
-message(STATUS "\n\n\n\n")
+
 target_include_directories( ${LIB_NAME}
   PUBLIC
     api
