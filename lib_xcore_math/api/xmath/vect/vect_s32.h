@@ -360,8 +360,8 @@ unsigned vect_s32_argmin(
  * &     b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor) \\
  * &     a_k \leftarrow \begin\{cases\}
  *           lower\_bound & b_k' \le lower\_bound                        \\
- * &         upper\_bound & b_k' \ge upper\_bound                        \\
- * &         b_k' & otherwise \end\{cases\}                              \\
+ *           upper\_bound & b_k' \ge upper\_bound                        \\
+ *           b_k' & otherwise \end\{cases\}                              \\
  * &     \qquad\text{ for }k\in 0\ ...\ (length-1)
  * }
  * 
@@ -1032,7 +1032,7 @@ headroom_t vect_s32_nmacc(
  * &     a_k \leftarrow 
  *           \begin\{cases\}
  *               b_k & b_k > 0 \\ 
- * &             0 & b_k \leq 0
+ *               0 & b_k \leq 0
  *       \end\{cases\}           \\
  * &     \qquad\text{ for }k\in 0\ ...\ (length-1)
  * }

@@ -415,7 +415,7 @@ void  bfp_fft_inverse_stereo(
  *       BFP vector must have length `FFT_N+2`, rather than `FFT_N` (`int32_t` elements), but
  *       these should NOT be reflected in the time-domain BFP vector's `length` field.
  * 
- * @f{align*}{
+ * @f{aligned}{
  * &       Re\{x_{N/2}\}  && \leftarrow  Im\{x_0\}     \\
  * &       Im\{x_0\}      && \leftarrow 0              \\
  * &       Im\{x_{N/2}\}  && \leftarrow 0              \\

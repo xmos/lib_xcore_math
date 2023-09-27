@@ -94,3 +94,7 @@ Complex 16-bit BFP API Quick Reference
     :widths: 35, 5, 20, 40
     :header-rows: 1
 
+
+.. raw:: latex
+
+  \newpage
