@@ -96,7 +96,7 @@ pipeline {
           }
         } // Linux builds and tests
 
-        stage('Windows builds and tests') {
+        stage('Windows builds') {
           agent {
             label 'windows10&&unified'
           }
@@ -128,7 +128,7 @@ pipeline {
               xcoreCleanSandbox()
             }
           }
-        } // Windows builds and tests
+        } // Windows builds
 
         stage ('Build Documentation') {
           agent {
