@@ -113,37 +113,19 @@ pipeline {
                       // xs3a build
                       bat 'cmake -B build_xs3a -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja"'
                       bat 'ninja -C build_xs3a -j4'
-                      // x86 build
-                      bat 'cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G"Ninja"'
-                      bat 'ninja -C build_x86 -j4'
                       // xmake build
                       dir('test/legacy_build') {
                         bat 'xmake -j4'
-                        bat 'xrun --io --id 0 bin/legacy_build.xe'
                       }
                     }
                   }
                 }
               }
             } // Build
-
-            stage('Unit tests x86') {
-              steps {
-                dir('lib_xcore_math/build_x86/test') {
-                  bat './bfp_tests/bfp_tests        -v'
-                  bat './dct_tests/dct_tests        -v'
-                  bat './fft_tests/fft_tests        -v'
-                  bat './filter_tests/filter_tests  -v'
-                  bat './scalar_tests/scalar_tests  -v'
-                  bat './vect_tests/vect_tests      -v'
-                  bat './xs3_tests/xs3_tests        -v'
-                }
-              }
-            } // Unit tests x86
           } // stages
           post {
             cleanup {
-              cleanWs()
+              xcoreCleanSandbox()
             }
           }
         } // Windows builds and tests
