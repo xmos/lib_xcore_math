@@ -38,7 +38,15 @@ The recommended make tools depend on the development platform:
 
 (Linux and MacOS): GNU Make - Available through your system package manager.
 
-Ninja (Windows): Ninja - Follow install instructions at https://ninja-build.org/ or use a system package manager such as ``winget``.
+Ninja (Windows): Ninja - Follow install instructions at https://ninja-build.org/ or on Windows
+install with ``winget`` by running the following commands in PowerShell:
+
+.. code-block:: PowerShell
+
+		# Install
+		winget install Ninja-build.ninja
+		# Reload user Path
+		$env:Path=[System.Environment]::GetEnvironmentVariable("Path","User")
 
 API Structure
 -------------
@@ -75,10 +83,7 @@ Including lib_xcore_math in External Applications
 application or as a static library to be linked into your own application. This library uses CMake
 to manage build configurations.
 
-Standalone build on Linux and MacOS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To configure your CMake build environment for ``lib_xcore_math``,
+On Linux and MacOS, to configure your CMake build environment for ``lib_xcore_math``,
 from the root of the cloned repository, the following command may be used (ensure that the XTC build
 tools are on your path): ::
 
@@ -92,10 +97,7 @@ instead: ::
 
     mkdir build && cd build && cmake -DDEV_LIB_XCORE_MATH=1 -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Unix Makefiles" ..
 
-Standalone build on Windows
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To configure your CMake build environment for ``lib_xcore_math``,
+On Windows, to configure your CMake build environment for ``lib_xcore_math``,
 from the root of the cloned repository, the following command may be used (ensure that the XTC build
 tools are on your path): ::
 
@@ -108,9 +110,6 @@ To include the unit tests and example applications in your build, use the follow
 instead: ::
 
     mkdir build && cd build && cmake -DDEV_LIB_XCORE_MATH=1 -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja" ..
-
-Include library in a different application
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you wish to include ``lib_xcore_math`` in your own application as a static library, the generated
 ``lib_xcore_math.a`` can then be linked into your own application. Be sure to also add
