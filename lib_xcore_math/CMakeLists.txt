@@ -38,10 +38,11 @@ target_compile_options( ${LIB_NAME}
   PRIVATE
     -Os -g
     -Wall
-    -Werror
     -Wextra
+    -Werror
     $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )
+
 
 
 # Set defaults for generating the FFT LUT if they are not already defined
