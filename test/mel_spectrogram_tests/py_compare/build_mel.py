@@ -6,25 +6,21 @@ from shutil import rmtree, copyfile
 import pathlib
 import sys
 
+build_dir = "build"
 
 def build_ffi():
     print("Building application...")
     # One more ../ than necessary - builds in the 'build' subdirectory in this folder
-    APPLICATION_ROOT = "../../../modules/x_melspectrogram"
-    XCORE_MATH = "../../modules/lib_xcore_math"
+    XCORE_MATH = "../../.."
 
     FLAGS = ["-std=c99", "-fPIC", "-D_GNU_SOURCE", "-w"]
 
     # Source file
-
     lib_xcore_math = pathlib.Path(XCORE_MATH).resolve()
     lib_xcore_math_sources = (lib_xcore_math / "lib_xcore_math" / "src").rglob("*.c")
 
-    SRCS = [f"{APPLICATION_ROOT}/src/mel_spectrogram.c"] + [
-        p for p in lib_xcore_math_sources
-    ]
+    SRCS = [p for p in lib_xcore_math_sources]
     INCLUDES = [
-        f"{APPLICATION_ROOT}/api",
         lib_xcore_math / "lib_xcore_math" / "api",
         lib_xcore_math / "lib_xcore_math" / "src" / "etc" / "xmath_fft_lut",
     ]
@@ -74,12 +70,17 @@ def build_ffi():
         extra_compile_args=FLAGS,
     )
 
-    ffibuilder.compile(tmpdir="build", target="mel_spectrogram_api.*", verbose=False)
+    ffibuilder.compile(tmpdir=build_dir, target="mel_spectrogram_api.*", verbose=False)
+
+    # Darwin hack https://stackoverflow.com/questions/2488016/how-to-make-python-load-dylib-on-osx
+    if sys.platform == "darwin":
+        copyfile("build/mel_spectrogram_api.dylib", "build/mel_spectrogram_api.so")
+
     print("Build complete!")
 
 
 def clean_ffi():
-    rmtree("./build")
+    rmtree(f"./{build_dir}")
 
 
 def build_uut():
