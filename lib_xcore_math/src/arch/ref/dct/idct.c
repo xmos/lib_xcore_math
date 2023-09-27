@@ -23,7 +23,8 @@ void idct_convolve(
   for(int k = length - 1; k > 0; k--){
     int64_t X0 = x[k];
     int64_t X1 = x[k-1];
-    y[k] = (X0 + X1) >> 1;
+    // TODO: Check if this cast is acceptable
+    y[k] = (int32_t) ( (X0 + X1) >> 1);
   }
   y[0] = tmp;
 }
@@ -51,8 +52,9 @@ void idct_adsb(
   for(unsigned k = 0; k < length; k++){
     int64_t s_elm = s[k];
     int64_t t_tilde_elm = t_tilde[k];
-    sums[k] = (s_elm + t_tilde_elm);
-    diffs[k] = (s_elm - t_tilde_elm);
+    // TODO: Check if this cast is acceptable
+    sums[k] = (int32_t) (s_elm + t_tilde_elm);
+    diffs[k] = (int32_t) (s_elm - t_tilde_elm);
   }
 }
 

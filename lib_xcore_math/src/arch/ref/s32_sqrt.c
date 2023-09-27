@@ -13,7 +13,7 @@ static int32_t isqrt_s64(
     unsigned depth)
 {
   // p = -(2^31)
-  int32_t p = -0x80000000;
+  int32_t p = - (int32_t) 0x80000000;
 
   int32_t result = 0;
 

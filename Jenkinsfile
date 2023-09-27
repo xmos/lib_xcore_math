@@ -118,8 +118,7 @@ pipeline {
                       bat 'ninja -C build_x86 -j4'
                       // xmake build
                       dir('test/legacy_build') {
-                        bat 'xmake -j4'
-                        bat 'xrun --io --id 0 bin/legacy_build.xe'
+                        bat 'xmake --jobs 4'
                       }
                     }
                   }

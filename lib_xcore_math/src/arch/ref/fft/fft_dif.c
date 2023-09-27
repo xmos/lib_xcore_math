@@ -156,7 +156,7 @@ void fft_dif_inverse (
     headroom_t* hr, 
     exponent_t* exp)
 {
-    const unsigned FFT_N_LOG2 = 31 - CLS_S32(N);
+    const signed FFT_N_LOG2 = 31 - CLS_S32(N);
 
     const complex_s32_t* W = XMATH_DIF_FFT_LUT(N);
 
@@ -170,7 +170,7 @@ void fft_dif_inverse (
 
     if(N != 4){
 
-        for(unsigned n = 0; n < FFT_N_LOG2-2; n++){
+        for(signed n = 0; n < FFT_N_LOG2-2; n++){
             
             const int b = 1<<(FFT_N_LOG2-1-n);
             const int a = 1<<(2+n);

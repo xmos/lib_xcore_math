@@ -28,7 +28,7 @@ headroom_t vect_s32_convolve_valid(
       acc = vlmacc32(acc, x[k+t], b_q30[t]);
     }
 
-    y[k] = acc;
+    y[k] = (int32_t) acc;
   }
 
   return vect_s32_headroom(y, y_length);

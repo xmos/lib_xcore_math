@@ -18,7 +18,7 @@ int32_t mul_qXX(int32_t x, int32_t y, right_shift_t shr, unsigned round){
   int64_t m = 0;
   if(round)
    m = (1LL << shr) - 1;
-  return (p + m) >> shr;
+  return (int32_t) ( (p + m) >> shr );
 }
 
 static inline
@@ -84,7 +84,7 @@ q2_30 sbrad_tan(
     powers[k] = vlsat32(vlmacc32(0, powers[k], coef[k]), shr[k]);
   }
 
-  t = vlmaccr32(0, &powers[0], &weights[0]);
+  t = (int32_t) vlmaccr32(0, &powers[0], &weights[0]);
 
   return t * out_mul;
 }
@@ -121,7 +121,7 @@ int32_t sbrad_sin(
     powers[k] = vlsat32(vlmacc32(0, powers[k], coef[k]), shr[k]);
   }
 
-  t = vlmaccr32(0, &powers[0], &weights[0]);
+  t = (int32_t) vlmaccr32(0, &powers[0], &weights[0]);
 
   return t * out_mul;
 }

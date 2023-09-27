@@ -337,7 +337,7 @@ float_s32_t bfp_s32_mean(
     if(shr > 0)
         mean += ((uint64_t)1 << (shr-1));
 
-    a.mant = mean >> shr;
+    a.mant = (int32_t) mean >> shr;
     a.exp = b->exp - hr + shr;
 
     return a;

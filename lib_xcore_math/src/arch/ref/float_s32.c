@@ -93,5 +93,5 @@ float float_s32_to_f32(
     const int32_t mantissa,
     const exponent_t exp)
 {
-  return ldexp(mantissa, exp);
+  return (float) ldexp(mantissa, exp);
 }

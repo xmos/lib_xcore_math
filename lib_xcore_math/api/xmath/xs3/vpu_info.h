@@ -78,12 +78,13 @@ enum {
     VPU_INT32_MAX =  0x7FFFFFFF,
     /** The lower saturation bound for 32-bit elements and 32-bit accumulators */
     VPU_INT32_MIN = -0x7FFFFFFF,
-
-    /** The upper saturation bound for 40-bit accumulators */
-    VPU_INT40_MAX =  0x7FFFFFFFFFLL,
-    /** The lower saturation bound for 40-bit accumulators */
-    VPU_INT40_MIN = -0x7FFFFFFFFFLL,
 };
+
+/** The upper saturation bound for 40-bit accumulators */
+#define VPU_INT40_MAX  0x7FFFFFFFFFLL
+/** The lower saturation bound for 40-bit accumulators */
+#define VPU_INT40_MIN -0x7FFFFFFFFFLL
+
 
 /**
  * Number of accumulator bits in each operating mode.

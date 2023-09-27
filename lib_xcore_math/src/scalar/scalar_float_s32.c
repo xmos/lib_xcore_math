@@ -19,7 +19,7 @@ static inline int32_t ashr32(int32_t x, right_shift_t shr)
 
   if(tmp > INT32_MAX)       return INT32_MAX;
   else if(tmp < INT32_MIN)  return INT32_MIN;
-  else                      return tmp;
+  else                      return (int32_t) tmp;
 }
 
 
@@ -39,7 +39,7 @@ float s32_to_f32(
     const int32_t mantissa,
     const exponent_t exp)
 {
-  return ldexp(mantissa, exp);
+  return (float) ldexp(mantissa, exp);
 }
 
 
@@ -223,7 +223,7 @@ q1_31 radians_to_tbrads(
 {
   const q1_31 inv_rho = 0x517cc1b7;
   int64_t acc = ((int64_t)inv_rho) * theta;
-  q1_31 alpha = acc >> 24;
+  q1_31 alpha = (q1_31) acc >> 24;
   return alpha;
 }
 

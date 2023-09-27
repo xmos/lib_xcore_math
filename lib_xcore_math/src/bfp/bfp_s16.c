@@ -344,7 +344,7 @@ float bfp_s16_mean(
     if(shr > 0) 
         mean64 += ((uint64_t)1 << (shr-1));
 
-    return s32_to_f32(mean64 >> shr, 
+    return s32_to_f32( (const int32_t) mean64 >> shr, 
                           b->exp - hr + shr);
 }
 

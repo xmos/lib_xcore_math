@@ -90,8 +90,8 @@ void vect_complex_f32_mul(
     complex_float_t B = b[k];
     complex_float_t C = c[k];
 
-    a[k].re = ((double) ((double)B.re) * ((double)C.re) - ((double)B.im) * ((double)C.im) );
-    a[k].im = ((double) ((double)B.im) * ((double)C.re) + ((double)B.re) * ((double)C.im) );
+    a[k].re = (float) ( (double) ((double)B.re) * ((double)C.re) - ((double)B.im) * ((double)C.im) );
+    a[k].im = (float) ( (double) ((double)B.im) * ((double)C.re) + ((double)B.re) * ((double)C.im) );
   }
 }
 
@@ -107,8 +107,8 @@ void vect_complex_f32_conj_mul(
     complex_float_t B = b[k];
     complex_float_t C = c[k];
 
-    a[k].re = ((double) ((double)B.re) * ((double)C.re) + ((double)B.im) * ((double)C.im) );
-    a[k].im = ((double) ((double)B.im) * ((double)C.re) - ((double)B.re) * ((double)C.im) );
+    a[k].re = (float) ( (double) ((double)B.re) * ((double)C.re) + ((double)B.im) * ((double)C.im) );
+    a[k].im = (float) ( (double) ((double)B.im) * ((double)C.re) - ((double)B.re) * ((double)C.im) );
   }
 }
 
@@ -125,8 +125,8 @@ void vect_complex_f32_macc(
     complex_float_t B = b[k];
     complex_float_t C = c[k];
 
-    a[k].re = ((double) ((double)A.re) + ((double)B.re) * ((double)C.re) - ((double)B.im) * ((double)C.im) );
-    a[k].im = ((double) ((double)A.im) + ((double)B.im) * ((double)C.re) + ((double)B.re) * ((double)C.im) );
+    a[k].re = (float) ( (double) ((double)A.re) + ((double)B.re) * ((double)C.re) - ((double)B.im) * ((double)C.im) );
+    a[k].im = (float) ( (double) ((double)A.im) + ((double)B.im) * ((double)C.re) + ((double)B.re) * ((double)C.im) );
   }
 }
   
@@ -143,7 +143,7 @@ void vect_complex_f32_conj_macc(
     complex_float_t B = b[k];
     complex_float_t C = c[k];
 
-    a[k].re = ((double) ((double)A.re) + ((double)B.re) * ((double)C.re) + ((double)B.im) * ((double)C.im) );
-    a[k].im = ((double) ((double)A.im) + ((double)B.im) * ((double)C.re) - ((double)B.re) * ((double)C.im) );
+    a[k].re = (float) ( (double) ((double)A.re) + ((double)B.re) * ((double)C.re) + ((double)B.im) * ((double)C.im) );
+    a[k].im = (float) ( (double) ((double)A.im) + ((double)B.im) * ((double)C.re) - ((double)B.re) * ((double)C.im) );
   }
 }

@@ -33,7 +33,7 @@ float f32_sin(
   }
 
   if(rho > 1.0){
-    rho = 2.0 - rho;
+    rho = (float) ( 2.0 - rho );
   }
 
   float phi = rho * rho;

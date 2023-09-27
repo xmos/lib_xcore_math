@@ -74,7 +74,7 @@ typedef int exponent_t;
  * 
  * @ingroup type_scalar_int
  */
-typedef unsigned headroom_t;
+typedef signed headroom_t;
 
 /**
  * @brief A rightwards arithmetic bit-shift.

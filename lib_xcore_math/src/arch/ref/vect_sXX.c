@@ -119,4 +119,5 @@ unsigned vect_sXX_add_scalar(
     default:
       assert(0); // shouldn't happen
   }
+  return 0;
 }

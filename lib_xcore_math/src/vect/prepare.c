@@ -481,13 +481,13 @@ void vect_s32_dot_prepare(
     const headroom_t total_hr = b_hr + c_hr;
     right_shift_t total_shr = K - 7;
 
-    *b_shr = (int) -b_hr;
-    *c_shr = (int) -c_hr;
+    *b_shr = -b_hr;
+    *c_shr = -c_hr;
 
     if(total_shr < 0){
         // Do nothing. We've already eliminated all our headroom.
         // we know that total_shr is more than zero, so safely recasting to unsigned
-    } else if((unsigned)total_shr >= total_hr){
+    } else if(total_shr >= total_hr){
 
         *b_shr += b_hr;
         *c_shr += c_hr;
@@ -497,8 +497,8 @@ void vect_s32_dot_prepare(
 
     } else {
 
-        *b_shr += MIN(b_hr, (unsigned)total_shr);
-        *c_shr += total_shr - MIN(b_hr, (unsigned)total_shr);
+        *b_shr += MIN(b_hr, total_shr);
+        *c_shr += total_shr - MIN(b_hr, total_shr);
 
     }
 
@@ -681,8 +681,8 @@ void vect_s32_clip_prepare(
         int64_t ub64 = ((int64_t)*upper_bound) << (-bound_shr);
         int64_t lb64 = ((int64_t)*lower_bound) << (-bound_shr);
 
-        ub = (ub64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (ub64 <= VPU_INT32_MIN)? VPU_INT32_MIN : ub64;
-        lb = (lb64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (lb64 <= VPU_INT32_MIN)? VPU_INT32_MIN : lb64;
+        ub = (int32_t) ( (ub64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (ub64 <= VPU_INT32_MIN)? VPU_INT32_MIN : ub64 );
+        lb = (int32_t) ( (lb64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (lb64 <= VPU_INT32_MIN)? VPU_INT32_MIN : lb64 );
     } else {
         // TODO: Should force upper_bound to round downwards to enforce the guarantee that no output can be larger than 
         // upper bound?

@@ -93,7 +93,7 @@ vpu_int8_acc_t vlmacc8(
     const int8_t y)
 {
     int64_t s = ((int64_t)acc) + (((int32_t)x)*y);
-    return SAT(32)(s);
+    return (vpu_int8_acc_t) SAT(32)(s);
 }
 
 
@@ -108,7 +108,7 @@ vpu_int8_acc_t vlmaccr8(
         s = SAT(32)(s);
     }
     
-    return SAT(32)(s);
+    return (vpu_int8_acc_t) SAT(32)(s);
 }
 
 
@@ -204,7 +204,7 @@ vpu_int16_acc_t vlmacc16(
     const int16_t y)
 {
     int64_t s = ((int64_t)acc) + (((int32_t)x)*y);
-    vpu_int16_acc_t p = SAT(32)(s);
+    vpu_int16_acc_t p = (vpu_int16_acc_t) SAT(32)(s);
     return p;
 }
 
@@ -219,7 +219,7 @@ vpu_int16_acc_t vlmaccr16(
         s += (((int32_t)x[i])*y[i]);
     }
     
-    return SAT(32)(s);
+    return (vpu_int16_acc_t) SAT(32)(s);
 }
 
 
@@ -245,7 +245,7 @@ vpu_int16_acc_t vadddr16(
     for(int k = 0; k < VPU_INT16_ACC_PERIOD; k++)
         s += acc[k];
 
-    return SAT(32)(s);
+    return (vpu_int16_acc_t) SAT(32)(s);
 }
 
 
@@ -259,7 +259,7 @@ int32_t vladd32(
     const int32_t b)
 {
     int64_t sum = ((int64_t)a) + b;
-    return SAT(32)(sum);
+    return (int32_t) SAT(32)(sum);
 }
 
 
@@ -268,7 +268,7 @@ int32_t vlsub32(
     const int32_t b)
 {
     int64_t diff = ((int64_t)a) - b;
-    return SAT(32)(diff);
+    return (int32_t) SAT(32)(diff);
 }
 
 
@@ -326,7 +326,7 @@ int32_t vlmul32(
 {
     int64_t p = ((int64_t)x)*y;
     p = ROUND_SHR64(p, 30);
-    return SAT(32)(p);
+    return (int32_t) SAT(32)(p);
 }
 
 
@@ -373,7 +373,7 @@ int32_t vlsat32(
     if(sat > 0)
         s = ((acc >> (sat-1)) + 1) >> 1;
 
-    return SAT(32)(s);
+    return (int32_t) SAT(32)(s);
 }
 
 
@@ -389,7 +389,7 @@ int32_t vcmr32(
 
     a = a - b;
 
-    return SAT(32)(a);
+    return (int32_t) SAT(32)(a);
 }
 
 
@@ -405,7 +405,7 @@ int32_t vcmi32(
 
     a = a + b;
 
-    return SAT(32)(a);
+    return (int32_t) SAT(32)(a);
 }
 
 
@@ -421,7 +421,7 @@ int32_t vcmcr32(
 
     a = b + a;
 
-    return SAT(32)(a);
+    return (int32_t) SAT(32)(a);
 }
 
 
@@ -437,7 +437,7 @@ int32_t vcmci32(
 
     a = b - a;
 
-    return SAT(32)(a);
+    return (int32_t) SAT(32)(a);
 }
 
 

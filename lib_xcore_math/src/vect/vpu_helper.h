@@ -12,9 +12,9 @@
  * 
  * Note that the bit width of the argument VAL must be larger than the target type for this to be effective.
  */
-#define SAT8(VAL)       (((VAL) >= VPU_INT8_MAX )? VPU_INT8_MAX  : (((VAL) <= VPU_INT8_MIN )? VPU_INT8_MIN  : (VAL)))
-#define SAT16(VAL)      (((VAL) >= VPU_INT16_MAX)? VPU_INT16_MAX : (((VAL) <= VPU_INT16_MIN)? VPU_INT16_MIN : (VAL)))
-#define SAT32(VAL)      (((VAL) >= VPU_INT32_MAX)? VPU_INT32_MAX : (((VAL) <= VPU_INT32_MIN)? VPU_INT32_MIN : (VAL)))
+#define SAT8(VAL)       (uint8_t) (((VAL) >= VPU_INT8_MAX )? VPU_INT8_MAX  : (((VAL) <= VPU_INT8_MIN )? VPU_INT8_MIN  : (VAL)))
+#define SAT16(VAL)      (uint16_t) (((VAL) >= VPU_INT16_MAX)? VPU_INT16_MAX : (((VAL) <= VPU_INT16_MIN)? VPU_INT16_MIN : (VAL)))
+#define SAT32(VAL)      (uint32_t) (((VAL) >= VPU_INT32_MAX)? VPU_INT32_MAX : (((VAL) <= VPU_INT32_MIN)? VPU_INT32_MIN : (VAL)))
 
 /**
  * e.g.   SAT(8)(512)  -->  SAT8(512)  --> VPU_INT8_MAX --> 127

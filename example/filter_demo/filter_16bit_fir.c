@@ -108,7 +108,7 @@ void filter_16bit_fir()
       coef_sum += abs(coefficients[lag]);
     }
 
-    double norm = ldexp(1, 16) / ldexp(coef_sum, 0);
+    double norm = ldexp(1, 16) / ldexp( (int32_t) coef_sum, 0);
 
     for(int lag = 0; lag < TAP_COUNT; lag++){
       coefficients[lag] = (int16_t) (coefficients[lag] * norm);

@@ -14,7 +14,7 @@ target_sources( ${APP_NAME}
 
 target_compile_options( ${APP_NAME}
   PRIVATE 
-    -Os -g
+    -Os
     $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
 )
 
@@ -22,6 +22,7 @@ target_compile_options( ${APP_NAME}
 if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   target_compile_options( ${APP_NAME}
     PRIVATE
+      -g
       -Wno-unused-variable
       -Wno-format
   )

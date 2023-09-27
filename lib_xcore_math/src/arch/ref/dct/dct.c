@@ -40,8 +40,9 @@ headroom_t dct_adsb_s32(
     int64_t t = tail[k];
     int64_t s = h + t;
     int64_t d = h - t;
-    sums[k] = s >> 1;
-    diffs[k] = d >> 1;
+    // TODO: Check if this cast is acceptable
+    sums[k] = (int32_t) ( s >> 1 );
+    diffs[k] = (int32_t) ( d >> 1 );
     diffs[k] = vlmul32(diffs[k], dct_lut[k]);
   }
 
@@ -75,7 +76,7 @@ void dct6_forward(
   int32_t x_tmp[8];
   memcpy(x_tmp, x, 6 * sizeof(int32_t));
   for(unsigned k = 0; k < DCT_N; k++)
-    tmp[k] = vlmaccr32(0, x_tmp, &dct6_matrix[DCT_N-1-k][0]);
+    tmp[k] = (int32_t) vlmaccr32(0, x_tmp, &dct6_matrix[DCT_N-1-k][0]);
   memcpy(y, tmp, sizeof(tmp));
 }
 

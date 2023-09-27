@@ -37,7 +37,7 @@ target_include_directories( ${LIB_NAME}
 
 target_compile_options( ${LIB_NAME}
   PRIVATE
-    -Os -g
+    -Os
     $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )
 
@@ -45,6 +45,7 @@ target_compile_options( ${LIB_NAME}
 if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   target_compile_options( ${LIB_NAME}
     PRIVATE
+     -g
      -Werror
      -Wextra
   )

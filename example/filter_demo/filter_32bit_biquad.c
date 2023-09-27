@@ -71,7 +71,7 @@ void filter_32bit_biquad()
    */
 
   // Print out the coefficients for each biquad filter section
-  for(int section = 0; section < filter.biquad_count; section++){
+  for(unsigned section = 0; section < filter.biquad_count; section++){
     printf("Biquad Section[%d]\n", section);
     printf("  -a1 = %f\n", ldexp(filter.coef[3][section], -30));
     printf("  -a2 = %f\n", ldexp(filter.coef[4][section], -30));

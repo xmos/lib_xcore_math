@@ -13,7 +13,7 @@ void f32_unpack(
     exponent_t* exp,
     const float input)
 {
-  *mantissa = INT32_MAX * frexp(input, exp);
+  *mantissa = (int32_t) ( INT32_MAX * frexp(input, exp) );
   *exp -= 31;
 }
 
@@ -22,7 +22,7 @@ float_s32_t f32_to_float_s32(
     const float x)
 {
   float_s32_t res;
-  res.mant = round(INT32_MAX * frexpf(x, &res.exp));
+  res.mant = (int32_t) round(INT32_MAX * frexpf(x, &res.exp));
   res.exp -= 31;
   return res;
 }
@@ -33,7 +33,7 @@ float_s32_t f64_to_float_s32(
 {
   float_s32_t res;
   double tmp = frexp(x, &res.exp);
-  res.mant = round(INT32_MAX * tmp);
+  res.mant = (int32_t) round(INT32_MAX * tmp);
   res.exp -= 31;
   return res;
 }

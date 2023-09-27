@@ -75,7 +75,7 @@ headroom_t dct8x8_stageB(
   headroom_t hr = 8;
   for(int k = 0; k < 8; k++){
     for(int j = 0; j < 8; j++){
-      hr = MIN(hr, HR_S8(y[k][j]));
+      hr = MIN(hr, (int) HR_S8(y[k][j]));
     }
   }
   return hr;
