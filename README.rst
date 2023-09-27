@@ -38,15 +38,7 @@ The recommended make tools depend on the development platform:
 
 (Linux and MacOS): GNU Make - Available through your system package manager.
 
-Ninja (Windows): Ninja - Follow install instructions at https://ninja-build.org/ or on windows
-install with ``winget`` by running the following commands in PowerShell:
-
-.. code-block:: PowerShell
-
-		# Install
-		winget install Ninja-build.ninja
-		# Reload user Path
-		$env:Path=[System.Environment]::GetEnvironmentVariable("Path","User")
+Ninja (Windows): Ninja - Follow install instructions at https://ninja-build.org/ or use a system package manager such as ``winget``.
 
 API Structure
 -------------
