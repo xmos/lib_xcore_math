@@ -27,8 +27,12 @@ target_sources( ${LIB_NAME}
     $<$<PLATFORM_ID:XCORE_XS3A>:${SOURCES_ASM}>
     $<$<PLATFORM_ID:Linux>:${SOURCES_REF}>
     $<$<PLATFORM_ID:Darwin>:${SOURCES_REF}>
+    $<$<PLATFORM_ID:Windows>:${SOURCES_REF}>
 )
-
+message(STATUS "\n\n\n\n")
+message(STATUS $<$<{PLATFORM_ID}:Windows>)
+message(STATUS "${PLATFORM_ID}")
+message(STATUS "\n\n\n\n")
 target_include_directories( ${LIB_NAME}
   PUBLIC
     api
@@ -37,7 +41,6 @@ target_include_directories( ${LIB_NAME}
 target_compile_options( ${LIB_NAME}
   PRIVATE
     -Os -g
-    -Wall
     $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )
 
@@ -45,8 +48,8 @@ target_compile_options( ${LIB_NAME}
 if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   target_compile_options( ${LIB_NAME}
     PRIVATE
-      -Werror
-      -Wextra
+     -Werror
+     -Wextra
   )
 endif()
 

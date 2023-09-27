@@ -385,8 +385,8 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
             bfp_s32_t* B = (bfp_s32_t*) &B_fft;
 
             //Split ref into two channels
-            double refA[FFT_N];
-            double refB[FFT_N];
+            double * refA = malloc(FFT_N * sizeof(double));
+            double * refB  = malloc(FFT_N * sizeof(double));
 
             for(int i = 0; i < FFT_N; i++){
               refA[i] = ref[i].re;

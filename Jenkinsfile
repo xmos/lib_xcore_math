@@ -143,7 +143,7 @@ pipeline {
           } // stages
           post {
             cleanup {
-              cleanWs()
+              xcoreCleanSandbox()
             }
           }
         } // Windows builds and tests
