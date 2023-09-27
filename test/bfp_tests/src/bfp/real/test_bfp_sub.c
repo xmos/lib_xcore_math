@@ -23,7 +23,12 @@ TEST_GROUP(bfp_sub);
 TEST_SETUP(bfp_sub) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_sub) {}
 
-#define REPS        1000
+#if SMOKE_TEST
+#  define REPS       (100)
+#else
+# define REPS        (1000)
+#endif
+
 #define MAX_LEN     18  //Smaller lengths mean larger variance w.r.t. individual element headroom
 
 static char msg_buff[200];

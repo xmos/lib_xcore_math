@@ -32,8 +32,12 @@ TEST_TEAR_DOWN(vect_f32_fft) {}
 #define WIGGLE 20
 
 #define MIN_FFT_N_LOG2  (4)
-#define LOOPS_LOG2  (8)
 
+#if SMOKE_TEST
+#  define LOOPS_LOG2       (2)
+#else
+#  define LOOPS_LOG2       (8)
+#endif
 
 
 TEST(vect_f32_fft, fft_f32_forward)

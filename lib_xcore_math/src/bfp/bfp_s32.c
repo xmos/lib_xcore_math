@@ -335,8 +335,8 @@ float_s32_t bfp_s32_mean(
     right_shift_t shr = MAX(0, 32 - HR_S64(mean));
 
     if(shr > 0)
-        mean += 1 << (shr-1);
-    
+        mean += ((uint64_t)1 << (shr-1));
+
     a.mant = mean >> shr;
     a.exp = b->exp - hr + shr;
 

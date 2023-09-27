@@ -45,7 +45,7 @@ target_compile_definitions( ${APP_NAME}
   PRIVATE
     $<$<PLATFORM_ID:Linux>:USE_REF=1>
     $<$<PLATFORM_ID:Darwin>:USE_REF=1>
-    SMOKE_TEST=$<BOOL:${XS3_MATH_SMOKE_TEST}>
+    SMOKE_TEST=$<BOOL:${XMATH_SMOKE_TEST}>
 )
 
 target_link_libraries( ${APP_NAME}
