@@ -30,11 +30,23 @@ Requirements
 ------------
 
 * xTIMEcomposer tools version 15.0.6 or later
-* CMake (for building the library and unit tests)
-* GNU Make (for building the libary and unit tests)
+* CMake (for building the library and unit tests, version 3.14 or later)
 * Doxygen (for building documentation)
 * Python 3 (for running source generation scripts, if necessary)
 
+The recommended make tools depend on the development platform:
+
+(Linux and MacOS): GNU Make - Available through your system package manager.
+
+Ninja (Windows): Ninja - Follow install instructions at https://ninja-build.org/ or on windows
+install with ``winget`` by running the following commands in PowerShell:
+
+.. code-block:: PowerShell
+
+		# Install
+		winget install Ninja-build.ninja
+		# Reload user Path
+		$env:Path=[System.Environment]::GetEnvironmentVariable("Path","User")
 
 API Structure
 -------------
@@ -69,7 +81,12 @@ Including lib_xcore_math in External Applications
 
 ``lib_xcore_math`` may be included in your own applications either as source to be compiled by your
 application or as a static library to be linked into your own application. This library uses CMake
-to manage build configurations. To configure your CMake build environment for ``lib_xcore_math``, 
+to manage build configurations.
+
+Standalone build on Linux and MacOS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To configure your CMake build environment for ``lib_xcore_math``,
 from the root of the cloned repository, the following command may be used (ensure that the XTC build
 tools are on your path): ::
 
@@ -82,6 +99,26 @@ To include the unit tests and example applications in your build, use the follow
 instead: ::
 
     mkdir build && cd build && cmake -DDEV_LIB_XCORE_MATH=1 -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Unix Makefiles" ..
+
+Standalone build on Windows
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To configure your CMake build environment for ``lib_xcore_math``,
+from the root of the cloned repository, the following command may be used (ensure that the XTC build
+tools are on your path): ::
+
+    mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja" ..
+
+Then to actually build the the library as a static binary just use the ``ninja`` command from the
+``build`` directory.
+
+To include the unit tests and example applications in your build, use the following command
+instead: ::
+
+    mkdir build && cd build && cmake -DDEV_LIB_XCORE_MATH=1 -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja" ..
+
+Include library in a different application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you wish to include ``lib_xcore_math`` in your own application as a static library, the generated
 ``lib_xcore_math.a`` can then be linked into your own application. Be sure to also add
