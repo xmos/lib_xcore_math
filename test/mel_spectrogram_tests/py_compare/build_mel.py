@@ -95,6 +95,4 @@ def build_uut():
 
 if __name__ == "__main__":
     build_ffi()
-    # Darwin hack https://stackoverflow.com/questions/2488016/how-to-make-python-load-dylib-on-osx
-    if sys.platform == "darwin":
-        copyfile("build/mel_spectrogram_api.dylib", "build/mel_spectrogram_api.so")
+
