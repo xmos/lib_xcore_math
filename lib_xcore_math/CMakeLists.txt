@@ -38,17 +38,11 @@ target_compile_options( ${LIB_NAME}
   PRIVATE
     -Os -g
     -Wall
+    -Werror
+    -Wextra
     $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )
 
-# Add options that are not valid with with MSVC compiler
-if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  target_compile_options( ${LIB_NAME}
-    PRIVATE
-      -Werror
-      -Wextra
-  )
-endif()
 
 # Set defaults for generating the FFT LUT if they are not already defined
 if ( NOT DEFINED XMATH_GEN_FFT_LUT )
