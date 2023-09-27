@@ -19,6 +19,7 @@ Scalar Type Conversion
     :file: csv/scalar_type_conversion.csv
     :widths: 40,30,30
     :header-rows: 1
+    :class: longtable
 
 
 
@@ -31,6 +32,7 @@ Fixed-Point Scalar Ops
     :file: csv/scalar_fixed_point_ops.csv
     :widths: 35,15,15,35
     :header-rows: 1
+    :class: longtable
 
 
 IEEE 754 Float Ops
@@ -42,6 +44,7 @@ IEEE 754 Float Ops
     :file: csv/scalar_f32_ops.csv
     :widths: 50,50
     :header-rows: 1
+    :class: longtable
 
 
 
@@ -54,6 +57,7 @@ Non-standard Scalar Float Ops
     :file: csv/scalar_float_ops.csv
     :widths: 50,50
     :header-rows: 1
+    :class: longtable
 
 
 Non-standard Complex Scalar Float Ops
@@ -65,4 +69,5 @@ Non-standard Complex Scalar Float Ops
     :file: csv/scalar_complex_float_ops.csv
     :widths: 50,50
     :header-rows: 1
+    :class: longtable
 

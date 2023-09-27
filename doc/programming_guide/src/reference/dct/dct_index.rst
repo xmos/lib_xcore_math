@@ -14,6 +14,7 @@ and Type-III are supported here.
     :file: dct_functions.csv
     :widths: 40, 30, 30
     :header-rows: 1
+    :class: longtable
 
 
 .. raw:: latex
