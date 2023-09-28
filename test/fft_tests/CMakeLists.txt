@@ -45,7 +45,6 @@ target_compile_options( ${APP_NAME}
   PRIVATE
     -D_CRT_SECURE_NO_WARNINGS
 )
-
 endif()
 
 target_link_options( ${APP_NAME}

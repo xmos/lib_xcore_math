@@ -86,7 +86,7 @@ TEST(float_convert, float_s64_to_float_s32)
 
     float_s32_t actual = float_s64_to_float_s32(x);
     
-    double expected_f = ldexp(x.mant, x.exp);
+    double expected_f = ldexp((double) x.mant, x.exp);
 
     int32_t expected_mant = conv_double_to_s32(expected_f, actual.exp, &error);
 
@@ -118,7 +118,7 @@ TEST(float_convert, float_s32_to_float)
 
     float actual = float_s32_to_float(x);
     
-    float expected = ldexpf(x.mant, x.exp);
+    float expected = ldexpf((float) x.mant, x.exp);
 
     // printf("\n\n\n");
     // printf("x.mant = 0x%08X  (%ld)\n", (unsigned) x.mant, x.mant);
@@ -168,16 +168,16 @@ TEST(float_convert, f32_to_float_s32)
 
     setExtraInfo_RS(v, seed);
 
-    x = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 40));
+    x = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 40));
 
     float_s32_t actual = f32_to_float_s32(x);
 
     if(x != 0.0)
       TEST_ASSERT_LESS_OR_EQUAL(1, HR_S32(actual.mant));
 
-    float diff  = fabsf(x - ldexpf(actual.mant + 0, actual.exp));
-    float diffP = fabsf(x - ldexpf(actual.mant + 1, actual.exp));
-    float diffM = fabsf(x - ldexpf(actual.mant - 1, actual.exp));
+    float diff  = fabsf(x - ldexpf((float) (actual.mant + 0), actual.exp));
+    float diffP = fabsf(x - ldexpf((float) (actual.mant + 1), actual.exp));
+    float diffM = fabsf(x - ldexpf((float) (actual.mant - 1), actual.exp));
 
     TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(diff, diffP, "");
     TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(diff, diffM, "");

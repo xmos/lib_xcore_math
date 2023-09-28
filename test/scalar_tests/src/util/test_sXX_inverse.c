@@ -59,7 +59,7 @@ TEST(sXX_inverse, s16_inverse)
         // We should not end up with much headroom
         TEST_ASSERT_LESS_OR_EQUAL(2, HR_S16(A));
 
-        int16_t expected = floor( ldexp(Bf_inv, -a_exp) );
+        int16_t expected = (int16_t) floor( ldexp(Bf_inv, -a_exp) );
 
         TEST_ASSERT_INT16_WITHIN(2, expected, A);
 
@@ -96,7 +96,7 @@ TEST(sXX_inverse, s32_inverse)
         // We should not end up with much headroom
         TEST_ASSERT_LESS_OR_EQUAL(2, HR_S32(A));
 
-        int32_t expected = floor( ldexp(Bf_inv, -a_exp) );
+        int32_t expected = (int32_t) floor( ldexp(Bf_inv, -a_exp) );
 
         TEST_ASSERT_INT32_WITHIN(2, expected, A);
 

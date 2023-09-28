@@ -32,10 +32,8 @@ TEST_TEAR_DOWN(sXX_mul) {}
 
 TEST(sXX_mul, s16_mul)
 {
-    
     unsigned seed = SEED_FROM_FUNC_NAME();
 
-    
     for(int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
@@ -43,24 +41,25 @@ TEST(sXX_mul, s16_mul)
         const exponent_t b_exp = pseudo_rand_int(&seed, -100, 100);
         const exponent_t c_exp = pseudo_rand_int(&seed, -100, 100);
 
-        const headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
-        const headroom_t c_hr = pseudo_rand_uint(&seed, 0, 28);
-        
-        int16_t B = 0;
-        int16_t C = 0;
-        
+        const headroom_t b_hr = pseudo_rand_uint(&seed, 0, 12);
+        const headroom_t c_hr = pseudo_rand_uint(&seed, 0, 12);
+
+        int32_t B = 0;
+        int32_t C = 0;
+
         do { B = pseudo_rand_int16(&seed) >> b_hr; } while (B == 0);
+
         do { C = pseudo_rand_int16(&seed) >> c_hr; } while (C == 0);
 
         exponent_t a_exp;
         int16_t A = s16_mul(&a_exp, B, C, b_exp, c_exp);
-        
+
         double Bf = ldexp(B, b_exp);
         double Cf = ldexp(C, c_exp);
 
         double Ef = Bf * Cf;
 
-        int16_t expected = round( ldexp(Ef, -a_exp) );
+        int16_t expected = (int16_t) round( ldexp(Ef, -a_exp) );
 
 
         TEST_ASSERT_INT16_WITHIN_MESSAGE(2, expected, A, "");
@@ -98,7 +97,7 @@ TEST(sXX_mul, s32_mul)
 
         double Ef = Bf * Cf;
 
-        int32_t expected = round( ldexp(Ef, -a_exp) );
+        int32_t expected = (int32_t) round( ldexp(Ef, -a_exp) );
 
 
         TEST_ASSERT_INT32_WITHIN_MESSAGE(2, expected, A, "");

@@ -61,8 +61,11 @@ int16_t s16_mul(
   // astew: Might be quicker to just use the VPU..
   int16_t WORD_ALIGNED a;
   right_shift_t a_shr;
+
   vect_s16_mul_prepare(a_exp, &a_shr, b_exp, c_exp, HR_S16(b), HR_S16(c));
+
   vect_s16_mul(&a, &b, &c, 1, a_shr);
+
   return a;
 }
 

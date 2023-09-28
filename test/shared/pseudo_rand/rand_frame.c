@@ -101,7 +101,7 @@ void test_random_bfp_s16(
 
     int shr = (pseudo_rand_uint32(seed) % 10) + 1;
 
-    for(unsigned int i = 0; i < length; i++)
+    for(int i = 0; i < length; i++)
         B->data[i] = pseudo_rand_int16(seed) >> shr;
     
     bfp_s16_init(B, B->data, exponent, length, 1);
@@ -129,7 +129,7 @@ void test_random_bfp_s32(
 
     int shr = (pseudo_rand_uint32(seed) % 10) + 1;
 
-    for(unsigned int i = 0; i < length; i++)
+    for(int i = 0; i < length; i++)
         B->data[i] = pseudo_rand_int32(seed) >> shr;
     
     bfp_s32_init(B, B->data, exponent, length, 1);
@@ -156,7 +156,7 @@ void test_random_bfp_complex_s16(
 
     int shr = (pseudo_rand_uint32(seed) % 10) + 1;
 
-    for(unsigned int i = 0; i < length; i++){
+    for(int i = 0; i < length; i++){
         B->real[i] = pseudo_rand_int16(seed) >> shr;
         B->imag[i] = pseudo_rand_int16(seed) >> shr;
     }
@@ -187,7 +187,7 @@ void test_random_bfp_complex_s32(
 
     int shr = (pseudo_rand_uint32(seed) % 10) + 1;
 
-    for(unsigned int i = 0; i < length; i++){
+    for(int i = 0; i < length; i++){
         B->data[i].re = pseudo_rand_int32(seed) >> shr;
         B->data[i].im = pseudo_rand_int32(seed) >> shr;
     }
