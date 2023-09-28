@@ -44,7 +44,6 @@ headroom_t vect_s32_convolve_same(
     const unsigned filter_taps,
     const pad_mode_e padding_mode )
 {
-  printf("filter_taps %d\n", filter_taps);
   const int P = filter_taps >> 1;
 
   headroom_t res_hr, hr;
