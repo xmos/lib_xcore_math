@@ -1,6 +1,6 @@
 Function,EW,Signature,Brief
-:c:func:`bfp_complex_s32_init()`               ,   , ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ", Initialize (static
-:c:func:`bfp_complex_s32_alloc()`              ,   , ":math:`\varnothing \to \mathbb{V}`                        ", Initialize (dynamic
+:c:func:`bfp_complex_s32_init()`               ,   , ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ", Initialize (static)
+:c:func:`bfp_complex_s32_alloc()`              ,   , ":math:`\varnothing \to \mathbb{V}`                        ", Initialize (dynamic)
 :c:func:`bfp_complex_s32_dealloc()`            ,   , ":math:`\mathbb{V} \to \mathbb{\varnothing}`               ", Deinitialize
 :c:func:`bfp_complex_s32_set()`                ,  x, ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ", Set All Elements
 :c:func:`bfp_complex_s32_use_exponent()`       ,   , ":math:`(\mathbb{V \times S}) \to \mathbb{V}`              ", Force Exponent
@@ -24,6 +24,6 @@ Function,EW,Signature,Brief
 :c:func:`bfp_complex_s32_sum()`                ,   , ":math:`\mathbb{V} \to \mathbb{S}`                         ", Vector Sum
 :c:func:`bfp_complex_s32_conjugate()`          ,  x, ":math:`\mathbb{V} \to \mathbb{V}`                         ", Complex Conjugate
 :c:func:`bfp_complex_s32_energy()`             ,   , ":math:`\mathbb{V} \to \mathbb{S}`                         ", Vector Energy
-:c:func:`bfp_complex_s32_make()`               ,  x, ":math:`(\mathbb{V \times V}) \to \mathbb{V}`              ", Construct Complex From Real and Imag
+:c:func:`bfp_complex_s32_make()`               ,  x, ":math:`(\mathbb{V \times V}) \to \mathbb{V}`              ", Construct Complex From Real and Imaginary
 :c:func:`bfp_complex_s32_real_part()`          ,  x, ":math:`\mathbb{V} \to \mathbb{V}`                         ", Real Part
-:c:func:`bfp_complex_s32_imag_part()`          ,  x, ":math:`\mathbb{V} \to \mathbb{V}`                         ", Imag Part
+:c:func:`bfp_complex_s32_imag_part()`          ,  x, ":math:`\mathbb{V} \to \mathbb{V}`                         ", Imaginary Part

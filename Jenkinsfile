@@ -91,12 +91,12 @@ pipeline {
           } // stages
           post {
             cleanup {
-              cleanWs()
+              xcoreCleanSandbox()
             }
           }
         } // Linux builds and tests
 
-        stage('Windows builds and tests') {
+        stage('Windows builds') {
           agent {
             label 'windows10&&unified'
           }
@@ -109,13 +109,10 @@ pipeline {
                   // fetch submodules
                   bat 'git submodule update --init --recursive --jobs 4'
                   withTools(params.TOOLS_VERSION) {
-                    withVS {
+		              withVS {
                       // xs3a build
                       bat 'cmake -B build_xs3a -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja"'
-                      bat 'ninja -C build_xs3a -j4'
-                      // x86 build
-                      bat 'cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G"Ninja"'
-                      bat 'ninja -C build_x86 -j4'
+                      bat 'ninja -C build_xs3a'
                       // xmake build
                       dir('test/legacy_build') {
                         bat 'xmake --jobs 4'
@@ -145,24 +142,28 @@ pipeline {
               xcoreCleanSandbox()
             }
           }
-        } // Windows builds and tests
+        } // Windows builds
 
         stage ('Build Documentation') {
           agent {
             label 'docker'
+          }
+          environment {
+            XMOSDOC_VERSION = "v3.0.0"
           }
           stages {
             stage('Build Docs') {
               steps {
                 runningOn(env.NODE_NAME)
                 checkout scm
+                sh "docker pull ghcr.io/xmos/doc_builder:${XMOSDOC_VERSION}"
                 sh """docker run --user "\$(id -u):\$(id -g)" \
                         --rm \
                         -v ${WORKSPACE}:/build \
                         -e EXCLUDE_PATTERNS="/build/doc/doc_excludes.txt" \
                         -e DOXYGEN=1 -e DOXYGEN_INCLUDE=/build/doc/Doxyfile.inc \
                         -e PDF=1 \
-                        ghcr.io/xmos/doc_builder:v3.0.0 \
+                        ghcr.io/xmos/doc_builder:${XMOSDOC_VERSION} \
                         || echo "PDF build is badly broken, ignoring for now till it's fixed." """
 
                 archiveArtifacts artifacts: "doc/_build/**", allowEmptyArchive: true
@@ -171,7 +172,7 @@ pipeline {
           } // stages
           post {
             cleanup {
-              cleanWs()
+              xcoreCleanSandbox()
             }
           }
         } // Build Documentation
