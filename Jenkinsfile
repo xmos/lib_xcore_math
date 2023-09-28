@@ -96,6 +96,40 @@ pipeline {
           }
         } // Linux builds and tests
 
+        stage('Windows builds') {
+          agent {
+            label 'windows10&&unified'
+          }
+          stages {
+            stage('Build') {
+              steps {
+                runningOn(env.NODE_NAME)
+                dir('lib_xcore_math') {
+                  checkout scm
+                  // fetch submodules
+                  bat 'git submodule update --init --recursive --jobs 4'
+                  withTools(params.TOOLS_VERSION) {
+		    withVS {
+                      // xs3a build
+                      bat 'cmake -B build_xs3a -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja"'
+                      bat 'ninja -C build_xs3a'
+                      // xmake build
+                      dir('test/legacy_build') {
+                        bat 'xmake --jobs 4'
+		      }
+                    }
+                  }
+                }
+              }
+            } // Build
+          } // stages
+          post {
+            cleanup {
+              xcoreCleanSandbox()
+            }
+          }
+        } // Windows builds
+
         stage ('Build Documentation') {
           agent {
             label 'docker'
@@ -117,7 +151,7 @@ pipeline {
                         -e PDF=1 \
                         ghcr.io/xmos/doc_builder:${XMOSDOC_VERSION} \
                         || echo "PDF build is badly broken, ignoring for now till it's fixed." """
-                
+
                 archiveArtifacts artifacts: "doc/_build/**", allowEmptyArchive: true
               } // steps
             } // Build Docs
