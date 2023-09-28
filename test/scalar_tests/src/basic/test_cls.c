@@ -55,7 +55,7 @@ TEST(CLS_macro, cls)
 
 
     // Check each
-    for(unsigned int i = 0; i < N; i++){ 
+    for(unsigned int i = 0; i < N; i++){
 
         if(sign_bits[i] == 32){
             TEST_ASSERT_TRUE((numbers[i] == 0 || numbers[i] == -1));
