@@ -129,7 +129,7 @@ void vect_s32_example()
     printf("\n\n\n============ Step 1 ============\n");
 
     // Random mantissas
-    for(unsigned int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < LENGTH; k++){
       B.data[k] = rand();
       C.data[k] = rand();
     }
@@ -271,7 +271,7 @@ void vect_s32_example()
     // need for any adjustments if there's already 1 bit of (unsigned) headroom) but a simple
     // strategy that usually works is to just manually add 1 bit of headroom to the unsigned vector
     // as follows
-    for(unsigned int k = 0; k < length; k++)
+    for(unsigned int k = 0; k < LENGTH; k++)
       C.data[k] = ((uint32_t)C.data[k]) >> 1;
   
     C.exp += 1;

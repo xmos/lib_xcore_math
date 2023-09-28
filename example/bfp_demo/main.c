@@ -108,7 +108,7 @@ void bfp_s32_example()
   // This is because we're going to fill them with random data next, so their current values are irrelevant.
 
   // Fill vector's B and C with random data.
-  for(unsigned int k = 0; k < length; k++){
+  for(unsigned int k = 0; k < LENGTH; k++){
     B.data[k] = rand();
     C.data[k] = rand();
   }

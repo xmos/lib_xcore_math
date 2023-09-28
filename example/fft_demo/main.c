@@ -62,7 +62,7 @@ void fft_mono_example()
   int32_t buffer[LENGTH+2];
   
   // We'll just fill that vector with random mantissas.
-  for(unsigned int k = 0; k < length; k++){
+  for(unsigned int k = 0; k < LENGTH; k++){
     buffer[k] = rand() << 1;
   }
   
@@ -203,7 +203,7 @@ void fft_stereo_example()
   complex_s32_t DWORD_ALIGNED scratch[LENGTH];
   
   // Fill in the buffers with random mantissas (left shift is to ensure some are negative).
-  for(unsigned int k = 0; k < length; k++){
+  for(unsigned int k = 0; k < LENGTH; k++){
     bufferA[k] = rand() << 1;
     bufferB[k] = rand() << 1;
   }
@@ -357,7 +357,7 @@ void fft_complex_example()
   complex_s32_t buffer[LENGTH];
   
   // Fill in the buffer with random mantissas (left shift is to ensure some are negative).
-  for(unsigned int k = 0; k < length; k++){
+  for(unsigned int k = 0; k < LENGTH; k++){
     buffer[k].re = rand() << 1;
     buffer[k].im = rand() << 1;
   }
