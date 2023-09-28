@@ -18,7 +18,7 @@ unsigned flt_bitrev(
     unsigned inp = index;
     unsigned res = 0;
 
-    for(int i = 0; i < bit_width; i++, inp >>= 1){
+    for(unsigned int i = 0; i < bit_width; i++, inp >>= 1){
         res = ((res<<1) | (inp & 0x1));
     }
 

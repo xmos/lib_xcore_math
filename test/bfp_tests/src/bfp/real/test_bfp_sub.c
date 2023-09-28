@@ -69,7 +69,7 @@ TEST(bfp_sub, bfp_s16_sub)
         test_double_from_s16(Bf, &B);
         test_double_from_s16(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] - Cf[i];
         }
 
@@ -77,7 +77,7 @@ TEST(bfp_sub, bfp_s16_sub)
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
         }
     }
@@ -113,7 +113,7 @@ TEST(bfp_sub, bfp_s32_sub)
         test_double_from_s32(Bf, &B);
         test_double_from_s32(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] - Cf[i];
         }
 
@@ -121,7 +121,7 @@ TEST(bfp_sub, bfp_s32_sub)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(1, expA[i], A.data[i]);
         }
     }

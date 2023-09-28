@@ -42,7 +42,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_mono)
     const unsigned FFT_N = (1 << FFT_N_LOG2);
     const unsigned FFT_BINS = FFT_N/2;
 
-    for(int frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
+    for(unsigned frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
 
       setExtraInfo_RSL(FFT_N, seed, frame_advance);
 
@@ -55,7 +55,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_mono)
 
       const exponent_t td_exp = A_td->exp;
       
-      for(int k = 0; k < A_td->length; k++)
+      for(unsigned int k = 0; k < A_td->length; k++)
         expected[k] = (k < frame_advance)? A_td->data[k] : 0;
       bfp_fft_forward_mono(A_td);
 
@@ -113,7 +113,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_A)
     const unsigned FFT_N = (1 << FFT_N_LOG2);
     const unsigned FFT_BINS = FFT_N/2;
 
-    for(int frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
+    for(unsigned frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
 
       setExtraInfo_RSL(FFT_N, seed, frame_advance);
 
@@ -130,7 +130,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_A)
       const exponent_t td_expA = A_td->exp;
       const exponent_t td_expB = B_td->exp;
       
-      for(int k = 0; k < A_td->length; k++){
+      for(unsigned int k = 0; k < A_td->length; k++){
         expectedA[k] = (k < frame_advance)? A_td->data[k] : 0;
         expectedB[k] = (k < frame_advance)? B_td->data[k] : 0;
       }
@@ -189,7 +189,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_B)
     const unsigned FFT_N = (1 << FFT_N_LOG2);
     const unsigned FFT_BINS = FFT_N/2;
 
-    for(int frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
+    for(unsigned int frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
 
       setExtraInfo_RSL(FFT_N, seed, frame_advance);
 
@@ -206,7 +206,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_B)
       const exponent_t td_expA = A_td->exp;
       const exponent_t td_expB = B_td->exp;
       
-      for(int k = 0; k < A_td->length; k++){
+      for(unsigned int k = 0; k < A_td->length; k++){
         expectedA[k] = (k < frame_advance)? A_td->data[k] : 0;
         expectedB[k] = (k < frame_advance)? B_td->data[k] : 0;
       }
