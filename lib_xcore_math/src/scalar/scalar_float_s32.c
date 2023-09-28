@@ -223,7 +223,7 @@ q1_31 radians_to_tbrads(
 {
   const q1_31 inv_rho = 0x517cc1b7;
   int64_t acc = ((int64_t)inv_rho) * theta;
-  q1_31 alpha = (q1_31) acc >> 24;
+  q1_31 alpha = (q1_31) (acc >> 24);
   return alpha;
 }
 

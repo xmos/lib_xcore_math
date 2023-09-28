@@ -448,6 +448,6 @@ float fmacc(
 {
   double bc = ((double)b) * ((double)c);
   double res = ((double)acc) + bc;
-  float res2 = (float)res;
+  float res2 = (float) res;
   return res2;
 }
