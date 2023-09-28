@@ -306,7 +306,7 @@ headroom_t vect_complex_s16_headroom(
  * 
  * @operation{ 
  * &     v_k \leftarrow b_k \cdot 2^{-b\_shr}    \\
- * &     a_k \leftarrow \sqrt { {\left( Re\\{v_k\\} \right)}^2 + {\left( Im\\{v_k\\} \right)}^2 }
+ * &     a_k \leftarrow \sqrt { {\left( Re\\{v_k\\} \right)}^2 + {\left( Im\\{v_k\\} \right)}^2 } \\
  * &       \qquad\text{ for }k\in 0\ ...\ (length-1) 
  * }
  * 

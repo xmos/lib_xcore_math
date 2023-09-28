@@ -122,9 +122,10 @@ void chunk_float_s32_log(
  * explanation, @vector{c} is considered to be single-dimensional, without redundancy.)
  * 
  * @operation{
- * &    b_{k,0} = 2^{30}                                                                   \\
- * &    b_{k,i} = round\left(\frac{b_{k,i-1}\cdot{}b_k}{2^{30}}\right)\qquad\text{for }i \in \{1..(N-1)\}    \\
- * &    a_k \leftarrow  \sum_{i=0}^{N-1}  round\left( \frac{b_{k,i}\cdot c_i}{2^{30}}  \right) \\
+ * &    b_{k,0} = 2^{30}                                                                        \\
+ * &    b_{k,i} = round\left(\frac{b_{k,i-1}\cdot{}b_k}{2^{30}}\right)                          \\
+ * &    \qquad\text{for }i \in \{1..(N-1)\}                                                     \\
+ * &    a_k \leftarrow  \sum_{i=0}^{N-1}  round\left( \frac{b_{k,i}\cdot c_i}{2^{30}}  \right)  \\
  * &    \qquad\text{for }k \in \{0..\mathtt{VPU\_INT32\_EPV}-1\}
  * }
  * 
