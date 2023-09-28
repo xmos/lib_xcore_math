@@ -126,7 +126,7 @@ TEST(bfp_headroom, bfp_complex_s16_headroom)
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
         int shr = pseudo_rand_uint32(&seed) % 10;
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             real[i] = pseudo_rand_int16(&seed) >> shr;
             imag[i] = pseudo_rand_int16(&seed) >> shr;
         }
@@ -171,7 +171,7 @@ TEST(bfp_headroom, bfp_complex_s32_headroom)
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
         int shr = pseudo_rand_uint32(&seed) % 10;
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             data[i].re = pseudo_rand_int32(&seed) >> shr;
             data[i].im = pseudo_rand_int32(&seed) >> shr;
         }

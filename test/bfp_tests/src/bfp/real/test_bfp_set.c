@@ -65,7 +65,7 @@ TEST(bfp_set, bfp_s16_set)
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(exp_hr, A.hr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL(val, A.data[i]);
         }
         for(int i = length; i < MAX_LEN; i++)
@@ -147,7 +147,7 @@ TEST(bfp_set, bfp_complex_s16_set)
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(exp_hr, A.hr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL(val.re, A.real[i]);
             TEST_ASSERT_EQUAL(val.im, A.imag[i]);
         }
@@ -192,7 +192,7 @@ TEST(bfp_set, bfp_complex_s32_set)
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(exp_hr, A.hr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL(val.re, A.data[i].re);
             TEST_ASSERT_EQUAL(val.im, A.data[i].im);
         }

@@ -62,7 +62,7 @@ TEST(filter_fir_s16_push_sample, filter_fir_s16_push_sample_down)
         UNITY_SET_DETAIL(msg_buff);
 #endif
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             buff[i] = pseudo_rand_int16(&seed);
             if(i) buff_exp[i-1] = buff[i];
         }
@@ -73,7 +73,7 @@ TEST(filter_fir_s16_push_sample, filter_fir_s16_push_sample_down)
 
         filter_fir_s16_push_sample_down(buff, length, new_sample);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL(buff_exp[i], buff[i]);
         }
     }
@@ -102,7 +102,7 @@ TEST(filter_fir_s16_push_sample, filter_fir_s16_push_sample_up)
         UNITY_SET_DETAIL(msg_buff);
 #endif
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             buff[i] = pseudo_rand_int16(&seed);
             if(i < length-1) buff_exp[i+1] = buff[i];
         }
@@ -112,7 +112,7 @@ TEST(filter_fir_s16_push_sample, filter_fir_s16_push_sample_up)
 
         filter_fir_s16_push_sample_up(buff,  length, new_sample);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL(buff_exp[i], buff[i]);
         }
     }

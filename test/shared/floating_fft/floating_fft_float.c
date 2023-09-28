@@ -16,7 +16,7 @@ void flt_bit_reverse_indexes_float(
     const unsigned length)
 {
     size_t logn = u32_ceil_log2(length);
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         unsigned rev = flt_bitrev(i, logn);
         if(rev < i) continue;
 
@@ -145,7 +145,7 @@ void flt_fft_inverse_float (
         }
     }
 
-    unsigned log2_N = 31-cls(N);
+    int log2_N = 31-cls(N);
 
     for(unsigned i=0;i<N;i++){
         pts[i].re = ldexpf(pts[i].re, -log2_N);

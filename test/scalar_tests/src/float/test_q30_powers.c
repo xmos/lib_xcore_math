@@ -58,7 +58,7 @@ TEST(q30_powers, q30_powers)
     float delta_us_per_elm = delta_us / length;
 
     unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 

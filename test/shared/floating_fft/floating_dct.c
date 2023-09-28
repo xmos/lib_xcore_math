@@ -16,9 +16,9 @@ void flt_dct_forward(
     float input[],
     const unsigned DCT_N)
 {
-  for(int k = 0; k < DCT_N; k++){
+  for(unsigned int k = 0; k < DCT_N; k++){
     output[k] = 0.0;
-    for(int n = 0; n < DCT_N; n++){
+    for(unsigned int n = 0; n < DCT_N; n++){
       float c = cosf( k * ((float) M_PI) * (2*n + 1) / (2.0f * DCT_N));
       output[k] += input[n] * c;
     }
@@ -31,9 +31,9 @@ void flt_dct_inverse(
     float input[],
     const unsigned DCT_N)
 {
-  for(int k = 0; k < DCT_N; k++){
+  for(unsigned int k = 0; k < DCT_N; k++){
     output[k] = input[0]/2.0f;
-    for(int n = 1; n < DCT_N; n++){
+    for(unsigned int n = 1; n < DCT_N; n++){
       float c = cosf( n * ((float) M_PI) * (2*k + 1) / (2.0f * DCT_N));
       output[k] += input[n] * c;
     }
@@ -46,9 +46,9 @@ void dbl_dct_forward(
     double input[],
     const unsigned DCT_N)
 {
-  for(int k = 0; k < DCT_N; k++){
+  for(unsigned int k = 0; k < DCT_N; k++){
     output[k] = 0.0;
-    for(int n = 0; n < DCT_N; n++){
+    for(unsigned int n = 0; n < DCT_N; n++){
       double c = cos( k * M_PI * (2*n + 1) / (2.0 * DCT_N));
       output[k] += input[n] * c;
     }
@@ -61,9 +61,9 @@ void dbl_dct_inverse(
     double input[],
     const unsigned DCT_N)
 {
-  for(int k = 0; k < DCT_N; k++){
+  for(unsigned int k = 0; k < DCT_N; k++){
     output[k] = input[0]/2.0;
-    for(int n = 1; n < DCT_N; n++){
+    for(unsigned int n = 1; n < DCT_N; n++){
       double c = cos( n * (M_PI) * (2*k + 1) / (2.0 * DCT_N));
       output[k] += input[n] * c;
     }

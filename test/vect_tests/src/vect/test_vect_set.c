@@ -116,7 +116,7 @@ TEST(vect_set, vect_complex_s16_set)
         
         vect_complex_s16_set(A_real, A_imag, new_real, new_imag, length);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_INT16(new_real, A_real[i]);
             TEST_ASSERT_EQUAL_INT16(new_imag, A_imag[i]);
         }
@@ -150,7 +150,7 @@ TEST(vect_set, vect_complex_s32_set)
         
         vect_complex_s32_set(A, new_real, new_imag, length);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_INT32(new_real, A[i].re);
             TEST_ASSERT_EQUAL_INT32(new_imag, A[i].im);
         }

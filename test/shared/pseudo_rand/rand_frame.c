@@ -19,7 +19,7 @@ unsigned test_random_vect_s16(
   unsigned length = pseudo_rand_uint(seed, min_length, max_length+1);
   right_shift_t shr = pseudo_rand_uint(seed, min_headroom, max_headroom+1);
   
-  for(int k = 0; k < length; k++){
+  for(unsigned k = 0; k < length; k++){
     vect[k] = pseudo_rand_int16(seed) >> shr;
   }
 
@@ -37,7 +37,7 @@ unsigned test_random_vect_s32(
   unsigned length = pseudo_rand_uint(seed, min_length, max_length+1);
   right_shift_t shr = pseudo_rand_uint(seed, min_headroom, max_headroom+1);
   
-  for(int k = 0; k < length; k++){
+  for(unsigned k = 0; k < length; k++){
     vect[k] = pseudo_rand_int32(seed) >> shr;
   }
 
@@ -56,7 +56,7 @@ unsigned test_random_vect_complex_s16(
   unsigned length = pseudo_rand_uint(seed, min_length, max_length+1);
   right_shift_t shr = pseudo_rand_uint(seed, min_headroom, max_headroom+1);
   
-  for(int k = 0; k < length; k++){
+  for(unsigned k = 0; k < length; k++){
     vect_re[k] = pseudo_rand_int16(seed) >> shr;
     vect_im[k] = pseudo_rand_int16(seed) >> shr;
   }
@@ -75,7 +75,7 @@ unsigned test_random_vect_complex_s32(
   unsigned length = pseudo_rand_uint(seed, min_length, max_length+1);
   right_shift_t shr = pseudo_rand_uint(seed, min_headroom, max_headroom+1);
   
-  for(int k = 0; k < length; k++){
+  for(unsigned k = 0; k < length; k++){
     vect[k].re = pseudo_rand_int32(seed) >> shr;
     vect[k].im = pseudo_rand_int32(seed) >> shr;
   }
@@ -156,7 +156,7 @@ void test_random_bfp_complex_s16(
 
     int shr = (pseudo_rand_uint32(seed) % 10) + 1;
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         B->real[i] = pseudo_rand_int16(seed) >> shr;
         B->imag[i] = pseudo_rand_int16(seed) >> shr;
     }
@@ -187,7 +187,7 @@ void test_random_bfp_complex_s32(
 
     int shr = (pseudo_rand_uint32(seed) % 10) + 1;
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         B->data[i].re = pseudo_rand_int32(seed) >> shr;
         B->data[i].im = pseudo_rand_int32(seed) >> shr;
     }
@@ -205,7 +205,7 @@ void test_double_from_s16(
     double* d_out,
     bfp_s16_t* d_in)
 {
-    for(int i = 0; i < d_in->length; i++){
+    for(unsigned int i = 0; i < d_in->length; i++){
         d_out[i] = ldexp(d_in->data[i], d_in->exp);
     }
 }
@@ -214,7 +214,7 @@ void test_double_from_s32(
     double* d_out,
     bfp_s32_t* d_in)
 {
-    for(int i = 0; i < d_in->length; i++){
+    for(unsigned int i = 0; i < d_in->length; i++){
         d_out[i] = ldexp(d_in->data[i], d_in->exp);
     }
 }
@@ -224,7 +224,7 @@ void test_double_from_complex_s16(
     double* d_out_imag,
     bfp_complex_s16_t* d_in)
 {
-    for(int i = 0; i < d_in->length; i++){
+    for(unsigned int i = 0; i < d_in->length; i++){
         // printf("## %d\t%d\t%d\n", d_in->real[i], d_in->imag[i], d_in->exp);
         d_out_real[i] = ldexp(d_in->real[i], d_in->exp);
         d_out_imag[i] = ldexp(d_in->imag[i], d_in->exp);
@@ -236,7 +236,7 @@ void test_double_from_complex_s32(
     double* d_out_imag,
     bfp_complex_s32_t* d_in)
 {
-    for(int i = 0; i < d_in->length; i++){
+    for(unsigned int i = 0; i < d_in->length; i++){
         d_out_real[i] = ldexp(d_in->data[i].re, d_in->exp);
         d_out_imag[i] = ldexp(d_in->data[i].im, d_in->exp);
     }
@@ -249,7 +249,7 @@ void test_s16_from_double(
     unsigned length,
     exponent_t use_exp)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         int exp;
         double mant = frexp(d_in[i], &exp);
         mant = mant * ldexp(1, exp - use_exp);
@@ -265,7 +265,7 @@ void test_s32_from_double(
     unsigned length,
     exponent_t use_exp)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         int exp;
         double mant = frexp(d_in[i], &exp);
         mant = mant * ldexp(1, exp - use_exp);
@@ -284,7 +284,7 @@ void test_complex_s16_from_double(
     unsigned length,
     exponent_t use_exp)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         int exp;
         double mant;
 
@@ -314,7 +314,7 @@ void test_complex_s32_from_double(
     unsigned length,
     exponent_t use_exp)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         int exp;
         double mant;
 

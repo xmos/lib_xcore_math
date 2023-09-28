@@ -38,7 +38,7 @@ void rand_vect_complex_s16(
     const unsigned headroom,
     unsigned* seed)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         output[i].re = pseudo_rand_int16(seed) >> headroom;
         output[i].im = pseudo_rand_int16(seed) >> headroom;
     }
@@ -50,7 +50,7 @@ void rand_vect_complex_s32(
     const unsigned headroom,
     unsigned* seed)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         output[i].re = pseudo_rand_int32(seed) >> headroom;
         output[i].im = pseudo_rand_int32(seed) >> headroom;
     }

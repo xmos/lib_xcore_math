@@ -189,7 +189,7 @@ TEST(vect_inverse, vect_s16_inverse)
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 12);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B[i] = pseudo_rand_int16(&seed) >> b_hr;
             if( B[i] == 0 )
                 B[i] = 1;
@@ -204,7 +204,7 @@ TEST(vect_inverse, vect_s16_inverse)
 
         double expected_flt[MAX_LEN];
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             expected_flt[i] = 1.0 / ldexp(B[i], b_exp);
         }
 
@@ -212,7 +212,7 @@ TEST(vect_inverse, vect_s16_inverse)
 
         test_s16_from_double(expected, expected_flt, length, a_exp);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_INT16_WITHIN(2, expected[i], A[i]);
         }
     }
@@ -235,7 +235,7 @@ TEST(vect_inverse, vect_s32_inverse)
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B[i] = pseudo_rand_int32(&seed) >> b_hr;
             if( B[i] == 0 )
                 B[i] = 1;
@@ -250,7 +250,7 @@ TEST(vect_inverse, vect_s32_inverse)
 
         double expected_flt[MAX_LEN];
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             expected_flt[i] = 1.0 / ldexp(B[i], b_exp);
         }
 
@@ -258,7 +258,7 @@ TEST(vect_inverse, vect_s32_inverse)
 
         test_s32_from_double(expected, expected_flt, length, a_exp);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
 
             if( abs(expected[i] - A[i]) > 2 ) {
 

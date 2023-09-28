@@ -315,14 +315,14 @@ TEST(vect_shl, vect_complex_s16_shl)
 
         const left_shift_t shl = pseudo_rand_int(&seed, -4, 4);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B_real[i] = pseudo_rand_int16(&seed) >> hr;
             B_imag[i] = pseudo_rand_int16(&seed) >> hr;
         }
 
         vect_complex_s16_shl(A_real, A_imag, B_real, B_imag, length, shl);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], -shl), A_real[i] );
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_imag[i], -shl), A_imag[i] );
         }
@@ -332,7 +332,7 @@ TEST(vect_shl, vect_complex_s16_shl)
 
         vect_complex_s16_shl(A_real, A_imag, A_real, A_imag, length, shl);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], -shl), A_real[i] );
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_imag[i], -shl), A_imag[i] );
         }
@@ -359,14 +359,14 @@ TEST(vect_shl, vect_complex_s32_shl)
 
         const left_shift_t shl = pseudo_rand_int(&seed, -8, 8);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> hr;
             B[i].im = pseudo_rand_int32(&seed) >> hr;
         }
 
         vect_complex_s32_shl(A, B, length, shl);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, -shl), A[i].re );
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].im, -shl), A[i].im );
         }
@@ -375,7 +375,7 @@ TEST(vect_shl, vect_complex_s32_shl)
 
         vect_complex_s32_shl(A, A, length, shl);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, -shl), A[i].re );
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].im, -shl), A[i].im );
         }
