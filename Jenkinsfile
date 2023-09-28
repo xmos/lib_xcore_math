@@ -109,14 +109,12 @@ pipeline {
                   // fetch submodules
                   bat 'git submodule update --init --recursive --jobs 4'
                   withTools(params.TOOLS_VERSION) {
-                    withVS {
-                      // xs3a build
-                      bat 'cmake -B build_xs3a -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja"'
-                      bat 'ninja -C build_xs3a -j4'
-                      // xmake build
-                      dir('test/legacy_build') {
-                        bat 'xmake --jobs 4'
-                      }
+                    // xs3a build
+                    bat 'cmake -B build_xs3a -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja"'
+                    bat 'ninja -C build_xs3a'
+                    // xmake build
+                    dir('test/legacy_build') {
+                      bat 'xmake --jobs 4'
                     }
                   }
                 }
