@@ -85,7 +85,6 @@ enum {
 /** The lower saturation bound for 40-bit accumulators */
 #define VPU_INT40_MIN -0x7FFFFFFFFFLL
 
-
 /**
  * Number of accumulator bits in each operating mode.
  * 

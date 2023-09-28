@@ -31,7 +31,7 @@ headroom_t vect_s32_inverse(
     const int64_t d = (0x1LL << scale);
 
     for(unsigned k = 0; k < length; k++){
-        a[k] = (int32_t) d / b[k];
+        a[k] = (int32_t) (d / b[k]);
         
         // printf("0x%016llX / %ld = %ld\n", (uint64_t) d, b[k], a[k]);
     }

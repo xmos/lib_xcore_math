@@ -14,7 +14,7 @@ static int32_t isqrt_s64(
 {
   // p = -(2^31)
   // declare the positive value first to avoid the Windows warning:
-  //warning C4146: unary minus operator applied to unsigned type, result still unsigned
+  // warning C4146: unary minus operator applied to unsigned type, result still unsigned
   int32_t p = 0x80000000;
   p = -p;
 
