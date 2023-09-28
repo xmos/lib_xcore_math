@@ -67,14 +67,14 @@ TEST(bfp_convolve, vect_s32_convolve_valid)
     bfp_s32_init(&bfp_in, signal_in, pseudo_rand_int(&seed, -20, 20), length, 1);
     bfp_s32_init(&bfp_out, signal_out, pseudo_rand_int(&seed, -20, 20), length-2*P, 0);
 
-     for(unsigned int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
-     for(unsigned int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] *= (int32_t) scale;
 
     const unsigned out_length = length - ((tap_count>>1)<<1);
@@ -129,14 +129,14 @@ TEST(bfp_convolve, vect_s32_convolve_same_reflected)
     bfp_s32_init(&bfp_in, signal_in, pseudo_rand_int(&seed, -20, 20), length, 1);
     bfp_s32_init(&bfp_out, signal_out, pseudo_rand_int(&seed, -20, 20), length, 0);
 
-     for(unsigned int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
-     for(unsigned int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] *= (int32_t) scale;
 
     for(unsigned int k = 0; k < length; k++){
@@ -197,14 +197,14 @@ TEST(bfp_convolve, vect_s32_convolve_same_zero)
     bfp_s32_init(&bfp_in, signal_in, pseudo_rand_int(&seed, -20, 20), length, 1);
     bfp_s32_init(&bfp_out, signal_out, pseudo_rand_int(&seed, -20, 20), length, 0);
 
-     for(unsigned int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
-     for(unsigned int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] *= (int32_t) scale;
 
     for(unsigned int k = 0; k < length; k++){
@@ -267,14 +267,14 @@ TEST(bfp_convolve, vect_s32_convolve_same_extend)
     bfp_s32_init(&bfp_in, signal_in, pseudo_rand_int(&seed, -20, 20), length, 1);
     bfp_s32_init(&bfp_out, signal_out, pseudo_rand_int(&seed, -20, 20), length, 0);
 
-     for(unsigned int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
-     for(unsigned int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] *= (int32_t) scale;
 
     for(unsigned int k = 0; k < length; k++){
