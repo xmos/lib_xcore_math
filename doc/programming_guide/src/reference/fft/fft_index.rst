@@ -11,6 +11,7 @@ FFT API Quick Reference
     :file: fft_functions.csv
     :widths: 40, 30, 30
     :header-rows: 1
+    :class: longtable
 
 
 .. raw:: latex
