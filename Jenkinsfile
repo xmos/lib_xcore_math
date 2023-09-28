@@ -129,13 +129,13 @@ pipeline {
             stage('Unit tests x86') {
               steps {
                 dir('lib_xcore_math/build_x86/test') {
-                  bat './bfp_tests/bfp_tests        -v'
-                  bat './dct_tests/dct_tests        -v'
-                  bat './fft_tests/fft_tests        -v'
-                  bat './filter_tests/filter_tests  -v'
-                  bat './scalar_tests/scalar_tests  -v'
-                  bat './vect_tests/vect_tests      -v'
-                  bat './xs3_tests/xs3_tests        -v'
+                  bat './bfp_tests/bfp_tests.exe        -v'
+                  bat './dct_tests/dct_tests.exe        -v'
+                  bat './fft_tests/fft_tests.exe        -v'
+                  bat './filter_tests/filter_tests.exe  -v'
+                  bat './scalar_tests/scalar_tests.exe  -v'
+                  bat './vect_tests/vect_tests.exe      -v'
+                  bat './xs3_tests/xs3_tests.exe        -v'
                 }
               }
             } // Unit tests x86
