@@ -70,7 +70,7 @@ TEST(bfp_complex_squared_mag, bfp_complex_s16_squared_mag)
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
 
@@ -86,7 +86,7 @@ TEST(bfp_complex_squared_mag, bfp_complex_s16_squared_mag)
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
         }
 
@@ -122,7 +122,7 @@ TEST(bfp_complex_squared_mag, bfp_complex_s32_squared_mag)
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i].re = pseudo_rand_int32(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int32(&seed) >> B.hr;
 
@@ -140,7 +140,7 @@ TEST(bfp_complex_squared_mag, bfp_complex_s32_squared_mag)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             // astew: 2022/06/30 -- Increased threshold from 3 to 4. Test was failing after I fixed
             //        the random number generation problem. (Threshold is observed, not theoretical)
             TEST_ASSERT_INT32_WITHIN(4, expA[i], A.data[i]);

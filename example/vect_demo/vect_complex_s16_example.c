@@ -19,13 +19,13 @@ static void print_vector_complex_s16(
 {
   // First, the raw mantissas
   printf("%s = [", name);
-  for(int k = 0; k < length; k++)
+  for(unsigned int k = 0; k < length; k++)
     printf("%d + j*%d, ", real[k], imag[k]);
   printf("] * 2**(%d)\t// (line %u)\n", exp, line);
 
   // Next, the float equivalent
   printf("%s_float = [", name);
-  for(int k = 0; k < length; k++)
+  for(unsigned int k = 0; k < length; k++)
     printf("%0.07f + j*%0.07f, ", ldexp(real[k], exp), ldexp(imag[k], exp));
   printf("]\n");
 }
@@ -129,7 +129,7 @@ void vect_complex_s16_example()
   C.exp = -15;
 
   // Randomly set the mantissas for B[] and C[]
-  for(int k = 0; k < LENGTH; k++){
+  for(unsigned int k = 0; k < length; k++){
     B.real[k] = rand();
     B.imag[k] = rand();
     C.real[k] = rand();

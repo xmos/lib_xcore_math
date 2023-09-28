@@ -48,7 +48,7 @@ TEST(vect_extract, vect_s16_extract_high_byte)
 
         setExtraInfo_RSL(v, seed, length);
 
-        for(int k = 0; k < length; k++)
+        for(unsigned int k = 0; k < length; k++)
           B[k] = pseudo_rand_int16(&seed);
 
         B[0] = 0x8000;
@@ -97,7 +97,7 @@ TEST(vect_extract, vect_s16_extract_low_byte)
 
         setExtraInfo_RSL(v, seed, length);
 
-        for(int k = 0; k < length; k++)
+        for(unsigned int k = 0; k < length; k++)
           B[k] = pseudo_rand_int16(&seed);
 
         B[0] = 0x0080;

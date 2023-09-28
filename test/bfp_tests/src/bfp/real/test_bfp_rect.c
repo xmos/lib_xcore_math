@@ -62,7 +62,7 @@ TEST(bfp_rect, bfp_s16_rect)
         TEST_ASSERT_EQUAL(B.exp, A.exp);
         TEST_ASSERT_EQUAL(vect_s16_headroom(A.data, A.length), A.hr);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             int16_t expected = (B.data[i] < 0)? 0 : B.data[i];
             TEST_ASSERT_EQUAL(expected, A.data[i]);
         }
@@ -93,7 +93,7 @@ TEST(bfp_rect, bfp_s32_rect)
         TEST_ASSERT_EQUAL(B.exp, A.exp);
         TEST_ASSERT_EQUAL(vect_s32_headroom(A.data, A.length), A.hr);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             int32_t expected = (B.data[i] < 0)? 0 : B.data[i];
             TEST_ASSERT_EQUAL(expected, A.data[i]);
         }

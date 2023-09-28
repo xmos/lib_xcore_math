@@ -54,7 +54,7 @@ TEST(bfp_sqrt, bfp_s16_sqrt)
 
         B.hr = pseudo_rand_uint(&seed, 0, 4);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B_data[i] = pseudo_rand_uint(&seed, INT16_MAX / 10, INT16_MAX) >> B.hr;
         }
 
@@ -65,7 +65,7 @@ TEST(bfp_sqrt, bfp_s16_sqrt)
         TEST_ASSERT_EQUAL(bfp_s16_headroom(&A), A.hr);
 
         
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
 
             double b_val = ldexp(B.data[i], B.exp);
             double a_val = ldexp(A.data[i], A.exp);
@@ -100,7 +100,7 @@ TEST(bfp_sqrt, bfp_s32_sqrt)
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B_data[i] = pseudo_rand_uint(&seed, INT32_MAX/10, INT32_MAX) >> B.hr;
         }
 
@@ -110,7 +110,7 @@ TEST(bfp_sqrt, bfp_s32_sqrt)
 
         TEST_ASSERT_EQUAL(bfp_s32_headroom(&A), A.hr);
         
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             double b_val = ldexp(B.data[i], B.exp);
             double a_val = ldexp(A.data[i], A.exp);
 

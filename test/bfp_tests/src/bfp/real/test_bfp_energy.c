@@ -50,7 +50,7 @@ TEST(bfp_energy, bfp_s16_energy)
 
         int64_t sum64 = 0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
 
             sum64 += ((int32_t)B.data[i]) * B.data[i];
@@ -87,7 +87,7 @@ TEST(bfp_energy, bfp_s32_energy)
 
         double expected = 0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
 
             expected += pow(ldexp(B.data[i], B.exp), 2);

@@ -53,7 +53,7 @@ TEST(bfp_complex_energy, bfp_complex_s16_energy)
 
         double expected_f = 0.0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
 
@@ -99,7 +99,7 @@ TEST(bfp_complex_energy, bfp_complex_s32_energy)
 
         double expected_f = 0.0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i].re = pseudo_rand_int32(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int32(&seed) >> B.hr;
 

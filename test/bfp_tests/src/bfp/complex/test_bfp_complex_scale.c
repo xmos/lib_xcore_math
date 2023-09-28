@@ -82,7 +82,7 @@ TEST(bfp_complex_scale, bfp_complex_s16_scale)
             pseudo_rand_int(&seed, -100, 100),
         };
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
 
@@ -98,7 +98,7 @@ TEST(bfp_complex_scale, bfp_complex_s16_scale)
         
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(1, expA.real[i], A.real[i]);
             TEST_ASSERT_INT16_WITHIN(1, expA.imag[i], A.imag[i]);
         }
@@ -174,7 +174,7 @@ TEST(bfp_complex_scale, bfp_complex_s32_scale)
             pseudo_rand_int(&seed, -100, 100),
         };
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i].re = pseudo_rand_int32(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int32(&seed) >> B.hr;
 
@@ -192,7 +192,7 @@ TEST(bfp_complex_scale, bfp_complex_s32_scale)
 
         // astew: 2022/06/30 -- Increased threshold from 2 to 3. Test was failing after I fixed
         //        the random number generation problem. (Threshold is observed, not theoretical)
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(3, expA[i].re, A.data[i].re);
             TEST_ASSERT_INT32_WITHIN(3, expA[i].im, A.data[i].im);
         }

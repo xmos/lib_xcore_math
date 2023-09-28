@@ -412,7 +412,7 @@ TEST(vect_shr, vect_split_acc_s32_shr)
     
     const right_shift_t shr = pseudo_rand_int(&seed, -hr, (20-hr));
 
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       if(shr >= 0)
         expected[k] = acc_s32[k] >> shr;
       else

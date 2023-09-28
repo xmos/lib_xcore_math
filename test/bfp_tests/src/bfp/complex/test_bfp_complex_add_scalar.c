@@ -89,7 +89,7 @@ TEST(bfp_complex_add_scalar, bfp_complex_s16_add_scalar)
           ldexp(C.mant.im, C.exp), 
         };
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af.real[i] = Bf.real[i] + Cf.re;
             Af.imag[i] = Bf.imag[i] + Cf.im;
         }
@@ -98,7 +98,7 @@ TEST(bfp_complex_add_scalar, bfp_complex_s16_add_scalar)
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(2, expA.real[i], A.real[i]);
             TEST_ASSERT_INT16_WITHIN(2, expA.imag[i], A.imag[i]);
         }
@@ -135,7 +135,7 @@ TEST(bfp_complex_add_scalar, bfp_complex_s32_add_scalar)
         C.mant.im = pseudo_rand_int32(&seed);
 
         //Just to make the test easier.
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i].re = B.data[i].re & 0xFFFFFFFE;
             B.data[i].im = B.data[i].im & 0xFFFFFFFE;
         }
@@ -147,7 +147,7 @@ TEST(bfp_complex_add_scalar, bfp_complex_s32_add_scalar)
           ldexp(C.mant.im, C.exp),
         };
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af.real[i] = Bf.real[i] + Cf.re;
             Af.imag[i] = Bf.imag[i] + Cf.im;
         }
@@ -156,7 +156,7 @@ TEST(bfp_complex_add_scalar, bfp_complex_s32_add_scalar)
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(2, expA[i].re, A.data[i].re);
             TEST_ASSERT_INT32_WITHIN(2, expA[i].im, A.data[i].im);
         }

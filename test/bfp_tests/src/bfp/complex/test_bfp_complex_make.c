@@ -79,7 +79,7 @@ TEST(bfp_complex_make, bfp_complex_s32_make)
         test_double_from_s32(Bf, &B);
         test_double_from_s32(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af.real[i] = Bf[i];
             Af.imag[i] = Cf[i];
         }
@@ -91,7 +91,7 @@ TEST(bfp_complex_make, bfp_complex_s32_make)
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN_MESSAGE(1, expA[i].re, A.data[i].re, "");
             TEST_ASSERT_INT32_WITHIN_MESSAGE(1, expA[i].im, A.data[i].im, "");
         }
@@ -129,7 +129,7 @@ TEST(bfp_complex_make, bfp_complex_s32_real_part)
 
         test_double_from_complex_s32(Bf.real, Bf.imag, &B);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf.real[i];
         }
 
@@ -139,7 +139,7 @@ TEST(bfp_complex_make, bfp_complex_s32_real_part)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN_MESSAGE(1, expA[i], A.data[i], "");
         }
     }
@@ -176,7 +176,7 @@ TEST(bfp_complex_make, bfp_complex_s32_imag_part)
 
         test_double_from_complex_s32(Bf.real, Bf.imag, &B);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf.imag[i];
         }
 
@@ -186,7 +186,7 @@ TEST(bfp_complex_make, bfp_complex_s32_imag_part)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN_MESSAGE(1, expA[i], A.data[i], "");
         }
     }

@@ -80,7 +80,7 @@ TEST(bfp_clip, bfp_s16_clip)
         upper32 = (upper32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (upper32 <= VPU_INT16_MIN)? VPU_INT16_MIN : upper32;
         lower32 = (lower32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (lower32 <= VPU_INT16_MIN)? VPU_INT16_MIN : lower32;
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_GREATER_OR_EQUAL_INT32(lower32, A.data[i]);
             TEST_ASSERT_LESS_OR_EQUAL_INT32(upper32, A.data[i]);
         }
@@ -128,7 +128,7 @@ TEST(bfp_clip, bfp_s32_clip)
         upper64 = (upper64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (upper64 <= VPU_INT32_MIN)? VPU_INT32_MIN : upper64;
         lower64 = (lower64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (lower64 <= VPU_INT32_MIN)? VPU_INT32_MIN : lower64;
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_GREATER_OR_EQUAL_INT32(lower64, A.data[i]);
             TEST_ASSERT_LESS_OR_EQUAL_INT32(upper64, A.data[i]);
         }

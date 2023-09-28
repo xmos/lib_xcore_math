@@ -68,7 +68,7 @@ TEST(bfp_add_scalar, bfp_s16_add_scalar)
 
         test_double_from_s16(Bf, &B);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] + C;
         }
 
@@ -115,7 +115,7 @@ TEST(bfp_add_scalar, bfp_s32_add_scalar)
 
         test_double_from_s32(Bf, &B);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] + Cf;
         }
 
@@ -123,7 +123,7 @@ TEST(bfp_add_scalar, bfp_s32_add_scalar)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(2, expA[i], A.data[i]);
         }
     }

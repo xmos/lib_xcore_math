@@ -58,7 +58,7 @@ TEST(bfp_dot, bfp_s16_dot)
 
         double expected = 0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_uint(&seed, 0, INT16_MAX) >> B.hr;
             C.data[i] = pseudo_rand_uint(&seed, 0, INT16_MAX) >> C.hr;
 
@@ -185,7 +185,7 @@ TEST(bfp_dot, bfp_s32_dot_2)
 
         double expected = 0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
             C.data[i] = pseudo_rand_int32(&seed) >> C.hr;
 

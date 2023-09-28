@@ -47,7 +47,7 @@ TEST(vect_boolean, vect_s8_is_negative)
 
         setExtraInfo_RSL(v, seed, length);
 
-        for(int k = 0; k < length; k++)
+        for(unsigned int k = 0; k < length; k++)
           B[k] = pseudo_rand_int8(&seed);
 
         memset(A, 0xCC, sizeof(A));
