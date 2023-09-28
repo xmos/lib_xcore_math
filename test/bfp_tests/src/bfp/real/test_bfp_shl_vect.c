@@ -69,10 +69,7 @@ TEST(bfp_shl, bfp_s16_shl)
         for(unsigned int i = 0; i < A.length; i++)
             TEST_ASSERT_EQUAL(B_copy.data[i] << (B_copy.hr-leave_hr), A.data[i]);
 
-        // declare the positive value first to avoid the Windows warning:
-        // warning C4146: unary minus operator applied to unsigned type, result still unsigned
-        int random_value = (int) pseudo_rand_uint32(&seed);
-        int shl = -(random_value % 5) - 1;
+        int shl = -((int) (pseudo_rand_uint32(&seed) % 5)) - 1;
 
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));
@@ -125,10 +122,7 @@ TEST(bfp_shl, bfp_s32_shl)
         for(unsigned int i = 0; i < A.length; i++)
             TEST_ASSERT_EQUAL(B_copy.data[i] << (B_copy.hr-leave_hr), A.data[i]);
 
-        // declare the positive value first to avoid the Windows warning:
-        // warning C4146: unary minus operator applied to unsigned type, result still unsigned
-        int random_value = (int) pseudo_rand_uint32(&seed);
-        int shl = -(random_value % 5) - 1;
+        int shl = -((int) (pseudo_rand_uint32(&seed) % 5)) - 1;
 
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));
@@ -273,10 +267,7 @@ TEST(bfp_shl, bfp_complex_s16_shl_2)
             TEST_ASSERT_EQUAL(B_copy.imag[i] << (B_copy.hr-leave_hr), A.imag[i]);
         }
 
-        // declare the positive value first to avoid the Windows warning:
-        // warning C4146: unary minus operator applied to unsigned type, result still unsigned
-        int random_value = (int) pseudo_rand_uint32(&seed);
-        int shl = -(random_value % 5) - 1;
+        int shl = -((int) (pseudo_rand_uint32(&seed) % 5)) - 1;
 
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(realB_copy, realA, sizeof(realA));
@@ -334,10 +325,7 @@ TEST(bfp_shl, bfp_complex_s32_shl_2)
             TEST_ASSERT_EQUAL(B_copy.data[i].im << (B_copy.hr-leave_hr), A.data[i].im);
         }
 
-        // declare the positive value first to avoid the Windows warning:
-        // warning C4146: unary minus operator applied to unsigned type, result still unsigned
-        int random_value = (int) pseudo_rand_uint32(&seed);
-        int shl = -(random_value % 5) - 1;
+        int shl = -((int) (pseudo_rand_uint32(&seed) % 5)) - 1;
 
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));

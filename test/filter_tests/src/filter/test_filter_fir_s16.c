@@ -48,7 +48,7 @@ TEST(filter_fir_s16, case0)
         filter_fir_s16_init(&filter, state, N, coefs, 0);
 
         int16_t exp = 0;
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             filter_fir_s16_add_sample(&filter, i);
             exp += i;
         }
@@ -83,7 +83,7 @@ TEST(filter_fir_s16, case1)
 
         filter_fir_s16_init(&filter, state, N, coefs, 0);
 
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             filter_fir_s16_add_sample(&filter, 1);
         }
 
@@ -140,7 +140,7 @@ TEST(filter_fir_s16, case2)
 
         int32_t expected32 = 0;
 
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             coefs[i] = pseudo_rand_int16(&seed) >> log2_N;
             state[i] = pseudo_rand_int16(&seed) >> log2_N;
         }

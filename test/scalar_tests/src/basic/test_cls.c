@@ -55,7 +55,7 @@ TEST(CLS_macro, cls)
 
 
     // Check each
-    for(int i = 0; i < N; i++){ 
+    for(unsigned int i = 0; i < N; i++){ 
 
         if(sign_bits[i] == 32){
             TEST_ASSERT_TRUE((numbers[i] == 0 || numbers[i] == -1));
@@ -84,7 +84,7 @@ TEST(CLS_macro, CLS_S32)
     unsigned actual[N];
     unsigned expected[N];
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
         numbers[i] = pseudo_rand_int32(&seed) >> (pseudo_rand_int32(&seed) % 32);
         expected[i] = cls(numbers[i]);
         actual[i] = CLS_S32(numbers[i]);
@@ -101,7 +101,7 @@ TEST(CLS_macro, CLS_S16)
     unsigned actual[N];
     unsigned expected[N];
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
         numbers[i] = pseudo_rand_int16(&seed) >> (pseudo_rand_int32(&seed) % 16);
         expected[i] = cls(numbers[i]) - 16;
         actual[i] = CLS_S16(numbers[i]);
@@ -119,7 +119,7 @@ TEST(CLS_macro, CLS_C32)
     unsigned actual[N];
     unsigned expected[N];
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
         numbers[i].re = pseudo_rand_int32(&seed) >> (pseudo_rand_int32(&seed) % 32);
         numbers[i].im = pseudo_rand_int32(&seed) >> (pseudo_rand_int32(&seed) % 32);
         expected[i] = MIN(cls(numbers[i].re), cls(numbers[i].im));
@@ -138,7 +138,7 @@ TEST(CLS_macro, CLS_C16)
     unsigned actual[N];
     unsigned expected[N];
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
         numbers[i].re = pseudo_rand_int16(&seed) >> (pseudo_rand_int32(&seed) % 16);
         numbers[i].im = pseudo_rand_int16(&seed) >> (pseudo_rand_int32(&seed) % 16);
         expected[i] = MIN(CLS_S16(numbers[i].re), CLS_S16(numbers[i].im));
@@ -166,7 +166,7 @@ TEST(CLS_macro, CLS_S64)
     unsigned actual[N];
     unsigned expected[N];
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
 
         numbers[i] = pseudo_rand_int64(&seed) >> pseudo_rand_uint(&seed, 0, 56);
 

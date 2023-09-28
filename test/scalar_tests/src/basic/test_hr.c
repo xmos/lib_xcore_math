@@ -41,7 +41,7 @@ TEST(HR_macro, HR_S32)
     unsigned actual[N];
     unsigned expected[N];
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
         numbers[i] = pseudo_rand_int32(&seed) >> pseudo_rand_uint(&seed, 0, 28);
         expected[i] = cls(numbers[i]) - 1;
         actual[i] = HR_S32(numbers[i]);
@@ -58,7 +58,7 @@ TEST(HR_macro, HR_S16)
     unsigned actual[N];
     unsigned expected[N];
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
         numbers[i] = pseudo_rand_int16(&seed) >> pseudo_rand_uint(&seed, 0, 12);
         expected[i] = HR_S32(numbers[i]) - 16;
         actual[i] = HR_S16(numbers[i]);
@@ -76,7 +76,7 @@ TEST(HR_macro, HR_C32)
     unsigned actual[N];
     unsigned expected[N];
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
         numbers[i].re = pseudo_rand_int32(&seed) >> pseudo_rand_uint(&seed, 0, 28);
         numbers[i].im = pseudo_rand_int32(&seed) >> pseudo_rand_uint(&seed, 0, 28);
         expected[i] = MIN(cls(numbers[i].re)-1, cls(numbers[i].im)-1);
@@ -95,7 +95,7 @@ TEST(HR_macro, HR_C16)
     unsigned actual[N];
     unsigned expected[N];
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
         numbers[i].re = pseudo_rand_int16(&seed) >> pseudo_rand_uint(&seed, 0, 12);
         numbers[i].im = pseudo_rand_int16(&seed) >> pseudo_rand_uint(&seed, 0, 12);
         expected[i] = MIN(HR_S16(numbers[i].re), HR_S16(numbers[i].im));
@@ -123,7 +123,7 @@ TEST(HR_macro, HR_S64)
     unsigned actual[N];
     unsigned expected[N];
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
         numbers[i] = pseudo_rand_int64(&seed) >> pseudo_rand_uint(&seed, 0, 56);
         expected[i] = CLS_S64(numbers[i]) - 1;
         actual[i] = HR_S64(numbers[i]);
@@ -137,7 +137,7 @@ TEST(HR_macro, HR_S64)
 
     TEST_ASSERT_EQUAL_UINT32_ARRAY(expected, actual, N);
 
-    for(int i = 0; i < N; i++){
+    for(unsigned int i = 0; i < N; i++){
         TEST_ASSERT_EQUAL(numbers[i], numbers2[i]);
         TEST_ASSERT_NOT_EQUAL(numbers[i], numbers3[i]);
     }

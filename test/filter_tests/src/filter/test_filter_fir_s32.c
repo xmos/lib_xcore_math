@@ -53,7 +53,7 @@ TEST(filter_fir_s32, case0)
         filter_fir_s32_init(&filter, state, N, coefs, 0);
 
         int32_t exp = 0;
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             filter_fir_s32_add_sample(&filter, i);
             exp += i;
         }
@@ -93,7 +93,7 @@ TEST(filter_fir_s32, case1)
 
         filter_fir_s32_init(&filter, state, N, coefs, 0);
 
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             filter_fir_s32_add_sample(&filter, 0x40000000);
         }
 
@@ -195,7 +195,7 @@ TEST(filter_fir_s32, case3)
 
         int64_t expected64 = 0;
 
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             coefs[i] = pseudo_rand_int32(&seed);
             state[i] = pseudo_rand_int32(&seed);
 
