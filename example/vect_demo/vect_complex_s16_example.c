@@ -129,7 +129,7 @@ void vect_complex_s16_example()
   C.exp = -15;
 
   // Randomly set the mantissas for B[] and C[]
-  for(unsigned int k = 0; k < length; k++){
+  for(unsigned int k = 0; k < LENGTH; k++){
     B.real[k] = rand();
     B.imag[k] = rand();
     C.real[k] = rand();

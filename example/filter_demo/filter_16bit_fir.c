@@ -127,7 +127,7 @@ void filter_16bit_fir()
   printf("Filter Coefficients:\n");
   
   printf("b = [");
-   for(unsigned int k = 0; k < tap_count; k++){
+   for(unsigned int k = 0; k < TAP_COUNT; k++){
     printf("% 7d, ", filter.coef[k]);
     if(k % 8 == 7) printf("\n     ");
   }
@@ -138,7 +138,7 @@ void filter_16bit_fir()
   
   // Print the equivalent floating-point FIR filter coefficients
   printf("b_float = [");
-   for(unsigned int k = 0; k < tap_count; k++){
+   for(unsigned int k = 0; k < TAP_COUNT; k++){
     printf("%f, ", ldexp(filter.coef[k], -filter.shift));
     if(k % 6 == 5) printf("\n           ");
   }
