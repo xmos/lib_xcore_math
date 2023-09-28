@@ -18,7 +18,7 @@ void rand_vect_s16(
     const unsigned headroom,
     unsigned* seed)
 {
-    for(int i = 0; i < length; i++)
+    for(unsigned int i = 0; i < length; i++)
         output[i] = pseudo_rand_int16(seed) >> headroom;
 }
 
@@ -28,7 +28,7 @@ void rand_vect_s32(
     const unsigned headroom,
     unsigned* seed)
 {
-    for(int i = 0; i < length; i++)
+    for(unsigned int i = 0; i < length; i++)
         output[i] = pseudo_rand_int32(seed) >> headroom;
 }
 

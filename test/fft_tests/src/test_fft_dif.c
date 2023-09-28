@@ -235,7 +235,7 @@ TEST(fft_dif, fft_dif_forward)
             unsigned ts2 = getTimestamp();
             fft_index_bit_reversal(a, FFT_N);
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
             unsigned diff = abs_diff_vect_complex_s32(a, exponent, A, FFT_N, &error);
@@ -299,7 +299,7 @@ TEST(fft_dif, fft_dif_inverse)
             unsigned ts2 = getTimestamp();
             fft_index_bit_reversal(a, FFT_N);
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
             unsigned diff = abs_diff_vect_complex_s32(a, exponent, A, FFT_N, &error);

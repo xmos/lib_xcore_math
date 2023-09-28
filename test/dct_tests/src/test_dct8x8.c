@@ -244,7 +244,8 @@ TEST(dct8x8, dct8x8_stageA)
     headroom_t actual_hr = vect_s16_headroom(&y[0][0], 64);
     TEST_ASSERT_EQUAL(actual_hr, reported_hr);
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -339,7 +340,8 @@ TEST(dct8x8, dct8x8_stageB)
 
     TEST_ASSERT_EQUAL(actual_hr, reported_hr);
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -438,7 +440,8 @@ TEST(dct8x8, dct8x8_forward)
 
       TEST_ASSERT_EQUAL(actual_hr, reported_hr);
 
-      float timing = (ts2-ts1)/100.0;
+      float timing = (float) ((ts2-ts1)/100.0);
+
       if(timing > worst_timing) worst_timing = timing;
     }
   }
@@ -538,7 +541,8 @@ TEST(dct8x8, dct8x8_inverse)
 
       TEST_ASSERT_EQUAL(actual_hr, reported_hr);
 
-      float timing = (ts2-ts1)/100.0;
+      float timing = (float) ((ts2-ts1)/100.0);
+
       if(timing > worst_timing) worst_timing = timing;
     }
   }

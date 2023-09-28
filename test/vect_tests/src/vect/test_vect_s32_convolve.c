@@ -268,7 +268,7 @@ TEST(vect_convolve, vect_s32_convolve_same_extend)
     headroom_t hr = vect_s32_convolve_same(signal_out, signal_in, taps, length, tap_count, PAD_MODE_EXTEND);
 
     // printf("\n\n\n");
-    // for(int i = 0; i < length; i++)
+    // for(unsigned int i = 0; i < length; i++)
     //   printf("signal_in[%d] = 0x%08X\n", i, signal_in[i]);
     // printf("\n\n\n");
 

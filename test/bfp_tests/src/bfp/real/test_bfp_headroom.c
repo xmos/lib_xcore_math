@@ -49,7 +49,7 @@ TEST(bfp_headroom, bfp_s16_headroom)
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
         int shr = pseudo_rand_uint32(&seed) % 10;
 
-        for(int i = 0; i < length; i++)
+        for(unsigned int i = 0; i < length; i++)
             data[i] = pseudo_rand_int16(&seed) >> shr;
         
         headroom_t exp_hr = vect_s16_headroom(data, length);
@@ -87,7 +87,7 @@ TEST(bfp_headroom, bfp_s32_headroom)
         exponent_t exponent = pseudo_rand_int(&seed, -20, 20);
         int shr = pseudo_rand_uint32(&seed) % 10;
 
-        for(int i = 0; i < length; i++)
+        for(unsigned int i = 0; i < length; i++)
             data[i] = pseudo_rand_int32(&seed) >> shr;
         
         headroom_t exp_hr = vect_s32_headroom(data, length);

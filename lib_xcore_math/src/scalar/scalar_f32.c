@@ -45,7 +45,7 @@ const float sin_coef[] = {
   1.604411847874e-04, -3.598843235212e-06, 5.692172921968e-08, -6.688035109811e-10,
 };
 
-const float two_over_pi = 6.366197723676e-01;
+const float two_over_pi = (float) 6.366197723676e-01;
 
 float f32_cos(
     const float theta)

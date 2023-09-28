@@ -55,7 +55,7 @@ TEST(vect_set, vect_s16_set)
         
         vect_s16_set(A, new_val, length);
 
-        for(int i = 0; i < length; i++)
+        for(unsigned int i = 0; i < length; i++)
             TEST_ASSERT_EQUAL_INT16(new_val, A[i]);
         for(int i = length; i < MAX_LEN; i++)
             TEST_ASSERT_EQUAL_INT16(0xCCCC, A[i]);
@@ -84,7 +84,7 @@ TEST(vect_set, vect_s32_set)
         
         vect_s32_set(A, new_val, length);
 
-        for(int i = 0; i < length; i++)
+        for(unsigned int i = 0; i < length; i++)
             TEST_ASSERT_EQUAL_INT32(new_val, A[i]);
         for(int i = length; i < MAX_LEN; i++)
             TEST_ASSERT_EQUAL_INT32(0xCCCCCCCC, A[i]);

@@ -100,7 +100,8 @@ TEST(dctXX_forward, dct6_forward)
 
 
     
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -182,7 +183,8 @@ TEST(dctXX_forward, dct8_forward)
     dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
     
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -265,7 +267,8 @@ TEST(dctXX_forward, dct12_forward)
     dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = 1<<3;
@@ -347,7 +350,8 @@ TEST(dctXX_forward, dct16_forward)
     dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
     
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -431,7 +435,8 @@ TEST(dctXX_forward, dct24_forward)
     dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -513,7 +518,8 @@ TEST(dctXX_forward, dct32_forward)
     dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
     
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -596,7 +602,8 @@ TEST(dctXX_forward, dct48_forward)
     dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -670,7 +677,8 @@ TEST(dctXX_forward, dct64_forward)
 
     x_exp += dct64_exp;
     
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = 8;

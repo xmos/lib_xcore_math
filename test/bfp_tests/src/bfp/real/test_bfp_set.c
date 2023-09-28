@@ -104,7 +104,7 @@ TEST(bfp_set, bfp_s32_set)
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(exp_hr, A.hr);
 
-        for(int i = 0; i < length; i++)
+        for(unsigned int i = 0; i < length; i++)
             TEST_ASSERT_EQUAL(val, A.data[i]);
         for(int i = length; i < MAX_LEN; i++)
             TEST_ASSERT_EQUAL(0, A.data[i]);

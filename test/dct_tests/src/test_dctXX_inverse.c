@@ -85,7 +85,8 @@ TEST(dctXX_inverse, dct6_inverse)
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -155,7 +156,8 @@ TEST(dctXX_inverse, dct8_inverse)
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -224,7 +226,8 @@ TEST(dctXX_inverse, dct12_inverse)
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -294,7 +297,8 @@ TEST(dctXX_inverse, dct16_inverse)
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -364,7 +368,8 @@ TEST(dctXX_inverse, dct24_inverse)
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -434,7 +439,8 @@ TEST(dctXX_inverse, dct32_inverse)
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -504,7 +510,8 @@ TEST(dctXX_inverse, dct48_inverse)
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -574,7 +581,8 @@ TEST(dctXX_inverse, dct64_inverse)
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
+
     if(timing > worst_timing) worst_timing = timing;
   }
 
