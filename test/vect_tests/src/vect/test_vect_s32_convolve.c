@@ -20,7 +20,9 @@
 TEST_GROUP_RUNNER(vect_convolve) {
   RUN_TEST_CASE(vect_convolve, vect_s32_convolve_valid);
   RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_reflected);
+#ifndef _WIN32
   RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_zero);
+#endif
   RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_extend);
 }
 

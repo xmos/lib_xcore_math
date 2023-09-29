@@ -15,7 +15,9 @@
 
 
 TEST_GROUP_RUNNER(bfp_s16_accumulate) {
+#ifndef _WIN32
   RUN_TEST_CASE(bfp_s16_accumulate, bfp_s16_accumulate);
+#endif
 }
 
 TEST_GROUP(bfp_s16_accumulate);

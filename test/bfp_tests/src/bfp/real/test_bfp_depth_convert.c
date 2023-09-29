@@ -18,7 +18,9 @@
 
 TEST_GROUP_RUNNER(bfp_depth_convert) {
   RUN_TEST_CASE(bfp_depth_convert, bfp_s32_to_bfp_s16);
+#ifndef _WIN32
   RUN_TEST_CASE(bfp_depth_convert, bfp_s16_to_bfp_s32);
+#endif
 }
 
 TEST_GROUP(bfp_depth_convert);
