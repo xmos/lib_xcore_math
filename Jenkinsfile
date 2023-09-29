@@ -115,7 +115,7 @@ pipeline {
                       bat 'ninja -C build_xs3a'
                       // x86 build
                       bat 'cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G"Ninja"'
-                      bat 'ninja -C build_x86 -j4'
+                      bat 'ninja -C build_x86'
                       // xmake build
                       dir('test/legacy_build') {
                         bat 'xmake --jobs 4'

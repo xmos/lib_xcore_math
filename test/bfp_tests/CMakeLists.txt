@@ -64,7 +64,6 @@ target_link_libraries( ${APP_NAME}
   unity
   $<$<PLATFORM_ID:Linux>:m>
   $<$<PLATFORM_ID:Darwin>:m>
-  #$<$<PLATFORM_ID:Windows>:m>
 )
 
 add_dependencies( lib_xcore_math-tests  ${APP_NAME} )
