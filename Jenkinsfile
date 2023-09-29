@@ -113,6 +113,9 @@ pipeline {
                       // xs3a build
                       bat 'cmake -B build_xs3a -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja"'
                       bat 'ninja -C build_xs3a'
+                      // x86 build
+                      bat 'cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G"Ninja"'
+                      bat 'ninja -C build_x86 -j4'
                       // xmake build
                       dir('test/legacy_build') {
                         bat 'xmake --jobs 4'
