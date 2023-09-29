@@ -21,9 +21,9 @@ TEST_GROUP_RUNNER(vect_convolve) {
   RUN_TEST_CASE(vect_convolve, vect_s32_convolve_valid);
   RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_reflected);
   // TODO: Enable this test for Windows
-  #ifndef _WIN32
+  //#ifndef _WIN32
   RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_zero);
-  #endif
+  //#endif
   RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_extend);
 }
 
@@ -172,18 +172,23 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
 
     const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
-
     setExtraInfo_RSL(rep, old_seed, length);
 
     const int P = tap_count >> 1;
 
     right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
+    printf("tap_count %d, length %d, shr %d\n", tap_count, length, shr);
+
     for(unsigned int k = 0; k < length; k++)
       signal_in[k] = pseudo_rand_int32(&seed) >> shr;
-
+    printf("signal_in: ");
+    for(unsigned int k = 0; k < length; k++) printf(" %d", signal_in[k]);
+    printf("\n");
     for(unsigned int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
-
+    printf("taps: ");
+    for(unsigned int k = 0; k < tap_count; k++) printf(" %d", taps[k]);
+    printf("\n");
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
