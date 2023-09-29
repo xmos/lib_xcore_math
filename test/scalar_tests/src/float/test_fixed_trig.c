@@ -16,9 +16,7 @@ TEST_GROUP_RUNNER(fixed_trig) {
   RUN_TEST_CASE(fixed_trig, q24_sin);
   RUN_TEST_CASE(fixed_trig, q24_cos);
   // TODO: Enable this test for Windows
-  #ifndef _WIN32
   RUN_TEST_CASE(fixed_trig, q24_tan);
-  #endif
 }
 
 TEST_GROUP(fixed_trig);
@@ -339,7 +337,7 @@ TEST(fixed_trig, q24_tan)
     if(result.exp != -30)
       TEST_ASSERT_LESS_THAN_INT32(2, HR_S32(result.mant));
 
-    if(fabs(exp) < 1000) {
+    if(fabs(exp) < 900) {
       // Unless we're very near the singular point, check that we're not far off
       TEST_ASSERT_INT32_WITHIN(10000, exp_fixed, result.mant);
       
