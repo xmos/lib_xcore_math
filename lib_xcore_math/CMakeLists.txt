@@ -27,6 +27,7 @@ target_sources( ${LIB_NAME}
     $<$<PLATFORM_ID:XCORE_XS3A>:${SOURCES_ASM}>
     $<$<PLATFORM_ID:Linux>:${SOURCES_REF}>
     $<$<PLATFORM_ID:Darwin>:${SOURCES_REF}>
+    $<$<PLATFORM_ID:Windows>:${SOURCES_REF}>
 )
 
 target_include_directories( ${LIB_NAME}
@@ -36,14 +37,19 @@ target_include_directories( ${LIB_NAME}
 
 target_compile_options( ${LIB_NAME}
   PRIVATE
-    -Os -g
-    -Wall
-    -Wextra
-    -Werror
+    -Os
     $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )
 
-
+# Add options that are not valid with with MSVC compiler
+if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  target_compile_options( ${LIB_NAME}
+    PRIVATE
+     -g
+     -Werror
+     -Wextra
+  )
+endif()
 
 # Set defaults for generating the FFT LUT if they are not already defined
 if ( NOT DEFINED XMATH_GEN_FFT_LUT )

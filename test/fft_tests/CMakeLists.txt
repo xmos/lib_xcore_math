@@ -25,12 +25,27 @@ target_include_directories( ${APP_NAME}
 
 target_compile_options( ${APP_NAME}
   PRIVATE 
-    -Os -g -Wno-format -Wno-unused-variable
+    -Os
     $<$<PLATFORM_ID:XCORE_XS3A>:-MMD>
     $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
     $<$<PLATFORM_ID:XCORE_XS3A>:-mcmodel=large>
     $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )
+
+# Add options that are not valid with with MSVC compiler
+if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  target_compile_options( ${APP_NAME}
+    PRIVATE
+      -g
+      -Wno-unused-variable
+      -Wno-format
+  )
+else()
+target_compile_options( ${APP_NAME}
+  PRIVATE
+    -D_CRT_SECURE_NO_WARNINGS
+)
+endif()
 
 target_link_options( ${APP_NAME}
   PRIVATE
@@ -44,6 +59,7 @@ target_compile_definitions( ${APP_NAME}
   PRIVATE
     $<$<PLATFORM_ID:Linux>:USE_REF=1>
     $<$<PLATFORM_ID:Darwin>:USE_REF=1>
+    $<$<PLATFORM_ID:Windows>:USE_REF=1>
     SMOKE_TEST=$<BOOL:${XMATH_SMOKE_TEST}>
 )
 
@@ -53,6 +69,7 @@ target_link_libraries( ${APP_NAME}
   unity
   $<$<PLATFORM_ID:Linux>:m>
   $<$<PLATFORM_ID:Darwin>:m>
+  #$<$<PLATFORM_ID:Windows>:m>
 )
 
 add_dependencies( lib_xcore_math-tests  ${APP_NAME} )

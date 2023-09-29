@@ -8,7 +8,9 @@
 #include "tst_common.h"
 #include "fft.h"
 #include "unity_fixture.h"
-
+#ifdef _WIN32
+#include "stdlib.h"
+#endif
 
 TEST_GROUP_RUNNER(bfp_fft) {
   RUN_TEST_CASE(bfp_fft, bfp_fft_forward_complex);
@@ -89,7 +91,7 @@ TEST(bfp_fft, bfp_fft_forward_complex)
             bfp_fft_forward_complex(&A);
             unsigned ts2 = getTimestamp();
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
             unsigned diff = abs_diff_vect_complex_s32(A.data, A.exp, ref, FFT_N, &error);
@@ -164,7 +166,7 @@ TEST(bfp_fft, bfp_fft_inverse_complex)
             bfp_fft_inverse_complex(&A);
             unsigned ts2 = getTimestamp();
             
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
             unsigned diff = abs_diff_vect_complex_s32(A.data, A.exp, ref, FFT_N, &error);
@@ -283,7 +285,7 @@ TEST(bfp_fft, bfp_fft_forward_stereo)
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diffB, "Output delta is too large (chanB)");
             
             // Update worst-case timing and error info
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             worst_timing = MAX(worst_timing, timing);
 
             worst_error = MAX(worst_error, diffA);
@@ -385,10 +387,14 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
             bfp_s32_t* B = (bfp_s32_t*) &B_fft;
 
             //Split ref into two channels
-            double refA[FFT_N];
-            double refB[FFT_N];
-
-            for(int i = 0; i < FFT_N; i++){
+            #ifndef _WIN32
+                double refA[FFT_N];
+                double refB[FFT_N];
+            #else
+                double * refA = malloc(FFT_N * sizeof(double));
+                double * refB  = malloc(FFT_N * sizeof(double));
+            #endif
+            for(unsigned int i = 0; i < FFT_N; i++){
               refA[i] = ref[i].re;
               refB[i] = ref[i].im;
             }
@@ -412,7 +418,7 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+WIGGLE, diffB, "Output delta is too large (chanB)");
             
             // Update worst-case timing and error info
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             worst_timing = MAX(worst_timing, timing);
 
             worst_error = MAX(worst_error, diffA);
@@ -486,7 +492,7 @@ TEST(bfp_fft, bfp_fft_forward_mono)
             A_fft = bfp_fft_forward_mono(&A);
             unsigned ts2 = getTimestamp();
             
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
 
@@ -573,10 +579,10 @@ TEST(bfp_fft, bfp_fft_inverse_mono)
             A = bfp_fft_inverse_mono(&A_fft);
             unsigned ts2 = getTimestamp();
             
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
-            for(int i = 0; i < N; i++)
+            for(unsigned int i = 0; i < N; i++)
                 ref_real[i] = ref[i].re;
 
             unsigned diff = abs_diff_vect_s32(A->data, A->exp, ref_real, N, &error);

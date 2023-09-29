@@ -182,7 +182,7 @@ TEST(vect_sqrt, vect_s16_sqrt_A)
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 12);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B[i] = pseudo_rand_uint(&seed, 0, INT16_MAX) >> b_hr;
         }
 
@@ -200,7 +200,7 @@ TEST(vect_sqrt, vect_s16_sqrt_A)
 
         TEST_ASSERT_EQUAL(b_exp+b_shr, 2*a_exp + 14);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
 
             int16_t target = vlashr16(B[i], b_shr);
 
@@ -221,11 +221,11 @@ TEST(vect_sqrt, vect_s16_sqrt_B)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    const unsigned length = 10;
-
-    int16_t WORD_ALIGNED B[length];
-    int16_t WORD_ALIGNED A[length];
-    int16_t WORD_ALIGNED A_full[length];
+    // const unsigned length = 10;
+    #define LENGTH ( 10 )
+    int16_t WORD_ALIGNED B[LENGTH];
+    int16_t WORD_ALIGNED A[LENGTH];
+    int16_t WORD_ALIGNED A_full[LENGTH];
 
     for(int v = 0; v < REPS; v++){
 
@@ -234,26 +234,26 @@ TEST(vect_sqrt, vect_s16_sqrt_B)
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 12);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < LENGTH; i++){
             B[i] = pseudo_rand_uint(&seed, 0, INT16_MAX) >> b_hr;
         }
 
-        b_hr = vect_s16_headroom(B, length);
+        b_hr = vect_s16_headroom(B, LENGTH);
 
         exponent_t a_exp;
         right_shift_t b_shr;
 
         vect_s16_sqrt_prepare(&a_exp, &b_shr, b_exp, b_hr);
 
-        vect_s16_sqrt(A_full, B, length, b_shr, VECT_SQRT_S16_MAX_DEPTH);
+        vect_s16_sqrt(A_full, B, LENGTH, b_shr, VECT_SQRT_S16_MAX_DEPTH);
 
         for(unsigned depth = 1; depth <= VECT_SQRT_S16_MAX_DEPTH; depth++){
 
-            vect_s16_sqrt(A, B, length, b_shr, depth);
+            vect_s16_sqrt(A, B, LENGTH, b_shr, depth);
 
             const uint16_t mask = (0x7FFF >> depth) ^ 0xFFFFFFFF;
 
-            for(int i = 0; i < length; i++){
+            for(unsigned int i = 0; i < LENGTH; i++){
 
                 TEST_ASSERT_LESS_OR_EQUAL(A_full[i], A[i]);
 
@@ -285,7 +285,7 @@ TEST(vect_sqrt, vect_s32_sqrt_A)
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B[i] = pseudo_rand_uint(&seed, 0, INT32_MAX) >> b_hr;
         }
 
@@ -303,7 +303,7 @@ TEST(vect_sqrt, vect_s32_sqrt_A)
 
         TEST_ASSERT_EQUAL(b_exp+b_shr, 2*a_exp + 30);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
 
             int32_t target = vlashr32(B[i], b_shr);
 
@@ -325,10 +325,15 @@ TEST(vect_sqrt, vect_s32_sqrt_B)
 
 
     const unsigned length = 10;
-
-    int32_t B[length];
-    int32_t A[length];
-    int32_t A_full[length];
+    #ifndef _WIN32
+        int32_t B[length];
+        int32_t A[length];
+        int32_t A_full[length];
+    #else
+        int32_t * B = malloc(length * sizeof(int32_t));
+        int32_t * A = malloc(length * sizeof(int32_t));
+        int32_t * A_full = malloc(length * sizeof(int32_t));
+    #endif
 
     for(int v = 0; v < REPS; v++){
 
@@ -337,7 +342,7 @@ TEST(vect_sqrt, vect_s32_sqrt_B)
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B[i] = pseudo_rand_uint(&seed, 0, INT32_MAX) >> b_hr;
         }
 
@@ -356,7 +361,7 @@ TEST(vect_sqrt, vect_s32_sqrt_B)
 
             const uint32_t mask = (0x7FFFFFFF >> depth) ^ 0xFFFFFFFF;
 
-            for(int i = 0; i < length; i++){
+            for(unsigned int i = 0; i < length; i++){
 
                 TEST_ASSERT_LESS_OR_EQUAL(A_full[i], A[i]);
 
