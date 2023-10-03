@@ -108,11 +108,11 @@ pipeline {
               steps {
                 runningOn(env.NODE_NAME)
                 checkout scm
-                sh "docker pull ghcr.io/xmos/doc_builder:$XMOSDOC_VERSION"
+                sh "docker pull ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION"
                 sh """docker run -u "\$(id -u):\$(id -g)" \
                     --rm \
                     -v ${WORKSPACE}:/build \
-                    ghcr.io/xmos/doc_builder:$XMOSDOC_VERSION -v"""
+                    ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION -v"""
                 archiveArtifacts artifacts: "doc/_build/**", allowEmptyArchive: true
               } // steps
             } // Build Docs
