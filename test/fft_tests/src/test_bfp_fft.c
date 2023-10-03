@@ -8,9 +8,6 @@
 #include "tst_common.h"
 #include "fft.h"
 #include "unity_fixture.h"
-#ifdef _WIN32
-#include "stdlib.h"
-#endif
 
 TEST_GROUP_RUNNER(bfp_fft) {
   RUN_TEST_CASE(bfp_fft, bfp_fft_forward_complex);
@@ -391,8 +388,8 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
                 double refA[FFT_N];
                 double refB[FFT_N];
             #else
-                double * refA = malloc(FFT_N * sizeof(double));
-                double * refB  = malloc(FFT_N * sizeof(double));
+                double * refA = XMATH_MALLOC(FFT_N * sizeof(double));
+                double * refB  = XMATH_MALLOC(FFT_N * sizeof(double));
             #endif
             for(unsigned int i = 0; i < FFT_N; i++){
               refA[i] = ref[i].re;
@@ -423,6 +420,11 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
 
             worst_error = MAX(worst_error, diffA);
             worst_error = MAX(worst_error, diffB);
+
+            #ifdef _WIN32
+                XMATH_FREE(refA);
+                XMATH_FREE(refB);
+            #endif
         }
         
 #if PRINT_ERRORS

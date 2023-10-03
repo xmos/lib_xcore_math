@@ -47,12 +47,12 @@ TEST(vect_sqrt, vect_s32_sqrt_prepare)
 {
 
     typedef struct {
-        struct {    
+        struct {
             exponent_t exp;
-            headroom_t hr;        
+            headroom_t hr;
         } B;
 
-        struct {    
+        struct {
             exponent_t a_exp;
             right_shift_t b_shr;
         } expected;
@@ -61,7 +61,7 @@ TEST(vect_sqrt, vect_s32_sqrt_prepare)
     } test_vector;
 
     test_vector test_vectors[] = {
-        // B{  exp,  hr },      expected{  a_exp,  b_shr },         line    
+        // B{  exp,  hr },      expected{  a_exp,  b_shr },         line
         {   {  -30,   0 },              {    -30,      0 },     __LINE__    },  //sqrt(1)
         {   {  -28,   2 },              {    -30,     -2 },     __LINE__    },  //sqrt(1)
         {   {    0,  26 },              {    -28,     -26},     __LINE__    },  //sqrt(16)
@@ -79,7 +79,7 @@ TEST(vect_sqrt, vect_s32_sqrt_prepare)
         test_vector* vector = &test_vectors[v];
 
         sprintf(msg_buff, "(vector @ line %u)", vector->line);
-        
+
         exponent_t a_exp;
         right_shift_t b_shr;
 
@@ -107,12 +107,12 @@ TEST(vect_sqrt, vect_s16_sqrt_prepare)
 {
 
     typedef struct {
-        struct {    
+        struct {
             exponent_t exp;
-            headroom_t hr;        
+            headroom_t hr;
         } B;
 
-        struct {    
+        struct {
             exponent_t a_exp;
             right_shift_t b_shr;
         } expected;
@@ -121,7 +121,7 @@ TEST(vect_sqrt, vect_s16_sqrt_prepare)
     } test_vector;
 
     test_vector test_vectors[] = {
-        // B{  exp,  hr },      expected{  a_exp,  b_shr },         line    
+        // B{  exp,  hr },      expected{  a_exp,  b_shr },         line
         {   {  -14,   0 },              {    -14,      0 },     __LINE__    },  //sqrt(1)
         {   {  -12,   2 },              {    -14,     -2 },     __LINE__    },  //sqrt(1)
         {   {    0,  10 },              {    -12,     -10},     __LINE__    },  //sqrt(16)
@@ -139,7 +139,7 @@ TEST(vect_sqrt, vect_s16_sqrt_prepare)
         test_vector* vector = &test_vectors[v];
 
         sprintf(msg_buff, "(vector @ line %u)", vector->line);
-        
+
         exponent_t a_exp;
         right_shift_t b_shr;
 
@@ -166,7 +166,6 @@ TEST(vect_sqrt, vect_s16_sqrt_prepare)
 TEST(vect_sqrt, vect_s16_sqrt_A)
 {
 
-    
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -217,7 +216,6 @@ TEST(vect_sqrt, vect_s16_sqrt_A)
 TEST(vect_sqrt, vect_s16_sqrt_B)
 {
 
-    
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -269,7 +267,6 @@ TEST(vect_sqrt, vect_s16_sqrt_B)
 TEST(vect_sqrt, vect_s32_sqrt_A)
 {
 
-    
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -320,7 +317,6 @@ TEST(vect_sqrt, vect_s32_sqrt_A)
 TEST(vect_sqrt, vect_s32_sqrt_B)
 {
 
-    
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -330,9 +326,9 @@ TEST(vect_sqrt, vect_s32_sqrt_B)
         int32_t A[length];
         int32_t A_full[length];
     #else
-        int32_t * B = malloc(length * sizeof(int32_t));
-        int32_t * A = malloc(length * sizeof(int32_t));
-        int32_t * A_full = malloc(length * sizeof(int32_t));
+        int32_t * B = XMATH_ALLOC(length * sizeof(int32_t));
+        int32_t * A = XMATH_ALLOC(length * sizeof(int32_t));
+        int32_t * A_full = XMATH_ALLOC(length * sizeof(int32_t));
     #endif
 
     for(int v = 0; v < REPS; v++){
@@ -371,5 +367,10 @@ TEST(vect_sqrt, vect_s32_sqrt_B)
             }
         }
     }
+    #ifdef _WIN32
+        XMATH_FREE(B);
+        XMATH_FREE(A);
+        XMATH_FREE(A_full);
+    #endif
 }
 

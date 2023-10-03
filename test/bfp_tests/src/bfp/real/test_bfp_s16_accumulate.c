@@ -15,9 +15,7 @@
 
 
 TEST_GROUP_RUNNER(bfp_s16_accumulate) {
-#ifndef _WIN32
   RUN_TEST_CASE(bfp_s16_accumulate, bfp_s16_accumulate);
-#endif
 }
 
 TEST_GROUP(bfp_s16_accumulate);
@@ -47,12 +45,11 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
 
   double expected_f[MAX_LEN];
   int32_t DWORD_ALIGNED expected[MAX_LEN];
-  int32_t DWORD_ALIGNED actual[MAX_LEN];
+  int32_t DWORD_ALIGNED actual[MAX_LEN+1];
 
   bfp_s16_init(&B, b_data, 0, 0, 0);
 
   for(int v = 0; v < REPS; v++){
-
     test_random_bfp_s16(&B, MAX_LEN, &seed, NULL, 0);
     B.length = pseudo_rand_int(&seed, 1,MAX_LEN+1);
 
@@ -72,7 +69,7 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
     vect_s32_split_accs(&acc[0], expected, B.length);
 
     for(int k = 0; k < B.length; k++){
-      expected_f[k] = ldexp(expected[k], acc_exp) 
+      expected_f[k] = ldexp(expected[k], acc_exp)
                     + ldexp(B.data[k], B.exp);
     }
 
