@@ -218,8 +218,6 @@ TEST(vect_sqrt, vect_s16_sqrt_B)
 
     unsigned seed = SEED_FROM_FUNC_NAME();
 
-
-    // const unsigned length = 10;
     #define LENGTH ( 10 )
     int16_t WORD_ALIGNED B[LENGTH];
     int16_t WORD_ALIGNED A[LENGTH];
@@ -320,15 +318,15 @@ TEST(vect_sqrt, vect_s32_sqrt_B)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    const unsigned length = 10;
+    #define LENGTH ( 10 )
     #ifndef _WIN32
-        int32_t B[length];
-        int32_t A[length];
-        int32_t A_full[length];
+        int32_t B[LENGTH];
+        int32_t A[LENGTH];
+        int32_t A_full[LENGTH];
     #else
-        int32_t * B = XMATH_ALLOC(length * sizeof(int32_t));
-        int32_t * A = XMATH_ALLOC(length * sizeof(int32_t));
-        int32_t * A_full = XMATH_ALLOC(length * sizeof(int32_t));
+        int32_t * B = XMATH_MALLOC(LENGTH * sizeof(int32_t));
+        int32_t * A = XMATH_MALLOC(LENGTH * sizeof(int32_t));
+        int32_t * A_full = XMATH_MALLOC(LENGTH * sizeof(int32_t));
     #endif
 
     for(int v = 0; v < REPS; v++){
@@ -338,26 +336,26 @@ TEST(vect_sqrt, vect_s32_sqrt_B)
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(unsigned int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < LENGTH; i++){
             B[i] = pseudo_rand_uint(&seed, 0, INT32_MAX) >> b_hr;
         }
 
-        b_hr = vect_s32_headroom(B, length);
+        b_hr = vect_s32_headroom(B, LENGTH);
 
         exponent_t a_exp;
         right_shift_t b_shr;
 
         vect_s32_sqrt_prepare(&a_exp, &b_shr, b_exp, b_hr);
 
-        vect_s32_sqrt(A_full, B, length, b_shr, VECT_SQRT_S32_MAX_DEPTH);
+        vect_s32_sqrt(A_full, B, LENGTH, b_shr, VECT_SQRT_S32_MAX_DEPTH);
 
         for(unsigned depth = 1; depth <= VECT_SQRT_S32_MAX_DEPTH; depth++){
 
-            vect_s32_sqrt(A, B, length, b_shr, depth);
+            vect_s32_sqrt(A, B, LENGTH, b_shr, depth);
 
             const uint32_t mask = (0x7FFFFFFF >> depth) ^ 0xFFFFFFFF;
 
-            for(unsigned int i = 0; i < length; i++){
+            for(unsigned int i = 0; i < LENGTH; i++){
 
                 TEST_ASSERT_LESS_OR_EQUAL(A_full[i], A[i]);
 
