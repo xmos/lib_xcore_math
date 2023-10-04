@@ -67,6 +67,7 @@ headroom_t vect_s32_convolve_same(
   for(int i = P; i < copy_count; i++)
     buff[i] = signal_in[i-P];
 
+  printf("filter_taps %d, copy_count %d, P %d, signal_in_length %d, padding_mode %d\n", filter_taps, copy_count, P, signal_in_length, padding_mode);
   switch(padding_mode){
     case PAD_MODE_REFLECT:
       apply_pad_reflect(&buff[0], P, signal_in, signal_in_length, 0);
