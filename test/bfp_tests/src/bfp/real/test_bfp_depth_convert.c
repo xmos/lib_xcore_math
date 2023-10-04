@@ -110,8 +110,8 @@ TEST(bfp_depth_convert, bfp_s16_to_bfp_s32)
         setExtraInfo_RS(r, seed);
 
         bfp_s16_init(&B, dataB,
-            pseudo_rand_int(&seed, -50, 50),
-            pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
+        pseudo_rand_int(&seed, -50, 50),
+        pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
         bfp_s32_init(&A, dataA, 0, B.length, 0);
 
