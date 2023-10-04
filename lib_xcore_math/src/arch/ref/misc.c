@@ -11,7 +11,6 @@
 #include "../../vect/vpu_const_vects.h"
 
 
-
 void vect_s32_merge_accs(
     int32_t a[],
     const split_acc_s32_t b[],
@@ -35,8 +34,6 @@ void vect_s32_merge_accs(
     }
   }
 }
-
-
 
 void vect_s32_split_accs(
     split_acc_s32_t a[],
@@ -64,4 +61,20 @@ void vect_s32_split_accs(
 
     a[g] = tmp;
   }
+}
+
+void f32_unpack(
+    int32_t * mantissa,
+    exponent_t * exp,
+    const float input)
+{
+  *mantissa = lroundf(INT32_MAX * frexpf(input, exp));
+  *exp -= 31;
+}
+
+float s32_to_f32(
+    const int32_t mantissa,
+    const exponent_t exp)
+{
+  return ldexpf(mantissa, exp);
 }
