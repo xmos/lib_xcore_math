@@ -18,10 +18,10 @@
 #include "unity_fixture.h"
 
 TEST_GROUP_RUNNER(vect_convolve) {
-  //RUN_TEST_CASE(vect_convolve, vect_s32_convolve_valid);
-  //RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_reflected);
+  RUN_TEST_CASE(vect_convolve, vect_s32_convolve_valid);
+  RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_reflected);
   RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_zero);
-  //RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_extend);
+  RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_extend);
 }
 
 TEST_GROUP(vect_convolve);

@@ -55,6 +55,7 @@ headroom_t vect_s32_headroom(
     const int32_t v[],
     const unsigned length)
 {
+    if (length == 0) return 31;
     int32_t largest = 0;
     unsigned ldex = 0;
 
