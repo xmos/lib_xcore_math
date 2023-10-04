@@ -13,11 +13,8 @@ static void apply_pad_constant(
     const unsigned P,
     const int32_t pad_value)
 {
-  for(unsigned i = 0; i < P; i++) {
-    printf("buff[%d] ", i);
+  for(unsigned i = 0; i < P; i++)
     buff[i] = pad_value;
-  }
-  printf("\n");
 }
 
 static void apply_pad_reflect(
@@ -67,12 +64,9 @@ headroom_t vect_s32_convolve_same(
   ////// Do left tail
   int32_t buff[9] = {0}; 
 
-  for(int i = P; i < copy_count; i++) {
-    printf("i-P %d ", i-P);
-    buff[i] = signal_in[i-P];
-  }
+  for(int i = P; i < copy_count; i++)
+      buff[i] = signal_in[i-P];
 
-  printf("\nfilter_taps %d, copy_count %d, P %d, signal_in_length %d, padding_mode %d\n", filter_taps, copy_count, P, signal_in_length, padding_mode);
   switch(padding_mode){
     case PAD_MODE_REFLECT:
       apply_pad_reflect(&buff[0], P, signal_in, signal_in_length, 0);
@@ -84,11 +78,11 @@ headroom_t vect_s32_convolve_same(
       apply_pad_constant(&buff[0], P, (int32_t) padding_mode);
   }
 
-  printf("\n\n\n");
-  for(int i = 0; i < copy_count; i++){
-    printf("buff[%d] = 0x%08lX\n", i, buff[i]);
-  }
-  printf("\n\n\n");
+  // printf("\n\n\n");
+  // for(int i = 0; i < copy_count; i++){
+  //   printf("buff[%d] = 0x%08lX\n", i, buff[i]);
+  // }
+  // printf("\n\n\n");
 
   hr = vect_s32_convolve_valid(
           &signal_out[0],
@@ -96,13 +90,12 @@ headroom_t vect_s32_convolve_same(
           filter_q30,
           filter_taps + P - 1,
           filter_taps);
-  printf("res_hr %d, hr %d\n", res_hr, hr);
   res_hr = MIN(res_hr, hr);
 
   ////// Do right tail
   for(unsigned i  = 0; i < filter_taps - 1; i++)
     buff[i] = signal_in[signal_in_length + 1 - filter_taps + i];
-    
+
   switch(padding_mode){
     case PAD_MODE_REFLECT:
       apply_pad_reflect(&buff[filter_taps-1], P, signal_in, signal_in_length, 1);
@@ -114,19 +107,18 @@ headroom_t vect_s32_convolve_same(
       apply_pad_constant(&buff[filter_taps-1], P, (int32_t) padding_mode);
   }
 
-  printf("\n\n\n");
-  for(int i = 0; i < copy_count; i++){
-    printf("buff[%d] = 0x%08lX\n", i, buff[i]);
-  }
-  printf("\n\n\n");
-  
+  // printf("\n\n\n");
+  //   for(int i = 0; i < copy_count; i++){
+  //     printf("buff[%d] = 0x%08lX\n", i, buff[i]);
+  // }
+  // printf("\n\n\n");
+
   hr = vect_s32_convolve_valid(
         &signal_out[signal_in_length-P],
         buff,
         filter_q30,
         filter_taps + P - 1,
         filter_taps);
-  printf("res_hr %d, hr %d\n", res_hr, hr);
   res_hr = MIN(res_hr, hr);
 
   return res_hr;

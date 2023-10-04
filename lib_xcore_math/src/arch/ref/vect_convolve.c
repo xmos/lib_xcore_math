@@ -20,7 +20,7 @@ headroom_t vect_s32_convolve_valid(
 {
   const unsigned P = b_length >> 1;
   const unsigned y_length = x_length - 2*P;
-  printf("x_length %d, b_length %d, P %d, y_length %d\n", x_length, b_length, P, y_length);
+
   for(unsigned k = 0; k < y_length; k++){
 
     vpu_int32_acc_t acc = 0;
