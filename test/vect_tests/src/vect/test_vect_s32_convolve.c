@@ -167,17 +167,17 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
   for(int rep = 0; rep < REPS; rep++) {
     const unsigned old_seed = seed;
 
-    //const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
-    //const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
-    const unsigned tap_count = 1;
+    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
+    const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
+    //const unsigned tap_count = 1;
 
-    const unsigned length = 63;
+    //const unsigned length = 63;
     setExtraInfo_RSL(rep, old_seed, length);
 
     const int P = tap_count >> 1;
 
-    //right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
-    right_shift_t shr=5;
+    right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
+    //right_shift_t shr=5;
 
     printf("    const unsigned tap_count = %d;\n    const unsigned length = %d;\n    right_shift_t shr=%d;\n", tap_count, length, shr);
 
@@ -189,7 +189,7 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
       //printf("    taps[%d] = %d;\n", k, taps[k]);
     }
-
+/*
      signal_in[0] = 27443839;
 
      signal_in[1] = 37806704;
@@ -317,6 +317,7 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
      signal_in[62] = 46342185;
 
     taps[0] = 202024044;
+*/
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
