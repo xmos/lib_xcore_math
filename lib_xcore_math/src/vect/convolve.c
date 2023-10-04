@@ -84,11 +84,11 @@ headroom_t vect_s32_convolve_same(
       apply_pad_constant(&buff[0], P, (int32_t) padding_mode);
   }
 
-  // printf("\n\n\n");
-  // for(int i = 0; i < copy_count; i++){
-  //   printf("buff[%d] = 0x%08X\n", i, buff[i]);
-  // }
-  // printf("\n\n\n");
+  printf("\n\n\n");
+  for(int i = 0; i < copy_count; i++){
+    printf("buff[%d] = 0x%08X\n", i, buff[i]);
+  }
+  printf("\n\n\n");
 
   hr = vect_s32_convolve_valid(
           &signal_out[0],
@@ -96,7 +96,7 @@ headroom_t vect_s32_convolve_same(
           filter_q30,
           filter_taps + P - 1,
           filter_taps);
-
+  printf("res_hr %d, hr %d\n", res_hr, hr);
   res_hr = MIN(res_hr, hr);
 
   ////// Do right tail

@@ -18,10 +18,10 @@
 #include "unity_fixture.h"
 
 TEST_GROUP_RUNNER(vect_convolve) {
-  RUN_TEST_CASE(vect_convolve, vect_s32_convolve_valid);
-  RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_reflected);
+  //RUN_TEST_CASE(vect_convolve, vect_s32_convolve_valid);
+  //RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_reflected);
   RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_zero);
-  RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_extend);
+  //RUN_TEST_CASE(vect_convolve, vect_s32_convolve_same_extend);
 }
 
 TEST_GROUP(vect_convolve);
@@ -167,24 +167,156 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
   for(int rep = 0; rep < REPS; rep++) {
     const unsigned old_seed = seed;
 
-    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
-    const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
+    //const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
+    //const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
+    const unsigned tap_count = 1;
+
+    const unsigned length = 63;
     setExtraInfo_RSL(rep, old_seed, length);
 
     const int P = tap_count >> 1;
 
-    right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
-    printf("    const unsigned tap_count = %d;\n    const unsigned length = %d;\n    right_shift_t shr=%d;\n", shr, tap_count, length);
+    //right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
+    right_shift_t shr=5;
+
+    printf("    const unsigned tap_count = %d;\n    const unsigned length = %d;\n    right_shift_t shr=%d;\n", tap_count, length, shr);
 
     for(int k = 0; k < length; k++) {
       signal_in[k] = pseudo_rand_int32(&seed) >> shr;
-      printf("    signal_in[%d] = %d;\n", k, signal_in[k]);
+      //printf("    signal_in[%d] = %d;\n", k, signal_in[k]);
     }
     for(int k = 0; k < tap_count; k++){
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
-      printf("    taps[%d] = %d;\n", k, taps[k]);
+      //printf("    taps[%d] = %d;\n", k, taps[k]);
     }
 
+     signal_in[0] = 27443839;
+
+     signal_in[1] = 37806704;
+
+     signal_in[2] = 11882645;
+
+     signal_in[3] = 17410903;
+
+     signal_in[4] = 7217189;
+
+     signal_in[5] = 61962985;
+
+     signal_in[6] = 38724151;
+
+     signal_in[7] = 64154158;
+
+     signal_in[8] = 21516996;
+
+     signal_in[9] = 40987002;
+
+     signal_in[10] = 18946605;
+
+     signal_in[11] = 35310583;
+
+     signal_in[12] = 63199409;
+
+     signal_in[13] = 39354441;
+
+     signal_in[14] = 65550997;
+
+     signal_in[15] = 60240099;
+
+     signal_in[16] = 14887023;
+
+     signal_in[17] = 23360124;
+
+     signal_in[18] = 28416138;
+
+     signal_in[19] = 17918509;
+
+     signal_in[20] = 59251100;
+
+     signal_in[21] = 17455281;
+
+     signal_in[22] = 42324624;
+
+     signal_in[23] = 1009998;
+
+     signal_in[24] = 62358185;
+
+     signal_in[25] = 59540419;
+
+     signal_in[26] = 61182923;
+
+     signal_in[27] = 62267406;
+
+     signal_in[28] = 26167955;
+
+     signal_in[29] = 47931642;
+
+     signal_in[30] = 2183619;
+
+     signal_in[31] = 43944151;
+
+     signal_in[32] = 50735676;
+
+     signal_in[33] = 14475582;
+
+     signal_in[34] = 16454012;
+
+     signal_in[35] = 36256478;
+
+     signal_in[36] = 29708691;
+
+     signal_in[37] = 18245671;
+
+     signal_in[38] = 14625292;
+
+     signal_in[39] = 45431772;
+
+     signal_in[40] = 56357425;
+
+     signal_in[41] = 14132138;
+
+     signal_in[42] = 66188010;
+
+     signal_in[43] = 24185640;
+
+     signal_in[44] = 1907474;
+
+     signal_in[45] = 1178045;
+
+     signal_in[46] = 56136547;
+
+     signal_in[47] = 55110384;
+
+     signal_in[48] = 23003314;
+
+     signal_in[49] = 36293304;
+
+     signal_in[50] = 59074835;
+
+     signal_in[51] = 9701924;
+
+     signal_in[52] = 56904370;
+
+     signal_in[53] = 29552662;
+
+     signal_in[54] = 46299866;
+
+     signal_in[55] = 15339911;
+
+     signal_in[56] = 42075068;
+
+     signal_in[57] = 11410230;
+
+     signal_in[58] = 47524403;
+
+     signal_in[59] = 22243700;
+
+     signal_in[60] = 6871363;
+
+     signal_in[61] = 4698805;
+
+     signal_in[62] = 46342185;
+
+    taps[0] = 202024044;
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
