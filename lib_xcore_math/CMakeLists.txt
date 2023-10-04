@@ -9,9 +9,9 @@ set( LIB_NAME   lib_xcore_math  )
 
 ## Source files
 file( GLOB_RECURSE    SOURCES_C   "src/vect/*.c"
-                                  "src/bfp/*.c"  
+                                  "src/bfp/*.c"
                                   "src/dct/*.c"
-                                  "src/fft/*.c" 
+                                  "src/fft/*.c"
                                   "src/filter/*.c"
                                   "src/scalar/*.c" )
 file( GLOB_RECURSE    SOURCES_CPP "src/*.cpp" )
@@ -41,14 +41,19 @@ target_compile_options( ${LIB_NAME}
     $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )
 
-# Add options that are not valid with with MSVC compiler
+# Add options for different compilers
 if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  target_compile_options( ${LIB_NAME}
+  target_compile_options( ${APP_NAME}
     PRIVATE
-     -g
-     -Werror
-     -Wextra
+      -g
+      -Wno-unused-variable
+      -Wno-format
   )
+else()
+target_compile_options( ${APP_NAME}
+  PRIVATE
+    -D_CRT_SECURE_NO_WARNINGS
+)
 endif()
 
 # Set defaults for generating the FFT LUT if they are not already defined

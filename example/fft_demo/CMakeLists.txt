@@ -9,16 +9,16 @@ add_executable( ${APP_NAME} )
 
 target_sources( ${APP_NAME}
   PRIVATE
-    main.c 
+    main.c
 )
 
 target_compile_options( ${APP_NAME}
-  PRIVATE 
+  PRIVATE
     -Os
     $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
 )
 
-# Add options that are not valid with with MSVC compiler
+# Add options for different compilers
 if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   target_compile_options( ${APP_NAME}
     PRIVATE
@@ -26,6 +26,11 @@ if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
       -Wno-unused-variable
       -Wno-format
   )
+else()
+target_compile_options( ${APP_NAME}
+  PRIVATE
+    -D_CRT_SECURE_NO_WARNINGS
+)
 endif()
 
 target_link_options( ${APP_NAME}
