@@ -8,36 +8,23 @@
 #include "xmath/xmath.h"
 
 
-void f32_unpack(
-    int32_t* mantissa,
-    exponent_t* exp,
-    const float input)
-{
-  *mantissa = INT32_MAX * frexp(input, exp);
-  *exp -= 31;
-}
-
-
 float_s32_t f32_to_float_s32(
     const float x)
 {
   float_s32_t res;
-  res.mant = round(INT32_MAX * frexpf(x, &res.exp));
-  res.exp -= 31;
+  f32_unpack(&res.mant, &res.exp, x);
   return res;
 }
-
 
 float_s32_t f64_to_float_s32(
     const double x)
 {
   float_s32_t res;
   double tmp = frexp(x, &res.exp);
-  res.mant = round(INT32_MAX * tmp);
+  res.mant = lround(INT32_MAX * tmp);
   res.exp -= 31;
   return res;
 }
-
 
 // The coefficients for the power series of sin(x). Currently used by f32_sin.S
 const float sin_coef[] = {
@@ -52,9 +39,6 @@ float f32_cos(
 {
   return f32_sin(theta + (((float)M_PI)/2));
 }
-
-
-
 
 const float log2_ps[16] = { 
   1.4426950216f, -0.7213475108f, 0.4808983505f, -0.3606737554f, 

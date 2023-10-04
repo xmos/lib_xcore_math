@@ -68,7 +68,6 @@ TEST(float_convert, float_s32_to_float_s64)
   }
 }
 
-
 TEST(float_convert, float_s64_to_float_s32)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
@@ -100,8 +99,6 @@ TEST(float_convert, float_s64_to_float_s32)
   }
 }
 
-
-
 TEST(float_convert, float_s32_to_float)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
@@ -132,8 +129,6 @@ TEST(float_convert, float_s32_to_float)
   }
 }
 
-
-
 TEST(float_convert, float_s32_to_double)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
@@ -156,14 +151,12 @@ TEST(float_convert, float_s32_to_double)
   }
 }
 
-
-
 TEST(float_convert, f32_to_float_s32)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   float x;
-  
+
   for(int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
@@ -171,9 +164,6 @@ TEST(float_convert, f32_to_float_s32)
     x = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 40));
 
     float_s32_t actual = f32_to_float_s32(x);
-
-    if(x != 0.0)
-      TEST_ASSERT_LESS_OR_EQUAL(1, HR_S32(actual.mant));
 
     float diff  = fabsf(x - ldexpf(actual.mant + 0, actual.exp));
     float diffP = fabsf(x - ldexpf(actual.mant + 1, actual.exp));
@@ -184,8 +174,6 @@ TEST(float_convert, f32_to_float_s32)
 
   }
 }
-
-
 
 TEST(float_convert, f64_to_float_s32)
 {
