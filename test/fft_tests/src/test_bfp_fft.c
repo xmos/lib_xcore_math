@@ -355,7 +355,6 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
 
                 ref[i].re = ldexp(a_data[i].re, initial_exponentA);
                 ref[i].im = ldexp(a_data[i].im, initial_exponentA);
-                printf("index %d\n ", (FFT_N/2)+i);
 
                 ref[(FFT_N/2)+i].re = ldexp(b_data[i].re, initial_exponentB);
                 ref[(FFT_N/2)+i].im = ldexp(b_data[i].im, initial_exponentB);

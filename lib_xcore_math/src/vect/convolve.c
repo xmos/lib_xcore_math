@@ -108,8 +108,8 @@ headroom_t vect_s32_convolve_same(
   }
 
   // printf("\n\n\n");
-  //   for(int i = 0; i < copy_count; i++){
-  //     printf("buff[%d] = 0x%08lX\n", i, buff[i]);
+  // for(int i = 0; i < copy_count; i++){
+  //   printf("buff[%d] = 0x%08lX\n", i, buff[i]);
   // }
   // printf("\n\n\n");
 
