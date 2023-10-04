@@ -43,16 +43,16 @@ target_compile_options( ${LIB_NAME}
 
 # Add options for different compilers
 if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  target_compile_options( ${APP_NAME}
+  target_compile_options(${LIB_NAME}
     PRIVATE
       -g
       -Wno-unused-variable
       -Wno-format
   )
 else()
-target_compile_options( ${APP_NAME}
-  PRIVATE
-    -D_CRT_SECURE_NO_WARNINGS
+  target_compile_options(${LIB_NAME}
+    PRIVATE
+      -D_CRT_SECURE_NO_WARNINGS
 )
 endif()
 
