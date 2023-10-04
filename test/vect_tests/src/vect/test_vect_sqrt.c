@@ -319,15 +319,10 @@ TEST(vect_sqrt, vect_s32_sqrt_B)
 
 
     #define LENGTH ( 10 )
-    #ifndef _WIN32
-        int32_t B[LENGTH];
-        int32_t A[LENGTH];
-        int32_t A_full[LENGTH];
-    #else
-        int32_t * B = XMATH_MALLOC(LENGTH * sizeof(int32_t));
-        int32_t * A = XMATH_MALLOC(LENGTH * sizeof(int32_t));
-        int32_t * A_full = XMATH_MALLOC(LENGTH * sizeof(int32_t));
-    #endif
+
+    int32_t B[LENGTH];
+    int32_t A[LENGTH];
+    int32_t A_full[LENGTH];
 
     for(int v = 0; v < REPS; v++){
 
@@ -365,10 +360,5 @@ TEST(vect_sqrt, vect_s32_sqrt_B)
             }
         }
     }
-    #ifdef _WIN32
-        XMATH_FREE(B);
-        XMATH_FREE(A);
-        XMATH_FREE(A_full);
-    #endif
 }
 
