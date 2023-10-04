@@ -11,7 +11,6 @@
 #include "../../vect/vpu_const_vects.h"
 
 
-
 static inline
 int64_t maccs(int64_t acc, int32_t x, int32_t y)
 {
@@ -23,9 +22,6 @@ int32_t lextract(int64_t acc, unsigned pos)
 {
   return (acc >> pos) & 0xFFFFFFFF;
 }
-
-
-
 
 float_s32_t float_s32_exp(
     const float_s32_t b)
@@ -86,12 +82,4 @@ float_s32_t float_s32_exp(
   z = q30_exp_small(z);
   res.mant = lextract(maccs(0, two_to_rho, z), 30);
   return res;
-}
-
-
-float float_s32_to_f32(
-    const int32_t mantissa,
-    const exponent_t exp)
-{
-  return ldexp(mantissa, exp);
 }
