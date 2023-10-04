@@ -13,8 +13,11 @@ static void apply_pad_constant(
     const unsigned P,
     const int32_t pad_value)
 {
-  for(unsigned i = 0; i < P; i++)
+  for(unsigned i = 0; i < P; i++) {
+    printf("buff[%d] ", i);
     buff[i] = pad_value;
+  }
+  printf("\n");
 }
 
 static void apply_pad_reflect(
@@ -64,10 +67,12 @@ headroom_t vect_s32_convolve_same(
   ////// Do left tail
   int32_t buff[9] = {0}; 
 
-  for(int i = P; i < copy_count; i++)
+  for(int i = P; i < copy_count; i++) {
+    printf("i-P %d ", i-P);
     buff[i] = signal_in[i-P];
+  }
 
-  printf("filter_taps %d, copy_count %d, P %d, signal_in_length %d, padding_mode %d\n", filter_taps, copy_count, P, signal_in_length, padding_mode);
+  printf("\nfilter_taps %d, copy_count %d, P %d, signal_in_length %d, padding_mode %d\n", filter_taps, copy_count, P, signal_in_length, padding_mode);
   switch(padding_mode){
     case PAD_MODE_REFLECT:
       apply_pad_reflect(&buff[0], P, signal_in, signal_in_length, 0);
