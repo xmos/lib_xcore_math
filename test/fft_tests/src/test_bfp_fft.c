@@ -387,6 +387,8 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
               double refA[FFT_N];
               double refB[FFT_N];
             #else
+              // On Windows all the arrays sizes must be known at compile time,
+              // otherwise they must be dynamically allocated at runtime.
               double * refA = (double *) XMATH_MALLOC(FFT_N * sizeof(double));
               double * refB  = (double *) XMATH_MALLOC(FFT_N * sizeof(double));
             #endif

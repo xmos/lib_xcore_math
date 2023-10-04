@@ -14,6 +14,8 @@ headroom_t vect_s16_headroom(
     const int16_t v[],
     const unsigned length)
 {
+    // If an array of zero size is given,
+    // return the maximum headroom
     if (length == 0) return 15;
 
     int16_t largest = 0;
@@ -57,6 +59,8 @@ headroom_t vect_s32_headroom(
     const int32_t v[],
     const unsigned length)
 {
+    // If an array of zero size is given,
+    // return the maximum headroom
     if (length == 0) return 31;
 
     int32_t largest = 0;
