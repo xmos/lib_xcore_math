@@ -169,17 +169,21 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
 
     const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
-
     setExtraInfo_RSL(rep, old_seed, length);
 
     const int P = tap_count >> 1;
 
     right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
-    for(int k = 0; k < length; k++)
-      signal_in[k] = pseudo_rand_int32(&seed) >> shr;
+    printf("    const unsigned tap_count = %d;\n    const unsigned length = %d;\n    right_shift_t shr=%d;\n", shr, tap_count, length);
 
-    for(int k = 0; k < tap_count; k++)
+    for(int k = 0; k < length; k++) {
+      signal_in[k] = pseudo_rand_int32(&seed) >> shr;
+      printf("    signal_in[%d] = %d;\n", k, signal_in[k]);
+    }
+    for(int k = 0; k < tap_count; k++){
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
+      printf("    taps[%d] = %d;\n", k, taps[k]);
+    }
 
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
