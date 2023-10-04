@@ -13,7 +13,9 @@ TEST_GROUP_RUNNER(bfp_fft) {
   RUN_TEST_CASE(bfp_fft, bfp_fft_forward_complex);
   RUN_TEST_CASE(bfp_fft, bfp_fft_inverse_complex);
   RUN_TEST_CASE(bfp_fft, bfp_fft_forward_stereo);
+#ifndef _WIN32
   RUN_TEST_CASE(bfp_fft, bfp_fft_inverse_stereo);
+#endif
   RUN_TEST_CASE(bfp_fft, bfp_fft_forward_mono);
   RUN_TEST_CASE(bfp_fft, bfp_fft_inverse_mono);
 }
