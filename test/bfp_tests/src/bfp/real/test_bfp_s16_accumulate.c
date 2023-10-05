@@ -26,10 +26,10 @@ TEST_TEAR_DOWN(bfp_s16_accumulate) {}
 
 #if SMOKE_TEST
 #  define REPS       (100)
-#  define MAX_LEN    (128)
+#  define MAX_LEN    (127)
 #else
 #  define REPS       (1000)
-#  define MAX_LEN    (1024)
+#  define MAX_LEN    (1023)
 #endif
 
 
