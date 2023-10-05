@@ -26,10 +26,10 @@ TEST_TEAR_DOWN(bfp_s16_accumulate) {}
 
 #if SMOKE_TEST
 #  define REPS       (100)
-#  define MAX_LEN    (127)
+#  define MAX_LEN    (128)
 #else
 #  define REPS       (1000)
-#  define MAX_LEN    (1023)
+#  define MAX_LEN    (1024)
 #endif
 
 
@@ -45,7 +45,7 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
 
   double expected_f[MAX_LEN];
   int32_t DWORD_ALIGNED expected[MAX_LEN];
-  int32_t DWORD_ALIGNED actual[MAX_LEN+1];
+  int32_t DWORD_ALIGNED actual[MAX_LEN];
 
   bfp_s16_init(&B, b_data, 0, 0, 0);
 
@@ -70,7 +70,7 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
       expected[k] = pseudo_rand_int32(&seed) >> 1;
       //printf("    expected[%d] = %d;\n", k, expected[k]);
     }
-    #if 0
+    #if 1
      B.length = 128;
 
      acc_exp = 26;
@@ -613,7 +613,7 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
     exp_hr = MIN(15, exp_hr);
 
     TEST_ASSERT_EQUAL(exp_hr, res_hr);
-
+    printf("exp_hr %d, res_hr %d\n", exp_hr, res_hr);
     test_s32_from_double(expected, expected_f, B.length, acc_exp);
 
     TEST_ASSERT_INT32_ARRAY_WITHIN(1, expected, actual, B.length);

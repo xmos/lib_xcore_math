@@ -544,8 +544,9 @@ headroom_t bfp_s16_accumulate(
 #endif
 
   const unsigned chunks = b->length >> VPU_INT16_EPV_LOG2;
-  const unsigned tail = b->length & (VPU_INT16_EPV - 1);
 
+  const unsigned tail = b->length & (VPU_INT16_EPV - 1);
+  printf("chunks %d, tail %d\n", chunks, tail);
   const right_shift_t b_shr = acc_exp - b->exp;
 
   unsigned vpu_ctrl = VPU_INT16_CTRL_INIT; // VPU 16-bit mode with zeroed headroom
