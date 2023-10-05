@@ -38,6 +38,7 @@ target_include_directories( ${LIB_NAME}
 target_compile_options( ${LIB_NAME}
   PRIVATE
     -Os
+    -Wall
     $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )
 
@@ -46,12 +47,15 @@ if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   target_compile_options(${LIB_NAME}
     PRIVATE
       -g
-      -Wno-unused-variable
-      -Wno-format
+      -Wextra
+      -Werror
   )
 else()
   target_compile_options(${LIB_NAME}
     PRIVATE
+       # Avoid warning C4996: 'sprintf': This function or variable may be unsafe.
+       # Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
+       # See online help for details.
       -D_CRT_SECURE_NO_WARNINGS
 )
 endif()

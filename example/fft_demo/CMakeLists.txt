@@ -23,8 +23,6 @@ if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   target_compile_options( ${APP_NAME}
     PRIVATE
       -g
-      -Wno-unused-variable
-      -Wno-format
   )
 else()
     target_compile_options( ${APP_NAME}
