@@ -599,10 +599,13 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
 
     unsigned chunks = B.length >> VPU_INT16_EPV_LOG2;
     unsigned tail = B.length & (VPU_INT16_EPV - 1);
+    printf("B.length %d, chunks %d, tail %d\n", B.length, chunks, tail);
+
     for(int k = tail; k < VPU_INT16_EPV; k++){
       acc[chunks].vD[k] = 0;
       acc[chunks].vR[k] = 0;
     }
+    printf("B.length %d, chunks %d, tail %d\n", B.length, chunks, tail);
 
     headroom_t res_hr = bfp_s16_accumulate(acc, acc_exp, &B);
 
