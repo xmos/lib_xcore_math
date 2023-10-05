@@ -56,13 +56,19 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
     exponent_t acc_exp = pseudo_rand_int(&seed, -30, 30);
 
     B.exp = acc_exp + pseudo_rand_int(&seed, -14, 15);
-
-    for(int k = 0; k < B.length; k++)
+    printf("\n\n\nREP %d\n\n\n", v);
+    printf("    B.length = %d\n", B.length);
+    printf("    acc_exp = %d\n", acc_exp);
+    printf("    B.exp = %d\n", B.exp);
+    for(int k = 0; k < B.length; k++) {
       B.data[k] = pseudo_rand_int16(&seed);
+      printf("    B.data[%d] = %d;\n", k, B.data[k]);
+    }
 
     // Generate random accumulator vector as int32_t's with 1 bit of headroom
     for(int k = 0; k < B.length; k++){
       expected[k] = pseudo_rand_int32(&seed) >> 1;
+      printf("    expected[%d] = %d;\n", k, expected[k]);
     }
 
     // Turn the int32_t accs into split_s32 accs
