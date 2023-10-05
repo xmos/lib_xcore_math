@@ -11,28 +11,28 @@
 
 /**
  * Width of the VPU vector registers in bits.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 #define XS3_VPU_VREG_WIDTH_BITS     (256)
 
 /**
  * Width of the VPU vector registers in bytes.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 #define XS3_VPU_VREG_WIDTH_BYTES    (XS3_VPU_VREG_WIDTH_BITS  >> 3)
 
 /**
  * Width of the VPU vector registers in words.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 #define XS3_VPU_VREG_WIDTH_WORDS    (XS3_VPU_VREG_WIDTH_BYTES >> 2)
 
 /**
  * Data type (bits 11..8) values of vCTRL, the control register for the VPU.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -46,7 +46,7 @@ enum {
 
 /**
  * Shift type (bits 7..6) values of vCTRL, the control register for the VPU.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -60,7 +60,7 @@ enum {
 
 /**
  * The saturation bounds for signed integers in each VPU operating mode.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -73,26 +73,34 @@ enum {
     VPU_INT16_MAX =  0x7FFF,
     /** The lower saturation bound for 16-bit elements */
     VPU_INT16_MIN = -0x7FFF,
-
     /** The upper saturation bound for 32-bit elements and 32-bit accumulators */
     VPU_INT32_MAX =  0x7FFFFFFF,
     /** The lower saturation bound for 32-bit elements and 32-bit accumulators */
     VPU_INT32_MIN = -0x7FFFFFFF,
+    /** On Win32 platforms the enum constants must be int type,
+    so the long long values must be defines outside the enumeration */
+#ifndef _WIN32
+    /** The upper saturation bound for 40-bit accumulators */
+    VPU_INT40_MAX = 0x7FFFFFFFFFLL,
+    /** The lower saturation bound for 40-bit accumulators */
+    VPU_INT40_MIN = -0x7FFFFFFFFFLL
 };
-
+#else
+};
 /** The upper saturation bound for 40-bit accumulators */
-#define VPU_INT40_MAX  0x7FFFFFFFFFLL
+#define VPU_INT40_MAX  ( 0x7FFFFFFFFFLL )
 /** The lower saturation bound for 40-bit accumulators */
-#define VPU_INT40_MIN -0x7FFFFFFFFFLL
+#define VPU_INT40_MIN ( -0x7FFFFFFFFFLL )
+#endif // _WIN32
 
 /**
  * Number of accumulator bits in each operating mode.
- * 
+ *
  * In each operating mode, the VLMACC, VLMACCR and VLSAT instructions operate on
  * an array of accumulators in the vector registers vR and vD. In each case, the
  * most significant bits are stored in vD, and the least significant bits are stored
  * in vR.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -104,7 +112,7 @@ enum {
 /**
  * When vD and vR contain accumulators, the values in this enum indicate how many least significant 
  * bits are stored in vR, with the remaining bits stored in vD.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -115,7 +123,7 @@ enum {
 /**
  * When vD and vR contain accumulators, the values in this enum can be used to mask off the bits of
  * the accumulator value which correspond to the portion in vR.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -126,32 +134,32 @@ enum {
 
 /**
  * Integer type which fits a single accumulator (32-bits) corresponding to the 8-bit VPU mode.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 typedef int32_t vpu_int8_acc_t;
 
 /**
  * Integer type which fits a single accumulator (32-bits) corresponding to the 16-bit VPU mode.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 typedef int32_t vpu_int16_acc_t;
 
 /**
  * Integer type which fits a single accumulator (40-bits) corresponding to the 32-bit VPU mode.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 typedef int64_t vpu_int32_acc_t;
 
 /**
  * The number of elements which fit into a vector register for each operating mode.
- * 
+ *
  * This is also the number of elements which are operated on in the following 
  * instructions: VDEPTH1, VDEPTH16, VDEPTH8, VLADD, VLADDD, VLASHR, VLMACCR, VLMUL, 
  *               VLSUB, VPOS, VSIGN
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -162,7 +170,7 @@ enum {
 
 /**
  * log-base-2 of the corresponding VPU_INT*_EPV values.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -173,10 +181,10 @@ enum {
 
 /**
  * The number of accumulators, spread across vR and vD, in each operating mode.
- * 
+ *
  * This is also the number of elements consumed (number of multiplies) by the
  * VLMACC instruction.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -187,7 +195,7 @@ enum {
 
 /**
  * log-base-2 of the corresponding VPU_INT*_ACC_PERIOD values.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -200,7 +208,7 @@ enum {
  * The number of elements consumed by a VLMACC instruction in each operating mode.
  * In other words, the number of simultaneous multiply-accumulates performed by the VLMACC
  * instruction.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
@@ -211,7 +219,7 @@ enum {
 
 /**
  * log-base-2 of the corresponding VPU_INT*_VLMACC_ELMS values.
- * 
+ *
  * @ingroup xs3_vpu_info
  */
 enum {
