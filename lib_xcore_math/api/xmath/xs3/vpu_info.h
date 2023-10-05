@@ -77,11 +77,11 @@ enum {
     VPU_INT32_MAX =  0x7FFFFFFF,
     /** The lower saturation bound for 32-bit elements and 32-bit accumulators */
     VPU_INT32_MIN = -0x7FFFFFFF,
-    /** On Win32 platforms the enum constants must be int type,
-    so the long long values must be defines outside the enumeration */
+    /** On Win32 platforms the enum constants are a 4-byte int type,
+        so the long long values must be defines outside the enumeration */
 #ifndef _WIN32
     /** The upper saturation bound for 40-bit accumulators */
-    VPU_INT40_MAX = 0x7FFFFFFFFFLL,
+    VPU_INT40_MAX =  0x7FFFFFFFFFLL,
     /** The lower saturation bound for 40-bit accumulators */
     VPU_INT40_MIN = -0x7FFFFFFFFFLL
 };

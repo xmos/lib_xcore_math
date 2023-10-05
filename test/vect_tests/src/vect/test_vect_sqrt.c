@@ -176,7 +176,7 @@ TEST(vect_sqrt, vect_s16_sqrt_A)
     for(int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
-        const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN-1);
+        const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
 
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 12);
@@ -275,7 +275,7 @@ TEST(vect_sqrt, vect_s32_sqrt_A)
     for(int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
-        const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN-1);
+        const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
 
         const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);

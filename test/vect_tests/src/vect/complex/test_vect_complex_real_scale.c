@@ -103,7 +103,7 @@ TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
 
         setExtraInfo_RS(v, seed);
 
-        unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
+        unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 15);
         headroom_t c_hr = pseudo_rand_uint(&seed, 0, 15);

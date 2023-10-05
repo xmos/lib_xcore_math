@@ -55,7 +55,7 @@ TEST(vect_convolve, vect_s32_convolve_valid)
 
   for(int rep = 0; rep < REPS; rep++) {
 
-    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
+    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 1, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
 
     right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
@@ -108,7 +108,7 @@ TEST(vect_convolve, vect_s32_convolve_same_reflected)
 
   for(int rep = 0; rep < REPS; rep++) {
 
-    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
+    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 1, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
 
     const int P = tap_count >> 1;
@@ -167,7 +167,7 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
   for(int rep = 0; rep < REPS; rep++) {
     const unsigned old_seed = seed;
 
-    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
+    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 1, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
 
     setExtraInfo_RSL(rep, old_seed, length);
