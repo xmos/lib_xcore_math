@@ -39,7 +39,7 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   int16_t DWORD_ALIGNED b_data[MAX_LEN];
-  split_acc_s32_t DWORD_ALIGNED acc[(MAX_LEN+VPU_INT16_EPV-1) / VPU_INT16_EPV];
+  split_acc_s32_t DWORD_ALIGNED acc[(MAX_LEN+VPU_INT16_EPV) / VPU_INT16_EPV];
 
   bfp_s16_t B;
 
