@@ -36,9 +36,8 @@ unsigned chunk_s16_accumulate(
 
      acc->vD[k] = (acc32 >> 16) & 0xFFFF;
      acc->vR[k] = acc32 & 0xFFFF;
-     unsigned tmp = 15 - HR_S16(acc->vD[k]);
-     printf("k %d, b_mod %d, vc %d, tmp %d\n", k, b_mod, vc, tmp);
 
+     unsigned tmp = 15 - HR_S16(acc->vD[k]);
      vc = MAX(vc, tmp);
   }
   return vc;

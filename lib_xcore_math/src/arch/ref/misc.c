@@ -48,7 +48,6 @@ void vect_s32_split_accs(
 
     for(int o = 0; o < VPU_INT8_ACC_PERIOD; o++){
       int k = g * VPU_INT8_ACC_PERIOD + o;
-      printf("%d ", k);
       int32_t acc32 = b[k];
 
       int32_t acc_hi = (acc32 & 0xFFFF0000) >> 16;
