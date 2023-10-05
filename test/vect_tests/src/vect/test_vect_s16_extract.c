@@ -27,10 +27,10 @@ TEST_TEAR_DOWN(vect_extract) {}
 
 #if SMOKE_TEST
 #  define REPS       (100)
-#  define MAX_LEN    (127)
+#  define MAX_LEN    (128)
 #else
 #  define REPS       (1000)
-#  define MAX_LEN    (1023)
+#  define MAX_LEN    (1024)
 #endif
 
 

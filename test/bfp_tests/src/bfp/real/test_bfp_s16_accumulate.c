@@ -26,10 +26,10 @@ TEST_TEAR_DOWN(bfp_s16_accumulate) {}
 
 #if SMOKE_TEST
 #  define REPS       (100)
-#  define MAX_LEN    (127)
+#  define MAX_LEN    (128)
 #else
 #  define REPS       (1000)
-#  define MAX_LEN    (1023)
+#  define MAX_LEN    (1024)
 #endif
 
 
@@ -45,13 +45,13 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
 
   double expected_f[MAX_LEN];
   int32_t DWORD_ALIGNED expected[MAX_LEN];
-  int32_t DWORD_ALIGNED actual[MAX_LEN+1];
+  int32_t DWORD_ALIGNED actual[MAX_LEN];
 
   bfp_s16_init(&B, b_data, 0, 0, 0);
 
   for(int v = 0; v < REPS; v++){
     test_random_bfp_s16(&B, MAX_LEN, &seed, NULL, 0);
-    B.length = pseudo_rand_int(&seed, 1,MAX_LEN+1);
+    B.length = pseudo_rand_int(&seed, 1, MAX_LEN+1);
 
     exponent_t acc_exp = pseudo_rand_int(&seed, -30, 30);
 
