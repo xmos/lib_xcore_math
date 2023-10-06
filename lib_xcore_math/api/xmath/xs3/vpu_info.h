@@ -61,24 +61,47 @@ enum {
 /**
  * The saturation bounds for signed integers in each VPU operating mode.
  *
- * @ingroup xs3_vpu_info
  */
 
-/** The upper saturation bound for 8-bit elements */
+/** The upper saturation bound for 8-bit elements
+ *
+ * @ingroup xs3_vpu_info
+*/
 #define VPU_INT8_MAX   ( 0x7F )
-/** The lower saturation bound for 8-bit elements */
+/** The lower saturation bound for 8-bit elements
+ *
+ * @ingroup xs3_vpu_info
+*/
 #define VPU_INT8_MIN   ( -0x7F )
-/** The upper saturation bound for 16-bit elements */
+/** The upper saturation bound for 16-bit elements
+ *
+ * @ingroup xs3_vpu_info
+*/
 #define VPU_INT16_MAX  ( 0x7FFF )
-/** The lower saturation bound for 16-bit elements */
+/** The lower saturation bound for 16-bit elements
+ *
+ * @ingroup xs3_vpu_info
+*/
 #define VPU_INT16_MIN  ( -0x7FFF )
-/** The upper saturation bound for 32-bit elements and 32-bit accumulators */
+/** The upper saturation bound for 32-bit elements and 32-bit accumulators
+ *
+ * @ingroup xs3_vpu_info
+*/
 #define VPU_INT32_MAX  ( 0x7FFFFFFF )
-/** The lower saturation bound for 32-bit elements and 32-bit accumulators */
+/** The lower saturation bound for 32-bit elements and 32-bit accumulators
+ *
+ * @ingroup xs3_vpu_info
+*/
 #define VPU_INT32_MIN  ( -0x7FFFFFFF )
-/** The upper saturation bound for 40-bit accumulators */
+/** The upper saturation bound for 40-bit accumulators
+ *
+ * @ingroup xs3_vpu_info
+*/
 #define VPU_INT40_MAX  ( 0x7FFFFFFFFFLL )
-/** The lower saturation bound for 40-bit accumulators */
+/** The lower saturation bound for 40-bit accumulators
+ *
+ * @ingroup xs3_vpu_info
+*/
 #define VPU_INT40_MIN  ( -0x7FFFFFFFFFLL )
 
 /**
