@@ -63,35 +63,23 @@ enum {
  *
  * @ingroup xs3_vpu_info
  */
-enum {
-    /** The upper saturation bound for 8-bit elements */
-    VPU_INT8_MAX =  0x7F,
-    /** The lower saturation bound for 8-bit elements */
-    VPU_INT8_MIN = -0x7F,
 
-    /** The upper saturation bound for 16-bit elements */
-    VPU_INT16_MAX =  0x7FFF,
-    /** The lower saturation bound for 16-bit elements */
-    VPU_INT16_MIN = -0x7FFF,
-    /** The upper saturation bound for 32-bit elements and 32-bit accumulators */
-    VPU_INT32_MAX =  0x7FFFFFFF,
-    /** The lower saturation bound for 32-bit elements and 32-bit accumulators */
-    VPU_INT32_MIN = -0x7FFFFFFF,
-    /** On Win32 platforms the enum constants are a 4-byte int type,
-        so the long long values must be declared as defines outside the enumeration */
-#ifndef _WIN32
-    /** The upper saturation bound for 40-bit accumulators */
-    VPU_INT40_MAX =  0x7FFFFFFFFFLL,
-    /** The lower saturation bound for 40-bit accumulators */
-    VPU_INT40_MIN = -0x7FFFFFFFFFLL
-};
-#else
-};
+/** The upper saturation bound for 8-bit elements */
+#define VPU_INT8_MAX   ( 0x7F )
+/** The lower saturation bound for 8-bit elements */
+#define VPU_INT8_MIN   ( -0x7F )
+/** The upper saturation bound for 16-bit elements */
+#define VPU_INT16_MAX  ( 0x7FFF )
+/** The lower saturation bound for 16-bit elements */
+#define VPU_INT16_MIN  ( -0x7FFF )
+/** The upper saturation bound for 32-bit elements and 32-bit accumulators */
+#define VPU_INT32_MAX  ( 0x7FFFFFFF )
+/** The lower saturation bound for 32-bit elements and 32-bit accumulators */
+#define VPU_INT32_MIN  ( -0x7FFFFFFF )
 /** The upper saturation bound for 40-bit accumulators */
 #define VPU_INT40_MAX  ( 0x7FFFFFFFFFLL )
 /** The lower saturation bound for 40-bit accumulators */
-#define VPU_INT40_MIN ( -0x7FFFFFFFFFLL )
-#endif // _WIN32
+#define VPU_INT40_MIN  ( -0x7FFFFFFFFFLL )
 
 /**
  * Number of accumulator bits in each operating mode.
