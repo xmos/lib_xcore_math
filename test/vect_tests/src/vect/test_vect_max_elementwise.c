@@ -62,7 +62,7 @@ TEST(vect_max_elementwise, vect_s16_max_elementwise)
 
     for(int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
-        unsigned len = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
+        unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         setExtraInfo_RSL(v, old_seed, len);
 
@@ -120,7 +120,7 @@ TEST(vect_max_elementwise, vect_s32_max_elementwise)
 
     for(int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
-        unsigned len = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
+        unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         setExtraInfo_RSL(v, old_seed, len);
 

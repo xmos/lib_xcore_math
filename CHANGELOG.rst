@@ -9,6 +9,7 @@ lib_xcore_math change log
 * Fixes bug with the `vect_s32_prepare_api` not appearing in the documentation.
 * Fixes bug in `bfp_s32_mean()` and `bfp_s16_mean()` when hitting a corner case scenario.
 * Cleans up internal functions.
+* Allows compiling and running demos and tests on Windows Native x86 platforms.
 
 2.1.2
 -----

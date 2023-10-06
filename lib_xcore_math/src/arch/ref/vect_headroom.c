@@ -14,6 +14,7 @@ headroom_t vect_s16_headroom(
     const int16_t v[],
     const unsigned length)
 {
+
     int16_t largest = 0;
     unsigned ldex = 0;
 
@@ -29,7 +30,7 @@ headroom_t vect_s16_headroom(
             ldex = k;
         }
     }
-    
+
     int16_t lval = v[ldex];
 
     for(int i = 14; i >= 0; i--){
@@ -55,6 +56,7 @@ headroom_t vect_s32_headroom(
     const int32_t v[],
     const unsigned length)
 {
+
     int32_t largest = 0;
     unsigned ldex = 0;
 
@@ -70,7 +72,7 @@ headroom_t vect_s32_headroom(
             ldex = k;
         }
     }
-    
+
     int32_t lval = v[ldex];
 
     for(int i = 30; i >= 0; i--){
@@ -80,7 +82,7 @@ headroom_t vect_s32_headroom(
             lmod = lval & ~mask;
         else
             lmod = lval | mask;
-         
+
         if(lmod != lval){
             return 30 - i;
         }

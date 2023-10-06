@@ -1753,13 +1753,13 @@ void vect_s32_merge_accs(
  * 
  * This function is most efficient (in terms of cycles/accumulator) when `length` is a multiple of
  * 16. In any case, `length` will be rounded up such that a multiple of 16 accumulators will always
- * be merged.
+ * be split.
  * 
  * This function can safely split accumulators in-place.
  * 
  * @param[out]  a       Output vector of split_acc_s32_t 
  * @param[in]   b       Input vector of int32_t
- * @param[in]   length  Number of accumulators to merge
+ * @param[in]   length  Number of accumulators to split
  * 
  * @exception ET_LOAD_STORE Raised if `b` or `a` is not word-aligned (See @ref note_vector_alignment)
  * 

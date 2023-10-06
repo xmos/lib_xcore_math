@@ -22,12 +22,12 @@
  */
 
 #include <math.h>
+#include "xmath/xmath.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "fft.h"
-
 
 // Private function prototypes
 static size_t reverse_bits(size_t x, int n);
@@ -41,7 +41,7 @@ int Fft_transformRadix2(double real[], double imag[], size_t n) {
 		levels++;
 	if ((size_t)1U << levels != n)
 		return false;  // n is not a power of 2
-	
+
 	// Trignometric tables
 	if (SIZE_MAX / sizeof(double) < n / 2)
 		return false;
@@ -54,7 +54,7 @@ int Fft_transformRadix2(double real[], double imag[], size_t n) {
 		cos_table[i] = cos(2 * M_PI * i / n);
 		sin_table[i] = sin(2 * M_PI * i / n);
 	}
-	
+
 	// Bit-reversed addressing permutation
 	for (size_t i = 0; i < n; i++) {
 		size_t j = reverse_bits(i, levels);
@@ -67,7 +67,7 @@ int Fft_transformRadix2(double real[], double imag[], size_t n) {
 			imag[j] = temp;
 		}
 	}
-	
+
 	// Cooley-Tukey decimation-in-time radix-2 FFT
 	for (size_t size = 2; size <= n; size *= 2) {
 		size_t halfsize = size / 2;
@@ -87,7 +87,7 @@ int Fft_transformRadix2(double real[], double imag[], size_t n) {
 			break;
 	}
 	status = true;
-	
+
 cleanup:
 	free(cos_table);
 	free(sin_table);

@@ -80,7 +80,7 @@ headroom_t vect_s32_convolve_same(
 
   // printf("\n\n\n");
   // for(int i = 0; i < copy_count; i++){
-  //   printf("buff[%d] = 0x%08X\n", i, buff[i]);
+  //   printf("buff[%d] = 0x%08lX\n", i, buff[i]);
   // }
   // printf("\n\n\n");
 
@@ -90,13 +90,12 @@ headroom_t vect_s32_convolve_same(
           filter_q30,
           filter_taps + P - 1,
           filter_taps);
-
   res_hr = MIN(res_hr, hr);
 
   ////// Do right tail
   for(unsigned i  = 0; i < filter_taps - 1; i++)
     buff[i] = signal_in[signal_in_length + 1 - filter_taps + i];
-    
+
   switch(padding_mode){
     case PAD_MODE_REFLECT:
       apply_pad_reflect(&buff[filter_taps-1], P, signal_in, signal_in_length, 1);
@@ -110,17 +109,16 @@ headroom_t vect_s32_convolve_same(
 
   // printf("\n\n\n");
   // for(int i = 0; i < copy_count; i++){
-  //   printf("buff[%d] = 0x%08X\n", i, buff[i]);
+  //   printf("buff[%d] = 0x%08lX\n", i, buff[i]);
   // }
   // printf("\n\n\n");
-  
+
   hr = vect_s32_convolve_valid(
         &signal_out[signal_in_length-P],
         buff,
         filter_q30,
         filter_taps + P - 1,
         filter_taps);
-
   res_hr = MIN(res_hr, hr);
 
   return res_hr;

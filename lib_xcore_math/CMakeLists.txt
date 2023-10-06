@@ -9,9 +9,9 @@ set( LIB_NAME   lib_xcore_math  )
 
 ## Source files
 file( GLOB_RECURSE    SOURCES_C   "src/vect/*.c"
-                                  "src/bfp/*.c"  
+                                  "src/bfp/*.c"
                                   "src/dct/*.c"
-                                  "src/fft/*.c" 
+                                  "src/fft/*.c"
                                   "src/filter/*.c"
                                   "src/scalar/*.c" )
 file( GLOB_RECURSE    SOURCES_CPP "src/*.cpp" )
@@ -27,6 +27,7 @@ target_sources( ${LIB_NAME}
     $<$<PLATFORM_ID:XCORE_XS3A>:${SOURCES_ASM}>
     $<$<PLATFORM_ID:Linux>:${SOURCES_REF}>
     $<$<PLATFORM_ID:Darwin>:${SOURCES_REF}>
+    $<$<PLATFORM_ID:Windows>:${SOURCES_REF}>
 )
 
 target_include_directories( ${LIB_NAME}
@@ -36,14 +37,28 @@ target_include_directories( ${LIB_NAME}
 
 target_compile_options( ${LIB_NAME}
   PRIVATE
-    -Os -g
+    -Os
     -Wall
-    -Wextra
-    -Werror
     $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
 )
 
-
+# Add options for different compilers
+if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  target_compile_options(${LIB_NAME}
+    PRIVATE
+      -g
+      -Wextra
+      -Werror
+  )
+else()
+  target_compile_options(${LIB_NAME}
+    PRIVATE
+       # Avoid warning C4996: 'sprintf': This function or variable may be unsafe.
+       # Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
+       # See online help for details.
+      -D_CRT_SECURE_NO_WARNINGS
+)
+endif()
 
 # Set defaults for generating the FFT LUT if they are not already defined
 if ( NOT DEFINED XMATH_GEN_FFT_LUT )
