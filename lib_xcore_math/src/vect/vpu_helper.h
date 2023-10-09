@@ -9,7 +9,7 @@
 
 /**
  * VPU saturation logic for 8-, 16- or 32-bit values.
- * 
+ *
  * Note that the bit width of the argument VAL must be larger than the target type for this to be effective.
  */
 #define SAT8(VAL)      (int8_t) (((VAL) >= VPU_INT8_MAX )? VPU_INT8_MAX  : (((VAL) <= VPU_INT8_MIN )? VPU_INT8_MIN  : (VAL)))
@@ -23,22 +23,22 @@
 
 /**
  * Apply a rounding right-shift to VAL. Adds 2**SHR to VAL prior to right-shifting, effectively rounding.
- * 
+ *
  * Note that SHR must be non-negative for this to work correctly.
  */
 #define ROUND_SHR(VAL, SHR)    (((SHR)<=0)?(VAL) : (((VAL)>>((SHR)-1))+1)>>1)
 
 /**
  * Apply a non-rounding right-shift to VAL.
- * 
+ *
  * Note that SHR must be non-negative for this to work correctly.
  */
 #define SHR(VAL, SHR)   ((VAL)>>SHR)
 
 /**
  * Rounding, saturating arithmetic right shift for 8-, 16- or 32-bit values.
- * 
- * SHR may be negative or non-negative. If negative, VAL is cast to larger bit depth, 
+ *
+ * SHR may be negative or non-negative. If negative, VAL is cast to larger bit depth,
  * left shift is applied, and saturation logic is applied. If non-negative, rounding
  * right shfit is applied.
  */

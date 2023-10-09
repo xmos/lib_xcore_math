@@ -8,7 +8,7 @@
 #include "xmath/xmath.h"
 
 
-static inline 
+static inline
 int32_t safe_ashr32(int32_t x, right_shift_t shr)
 {
   if(shr >= 32){
@@ -68,8 +68,8 @@ void bfp_s32_shl(
 
 
 void bfp_s32_add(
-    bfp_s32_t* a, 
-    const bfp_s32_t* b, 
+    bfp_s32_t* a,
+    const bfp_s32_t* b,
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -87,8 +87,8 @@ void bfp_s32_add(
 
 
 void bfp_s32_add_scalar(
-    bfp_s32_t* a, 
-    const bfp_s32_t* b, 
+    bfp_s32_t* a,
+    const bfp_s32_t* b,
     const float_s32_t c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -98,18 +98,18 @@ void bfp_s32_add_scalar(
 
     right_shift_t b_shr, c_shr;
 
-    vect_s32_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp, 
+    vect_s32_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp,
                                     b->hr, HR_S32(c.mant));
     int32_t cc = safe_ashr32(c.mant, c_shr);
 
-    a->hr = vect_s32_add_scalar(a->data, b->data, cc, b->length, 
+    a->hr = vect_s32_add_scalar(a->data, b->data, cc, b->length,
                                     b_shr);
 }
 
 
 void bfp_s32_sub(
-    bfp_s32_t* a, 
-    const bfp_s32_t* b, 
+    bfp_s32_t* a,
+    const bfp_s32_t* b,
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -127,8 +127,8 @@ void bfp_s32_sub(
 
 
 void bfp_s32_mul(
-    bfp_s32_t* a, 
-    const bfp_s32_t* b, 
+    bfp_s32_t* a,
+    const bfp_s32_t* b,
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -138,14 +138,14 @@ void bfp_s32_mul(
 #endif
 
     right_shift_t b_shr, c_shr;
-    vect_s32_mul_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr); 
+    vect_s32_mul_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->hr = vect_s32_mul(a->data, b->data, c->data, b->length, b_shr, c_shr);
 }
 
 
 void bfp_s32_scale(
-    bfp_s32_t* a, 
+    bfp_s32_t* a,
     const bfp_s32_t* b,
     const float_s32_t c)
 {
@@ -193,7 +193,7 @@ float_s64_t bfp_s32_sum(
 
 
 float_s64_t bfp_s32_dot(
-    const bfp_s32_t* b, 
+    const bfp_s32_t* b,
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -211,10 +211,10 @@ float_s64_t bfp_s32_dot(
 
 
 void bfp_s32_clip(
-    bfp_s32_t* a, 
-    const bfp_s32_t* b, 
-    const int32_t lower_bound, 
-    const int32_t upper_bound, 
+    bfp_s32_t* a,
+    const bfp_s32_t* b,
+    const int32_t lower_bound,
+    const int32_t upper_bound,
     const int bound_exp)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -227,7 +227,7 @@ void bfp_s32_clip(
     exponent_t a_exp;
     right_shift_t b_shr;
 
-    int32_t lb = lower_bound; 
+    int32_t lb = lower_bound;
     int32_t ub = upper_bound;
 
     vect_s32_clip_prepare(&a_exp, &b_shr, &lb, &ub, b->exp, bound_exp, b->hr);
@@ -337,7 +337,7 @@ float_s32_t bfp_s32_mean(
     if(shr > 0)
         mean += ((uint64_t)1 << (shr-1));
 
-    a.mant = mean >> shr;
+    a.mant = (int32_t) (mean >> shr);
     a.exp = b->exp - hr + shr;
 
     return a;
@@ -394,8 +394,8 @@ float_s32_t bfp_s32_max(
 
 
 void bfp_s32_max_elementwise(
-    bfp_s32_t* a, 
-    const bfp_s32_t* b, 
+    bfp_s32_t* a,
+    const bfp_s32_t* b,
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -408,11 +408,11 @@ void bfp_s32_max_elementwise(
   // We'll choose the smallest exponent that leaves at least 1 bit of headroom.
   const unsigned min_required_operand_headroom = 1;
   right_shift_t b_shr, c_shr;
-  vect_2vec_prepare(&a->exp, &b_shr, &c_shr, 
-                        b->exp, c->exp, b->hr, c->hr, 
+  vect_2vec_prepare(&a->exp, &b_shr, &c_shr,
+                        b->exp, c->exp, b->hr, c->hr,
                         min_required_operand_headroom);
 
-  a->hr = vect_s32_max_elementwise(a->data, b->data, c->data, 
+  a->hr = vect_s32_max_elementwise(a->data, b->data, c->data,
                                        b->length, b_shr, c_shr);
 }
 
@@ -432,8 +432,8 @@ float_s32_t bfp_s32_min(
 
 
 void bfp_s32_min_elementwise(
-    bfp_s32_t* a, 
-    const bfp_s32_t* b, 
+    bfp_s32_t* a,
+    const bfp_s32_t* b,
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -446,11 +446,11 @@ void bfp_s32_min_elementwise(
   // We'll choose the smallest exponent that leaves at least 1 bit of headroom.
   const unsigned min_required_operand_headroom = 1;
   right_shift_t b_shr, c_shr;
-  vect_2vec_prepare(&a->exp, &b_shr, &c_shr, 
-                        b->exp, c->exp, b->hr, c->hr, 
+  vect_2vec_prepare(&a->exp, &b_shr, &c_shr,
+                        b->exp, c->exp, b->hr, c->hr,
                         min_required_operand_headroom);
 
-  a->hr = vect_s32_min_elementwise(a->data, b->data, c->data, 
+  a->hr = vect_s32_min_elementwise(a->data, b->data, c->data,
                                        b->length, b_shr, c_shr);
 }
 
@@ -499,7 +499,7 @@ void bfp_s32_to_bfp_s16(
 
 void bfp_s32_macc(
     bfp_s32_t* acc,
-    const bfp_s32_t* b, 
+    const bfp_s32_t* b,
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -509,18 +509,18 @@ void bfp_s32_macc(
 #endif
 
     right_shift_t acc_shr, b_shr, c_shr;
-    vect_s32_macc_prepare(&acc->exp, 
-                              &acc_shr, &b_shr, &c_shr, 
-                              acc->exp, b->exp, c->exp, 
-                              acc->hr, b->hr, c->hr); 
+    vect_s32_macc_prepare(&acc->exp,
+                              &acc_shr, &b_shr, &c_shr,
+                              acc->exp, b->exp, c->exp,
+                              acc->hr, b->hr, c->hr);
 
-    acc->hr = vect_s32_macc(acc->data, b->data, c->data, 
+    acc->hr = vect_s32_macc(acc->data, b->data, c->data,
                                 b->length, acc_shr, b_shr, c_shr);
 }
 
 void bfp_s32_nmacc(
     bfp_s32_t* acc,
-    const bfp_s32_t* b, 
+    const bfp_s32_t* b,
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -530,12 +530,12 @@ void bfp_s32_nmacc(
 #endif
 
     right_shift_t acc_shr, b_shr, c_shr;
-    vect_s32_macc_prepare(&acc->exp, 
-                              &acc_shr, &b_shr, &c_shr, 
-                              acc->exp, b->exp, c->exp, 
-                              acc->hr, b->hr, c->hr); 
+    vect_s32_macc_prepare(&acc->exp,
+                              &acc_shr, &b_shr, &c_shr,
+                              acc->exp, b->exp, c->exp,
+                              acc->hr, b->hr, c->hr);
 
-    acc->hr = vect_s32_nmacc(acc->data, b->data, c->data, 
+    acc->hr = vect_s32_nmacc(acc->data, b->data, c->data,
                                  b->length, acc_shr, b_shr, c_shr);
 }
 

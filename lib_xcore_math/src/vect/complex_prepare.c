@@ -25,7 +25,7 @@ void vect_complex_s16_macc_prepare(
     const headroom_t b_hr,
     const headroom_t c_hr)
 {
-  // Compared to vect_s16_macc_prepare() (see that function for more details) we need one extra bit of shift 
+  // Compared to vect_s16_macc_prepare() (see that function for more details) we need one extra bit of shift
   // in bc_shr
 
   const headroom_t bc_hr = b_hr + c_hr;
@@ -35,7 +35,7 @@ void vect_complex_s16_macc_prepare(
   const exponent_t bc_exp = b_exp + c_exp - bc_hr + 17;
 
   // The exponent that acc[] would have if it had exactly one bit of headroom.
-  // This way 
+  // This way
   const exponent_t tmp_exp = acc_exp - acc_hr + 1;
 
   // The new exponent should be whichever of those two exponents is greater.
@@ -82,7 +82,7 @@ void vect_complex_s16_real_mul_prepare(
 
     Due to the symmetric saturation logic in the VPU, -2^15 cannot be output either.
 
-    If one pair of inputs happens to be  -2^15 and (2^15)-1, with a sat value of 15, the 
+    If one pair of inputs happens to be  -2^15 and (2^15)-1, with a sat value of 15, the
      (rounded) result prior to saturation ends up being:
 
         ((-2^15 * ((2^15)-1) + 2^14) >> 15
@@ -101,7 +101,7 @@ void vect_complex_s16_real_mul_prepare(
     Otherwise, that will be explicitly avoided. (Beware: avoiding saturation effectively loses
     a bit of precision).
 
-    Note that if the vector inputs B and C to bfp_complex_s16_real_mul() are the result of a previous VPU 
+    Note that if the vector inputs B and C to bfp_complex_s16_real_mul() are the result of a previous VPU
     operation, the saturating condition cannot occur, because the VPU cannot output -0x8000. In that case
     there's no reason not to allow saturation.
     */
@@ -260,7 +260,7 @@ void vect_complex_s32_mag_prepare(
     const exponent_t b_exp,
     const headroom_t b_hr)
 {
-    // Needs 1 bit of headroom. For 16 bits, consider that complex mantissa values near (INT16_MAX + INT16_MAX*j) can't 
+    // Needs 1 bit of headroom. For 16 bits, consider that complex mantissa values near (INT16_MAX + INT16_MAX*j) can't
     // be rotated to the real axis without going beyond the range of a 16-bit integer.
     *b_shr = 1-(int)b_hr;
     *a_exp = b_exp + *b_shr;
@@ -296,8 +296,8 @@ void vect_complex_s32_real_mul_prepare(
     */
     right_shift_t remaining_shr = 1;
 
-    *b_shr = -b_hr;
-    *c_shr = -c_hr;
+    *b_shr = -(int)b_hr;
+    *c_shr = -(int)c_hr;
 
     // If b had headroom to begin with, then shifting it right 1 more will be lossless.
     // otherwise shift c right 1 more.
@@ -321,7 +321,7 @@ void vect_complex_s32_mul_prepare(
 {
     /*
 
-        2^31 = ( -2^31 * 2^-b_hr * 2^-b_shr * -2^31 * 2^-c_hr * 2^-c_shr 
+        2^31 = ( -2^31 * 2^-b_hr * 2^-b_shr * -2^31 * 2^-c_hr * 2^-c_shr
                             + -2^31 * 2^-b_hr * 2^-b_shr * -2^31 * 2^-c_hr * 2^-c_shr ) * 2^-30
         2^(31) = ( 2^(31+31-b_hr-b_shr-c_hr-c_shr) + 2^(31+31-b_hr-b_shr-c_hr-c_shr) ) * 2^-30
         2^(31) = 2 * 2^(62-b_hr-b_shr-c_hr-c_shr) * 2^-30
@@ -340,7 +340,7 @@ void vect_complex_s32_mul_prepare(
     //  total_shr <= 3
     
     if(total_shr < 0){
-        *b_shr = MAX(total_shr, ((int)-b_hr));
+        *b_shr = MAX(total_shr, -(int)b_hr);
     } else {
         if( b_hr <= c_hr )
             *b_shr = total_shr - (total_shr >> 1);
@@ -380,9 +380,9 @@ void vect_complex_s32_scale_prepare(
 
     // We can't left-shift B more than b_hr bits, so the
     // rest must come from alpha
-    if( *b_shr < ((int)-b_hr) ){
+    if( *b_shr < -(int)b_hr ){
         *c_shr = *b_shr + b_hr;
-        *b_shr = -b_hr;
+        *b_shr = -(int)b_hr;
     }
 
     *a_exp = b_exp + c_exp + 30 + *b_shr + *c_shr;
@@ -403,7 +403,7 @@ void vect_complex_s32_squared_mag_prepare(
 
         And we want the result for that case to be 0x7FFFFFFF (0x80000000 before saturation).
 
-            0x80000000 = ( (-2^31 * 2^-b_hr * 2^-b_shr) * (-2^31 * 2^-b_hr * 2^-b_shr) 
+            0x80000000 = ( (-2^31 * 2^-b_hr * 2^-b_shr) * (-2^31 * 2^-b_hr * 2^-b_shr)
                                     + (-2^31 * 2^-b_hr * 2^-b_shr) * (-2^31 * 2^-b_hr * 2^-b_shr) ) >> 30
             2^31 = ( 2^1 * 2^( 31 - b_hr - b_shr + 31 - b_hr - b_shr ) ) * 2^-30
             2^31 = ( 2^( 63 - 2*b_hr - 2*b_shr ) * 2^-30

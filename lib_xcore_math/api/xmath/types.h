@@ -13,7 +13,9 @@ extern "C" {
 
 // Disable warning messages C4820:
 // warning C4820: '<unnamed-tag>': '4' bytes padding added after data member XYZ
+#ifdef _WIN32
 #pragma warning( disable : 4820)
+#endif
 
 /**
  * @defgroup type_scalar_int      xmath Scalar Types (Integer)

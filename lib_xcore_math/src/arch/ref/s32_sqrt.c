@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 
 static int32_t isqrt_s64(
@@ -13,7 +13,8 @@ static int32_t isqrt_s64(
     unsigned depth)
 {
   // p = -(2^31)
-  int32_t p = -0x80000000;
+  int32_t p = 0x80000000;
+  p = -p;
 
   int32_t result = 0;
 

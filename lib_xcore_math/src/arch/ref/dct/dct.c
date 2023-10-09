@@ -7,9 +7,9 @@
 #include <string.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../vect/vpu_const_vects.h"
+#include "vpu_const_vects.h"
 
 
 
@@ -40,12 +40,12 @@ headroom_t dct_adsb_s32(
     int64_t t = tail[k];
     int64_t s = h + t;
     int64_t d = h - t;
-    sums[k] = s >> 1;
-    diffs[k] = d >> 1;
+    sums[k] = (int32_t) (s >> 1);
+    diffs[k] = (int32_t) (d >> 1);
     diffs[k] = vlmul32(diffs[k], dct_lut[k]);
   }
 
-  return MIN(vect_s32_headroom(sums, length), 
+  return MIN(vect_s32_headroom(sums, length),
              vect_s32_headroom(diffs, length));
 }
 
@@ -75,7 +75,7 @@ void dct6_forward(
   int32_t x_tmp[8];
   memcpy(x_tmp, x, 6 * sizeof(int32_t));
   for(unsigned k = 0; k < DCT_N; k++)
-    tmp[k] = vlmaccr32(0, x_tmp, &dct6_matrix[DCT_N-1-k][0]);
+    tmp[k] = (int32_t) vlmaccr32(0, x_tmp, &dct6_matrix[DCT_N-1-k][0]);
   memcpy(y, tmp, sizeof(tmp));
 }
 
@@ -127,7 +127,7 @@ void dct12_forward(
 
 void dct16_forward(
     int32_t y[16],
-    const int32_t x[16]) 
+    const int32_t x[16])
 {
   const unsigned DCT_N = 16;
   const unsigned HALF_DCT_N = 8;
@@ -160,7 +160,7 @@ void dct16_forward(
 
 void dct24_forward(
     int32_t y[24],
-    const int32_t x[24]) 
+    const int32_t x[24])
 {
   const unsigned DCT_N = 24;
   const unsigned HALF_DCT_N = 12;

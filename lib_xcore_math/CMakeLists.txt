@@ -35,6 +35,11 @@ target_include_directories( ${LIB_NAME}
     api
 )
 
+target_include_directories( ${LIB_NAME}
+  PRIVATE
+    src/vect
+)
+
 target_compile_options( ${LIB_NAME}
   PRIVATE
     -Os
@@ -75,7 +80,7 @@ if ( ${XMATH_GEN_FFT_LUT} )
   # Auto-generate the FFT LUT
 
   if( NOT ${Python3_FOUND} )
-    message(FATAL_ERROR "FFT LUT generation enabled, but Python3 not found. " 
+    message(FATAL_ERROR "FFT LUT generation enabled, but Python3 not found. "
                         "Disable the XMATH_GEN_FFT_LUT option to use the version included with the repository (max FFT length=1024). "
                         "Disable the XMATH_USE_DEFAULT_FFT_LUT option if you've manually generated the LUT.")
   endif()
@@ -88,10 +93,10 @@ if ( ${XMATH_GEN_FFT_LUT} )
   set( FFT_LUT_FILE "xmath_fft_lut" )
   set( FFT_LUT_FILE_SOURCE  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.c )
   set( FFT_LUT_FILE_HEADER  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.h )
-
+ 
   list(APPEND FFT_SCRIPT_ARGS --out_file ${FFT_LUT_FILE})
   list(APPEND FFT_SCRIPT_ARGS --out_dir ${XMATH_AUTOGEN_DIR})
-  list(APPEND FFT_SCRIPT_ARGS --max_fft_log2 ${XMATH_MAX_FFT_LEN_LOG2}) 
+  list(APPEND FFT_SCRIPT_ARGS --max_fft_log2 ${XMATH_MAX_FFT_LEN_LOG2})
   list(APPEND FFT_SCRIPT_ARGS --dit)
   list(APPEND FFT_SCRIPT_ARGS --dif)
 
@@ -133,4 +138,4 @@ else()
     # Otherwise, the user must use the provided python script to generate their own. See the Notes
     # section in the documentation for details.
   endif()
-endif()   
+endif()

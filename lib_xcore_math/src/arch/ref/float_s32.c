@@ -6,9 +6,9 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../vect/vpu_const_vects.h"
+#include "vpu_const_vects.h"
 
 
 static inline
@@ -17,7 +17,7 @@ int64_t maccs(int64_t acc, int32_t x, int32_t y)
   return acc + (((int64_t)x) * y);
 }
 
-static inline 
+static inline
 int32_t lextract(int64_t acc, unsigned pos)
 {
   return (acc >> pos) & 0xFFFFFFFF;
@@ -35,7 +35,7 @@ float_s32_t float_s32_exp(
 
   headroom_t hr = HR_S32(b.mant);
 
-  int32_t tmp1 = vlashr32(b.mant, -hr);
+  int32_t tmp1 = vlashr32(b.mant, -(int)hr);
   tmp1 = vlashr32(tmp1, 1);
 
   res.exp = (b.exp - hr) + 1;
@@ -45,7 +45,7 @@ float_s32_t float_s32_exp(
 
   if( res.exp >= 0 ){
     res.mant = one;
-    res.exp = res.exp - 30; 
+    res.exp = res.exp - 30;
     return res;
   }
 

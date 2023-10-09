@@ -6,9 +6,9 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../vect/vpu_const_vects.h"
+#include "vpu_const_vects.h"
 
 
 void chunk_float_s32_log(
@@ -76,7 +76,7 @@ void chunk_q30_power_series(
 
     int32_t pow = 0x40000000;
     for(unsigned i = 0; i < term_count; i++){
-      acc = vlmacc32(acc, pow, coef[8*i]);
+      acc = (int32_t) vlmacc32(acc, pow, coef[8*i]);
       pow = vlmul32(pow, b[k]);
     }
 

@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath_fft_lut.h"
 
 //load 4 complex 32-bit values into a buffer
