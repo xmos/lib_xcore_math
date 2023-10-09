@@ -11,7 +11,7 @@
 bfp_s32_t bfp_s32_alloc(
     const unsigned length)
 {
-#if (DEBUG)
+#if (defined DEBUG && DEBUG > 0)
   assert( length > 0 );
 #endif // DEBUG
 
@@ -27,7 +27,7 @@ bfp_s32_t bfp_s32_alloc(
 bfp_s16_t bfp_s16_alloc(
     const unsigned length)
 {
-#if (DEBUG)
+#if (defined DEBUG && DEBUG > 0)
   assert( length > 0 );
 #endif // DEBUG
 
@@ -43,7 +43,7 @@ bfp_s16_t bfp_s16_alloc(
 bfp_complex_s32_t bfp_complex_s32_alloc(
     const unsigned length)
 {
-#if (DEBUG)
+#if (defined DEBUG && DEBUG > 0)
   assert( length > 0 );
 #endif // DEBUG
 
@@ -59,7 +59,7 @@ bfp_complex_s32_t bfp_complex_s32_alloc(
 bfp_complex_s16_t bfp_complex_s16_alloc(
     const unsigned length)
 {
-#if (DEBUG)
+#if (defined DEBUG && DEBUG > 0)
   assert( length > 0 );
 #endif // DEBUG
 
