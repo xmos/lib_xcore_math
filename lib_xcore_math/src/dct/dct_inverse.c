@@ -67,7 +67,7 @@ void dct12_inverse(
 {
   const unsigned DCT_N = 12;
   const unsigned HALF_DCT_N = (DCT_N >> 1);
-  const unsigned DCT_N_LOG2_CEIL = 4;
+  const signed DCT_N_LOG2_CEIL = 4; // Declare as signed to avoid warning C4146: unary minus operator applied to unsigned type, result still unsigned
   const unsigned HALF_DCT_N_CHUNKS = ((HALF_DCT_N + 7) >> 3);
   const int32_t* dct_lut = &idct12_lut[0];
 
@@ -115,7 +115,7 @@ void dct16_inverse(
 {
   const unsigned DCT_N = 16;
   const unsigned HALF_DCT_N = (DCT_N >> 1);
-  const unsigned DCT_N_LOG2_CEIL = 4;
+  const signed DCT_N_LOG2_CEIL = 4; // Declare as signed to avoid warning C4146: unary minus operator applied to unsigned type, result still unsigned
   const unsigned HALF_DCT_N_CHUNKS = ((HALF_DCT_N + 7) >> 3);
   const int32_t* dct_lut = &idct16_lut[0];
 
@@ -141,7 +141,7 @@ void dct24_inverse(
 {
   const unsigned DCT_N = 24;
   const unsigned HALF_DCT_N = (DCT_N >> 1);
-  const unsigned DCT_N_LOG2_CEIL = 5;
+  const signed DCT_N_LOG2_CEIL = 5; // Declare as signed to avoid warning C4146: unary minus operator applied to unsigned type, result still unsigned
   const unsigned HALF_DCT_N_CHUNKS = ((HALF_DCT_N + 7) >> 3);
   const int32_t* dct_lut = &idct24_lut[0];
 
@@ -167,7 +167,7 @@ void dct32_inverse(
 {
   const unsigned DCT_N = 32;
   const unsigned HALF_DCT_N = (DCT_N >> 1);
-  const unsigned DCT_N_LOG2_CEIL = 5;
+  const signed DCT_N_LOG2_CEIL = 5; // Declare as signed to avoid warning C4146: unary minus operator applied to unsigned type, result still unsigned
   const unsigned HALF_DCT_N_CHUNKS = ((HALF_DCT_N + 7) >> 3);
   const int32_t* dct_lut = &idct32_lut[0];
 
@@ -193,7 +193,7 @@ void dct48_inverse(
 {
   const unsigned DCT_N = 48;
   const unsigned HALF_DCT_N = (DCT_N >> 1);
-  const unsigned DCT_N_LOG2_CEIL = 6;
+  const signed DCT_N_LOG2_CEIL = 6; // Declare as signed to avoid warning C4146: unary minus operator applied to unsigned type, result still unsigned
   const unsigned HALF_DCT_N_CHUNKS = ((HALF_DCT_N + 7) >> 3);
   const int32_t* dct_lut = &idct48_lut[0];
 
@@ -219,7 +219,7 @@ void dct64_inverse(
 {
   const unsigned DCT_N = 64;
   const unsigned HALF_DCT_N = (DCT_N >> 1);
-  const unsigned DCT_N_LOG2_CEIL = 6;
+  const signed DCT_N_LOG2_CEIL = 6; // Declare as signed to avoid warning C4146: unary minus operator applied to unsigned type, result still unsigned
   const unsigned HALF_DCT_N_CHUNKS = ((HALF_DCT_N + 7) >> 3);
   const int32_t* dct_lut = &idct64_lut[0];
 

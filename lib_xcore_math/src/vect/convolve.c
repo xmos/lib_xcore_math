@@ -62,7 +62,7 @@ headroom_t vect_s32_convolve_same(
   const int copy_count = filter_taps + P - 1;
 
   ////// Do left tail
-  int32_t buff[9] = {0}; 
+  int32_t buff[9] = {0};
 
   for(int i = P; i < copy_count; i++)
     buff[i] = signal_in[i-P];
@@ -74,6 +74,7 @@ headroom_t vect_s32_convolve_same(
     case PAD_MODE_EXTEND:
       apply_pad_constant(&buff[0], P, signal_in[0]);
       break;
+    case PAD_MODE_ZERO:
     default:
       apply_pad_constant(&buff[0], P, (int32_t) padding_mode);
   }
@@ -103,6 +104,7 @@ headroom_t vect_s32_convolve_same(
     case PAD_MODE_EXTEND:
       apply_pad_constant(&buff[filter_taps-1], P, signal_in[signal_in_length-1]);
       break;
+    case PAD_MODE_ZERO:
     default:
       apply_pad_constant(&buff[filter_taps-1], P, (int32_t) padding_mode);
   }

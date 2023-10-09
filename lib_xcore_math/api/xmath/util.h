@@ -293,12 +293,13 @@ static inline unsigned n_bitrev(
   asm( "bitrev %0, %1" : "=r"(rev_index) : "r"(shifted_index) );
 
 #else
+
   unsigned dex = index;
   
   for(unsigned i = 0; i < bits; i++, dex >>= 1){
       rev_index = ((rev_index<<1) | (dex & 0x1));
   }
-  return rev_index;
+
 #endif
 
 
