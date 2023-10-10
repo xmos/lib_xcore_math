@@ -101,7 +101,7 @@ pipeline {
             label 'docker'
           }
           environment {
-            XMOSDOC_VERSION = "pr-67"
+            XMOSDOC_VERSION = "v4.0"
           }
           stages {
             stage('Build Docs') {
