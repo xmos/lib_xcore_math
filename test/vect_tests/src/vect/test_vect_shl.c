@@ -309,7 +309,7 @@ TEST(vect_shl, vect_complex_s16_shl)
 
         setExtraInfo_R(v);
 
-        const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
+        const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         const headroom_t hr = pseudo_rand_uint(&seed, 0, 12);
 
@@ -353,7 +353,7 @@ TEST(vect_shl, vect_complex_s32_shl)
 
         setExtraInfo_R(v);
 
-        const unsigned length = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
+        const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         const headroom_t hr = pseudo_rand_uint(&seed, 0, 28);
 

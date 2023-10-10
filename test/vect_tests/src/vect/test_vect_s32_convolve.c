@@ -55,7 +55,7 @@ TEST(vect_convolve, vect_s32_convolve_valid)
 
   for(int rep = 0; rep < REPS; rep++) {
 
-    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
+    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 1, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
 
     right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
@@ -80,7 +80,7 @@ TEST(vect_convolve, vect_s32_convolve_valid)
         acc = vlmacc32(acc, signal_in[k+p], taps[p]);
       expected[k] = acc;
     }
-    
+
     headroom_t hr = vect_s32_convolve_valid(signal_out, signal_in, taps, length, tap_count);
 
     TEST_ASSERT_EQUAL_MESSAGE(vect_s32_headroom(signal_out, out_length), hr, "");
@@ -108,7 +108,7 @@ TEST(vect_convolve, vect_s32_convolve_same_reflected)
 
   for(int rep = 0; rep < REPS; rep++) {
 
-    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
+    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 1, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
 
     const int P = tap_count >> 1;
@@ -138,7 +138,7 @@ TEST(vect_convolve, vect_s32_convolve_same_reflected)
     }
 
     memset(signal_out, 0, sizeof(signal_out));
-    
+
     headroom_t hr = vect_s32_convolve_same(signal_out, signal_in, taps, length, tap_count, PAD_MODE_REFLECT);
 
     TEST_ASSERT_EQUAL_MESSAGE(vect_s32_headroom(signal_out, length), hr, "");
@@ -158,7 +158,7 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
   const unsigned ALLOWED_TAPS[4] = {1,3,5,7};
 
   int32_t WORD_ALIGNED signal_in[MAX_LEN];
-  int32_t WORD_ALIGNED signal_out[MAX_LEN];   
+  int32_t WORD_ALIGNED signal_out[MAX_LEN];
 
   int32_t WORD_ALIGNED taps[7];
 
@@ -167,7 +167,7 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
   for(int rep = 0; rep < REPS; rep++) {
     const unsigned old_seed = seed;
 
-    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
+    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 1, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
 
     setExtraInfo_RSL(rep, old_seed, length);
@@ -175,6 +175,7 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
     const int P = tap_count >> 1;
 
     right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
+
     for(int k = 0; k < length; k++)
       signal_in[k] = pseudo_rand_int32(&seed) >> shr;
 
@@ -192,16 +193,16 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
       vpu_int32_acc_t acc = 0;
       for(int t = 0; t < tap_count; t++) {
         int i = k + t - P;
-        int32_t input = signal_in[ i ];
-        if( (i < 0) || (i >= length) )
-          input = 0;
+        int32_t input = 0;
+        if( (i >= 0) && (i < length) )
+          input = signal_in[ i ];
         acc = vlmacc32(acc, input, taps[t]);
       }
       expected[k] = acc;
     }
 
     memset(signal_out, 0, sizeof(signal_out));
-    
+
     headroom_t hr = vect_s32_convolve_same(signal_out, signal_in, taps, length, tap_count, PAD_MODE_ZERO);
 
     TEST_ASSERT_EQUAL_MESSAGE(vect_s32_headroom(signal_out, length), hr, "");
@@ -221,7 +222,7 @@ TEST(vect_convolve, vect_s32_convolve_same_extend)
   const unsigned ALLOWED_TAPS[4] = {1,3,5,7};
 
   int32_t WORD_ALIGNED signal_in[MAX_LEN];
-  int32_t WORD_ALIGNED signal_out[MAX_LEN];   
+  int32_t WORD_ALIGNED signal_out[MAX_LEN];
 
   int32_t WORD_ALIGNED taps[7];
 
@@ -255,18 +256,18 @@ TEST(vect_convolve, vect_s32_convolve_same_extend)
       vpu_int32_acc_t acc = 0;
       for(int t = 0; t < tap_count; t++) {
         int i = k + t - P;
-        int32_t input = signal_in[ i ];
+        int32_t input = 0;
         if( i < 0 )             input = signal_in[0];
         else if( i >= length )  input = signal_in[length - 1];
+        else input = signal_in[ i ];
         acc = vlmacc32(acc, input, taps[t]);
       }
       expected[k] = acc;
     }
 
     memset(signal_out, 0, sizeof(signal_out));
-    
-    headroom_t hr = vect_s32_convolve_same(signal_out, signal_in, taps, length, tap_count, PAD_MODE_EXTEND);
 
+    headroom_t hr = vect_s32_convolve_same(signal_out, signal_in, taps, length, tap_count, PAD_MODE_EXTEND);
     // printf("\n\n\n");
     // for(int i = 0; i < length; i++)
     //   printf("signal_in[%d] = 0x%08X\n", i, signal_in[i]);

@@ -5,4 +5,3 @@ Function, Brief
 :c:func:`float_complex_s32_mul()`    , ":math:`x \times y`           "
 :c:func:`float_complex_s32_add()`    , ":math:`x + y`                "
 :c:func:`float_complex_s32_sub()`    , ":math:`x - y`                "
-

@@ -6,14 +6,14 @@
 #include <string.h>
 
 #include "xmath/xmath.h"
-#include "../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 
 extern const unsigned rot_table32_rows;
 extern const complex_s32_t rot_table32[30][4];
 
 
-static inline 
+static inline
 complex_s32_t safe_complex_ashr32(complex_s32_t x, right_shift_t shr)
 {
   complex_s32_t y;
@@ -77,8 +77,8 @@ void bfp_complex_s32_shl(
 
 
 void bfp_complex_s32_add(
-    bfp_complex_s32_t* a, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* a,
+    const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -96,8 +96,8 @@ void bfp_complex_s32_add(
 
 
 void bfp_complex_s32_add_scalar(
-    bfp_complex_s32_t* a, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* a,
+    const bfp_complex_s32_t* b,
     const float_complex_s32_t c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -107,18 +107,18 @@ void bfp_complex_s32_add_scalar(
 
     right_shift_t b_shr, c_shr;
 
-    vect_complex_s32_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, 
+    vect_complex_s32_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp,
                                             c.exp, b->hr, HR_C32(c.mant));
 
     complex_s32_t cc = safe_complex_ashr32(c.mant, c_shr);
 
-    a->hr = vect_complex_s32_add_scalar(a->data, b->data, cc, b->length, 
+    a->hr = vect_complex_s32_add_scalar(a->data, b->data, cc, b->length,
                                             b_shr);
 }
 
 
 void bfp_complex_s32_sub(
-    bfp_complex_s32_t* a, 
+    bfp_complex_s32_t* a,
     const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c)
 {
@@ -137,8 +137,8 @@ void bfp_complex_s32_sub(
 
 
 void bfp_complex_s32_real_mul(
-    bfp_complex_s32_t* a, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* a,
+    const bfp_complex_s32_t* b,
     const bfp_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -159,8 +159,8 @@ void bfp_complex_s32_real_mul(
 
 
 void bfp_complex_s32_mul(
-    bfp_complex_s32_t* a, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* a,
+    const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -180,8 +180,8 @@ void bfp_complex_s32_mul(
 
 
 void bfp_complex_s32_conj_mul(
-    bfp_complex_s32_t* a, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* a,
+    const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -196,14 +196,14 @@ void bfp_complex_s32_conj_mul(
     vect_complex_s32_conj_mul_prepare(&a_exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
 
     a->exp = a_exp;
-    a->hr = vect_complex_s32_conj_mul(a->data, b->data, c->data, 
+    a->hr = vect_complex_s32_conj_mul(a->data, b->data, c->data,
                                                   b->length, b_shr, c_shr);
 }
 
 
 void bfp_complex_s32_real_scale(
-    bfp_complex_s32_t* a, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* a,
+    const bfp_complex_s32_t* b,
     const float_s32_t c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -222,8 +222,8 @@ void bfp_complex_s32_real_scale(
 
 
 void bfp_complex_s32_scale(
-    bfp_complex_s32_t* a, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* a,
+    const bfp_complex_s32_t* b,
     const float_complex_s32_t c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -241,7 +241,7 @@ void bfp_complex_s32_scale(
 
 
 void bfp_complex_s32_squared_mag(
-    bfp_s32_t* a, 
+    bfp_s32_t* a,
     const bfp_complex_s32_t* b)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -258,7 +258,7 @@ void bfp_complex_s32_squared_mag(
 
 
 void bfp_complex_s32_mag(
-    bfp_s32_t* a, 
+    bfp_s32_t* a,
     const bfp_complex_s32_t* b)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -270,12 +270,12 @@ void bfp_complex_s32_mag(
 
     vect_complex_s32_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
 
-    a->hr = vect_complex_s32_mag(a->data, b->data, b->length, 
+    a->hr = vect_complex_s32_mag(a->data, b->data, b->length,
                                      b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
 }
 
 
-float_complex_s64_t bfp_complex_s32_sum( 
+float_complex_s64_t bfp_complex_s32_sum(
     const bfp_complex_s32_t* b)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -293,7 +293,7 @@ float_complex_s64_t bfp_complex_s32_sum(
 
 
 void bfp_complex_s32_to_bfp_complex_s16(
-    bfp_complex_s16_t* a, 
+    bfp_complex_s16_t* a,
     const bfp_complex_s32_t* b)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -311,8 +311,8 @@ void bfp_complex_s32_to_bfp_complex_s16(
 
 
 void bfp_complex_s32_macc(
-    bfp_complex_s32_t* acc, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* acc,
+    const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -332,8 +332,8 @@ void bfp_complex_s32_macc(
 
 
 void bfp_complex_s32_nmacc(
-    bfp_complex_s32_t* acc, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* acc,
+    const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -353,8 +353,8 @@ void bfp_complex_s32_nmacc(
 
 
 void bfp_complex_s32_conj_macc(
-    bfp_complex_s32_t* acc, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* acc,
+    const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -374,8 +374,8 @@ void bfp_complex_s32_conj_macc(
 
 
 void bfp_complex_s32_conj_nmacc(
-    bfp_complex_s32_t* acc, 
-    const bfp_complex_s32_t* b, 
+    bfp_complex_s32_t* acc,
+    const bfp_complex_s32_t* b,
     const bfp_complex_s32_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -395,7 +395,7 @@ void bfp_complex_s32_conj_nmacc(
 
 
 void bfp_complex_s32_conjugate(
-    bfp_complex_s32_t* a, 
+    bfp_complex_s32_t* a,
     const bfp_complex_s32_t* b)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -442,7 +442,7 @@ void bfp_complex_s32_make(
   const right_shift_t b_shr = a->exp - b->exp;
   const right_shift_t c_shr = a->exp - c->exp;
   
-  vect_s32_zip(&a->data[0], &b->data[0], &c->data[0], 
+  vect_s32_zip(&a->data[0], &b->data[0], &c->data[0],
                     b->length, b_shr, c_shr);
 }
 

@@ -6,10 +6,9 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../vect/vpu_const_vects.h"
-
+#include "vpu_const_vects.h"
 
 
 void vect_s32_merge_accs(
@@ -36,8 +35,6 @@ void vect_s32_merge_accs(
   }
 }
 
-
-
 void vect_s32_split_accs(
     split_acc_s32_t a[],
     const int32_t b[],
@@ -51,7 +48,6 @@ void vect_s32_split_accs(
 
     for(int o = 0; o < VPU_INT8_ACC_PERIOD; o++){
       int k = g * VPU_INT8_ACC_PERIOD + o;
-
       int32_t acc32 = b[k];
 
       int32_t acc_hi = (acc32 & 0xFFFF0000) >> 16;
@@ -64,4 +60,20 @@ void vect_s32_split_accs(
 
     a[g] = tmp;
   }
+}
+
+void f32_unpack(
+    int32_t * mantissa,
+    exponent_t * exp,
+    const float input)
+{
+  *mantissa = lroundf(INT32_MAX * frexpf(input, exp));
+  *exp -= 31;
+}
+
+float s32_to_f32(
+    const int32_t mantissa,
+    const exponent_t exp)
+{
+  return ldexpf((float) mantissa, exp);
 }

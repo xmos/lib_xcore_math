@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
 
 
@@ -17,7 +17,7 @@ void vect_s16_inverse(
 {
     const int32_t dividend = 1 << scale;
     for(unsigned k = 0; k < length; k++){
-        a[k] = (dividend / b[k]);
+        a[k] = (int16_t) (dividend / b[k]);
     }
 }
 
@@ -31,7 +31,7 @@ headroom_t vect_s32_inverse(
     const int64_t d = (0x1LL << scale);
 
     for(unsigned k = 0; k < length; k++){
-        a[k] = d / b[k];
+        a[k] = (int32_t) (d / b[k]);
         
         // printf("0x%016llX / %ld = %ld\n", (uint64_t) d, b[k], a[k]);
     }

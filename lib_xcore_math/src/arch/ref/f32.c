@@ -6,9 +6,9 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../vect/vpu_const_vects.h"
+#include "vpu_const_vects.h"
 
 
 extern const float sin_coef[];
@@ -33,7 +33,7 @@ float f32_sin(
   }
 
   if(rho > 1.0){
-    rho = 2.0 - rho;
+    rho = (float) (2.0) - rho;
   }
 
   float phi = rho * rho;

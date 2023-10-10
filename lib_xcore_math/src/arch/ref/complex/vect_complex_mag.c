@@ -5,10 +5,10 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../../vect/vpu_const_vects.h"
+#include "vpu_const_vects.h"
 
 
 #define negative_one_s16    (vpu_vec_neg_0x4000[0])
@@ -84,7 +84,7 @@ headroom_t vect_complex_s32_mag(
         
         // Apply a right-shift to b[k]
         complex_s32_t B = {
-            vlashr32(b[k].re, b_shr), 
+            vlashr32(b[k].re, b_shr),
             vlashr32(b[k].im, b_shr),
         };
 

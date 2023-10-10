@@ -4,16 +4,22 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
-#include "../../../vect/vpu_const_vects.h"
+#include "vpu_helper.h"
+#include "vpu_const_vects.h"
 #include "xmath_fft_lut.h"
 
 #include "xmath/xs3/vpu_scalar_ops.h"
 
+// Disable warning messages C4293:
+// warning C4293: '<<': shift count negative or too big, undefined behavior
+#ifdef _WIN32
+#pragma warning( disable : 4293)
+#endif
+
 
 //load 4 complex 32-bit values into a buffer
 static void load_vec(
-    complex_s32_t dst[], 
+    complex_s32_t dst[],
     const complex_s32_t src[])
 {
     for(int i = 0; i < 4; i++){
@@ -61,7 +67,7 @@ headroom_t fft_spectra_split(
     complex_s32_t XN = X[K];
     
     // If we change [X[0].re, X[0].im, X[K].re, X[K].im] to be this:
-    //  [DC.re - Ny.im,  Ny.re + DC.im,   DC.re + Ny.im,  -Ny.re + DC.im  ]  
+    //  [DC.re - Ny.im,  Ny.re + DC.im,   DC.re + Ny.im,  -Ny.re + DC.im  ]
     // then we can just compute those bins in the loop below. Not very important
     // here, but makes the assembly much faster.
     // This does unfortunately introduce the requirement that the input have at least 1 bit of headroom.
@@ -212,7 +218,7 @@ void fft_mono_adjust(
         //     B[i].re = ASHR(32)(((int64_t) 0x40000000) + tmp[i].re, 1);
         //     B[i].im = ASHR(32)(((int64_t) 0x00000000) + tmp[i].im, 1);
         // }
-        vect_complex_s32_sub(A, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1); 
+        vect_complex_s32_sub(A, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1);
         vect_complex_s32_add(B, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1);
 
 

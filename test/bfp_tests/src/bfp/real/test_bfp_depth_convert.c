@@ -106,7 +106,14 @@ TEST(bfp_depth_convert, bfp_s16_to_bfp_s32)
     B.data = dataB;
 
     for(int r = 0; r < REPS; r++){
+
         setExtraInfo_RS(r, seed);
+
+        bfp_s16_init(&B, dataB,
+        pseudo_rand_int(&seed, -50, 50),
+        pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
+
+        bfp_s32_init(&A, dataA, 0, B.length, 0);
 
         test_random_bfp_s16(&B, MAX_LEN, &seed, NULL, 0);
         A.length = B.length;
@@ -116,7 +123,7 @@ TEST(bfp_depth_convert, bfp_s16_to_bfp_s32)
         TEST_ASSERT_EQUAL(B.length, A.length);
         TEST_ASSERT_EQUAL(B.hr + 8, A.hr);
         TEST_ASSERT_EQUAL(vect_s32_headroom(A.data, A.length), A.hr);
-        
+
         TEST_ASSERT_EQUAL(B.exp-8, A.exp);
 
         for(int i = 0; i < A.length; i++){

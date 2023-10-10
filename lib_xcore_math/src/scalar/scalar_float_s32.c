@@ -8,8 +8,6 @@
 #include "xmath/xmath.h"
 
 
-
-
 static inline int32_t ashr32(int32_t x, right_shift_t shr)
 {
   if(shr >= 0)
@@ -19,10 +17,8 @@ static inline int32_t ashr32(int32_t x, right_shift_t shr)
 
   if(tmp > INT32_MAX)       return INT32_MAX;
   else if(tmp < INT32_MIN)  return INT32_MIN;
-  else                      return tmp;
+  else                      return (int32_t) tmp;
 }
-
-
 
 float_s64_t float_s32_to_float_s64(
     const float_s32_t x)
@@ -34,28 +30,17 @@ float_s64_t float_s32_to_float_s64(
   return res;
 }
 
-
-float s32_to_f32(
-    const int32_t mantissa,
-    const exponent_t exp)
-{
-  return ldexp(mantissa, exp);
-}
-
-
 float float_s32_to_float(
     const float_s32_t x)
 {
   return s32_to_f32(x.mant, x.exp);
 }
 
-
 double float_s32_to_double(
     const float_s32_t x)
 {
   return ldexp(x.mant, x.exp);
 }
-
 
 float_s32_t float_s32_mul(
     const float_s32_t x,
@@ -65,8 +50,6 @@ float_s32_t float_s32_mul(
   res.mant = s32_mul(&res.exp, x.mant, y.mant, x.exp, y.exp);
   return res;
 }
-
-
     
 float_s32_t float_s32_add(
     const float_s32_t x,
@@ -90,8 +73,6 @@ float_s32_t float_s32_add(
   return res;
 }
 
-
-    
 float_s32_t float_s32_sub(
     const float_s32_t x,
     const float_s32_t y)
@@ -114,8 +95,6 @@ float_s32_t float_s32_sub(
   return res;
 }
 
-
-    
 float_s32_t float_s32_div(
     const float_s32_t x,
     const float_s32_t y)
@@ -128,8 +107,6 @@ float_s32_t float_s32_div(
   return float_s32_mul(x, t);
 }
 
-
-    
 float_s32_t float_s32_abs(
     const float_s32_t x)
 {
@@ -139,7 +116,6 @@ float_s32_t float_s32_abs(
   return res;
 }
 
-    
 unsigned float_s32_gt(
     const float_s32_t x,
     const float_s32_t y)
@@ -148,8 +124,6 @@ unsigned float_s32_gt(
   return delta.mant > 0;
 }
 
-
-    
 unsigned float_s32_gte(
     const float_s32_t x,
     const float_s32_t y)
@@ -158,7 +132,6 @@ unsigned float_s32_gte(
   return delta.mant >= 0;
 }
 
-    
 float_s32_t float_s32_ema(
     const float_s32_t x,
     const float_s32_t y,
@@ -177,7 +150,6 @@ float_s32_t float_s32_ema(
   return float_s32_add(float_s32_mul(x, t), float_s32_mul(y, s));
 }
 
-    
 float_s32_t float_s32_sqrt(
     const float_s32_t x)
 {
@@ -186,15 +158,12 @@ float_s32_t float_s32_sqrt(
   return res;
 }
 
-
-
 q2_30 q24_sin(
     const radian_q24_t theta)
 {
   const sbrad_t alpha = radians_to_sbrads(theta);
   return sbrad_sin(alpha);
 }
-
 
 #define PI_HALF_Q24   Q24(M_PI / 2.0)
 #define THREE_PI_OVER_TWO_Q24   Q24(3.0 * M_PI / 2.0)
@@ -203,30 +172,28 @@ q2_30 q24_cos(
     const radian_q24_t theta)
 {
   // cos(x) = sin(x + pi/2) = sin(x - 3*pi/2)
-  // BUT the span of a Q24 ( [-128, 128) --> 256 ) is not an 
+  // BUT the span of a Q24 ( [-128, 128) --> 256 ) is not an
   //  integer multiple of 2*pi, so we can't let the angle overflow
   //  always adding pi/2
-  const radian_q24_t theta_mod = theta 
+  const radian_q24_t theta_mod = theta
             + ((theta >= 0)? (-THREE_PI_OVER_TWO_Q24) : (PI_HALF_Q24));
   const sbrad_t alpha = radians_to_sbrads(theta_mod);
   return sbrad_sin(alpha);
 }
 
-
 /**
  * Like radians_to_sbrads, except it takes advantage of the symmetries of
  * tan(theta) instead of sin(theta).
  */
-static inline 
+static inline
 q1_31 radians_to_tbrads(
     const radian_q24_t theta)
 {
   const q1_31 inv_rho = 0x517cc1b7;
   int64_t acc = ((int64_t)inv_rho) * theta;
-  q1_31 alpha = acc >> 24;
+  q1_31 alpha = (q1_31) (acc >> 24);
   return alpha;
 }
-
 
 float_s32_t q24_tan(
     const radian_q24_t theta)

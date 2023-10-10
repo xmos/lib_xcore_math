@@ -7,7 +7,7 @@
 #include <string.h>
 
 #include "xmath/xmath.h"
-#include "../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 extern const unsigned rot_table16_rows;
 extern const int16_t rot_table16[14][2][16];

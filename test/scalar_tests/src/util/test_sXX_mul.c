@@ -43,8 +43,8 @@ TEST(sXX_mul, s16_mul)
         const exponent_t b_exp = pseudo_rand_int(&seed, -100, 100);
         const exponent_t c_exp = pseudo_rand_int(&seed, -100, 100);
 
-        const headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
-        const headroom_t c_hr = pseudo_rand_uint(&seed, 0, 28);
+        const headroom_t b_hr = pseudo_rand_uint(&seed, 0, 12);
+        const headroom_t c_hr = pseudo_rand_uint(&seed, 0, 12);
         
         int16_t B = 0;
         int16_t C = 0;

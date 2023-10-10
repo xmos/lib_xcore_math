@@ -62,7 +62,7 @@ headroom_t vect_s32_convolve_same(
   const int copy_count = filter_taps + P - 1;
 
   ////// Do left tail
-  int32_t buff[9] = {0}; 
+  int32_t buff[9] = {0};
 
   for(int i = P; i < copy_count; i++)
     buff[i] = signal_in[i-P];
@@ -74,13 +74,14 @@ headroom_t vect_s32_convolve_same(
     case PAD_MODE_EXTEND:
       apply_pad_constant(&buff[0], P, signal_in[0]);
       break;
+    case PAD_MODE_ZERO:
     default:
       apply_pad_constant(&buff[0], P, (int32_t) padding_mode);
   }
 
   // printf("\n\n\n");
   // for(int i = 0; i < copy_count; i++){
-  //   printf("buff[%d] = 0x%08X\n", i, buff[i]);
+  //   printf("buff[%d] = 0x%08lX\n", i, buff[i]);
   // }
   // printf("\n\n\n");
 
@@ -90,13 +91,12 @@ headroom_t vect_s32_convolve_same(
           filter_q30,
           filter_taps + P - 1,
           filter_taps);
-
   res_hr = MIN(res_hr, hr);
 
   ////// Do right tail
   for(unsigned i  = 0; i < filter_taps - 1; i++)
     buff[i] = signal_in[signal_in_length + 1 - filter_taps + i];
-    
+
   switch(padding_mode){
     case PAD_MODE_REFLECT:
       apply_pad_reflect(&buff[filter_taps-1], P, signal_in, signal_in_length, 1);
@@ -104,23 +104,23 @@ headroom_t vect_s32_convolve_same(
     case PAD_MODE_EXTEND:
       apply_pad_constant(&buff[filter_taps-1], P, signal_in[signal_in_length-1]);
       break;
+    case PAD_MODE_ZERO:
     default:
       apply_pad_constant(&buff[filter_taps-1], P, (int32_t) padding_mode);
   }
 
   // printf("\n\n\n");
   // for(int i = 0; i < copy_count; i++){
-  //   printf("buff[%d] = 0x%08X\n", i, buff[i]);
+  //   printf("buff[%d] = 0x%08lX\n", i, buff[i]);
   // }
   // printf("\n\n\n");
-  
+
   hr = vect_s32_convolve_valid(
         &signal_out[signal_in_length-P],
         buff,
         filter_q30,
         filter_taps + P - 1,
         filter_taps);
-
   res_hr = MIN(res_hr, hr);
 
   return res_hr;
