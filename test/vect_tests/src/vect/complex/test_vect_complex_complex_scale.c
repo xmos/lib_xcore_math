@@ -92,7 +92,7 @@ static complex_s32_t mul_complex_s32(complex_s32_t b, complex_s32_t c, int b_shr
     a_re = SAT(32)(a_re);
     a_im = SAT(32)(a_im);
 
-    complex_s32_t res = {(int16_t) a_re, (int16_t) a_im};
+    complex_s32_t res = {(int32_t) a_re, (int32_t) a_im};
     return res;
 }
 
