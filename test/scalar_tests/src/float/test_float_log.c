@@ -32,7 +32,7 @@ TEST(float_log, f32_normA)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     float x = ldexp(pseudo_rand_uint(&seed, 1, INT32_MAX), 
@@ -82,7 +82,7 @@ TEST(float_log, f32_log2)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     float x = ldexp(pseudo_rand_uint(&seed, 1, INT32_MAX), 

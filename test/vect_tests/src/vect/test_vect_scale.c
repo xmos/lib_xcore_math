@@ -158,7 +158,7 @@ TEST(vect_scale, vect_s16_scale_basic)
 
     const unsigned start_case = 3;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -172,7 +172,7 @@ TEST(vect_scale, vect_s16_scale_basic)
             int16_t A[40];
             int16_t B[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B[i] = casse->value.b;
             }
@@ -180,7 +180,7 @@ TEST(vect_scale, vect_s16_scale_basic)
 
             hr = vect_s16_scale(A, B, len, casse->value.alpha, casse->sat);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
@@ -188,7 +188,7 @@ TEST(vect_scale, vect_s16_scale_basic)
             memcpy(A, B, sizeof(A));
             hr = vect_s16_scale(A, A, len, casse->value.alpha, casse->sat);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
@@ -208,13 +208,13 @@ TEST(vect_scale, vect_s16_scale_random)
     int16_t B[MAX_LEN];
     int16_t alpha;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int16(&seed) >> shr;
         }
@@ -227,7 +227,7 @@ TEST(vect_scale, vect_s16_scale_random)
 
         hr = vect_s16_scale(A, B, len, alpha, sat);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int16_t expected = scalar_mul_s16(B[i], alpha, sat);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], sat, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
@@ -237,7 +237,7 @@ TEST(vect_scale, vect_s16_scale_random)
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s16_scale(A, A, len, alpha, sat);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int16_t expected = scalar_mul_s16(B[i], alpha, sat);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], sat, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
@@ -294,7 +294,7 @@ TEST(vect_scale, vect_s32_scale_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -313,14 +313,14 @@ TEST(vect_scale, vect_s32_scale_basic)
             int32_t A[40];
             int32_t B[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B[i] = casse->value.b;
             }
 
             hr = vect_s32_scale(A, B, len, casse->value.c, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, casse->line);
             }
@@ -328,7 +328,7 @@ TEST(vect_scale, vect_s32_scale_basic)
             memcpy(A, B, sizeof(A));
             hr = vect_s32_scale(A, A, len, casse->value.c, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, casse->line);
             }
@@ -348,13 +348,13 @@ TEST(vect_scale, vect_s32_scale_random)
     int32_t B[MAX_LEN];
     // int32_t alpha;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int32(&seed) >> shr;
         }
@@ -368,7 +368,7 @@ TEST(vect_scale, vect_s32_scale_random)
 
         hr = vect_s32_scale(A, B, len, c, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int32_t expected = scalar_mul_s32(B[i], c, b_shr, c_shr);
             TEST_ASSERT_EQUAL(expected, A[i]);
         }
@@ -377,7 +377,7 @@ TEST(vect_scale, vect_s32_scale_random)
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s32_scale(A, A, len, c, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int32_t expected = scalar_mul_s32(B[i], c, b_shr, c_shr);
             TEST_ASSERT_EQUAL(expected, A[i]);
         }

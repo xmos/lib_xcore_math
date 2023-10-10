@@ -37,8 +37,8 @@ static char msg_buff[200];
     }} while(0)
 
 
-static complex_s16_t mul_complex_conj_s16(int16_t b_re, int16_t b_im, 
-                                     int16_t c_re, int16_t c_im, 
+static complex_s16_t mul_complex_conj_s16(int16_t b_re, int16_t b_im,
+                                     int16_t c_re, int16_t c_im,
                                      right_shift_t sat)
 {
     int64_t bp_re = b_re;
@@ -52,7 +52,7 @@ static complex_s16_t mul_complex_conj_s16(int16_t b_re, int16_t b_im,
     a_re = SAT(16)(ROUND_SHR(a_re, sat));
     a_im = SAT(16)(ROUND_SHR(a_im, sat));
 
-    complex_s16_t res = {a_re, a_im};
+    complex_s16_t res = {(int16_t) a_re, (int16_t) a_im};
     return res;
 }
 
@@ -93,7 +93,7 @@ static complex_s32_t mul_complex_conj_s32(complex_s32_t b, complex_s32_t c, int 
     a_re = SAT(32)(a_re);
     a_im = SAT(32)(a_im);
 
-    complex_s32_t res = {a_re, a_im};
+    complex_s32_t res = {(int32_t) a_re, (int32_t) a_im};
     return res;
 }
 
@@ -103,7 +103,7 @@ TEST(vect_complex_conj_mul, vect_complex_s16_conj_mul_basic)
     
 
     typedef struct {
-        struct {    complex_s16_t b;  
+        struct {    complex_s16_t b;
                     complex_s16_t c;  } value;
         right_shift_t sat;
         complex_s16_t expected;
@@ -130,14 +130,14 @@ TEST(vect_complex_conj_mul, vect_complex_s16_conj_mul_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
         //Verify mul_complex_s16() is correct. It's used in other test cases.
-        complex_s16_t tmp = mul_complex_conj_s16(casse->value.b.re, casse->value.b.im, 
-                                            casse->value.c.re, casse->value.c.im, 
+        complex_s16_t tmp = mul_complex_conj_s16(casse->value.b.re, casse->value.b.im,
+                                            casse->value.c.re, casse->value.c.im,
                                             casse->sat);
 
         TEST_ASSERT_EQUAL_MSG(casse->expected.re, tmp.re, casse->line);
@@ -150,12 +150,12 @@ TEST(vect_complex_conj_mul, vect_complex_s16_conj_mul_basic)
             unsigned len = lengths[l];
 
             headroom_t hr;
-            struct { 
-                int16_t real[40]; 
-                int16_t imag[40]; 
+            struct {
+                int16_t real[40];
+                int16_t imag[40];
             } A, B, C;
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A.real[i] = 0xCC;
                 A.imag[i] = 0xCC;
                 B.real[i] = casse->value.b.re;
@@ -164,13 +164,13 @@ TEST(vect_complex_conj_mul, vect_complex_s16_conj_mul_basic)
                 C.imag[i] = casse->value.c.im;
             }
 
-            hr = vect_complex_s16_conj_mul(A.real, A.imag, 
-                                                  B.real, B.imag, 
-                                                  C.real, C.imag, 
+            hr = vect_complex_s16_conj_mul(A.real, A.imag,
+                                                  B.real, B.imag,
+                                                  C.real, C.imag,
                                                   len, casse->sat);
             headroom_t hrre, hrim;
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[0], casse->line);
             }
@@ -183,7 +183,7 @@ TEST(vect_complex_conj_mul, vect_complex_s16_conj_mul_basic)
                                                   C.real, C.imag,
                                                   len, casse->sat);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[0], casse->line);
             }
@@ -214,18 +214,18 @@ TEST(vect_complex_conj_mul, vect_complex_s16_conj_mul_random)
 
     headroom_t hr;
     
-    struct { 
-        int16_t real[MAX_LEN]; 
-        int16_t imag[MAX_LEN]; 
+    struct {
+        int16_t real[MAX_LEN];
+        int16_t imag[MAX_LEN];
     } A, B, C;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B.real[i] = pseudo_rand_int16(&seed) >> shr;
             C.real[i] = pseudo_rand_int16(&seed) >> shr;
@@ -235,14 +235,14 @@ TEST(vect_complex_conj_mul, vect_complex_s16_conj_mul_random)
 
         int sat = (pseudo_rand_uint32(&seed) % 10);
         
-        hr = vect_complex_s16_conj_mul(A.real, A.imag, 
-                                              B.real, B.imag, 
-                                              C.real, C.imag, 
+        hr = vect_complex_s16_conj_mul(A.real, A.imag,
+                                              B.real, B.imag,
+                                              C.real, C.imag,
                                               len, sat);
 
         headroom_t hrre, hrim;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s16_t expected = mul_complex_conj_s16(B.real[i], B.imag[i], C.real[i], C.imag[i], sat);
             
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
@@ -252,12 +252,12 @@ TEST(vect_complex_conj_mul, vect_complex_s16_conj_mul_random)
         TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, v);
         
         memcpy(&A, &B, sizeof(A));
-        hr = vect_complex_s16_conj_mul(A.real, A.imag, 
-                                              A.real, A.imag, 
-                                              C.real, C.imag, 
+        hr = vect_complex_s16_conj_mul(A.real, A.imag,
+                                              A.real, A.imag,
+                                              C.real, C.imag,
                                               len, sat);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s16_t expected = mul_complex_conj_s16(B.real[i], B.imag[i], C.real[i], C.imag[i], sat);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
@@ -279,7 +279,7 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_basic)
     
 
     typedef struct {
-        struct {    complex_s32_t b;  
+        struct {    complex_s32_t b;
                     complex_s32_t c;  } value;
         struct {    int b;      int c;      } shr;
         complex_s32_t expected;
@@ -305,7 +305,7 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -327,7 +327,7 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_basic)
             complex_s32_t B[40];
             complex_s32_t C[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i].re = 0xCC;
                 A[i].im = 0xCC;
                 B[i].re = casse->value.b.re;
@@ -338,7 +338,7 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_basic)
 
             hr = vect_complex_s32_conj_mul(A, B, C, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[0].im, casse->line);
             }
@@ -347,7 +347,7 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_basic)
             memcpy(A, B, sizeof(A));
             hr = vect_complex_s32_conj_mul(A, A, C, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[0].im, casse->line);
             }
@@ -356,7 +356,7 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_basic)
             memcpy(A, C, sizeof(A));
             hr = vect_complex_s32_conj_mul(A, B, A, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[0].im, casse->line);
             }
@@ -387,13 +387,13 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_random)
     complex_s32_t B[MAX_LEN];
     complex_s32_t C[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i].re = pseudo_rand_int32(&seed) >> shr;
             C[i].re = pseudo_rand_int32(&seed) >> shr;
@@ -408,7 +408,7 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_random)
 
         // headroom_t hrre, hrim;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_conj_s32(B[i], C[i], b_shr, c_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
@@ -418,7 +418,7 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_random)
         memcpy(&A, &B, sizeof(A));
         hr = vect_complex_s32_conj_mul(A, A, C, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_conj_s32(B[i], C[i], b_shr, c_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
@@ -428,7 +428,7 @@ TEST(vect_complex_conj_mul, vect_complex_s32_conj_mul_random)
         memcpy(&A, &C, sizeof(A));
         hr = vect_complex_s32_conj_mul(A, B, A, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_conj_s32(B[i], C[i], b_shr, c_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);

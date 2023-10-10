@@ -91,7 +91,7 @@ TEST(vect_shr, vect_s16_shr_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -120,7 +120,7 @@ TEST(vect_shr, vect_s16_shr_random)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
         
@@ -215,7 +215,7 @@ TEST(vect_shr, vect_s32_shr_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -244,7 +244,7 @@ TEST(vect_shr, vect_s32_shr_random)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
         
@@ -306,7 +306,7 @@ TEST(vect_shr, vect_complex_s16_shr)
     int16_t WORD_ALIGNED B_real[MAX_LEN];
     int16_t WORD_ALIGNED B_imag[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
@@ -316,14 +316,14 @@ TEST(vect_shr, vect_complex_s16_shr)
 
         const left_shift_t shr = pseudo_rand_int(&seed, -4, 4);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B_real[i] = pseudo_rand_int16(&seed) >> hr;
             B_imag[i] = pseudo_rand_int16(&seed) >> hr;
         }
 
         vect_complex_s16_shr(A_real, A_imag, B_real, B_imag, length, shr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], shr), A_real[i] );
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_imag[i], shr), A_imag[i] );
         }
@@ -333,7 +333,7 @@ TEST(vect_shr, vect_complex_s16_shr)
 
         vect_complex_s16_shr(A_real, A_imag, A_real, A_imag, length, shr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], shr), A_real[i] );
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_imag[i], shr), A_imag[i] );
         }
@@ -350,7 +350,7 @@ TEST(vect_shr, vect_complex_s32_shr)
     complex_s32_t A[MAX_LEN];
     complex_s32_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
@@ -360,14 +360,14 @@ TEST(vect_shr, vect_complex_s32_shr)
 
         const left_shift_t shr = pseudo_rand_int(&seed, -8, 8);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> hr;
             B[i].im = pseudo_rand_int32(&seed) >> hr;
         }
 
         vect_complex_s32_shr(A, B, length, shr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, shr), A[i].re );
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].im, shr), A[i].im );
         }
@@ -376,7 +376,7 @@ TEST(vect_shr, vect_complex_s32_shr)
 
         vect_complex_s32_shr(A, A, length, shr);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, shr), A[i].re );
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].im, shr), A[i].im );
         }
@@ -394,7 +394,7 @@ TEST(vect_shr, vect_split_acc_s32_shr)
   int32_t expected[MAX_LEN];
   split_acc_s32_t DWORD_ALIGNED acc[(MAX_LEN + (VPU_INT16_EPV-1)) / VPU_INT16_EPV];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_R(v);
 
@@ -402,7 +402,7 @@ TEST(vect_shr, vect_split_acc_s32_shr)
 
     headroom_t hr = pseudo_rand_uint(&seed, 0, 8);
     
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       acc_s32[i] = pseudo_rand_int32(&seed) >> hr;
     }
 
@@ -412,7 +412,7 @@ TEST(vect_shr, vect_split_acc_s32_shr)
     
     const right_shift_t shr = pseudo_rand_int(&seed, -hr, (20-hr));
 
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       if(shr >= 0)
         expected[k] = acc_s32[k] >> shr;
       else

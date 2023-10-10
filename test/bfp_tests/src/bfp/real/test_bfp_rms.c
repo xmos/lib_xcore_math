@@ -57,7 +57,7 @@ TEST(bfp_rms, bfp_s16_rms)
                           
         B.hr = pseudo_rand_uint(&seed, 0, 12);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
         }
 
@@ -66,7 +66,7 @@ TEST(bfp_rms, bfp_s16_rms)
         float_s32_t result = bfp_s16_rms(&B);
 
         double energy = 0;
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             energy += pow(ldexp(B.data[i], B.exp), 2);
         }
 
@@ -75,8 +75,8 @@ TEST(bfp_rms, bfp_s16_rms)
         const double expectedF = sqrt(mean_energy);
 
         float_s32_t ideal_result = {
-            .mant = round( expectedF / ldexp(1,result.exp) ),
-            .exp = floor( log2(expectedF) ) - 30 };
+            .mant = lround( expectedF / ldexp((double) 1,result.exp) ),
+            .exp = (exponent_t) floor( log2(expectedF) ) - 30 };
 
 
         TEST_ASSERT_INT32_WITHIN(3, ideal_result.exp, result.exp);
@@ -107,7 +107,7 @@ TEST(bfp_rms, bfp_s32_rms)
                           
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
         }
 
@@ -116,7 +116,7 @@ TEST(bfp_rms, bfp_s32_rms)
         float_s32_t result = bfp_s32_rms(&B);
 
         double energy = 0;
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             energy += pow(ldexp(B.data[i], B.exp), 2);
         }
 
@@ -125,8 +125,8 @@ TEST(bfp_rms, bfp_s32_rms)
         const double expectedF = sqrt(mean_energy);
 
         float_s32_t ideal_result = {
-            .mant = round( expectedF / ldexp(1,result.exp) ),
-            .exp = floor( log2(expectedF) ) - 30 };
+            .mant = lround( expectedF / ldexp((double) 1,result.exp) ),
+            .exp = (exponent_t) floor( log2(expectedF) ) - 30 };
 
         TEST_ASSERT_INT32_WITHIN(3, ideal_result.exp, result.exp);
         TEST_ASSERT_INT32_WITHIN(4, ideal_result.mant, result.mant);

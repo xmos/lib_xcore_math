@@ -69,7 +69,7 @@ TEST(bfp_add, bfp_s16_add)
         test_double_from_s16(Bf, &B);
         test_double_from_s16(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] + Cf[i];
         }
 
@@ -115,7 +115,7 @@ TEST(bfp_add, bfp_s32_add)
         test_double_from_s32(Bf, &B);
         test_double_from_s32(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] + Cf[i];
         }
 
@@ -123,7 +123,7 @@ TEST(bfp_add, bfp_s32_add)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(1, expA[i], A.data[i]);
         }
     }

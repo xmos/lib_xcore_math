@@ -106,7 +106,7 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
 
   unsigned max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = 8;
@@ -114,12 +114,12 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
     const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
     headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i].exp = pseudo_rand_int(&seed, -30, 30);
       B[i].mant = pseudo_rand_uint(&seed, 0, INT32_MAX);
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i].mant, B[i].exp);
       double exp_dbl = log(bi);
       expected[i] = round(ldexp(exp_dbl, 24));
@@ -134,7 +134,7 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
     float delta_us_per_elm = delta_us / length;
 
     unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 
@@ -213,7 +213,7 @@ TEST(vect_log, chunk_s32_log)
 
   unsigned max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = 8;
@@ -221,11 +221,11 @@ TEST(vect_log, chunk_s32_log)
     const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
     headroom_t b_hr = pseudo_rand_uint(&seed, 0, 5);
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i] = pseudo_rand_uint(&seed, 0, INT32_MAX) >> b_hr;
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl = log(bi);
 
@@ -242,7 +242,7 @@ TEST(vect_log, chunk_s32_log)
     float delta_us_per_elm = delta_us / length;
 
     unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 
@@ -278,7 +278,7 @@ TEST(vect_log, vect_s32_log)
 
   unsigned max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
@@ -291,11 +291,11 @@ TEST(vect_log, vect_s32_log)
     const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
     headroom_t b_hr = pseudo_rand_uint(&seed, 0, 5);
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i] = pseudo_rand_uint(&seed, 0, INT32_MAX) >> b_hr;
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl;
       
@@ -338,7 +338,7 @@ TEST(vect_log, vect_s32_log)
     float delta_us_per_elm = delta_us / length;
 
     unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 
@@ -372,7 +372,7 @@ TEST(vect_log, vect_float_s32_log)
 
   unsigned max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
@@ -385,12 +385,12 @@ TEST(vect_log, vect_float_s32_log)
     const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
     headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i].exp = pseudo_rand_int(&seed, -30, 30);
       B[i].mant = pseudo_rand_uint(&seed, 0, INT32_MAX);
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i].mant, B[i].exp);
       double exp_dbl;
       
@@ -433,7 +433,7 @@ TEST(vect_log, vect_float_s32_log)
     float delta_us_per_elm = delta_us / length;
 
     unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 

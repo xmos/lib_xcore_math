@@ -107,7 +107,7 @@ TEST(vect_dot, vect_s16_dot)
     int16_t WORD_ALIGNED C[MAX_LEN];
     
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
@@ -119,7 +119,7 @@ TEST(vect_dot, vect_s16_dot)
 
         int64_t expected = 0;
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int16(&seed) >> B_hr;
             C[i] = pseudo_rand_int16(&seed) >> C_hr;
 
@@ -186,7 +186,7 @@ TEST(vect_dot, vect_s32_dot_basic)
     const unsigned start_case = 0;
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -199,7 +199,7 @@ TEST(vect_dot, vect_s32_dot_basic)
         int32_t WORD_ALIGNED C[MAX_LEN];
         int64_t result;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = casse->input.b;
             C[i] = casse->input.c;
         }

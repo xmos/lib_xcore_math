@@ -46,13 +46,13 @@ TEST(vect_add_scalar, vect_s16_add_scalar)
 
   int16_t expected[MAX_LEN];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     const unsigned old_seed = seed;
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
     setExtraInfo_RSL(v, old_seed, len);
     
-    for(int i = 0; i < len; i++){
+    for(unsigned int i = 0; i < len; i++){
         unsigned shr = pseudo_rand_uint(&seed, 0, 8);
         B[i] = pseudo_rand_int16(&seed) >> shr;
     }
@@ -61,7 +61,7 @@ TEST(vect_add_scalar, vect_s16_add_scalar)
     int b_shr = pseudo_rand_uint(&seed, -2, 3);
 
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       expected[k] = vladd16(vlashr16(B[k], b_shr), C);
     }
     
@@ -86,13 +86,13 @@ TEST(vect_add_scalar, vect_s32_add_scalar)
 
   int32_t expected[MAX_LEN];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     const unsigned old_seed = seed;
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
     setExtraInfo_RSL(v, old_seed, len);
     
-    for(int i = 0; i < len; i++){
+    for(unsigned int i = 0; i < len; i++){
         unsigned shr = pseudo_rand_uint(&seed, 0, 8);
         B[i] = pseudo_rand_int32(&seed) >> shr;
     }
@@ -101,7 +101,7 @@ TEST(vect_add_scalar, vect_s32_add_scalar)
     int b_shr = pseudo_rand_uint(&seed, -2, 3);
 
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       expected[k] = vladd32(vlashr32(B[k], b_shr), C);
     }
     

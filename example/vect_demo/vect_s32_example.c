@@ -19,13 +19,13 @@ static void print_vector_s32(
 {
   // First, the raw mantissas
   printf("%s = [", name);
-  for(int k = 0; k < length; k++)
+  for(unsigned int k = 0; k < length; k++)
     printf("%ld, ", vect[k]);
   printf("] * 2**(%d)\t// (line %u)\n", exp, line);
 
   // Next, the float equivalent
   printf("%s_float = [", name);
-  for(int k = 0; k < length; k++)
+  for(unsigned int k = 0; k < length; k++)
     printf("%0.07f, ", ldexp(vect[k], exp));
   printf("]\n");
 }

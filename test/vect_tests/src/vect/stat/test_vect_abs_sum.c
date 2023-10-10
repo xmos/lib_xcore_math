@@ -60,7 +60,7 @@ TEST(vect_abs_sum, vect_s16_abs_sum_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -73,7 +73,7 @@ TEST(vect_abs_sum, vect_s16_abs_sum_basic)
         for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
             unsigned len = lengths[l];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 B[i] = casse->b;
             }
 
@@ -111,20 +111,20 @@ TEST(vect_abs_sum, vect_s16_abs_sum_random)
     int32_t result;
     int16_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         setExtraInfo_RSL(v, seed, len);
 
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int16(&seed);
         }
 
         result = vect_s16_abs_sum(B, len);
 
         int32_t exp = 0;
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int32_t b = B[i];
             b = (b>=0)? b : -b;
             exp += b;
@@ -160,7 +160,7 @@ TEST(vect_abs_sum, vect_s32_abs_sum_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -173,7 +173,7 @@ TEST(vect_abs_sum, vect_s32_abs_sum_basic)
         for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
             unsigned len = lengths[l];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 B[i] = casse->b;
             }
 
@@ -211,21 +211,21 @@ TEST(vect_abs_sum, vect_s32_abs_sum_random)
     int64_t result;
     int32_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         // len = 9;
 
         setExtraInfo_RSL(v, seed, len);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed);
         }
 
         result = vect_s32_abs_sum(B, len);
 
         int64_t exp = 0;
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int64_t b = B[i];
             b = (b>=0)? b : -b;
             exp += b;

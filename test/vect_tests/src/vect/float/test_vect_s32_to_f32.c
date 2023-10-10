@@ -47,7 +47,7 @@ TEST(vect_s32_to_vect_f32, vect_s32_to_vect_f32)
   float expected[MAX_LEN];
 
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     const unsigned old_seed = seed;
 
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
@@ -55,14 +55,14 @@ TEST(vect_s32_to_vect_f32, vect_s32_to_vect_f32)
 
     exponent_t b_exp = pseudo_rand_int(&seed, -20, 20);
 
-    for(int i = 0; i < len; i++){
+    for(unsigned int i = 0; i < len; i++){
       vec_in[i] = pseudo_rand_int32(&seed);
       expected[i] = ldexpf(vec_in[i], b_exp);
     }
     
     vect_s32_to_vect_f32(vec_out, vec_in, len, b_exp);
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       TEST_ASSERT_EQUAL_MESSAGE(expected[k], vec_out[k], "");
     }
   }

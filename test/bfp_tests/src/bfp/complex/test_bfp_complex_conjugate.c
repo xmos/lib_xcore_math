@@ -49,7 +49,7 @@ TEST(bfp_complex_conjugate, bfp_complex_s16_conjugate)
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
 
-        bfp_complex_s16_init(&B, B_data.real, B_data.imag, 
+        bfp_complex_s16_init(&B, B_data.real, B_data.imag,
             pseudo_rand_int(&seed, -100, 100),
             pseudo_rand_int(&seed, 1, MAX_LEN+1), 0);
 
@@ -57,7 +57,7 @@ TEST(bfp_complex_conjugate, bfp_complex_s16_conjugate)
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B_data.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B_data.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
         }
@@ -74,7 +74,7 @@ TEST(bfp_complex_conjugate, bfp_complex_s16_conjugate)
           TEST_ASSERT_EQUAL(B.hr, A.hr);
         TEST_ASSERT_EQUAL(B.exp, A.exp);
 
-        for(int k = 0; k < B.length; k++){
+        for(unsigned int k = 0; k < B.length; k++){
           
           TEST_ASSERT_INT16_WITHIN(1, SAT(16)(B_data.real[k]), A_data.real[k]);
           TEST_ASSERT_INT16_WITHIN(1, -SAT(16)(B_data.imag[k]), A_data.imag[k]);
@@ -104,7 +104,7 @@ TEST(bfp_complex_conjugate, bfp_complex_s32_conjugate)
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i].re = pseudo_rand_int32(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int32(&seed) >> B.hr;
         }
@@ -115,7 +115,7 @@ TEST(bfp_complex_conjugate, bfp_complex_s32_conjugate)
         TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(A.data, A.length), A.hr, "");
         TEST_ASSERT_EQUAL_MESSAGE(B.exp, A.exp, "");
 
-        for(int k = 0; k < B.length; k++){
+        for(unsigned int k = 0; k < B.length; k++){
           TEST_ASSERT_INT32_WITHIN(1, SAT(32)(B.data[k].re), A.data[k].re);
           TEST_ASSERT_INT32_WITHIN(1, -SAT(32)(B.data[k].im), A.data[k].im);
         }

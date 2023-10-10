@@ -35,7 +35,7 @@ TEST(float_trig, f32_sin)
 
   // printf("\n\n");
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
@@ -74,7 +74,7 @@ TEST(float_trig, f32_cos)
 
   // printf("\n\n");
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 

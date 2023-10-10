@@ -65,13 +65,13 @@ TEST(vect_rect, vect_s16_rect) //
         TEST_ASSERT_EQUAL(2, hr);
     }
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
         const unsigned len = pseudo_rand_uint32(&seed) % MAX_LEN;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 10;
             B[i] = pseudo_rand_int16(&seed) >> shr;
         }
@@ -79,7 +79,7 @@ TEST(vect_rect, vect_s16_rect) //
         memset(A, 0xCC, sizeof(A));
         hr = vect_s16_rect(A, B, len);
 
-        for(int i = 0; i < len; i++)
+        for(unsigned int i = 0; i < len; i++)
             TEST_ASSERT_EQUAL(B[i] >= 0? B[i] : 0, A[i]);
         for(int i = len; i < MAX_LEN; i++)
             TEST_ASSERT_EQUAL((int16_t)0xCCCC, A[i]);
@@ -87,7 +87,7 @@ TEST(vect_rect, vect_s16_rect) //
         memcpy(A, B, sizeof(A));
         hr = vect_s16_rect(A, A, len);
 
-        for(int i = 0; i < len; i++)
+        for(unsigned int i = 0; i < len; i++)
             TEST_ASSERT_EQUAL(B[i] >= 0? B[i] : 0, A[i]);
     }
 }
@@ -116,13 +116,13 @@ TEST(vect_rect, vect_s32_rect)
         TEST_ASSERT_EQUAL(2, hr);
     }
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
         const unsigned len = pseudo_rand_uint32(&seed) % MAX_LEN;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 10;
             B[i] = pseudo_rand_int32(&seed) >> shr;
         }
@@ -130,7 +130,7 @@ TEST(vect_rect, vect_s32_rect)
         memset(A, 0xCC, sizeof(A));
         hr = vect_s32_rect(A, B, len);
 
-        for(int i = 0; i < len; i++)
+        for(unsigned int i = 0; i < len; i++)
             TEST_ASSERT_EQUAL(B[i] >= 0? B[i] : 0, A[i]);
         for(int i = len; i < MAX_LEN; i++)
             TEST_ASSERT_EQUAL((int32_t)0xCCCCCCCC, A[i]);
@@ -138,7 +138,7 @@ TEST(vect_rect, vect_s32_rect)
         memcpy(A, B, sizeof(A));
         hr = vect_s32_rect(A, A, len);
 
-        for(int i = 0; i < len; i++)
+        for(unsigned int i = 0; i < len; i++)
             TEST_ASSERT_EQUAL(B[i] >= 0? B[i] : 0, A[i]);
     }
 }

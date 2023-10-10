@@ -36,7 +36,7 @@ TEST(sXX_mul, s16_mul)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
@@ -74,7 +74,7 @@ TEST(sXX_mul, s32_mul)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 

@@ -39,11 +39,11 @@ static void mat_mul_s8_x_s16_yield_s32_ref (
     const unsigned M_rows,
     const unsigned N_cols)
 {
-  for(int row = 0; row < M_rows; row++){
+  for(unsigned int row = 0; row < M_rows; row++){
 
     output[row] = 0;
  
-    for(int col = 0; col < N_cols; col++){
+    for(unsigned int col = 0; col < N_cols; col++){
       output[row] += ((int32_t)weights[row * N_cols + col]) * ((int32_t)input[col]);
     }
   }
@@ -66,15 +66,15 @@ TEST(mat_mul_s8_x_s16_yield_s32, mat_mul_s8_x_s16_yield_s32)
 
   // printf("\n\n\n");
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
       unsigned M_rows = pseudo_rand_uint(&seed, 1, MAX_ROWS+1);
       unsigned N_cols = (pseudo_rand_uint(&seed, 4, MAX_COLS+1) >> 2) << 2;
 
       // printf("\trep % 3d...\t(seed: 0x%08X) (rows, cols: %u, %u)\n", v, seed, M_rows, N_cols);
 
-      for(int row = 0; row < M_rows; row++){
-        for(int col = 0; col < N_cols; col++){
+      for(unsigned int row = 0; row < M_rows; row++){
+        for(unsigned int col = 0; col < N_cols; col++){
           matrix[row * N_cols + col] = pseudo_rand_int8(&seed);
         }
       }
@@ -107,7 +107,7 @@ TEST(mat_mul_s8_x_s16_yield_s32, mat_mul_s8_x_s16_yield_s32)
       for(int row = 0; row < M_rows; row++) {
 
         if(output[row] != output_ref[row]){
-          printf("\noutput[%d] = 0x%08X  (output_ref: 0x%08X)\n", 
+          printf("\noutput[%d] = 0x%08X  (output_ref: 0x%08X)\n",
                   row, (unsigned) output[row], (unsigned) output_ref[row]);
         }
 

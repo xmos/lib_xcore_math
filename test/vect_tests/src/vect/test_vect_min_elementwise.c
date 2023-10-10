@@ -60,7 +60,7 @@ TEST(vect_min_elementwise, vect_s16_min_elementwise)
 
     const char debug_fmt[] = "Expected: %d <-- min((%d >> %d), (%d >> %d)) \nActual: %d\n";
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -69,7 +69,7 @@ TEST(vect_min_elementwise, vect_s16_min_elementwise)
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 5);
         headroom_t c_hr = pseudo_rand_uint(&seed, 0, 5);
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int16(&seed) >> b_hr;
             C[i] = pseudo_rand_int16(&seed) >> c_hr;
         }
@@ -81,7 +81,7 @@ TEST(vect_min_elementwise, vect_s16_min_elementwise)
         right_shift_t c_shr = pseudo_rand_int(&seed, 1-c_hr, 5);
         
         // Determine expected outputs
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
           expected[i] = min_s16(B[i], C[i], b_shr, c_shr);
         }
         
@@ -118,7 +118,7 @@ TEST(vect_min_elementwise, vect_s32_min_elementwise)
 
     const char debug_fmt[] = "Expected: %ld <-- min((%ld >> %d), (%ld >> %d)) \nActual: %ld\n";
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -127,7 +127,7 @@ TEST(vect_min_elementwise, vect_s32_min_elementwise)
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 5);
         headroom_t c_hr = pseudo_rand_uint(&seed, 0, 5);
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed) >> b_hr;
             C[i] = pseudo_rand_int32(&seed) >> c_hr;
         }
@@ -139,7 +139,7 @@ TEST(vect_min_elementwise, vect_s32_min_elementwise)
         right_shift_t c_shr = pseudo_rand_int(&seed, 1-c_hr, 5);
         
         // Determine expected outputs
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
           expected[i] = min_s32(B[i], C[i], b_shr, c_shr);
         }
         

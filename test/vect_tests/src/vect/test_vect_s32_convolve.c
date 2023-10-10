@@ -53,30 +53,30 @@ TEST(vect_convolve, vect_s32_convolve_valid)
 
   int32_t expected[MAX_LEN];
 
-  for(int rep = 0; rep < REPS; rep++) {
+  for(unsigned int rep = 0; rep < REPS; rep++) {
 
     const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 1, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
 
     right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
-    for(int k = 0; k < length; k++)
+    for(unsigned int k = 0; k < length; k++)
       signal_in[k] = pseudo_rand_int32(&seed) >> shr;
 
-    for(int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
-    for(int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] *= scale;
 
     const unsigned out_length = length - ((tap_count>>1)<<1);
 
-    for(int k = 0; k < out_length; k++){
+    for(unsigned int k = 0; k < out_length; k++){
       vpu_int32_acc_t acc = 0;
-      for(int p = 0; p < tap_count; p++)
+      for(unsigned int p = 0; p < tap_count; p++)
         acc = vlmacc32(acc, signal_in[k+p], taps[p]);
       expected[k] = acc;
     }
@@ -106,7 +106,7 @@ TEST(vect_convolve, vect_s32_convolve_same_reflected)
 
   int32_t expected[MAX_LEN];
 
-  for(int rep = 0; rep < REPS; rep++) {
+  for(unsigned int rep = 0; rep < REPS; rep++) {
 
     const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 1, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
@@ -114,22 +114,22 @@ TEST(vect_convolve, vect_s32_convolve_same_reflected)
     const int P = tap_count >> 1;
 
     right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
-    for(int k = 0; k < length; k++)
+    for(unsigned int k = 0; k < length; k++)
       signal_in[k] = pseudo_rand_int32(&seed) >> shr;
 
-    for(int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
-    for(int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] *= scale;
 
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       vpu_int32_acc_t acc = 0;
-      for(int t = 0; t < tap_count; t++) {
+      for(unsigned int t = 0; t < tap_count; t++) {
         int i = k + t - P;
         int32_t input = signal_in[ (i < 0)? (-i) : (i >= length)? (2*length - i - 2) : i ];
         acc = vlmacc32(acc, input, taps[t]);
@@ -164,7 +164,7 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
 
   int32_t expected[MAX_LEN];
 
-  for(int rep = 0; rep < REPS; rep++) {
+  for(unsigned int rep = 0; rep < REPS; rep++) {
     const unsigned old_seed = seed;
 
     const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 1, 4)];
@@ -176,22 +176,22 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
 
     right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
 
-    for(int k = 0; k < length; k++)
+    for(unsigned int k = 0; k < length; k++)
       signal_in[k] = pseudo_rand_int32(&seed) >> shr;
 
-    for(int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
-    for(int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] *= scale;
 
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       vpu_int32_acc_t acc = 0;
-      for(int t = 0; t < tap_count; t++) {
+      for(unsigned int t = 0; t < tap_count; t++) {
         int i = k + t - P;
         int32_t input = 0;
         if( (i >= 0) && (i < length) )
@@ -228,10 +228,10 @@ TEST(vect_convolve, vect_s32_convolve_same_extend)
 
   int32_t expected[MAX_LEN];
 
-  for(int rep = 0; rep < REPS; rep++) {
+  for(unsigned int rep = 0; rep < REPS; rep++) {
     const unsigned old_seed = seed;
 
-    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 0, 4)];
+    const unsigned tap_count = ALLOWED_TAPS[pseudo_rand_uint(&seed, 1, 4)];
     const unsigned length = pseudo_rand_uint(&seed, tap_count, MAX_LEN+1);
 
     setExtraInfo_RSL(rep, old_seed, length);
@@ -239,22 +239,22 @@ TEST(vect_convolve, vect_s32_convolve_same_extend)
     const int P = tap_count >> 1;
 
     right_shift_t shr = pseudo_rand_uint(&seed, 0, 6);
-    for(int k = 0; k < length; k++)
+    for(unsigned int k = 0; k < length; k++)
       signal_in[k] = pseudo_rand_int32(&seed) >> shr;
 
-    for(int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] = pseudo_rand_uint32(&seed) >> 1;
 
     int64_t tap_total = vect_s32_sum(taps, tap_count);
 
     float scale = ldexpf(1, 30) / tap_total;
 
-    for(int k = 0; k < tap_count; k++)
+    for(unsigned int k = 0; k < tap_count; k++)
       taps[k] *= scale;
 
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       vpu_int32_acc_t acc = 0;
-      for(int t = 0; t < tap_count; t++) {
+      for(unsigned int t = 0; t < tap_count; t++) {
         int i = k + t - P;
         int32_t input = 0;
         if( i < 0 )             input = signal_in[0];
@@ -269,7 +269,7 @@ TEST(vect_convolve, vect_s32_convolve_same_extend)
 
     headroom_t hr = vect_s32_convolve_same(signal_out, signal_in, taps, length, tap_count, PAD_MODE_EXTEND);
     // printf("\n\n\n");
-    // for(int i = 0; i < length; i++)
+    // for(unsigned int i = 0; i < length; i++)
     //   printf("signal_in[%d] = 0x%08X\n", i, signal_in[i]);
     // printf("\n\n\n");
 

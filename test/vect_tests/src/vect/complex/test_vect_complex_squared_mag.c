@@ -216,7 +216,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         // setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -236,7 +236,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_basic)
                 int16_t imag[40];
             } B;
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B.real[i] = casse->b.re;
                 B.imag[i] = casse->b.im;
@@ -244,7 +244,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_basic)
 
             hr = vect_complex_s16_squared_mag(A, B.real, B.imag, len, casse->sat);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[i], casse->line);
             }
 
@@ -274,7 +274,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_random)
         int16_t imag[MAX_LEN];
     } B;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         // unsigned rep_seed = seed;
 
@@ -282,7 +282,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_random)
         
         headroom_t B_hr = pseudo_rand_uint32(&seed) % 4;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B_hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B_hr;
         }
@@ -301,7 +301,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_random)
         
         hr = vect_complex_s16_squared_mag(A, B.real, B.imag, len, sat);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s16_t bbb = {B.real[i], B.imag[i]};
             int16_t expected = squared_mag_complex_s16(bbb, sat);
 
@@ -358,7 +358,7 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         // setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -372,7 +372,7 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_basic)
             int32_t DWORD_ALIGNED A[40];
             complex_s32_t DWORD_ALIGNED B[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B[i].re = casse->b.re;
                 B[i].im = casse->b.im;
@@ -380,7 +380,7 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_basic)
 
             hr = vect_complex_s32_squared_mag(A, B, len, casse->b_shr);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG_FMT(casse->expected, A[i], 
                   "(test vect %d @ line %u) (len: %u) (index %d): (mag(( %ld + i*%ld) >> %d))**2",
                    v, casse->line, len, i, B[i].re, B[i].im, casse->b_shr);
@@ -407,14 +407,14 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_random)
     int32_t DWORD_ALIGNED A[MAX_LEN];
     complex_s32_t DWORD_ALIGNED B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         // setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
         headroom_t B_hr = pseudo_rand_uint32(&seed) % 8;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i].re = pseudo_rand_int32(&seed) >> B_hr;
             B[i].im = pseudo_rand_int32(&seed) >> B_hr;
         }
@@ -432,7 +432,7 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_random)
         
         hr = vect_complex_s32_squared_mag(A, B, len, b_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int32_t expected = squared_mag_complex_s32(B[i], b_shr);
             TEST_ASSERT_EQUAL_MSG_FMT(expected, A[i], 
                   "(test vect %d) (len: %u) (index %d): (mag(( %ld + i*%ld) >> %d))**2",

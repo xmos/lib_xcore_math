@@ -43,7 +43,7 @@ TEST(vect_f32_max_exponent, vect_f32_max_exponent)
   DWORD_ALIGNED
   float vector[MAX_LEN];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     const unsigned old_seed = seed;
 
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
@@ -54,7 +54,7 @@ TEST(vect_f32_max_exponent, vect_f32_max_exponent)
     exponent_t max_exponent = -0x80000000;
 
     // Create a bunch of random floats.
-    for(int i = 0; i < len; i++){
+    for(unsigned int i = 0; i < len; i++){
       int32_t mant = pseudo_rand_int32(&seed);
       exponent_t exp = pseudo_rand_int(&seed, -95, 95);
       float val = ldexpf(mant, exp);

@@ -53,7 +53,7 @@ TEST(vect_macc, vect_s16_macc)
     exp.a = -1024;
     hr.a = vect_s16_headroom(A, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
@@ -115,7 +115,7 @@ TEST(vect_macc, vect_s16_nmacc)
     exp.a = -1024;
     hr.a = vect_s16_headroom(A, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
@@ -176,7 +176,7 @@ TEST(vect_macc, vect_s32_macc)
     exp.a = -1024;
     hr.a = vect_s32_headroom(A, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -239,7 +239,7 @@ TEST(vect_macc, vect_s32_nmacc)
     exp.a = -1024;
     hr.a = vect_s32_headroom(A, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);

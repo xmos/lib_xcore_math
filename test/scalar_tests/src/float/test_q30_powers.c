@@ -36,7 +36,7 @@ TEST(q30_powers, q30_powers)
   q2_30 expected[32];
   unsigned max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
     unsigned length = pseudo_rand_uint(&seed, 1, 32+1);
     const exponent_t b_exp = -30;
@@ -58,7 +58,7 @@ TEST(q30_powers, q30_powers)
     float delta_us_per_elm = delta_us / length;
 
     unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 

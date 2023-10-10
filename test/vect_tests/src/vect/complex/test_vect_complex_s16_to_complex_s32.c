@@ -64,7 +64,7 @@ TEST(vect_complex_s16_to_vect_complex_s32, vect_complex_s16_to_vect_complex_s32_
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -79,7 +79,7 @@ TEST(vect_complex_s16_to_vect_complex_s32, vect_complex_s16_to_vect_complex_s32_
         for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
             unsigned len = lengths[i];
 
-            for(int i = 0; i < MAX_LEN; i++){
+            for(unsigned int i = 0; i < MAX_LEN; i++){
                 B.real[i] = (i < len)? casse->b.re : 0xBBBB;
                 B.imag[i] = (i < len)? casse->b.im : 0xBBBB;
                 A[i].re = 0xCCCCCCCC;
@@ -88,7 +88,7 @@ TEST(vect_complex_s16_to_vect_complex_s32, vect_complex_s16_to_vect_complex_s32_
 
             vect_complex_s16_to_vect_complex_s32(A, B.real, B.imag, len);
 
-            for(int k = 0; k < MAX_LEN; k++){
+            for(unsigned int k = 0; k < MAX_LEN; k++){
                 complex_s32_t exp = {
                     (k < len)? ((int32_t)casse->b.re) : 0xCCCCCCCC,
                     (k < len)? ((int32_t)casse->b.im) : 0xCCCCCCCC  };
@@ -117,13 +117,13 @@ TEST(vect_complex_s16_to_vect_complex_s32, vect_complex_s16_to_vect_complex_s32_
         int16_t imag[MAX_LEN];
      } B;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
         const unsigned len = pseudo_rand_uint32(&seed) % MAX_LEN + 1;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 10;
             B.real[i] = pseudo_rand_int16(&seed) >> shr;
             B.imag[i] = pseudo_rand_int16(&seed) >> shr;
@@ -132,7 +132,7 @@ TEST(vect_complex_s16_to_vect_complex_s32, vect_complex_s16_to_vect_complex_s32_
         memset(A, 0xCC, sizeof(A));
         vect_complex_s16_to_vect_complex_s32(A, B.real, B.imag, len);
 
-        for(int k = 0; k < MAX_LEN; k++){
+        for(unsigned int k = 0; k < MAX_LEN; k++){
                 complex_s32_t exp = {
                     (k < len)? ((int32_t)B.real[k]) : 0xCCCCCCCC,
                     (k < len)? ((int32_t)B.imag[k]) : 0xCCCCCCCC  };

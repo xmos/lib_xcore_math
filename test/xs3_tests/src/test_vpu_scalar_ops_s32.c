@@ -74,7 +74,7 @@ TEST(vpu_scalar_ops_s32, vladd32)
     TEST_ASSERT_EQUAL_INT32(  VPU_INT32_MIN, vladd32( -0x7F000000, -0x1000000));
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         int32_t x = pseudo_rand_int32(&seed);
@@ -114,7 +114,7 @@ TEST(vpu_scalar_ops_s32, vlsub32)
     TEST_ASSERT_EQUAL_INT32(  VPU_INT32_MIN, vlsub32( -0x7F000000,  0x1000000));
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         int32_t x = pseudo_rand_int32(&seed);
@@ -166,7 +166,7 @@ TEST(vpu_scalar_ops_s32, vlashr32)
     TEST_ASSERT_EQUAL_INT32( VPU_INT32_MIN, vlashr32(    -1,     -31));
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         int32_t x = pseudo_rand_int32(&seed);
@@ -308,7 +308,7 @@ TEST(vpu_scalar_ops_s32, vlmul32)
     TEST_ASSERT_EQUAL_INT32( VPU_INT32_MAX, vlmul32( -0x7FFFFFFF,  -0x7FFFFFFF));
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         int32_t x = pseudo_rand_int32(&seed);
@@ -342,7 +342,7 @@ TEST(vpu_scalar_ops_s32, vlmacc32)
     TEST_ASSERT_EQUAL_INT32( VPU_INT40_MIN, vlmacc32( -0x8000000000,    -1,       0x40000000) ); 
     TEST_ASSERT_EQUAL_INT32( VPU_INT40_MAX, vlmacc32(  0x7FFFFFFFFF,     1,       0x40000000) ); 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         vpu_int32_acc_t acc = pseudo_rand_int64(&seed) >> 24;
@@ -378,7 +378,7 @@ TEST(vpu_scalar_ops_s32, vlmaccr32)
     
     unsigned seed = SEED_FROM_FUNC_NAME();
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         vpu_int32_acc_t acc = pseudo_rand_int64(&seed) >> 24;
@@ -464,7 +464,7 @@ TEST(vpu_scalar_ops_s32, vcmr32)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         complex_s32_t x;
@@ -497,7 +497,7 @@ TEST(vpu_scalar_ops_s32, vcmi32)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         complex_s32_t x;
@@ -530,7 +530,7 @@ TEST(vpu_scalar_ops_s32, vcmcr32)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         complex_s32_t x;
@@ -563,7 +563,7 @@ TEST(vpu_scalar_ops_s32, vcmci32)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         complex_s32_t x;

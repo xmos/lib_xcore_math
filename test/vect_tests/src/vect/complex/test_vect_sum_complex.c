@@ -66,7 +66,7 @@ TEST(vect_complex_sum, vect_complex_s32_sum_prepare)
         if(r == REPS-1)
           b_length = MAX_LEN;
 
-        for(int i = 0; i < MAX_LEN; i++){
+        for(unsigned int i = 0; i < MAX_LEN; i++){
             B[i].re = 0x40000000 >> b_hr;
             B[i].im = INT32_MIN >> b_hr;
         }
@@ -129,7 +129,7 @@ TEST(vect_complex_sum, vect_complex_s16_sum_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -146,7 +146,7 @@ TEST(vect_complex_sum, vect_complex_s16_sum_basic)
 
             unsigned len = lengths[l];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 B.real[i] = casse->b.re;
                 B.imag[i] = casse->b.im;
             }
@@ -184,14 +184,14 @@ TEST(vect_complex_sum, vect_complex_s16_sum_random)
         int16_t imag[MAX_LEN];
     } B;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
     
         complex_s32_t expected = {0,0};
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B.real[i] = pseudo_rand_int16(&seed);
             B.imag[i] = pseudo_rand_int16(&seed);
 
@@ -234,7 +234,7 @@ TEST(vect_complex_sum, vect_complex_s32_sum_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -246,7 +246,7 @@ TEST(vect_complex_sum, vect_complex_s32_sum_basic)
         for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
             unsigned len = lengths[l];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 B[i] = casse->b;
             }
 
@@ -281,14 +281,14 @@ TEST(vect_complex_sum, vect_complex_s32_sum_random)
     complex_s64_t result;
     complex_s32_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
         complex_s64_t expected = {0,0};
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i].re = pseudo_rand_int32(&seed);
             B[i].im = pseudo_rand_int32(&seed);
         }
@@ -322,7 +322,7 @@ TEST(vect_complex_sum, vect_complex_s32_sum_random)
 
         vect_complex_s32_sum(&result, B, len, b_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             expected.re += ROUND_SHR(B[i].re, b_shr);
             expected.im += ROUND_SHR(B[i].im, b_shr);
         }

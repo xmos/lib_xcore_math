@@ -51,11 +51,6 @@ TEST(bfp_complex_mag, bfp_complex_s16_mag)
 
     double Af[MAX_LEN];
 
-    struct {
-        double real[MAX_LEN];
-        double imag[MAX_LEN];
-    } Bf;
-
     int16_t expA[MAX_LEN];
 
 
@@ -72,7 +67,7 @@ TEST(bfp_complex_mag, bfp_complex_s16_mag)
 
         setExtraInfo_RSL(r, old_seed, B.length);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
 
@@ -111,10 +106,6 @@ TEST(bfp_complex_mag, bfp_complex_s32_mag)
 
     complex_s32_t B_data[MAX_LEN];
     bfp_complex_s32_t B;
-    struct {
-        double real[MAX_LEN];
-        double imag[MAX_LEN];
-    } Bf;
 
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
@@ -127,7 +118,7 @@ TEST(bfp_complex_mag, bfp_complex_s32_mag)
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i].re = pseudo_rand_int32(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int32(&seed) >> B.hr;
 
@@ -144,7 +135,7 @@ TEST(bfp_complex_mag, bfp_complex_s32_mag)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(8, expA[i], A.data[i]);
         }
     }

@@ -42,7 +42,7 @@ TEST(vect_zip, vect_s32_zip)
 
     complex_s32_t expected[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -54,7 +54,7 @@ TEST(vect_zip, vect_s32_zip)
         right_shift_t b_shr = pseudo_rand_int(&seed, -2, 3);
         right_shift_t c_shr = pseudo_rand_int(&seed, -2, 3);
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed) >> b_hr;
             C[i] = pseudo_rand_int32(&seed) >> c_hr;
 
@@ -64,7 +64,7 @@ TEST(vect_zip, vect_s32_zip)
 
         vect_s32_zip(A, B, C, len, b_shr, c_shr);
 
-        for(int k = 0; k < len; k++){
+        for(unsigned int k = 0; k < len; k++){
 
           if(A[k].re != expected[k].re){
             printf("\nB[%d] = %ld;  b_shr = %d\n", k, B[k], b_shr);
@@ -94,7 +94,7 @@ TEST(vect_zip, vect_s32_unzip)
     int32_t expectedA[MAX_LEN];
     int32_t expectedB[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -103,7 +103,7 @@ TEST(vect_zip, vect_s32_unzip)
         headroom_t re_hr = pseudo_rand_uint(&seed, 0, 8);
         headroom_t im_hr = pseudo_rand_uint(&seed, 0, 8);
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
           C[i].re = pseudo_rand_int32(&seed) >> re_hr;
           C[i].im = pseudo_rand_int32(&seed) >> im_hr;
 
@@ -113,7 +113,7 @@ TEST(vect_zip, vect_s32_unzip)
 
         vect_s32_unzip(A, B, C, len);
 
-        for(int k = 0; k < len; k++){
+        for(unsigned int k = 0; k < len; k++){
 
           if(A[k] != expectedA[k])
             printf("\nC[%d].re = %ld\n", k, B[k]);

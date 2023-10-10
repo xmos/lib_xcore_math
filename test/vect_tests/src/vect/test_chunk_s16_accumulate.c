@@ -43,14 +43,14 @@ TEST(chunk_s16_accumulate, chunk_s16_accumulate_NONPOS_SHR)
   int32_t DWORD_ALIGNED expected[VPU_INT16_EPV];
   int32_t DWORD_ALIGNED actual[VPU_INT16_EPV];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     const unsigned length = VPU_INT16_EPV;
 
-    for(int k = 0; k < length; k++)
+    for(unsigned int k = 0; k < length; k++)
       B[k] = pseudo_rand_int16(&seed);
 
     // Generate random accumulator vector as int32_t's with 1 bit of headroom
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       expected[k] = pseudo_rand_int32(&seed) >> 1;
     }
 
@@ -61,7 +61,7 @@ TEST(chunk_s16_accumulate, chunk_s16_accumulate_NONPOS_SHR)
 
     right_shift_t b_shr = pseudo_rand_int(&seed, -14, 0);
 
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       expected[k] += ((int32_t)B[k]) << (-b_shr);
     }
 
@@ -89,14 +89,14 @@ TEST(chunk_s16_accumulate, chunk_s16_accumulate_POS_SHR)
   int32_t DWORD_ALIGNED expected[VPU_INT16_EPV];
   int32_t DWORD_ALIGNED actual[VPU_INT16_EPV];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     const unsigned length = VPU_INT16_EPV;
 
-    for(int k = 0; k < length; k++)
+    for(unsigned int k = 0; k < length; k++)
       B[k] = pseudo_rand_int16(&seed);
 
     // Generate random accumulator vector as int32_t's with 1 bit of headroom
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       expected[k] = pseudo_rand_int32(&seed) >> 1;
     }
 
@@ -107,7 +107,7 @@ TEST(chunk_s16_accumulate, chunk_s16_accumulate_POS_SHR)
 
     right_shift_t b_shr = pseudo_rand_int(&seed, 1, 15);
 
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       expected[k] += ((int32_t)B[k]) >> (b_shr);
     }
 

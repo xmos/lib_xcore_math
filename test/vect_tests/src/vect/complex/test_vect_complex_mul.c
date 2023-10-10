@@ -207,7 +207,7 @@ TEST(vect_complex_mul, vect_complex_s16_mul_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -232,7 +232,7 @@ TEST(vect_complex_mul, vect_complex_s16_mul_basic)
                 int16_t imag[40]; 
             } A, B, C;
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A.real[i] = 0xCC;
                 A.imag[i] = 0xCC;
                 B.real[i] = casse->value.b.re;
@@ -247,7 +247,7 @@ TEST(vect_complex_mul, vect_complex_s16_mul_basic)
                                                   len, casse->sat);
             headroom_t hrre, hrim;
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[0], casse->line);
             }
@@ -260,7 +260,7 @@ TEST(vect_complex_mul, vect_complex_s16_mul_basic)
                                                   C.real, C.imag,
                                                   len, casse->sat);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[0], casse->line);
             }
@@ -293,13 +293,13 @@ TEST(vect_complex_mul, vect_complex_s16_mul_random)
         int16_t imag[MAX_LEN]; 
     } A, B, C;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B.real[i] = pseudo_rand_int16(&seed) >> shr;
             C.real[i] = pseudo_rand_int16(&seed) >> shr;
@@ -316,7 +316,7 @@ TEST(vect_complex_mul, vect_complex_s16_mul_random)
 
         headroom_t hrre, hrim;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s16_t expected = mul_complex_s16(B.real[i], B.imag[i], C.real[i], C.imag[i], sat);
             
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
@@ -331,7 +331,7 @@ TEST(vect_complex_mul, vect_complex_s16_mul_random)
                                               C.real, C.imag, 
                                               len, sat);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s16_t expected = mul_complex_s16(B.real[i], B.imag[i], C.real[i], C.imag[i], sat);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
@@ -406,7 +406,7 @@ TEST(vect_complex_mul, vect_complex_s32_mul_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -429,7 +429,7 @@ TEST(vect_complex_mul, vect_complex_s32_mul_basic)
             complex_s32_t B[40];
             complex_s32_t C[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i].re = 0xCC;
                 A[i].im = 0xCC;
                 B[i].re = casse->value.b.re;
@@ -440,7 +440,7 @@ TEST(vect_complex_mul, vect_complex_s32_mul_basic)
 
             hr = vect_complex_s32_mul(A, B, C, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[0].im, casse->line);
             }
@@ -449,7 +449,7 @@ TEST(vect_complex_mul, vect_complex_s32_mul_basic)
             memcpy(A, B, sizeof(A));
             hr = vect_complex_s32_mul(A, A, C, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[0].im, casse->line);
             }
@@ -458,7 +458,7 @@ TEST(vect_complex_mul, vect_complex_s32_mul_basic)
             memcpy(A, C, sizeof(A));
             hr = vect_complex_s32_mul(A, B, A, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected.re, A[0].re, casse->line);
                 TEST_ASSERT_EQUAL_MSG(casse->expected.im, A[0].im, casse->line);
             }
@@ -488,13 +488,13 @@ TEST(vect_complex_mul, vect_complex_s32_mul_random)
     complex_s32_t B[MAX_LEN];
     complex_s32_t C[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i].re = pseudo_rand_int32(&seed) >> shr;
             C[i].re = pseudo_rand_int32(&seed) >> shr;
@@ -509,7 +509,7 @@ TEST(vect_complex_mul, vect_complex_s32_mul_random)
 
         // headroom_t hrre, hrim;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_s32(B[i], C[i], b_shr, c_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
@@ -519,7 +519,7 @@ TEST(vect_complex_mul, vect_complex_s32_mul_random)
         memcpy(&A, &B, sizeof(A));
         hr = vect_complex_s32_mul(A, A, C, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_s32(B[i], C[i], b_shr, c_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);
@@ -529,7 +529,7 @@ TEST(vect_complex_mul, vect_complex_s32_mul_random)
         memcpy(&A, &C, sizeof(A));
         hr = vect_complex_s32_mul(A, B, A, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s32_t expected = mul_complex_s32(B[i], C[i], b_shr, c_shr);
             TEST_ASSERT_EQUAL_MESSAGE(expected.re, A[i].re, msg_buff);
             TEST_ASSERT_EQUAL_MESSAGE(expected.im, A[i].im, msg_buff);

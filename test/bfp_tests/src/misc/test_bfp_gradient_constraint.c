@@ -35,14 +35,14 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_mono)
 
   int32_t expected[1 << MAX_FFT_N_LOG2];
 
-  for(int FFT_N_LOG2 = MIN_FFT_N_LOG2; 
-          FFT_N_LOG2 < MAX_FFT_N_LOG2; 
+  for(int FFT_N_LOG2 = MIN_FFT_N_LOG2;
+          FFT_N_LOG2 < MAX_FFT_N_LOG2;
           FFT_N_LOG2++){
 
     const unsigned FFT_N = (1 << FFT_N_LOG2);
     const unsigned FFT_BINS = FFT_N/2;
 
-    for(int frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
+    for(unsigned int frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
 
       setExtraInfo_RSL(FFT_N, seed, frame_advance);
 
@@ -55,7 +55,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_mono)
 
       const exponent_t td_exp = A_td->exp;
       
-      for(int k = 0; k < A_td->length; k++)
+      for(unsigned int k = 0; k < A_td->length; k++)
         expected[k] = (k < frame_advance)? A_td->data[k] : 0;
       bfp_fft_forward_mono(A_td);
 
@@ -63,7 +63,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_mono)
       //// Apply op
       bfp_complex_s32_gradient_constraint_mono(&A_fd, frame_advance);
 
-      TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(dataA, FFT_BINS), A_fd.hr, 
+      TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(dataA, FFT_BINS), A_fd.hr,
                                 "Headroom is wrong.");
 
       //// Check results
@@ -86,7 +86,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_mono)
       // astew: 2022/08/23 -- Increased threshold again to 25. The seed changed, so this is most
       //                      likely a result of hitting a slightly worse case. Everything still
       //                      seems correct.
-      XTEST_ASSERT_VECT_S32_WITHIN(25, expected, A_td->data, A_td->length, 
+      XTEST_ASSERT_VECT_S32_WITHIN(25, expected, A_td->data, A_td->length,
         "FFT_N: %u\n"
         "frame_advance: %u\n", FFT_N, frame_advance);
 
@@ -106,14 +106,14 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_A)
   int32_t expectedA[1 << MAX_FFT_N_LOG2];
   int32_t expectedB[1 << MAX_FFT_N_LOG2];
 
-  for(int FFT_N_LOG2 = MIN_FFT_N_LOG2; 
-          FFT_N_LOG2 < MAX_FFT_N_LOG2; 
+  for(int FFT_N_LOG2 = MIN_FFT_N_LOG2;
+          FFT_N_LOG2 < MAX_FFT_N_LOG2;
           FFT_N_LOG2++){
 
     const unsigned FFT_N = (1 << FFT_N_LOG2);
     const unsigned FFT_BINS = FFT_N/2;
 
-    for(int frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
+    for(unsigned int frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
 
       setExtraInfo_RSL(FFT_N, seed, frame_advance);
 
@@ -130,7 +130,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_A)
       const exponent_t td_expA = A_td->exp;
       const exponent_t td_expB = B_td->exp;
       
-      for(int k = 0; k < A_td->length; k++){
+      for(unsigned int k = 0; k < A_td->length; k++){
         expectedA[k] = (k < frame_advance)? A_td->data[k] : 0;
         expectedB[k] = (k < frame_advance)? B_td->data[k] : 0;
       }
@@ -141,9 +141,9 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_A)
       //// Apply op
       bfp_complex_s32_gradient_constraint_stereo(&A_fd, &B_fd, frame_advance);
       
-      TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(dataA, FFT_BINS), A_fd.hr, 
+      TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(dataA, FFT_BINS), A_fd.hr,
                                 "Headroom is wrong (A).");
-      TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(dataB, FFT_BINS), B_fd.hr, 
+      TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(dataB, FFT_BINS), B_fd.hr,
                                 "Headroom is wrong (B).");
 
       //// Check results
@@ -159,11 +159,11 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_A)
       // It's possible doing the IFFT allowed noise to bleed into the samples that should be zero
       // here, so give some slack
 
-      XTEST_ASSERT_VECT_S32_WITHIN(23, expectedA, A_td->data, A_td->length, 
+      XTEST_ASSERT_VECT_S32_WITHIN(23, expectedA, A_td->data, A_td->length,
         "FFT_N: %u\n"
         "frame_advance: %u\n", FFT_N, frame_advance);
 
-      XTEST_ASSERT_VECT_S32_WITHIN(23, expectedB, B_td->data, A_td->length, 
+      XTEST_ASSERT_VECT_S32_WITHIN(23, expectedB, B_td->data, A_td->length,
         "FFT_N: %u\n"
         "frame_advance: %u\n", FFT_N, frame_advance);
 
@@ -182,14 +182,14 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_B)
   int32_t expectedA[1 << MAX_FFT_N_LOG2];
   int32_t expectedB[1 << MAX_FFT_N_LOG2];
 
-  for(int FFT_N_LOG2 = MIN_FFT_N_LOG2; 
-          FFT_N_LOG2 < MAX_FFT_N_LOG2; 
+  for(int FFT_N_LOG2 = MIN_FFT_N_LOG2;
+          FFT_N_LOG2 < MAX_FFT_N_LOG2;
           FFT_N_LOG2++){
 
     const unsigned FFT_N = (1 << FFT_N_LOG2);
     const unsigned FFT_BINS = FFT_N/2;
 
-    for(int frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
+    for(unsigned int frame_advance = 16; frame_advance < FFT_BINS; frame_advance += 16){
 
       setExtraInfo_RSL(FFT_N, seed, frame_advance);
 
@@ -206,7 +206,7 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_B)
       const exponent_t td_expA = A_td->exp;
       const exponent_t td_expB = B_td->exp;
       
-      for(int k = 0; k < A_td->length; k++){
+      for(unsigned int k = 0; k < A_td->length; k++){
         expectedA[k] = (k < frame_advance)? A_td->data[k] : 0;
         expectedB[k] = (k < frame_advance)? B_td->data[k] : 0;
       }
@@ -217,9 +217,9 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_B)
       //// Apply op
       bfp_complex_s32_gradient_constraint_stereo(&A_fd, &B_fd, frame_advance);
       
-      TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(A_fd.data, FFT_BINS), A_fd.hr, 
+      TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(A_fd.data, FFT_BINS), A_fd.hr,
                                 "Headroom is wrong (A).");
-      TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(B_fd.data, FFT_BINS), B_fd.hr, 
+      TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(B_fd.data, FFT_BINS), B_fd.hr,
                                 "Headroom is wrong (B).");
 
       //// Check results
@@ -237,11 +237,11 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_B)
 
       // astew: 2022/06/30 -- Increased threshold from 34 to 40. Test was failing after I fixed
       //        the random number generation problem. (threshold is observed, not theoretical)
-      XTEST_ASSERT_VECT_S32_WITHIN(40, expectedA, A_td->data, A_td->length, 
+      XTEST_ASSERT_VECT_S32_WITHIN(40, expectedA, A_td->data, A_td->length,
         "FFT_N: %u\n"
         "frame_advance: %u\n", FFT_N, frame_advance);
 
-      XTEST_ASSERT_VECT_S32_WITHIN(40, expectedB, B_td->data, B_td->length, 
+      XTEST_ASSERT_VECT_S32_WITHIN(40, expectedB, B_td->data, B_td->length,
         "FFT_N: %u\n"
         "frame_advance: %u\n", FFT_N, frame_advance);
 

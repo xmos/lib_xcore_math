@@ -40,7 +40,7 @@ TEST(vect_copy, vect_s32_copy)
   int32_t WORD_ALIGNED A[MAX_LEN];
   int32_t WORD_ALIGNED B[MAX_LEN];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     unsigned old_seed = seed;
     unsigned len = 8*pseudo_rand_uint(&seed, 1, MAX_VECTS+1);
 
@@ -48,7 +48,7 @@ TEST(vect_copy, vect_s32_copy)
 
     headroom_t b_hr = pseudo_rand_uint(&seed, 0, 20);
     
-    for(int i = 0; i < len; i++)
+    for(unsigned int i = 0; i < len; i++)
         B[i] = pseudo_rand_int32(&seed) >> b_hr;
 
     

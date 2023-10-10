@@ -82,7 +82,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
         B.hr = pseudo_rand_uint(&seed, 0, 12);
         C.hr = pseudo_rand_uint(&seed, 0, 12);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
             C.data[i] = pseudo_rand_int16(&seed) >> C.hr;
@@ -91,7 +91,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
         test_double_from_complex_s16(Bf.real, Bf.imag, &B);
         test_double_from_s16(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af.real[i] = Bf.real[i] * Cf[i];
             Af.imag[i] = Bf.imag[i] * Cf[i];
         }
@@ -102,7 +102,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
 
             // printf("A.real[%d] = %d <--  %d       %d\n", i,  A.real[i], B.real[i], C.data[i]);
             // printf("A.imag[%d] = %d <--  %d       %d\n", i,  A.imag[i], B.imag[i], C.data[i]);
@@ -150,7 +150,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
         B.hr = pseudo_rand_uint(&seed, 0, 28);
         C.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
 
             B.data[i].re = pseudo_rand_int16(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int16(&seed) >> B.hr;
@@ -160,7 +160,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
         test_double_from_complex_s32(Bf.real, Bf.imag, &B);
         test_double_from_s32(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af.real[i] = Bf.real[i] * Cf[i];
             Af.imag[i] = Bf.imag[i] * Cf[i];
         }
@@ -171,7 +171,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
 
         test_complex_s32_from_double(expected, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
 
             // printf("A.real[%d] = %d <--  %d       %d\n", i,  A.real[i], B.real[i], C.data[i]);
             // printf("A.imag[%d] = %d <--  %d       %d\n", i,  A.imag[i], B.imag[i], C.data[i]);

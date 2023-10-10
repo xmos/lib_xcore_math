@@ -47,7 +47,7 @@ TEST(vect_f32_to_vect_s32, vect_f32_to_vect_s32)
   int32_t expected[MAX_LEN];
 
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     const unsigned old_seed = seed;
 
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
@@ -56,7 +56,7 @@ TEST(vect_f32_to_vect_s32, vect_f32_to_vect_s32)
     exponent_t max_exponent = -0x80000000;
 
     // Create a bunch of random floats.
-    for(int i = 0; i < len; i++){
+    for(unsigned int i = 0; i < len; i++){
       int32_t mant = pseudo_rand_int32(&seed);
       // modest range on exponents prevent us from ending up with lots of zeros.
       exponent_t exp = pseudo_rand_int(&seed, -10, 10); 
@@ -66,7 +66,7 @@ TEST(vect_f32_to_vect_s32, vect_f32_to_vect_s32)
 
     exponent_t exp_out = vect_f32_max_exponent(vec_in, len);
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       float_s32_t f32 = f32_to_float_s32(vec_in[k]);
       expected[k] = vlashr32(f32.mant, exp_out - f32.exp);
     }

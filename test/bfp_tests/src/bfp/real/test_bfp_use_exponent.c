@@ -57,7 +57,7 @@ TEST(bfp_use_exponent, bfp_s16_use_exponent)
 
     const right_shift_t data_hr = pseudo_rand_uint(&seed, 0, 5);
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       dataA[k] = pseudo_rand_int16(&seed) >> data_hr;
 
       expected[k] = delta_p? vlashr16(dataA[k], delta_p) : dataA[k];
@@ -106,7 +106,7 @@ TEST(bfp_use_exponent, bfp_s32_use_exponent)
 
     const right_shift_t data_hr = pseudo_rand_uint(&seed, 0, 5);
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       dataA[k] = pseudo_rand_int32(&seed) >> data_hr;
 
       expected[k] = delta_p? vlashr32(dataA[k], delta_p) : dataA[k];

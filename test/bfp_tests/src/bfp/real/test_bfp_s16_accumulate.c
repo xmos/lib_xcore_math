@@ -49,7 +49,7 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
 
   bfp_s16_init(&B, b_data, 0, 0, 0);
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     test_random_bfp_s16(&B, MAX_LEN, &seed, NULL, 0);
     B.length = pseudo_rand_int(&seed, 1, MAX_LEN+1);
 
@@ -57,19 +57,19 @@ TEST(bfp_s16_accumulate, bfp_s16_accumulate)
 
     B.exp = acc_exp + pseudo_rand_int(&seed, -14, 15);
 
-    for(int k = 0; k < B.length; k++) {
+    for(unsigned int k = 0; k < B.length; k++) {
       B.data[k] = pseudo_rand_int16(&seed);
     }
 
     // Generate random accumulator vector as int32_t's with 1 bit of headroom
-    for(int k = 0; k < B.length; k++) {
+    for(unsigned int k = 0; k < B.length; k++) {
       expected[k] = pseudo_rand_int32(&seed) >> 1;
     }
 
     // Turn the int32_t accs into split_s32 accs
     vect_s32_split_accs(&acc[0], expected, B.length);
 
-    for(int k = 0; k < B.length; k++){
+    for(unsigned int k = 0; k < B.length; k++){
       expected_f[k] = ldexp(expected[k], acc_exp)
                     + ldexp(B.data[k], B.exp);
     }

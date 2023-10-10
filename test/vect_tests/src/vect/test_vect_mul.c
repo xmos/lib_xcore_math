@@ -143,8 +143,8 @@ TEST(vect_mul, vect_s32_mul_prepare)
         vect_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         // a_exp and a_shr should be calculated for exactly this case
-        int32_t WORD_ALIGNED B = -0x80000000;
-        int32_t WORD_ALIGNED C = -0x80000000;
+        int32_t WORD_ALIGNED B = -(int)0x80000000;
+        int32_t WORD_ALIGNED C = -(int)0x80000000;
         B = B >> b_hr;
         C = C >> c_hr;
         int32_t WORD_ALIGNED A;
@@ -187,14 +187,14 @@ TEST(vect_mul, vect_s16_mul_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
         
         //Verify mul_s16() is correct. It's used in other test cases.
-        TEST_ASSERT_EQUAL_MSG(casse->expected, 
-                    mul_s16(casse->value.b, casse->value.c, casse->a_shr), 
+        TEST_ASSERT_EQUAL_MSG(casse->expected,
+                    mul_s16(casse->value.b, casse->value.c, casse->a_shr),
                     casse->line);
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
@@ -207,7 +207,7 @@ TEST(vect_mul, vect_s16_mul_basic)
             int16_t B[40];
             int16_t C[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B[i] = casse->value.b;
                 C[i] = casse->value.c;
@@ -215,7 +215,7 @@ TEST(vect_mul, vect_s16_mul_basic)
 
             hr = vect_s16_mul(A, B, C, len, casse->a_shr);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
@@ -223,7 +223,7 @@ TEST(vect_mul, vect_s16_mul_basic)
             memcpy(A, B, sizeof(A));
             hr = vect_s16_mul(A, A, C, len, casse->a_shr);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
@@ -231,7 +231,7 @@ TEST(vect_mul, vect_s16_mul_basic)
             memcpy(A, C, sizeof(A));
             hr = vect_s16_mul(A, B, A, len, casse->a_shr);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
@@ -254,13 +254,13 @@ TEST(vect_mul, vect_s16_mul_random)
 
     const char debug_fmt[] = "Expected: %d <-- (%d * %d) >> %d \nActual: %d\n";
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
         setExtraInfo_RSL(v, old_seed, len);
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int16(&seed) >> shr;
             C[i] = pseudo_rand_int16(&seed) >> shr;
@@ -269,14 +269,14 @@ TEST(vect_mul, vect_s16_mul_random)
         int a_shr = (pseudo_rand_uint32(&seed) % 5);
 
         // Determine expected outputs
-        for(int i = 0; i < len; i++)
+        for(unsigned int i = 0; i < len; i++)
           expected[i] = mul_s16(B[i], C[i], a_shr);
         
         
         // A <-- B * C
         hr = vect_s16_mul(A, B, C, len, a_shr);
 
-        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len, 
+        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
             debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
         
@@ -285,7 +285,7 @@ TEST(vect_mul, vect_s16_mul_random)
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s16_mul(A, A, C, len, a_shr);
 
-        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len, 
+        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
             debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
         
@@ -294,7 +294,7 @@ TEST(vect_mul, vect_s16_mul_random)
         memcpy(A, C, sizeof(A[0])*len);
         hr = vect_s16_mul(A, B, A, len, a_shr);
 
-        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len, 
+        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
             debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
         
@@ -347,7 +347,7 @@ TEST(vect_mul, vect_s32_mul_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -366,7 +366,7 @@ TEST(vect_mul, vect_s32_mul_basic)
             int32_t B[40];
             int32_t C[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B[i] = casse->value.b;
                 C[i] = casse->value.c;
@@ -374,7 +374,7 @@ TEST(vect_mul, vect_s32_mul_basic)
 
             hr = vect_s32_mul(A, B, C, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, casse->line);
             }
@@ -382,7 +382,7 @@ TEST(vect_mul, vect_s32_mul_basic)
             memcpy(A, B, sizeof(A));
             hr = vect_s32_mul(A, A, C, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, casse->line);
             }
@@ -390,7 +390,7 @@ TEST(vect_mul, vect_s32_mul_basic)
             memcpy(A, C, sizeof(A));
             hr = vect_s32_mul(A, B, A, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, casse->line);
             }
@@ -412,13 +412,13 @@ TEST(vect_mul, vect_s32_mul_random)
 
     const char debug_fmt[] = "Expected: %ld <-- (%ld >> %d) * (%ld >> %d) \nActual: %ld\n";
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
 
         setExtraInfo_RSL(v, old_seed, len);
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int32(&seed) >> shr;
             C[i] = pseudo_rand_int32(&seed) >> shr;
@@ -429,14 +429,14 @@ TEST(vect_mul, vect_s32_mul_random)
         
 
         // Determine expected outputs
-        for(int i = 0; i < len; i++)
+        for(unsigned int i = 0; i < len; i++)
           expected[i] = mul_s32(B[i], C[i], b_shr, c_shr);
         
 
         // A <-- B * C
         hr = vect_s32_mul(A, B, C, len, b_shr, c_shr);
 
-        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
+        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
             debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
         
@@ -445,7 +445,7 @@ TEST(vect_mul, vect_s32_mul_random)
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s32_mul(A, A, C, len, b_shr, c_shr);
 
-        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
+        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
             debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
         
@@ -454,7 +454,7 @@ TEST(vect_mul, vect_s32_mul_random)
         memcpy(A, C, sizeof(A[0])*len);
         hr = vect_s32_mul(A, B, A, len, b_shr, c_shr);
 
-        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
+        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
             debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
         

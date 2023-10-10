@@ -41,13 +41,13 @@ TEST(vect_boolean, vect_s8_is_negative)
     int8_t WORD_ALIGNED A[MAX_LEN];
     int8_t WORD_ALIGNED B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned length = (v < 48)? v :  pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         setExtraInfo_RSL(v, seed, length);
 
-        for(int k = 0; k < length; k++)
+        for(unsigned int k = 0; k < length; k++)
           B[k] = pseudo_rand_int8(&seed);
 
         memset(A, 0xCC, sizeof(A));

@@ -177,7 +177,7 @@ TEST(filter_fir_s32, case3)
 
     filter_fir_s32_t filter;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         const unsigned old_seed = seed;
 

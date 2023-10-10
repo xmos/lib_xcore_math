@@ -43,7 +43,7 @@ TEST(vect_energy, vect_s16_energy)
     int32_t result;
     int16_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         setExtraInfo_RSL(v, seed, len);
@@ -75,7 +75,7 @@ TEST(vect_energy, vect_s16_energy)
 
         int32_t exp = 0;
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int16(&seed);
             int32_t t = B[i];
             t = (b_shr>=0)? (t>>b_shr) : (t<<-b_shr);
@@ -104,7 +104,7 @@ TEST(vect_energy, vect_s32_energy)
     int64_t result;
     int32_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         // len = 1;
@@ -140,7 +140,7 @@ TEST(vect_energy, vect_s32_energy)
 
         int64_t exp = 0;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed);
             int64_t t = B[i];
             t = (b_shr>=0)? (t>>b_shr) : (t<<-b_shr);

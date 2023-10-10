@@ -113,7 +113,7 @@ TEST(float_exp, float_s32_exp_RANDOM)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     float_s32_t x = {

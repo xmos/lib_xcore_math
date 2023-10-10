@@ -90,7 +90,7 @@ TEST(vect_shl, vect_s16_shl_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -119,7 +119,7 @@ TEST(vect_shl, vect_s16_shl_random)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
         
@@ -214,7 +214,7 @@ TEST(vect_shl, vect_s32_shl_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -243,7 +243,7 @@ TEST(vect_shl, vect_s32_shl_random)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
         
@@ -305,7 +305,7 @@ TEST(vect_shl, vect_complex_s16_shl)
     int16_t WORD_ALIGNED B_real[MAX_LEN];
     int16_t WORD_ALIGNED B_imag[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
@@ -315,14 +315,14 @@ TEST(vect_shl, vect_complex_s16_shl)
 
         const left_shift_t shl = pseudo_rand_int(&seed, -4, 4);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B_real[i] = pseudo_rand_int16(&seed) >> hr;
             B_imag[i] = pseudo_rand_int16(&seed) >> hr;
         }
 
         vect_complex_s16_shl(A_real, A_imag, B_real, B_imag, length, shl);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], -shl), A_real[i] );
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_imag[i], -shl), A_imag[i] );
         }
@@ -332,7 +332,7 @@ TEST(vect_shl, vect_complex_s16_shl)
 
         vect_complex_s16_shl(A_real, A_imag, A_real, A_imag, length, shl);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], -shl), A_real[i] );
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_imag[i], -shl), A_imag[i] );
         }
@@ -349,7 +349,7 @@ TEST(vect_shl, vect_complex_s32_shl)
     complex_s32_t A[MAX_LEN];
     complex_s32_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
@@ -359,14 +359,14 @@ TEST(vect_shl, vect_complex_s32_shl)
 
         const left_shift_t shl = pseudo_rand_int(&seed, -8, 8);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> hr;
             B[i].im = pseudo_rand_int32(&seed) >> hr;
         }
 
         vect_complex_s32_shl(A, B, length, shl);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, -shl), A[i].re );
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].im, -shl), A[i].im );
         }
@@ -375,7 +375,7 @@ TEST(vect_shl, vect_complex_s32_shl)
 
         vect_complex_s32_shl(A, A, length, shl);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, -shl), A[i].re );
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].im, -shl), A[i].im );
         }

@@ -66,10 +66,10 @@ TEST(bfp_shl, bfp_s16_shl)
         TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
         TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
 
-        for(int i = 0; i < A.length; i++)
+        for(unsigned int i = 0; i < A.length; i++)
             TEST_ASSERT_EQUAL(B_copy.data[i] << (B_copy.hr-leave_hr), A.data[i]);
 
-        int shl = -(pseudo_rand_uint32(&seed) % 5) - 1;
+        int shl = -(int)(pseudo_rand_uint32(&seed) % 5) - 1;
 
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));
@@ -83,7 +83,7 @@ TEST(bfp_shl, bfp_s16_shl)
         TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
         TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
 
-        for(int i = 0; i < A.length; i++)
+        for(unsigned int i = 0; i < A.length; i++)
             TEST_ASSERT_EQUAL(B_copy.data[i] >> (-shl), B.data[i]);
     }
 }
@@ -119,10 +119,10 @@ TEST(bfp_shl, bfp_s32_shl)
         TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
         TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
 
-        for(int i = 0; i < A.length; i++)
+        for(unsigned int i = 0; i < A.length; i++)
             TEST_ASSERT_EQUAL(B_copy.data[i] << (B_copy.hr-leave_hr), A.data[i]);
 
-        int shl = -(pseudo_rand_uint32(&seed) % 5) - 1;
+        int shl = -(int)(pseudo_rand_uint32(&seed) % 5) - 1;
 
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));
@@ -136,7 +136,7 @@ TEST(bfp_shl, bfp_s32_shl)
         TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
         TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
 
-        for(int i = 0; i < A.length; i++)
+        for(unsigned int i = 0; i < A.length; i++)
             TEST_ASSERT_EQUAL(B_copy.data[i] >> (-shl), B.data[i]);
     }
 }
@@ -161,7 +161,7 @@ TEST(bfp_shl, bfp_complex_s16_shl)
 
         right_shift_t min_hr = pseudo_rand_uint(&seed,2, 8);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B_data.real[i] = pseudo_rand_int16(&seed) >> (min_hr + pseudo_rand_uint(&seed, 0, 5));
             B_data.imag[i] = pseudo_rand_int16(&seed) >> (min_hr + pseudo_rand_uint(&seed, 0, 5));
         }
@@ -176,7 +176,7 @@ TEST(bfp_shl, bfp_complex_s16_shl)
         TEST_ASSERT_EQUAL(B.exp, A.exp);
         TEST_ASSERT_EQUAL(B.hr - shl, A.hr);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             TEST_ASSERT_EQUAL(B.real[i] << shl, A.real[i]);
             TEST_ASSERT_EQUAL(B.imag[i] << shl, A.imag[i]);
         }
@@ -199,7 +199,7 @@ TEST(bfp_shl, bfp_complex_s32_shl)
 
         right_shift_t min_hr = pseudo_rand_uint(&seed,2, 16);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B_data[i].re = pseudo_rand_int32(&seed) >> (min_hr + pseudo_rand_uint(&seed, 0, 10));
             B_data[i].im = pseudo_rand_int32(&seed) >> (min_hr + pseudo_rand_uint(&seed, 0, 10));
         }
@@ -216,7 +216,7 @@ TEST(bfp_shl, bfp_complex_s32_shl)
         TEST_ASSERT_EQUAL(B.exp, A.exp);
         TEST_ASSERT_EQUAL(B.hr - shl, A.hr);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             TEST_ASSERT_EQUAL(B.data[i].re << shl, A.data[i].re);
             TEST_ASSERT_EQUAL(B.data[i].im << shl, A.data[i].im);
         }
@@ -262,12 +262,12 @@ TEST(bfp_shl, bfp_complex_s16_shl_2)
         TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
         TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_EQUAL(B_copy.real[i] << (B_copy.hr-leave_hr), A.real[i]);
             TEST_ASSERT_EQUAL(B_copy.imag[i] << (B_copy.hr-leave_hr), A.imag[i]);
         }
 
-        int shl = -(pseudo_rand_uint32(&seed) % 5) - 1;
+        int shl = -(int)(pseudo_rand_uint32(&seed) % 5) - 1;
 
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(realB_copy, realA, sizeof(realA));
@@ -282,7 +282,7 @@ TEST(bfp_shl, bfp_complex_s16_shl_2)
         TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
         TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_EQUAL(B_copy.real[i] >> (-shl), B.real[i]);
             TEST_ASSERT_EQUAL(B_copy.imag[i] >> (-shl), B.imag[i]);
         }
@@ -320,12 +320,12 @@ TEST(bfp_shl, bfp_complex_s32_shl_2)
         TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
         TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_EQUAL(B_copy.data[i].re << (B_copy.hr-leave_hr), A.data[i].re);
             TEST_ASSERT_EQUAL(B_copy.data[i].im << (B_copy.hr-leave_hr), A.data[i].im);
         }
 
-        int shl = -(pseudo_rand_uint32(&seed) % 5) - 1;
+        int shl = -(int)(pseudo_rand_uint32(&seed) % 5) - 1;
 
         memcpy(&B_copy, &A, sizeof(A));
         memcpy(dataB_copy, dataA, sizeof(dataA));
@@ -339,7 +339,7 @@ TEST(bfp_shl, bfp_complex_s32_shl_2)
         TEST_ASSERT_EQUAL(B_copy.exp, B.exp);
         TEST_ASSERT_EQUAL(B_copy.exp, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_EQUAL(B_copy.data[i].re >> (-shl), B.data[i].re);
             TEST_ASSERT_EQUAL(B_copy.data[i].im >> (-shl), B.data[i].im);
         }

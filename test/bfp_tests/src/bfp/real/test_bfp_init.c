@@ -51,7 +51,7 @@ TEST(bfp_init, bfp_s16_init)
 
         int shr = pseudo_rand_uint(&seed, 0, 10);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             data[i] = pseudo_rand_int16(&seed) >> shr;
         }
 
@@ -93,7 +93,7 @@ TEST(bfp_init, bfp_s32_init)
 
         int shr = pseudo_rand_uint(&seed, 0, 10);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             data[i] = pseudo_rand_int32(&seed) >> shr;
         }
 
@@ -136,7 +136,7 @@ TEST(bfp_init, bfp_complex_s16_init)
 
         int shr = pseudo_rand_uint(&seed, 0, 10);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             real_data[i] = pseudo_rand_int16(&seed) >> (shr + (pseudo_rand_uint32(&seed) % 4));
             imag_data[i] = pseudo_rand_int16(&seed) >> (shr + (pseudo_rand_uint32(&seed) % 4));
         }
@@ -184,7 +184,7 @@ TEST(bfp_init, bfp_complex_s32_init)
 
         int shr = pseudo_rand_uint(&seed, 0, 10);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             data[i].re = pseudo_rand_int16(&seed) >> (shr + (pseudo_rand_uint32(&seed) % 7));
             data[i].im = pseudo_rand_int16(&seed) >> (shr + (pseudo_rand_uint32(&seed) % 7));
         }

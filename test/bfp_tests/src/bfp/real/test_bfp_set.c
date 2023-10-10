@@ -34,7 +34,7 @@ TEST_TEAR_DOWN(bfp_set) {}
 #endif
 
 
-TEST(bfp_set, bfp_s16_set) 
+TEST(bfp_set, bfp_s16_set)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
     
@@ -65,7 +65,7 @@ TEST(bfp_set, bfp_s16_set)
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(exp_hr, A.hr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL(val, A.data[i]);
         }
         for(int i = length; i < MAX_LEN; i++)
@@ -73,7 +73,7 @@ TEST(bfp_set, bfp_s16_set)
     }
 }
 
-TEST(bfp_set, bfp_s32_set) 
+TEST(bfp_set, bfp_s32_set)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
     
@@ -104,7 +104,7 @@ TEST(bfp_set, bfp_s32_set)
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(exp_hr, A.hr);
 
-        for(int i = 0; i < length; i++)
+        for(unsigned int i = 0; i < length; i++)
             TEST_ASSERT_EQUAL(val, A.data[i]);
         for(int i = length; i < MAX_LEN; i++)
             TEST_ASSERT_EQUAL(0, A.data[i]);
@@ -112,7 +112,7 @@ TEST(bfp_set, bfp_s32_set)
 }
 
 
-TEST(bfp_set, bfp_complex_s16_set) 
+TEST(bfp_set, bfp_complex_s16_set)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
     
@@ -141,13 +141,13 @@ TEST(bfp_set, bfp_complex_s16_set)
 
         bfp_complex_s16_set(&A, val, exponent);
 
-        headroom_t exp_hr = HR_S16(val.re) < HR_S16(val.im)? 
+        headroom_t exp_hr = HR_S16(val.re) < HR_S16(val.im)?
                             HR_S16(val.re) : HR_S16(val.im);
 
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(exp_hr, A.hr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL(val.re, A.real[i]);
             TEST_ASSERT_EQUAL(val.im, A.imag[i]);
         }
@@ -159,7 +159,7 @@ TEST(bfp_set, bfp_complex_s16_set)
 }
 
 
-TEST(bfp_set, bfp_complex_s32_set) 
+TEST(bfp_set, bfp_complex_s32_set)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
     
@@ -186,13 +186,13 @@ TEST(bfp_set, bfp_complex_s32_set)
 
         bfp_complex_s32_set(&A, val, exponent);
 
-        headroom_t exp_hr = HR_S32(val.re) < HR_S32(val.im)? 
+        headroom_t exp_hr = HR_S32(val.re) < HR_S32(val.im)?
                             HR_S32(val.re) : HR_S32(val.im);
 
         TEST_ASSERT_EQUAL(exponent, A.exp);
         TEST_ASSERT_EQUAL(exp_hr, A.hr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL(val.re, A.data[i].re);
             TEST_ASSERT_EQUAL(val.im, A.data[i].im);
         }

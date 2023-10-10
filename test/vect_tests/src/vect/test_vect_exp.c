@@ -44,18 +44,18 @@ TEST(vect_exp, chunk_q30_exp_small_RANDOM)
 
   unsigned max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = VPU_INT32_EPV;
 
     const exponent_t b_exp = -30;
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i] = pseudo_rand_int32(&seed) / 4;
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl = exp(bi);
       expected[i] = round(ldexp(exp_dbl, 30));
@@ -108,18 +108,18 @@ TEST(vect_exp, vect_q30_exp_small_RANDOM)
 
   unsigned max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
     const exponent_t b_exp = -30;
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i] = pseudo_rand_int32(&seed) / 4;
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl = exp(bi);
       expected[i] = round(ldexp(exp_dbl, 30));
@@ -138,7 +138,7 @@ TEST(vect_exp, vect_q30_exp_small_RANDOM)
     // printf("A[0] = %f (0x%08X << -30) \n", ldexp(A[0], -30), (unsigned) A[0]);
 
     unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 
