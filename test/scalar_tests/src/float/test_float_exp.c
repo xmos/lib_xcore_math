@@ -31,7 +31,7 @@ TEST_TEAR_DOWN(float_exp) {}
 
 
 
-static 
+static
 double diff_ratio(float_s32_t a, double b)
 {
   double aa = ldexp(a.mant, a.exp);
@@ -52,7 +52,7 @@ TEST(float_exp, q30_exp_small)
     TIME_STATEMENT(actual = q30_exp_small(x), timing);
     double expected_f = exp(ldexp(x, -30));
     q2_30 expected = Q30(expected_f);
-    int diff = abs(expected - actual);
+    unsigned int diff = abs(expected - actual);
     max_diff = MAX(diff, max_diff);
     TEST_ASSERT_INT32_WITHIN_MESSAGE(2, expected, actual, "");
   }
@@ -123,7 +123,7 @@ TEST(float_exp, float_s32_exp_RANDOM)
 
     float_s32_t actual = float_s32_exp(x);
     double expected_f = exp(ldexp(x.mant, x.exp));
-    int32_t expected_mant = round(ldexp(expected_f,-actual.exp));
+    int32_t expected_mant = lround(ldexp(expected_f,-actual.exp));
     int diff = expected_mant - actual.mant;
     double perc = 100 * (((double)diff) / expected_mant);
 

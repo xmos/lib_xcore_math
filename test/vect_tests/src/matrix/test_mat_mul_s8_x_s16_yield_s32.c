@@ -81,7 +81,7 @@ TEST(mat_mul_s8_x_s16_yield_s32, mat_mul_s8_x_s16_yield_s32)
       pseudo_rand_int8(&seed);
 
       memset(vector, 0, sizeof(vector));
-      for(int col = 0; col < N_cols; col++)
+      for(unsigned int col = 0; col < N_cols; col++)
         vector[col] = pseudo_rand_int16(&seed);
 
       // unsigned opt_start, opt_end;
@@ -104,7 +104,7 @@ TEST(mat_mul_s8_x_s16_yield_s32, mat_mul_s8_x_s16_yield_s32)
       // printf("%d x %d:  %0.02f\n", M_rows, N_cols, ratio);
       // printf("% 3d x % 3d:  %f us\n", M_rows, N_cols, opt_ns / 1000.0f);
 
-      for(int row = 0; row < M_rows; row++) {
+      for(unsigned int row = 0; row < M_rows; row++) {
 
         if(output[row] != output_ref[row]){
           printf("\noutput[%d] = 0x%08X  (output_ref: 0x%08X)\n",

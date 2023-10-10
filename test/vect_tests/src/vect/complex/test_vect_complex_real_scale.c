@@ -92,9 +92,9 @@ TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     
-    struct { 
-        int16_t real[MAX_LEN]; 
-        int16_t imag[MAX_LEN]; 
+    struct {
+        int16_t real[MAX_LEN];
+        int16_t imag[MAX_LEN];
     } A, B;
     
     int16_t C;
@@ -121,8 +121,8 @@ TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
         
 
         {
-            headroom_t hr = vect_complex_s16_real_scale(A.real, A.imag, 
-                                                            B.real, B.imag, 
+            headroom_t hr = vect_complex_s16_real_scale(A.real, A.imag,
+                                                            B.real, B.imag,
                                                             C, length, sat);
 
             headroom_t exp_hr = vect_complex_s16_headroom(A.real, A.imag, length);
@@ -130,13 +130,13 @@ TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
             TEST_ASSERT_EQUAL(exp_hr, hr);
 
             for(unsigned int i = 0; i < length; i++){
-                int32_t exp = ldexp( ((int32_t)B.real[i]) * C, -sat) + ldexp(1, -40);
+                int32_t exp = (int32_t) ldexp( (double) (((int32_t)B.real[i]) * C), -sat) + (int32_t) ldexp(1.0, -40);
                 exp = MIN(exp, VPU_INT16_MAX);
                 exp = MAX(exp, VPU_INT16_MIN);
 
                 TEST_ASSERT_INT16_WITHIN(1, exp, A.real[i]);
 
-                exp = round(ldexp( ((int32_t)B.imag[i]) * C, -sat) + ldexp(1, -40));
+                exp = lround(ldexp( ((int32_t)B.imag[i]) * C, -sat) + ldexp(1, -40));
                 exp = MIN(exp, VPU_INT16_MAX);
                 exp = MAX(exp, VPU_INT16_MIN);
                 TEST_ASSERT_INT16_WITHIN(1, exp, A.imag[i]);
@@ -148,8 +148,8 @@ TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
             memcpy(A.imag, B.imag, sizeof(A.imag));
 
 
-            headroom_t hr = vect_complex_s16_real_scale(A.real, A.imag, 
-                                                            A.real, A.imag, 
+            headroom_t hr = vect_complex_s16_real_scale(A.real, A.imag,
+                                                            A.real, A.imag,
                                                             C, length, sat);
 
             headroom_t exp_hr = vect_complex_s16_headroom(A.real, A.imag, length);
@@ -157,12 +157,12 @@ TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
             TEST_ASSERT_EQUAL(exp_hr, hr);
 
             for(unsigned int i = 0; i < length; i++){
-                int32_t exp = ldexp( ((int32_t)B.real[i]) * C, -sat) + ldexp(1, -40);
+                int32_t exp = (int32_t) ldexp( (double) (((int32_t)B.real[i]) * C), -sat) + (int32_t) ldexp(1.0, -40);
                 exp = MIN(exp, VPU_INT16_MAX);
                 exp = MAX(exp, VPU_INT16_MIN);
                 TEST_ASSERT_INT16_WITHIN(1, exp, A.real[i]);
 
-                exp = round(ldexp( ((int32_t)B.imag[i]) * C, -sat) + ldexp(1, -40));
+                exp = lround(ldexp( ((int32_t)B.imag[i]) * C, -sat) + ldexp(1, -40));
                 exp = MIN(exp, VPU_INT16_MAX);
                 exp = MAX(exp, VPU_INT16_MIN);
                 TEST_ASSERT_INT16_WITHIN(1, exp, A.imag[i]);

@@ -13,10 +13,10 @@
 
 /**
  * Biquad filter used in this example.
- * 
+ *
  * Unlike the 16- and 32-bit FIR filters, 32-bit biquad filters store their state and coefficients
  * within the filter struct itself.
- * 
+ *
  */
 filter_biquad_s32_t filter = {
   // Number of biquad sections in this filter block
@@ -44,34 +44,34 @@ void filter_32bit_biquad()
 
   /**
    * In this example, we'll look at how to use the 32-bit biquad filtering functions.
-   * 
+   *
    * 32-bit biquad filters use the filter_biquad_s32_t type. Unlike the 16- and 32-bit FIR
    * filters, the 32-bit biquad filter type carries its own data and need not be initialized.
    * (see above)
-   * 
+   *
    * The coefficients of the 32-bit biquad filter are encoded as Q2.30 fixed-point values. If x[n]
-   * is the input to a biquad section at time n, and y[n] is its output, then the relationship 
+   * is the input to a biquad section at time n, and y[n] is its output, then the relationship
    * between y[n] and x[n] for a single biquad filter section is:
-   * 
+   *
    *    y[n] = ((b0 * x[n  ]) >> 30)
    *         + ((b1 * x[n-1]) >> 30)
    *         + ((b2 * x[n-2]) >> 30)
    *         - ((a1 * y[n-1]) >> 30)
    *         - ((a2 * y[n-2]) >> 30)
-   * 
-   *  where the right-shifts are rounding, and b0, b1, b2, -a1, and -a2 are `filter.coef[0][k]`, 
-   * `filter.coef[1][k]`, `filter.coef[2][k]`, `filter.coef[3][k]`, and `filter.coef[4][k]` 
-   *  respectively, for the kth biquad section. The output y[n] is then also the input to the 
+   *
+   *  where the right-shifts are rounding, and b0, b1, b2, -a1, and -a2 are `filter.coef[0][k]`,
+   * `filter.coef[1][k]`, `filter.coef[2][k]`, `filter.coef[3][k]`, and `filter.coef[4][k]`
+   *  respectively, for the kth biquad section. The output y[n] is then also the input to the
    *  (k+1)th biquad section.
-   * 
-   * A single filter_biquad_s32_t stores coefficients and state information for up to 8 biquad 
+   *
+   * A single filter_biquad_s32_t stores coefficients and state information for up to 8 biquad
    * sections (the optimal block size for computation). If more than 8 biquad sections are required,
    * an array of filter_biquad_s32_t structs can be used, and the filter can be executed using
    * filter_biquads_s32() instead of filter_biquad_s32().
    */
 
   // Print out the coefficients for each biquad filter section
-  for(int section = 0; section < filter.biquad_count; section++){
+  for(unsigned int section = 0; section < filter.biquad_count; section++){
     printf("Biquad Section[%d]\n", section);
     printf("  -a1 = %f\n", ldexp(filter.coef[3][section], -30));
     printf("  -a2 = %f\n", ldexp(filter.coef[4][section], -30));

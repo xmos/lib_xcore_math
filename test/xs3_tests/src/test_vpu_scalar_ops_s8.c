@@ -238,13 +238,13 @@ TEST(vpu_scalar_ops_s8, vlmacc8)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    TEST_ASSERT_EQUAL_INT32(             0, vlmacc8(              0,     0,     0) ); 
-    TEST_ASSERT_EQUAL_INT32(           100, vlmacc8(            100,     0,     0) ); 
-    TEST_ASSERT_EQUAL_INT32(          -100, vlmacc8(           -100,     0,     0) ); 
-    TEST_ASSERT_EQUAL_INT32(           100, vlmacc8(            100,     1,     0) ); 
-    TEST_ASSERT_EQUAL_INT32(            94, vlmacc8(            100,     2,    -3) ); 
-    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MIN, vlmacc8(  VPU_INT32_MIN,    -1,     1) ); 
-    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MAX, vlmacc8(  VPU_INT32_MAX,     1,     1) ); 
+    TEST_ASSERT_EQUAL_INT32(             0, vlmacc8(              0,     0,     0) );
+    TEST_ASSERT_EQUAL_INT32(           100, vlmacc8(            100,     0,     0) );
+    TEST_ASSERT_EQUAL_INT32(          -100, vlmacc8(           -100,     0,     0) );
+    TEST_ASSERT_EQUAL_INT32(           100, vlmacc8(            100,     1,     0) );
+    TEST_ASSERT_EQUAL_INT32(            94, vlmacc8(            100,     2,    -3) );
+    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MIN, vlmacc8(  VPU_INT32_MIN,    -1,     1) );
+    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MAX, vlmacc8(  VPU_INT32_MAX,     1,     1) );
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
@@ -318,7 +318,7 @@ TEST(vpu_scalar_ops_s8, vlsat8)
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
-        headroom_t hr = pseudo_rand_uint(&seed, 0, 32);        
+        headroom_t hr = pseudo_rand_uint(&seed, 0, 32);
         int32_t acc = pseudo_rand_int32(&seed) >> hr;
 
         int8_t shr = pseudo_rand_int(&seed, 23 - hr, 25 - hr);
@@ -331,7 +331,7 @@ TEST(vpu_scalar_ops_s8, vlsat8)
         fexp = MIN(fexp, VPU_INT8_MAX);
         fexp = MAX(fexp, VPU_INT8_MIN);
 
-        int8_t exp = fexp;
+        int8_t exp = (int8_t) fexp;
 
         int8_t res = vlsat8(acc, shr);
 

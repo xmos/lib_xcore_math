@@ -37,7 +37,7 @@ TEST(s32_sqrt, s32_sqrt)
 
     const unsigned N_cases = sizeof(cases) / sizeof(int32_t);
 
-    for(int i = 0; i < N_cases; i++){
+    for(unsigned int i = 0; i < N_cases; i++){
 
         exponent_t b_exp = 0, a_exp;
 

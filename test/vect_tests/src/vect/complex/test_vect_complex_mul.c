@@ -39,8 +39,8 @@ static char msg_buff[200];
     }} while(0)
 
 
-static complex_s16_t mul_complex_s16(int16_t b_re, int16_t b_im, 
-                                     int16_t c_re, int16_t c_im, 
+static complex_s16_t mul_complex_s16(int16_t b_re, int16_t b_im,
+                                     int16_t c_re, int16_t c_im,
                                      right_shift_t sat)
 {
     int64_t bp_re = b_re;
@@ -54,7 +54,7 @@ static complex_s16_t mul_complex_s16(int16_t b_re, int16_t b_im,
     a_re = SAT(16)(ROUND_SHR(a_re, sat));
     a_im = SAT(16)(ROUND_SHR(a_im, sat));
 
-    complex_s16_t res = {a_re, a_im};
+    complex_s16_t res = {(int16_t) a_re, (int16_t) a_im};
     return res;
 }
 
@@ -95,7 +95,7 @@ static complex_s32_t mul_complex_s32(complex_s32_t b, complex_s32_t c, int b_shr
     a_re = SAT(32)(a_re);
     a_im = SAT(32)(a_im);
 
-    complex_s32_t res = {a_re, a_im};
+    complex_s32_t res = {(int32_t) a_re, (int32_t) a_im};
     return res;
 }
 
@@ -134,7 +134,7 @@ TEST(vect_complex_mul, vect_complex_s16_mul_prepare)
         } else if(P_im == ((int32_t)0x8000)){
             TEST_ASSERT_EQUAL_MESSAGE(0, a_shr, "[Computed sat is wrong]");
         } else {
-            TEST_ASSERT( ldexp(P_im, -a_shr) == 0x8000 );
+            TEST_ASSERT( ldexp((double) P_im, -a_shr) == 0x8000 );
         }
     }
 }
@@ -161,8 +161,8 @@ TEST(vect_complex_mul, vect_complex_s32_mul_prepare)
         right_shift_t b_shr, c_shr;
 
         // a_exp and a_shr should be calculated for exactly this case
-        complex_s32_t WORD_ALIGNED B = {((int32_t)-0x80000000) >> b_hr, ((int32_t)-0x80000000) >> b_hr};
-        complex_s32_t WORD_ALIGNED C = {((int32_t)-0x80000000) >> c_hr, ((int32_t)-0x80000000) >> c_hr};
+        complex_s32_t WORD_ALIGNED B = {((int32_t)-(int32_t)0x80000000) >> b_hr, ((int32_t)-(int32_t)0x80000000) >> b_hr};
+        complex_s32_t WORD_ALIGNED C = {((int32_t)-(int32_t)0x80000000) >> c_hr, ((int32_t)-(int32_t)0x80000000) >> c_hr};
         complex_s32_t WORD_ALIGNED A;
 
         vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
@@ -180,7 +180,7 @@ TEST(vect_complex_mul, vect_complex_s32_mul_prepare)
 TEST(vect_complex_mul, vect_complex_s16_mul_basic)
 {
     typedef struct {
-        struct {    complex_s16_t b;  
+        struct {    complex_s16_t b;
                     complex_s16_t c;  } value;
         right_shift_t sat;
         complex_s16_t expected;
@@ -213,8 +213,8 @@ TEST(vect_complex_mul, vect_complex_s16_mul_basic)
         test_case_t* casse = &casses[v];
 
         //Verify mul_complex_s16() is correct. It's used in other test cases.
-        complex_s16_t tmp = mul_complex_s16(casse->value.b.re, casse->value.b.im, 
-                                            casse->value.c.re, casse->value.c.im, 
+        complex_s16_t tmp = mul_complex_s16(casse->value.b.re, casse->value.b.im,
+                                            casse->value.c.re, casse->value.c.im,
                                             casse->sat);
                                             
         TEST_ASSERT_EQUAL_MSG(casse->expected.re, tmp.re, casse->line);
@@ -227,9 +227,9 @@ TEST(vect_complex_mul, vect_complex_s16_mul_basic)
             unsigned len = lengths[l];
 
             headroom_t hr;
-            struct { 
-                int16_t real[40]; 
-                int16_t imag[40]; 
+            struct {
+                int16_t real[40];
+                int16_t imag[40];
             } A, B, C;
 
             for(unsigned int i = 0; i < len; i++){
@@ -241,9 +241,9 @@ TEST(vect_complex_mul, vect_complex_s16_mul_basic)
                 C.imag[i] = casse->value.c.im;
             }
 
-            hr = vect_complex_s16_mul(A.real, A.imag, 
-                                                  B.real, B.imag, 
-                                                  C.real, C.imag, 
+            hr = vect_complex_s16_mul(A.real, A.imag,
+                                                  B.real, B.imag,
+                                                  C.real, C.imag,
                                                   len, casse->sat);
             headroom_t hrre, hrim;
 
@@ -288,9 +288,9 @@ TEST(vect_complex_mul, vect_complex_s16_mul_random)
 
     headroom_t hr;
     
-    struct { 
-        int16_t real[MAX_LEN]; 
-        int16_t imag[MAX_LEN]; 
+    struct {
+        int16_t real[MAX_LEN];
+        int16_t imag[MAX_LEN];
     } A, B, C;
 
     for(unsigned int v = 0; v < REPS; v++){
@@ -309,9 +309,9 @@ TEST(vect_complex_mul, vect_complex_s16_mul_random)
 
         int sat = (pseudo_rand_uint32(&seed) % 10);
         
-        hr = vect_complex_s16_mul(A.real, A.imag, 
-                                              B.real, B.imag, 
-                                              C.real, C.imag, 
+        hr = vect_complex_s16_mul(A.real, A.imag,
+                                              B.real, B.imag,
+                                              C.real, C.imag,
                                               len, sat);
 
         headroom_t hrre, hrim;
@@ -326,9 +326,9 @@ TEST(vect_complex_mul, vect_complex_s16_mul_random)
         TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, v);
         
         memcpy(&A, &B, sizeof(A));
-        hr = vect_complex_s16_mul(A.real, A.imag, 
-                                              A.real, A.imag, 
-                                              C.real, C.imag, 
+        hr = vect_complex_s16_mul(A.real, A.imag,
+                                              A.real, A.imag,
+                                              C.real, C.imag,
                                               len, sat);
 
         for(unsigned int i = 0; i < len; i++){
@@ -353,7 +353,7 @@ TEST(vect_complex_mul, vect_complex_s32_mul_basic)
     
 
     typedef struct {
-        struct {    complex_s32_t b;  
+        struct {    complex_s32_t b;
                     complex_s32_t c;  } value;
         struct {    int b;      int c;      } shr;
         complex_s32_t expected;
@@ -373,20 +373,20 @@ TEST(vect_complex_mul, vect_complex_s32_mul_basic)
         // { {{-0x00004001, 0x00000000}, { 0x00008000, 0x00000000} },    {   0,   0}, {-0x00000001, 0x00000000}, __LINE__}, // -0.5 - 1LSb
 
         
-        // { {{ 0x0008000, 0x00000000}, { 0x00010000, 0x00000000} },    {   0,   0}, {  0x00000002, 0x00000000 }, __LINE__}, 
-        // { {{ 0x0008000, 0x00000000}, { 0x00008000, 0x00000000} },    {   0,   0}, {  0x00000001, 0x00000000 }, __LINE__}, 
+        // { {{ 0x0008000, 0x00000000}, { 0x00010000, 0x00000000} },    {   0,   0}, {  0x00000002, 0x00000000 }, __LINE__},
+        // { {{ 0x0008000, 0x00000000}, { 0x00008000, 0x00000000} },    {   0,   0}, {  0x00000001, 0x00000000 }, __LINE__},
         // { {{ 0x0008000, 0x00000000}, { 0x00004000, 0x00000000} },    {   0,   0}, {  0x00000001, 0x00000000 }, __LINE__},  //(2^15 * 2^14 - 0 * 0)  / 2^30 = 2^29 / 2^30 -> 0.5 rounds to 1
         // { {{ 0x0000000, 0x00008000}, { 0x00000000, 0x00004000} },    {   0,   0}, { -0x00000001, 0x00000000 }, __LINE__},  //(0 * 0 - 2^15 * 2^14) / 2^30 =-2^29 / 2^30 -> -0.5 rounds to 0
         // { {{ 0x0000000,-0x00008000}, { 0x00000000, 0x00004000} },    {   0,   0}, {  0x00000000, 0x00000000 }, __LINE__},  //(0 * 0 - -2^15 * 2^14) / 2^30 = 2^29 / 2^30 -> 0.5 rounds to 1
 
 
-        // { {{ 0x0000000,-0x00008000}, { 0x00000000, 0x00010000} },    {   0,   0}, {  0x00000002, 0x00000000 }, __LINE__}, 
-        // { {{ 0x0000000,-0x00008000}, { 0x00000000, 0x00008000} },    {   0,   0}, {  0x00000001, 0x00000000 }, __LINE__}, 
-        // { {{ 0x0000000,-0x00008000}, { 0x00000000, 0x00004000} },    {   0,   0}, {  0x00000001, 0x00000000 }, __LINE__},  // 0 * 0 - -2^15 * 2^14  -> 
+        // { {{ 0x0000000,-0x00008000}, { 0x00000000, 0x00010000} },    {   0,   0}, {  0x00000002, 0x00000000 }, __LINE__},
+        // { {{ 0x0000000,-0x00008000}, { 0x00000000, 0x00008000} },    {   0,   0}, {  0x00000001, 0x00000000 }, __LINE__},
+        // { {{ 0x0000000,-0x00008000}, { 0x00000000, 0x00004000} },    {   0,   0}, {  0x00000001, 0x00000000 }, __LINE__},  // 0 * 0 - -2^15 * 2^14  ->
         
-        // { {{ -42426758, -6496}, {  -59150, -993822770} },    {   0,   0}, {      -3675,   39268917}, __LINE__}, 
-        // { {{ -42426758, -6496}, {  -59150, -993822771} },    {   0,   0}, {      -3675,      39628}, __LINE__}, 
-        // { {{ -678828114, -103936261}, {  -30286169, -508859176} },    {   4,   9}, {      -3675,      39628}, __LINE__}, 
+        // { {{ -42426758, -6496}, {  -59150, -993822770} },    {   0,   0}, {      -3675,   39268917}, __LINE__},
+        // { {{ -42426758, -6496}, {  -59150, -993822771} },    {   0,   0}, {      -3675,      39628}, __LINE__},
+        // { {{ -678828114, -103936261}, {  -30286169, -508859176} },    {   4,   9}, {      -3675,      39628}, __LINE__},
 
 
         { {{ 0x00000000, 0x00000000}, { 0x00000000, 0x00000000} },    {   0,   0}, { 0x00000000, 0x00000000}, __LINE__},

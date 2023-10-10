@@ -81,7 +81,7 @@ TEST(vect_max, vect_s32_max_random)
 
         setExtraInfo_RSL(v, seed, len);
 
-        int32_t max = -0x80000000;
+        int32_t max = -(int)0x80000000;
 
         for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed);

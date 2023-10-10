@@ -67,16 +67,16 @@ TEST(vect_complex_f32_macc, vect_complex_f32_macc)
     const unsigned old_seed = seed;
 
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
-    setExtraInfo_RSL(v, old_seed, len);  
+    setExtraInfo_RSL(v, old_seed, len);
     // printf("0x%08X\n", old_seed);
 
     for(unsigned int k = 0; k < len; k++){
-      a[k].re = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
-      a[k].im = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
-      b[k].re = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
-      b[k].im = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
-      c[k].re = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
-      c[k].im = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      a[k].re = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      a[k].im = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      b[k].re = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      b[k].im = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      c[k].re = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      c[k].im = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
 
       double RR = ((double)b[k].re) * ((double)c[k].re);
       double RI = ((double)b[k].re) * ((double)c[k].im);
@@ -94,8 +94,8 @@ TEST(vect_complex_f32_macc, vect_complex_f32_macc)
         continue;
       }
       
-      expected[k].re = ZR;
-      expected[k].im = ZI;
+      expected[k].re = (float) ZR;
+      expected[k].im = (float) ZI;
 
     }
     
@@ -135,16 +135,16 @@ TEST(vect_complex_f32_macc, vect_complex_f32_conj_macc)
     const unsigned old_seed = seed;
 
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
-    setExtraInfo_RSL(v, old_seed, len);  
+    setExtraInfo_RSL(v, old_seed, len);
     // printf("0x%08X\n", old_seed);
 
     for(unsigned int k = 0; k < len; k++){
-      a[k].re = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
-      a[k].im = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
-      b[k].re = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
-      b[k].im = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
-      c[k].re = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
-      c[k].im = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      a[k].re = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      a[k].im = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      b[k].re = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      b[k].im = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      c[k].re = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
+      c[k].im = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 10));
 
       double RR = ((double)b[k].re) * ((double)c[k].re);
       double RI = ((double)b[k].re) * ((double)c[k].im);
@@ -162,8 +162,8 @@ TEST(vect_complex_f32_macc, vect_complex_f32_conj_macc)
         continue;
       }
       
-      expected[k].re = ZR;
-      expected[k].im = ZI;
+      expected[k].re = (float) ZR;
+      expected[k].im = (float) ZI;
 
     }
     

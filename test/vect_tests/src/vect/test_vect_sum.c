@@ -139,13 +139,13 @@ TEST(vect_sum, vect_s32_sum_basic)
     } test_case_t;
 
     test_case_t casses[] = {
-        //      b     line num
-        {  0x00000000,    __LINE__},
-        {  0x00000001,    __LINE__},
-        { -0x00000001,    __LINE__},
-        {  0x00020000,    __LINE__},
-        {  0x7FFFFFFF,    __LINE__},
-        { -0x80000000,    __LINE__},
+        //               b  line num
+        {       0x00000000, __LINE__},
+        {       0x00000001, __LINE__},
+        {      -0x00000001, __LINE__},
+        {       0x00020000, __LINE__},
+        {       0x7FFFFFFF, __LINE__},
+        { -(int)0x80000000, __LINE__},
     };
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
@@ -214,7 +214,7 @@ TEST(vect_sum, vect_s32_sum_random)
             exp += B[i];
         }
 
-        XTEST_ASSERT_S64_EQUAL(exp, result, 
+        XTEST_ASSERT_S64_EQUAL(exp, result,
             "length: %u", len);
         
     }

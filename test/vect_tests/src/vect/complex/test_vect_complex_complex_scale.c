@@ -36,8 +36,8 @@ static char msg_buff[200];
     }} while(0)
 
 
-static complex_s16_t mul_complex_s16(int16_t b_re, int16_t b_im, 
-                                     int16_t c_re, int16_t c_im, 
+static complex_s16_t mul_complex_s16(int16_t b_re, int16_t b_im,
+                                     int16_t c_re, int16_t c_im,
                                      right_shift_t sat)
 {
     int64_t bp_re = b_re;
@@ -51,7 +51,7 @@ static complex_s16_t mul_complex_s16(int16_t b_re, int16_t b_im,
     a_re = SAT(16)(ROUND_SHR(a_re, sat));
     a_im = SAT(16)(ROUND_SHR(a_im, sat));
 
-    complex_s16_t res = {a_re, a_im};
+    complex_s16_t res = {(int16_t) a_re, (int16_t) a_im};
     return res;
 }
 
@@ -92,7 +92,7 @@ static complex_s32_t mul_complex_s32(complex_s32_t b, complex_s32_t c, int b_shr
     a_re = SAT(32)(a_re);
     a_im = SAT(32)(a_im);
 
-    complex_s32_t res = {a_re, a_im};
+    complex_s32_t res = {(int16_t) a_re, (int16_t) a_im};
     return res;
 }
 
@@ -102,7 +102,7 @@ TEST(vect_complex_scale, vect_complex_s16_scale_basic)
     
 
     typedef struct {
-        struct {    complex_s16_t b;  
+        struct {    complex_s16_t b;
                     complex_s16_t c;  } value;
         right_shift_t sat;
         complex_s16_t expected;
@@ -135,8 +135,8 @@ TEST(vect_complex_scale, vect_complex_s16_scale_basic)
         test_case_t* casse = &casses[v];
 
         //Verify mul_complex_s16() is correct. It's used in other test cases.
-        complex_s16_t tmp = mul_complex_s16(casse->value.b.re, casse->value.b.im, 
-                                            casse->value.c.re, casse->value.c.im, 
+        complex_s16_t tmp = mul_complex_s16(casse->value.b.re, casse->value.b.im,
+                                            casse->value.c.re, casse->value.c.im,
                                             casse->sat);
                                             
         TEST_ASSERT_EQUAL_MSG(casse->expected.re, tmp.re, casse->line);
@@ -149,9 +149,9 @@ TEST(vect_complex_scale, vect_complex_s16_scale_basic)
             unsigned len = lengths[l];
 
             headroom_t hr;
-            struct { 
-                int16_t real[40]; 
-                int16_t imag[40]; 
+            struct {
+                int16_t real[40];
+                int16_t imag[40];
             } A, B;
 
             for(unsigned int i = 0; i < len; i++){
@@ -161,9 +161,9 @@ TEST(vect_complex_scale, vect_complex_s16_scale_basic)
                 B.imag[i] = casse->value.b.im;
             }
 
-            hr = vect_complex_s16_scale(A.real, A.imag, 
-                                                       B.real, B.imag, 
-                                                       casse->value.c.re, casse->value.c.im, 
+            hr = vect_complex_s16_scale(A.real, A.imag,
+                                                       B.real, B.imag,
+                                                       casse->value.c.re, casse->value.c.im,
                                                        len, casse->sat);
             headroom_t hrre, hrim;
 
@@ -177,7 +177,7 @@ TEST(vect_complex_scale, vect_complex_s16_scale_basic)
             memcpy(&A, &B, sizeof(A));
             hr = vect_complex_s16_scale(A.real, A.imag,
                                                        A.real, A.imag,
-                                                       casse->value.c.re, casse->value.c.im, 
+                                                       casse->value.c.re, casse->value.c.im,
                                                        len, casse->sat);
 
             for(unsigned int i = 0; i < len; i++){
@@ -210,9 +210,9 @@ TEST(vect_complex_scale, vect_complex_s16_scale_random)
 
     headroom_t hr;
     
-    struct { 
-        int16_t real[MAX_LEN]; 
-        int16_t imag[MAX_LEN]; 
+    struct {
+        int16_t real[MAX_LEN];
+        int16_t imag[MAX_LEN];
     } A, B;
 
     complex_s16_t C;
@@ -233,9 +233,9 @@ TEST(vect_complex_scale, vect_complex_s16_scale_random)
 
         int sat = (pseudo_rand_uint32(&seed) % 10);
         
-        hr = vect_complex_s16_scale(A.real, A.imag, 
-                                                   B.real, B.imag, 
-                                                   C.re, C.im, 
+        hr = vect_complex_s16_scale(A.real, A.imag,
+                                                   B.real, B.imag,
+                                                   C.re, C.im,
                                                    len, sat);
 
         headroom_t hrre, hrim;
@@ -250,9 +250,9 @@ TEST(vect_complex_scale, vect_complex_s16_scale_random)
         TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, v);
         
         memcpy(&A, &B, sizeof(A));
-        hr = vect_complex_s16_scale(A.real, A.imag, 
-                                                   A.real, A.imag, 
-                                                   C.re, C.im, 
+        hr = vect_complex_s16_scale(A.real, A.imag,
+                                                   A.real, A.imag,
+                                                   C.re, C.im,
                                                    len, sat);
 
         for(unsigned int i = 0; i < len; i++){
@@ -275,7 +275,7 @@ TEST(vect_complex_scale, vect_complex_s32_scale_basic)
     
 
     typedef struct {
-        struct {    complex_s32_t b;  
+        struct {    complex_s32_t b;
                     complex_s32_t c;  } value;
         struct {    int b;      int c;      } shr;
         complex_s32_t expected;

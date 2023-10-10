@@ -59,7 +59,7 @@ TEST(vect_shr, vect_s16_shr_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
+    test_case_t cases[] = {
         //    value     shr     expected    line #
         {        1,      0,           1,    __LINE__},
         {        0,      0,           0,    __LINE__},
@@ -87,14 +87,14 @@ TEST(vect_shr, vect_s16_shr_basic)
         {  -0x8000,      0,     -0x7FFF,    __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         int16_t B[1] = { casse->value };
         int16_t A[1] = { 0xCC };
@@ -183,42 +183,42 @@ TEST(vect_shr, vect_s32_shr_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
-        //    value     shr     expected    line #
-        {            1,      0,               1,    __LINE__},
-        {            0,      0,               0,    __LINE__},
-        {           -1,      0,              -1,    __LINE__},
-        {            2,      0,               2,    __LINE__},
-        {            3,      0,               3,    __LINE__},
-        {           -2,      0,              -2,    __LINE__},
-        {           -3,      0,              -3,    __LINE__},
-        {   0x00FF0000,      0,      0x00FF0000,    __LINE__},
-        {            1,     -1,               2,    __LINE__},
-        {            1,     -2,               4,    __LINE__},
-        {            1,     -3,               8,    __LINE__},
-        {            1,      1,               0,    __LINE__},
-        {            1,      2,               0,    __LINE__},
-        {   0x07F00000,     -1,      0x0FE00000,    __LINE__},
-        {   0x07F00000,      1,      0x03F80000,    __LINE__},
-        {   0x07F00000,     -2,      0x1FC00000,    __LINE__},
-        {  -0x00080000,     -1,     -0x00100000,    __LINE__},
-        {  -0x00080000,      1,     -0x00040000,    __LINE__},
-        {  -0x00080000,      2,     -0x00020000,    __LINE__},
-        {  -0x00080000,      3,     -0x00010000,    __LINE__},
-        {  -0x00080000,      4,     -0x00008000,    __LINE__},
-        {   0x10000000,     -3,      0x7FFFFFFF,    __LINE__},
-        {  -0x10000000,     -3,     -0x7FFFFFFF,    __LINE__},
-        {  -0x80000000,      0,     -0x7FFFFFFF,    __LINE__},
+    test_case_t cases[] = {
+        //            value       shr         expected       line #
+        {                 1,        0,               1,    __LINE__},
+        {                 0,        0,               0,    __LINE__},
+        {                -1,        0,              -1,    __LINE__},
+        {                 2,        0,               2,    __LINE__},
+        {                 3,        0,               3,    __LINE__},
+        {                -2,        0,              -2,    __LINE__},
+        {                -3,        0,              -3,    __LINE__},
+        {        0x00FF0000,        0,      0x00FF0000,    __LINE__},
+        {                 1,       -1,               2,    __LINE__},
+        {                 1,       -2,               4,    __LINE__},
+        {                 1,       -3,               8,    __LINE__},
+        {                 1,        1,               0,    __LINE__},
+        {                 1,        2,               0,    __LINE__},
+        {        0x07F00000,       -1,      0x0FE00000,    __LINE__},
+        {        0x07F00000,        1,      0x03F80000,    __LINE__},
+        {        0x07F00000,       -2,      0x1FC00000,    __LINE__},
+        {       -0x00080000,       -1,     -0x00100000,    __LINE__},
+        {       -0x00080000,        1,     -0x00040000,    __LINE__},
+        {       -0x00080000,        2,     -0x00020000,    __LINE__},
+        {       -0x00080000,        3,     -0x00010000,    __LINE__},
+        {       -0x00080000,        4,     -0x00008000,    __LINE__},
+        {        0x10000000,       -3,      0x7FFFFFFF,    __LINE__},
+        {       -0x10000000,       -3,     -0x7FFFFFFF,    __LINE__},
+        {  -(int)0x80000000,        0,     -0x7FFFFFFF,    __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         int32_t B[1] = { casse->value };
         int32_t A[1] = { 0xCC };
@@ -410,7 +410,7 @@ TEST(vect_shr, vect_split_acc_s32_shr)
 
     hr = vect_s32_headroom(acc_s32, length);
     
-    const right_shift_t shr = pseudo_rand_int(&seed, -hr, (20-hr));
+    const right_shift_t shr = pseudo_rand_int(&seed, -(int)hr, (20-hr));
 
     for(unsigned int k = 0; k < length; k++){
       if(shr >= 0)

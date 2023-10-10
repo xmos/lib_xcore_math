@@ -36,7 +36,7 @@ TEST(filter_biquad_s32, case0)
     memset(filter.state, 0, sizeof(filter.state));
 
     for(int i = 0; i < 5; i++){
-        for(int j = 0; j < filter.biquad_count; j++)
+        for(unsigned int j = 0; j < filter.biquad_count; j++)
             filter.coef[i][j] = 0x40000000;
         for(int j = filter.biquad_count; j < 8; j++)
             filter.coef[i][j] = 0;
@@ -62,7 +62,7 @@ TEST(filter_biquad_s32, case1)
     memset(filter.state, 0, sizeof(filter.state));
 
     for(int i = 0; i < 5; i++){
-        for(int j = 0; j < filter.biquad_count; j++)
+        for(unsigned int j = 0; j < filter.biquad_count; j++)
             filter.coef[i][j] = 0x40000000;
         for(int j = filter.biquad_count; j < 8; j++)
             filter.coef[i][j] = 0;
@@ -97,7 +97,7 @@ TEST(filter_biquad_s32, case2)
     memset(filter.state, 0, sizeof(filter.state));
 
     for(int i = 0; i < 5; i++){
-        for(int j = 0; j < filter.biquad_count; j++)
+        for(unsigned int j = 0; j < filter.biquad_count; j++)
             filter.coef[i][j] = (j==(filter.biquad_count-1))? 0x20000000 : 0x40000000;
         for(int j = filter.biquad_count; j < 8; j++)
             filter.coef[i][j] = 0;
@@ -140,7 +140,7 @@ TEST(filter_biquad_s32, case3)
 
     const unsigned N_samples = sizeof(samples) >> 2;
 
-    for(int i = 0; i < N_samples; i++){
+    for(unsigned int i = 0; i < N_samples; i++){
         int32_t y = filter_biquad_s32(&filter, samples[i]);
 
         if(Y_exp[i] != y)

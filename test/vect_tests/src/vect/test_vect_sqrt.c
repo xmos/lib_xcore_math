@@ -74,7 +74,7 @@ TEST(vect_sqrt, vect_s32_sqrt_prepare)
 
     const unsigned start_vector = 0;
 
-    for(int v = start_vector; v < N_vectors; v++){
+    for(unsigned int v = start_vector; v < N_vectors; v++){
 
         test_vector* vector = &test_vectors[v];
 
@@ -134,7 +134,7 @@ TEST(vect_sqrt, vect_s16_sqrt_prepare)
 
     const unsigned start_vector = 0;
 
-    for(int v = start_vector; v < N_vectors; v++){
+    for(unsigned int v = start_vector; v < N_vectors; v++){
 
         test_vector* vector = &test_vectors[v];
 

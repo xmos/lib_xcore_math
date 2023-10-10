@@ -103,7 +103,7 @@ TEST(vect_sub, vect_s16_sub_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
+    test_case_t cases[] = {
         // value{       b         c }   shr{  b   c }        exp        line num
         {       {  0x0000,  -0x0000 },     {  0,  0 },    0x0000,       __LINE__},
         {       {  0x0001,  -0x0000 },     {  0,  0 },    0x0001,       __LINE__},
@@ -134,14 +134,14 @@ TEST(vect_sub, vect_s16_sub_basic)
         
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
         
         //Verify sub_s16() is correct. It's used in other test cases.
         TEST_ASSERT_EQUAL_MSG(casse->expected, sub_s16(casse->value.b, casse->value.c, casse->shr.b, casse->shr.c), casse->line);
@@ -263,44 +263,44 @@ TEST(vect_sub, vect_s32_sub_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
-        // value{           b             c }   shr{   b    c }            exp        line num
-        {       {  0x00000000,  -0x00000000 },     {   0,   0 },    0x00000000,       __LINE__},
-        {       {  0x00000001,  -0x00000000 },     {   0,   0 },    0x00000001,       __LINE__},
-        {       {  0x00000000,  -0x00000001 },     {   0,   0 },    0x00000001,       __LINE__},
-        {       {  0x00000001,  -0x00000001 },     {   0,   0 },    0x00000002,       __LINE__},
-        {       { -0x00000001,  -0x00000001 },     {   0,   0 },    0x00000000,       __LINE__},
-        {       {  0x00001010,  -0x00000101 },     {   0,   0 },    0x00001111,       __LINE__},
-        {       { -0x00001010,   0x00000101 },     {   0,   0 },   -0x00001111,       __LINE__},
-        {       { -0x80000000,  -0x00000000 },     {   0,   0 },   -0x7FFFFFFF,       __LINE__},
-        {       {  0x40000000,  -0x40000000 },     {   0,   0 },    0x7FFFFFFF,       __LINE__},
-        {       {  0x7FFFFFFF,  -0x7FFFFFFF },     {   0,   0 },    0x7FFFFFFF,       __LINE__},
+    test_case_t cases[] = {
+        // value{           b                    c }   shr{   b    c }            exp        line num
+        {       {  0x00000000,         -0x00000000 },     {   0,   0 },    0x00000000,       __LINE__},
+        {       {  0x00000001,         -0x00000000 },     {   0,   0 },    0x00000001,       __LINE__},
+        {       {  0x00000000,         -0x00000001 },     {   0,   0 },    0x00000001,       __LINE__},
+        {       {  0x00000001,         -0x00000001 },     {   0,   0 },    0x00000002,       __LINE__},
+        {       { -0x00000001,         -0x00000001 },     {   0,   0 },    0x00000000,       __LINE__},
+        {       {  0x00001010,         -0x00000101 },     {   0,   0 },    0x00001111,       __LINE__},
+        {       { -0x00001010,          0x00000101 },     {   0,   0 },   -0x00001111,       __LINE__},
+        {       { -(int)0x80000000,    -0x00000000 },     {   0,   0 },   -0x7FFFFFFF,       __LINE__},
+        {       {  0x40000000,         -0x40000000 },     {   0,   0 },    0x7FFFFFFF,       __LINE__},
+        {       {  0x7FFFFFFF,         -0x7FFFFFFF },     {   0,   0 },    0x7FFFFFFF,       __LINE__},
 
-        {       {  0x00000001,  -0x00000001 },     {   1,   0 },    0x00000001,       __LINE__},
-        {       {  0x00000001,  -0x00000001 },     {   1,   1 },    0x00000001,       __LINE__},
-        {       {  0x00000002,  -0x00000002 },     {   1,   1 },    0x00000002,       __LINE__},
-        {       {  0x00000010,  -0x00000020 },     {   1,   1 },    0x00000018,       __LINE__},
-        {       {  0x00000011,  -0x00000021 },     {   4,   5 },    0x00000003,       __LINE__},
-        {       { -0x00000010,   0x00000020 },     {   4,   4 },   -0x00000003,       __LINE__},
-        {       { -0x00000011,  -0x00000000 },     {   1,   0 },   -0x00000009,       __LINE__}, //truncation of negative rounds towards negative infinity
-        {       { -0x00000001,   0x00000001 },     {  10,  10 },   -0x00000001,       __LINE__},
+        {       {  0x00000001,         -0x00000001 },     {   1,   0 },    0x00000001,       __LINE__},
+        {       {  0x00000001,         -0x00000001 },     {   1,   1 },    0x00000001,       __LINE__},
+        {       {  0x00000002,         -0x00000002 },     {   1,   1 },    0x00000002,       __LINE__},
+        {       {  0x00000010,         -0x00000020 },     {   1,   1 },    0x00000018,       __LINE__},
+        {       {  0x00000011,         -0x00000021 },     {   4,   5 },    0x00000003,       __LINE__},
+        {       { -0x00000010,          0x00000020 },     {   4,   4 },   -0x00000003,       __LINE__},
+        {       { -0x00000011,         -0x00000000 },     {   1,   0 },   -0x00000009,       __LINE__}, //truncation of negative rounds towards negative infinity
+        {       { -0x00000001,          0x00000001 },     {  10,  10 },   -0x00000001,       __LINE__},
 
-        {       {  0x00000001,  -0x00000001 },     {  -1,   0 },    0x00000003,       __LINE__},
-        {       {  0x00000001,  -0x00000001 },     {   0,  -1 },    0x00000003,       __LINE__},
-        {       {  0x00000001,  -0x00000001 },     {  -1,  -1 },    0x00000004,       __LINE__},
-        {       {  0x00000010,  -0x00000020 },     {  -1,  -1 },    0x00000060,       __LINE__},
-        {       {  0x00000010,  -0x00000020 },     {  -8,  -8 },    0x00003000,       __LINE__},
-        {       {  0x00000FFF,   0x00000FFF },     { -20, -16 },    0x7000FFFF,       __LINE__},
+        {       {  0x00000001,         -0x00000001 },     {  -1,   0 },    0x00000003,       __LINE__},
+        {       {  0x00000001,         -0x00000001 },     {   0,  -1 },    0x00000003,       __LINE__},
+        {       {  0x00000001,         -0x00000001 },     {  -1,  -1 },    0x00000004,       __LINE__},
+        {       {  0x00000010,         -0x00000020 },     {  -1,  -1 },    0x00000060,       __LINE__},
+        {       {  0x00000010,         -0x00000020 },     {  -8,  -8 },    0x00003000,       __LINE__},
+        {       {  0x00000FFF,          0x00000FFF },     { -20, -16 },    0x7000FFFF,       __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         //Verify sub_s32() is correct. It's used in other test cases.
         TEST_ASSERT_EQUAL_MSG(casse->expected, sub_s32(casse->value.b, casse->value.c, casse->shr.b, casse->shr.c), casse->line);

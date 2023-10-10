@@ -38,7 +38,7 @@ static char msg_buff[200];
 
 
 static complex_s16_t mul_complex_s16(
-    int16_t b_re, int16_t b_im, 
+    int16_t b_re, int16_t b_im,
     int16_t c, right_shift_t sat)
 {
     complex_s32_t p = {
@@ -56,9 +56,9 @@ static complex_s16_t mul_complex_s16(
 
 
 static complex_s32_t mul_complex_s32(
-    complex_s32_t b, 
-    int32_t c, 
-    right_shift_t b_shr, 
+    complex_s32_t b,
+    int32_t c,
+    right_shift_t b_shr,
     right_shift_t c_shr)
 {
     int64_t bp_re = b.re;
@@ -132,14 +132,14 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_basic)
     
 
     typedef struct {
-        struct {    complex_s16_t b;  
+        struct {    complex_s16_t b;
                     int16_t c;  } value;
         right_shift_t sat;
         complex_s16_t expected;
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
+    test_case_t cases[] = {
         // value{ b{     re,      im},       c},   sat,  exp{     re,      im},    line num
         {       {  { 0x0000,  0x0000},  0x0000},     0,     { 0x0000,  0x0000},    __LINE__},
         {       {  { 0x0001,  0x0001},  0x0000},     0,     { 0x0000,  0x0000},    __LINE__},
@@ -152,17 +152,17 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_basic)
         {       {  { 0x0100, -0x0100},  0x0100},     4,     { 0x1000, -0x1000},    __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
-        //Verify mul_complex_s16() is correct. It's used in other test cases.   
-        complex_s16_t tmp = mul_complex_s16(casse->value.b.re, casse->value.b.im, 
+        //Verify mul_complex_s16() is correct. It's used in other test cases.
+        complex_s16_t tmp = mul_complex_s16(casse->value.b.re, casse->value.b.im,
                                             casse->value.c, casse->sat);
                                             
         TEST_ASSERT_EQUAL_MSG(casse->expected.re, tmp.re, casse->line);
@@ -174,9 +174,9 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_basic)
             unsigned len = lengths[l];
 
             headroom_t hr;
-            struct { 
-                int16_t real[40]; 
-                int16_t imag[40]; 
+            struct {
+                int16_t real[40];
+                int16_t imag[40];
             } A, B;
 
             int16_t C[40];
@@ -187,8 +187,8 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_basic)
             vect_s16_set(B.imag, casse->value.b.im, len);
             vect_s16_set(C, casse->value.c, len);
 
-            hr = vect_complex_s16_real_mul(A.real, A.imag, 
-                                          B.real, B.imag, 
+            hr = vect_complex_s16_real_mul(A.real, A.imag,
+                                          B.real, B.imag,
                                           C, len, casse->sat);
 
             for(unsigned int i = 0; i < len; i++){
@@ -232,9 +232,9 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_random)
 
     headroom_t hr;
     
-    struct { 
-        int16_t real[MAX_LEN]; 
-        int16_t imag[MAX_LEN]; 
+    struct {
+        int16_t real[MAX_LEN];
+        int16_t imag[MAX_LEN];
     } A, B;
 
     int16_t C[MAX_LEN];
@@ -254,8 +254,8 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_random)
 
         int sat = (pseudo_rand_uint32(&seed) % 10);
         
-        hr = vect_complex_s16_real_mul(A.real, A.imag, 
-                                      B.real, B.imag, 
+        hr = vect_complex_s16_real_mul(A.real, A.imag,
+                                      B.real, B.imag,
                                       C, len, sat);
 
         // headroom_t hrre, hrim;
@@ -270,8 +270,8 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_random)
         TEST_ASSERT_EQUAL_MSG( vect_complex_s16_headroom(A.real,A.imag,len),  hr, v);
         
         memcpy(&A, &B, sizeof(A));
-        hr = vect_complex_s16_real_mul(A.real, A.imag, 
-                                      A.real, A.imag, 
+        hr = vect_complex_s16_real_mul(A.real, A.imag,
+                                      A.real, A.imag,
                                       C, len, sat);
 
         for(unsigned int i = 0; i < len; i++){
@@ -292,38 +292,38 @@ TEST(vect_complex_real_mul, vect_complex_s32_real_mul_basic)
     
 
     typedef struct {
-        struct {    complex_s32_t b;  
+        struct {    complex_s32_t b;
                     int32_t c;  } value;
-        struct {    right_shift_t b; 
+        struct {    right_shift_t b;
                     right_shift_t c; } shr;
         complex_s32_t expected;
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
-        // value{ b{         re,          im},           c}, shr{  b,  c},  exp{         re,          im},    line num
-        {       {  { 0x00000000,  0x00000000},  0x00000000},    {  0,  0},     { 0x00000000,  0x00000000},    __LINE__},
-        {       {  { 0x00000001,  0x00000001},  0x00000000},    {  0,  0},     { 0x00000000,  0x00000000},    __LINE__},
-        {       {  { 0x00000000,  0x00000000},  0x00000001},    {  0,  0},     { 0x00000000,  0x00000000},    __LINE__},
-        {       {  { 0x00000100,  0x00000000},  0x40000000},    {  0,  0},     { 0x00000100,  0x00000000},    __LINE__},
-        {       {  { 0x00000100,  0x00000100},  0x40000000},    {  0,  0},     { 0x00000100,  0x00000100},    __LINE__},
-        {       {  { 0x00000100,  0x00000100},  0x20000000},    {  0,  0},     { 0x00000080,  0x00000080},    __LINE__},
-        {       {  { 0x00000001,  0x00000001}, -0x80000000},    {  0,  0},     {-0x00000002, -0x00000002},    __LINE__},
-        {       {  { 0x00000001,  0x00000001}, -0x80000000},    {  0,  1},     {-0x00000001, -0x00000001},    __LINE__},
-        {       {  { 0x00000001,  0x00000001}, -0x80000000},    { -1,  0},     {-0x00000004, -0x00000004},    __LINE__},
-        {       {  { 0x05000000,  0x0A000000},  0x40000000},    {  8,  0},     { 0x00050000,  0x000A0000},    __LINE__},
-        {       {  { 0x05000000,  0x0A000000},  0x40000000},    {  0,  8},     { 0x00050000,  0x000A0000},    __LINE__},
-        {       {  { 0x05000000,  0x0A000000},  0x40000000},    {  4, 12},     { 0x00000500,  0x00000A00},    __LINE__},
+    test_case_t cases[] = {
+        // value{ b{         re,          im},                   c}, shr{  b,  c},  exp{         re,             im},   line num},
+        {       {  { 0x00000000,  0x00000000},          0x00000000},    {  0,  0},     { 0x00000000,     0x00000000},   __LINE__},
+        {       {  { 0x00000001,  0x00000001},          0x00000000},    {  0,  0},     { 0x00000000,     0x00000000},   __LINE__},
+        {       {  { 0x00000000,  0x00000000},          0x00000001},    {  0,  0},     { 0x00000000,     0x00000000},   __LINE__},
+        {       {  { 0x00000100,  0x00000000},          0x40000000},    {  0,  0},     { 0x00000100,     0x00000000},   __LINE__},
+        {       {  { 0x00000100,  0x00000100},          0x40000000},    {  0,  0},     { 0x00000100,     0x00000100},   __LINE__},
+        {       {  { 0x00000100,  0x00000100},          0x20000000},    {  0,  0},     { 0x00000080,     0x00000080},   __LINE__},
+        {       {  { 0x00000001,  0x00000001},    -(int)0x80000000},    {  0,  0},     {-0x00000002,    -0x00000002},   __LINE__},
+        {       {  { 0x00000001,  0x00000001},    -(int)0x80000000},    {  0,  1},     {-0x00000001,    -0x00000001},   __LINE__},
+        {       {  { 0x00000001,  0x00000001},    -(int)0x80000000},    { -1,  0},     {-0x00000004,    -0x00000004},   __LINE__},
+        {       {  { 0x05000000,  0x0A000000},          0x40000000},    {  8,  0},     { 0x00050000,     0x000A0000},   __LINE__},
+        {       {  { 0x05000000,  0x0A000000},          0x40000000},    {  0,  8},     { 0x00050000,     0x000A0000},   __LINE__},
+        {       {  { 0x05000000,  0x0A000000},          0x40000000},    {  4, 12},     { 0x00000500,     0x00000A00},   __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         //Verify mul_complex_s32() is correct. It's used in other test cases.
         complex_s32_t tmp = mul_complex_s32(casse->value.b, casse->value.c, casse->shr.b, casse->shr.c);

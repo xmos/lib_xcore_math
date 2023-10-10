@@ -65,7 +65,7 @@ TEST(vect_dot, vect_s32_dot_prepare)
         const headroom_t B_hr = pseudo_rand_uint(&seed, 0, 30);
         const headroom_t C_hr = pseudo_rand_uint(&seed, 0, 30);
 
-        for(int i = 0; i < B_length; i++){
+        for(unsigned int i = 0; i < B_length; i++){
             B[i] = INT32_MIN >> B_hr;
             C[i] = INT32_MIN >> C_hr;
         }
@@ -79,7 +79,7 @@ TEST(vect_dot, vect_s32_dot_prepare)
 
         int64_t result = vect_s32_dot(B, C, B_length, b_shr, c_shr);
 
-        double got = ldexp(result, A_exp);
+        double got = ldexp((double) result, A_exp);
 
         TEST_ASSERT( fabs((expected-got)/expected) < ldexp(1, -25) );
     }

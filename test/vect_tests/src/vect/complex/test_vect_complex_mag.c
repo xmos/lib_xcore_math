@@ -67,7 +67,7 @@ static int16_t mag_complex_s16(complex_s16_t b, right_shift_t b_shr)
 
     double mag = sqrt(sqr_mag);
 
-    int16_t a = round(mag);
+    int16_t a = (int16_t) lround(mag);
     
     return SAT(16)(a);
 }
@@ -86,9 +86,9 @@ static int32_t mag_complex_s32(complex_s32_t b, right_shift_t b_shr)
 
     int64_t sqr_mag = bp_re*bp_re + bp_im*bp_im;
 
-    double mag = sqrt(sqr_mag);
+    double mag = sqrt((double) sqr_mag);
 
-    int32_t a = round(mag);
+    int32_t a = lround(mag);
     
     return SAT(32)(a);
 }
@@ -211,7 +211,7 @@ TEST(vect_complex_mag, vect_complex_s16_mag_basic)
                 
                 unsigned abs_delta = abs(A[i] - casse->expected);
 
-                TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, casse->expected, A[i], 
+                TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, casse->expected, A[i],
                     "(test vector %d @ line %u) (length: %u) (index %d): mag( (%d + i*%d) >> %d )   (delta = %d)",
                         v, casse->line, len, i, B.real[i], B.imag[i], casse->b_shr, A[i] - casse->expected );
 
@@ -271,7 +271,7 @@ TEST(vect_complex_mag, vect_complex_s16_mag_random)
 
         B_hr = MIN( vect_s16_headroom(B.real, len), vect_s16_headroom(B.imag, len) );
 // printf("! %d\t\t%d\n", B_hr, B.imag[0]);
-        right_shift_t b_shr = -B_hr + 1;
+        right_shift_t b_shr = -(int)B_hr + 1;
         
         hr = vect_complex_s16_mag(A, B.real, B.imag, len, b_shr, (int16_t*) rot_table16, rot_table16_rows);
 
@@ -282,7 +282,7 @@ TEST(vect_complex_mag, vect_complex_s16_mag_random)
 
             unsigned abs_delta = abs(A[i] - expected);
 
-            TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, expected, A[i], 
+            TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, expected, A[i],
                 "(rep %d; seed: 0x%08X) A[%i]: mag( (%d + i*%d) >> %d ) (delta = %d) (B_hr: %d)",
                        v, rep_seed, i, B.real[i], B.imag[i], b_shr, A[i] - expected, B_hr );
 
@@ -338,7 +338,7 @@ TEST(vect_complex_mag, vect_complex_s32_mag_basic)
           { { 0x20000000,-0x20000000},     4, 0x02d413cd,      __LINE__},
           { {-0x40000000,-0x40000000},     0, 0x5A82799A,      __LINE__},
           { { 0x0186B400, 0x22E7EC80},     0, 0x22f07608,      __LINE__}, //worst case I've found, off by 7
-        //   { { 0x20daf1a5, 0x7e8080b5},     0, 
+        //   { { 0x20daf1a5, 0x7e8080b5},     0,
     };
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
@@ -372,7 +372,7 @@ TEST(vect_complex_mag, vect_complex_s32_mag_basic)
                 
                 unsigned abs_delta = abs(A[i] - casse->expected);
 
-                TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, casse->expected, A[i], 
+                TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, casse->expected, A[i],
                     "(test vector %d @ line %u) (length: %u) (index %d): mag(( %ld + i*%ld) >> %d)   (delta = %ld)",
                         v, casse->line, len, i, B[i].re, B[i].im, casse->b_shr, A[i] - casse->expected );
 
@@ -431,7 +431,7 @@ TEST(vect_complex_mag, vect_complex_s32_mag_random)
         
         B_hr = vect_s32_headroom((int32_t*) B, 2*len);
 
-        right_shift_t b_shr = (-B_hr)+1;
+        right_shift_t b_shr = -(int)B_hr + 1;
         
         hr = vect_complex_s32_mag(A, B, len, b_shr, (complex_s32_t*) rot_table32, rot_table32_rows);
 
@@ -441,7 +441,7 @@ TEST(vect_complex_mag, vect_complex_s32_mag_random)
 
             unsigned abs_delta = abs(A[i] - expected);
 
-            TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, expected, A[i], 
+            TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, expected, A[i],
                 "(rep %d; seed: 0x%08X) A[%i]: mag(( %ld + i*%ld) >> %d) (delta = %ld) (B_hr: %d)",
                        v, rep_seed, i, B[i].re, B[i].im, b_shr, A[i] - expected, B_hr );
 

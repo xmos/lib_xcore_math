@@ -51,16 +51,16 @@ TEST(vect_f32_to_vect_s32, vect_f32_to_vect_s32)
     const unsigned old_seed = seed;
 
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-    setExtraInfo_RSL(v, old_seed, len);  
+    setExtraInfo_RSL(v, old_seed, len);
 
-    exponent_t max_exponent = -0x80000000;
+    exponent_t max_exponent = -(int)0x80000000;
 
     // Create a bunch of random floats.
     for(unsigned int i = 0; i < len; i++){
       int32_t mant = pseudo_rand_int32(&seed);
       // modest range on exponents prevent us from ending up with lots of zeros.
-      exponent_t exp = pseudo_rand_int(&seed, -10, 10); 
-      float val = ldexpf(mant, exp);
+      exponent_t exp = pseudo_rand_int(&seed, -10, 10);
+      float val = ldexpf((float) mant, exp);
       vec_in[i] = val;
     }
 

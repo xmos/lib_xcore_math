@@ -40,7 +40,7 @@ TEST(float_trig, f32_sin)
     setExtraInfo_RS(v, seed);
 
     // -32.0 <= x < 32.0
-    float x = ldexpf(pseudo_rand_int32(&seed), -26);
+    float x = ldexpf((float) pseudo_rand_int32(&seed), -26);
 
     // x = -5.4977f;
 
@@ -79,7 +79,7 @@ TEST(float_trig, f32_cos)
     setExtraInfo_RS(v, seed);
 
     // -32.0 <= x < 32.0
-    float x = ldexpf(pseudo_rand_int32(&seed), -26);
+    float x = ldexpf((float) pseudo_rand_int32(&seed), -26);
 
     // x = -5.4977f;
 

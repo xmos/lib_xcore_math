@@ -4,7 +4,7 @@
 #include "dsp_dct.h"
 
 /* This is a simple DCT implementation. It can be optimised for memory and
- * speed at a later time. 
+ * speed at a later time.
  *
  * dct4(), dct3(), and dct2() are implemented natively
  * dct6() comprises two calls two dct3();
@@ -113,7 +113,7 @@ static const int32_t costable48[24] = {
 
 static inline int32_t mulcos(int32_t x, int32_t cos) {
     long long r = cos * (long long) x;
-    return r >> 31;
+    return (int32_t) (r >> 31);
 }
 
 #define DCT(N,M)                                \
@@ -148,7 +148,7 @@ void dsp_dct_forward4(int32_t output[4], int32_t input[4]) {
     output[2] = mulcos(i03 - i12, 1518500250);
     output[1] =  mulcos(i03_, 1984016189) +
         mulcos(i12_, 821806413);
-    output[3] = mulcos(i03_, 821806413) + 
+    output[3] = mulcos(i03_, 821806413) +
         mulcos(i12_, -1984016189);
 }
 

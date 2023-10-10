@@ -221,13 +221,13 @@ TEST(vect_complex_sum, vect_complex_s32_sum_basic)
     } test_case_t;
 
     test_case_t casses[] = {
-        // b{          re,           im }, b_shr,  line num
-        {   {  0x00000000,  0x000000000 },     0,  __LINE__},
-        {   {  0x00000001,  0x000000000 },     0,  __LINE__},
-        {   { -0x00000001,  0x000000000 },     0,  __LINE__},
-        {   {  0x00020000,  0x000000000 },     0,  __LINE__},
-        {   {  0x7FFFFFFF,  0x000000000 },     0,  __LINE__},
-        {   { -0x80000000,  0x000000000 },     0,  __LINE__},
+        // b{          re,                   im }, b_shr,  line num},
+        {   {  0x00000000,          0x000000000 },     0,  __LINE__},
+        {   {  0x00000001,          0x000000000 },     0,  __LINE__},
+        {   { -(int)0x00000001,     0x000000000 },     0,  __LINE__},
+        {   {  0x00020000,          0x000000000 },     0,  __LINE__},
+        {   {  0x7FFFFFFF,          0x000000000 },     0,  __LINE__},
+        {   { -(int)0x80000000,     0x000000000 },     0,  __LINE__},
     };
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
@@ -301,7 +301,7 @@ TEST(vect_complex_sum, vect_complex_s32_sum_random)
             With a 40 bit accumulator we can add 2^(8+hr+b_shr) elements without saturating.
             We want b_shr to be the smallest (cannot be negative) number it can be.
 
-            max_res = -(2**31) * 2**(len_log2-hr-b_shr) 
+            max_res = -(2**31) * 2**(len_log2-hr-b_shr)
             -(2**39) = -(2**31) * 2**(len_log2-hr-b_shr)  -->  2**8 = 2**(len_log2-hr-b_shr)
             8 = len_log2-hr-b_shr --> b_shr = len_log2-hr-8
 

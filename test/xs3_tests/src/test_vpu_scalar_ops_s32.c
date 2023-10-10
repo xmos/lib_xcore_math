@@ -177,7 +177,7 @@ TEST(vpu_scalar_ops_s32, vlashr32)
         fexp = MIN(fexp, VPU_INT32_MAX);
         fexp = MAX(fexp, VPU_INT32_MIN);
 
-        int32_t exp = fexp;
+        int32_t exp = (int32_t) fexp;
 
         int32_t res = vlashr32(x, shr);
     
@@ -247,7 +247,7 @@ TEST(vpu_scalar_ops_s32, vdepth8_32)
 
         int8_t res = vdepth8_32( (int32_t) k );
 
-        int32_t exp = round(ldexp( k, -24) + ldexp(1, -40));
+        int32_t exp = lround(ldexp( (double) k, -24) + ldexp(1, -40));
         exp = MIN(exp, VPU_INT8_MAX);
         exp = MAX(exp, VPU_INT8_MIN);
 
@@ -277,9 +277,9 @@ TEST(vpu_scalar_ops_s32, vdepth16_32)
     for(int64_t k = INT32_MIN; k < INT32_MAX; k += (UINT32_MAX/STEP_DIV))
     {
 
-        int8_t res = vdepth16_32( (int32_t) k );
+        int8_t res = (int8_t) vdepth16_32( (int32_t) k );
 
-        int32_t exp = round(ldexp( k, -16) + ldexp(1, -40));
+        int32_t exp = lround(ldexp( (double) k, -16) + ldexp(1, -40));
         exp = MIN(exp, VPU_INT16_MAX);
         exp = MAX(exp, VPU_INT16_MIN);
 
@@ -296,16 +296,16 @@ TEST(vpu_scalar_ops_s32, vlmul32)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    TEST_ASSERT_EQUAL_INT32(             0, vlmul32(           0,            0));
-    TEST_ASSERT_EQUAL_INT32(             1, vlmul32(           1,   0x40000000));
-    TEST_ASSERT_EQUAL_INT32(            -1, vlmul32(           1,  -0x40000000));
-    TEST_ASSERT_EQUAL_INT32(           123, vlmul32(         123,   0x40000000));
-    TEST_ASSERT_EQUAL_INT32(          -123, vlmul32(         123,  -0x40000000));
-    TEST_ASSERT_EQUAL_INT32(        -12322, vlmul32(       24644,  -0x20000000));
-    TEST_ASSERT_EQUAL_INT32(         12322, vlmul32(       24644,   0x20000000));
-    TEST_ASSERT_EQUAL_INT32(         12323, vlmul32(       24645,   0x20000000));
-    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MIN, vlmul32( -0x80000000,   0x40000000));
-    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MAX, vlmul32( -0x7FFFFFFF,  -0x7FFFFFFF));
+    TEST_ASSERT_EQUAL_INT32(             0, vlmul32(                  0,            0));
+    TEST_ASSERT_EQUAL_INT32(             1, vlmul32(                  1,   0x40000000));
+    TEST_ASSERT_EQUAL_INT32(            -1, vlmul32(                  1,  -0x40000000));
+    TEST_ASSERT_EQUAL_INT32(           123, vlmul32(                123,   0x40000000));
+    TEST_ASSERT_EQUAL_INT32(          -123, vlmul32(                123,  -0x40000000));
+    TEST_ASSERT_EQUAL_INT32(        -12322, vlmul32(              24644,  -0x20000000));
+    TEST_ASSERT_EQUAL_INT32(         12322, vlmul32(              24644,   0x20000000));
+    TEST_ASSERT_EQUAL_INT32(         12323, vlmul32(              24645,   0x20000000));
+    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MIN, vlmul32(   -(int)0x80000000,   0x40000000));
+    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MAX, vlmul32(        -0x7FFFFFFF,  -0x7FFFFFFF));
 
 
     for(unsigned int v = 0; v < REPS; v++){
@@ -319,7 +319,7 @@ TEST(vpu_scalar_ops_s32, vlmul32)
         fexp = MIN(fexp, VPU_INT32_MAX);
         fexp = MAX(fexp, VPU_INT32_MIN);
 
-        int32_t exp = fexp;
+        int32_t exp = (int32_t) fexp;
 
         int32_t res = vlmul32(x, y);
 
@@ -334,13 +334,13 @@ TEST(vpu_scalar_ops_s32, vlmacc32)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    TEST_ASSERT_EQUAL_INT32(             0, vlmacc32(           0,     0,   0 * 0x40000000) ); 
-    TEST_ASSERT_EQUAL_INT32(           100, vlmacc32(         100,     0,   0 * 0x40000000) ); 
-    TEST_ASSERT_EQUAL_INT32(          -100, vlmacc32(        -100,     0,   0 * 0x40000000) ); 
-    TEST_ASSERT_EQUAL_INT32(           100, vlmacc32(         100,     1,   0 * 0x40000000) ); 
-    TEST_ASSERT_EQUAL_INT32(            94, vlmacc32(         100,     3,  -2 * 0x40000000) ); 
-    TEST_ASSERT_EQUAL_INT32( VPU_INT40_MIN, vlmacc32( -0x8000000000,    -1,       0x40000000) ); 
-    TEST_ASSERT_EQUAL_INT32( VPU_INT40_MAX, vlmacc32(  0x7FFFFFFFFF,     1,       0x40000000) ); 
+    TEST_ASSERT_EQUAL_INT32(             0, vlmacc32(           0,     0,   0 * 0x40000000) );
+    TEST_ASSERT_EQUAL_INT32(           100, vlmacc32(         100,     0,   0 * 0x40000000) );
+    TEST_ASSERT_EQUAL_INT32(          -100, vlmacc32(        -100,     0,   0 * 0x40000000) );
+    TEST_ASSERT_EQUAL_INT32(           100, vlmacc32(         100,     1,   0 * 0x40000000) );
+    TEST_ASSERT_EQUAL_INT32(            94, vlmacc32(         100,     3,  -2 * 0x40000000) );
+    TEST_ASSERT_EQUAL_INT32( VPU_INT40_MIN, vlmacc32( -0x8000000000,    -1,       0x40000000) );
+    TEST_ASSERT_EQUAL_INT32( VPU_INT40_MAX, vlmacc32(  0x7FFFFFFFFF,     1,       0x40000000) );
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
@@ -349,14 +349,14 @@ TEST(vpu_scalar_ops_s32, vlmacc32)
         int32_t x = pseudo_rand_int32(&seed);
         int32_t y = pseudo_rand_int32(&seed);
 
-        double fexp = acc;
+        double fexp = (double) acc;
 
         fexp += round( x * ldexp(y, -30) + ldexp(1,-41) );
 
         fexp = MIN(fexp, VPU_INT40_MAX);
         fexp = MAX(fexp, VPU_INT40_MIN);
 
-        vpu_int32_acc_t exp = fexp;
+        vpu_int32_acc_t exp = (vpu_int32_acc_t) fexp;
 
         vpu_int32_acc_t res = vlmacc32(acc, x, y);
 
@@ -427,7 +427,7 @@ TEST(vpu_scalar_ops_s32, vlsat32)
 
             for(headroom_t hr = 0; hr < 40; hr++){
 
-                int32_t acc = (pseudo_rand_int64(&seed) >> 24) >> hr;
+                int32_t acc = (int32_t) ((pseudo_rand_int64(&seed) >> 24) >> hr);
 
                 int32_t shr = pseudo_rand_int(&seed, 31 - hr, 33 - hr);
 
@@ -443,7 +443,7 @@ TEST(vpu_scalar_ops_s32, vlsat32)
                 fexp = MIN(fexp, VPU_INT32_MAX);
                 fexp = MAX(fexp, VPU_INT32_MIN);
 
-                int32_t exp = fexp;
+                int32_t exp = (int32_t) fexp;
 
                 int32_t res = vlsat32(acc, shr);
 
@@ -482,7 +482,7 @@ TEST(vpu_scalar_ops_s32, vcmr32)
         exp64 = MIN(exp64, VPU_INT32_MAX);
         exp64 = MAX(exp64, VPU_INT32_MIN);
 
-        int32_t exp = exp64;
+        int32_t exp = (int32_t) exp64;
 
         int32_t res = vcmr32(x, y);
 
@@ -515,7 +515,7 @@ TEST(vpu_scalar_ops_s32, vcmi32)
         exp64 = MIN(exp64, VPU_INT32_MAX);
         exp64 = MAX(exp64, VPU_INT32_MIN);
 
-        int32_t exp = exp64;
+        int32_t exp = (int32_t) exp64;
 
         int32_t res = vcmi32(x, y);
 
@@ -548,7 +548,7 @@ TEST(vpu_scalar_ops_s32, vcmcr32)
         exp64 = MIN(exp64, VPU_INT32_MAX);
         exp64 = MAX(exp64, VPU_INT32_MIN);
 
-        int32_t exp = exp64;
+        int32_t exp = (int32_t) exp64;
 
         int32_t res = vcmcr32(x, y);
 
@@ -581,7 +581,7 @@ TEST(vpu_scalar_ops_s32, vcmci32)
         exp64 = MIN(exp64, VPU_INT32_MAX);
         exp64 = MAX(exp64, VPU_INT32_MIN);
 
-        int32_t exp = exp64;
+        int32_t exp = (int32_t) exp64;
 
         int32_t res = vcmci32(x, y);
 

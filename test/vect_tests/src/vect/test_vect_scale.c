@@ -120,7 +120,7 @@ TEST(vect_scale, vect_s16_scale_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
+    test_case_t cases[] = {
         // value{       b     alpha }   sat        exp        line num
         {       {  0x0000,   0x0000 },    0,    0x0000,       __LINE__},
         {       {  0x0001,   0x0000 },    0,    0x0000,       __LINE__},
@@ -154,14 +154,14 @@ TEST(vect_scale, vect_s16_scale_basic)
         
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 3;
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
 
@@ -258,49 +258,49 @@ TEST(vect_scale, vect_s32_scale_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
-        // value{           b             c }   shr{   b    c }            exp        line num
-        {       {  0x00000000,   0x00000000 },     {   0,   0 },      0x00000000,       __LINE__},
-        {       {  0x00010000,   0x00000000 },     {   0,   0 },      0x00000000,       __LINE__},
-        {       {  0x00000000,   0x00010000 },     {   0,   0 },      0x00000000,       __LINE__},
-        {       {  0x40000000,   0x40000000 },     {   0,   0 },      0x40000000,       __LINE__},
-        {       { -0x40000000,   0x40000000 },     {   0,   0 },     -0x40000000,       __LINE__},
-        {       { -0x40000000,  -0x40000000 },     {   0,   0 },      0x40000000,       __LINE__},
-        {       {  0x40000000,   0x00010000 },     {   0,   0 },      0x00010000,       __LINE__},
-        {       {  0x00010000,   0x40000000 },     {   0,   0 },      0x00010000,       __LINE__},
-        {       {  0x40000000,   0x01230000 },     {   0,   0 },      0x01230000,       __LINE__},
-        {       {  0x01230000,   0x40000000 },     {   0,   0 },      0x01230000,       __LINE__},
-        {       {  0x00400000,   0x02000000 },     {   0,   0 },      0x00020000,       __LINE__},
-        {       {  0x00400000,   0x01000000 },     {   0,   0 },      0x00010000,       __LINE__},
-        {       {  0x00004000,   0x00010000 },     {   0,   0 },      0x00000001,       __LINE__},
-        {       {  0x00004000,   0x00008000 },     {   0,   0 },      0x00000001,       __LINE__},
-        {       {  0x00000400,   0x00000400 },     {   0,   0 },      0x00000000,       __LINE__},
-        {       {  0x7f000000,   0x7f000000 },     {   0,   0 },      0x7fffffff,       __LINE__},
-        {       {  0x7f000000,  -0x7f000000 },     {   0,   0 },     -0x7fffffff,       __LINE__},
-        {       { -0x80000000,   0x40000000 },     {   0,   0 },     -0x7fffffff,       __LINE__},
-        {       {  0x40000000,   0x40000000 },     {   1,   0 },      0x20000000,       __LINE__},
-        {       {  0x40000000,   0x20000000 },     {   0,   0 },      0x20000000,       __LINE__},
-        {       {  0x40000000,   0x20000000 },     {   1,   0 },      0x10000000,       __LINE__},
-        {       {  0x40000000,   0x02000000 },     {   3,   0 },      0x00400000,       __LINE__},
-        {       {  0x08000000,   0x40000000 },     { - 1,   0 },      0x10000000,       __LINE__},
-        {       {  0x08000000,   0x40000000 },     { - 2,   0 },      0x20000000,       __LINE__},
-        {       {  0x08000000,   0x40000000 },     { - 3,   0 },      0x40000000,       __LINE__},
-        {       {  0x08000000,   0x40000000 },     { - 4,   0 },      0x7fffffff,       __LINE__},
-        {       {  0x08000000,  -0x40000000 },     { - 4,   0 },     -0x7fffffff,       __LINE__},
-        {       {  0x08000000,   0x20000000 },     { - 4,   0 },      0x40000000,       __LINE__},
+    test_case_t cases[] = {
+        // value{           b                    c }   shr{   b    c }            exp        line num
+        {       {  0x00000000,          0x00000000 },     {   0,   0 },      0x00000000,       __LINE__},
+        {       {  0x00010000,          0x00000000 },     {   0,   0 },      0x00000000,       __LINE__},
+        {       {  0x00000000,          0x00010000 },     {   0,   0 },      0x00000000,       __LINE__},
+        {       {  0x40000000,          0x40000000 },     {   0,   0 },      0x40000000,       __LINE__},
+        {       { -0x40000000,          0x40000000 },     {   0,   0 },     -0x40000000,       __LINE__},
+        {       { -0x40000000,         -0x40000000 },     {   0,   0 },      0x40000000,       __LINE__},
+        {       {  0x40000000,          0x00010000 },     {   0,   0 },      0x00010000,       __LINE__},
+        {       {  0x00010000,          0x40000000 },     {   0,   0 },      0x00010000,       __LINE__},
+        {       {  0x40000000,          0x01230000 },     {   0,   0 },      0x01230000,       __LINE__},
+        {       {  0x01230000,          0x40000000 },     {   0,   0 },      0x01230000,       __LINE__},
+        {       {  0x00400000,          0x02000000 },     {   0,   0 },      0x00020000,       __LINE__},
+        {       {  0x00400000,          0x01000000 },     {   0,   0 },      0x00010000,       __LINE__},
+        {       {  0x00004000,          0x00010000 },     {   0,   0 },      0x00000001,       __LINE__},
+        {       {  0x00004000,          0x00008000 },     {   0,   0 },      0x00000001,       __LINE__},
+        {       {  0x00000400,          0x00000400 },     {   0,   0 },      0x00000000,       __LINE__},
+        {       {  0x7f000000,          0x7f000000 },     {   0,   0 },      0x7fffffff,       __LINE__},
+        {       {  0x7f000000,         -0x7f000000 },     {   0,   0 },     -0x7fffffff,       __LINE__},
+        {       { -(int)0x80000000,     0x40000000 },     {   0,   0 },     -0x7fffffff,       __LINE__},
+        {       {  0x40000000,          0x40000000 },     {   1,   0 },      0x20000000,       __LINE__},
+        {       {  0x40000000,          0x20000000 },     {   0,   0 },      0x20000000,       __LINE__},
+        {       {  0x40000000,          0x20000000 },     {   1,   0 },      0x10000000,       __LINE__},
+        {       {  0x40000000,          0x02000000 },     {   3,   0 },      0x00400000,       __LINE__},
+        {       {  0x08000000,          0x40000000 },     { - 1,   0 },      0x10000000,       __LINE__},
+        {       {  0x08000000,          0x40000000 },     { - 2,   0 },      0x20000000,       __LINE__},
+        {       {  0x08000000,          0x40000000 },     { - 3,   0 },      0x40000000,       __LINE__},
+        {       {  0x08000000,          0x40000000 },     { - 4,   0 },      0x7fffffff,       __LINE__},
+        {       {  0x08000000,         -0x40000000 },     { - 4,   0 },     -0x7fffffff,       __LINE__},
+        {       {  0x08000000,          0x20000000 },     { - 4,   0 },      0x40000000,       __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         //Verify mul_s32() is correct. It's used in other test cases.
-        TEST_ASSERT_EQUAL_MSG(casse->expected, scalar_mul_s32(casse->value.b, casse->value.c, 
+        TEST_ASSERT_EQUAL_MSG(casse->expected, scalar_mul_s32(casse->value.b, casse->value.c,
                                 casse->shr.b, casse->shr.c), casse->line);
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };

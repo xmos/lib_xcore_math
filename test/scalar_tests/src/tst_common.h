@@ -34,13 +34,13 @@ void setExtraInfo_R(
 
 EXTERN_C
 void setExtraInfo_RS(
-    int rep, 
+    int rep,
     unsigned seed);
 
 EXTERN_C
 void setExtraInfo_RSL(
-    int rep, 
-    unsigned seed, 
+    int rep,
+    unsigned seed,
     unsigned length);
 
 
@@ -52,5 +52,5 @@ void setExtraInfo_RSL(
     STATEMENT;                                            \
     volatile uint32_t t_end = get_reference_time();       \
     uint32_t delta_ticks = t_end - t_start;               \
-    OUTPUT_FLOAT_US = delta_ticks / 100.0;                \
+    OUTPUT_FLOAT_US = (float) (delta_ticks / 100.0);      \
   } while(0)

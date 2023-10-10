@@ -49,20 +49,20 @@ TEST(vect_f32_max_exponent, vect_f32_max_exponent)
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
     setExtraInfo_RSL(v, old_seed, len);
 
-    // printf("seed = 0x%08X\n", old_seed);    
+    // printf("seed = 0x%08X\n", old_seed);
 
-    exponent_t max_exponent = -0x80000000;
+    exponent_t max_exponent = -(int)0x80000000;
 
     // Create a bunch of random floats.
     for(unsigned int i = 0; i < len; i++){
       int32_t mant = pseudo_rand_int32(&seed);
       exponent_t exp = pseudo_rand_int(&seed, -95, 95);
-      float val = ldexpf(mant, exp);
+      float val = ldexpf((float) mant, exp);
       vector[i] = val;
       
       int exp2;
       float vn = fabsf(frexpf(val, &exp2));
-      int df = ceilf(log2f(vn));
+      int df = (int) ceilf(log2f(vn));
       assert(df == 0);
       exp2 -= 31;
 

@@ -51,13 +51,13 @@ TEST(vect_s32_to_vect_f32, vect_s32_to_vect_f32)
     const unsigned old_seed = seed;
 
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
-    setExtraInfo_RSL(v, old_seed, len);  
+    setExtraInfo_RSL(v, old_seed, len);
 
     exponent_t b_exp = pseudo_rand_int(&seed, -20, 20);
 
     for(unsigned int i = 0; i < len; i++){
       vec_in[i] = pseudo_rand_int32(&seed);
-      expected[i] = ldexpf(vec_in[i], b_exp);
+      expected[i] = ldexpf((float) vec_in[i], b_exp);
     }
     
     vect_s32_to_vect_f32(vec_out, vec_in, len, b_exp);

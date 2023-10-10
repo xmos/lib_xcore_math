@@ -57,7 +57,7 @@ TEST(mat_mul_s8_x_s8_yield_s32, mat_mul_s8_x_s8_yield_s32)
         pseudo_rand_int8(&seed);
 
         memset(vector, 0, sizeof(vector));
-        for(int col = 0; col < N_cols; col++)
+        for(unsigned int col = 0; col < N_cols; col++)
           vector[col] = pseudo_rand_int8(&seed);
 
         memset(accumulators, 0xFF, sizeof(accumulators));
@@ -65,7 +65,7 @@ TEST(mat_mul_s8_x_s8_yield_s32, mat_mul_s8_x_s8_yield_s32)
         mat_mul_s8_x_s8_yield_s32(accumulators, matrix, vector, M_rows, N_cols);
 
 
-        for(int row = 0; row < M_rows; row++) {
+        for(unsigned int row = 0; row < M_rows; row++) {
           int grp = row / VPU_INT8_ACC_PERIOD;
           int offset = row % VPU_INT8_ACC_PERIOD;
           

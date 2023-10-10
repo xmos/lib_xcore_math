@@ -232,7 +232,7 @@ TEST(fft_dit, fft_dit_forward)
             fft_dit_forward(a, FFT_N, &headroom, &exponent);
             unsigned ts2 = getTimestamp();
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
             unsigned diff = abs_diff_vect_complex_s32(a, exponent, A, FFT_N, &error);
@@ -295,7 +295,7 @@ TEST(fft_dit, fft_dit_inverse)
             fft_dit_inverse(a, FFT_N, &headroom, &exponent);
             unsigned ts2 = getTimestamp();
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
             unsigned diff = abs_diff_vect_complex_s32(a, exponent, A, FFT_N, &error);

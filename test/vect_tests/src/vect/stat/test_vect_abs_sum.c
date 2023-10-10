@@ -46,7 +46,7 @@ TEST(vect_abs_sum, vect_s16_abs_sum_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
+    test_case_t cases[] = {
         //      b     line num
         {  0x0000,    __LINE__},
         {  0x0001,    __LINE__},
@@ -56,14 +56,14 @@ TEST(vect_abs_sum, vect_s16_abs_sum_basic)
         { -0x8000,    __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         int16_t WORD_ALIGNED B[40];
         int32_t result;
@@ -146,24 +146,24 @@ TEST(vect_abs_sum, vect_s32_abs_sum_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
-        //      b     line num
-        {  0x00000000,    __LINE__},
-        {  0x00000001,    __LINE__},
-        { -0x00000001,    __LINE__},
-        {  0x00020000,    __LINE__},
-        {  0x7FFFFFFF,    __LINE__},
-        { -0x80000000,    __LINE__},
+    test_case_t cases[] = {
+        //               b     line num
+        {       0x00000000,    __LINE__},
+        {       0x00000001,    __LINE__},
+        {      -0x00000001,    __LINE__},
+        {       0x00020000,    __LINE__},
+        {       0x7FFFFFFF,    __LINE__},
+        { -(int)0x80000000,    __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         int32_t B[40];
         int64_t result;
@@ -231,7 +231,7 @@ TEST(vect_abs_sum, vect_s32_abs_sum_random)
             exp += b;
         }
 
-        XTEST_ASSERT_S64_EQUAL(exp, result, 
+        XTEST_ASSERT_S64_EQUAL(exp, result,
             "length: %u", len);
         
     }

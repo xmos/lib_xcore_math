@@ -116,10 +116,10 @@ TEST(vect_zip, vect_s32_unzip)
         for(unsigned int k = 0; k < len; k++){
 
           if(A[k] != expectedA[k])
-            printf("\nC[%d].re = %ld\n", k, B[k]);
+            printf("\nC[%d].re = %ld\n", k, C[k].re);
           
           if(B[k] != expectedB[k])
-            printf("\nC[%d].im = %ld\n", k, C[k]);
+            printf("\nC[%d].im = %ld\n", k, C[k].im);
           
 
           TEST_ASSERT_EQUAL_INT32_MESSAGE(expectedA[k], A[k], "");

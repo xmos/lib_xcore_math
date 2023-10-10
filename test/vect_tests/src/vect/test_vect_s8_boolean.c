@@ -56,7 +56,7 @@ TEST(vect_boolean, vect_s8_is_negative)
 
         for(int i = 0; i < MAX_LEN; i++) {
           int8_t expected = (B[i] < 0)? 1 : 0;
-          expected = (i >= length)? 0xCC : expected;
+          expected = (i >= (int) length)? 0xCC : expected;
 
           if(A[i] != expected) printf("A[%d] = 0x%02X\n", i, A[i]);
           

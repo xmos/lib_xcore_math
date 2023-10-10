@@ -76,7 +76,7 @@ TEST(fft_mono_adjust, fft_mono_adjust_forward)
                 ref2[i].im = 0;
             }
 
-            for(int i = 0; i < N/2; i++){
+            for(unsigned int i = 0; i < N/2; i++){
                 ref1[i].re = conv_s32_to_double(a[2*i+0], exponent, &error);
                 ref1[i].im = conv_s32_to_double(a[2*i+1], exponent, &error);
             }
@@ -98,11 +98,6 @@ TEST(fft_mono_adjust, fft_mono_adjust_forward)
             fft_index_bit_reversal((complex_s32_t*) a, N/2);
             fft_dit_forward((complex_s32_t*) a, N/2, &headroom, &exponent);
 
-            for(int i = 0; i < N/2; i++){
-                complex_s32_t aa = ((complex_s32_t*)a)[i];
-                complex_double_t rr = ((complex_double_t*)ref1)[i];
-            }
-
             diff = abs_diff_vect_complex_s32((complex_s32_t*)a, exponent, (complex_double_t*) ref1, N/2, &error);
             TEST_ASSERT_CONVERSION(error);
             TEST_ASSERT_LESS_OR_EQUAL_UINT32_MESSAGE(k+2, diff, "Test setup failed.");
@@ -111,7 +106,7 @@ TEST(fft_mono_adjust, fft_mono_adjust_forward)
             fft_mono_adjust((complex_s32_t*) a, N, 0);
             unsigned ts2 = getTimestamp();
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
             diff = abs_diff_vect_complex_s32((complex_s32_t*) a, exponent, ref2, N/2, &error);
@@ -183,7 +178,7 @@ TEST(fft_mono_adjust, fft_mono_adjust_inverse)
             fft_mono_adjust(a, N, 1);
             unsigned ts2 = getTimestamp();
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
             
             diff = abs_diff_vect_complex_s32(a, exponent, ref, N/2, &error);

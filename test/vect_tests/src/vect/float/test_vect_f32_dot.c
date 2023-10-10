@@ -55,20 +55,20 @@ TEST(vect_f32_dot, vect_f32_dot)
         const unsigned old_seed = seed;
 
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
-        setExtraInfo_RSL(v, old_seed, len);  
+        setExtraInfo_RSL(v, old_seed, len);
         // printf("0x%08X\n", old_seed);
 
         for(unsigned int k = 0; k < len; k++){
-          // The mask being applied is to avoid a divergence between the 
+          // The mask being applied is to avoid a divergence between the
           // implementation of this function using the FMACC instruction, and the
-          // implementation using FMUL+FADD.  The former keeps full precision 
+          // implementation using FMUL+FADD.  The former keeps full precision
           // of the product to be added.  But I want this test to be agnostic to
           // the implementation. Masking off LSbs helps mitigate that divergence
           // without compromising the integrity of the test.
 
-          b[k+B_OFF] = ldexpf(pseudo_rand_int32(&seed) & 0xFFFFFF00, 
+          b[k+B_OFF] = ldexpf((float) (pseudo_rand_int32(&seed) & 0xFFFFFF00),
                               pseudo_rand_int(&seed, -2, 2));
-          c[k+C_OFF] = ldexpf(pseudo_rand_int32(&seed) & 0xFFFFFF00, 
+          c[k+C_OFF] = ldexpf((float) (pseudo_rand_int32(&seed) & 0xFFFFFF00),
                               pseudo_rand_int(&seed, -2, 2));
         }
         

@@ -70,7 +70,7 @@ TEST(vect_convolve, vect_s32_convolve_valid)
     float scale = ldexpf(1, 30) / tap_total;
 
     for(unsigned int k = 0; k < tap_count; k++)
-      taps[k] *= scale;
+      taps[k] *= (int32_t) scale;
 
     const unsigned out_length = length - ((tap_count>>1)<<1);
 
@@ -78,7 +78,7 @@ TEST(vect_convolve, vect_s32_convolve_valid)
       vpu_int32_acc_t acc = 0;
       for(unsigned int p = 0; p < tap_count; p++)
         acc = vlmacc32(acc, signal_in[k+p], taps[p]);
-      expected[k] = acc;
+      expected[k] = (int32_t) acc;
     }
 
     headroom_t hr = vect_s32_convolve_valid(signal_out, signal_in, taps, length, tap_count);
@@ -125,16 +125,16 @@ TEST(vect_convolve, vect_s32_convolve_same_reflected)
     float scale = ldexpf(1, 30) / tap_total;
 
     for(unsigned int k = 0; k < tap_count; k++)
-      taps[k] *= scale;
+      taps[k] *= (int32_t) scale;
 
     for(unsigned int k = 0; k < length; k++){
       vpu_int32_acc_t acc = 0;
       for(unsigned int t = 0; t < tap_count; t++) {
         int i = k + t - P;
-        int32_t input = signal_in[ (i < 0)? (-i) : (i >= length)? (2*length - i - 2) : i ];
+        int32_t input = signal_in[ (i < 0)? (-i) : (i >= (int) length)? (2*length - i - 2) : i ];
         acc = vlmacc32(acc, input, taps[t]);
       }
-      expected[k] = acc;
+      expected[k] = (int32_t) acc;
     }
 
     memset(signal_out, 0, sizeof(signal_out));
@@ -187,18 +187,18 @@ TEST(vect_convolve, vect_s32_convolve_same_zero)
     float scale = ldexpf(1, 30) / tap_total;
 
     for(unsigned int k = 0; k < tap_count; k++)
-      taps[k] *= scale;
+      taps[k] *= (int32_t) scale;
 
     for(unsigned int k = 0; k < length; k++){
       vpu_int32_acc_t acc = 0;
       for(unsigned int t = 0; t < tap_count; t++) {
         int i = k + t - P;
         int32_t input = 0;
-        if( (i >= 0) && (i < length) )
+        if( (i >= 0) && (i < (int) length) )
           input = signal_in[ i ];
         acc = vlmacc32(acc, input, taps[t]);
       }
-      expected[k] = acc;
+      expected[k] = (int32_t) acc;
     }
 
     memset(signal_out, 0, sizeof(signal_out));
@@ -250,7 +250,7 @@ TEST(vect_convolve, vect_s32_convolve_same_extend)
     float scale = ldexpf(1, 30) / tap_total;
 
     for(unsigned int k = 0; k < tap_count; k++)
-      taps[k] *= scale;
+      taps[k] *= (int32_t) scale;
 
     for(unsigned int k = 0; k < length; k++){
       vpu_int32_acc_t acc = 0;
@@ -258,11 +258,11 @@ TEST(vect_convolve, vect_s32_convolve_same_extend)
         int i = k + t - P;
         int32_t input = 0;
         if( i < 0 )             input = signal_in[0];
-        else if( i >= length )  input = signal_in[length - 1];
+        else if( i >= (int) length )  input = signal_in[length - 1];
         else input = signal_in[ i ];
         acc = vlmacc32(acc, input, taps[t]);
       }
-      expected[k] = acc;
+      expected[k] = (int32_t) acc;
     }
 
     memset(signal_out, 0, sizeof(signal_out));
