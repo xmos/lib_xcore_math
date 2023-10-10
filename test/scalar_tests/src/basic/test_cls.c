@@ -67,7 +67,7 @@ TEST(CLS_macro, cls)
         check = check && (numbers[i] << (sign_bits[i]  ) >> (sign_bits[i]  )) != numbers[i];
 
         if(!check){
-            sprintf(msg_buff, "(index: %d; number: %d (0x%08X); result: %u)", i, (int) numbers[i],
+            sprintf(msg_buff, "(index: %d; number: %ld (0x%08X); result: %u)", i, (long int) numbers[i],
                         numbers[i], sign_bits[i]);
         }
 
