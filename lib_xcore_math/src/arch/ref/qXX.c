@@ -6,9 +6,9 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../vect/vpu_const_vects.h"
+#include "vpu_const_vects.h"
 
 
 
@@ -18,7 +18,7 @@ int32_t mul_qXX(int32_t x, int32_t y, right_shift_t shr, unsigned round){
   int64_t m = 0;
   if(round)
    m = (1LL << shr) - 1;
-  return (p + m) >> shr;
+  return (int32_t) ((p + m) >> shr);
 }
 
 static inline
@@ -27,7 +27,7 @@ int64_t maccs(int64_t acc, int32_t x, int32_t y)
   return acc + (((int64_t)x) * y);
 }
 
-static inline 
+static inline
 int32_t lextract(int64_t acc, unsigned pos)
 {
   return (acc >> pos) & 0xFFFFFFFF;
@@ -46,7 +46,7 @@ sbrad_t radians_to_sbrads(
   int32_t tmp = (acc >> 25) & 0xFFFFFFFF;
   int32_t kase = (tmp >> 30) & 0x00000003;
   tmp = tmp << 1;
-  if(kase == 1 || kase == 2) 
+  if(kase == 1 || kase == 2)
     tmp *= -1;
 
   return tmp;
@@ -58,13 +58,13 @@ sbrad_t radians_to_sbrads(
 q2_30 sbrad_tan(
     const sbrad_t theta)
 {
-  const int coef[] = { 
-    0x6487ED51, 0x52AEF398, 0x519AF19D, 0x517FFE6D, 
+  const int coef[] = {
+    0x6487ED51, 0x52AEF398, 0x519AF19D, 0x517FFE6D,
     0x517D1CB8, 0x517CCBC9, 0x517CC2D5, 0x6b6cb9bd };
   const right_shift_t shr[] = {1, 3, 5, 7, 9, 11, 13, 15};
-  const int32_t weights[] = { 
-      0x40000000, 0x40000000, 0x40000000, 0x40000000, 
-      0x40000000, 0x40000000, 0x40000000, 0x40000000 }; 
+  const int32_t weights[] = {
+      0x40000000, 0x40000000, 0x40000000, 0x40000000,
+      0x40000000, 0x40000000, 0x40000000, 0x40000000 };
   
   int32_t t = theta;
 
@@ -72,7 +72,7 @@ q2_30 sbrad_tan(
 
   t *= out_mul;
 
-  const int32_t r = lextract(maccs(0, t, t), 30); 
+  const int32_t r = lextract(maccs(0, t, t), 30);
 
   int32_t powers[8];
   powers[0] = t;
@@ -84,7 +84,7 @@ q2_30 sbrad_tan(
     powers[k] = vlsat32(vlmacc32(0, powers[k], coef[k]), shr[k]);
   }
 
-  t = vlmaccr32(0, &powers[0], &weights[0]);
+  t = (int32_t) vlmaccr32(0, &powers[0], &weights[0]);
 
   return t * out_mul;
 }
@@ -95,13 +95,13 @@ q2_30 sbrad_tan(
 int32_t sbrad_sin(
     const sbrad_t theta)
 {
-  const int32_t coef[] = { 
-      0x6487ed51, -0x52aef399, 0x519af19d, -0x4cb4b33a, 
+  const int32_t coef[] = {
+      0x6487ed51, -0x52aef399, 0x519af19d, -0x4cb4b33a,
       0x541e0d21, -0x78c1d3f8, 0x7a3d0d34, -0x5beb6e7d };
   const right_shift_t shr[] = {1, 2, 5, 9, 14, 20, 26, 32};
-  const int32_t weights[] = { 
-      0x40000000, 0x40000000, 0x40000000, 0x40000000, 
-      0x40000000, 0x40000000, 0,          0 }; 
+  const int32_t weights[] = {
+      0x40000000, 0x40000000, 0x40000000, 0x40000000,
+      0x40000000, 0x40000000, 0,          0 };
   
   int32_t t = theta;
 
@@ -109,7 +109,7 @@ int32_t sbrad_sin(
 
   t *= out_mul;
 
-  const int32_t r = lextract(maccs(0, t, t), 31); 
+  const int32_t r = lextract(maccs(0, t, t), 31);
 
   int32_t powers[8];
   powers[0] = t;
@@ -121,7 +121,7 @@ int32_t sbrad_sin(
     powers[k] = vlsat32(vlmacc32(0, powers[k], coef[k]), shr[k]);
   }
 
-  t = vlmaccr32(0, &powers[0], &weights[0]);
+  t = (int32_t) vlmaccr32(0, &powers[0], &weights[0]);
 
   return t * out_mul;
 }
@@ -145,10 +145,10 @@ q8_24 q24_logistic_fast(
     const q8_24 x)
 {
   const int32_t logi_slope[8] = {
-    1015490930, 640498971, 297985800, 120120271, 
+    1015490930, 640498971, 297985800, 120120271,
     46079377, 17219453, 6371555, 3717288 };
   const int32_t logi_offset[8] = {
-    8388608, 9853420, 12529304, 14613666, 
+    8388608, 9853420, 12529304, 14613666,
     15770555, 16334225, 16588473, 16661050 };
 
   const unsigned out_sub = x < 0;
@@ -206,8 +206,8 @@ q2_30 q30_exp_small(
     const q2_30 x)
 {
   const int32_t coef[9] = {
-    0x40000000, 0x20000000, 0x0AAAAAAB, 
-    0x02AAAAAB, 0x00888889, 0x0016C16C,  
+    0x40000000, 0x20000000, 0x0AAAAAAB,
+    0x02AAAAAB, 0x00888889, 0x0016C16C,
     0x00034034, 0x00006807, 0x00000B8F };
   
   q2_30 pow = Q30(1.0);

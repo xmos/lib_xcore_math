@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 #include "xmath/xs3/vpu_scalar_ops.h"
 
@@ -34,7 +34,7 @@ int32_t filter_fir_s32(
 
     if(filter->shift >= 0){
         if(filter->shift != 0)
-            acc += (1 << (filter->shift-1));
+            acc += (vpu_int32_acc_t) (1 << (filter->shift-1));
         acc = acc >> filter->shift;
     } else {
         acc = acc << (-filter->shift);

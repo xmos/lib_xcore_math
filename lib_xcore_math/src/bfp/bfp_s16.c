@@ -9,7 +9,7 @@
 #include "xmath/xmath.h"
 
 
-static inline 
+static inline
 int16_t safe_ashr16(int16_t x, right_shift_t shr)
 {
   if(shr >= 16){
@@ -67,8 +67,8 @@ void bfp_s16_shl(
 
 
 void bfp_s16_add(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -86,8 +86,8 @@ void bfp_s16_add(
 
 
 void bfp_s16_add_scalar(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const float c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -101,19 +101,19 @@ void bfp_s16_add_scalar(
     exponent_t c_exp;
     f32_unpack_s16(&c_mant, &c_exp, c);
 
-    vect_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp, 
+    vect_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp,
                                     b->hr, HR_S16(c_mant));
 
     int16_t cc = safe_ashr16(c_mant, c_shr);
 
-    a->hr = vect_s16_add_scalar(a->data, b->data, cc, b->length, 
+    a->hr = vect_s16_add_scalar(a->data, b->data, cc, b->length,
                                     b_shr);
 }
 
 
 void bfp_s16_sub(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -131,8 +131,8 @@ void bfp_s16_sub(
 
 
 void bfp_s16_mul(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -151,8 +151,8 @@ void bfp_s16_mul(
 
 
 void bfp_s16_scale(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const float alpha)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -202,7 +202,7 @@ float_s32_t bfp_s16_sum(
 
 
 float_s64_t bfp_s16_dot(
-    const bfp_s16_t* b, 
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -218,10 +218,10 @@ float_s64_t bfp_s16_dot(
 
 
 void bfp_s16_clip(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
-    const int16_t lower_bound, 
-    const int16_t upper_bound, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
+    const int16_t lower_bound,
+    const int16_t upper_bound,
     const int bound_exp)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -341,10 +341,10 @@ float bfp_s16_mean(
     int64_t mean64 = sum64 / ((int)b->length);
     right_shift_t shr = MAX(0, 32 - HR_S64(mean64));
 
-    if(shr > 0) 
+    if(shr > 0)
         mean64 += ((uint64_t)1 << (shr-1));
 
-    return s32_to_f32(mean64 >> shr, 
+    return s32_to_f32((int32_t) (mean64 >> shr),
                           b->exp - hr + shr);
 }
 
@@ -391,14 +391,14 @@ float bfp_s16_max(
     assert(b->length != 0);
 #endif
 
-    return s32_to_f32(vect_s16_max(b->data, b->length), 
+    return s32_to_f32(vect_s16_max(b->data, b->length),
                           b->exp);
 }
 
 
 void bfp_s16_max_elementwise(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -411,11 +411,11 @@ void bfp_s16_max_elementwise(
   // We'll choose the smallest exponent that leaves at least 1 bit of headroom.
   const unsigned min_required_operand_headroom = 1;
   right_shift_t b_shr, c_shr;
-  vect_2vec_prepare(&a->exp, &b_shr, &c_shr, 
-                        b->exp, c->exp, b->hr, c->hr, 
+  vect_2vec_prepare(&a->exp, &b_shr, &c_shr,
+                        b->exp, c->exp, b->hr, c->hr,
                         min_required_operand_headroom);
 
-  a->hr = vect_s16_max_elementwise(a->data, b->data, c->data, 
+  a->hr = vect_s16_max_elementwise(a->data, b->data, c->data,
                                        b->length, b_shr, c_shr);
 }
 
@@ -427,14 +427,14 @@ float bfp_s16_min(
     assert(b->length != 0);
 #endif
 
-    return s32_to_f32(vect_s16_min(b->data, b->length), 
+    return s32_to_f32(vect_s16_min(b->data, b->length),
                           b->exp);
 }
 
 
 void bfp_s16_min_elementwise(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -447,11 +447,11 @@ void bfp_s16_min_elementwise(
   // We'll choose the smallest exponent that leaves at least 1 bit of headroom.
   const unsigned min_required_operand_headroom = 1;
   right_shift_t b_shr, c_shr;
-  vect_2vec_prepare(&a->exp, &b_shr, &c_shr, 
-                        b->exp, c->exp, b->hr, c->hr, 
+  vect_2vec_prepare(&a->exp, &b_shr, &c_shr,
+                        b->exp, c->exp, b->hr, c->hr,
                         min_required_operand_headroom);
 
-  a->hr = vect_s16_min_elementwise(a->data, b->data, c->data, 
+  a->hr = vect_s16_min_elementwise(a->data, b->data, c->data,
                                        b->length, b_shr, c_shr);
 }
 
@@ -481,7 +481,7 @@ unsigned bfp_s16_argmin(
 void bfp_s16_to_bfp_s32(
     bfp_s32_t* a,
     const bfp_s16_t* b)
-{    
+{
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
     assert(b->length == a->length);
     assert(b->length != 0);
@@ -497,8 +497,8 @@ void bfp_s16_to_bfp_s32(
 
 
 void bfp_s16_macc(
-    bfp_s16_t* acc, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* acc,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -516,8 +516,8 @@ void bfp_s16_macc(
 
 
 void bfp_s16_nmacc(
-    bfp_s16_t* acc, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* acc,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h

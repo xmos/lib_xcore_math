@@ -5,12 +5,12 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath_fft_lut.h"
 
 //load 4 complex 32-bit values into a buffer
 static void load_vec(
-    complex_s32_t dst[], 
+    complex_s32_t dst[],
     const complex_s32_t src[])
 {
     for(int i = 0; i < 4; i++){
@@ -77,9 +77,9 @@ static void vftfb(
 
 
 void fft_dif_forward (
-    complex_s32_t x[], 
-    const unsigned N, 
-    headroom_t* hr, 
+    complex_s32_t x[],
+    const unsigned N,
+    headroom_t* hr,
     exponent_t* exp)
 {
     const unsigned FFT_N_LOG2 = 31 - CLS_S32(N);
@@ -151,16 +151,16 @@ void fft_dif_forward (
 
 
 void fft_dif_inverse (
-    complex_s32_t x[], 
-    const unsigned N, 
-    headroom_t* hr, 
+    complex_s32_t x[],
+    const unsigned N,
+    headroom_t* hr,
     exponent_t* exp)
 {
     const unsigned FFT_N_LOG2 = 31 - CLS_S32(N);
 
     const complex_s32_t* W = XMATH_DIF_FFT_LUT(N);
 
-    exponent_t exp_modifier = -FFT_N_LOG2;
+    exponent_t exp_modifier = -(int)FFT_N_LOG2;
     right_shift_t shift_mode = 0;
 
     complex_s32_t vD[4] = {{0}}, vR[4] = {{0}}, vC[4] = {{0}};
