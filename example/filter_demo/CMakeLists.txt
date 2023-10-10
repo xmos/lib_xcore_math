@@ -25,6 +25,7 @@ target_compile_options( ${APP_NAME}
 if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   target_compile_options( ${APP_NAME}
     PRIVATE
+      -Werror
       -g
   )
 else()

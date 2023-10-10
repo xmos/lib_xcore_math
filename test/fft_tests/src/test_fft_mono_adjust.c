@@ -57,7 +57,6 @@ TEST(fft_mono_adjust, fft_mono_adjust_forward)
         flt_make_sine_table_double(sine_tableB, N);
         
         for(unsigned t = 0; t < (1 << LOOPS_LOG2); t++){
-            const unsigned seed = r;
             unsigned diff = 0;
 
             int32_t DWORD_ALIGNED a[MAX_PROC_FRAME_LENGTH];
@@ -154,10 +153,7 @@ TEST(fft_mono_adjust, fft_mono_adjust_inverse)
         flt_make_sine_table_double(sine_tableA, N/2);
         
         for(unsigned t = 0; t < (1 << LOOPS_LOG2); t++){
-            
-            const unsigned seed = r;
             unsigned diff = 0;
-
             complex_s32_t DWORD_ALIGNED a[MAX_PROC_FRAME_LENGTH/2];
             complex_double_t DWORD_ALIGNED ref[MAX_PROC_FRAME_LENGTH/2];
 

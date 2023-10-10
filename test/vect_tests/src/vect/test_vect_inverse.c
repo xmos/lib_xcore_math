@@ -228,7 +228,6 @@ TEST(vect_inverse, vect_s32_inverse)
 
 
     for(unsigned int v = 0; v < REPS; v++){
-        unsigned old_seed = seed;
         const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
         setExtraInfo_RSL(v, seed, length);
 

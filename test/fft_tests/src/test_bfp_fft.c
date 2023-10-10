@@ -211,8 +211,6 @@ TEST(bfp_fft, bfp_fft_forward_stereo)
 
         for(unsigned t = 0; t < (1<<LOOPS_LOG2); t++){
 
-            const unsigned seed = r;
-
             // Buffers for the BFP vectors (both time and freq domain)
             int32_t DWORD_ALIGNED chanA_buff[MAX_PROC_FRAME_LENGTH];
             int32_t DWORD_ALIGNED chanB_buff[MAX_PROC_FRAME_LENGTH];
@@ -267,7 +265,7 @@ TEST(bfp_fft, bfp_fft_forward_stereo)
             TEST_ASSERT_EQUAL(FFT_N/2, chanB_fd->length);
 
             // headroom is expected to be the minimum of the two channels
-            headroom_t exp_hr = MIN(vect_complex_s32_headroom(chanA_fd->data, chanA_fd->length), 
+            headroom_t exp_hr = MIN(vect_complex_s32_headroom(chanA_fd->data, chanA_fd->length),
                                     vect_complex_s32_headroom(chanB_fd->data, chanB_fd->length));
 
             TEST_ASSERT_EQUAL(exp_hr, chanA_fd->hr);
@@ -402,7 +400,7 @@ TEST(bfp_fft, bfp_fft_inverse_stereo)
             TEST_ASSERT_EQUAL(FFT_N, B->length);
 
             // headroom is expected to be the minimum of the two channels
-            headroom_t exp_hr = MIN(vect_s32_headroom(A->data, A->length), 
+            headroom_t exp_hr = MIN(vect_s32_headroom(A->data, A->length),
                                     vect_s32_headroom(B->data, B->length));
 
             TEST_ASSERT_EQUAL(exp_hr, A->hr);

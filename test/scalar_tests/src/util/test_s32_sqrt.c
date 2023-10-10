@@ -32,7 +32,6 @@ TEST_TEAR_DOWN(s32_sqrt) {}
 
 TEST(s32_sqrt, s32_sqrt)
 {
-    unsigned seed = SEED_FROM_FUNC_NAME();
     int32_t cases[] = { 0, 1, 4, 16, 100, 0x4000 };
 
     const unsigned N_cases = sizeof(cases) / sizeof(int32_t);

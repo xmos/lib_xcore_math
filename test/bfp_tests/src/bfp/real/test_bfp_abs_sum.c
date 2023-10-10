@@ -90,8 +90,6 @@ TEST(bfp_abs_sum, bfp_s32_abs_sum)
         B.exp = pseudo_rand_int(&seed, -100, 100);
         B.hr = pseudo_rand_uint(&seed, 0, 31);
         
-        int64_t sum = 0;
-
         float_s64_t expected = {
             .mant = 0,
             .exp = B.exp };

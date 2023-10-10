@@ -30,7 +30,7 @@ TEST_TEAR_DOWN(bfp_clip) {}
 #  define MAX_LEN    (512)
 #endif
 
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \
@@ -75,7 +75,7 @@ TEST(bfp_clip, bfp_s16_clip)
         right_shift_t bound_shr = A.exp - bound_exp;
         assert(bound_shr > -16);
 
-        int32_t upper32 = (bound_shr >= 0)? ((int32_t)upper) >> (bound_shr) : ((int32_t)upper) << -bound_shr; 
+        int32_t upper32 = (bound_shr >= 0)? ((int32_t)upper) >> (bound_shr) : ((int32_t)upper) << -bound_shr;
         int32_t lower32 = (bound_shr >= 0)? ((int32_t)lower) >> (bound_shr) : ((int32_t)lower) << -bound_shr;
         upper32 = (upper32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (upper32 <= VPU_INT16_MIN)? VPU_INT16_MIN : upper32;
         lower32 = (lower32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (lower32 <= VPU_INT16_MIN)? VPU_INT16_MIN : lower32;
@@ -123,7 +123,7 @@ TEST(bfp_clip, bfp_s32_clip)
         right_shift_t bound_shr = A.exp - bound_exp;
         assert(bound_shr > -32);
 
-        int64_t upper64 = (bound_shr >= 0)? ((int64_t)upper) >> (bound_shr) : ((int64_t)upper) << -bound_shr; 
+        int64_t upper64 = (bound_shr >= 0)? ((int64_t)upper) >> (bound_shr) : ((int64_t)upper) << -bound_shr;
         int64_t lower64 = (bound_shr >= 0)? ((int64_t)lower) >> (bound_shr) : ((int64_t)lower) << -bound_shr;
         upper64 = (upper64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (upper64 <= VPU_INT32_MIN)? VPU_INT32_MIN : upper64;
         lower64 = (lower64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (lower64 <= VPU_INT32_MIN)? VPU_INT32_MIN : lower64;

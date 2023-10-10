@@ -32,8 +32,7 @@ TEST_TEAR_DOWN(bfp_complex_make) {}
 #  define MAX_LEN    (512)
 #endif
 
-
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \

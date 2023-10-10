@@ -48,7 +48,7 @@ TEST(float_logistic, q24_logistic)
       printf("x = %f  (%ld << -24)\n", xf, x);
       printf("exp = %f  (%ld << -24)\n", expected_f, expected_q24);
       printf("y = %f  (%ld << -24)\n", ldexp(y, -24), y);
-      printf("error = %ld\n", error);
+      printf("error = %d\n", error);
     }
     TEST_ASSERT_INT32_WITHIN(100, expected_q24, y);
   }
@@ -76,7 +76,7 @@ TEST(float_logistic, q24_logistic_fast)
       printf("x = %f  (%ld << -24)\n", xf, x);
       printf("exp = %f  (%ld << -24)\n", expected_f, expected_q24);
       printf("y = %f  (%ld << -24)\n", ldexp(y, -24), y);
-      printf("error = %ld\n", error);
+      printf("error = %d\n", error);
     }
     TEST_ASSERT_INT32_WITHIN(112000, expected_q24, y);
   }

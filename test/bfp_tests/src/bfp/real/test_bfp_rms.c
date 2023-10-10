@@ -31,9 +31,7 @@ TEST_TEAR_DOWN(bfp_rms) {}
 #  define MAX_LEN    (512)
 #endif
 
-
-static unsigned seed;
-
+// static unsigned seed;
 
 TEST(bfp_rms, bfp_s16_rms)
 {

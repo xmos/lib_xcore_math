@@ -31,9 +31,7 @@ TEST_TEAR_DOWN(bfp_complex_real_scale) {}
 #  define MAX_LEN    (512)
 #endif
 
-
-static char msg_buff[200];
-
+// static char msg_buff[200];
 
 TEST(bfp_complex_real_scale, bfp_complex_s16_real_scale)
 {

@@ -23,7 +23,7 @@ TEST_GROUP(vect_rect);
 TEST_SETUP(vect_rect) { fflush(stdout); }
 TEST_TEAR_DOWN(vect_rect) {}
 
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \
     if((EXPECTED)!=(ACTUAL)) {                                        \

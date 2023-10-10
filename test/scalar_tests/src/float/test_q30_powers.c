@@ -49,13 +49,13 @@ TEST(q30_powers, q30_powers)
       expected[i] = lround(ldexp(pow, 30));
     }
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     q30_powers(A, B, length);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = (float) (delta_ticks / 100.0);
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
     int max_error = 0;
     for(unsigned int i = 0; i < length; i++){

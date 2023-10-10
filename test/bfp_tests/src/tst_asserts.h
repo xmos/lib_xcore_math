@@ -63,7 +63,7 @@
       if(d > (THRESH)) {                                                                \
         printf("\n*** abs(%s[%d] - %s[%d]) > %d ***\n",                                 \
             #EXPECTED, i, #ACTUAL, i, (THRESH));                                        \
-        printf("Actual delta: %d\n", d);                                                \
+        printf("Actual delta: %ld\n", d);                                                \
         printf(FMT, __VA_ARGS__ );                                                      \
       }                                                                                 \
       TEST_ASSERT_INT32_WITHIN_MESSAGE((THRESH),                                        \

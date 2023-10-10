@@ -80,13 +80,13 @@ TEST(fixed_trig, radians_to_sbrads)
     
     exp_q31 *= out_mul;
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     int32_t actual_q31 = radians_to_sbrads(theta_q24);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
     TEST_ASSERT_INT32_WITHIN_MESSAGE(30, exp_q31, actual_q31, "");
 
-    float mine = (t1-t0) / 100.0f;
+    // float mine = (float) ((t1-t0) / 100.0f);
     // printf("[timing] Mine: %0.02f us\n", mine);
   }
 
@@ -112,14 +112,14 @@ TEST(fixed_trig, sbrad_sin)
 
     double exp = sin(theta);
     float theta_flt = (float) theta;
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     volatile float just_for_timing = sinf(theta_flt);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    volatile uint32_t t2 = get_reference_time();
+    // volatile uint32_t t2 = get_reference_time();
     volatile int32_t alpha = radians_to_sbrads(theta_q24);
     volatile int32_t result_q30 = sbrad_sin(alpha);
-    volatile uint32_t t3 = get_reference_time();
+    // volatile uint32_t t3 = get_reference_time();
 
     int32_t exp_q30 = lround(ldexp(exp,30));
 
@@ -132,8 +132,8 @@ TEST(fixed_trig, sbrad_sin)
 
     TEST_ASSERT_INT32_WITHIN(10000, exp_q30, result_q30);
 
-    float ref  = (t1-t0) / 100.0f;
-    float mine = (t3-t2) / 100.0f;
+    // float ref  = (t1-t0) / 100.0f;
+    // float mine = (t3-t2) / 100.0f;
 
     just_for_timing;
     // printf("\n[timing] Mine: %0.02f us\tRef: %0.02f us\n", mine, ref);
@@ -175,14 +175,14 @@ TEST(fixed_trig, sbrad_tan)
     double expected = tan(theta);
 
     float theta_flt = (float) theta;
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     volatile float just_for_timing = tanf(theta_flt);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    volatile uint32_t t2 = get_reference_time();
+    // volatile uint32_t t2 = get_reference_time();
     volatile q1_31 alpha_q31 = radians_to_sbrads(theta_q24);
     volatile q2_30 result_q30 = sbrad_tan(alpha_q31);
-    volatile uint32_t t3 = get_reference_time();
+    // volatile uint32_t t3 = get_reference_time();
 
     q2_30 expected_q30 = lround(ldexp(expected,30));
 
@@ -198,8 +198,8 @@ TEST(fixed_trig, sbrad_tan)
     // Unfortunately the error can be a bit large compared to sin() and cos()
     TEST_ASSERT_INT32_WITHIN_MESSAGE(1000, expected_q30, result_q30,"");
 
-    float ref  = (t1-t0) / 100.0f;
-    float mine = (t3-t2) / 100.0f;
+    // float ref  = (t1-t0) / 100.0f;
+    // float mine = (t3-t2) / 100.0f;
 
     just_for_timing;
     // printf("[alpha = %f] Mine: %0.02f us\tRef: %0.02f us\terror: %ld\t error(%): %f%%\n", alpha, mine, ref, expected_q30 - result_q30, erp*100.0);
@@ -227,13 +227,13 @@ TEST(fixed_trig, q24_sin)
 
     double exp = sin(theta);
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     volatile float just_for_timing = sinf((float) theta);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    volatile uint32_t t2 = get_reference_time();
+    // volatile uint32_t t2 = get_reference_time();
     volatile q2_30 result_q30 = q24_sin(theta_q24);
-    volatile uint32_t t3 = get_reference_time();
+    // volatile uint32_t t3 = get_reference_time();
 
     q2_30 exp_q30 = lround(ldexp(exp,30));
 
@@ -246,8 +246,8 @@ TEST(fixed_trig, q24_sin)
 
     TEST_ASSERT_INT32_WITHIN(10000, exp_q30, result_q30);
 
-    float ref  = (t1-t0) / 100.0f;
-    float mine = (t3-t2) / 100.0f;
+    // float ref  = (t1-t0) / 100.0f;
+    // float mine = (t3-t2) / 100.0f;
 
     just_for_timing;
     // printf("[timing] Mine: %0.02f us\tRef: %0.02f us\n", mine, ref);
@@ -276,13 +276,13 @@ TEST(fixed_trig, q24_cos)
 
 
     double exp = cos(theta);
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     volatile float just_for_timing = cosf((float) theta);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    volatile uint32_t t2 = get_reference_time();
+    // volatile uint32_t t2 = get_reference_time();
     volatile q2_30 result_q30 = q24_cos(theta_q24);
-    volatile uint32_t t3 = get_reference_time();
+    // volatile uint32_t t3 = get_reference_time();
 
     q2_30 exp_q30 = lround(ldexp(exp,30));
 
@@ -295,8 +295,8 @@ TEST(fixed_trig, q24_cos)
 
     TEST_ASSERT_INT32_WITHIN(10000, exp_q30, result_q30);
 
-    float ref  = (t1-t0) / 100.0f;
-    float mine = (t3-t2) / 100.0f;
+    // float ref  = (t1-t0) / 100.0f;
+    // float mine = (t3-t2) / 100.0f;
 
     just_for_timing;
     // printf("[timing] Mine: %0.02f us\tRef: %0.02f us\n", mine, ref);
@@ -323,13 +323,13 @@ TEST(fixed_trig, q24_tan)
     q8_24 theta_q24 = (q8_24) floor(ldexp(theta, 24));
 
     double exp = tan(theta);
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     volatile float just_for_timing = tanf((float) theta);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    volatile uint32_t t2 = get_reference_time();
+    // volatile uint32_t t2 = get_reference_time();
     volatile float_s32_t result = q24_tan(theta_q24);
-    volatile uint32_t t3 = get_reference_time();
+    // volatile uint32_t t3 = get_reference_time();
 
     int32_t exp_fixed = lround(ldexp(exp,-result.exp));
 
@@ -362,9 +362,6 @@ TEST(fixed_trig, q24_tan)
       double erp = ((double)er) / abs(exp_inv_q30);
       max_error_pct = (erp > max_error_pct)? erp : max_error_pct;
     }
-
-    float ref  = (t1-t0) / 100.0f;
-    float mine = (t3-t2) / 100.0f;
 
     just_for_timing;
   }

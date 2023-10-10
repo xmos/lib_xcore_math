@@ -34,8 +34,6 @@ static char msg_buff[200];
 #define MAX_TAPS    100
 TEST(filter_fir_s32, case0)
 {
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
     int32_t coefs[MAX_TAPS];
     int32_t state[MAX_TAPS];
 
@@ -75,8 +73,6 @@ TEST(filter_fir_s32, case0)
 #define MAX_TAPS    100
 TEST(filter_fir_s32, case1)
 {
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
     int32_t coefs[MAX_TAPS];
     int32_t state[MAX_TAPS];
 
@@ -114,8 +110,6 @@ TEST(filter_fir_s32, case1)
 #define TAPS    32
 TEST(filter_fir_s32, case2)
 {
-    unsigned seed = SEED_FROM_FUNC_NAME();
-    
     int32_t coefs[TAPS];
     int32_t state[TAPS];
 

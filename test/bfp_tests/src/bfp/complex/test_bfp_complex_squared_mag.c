@@ -31,8 +31,7 @@ TEST_TEAR_DOWN(bfp_complex_squared_mag) {}
 #  define MAX_LEN    (512)
 #endif
 
-
-static char msg_buff[200];
+// static char msg_buff[200];
 
 
 TEST(bfp_complex_squared_mag, bfp_complex_s16_squared_mag)

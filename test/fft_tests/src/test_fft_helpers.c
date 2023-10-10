@@ -46,7 +46,6 @@ TEST(fft_helpers, fft_index_bit_reversal)
 #endif
 
     unsigned r = 1;
-    conv_error_e error = 0;
 
     for(unsigned k = MIN_N_LOG2; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
 

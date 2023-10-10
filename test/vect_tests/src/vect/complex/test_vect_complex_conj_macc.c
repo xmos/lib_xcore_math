@@ -83,8 +83,8 @@ TEST(vect_complex_conj_macc, vect_complex_s16_conj_macc)
         hr.c = vect_complex_s16_headroom(C.re, C.im, LEN);
 
         right_shift_t acc_shr, bc_shr;
-        vect_complex_s16_conj_macc_prepare(&exp.a, &acc_shr, &bc_shr, 
-                                          exp.a, exp.b, exp.c, 
+        vect_complex_s16_conj_macc_prepare(&exp.a, &acc_shr, &bc_shr,
+                                          exp.a, exp.b, exp.c,
                                           hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s16_conj_macc(A.re, A.im, B.re, B.im, C.re, C.im, LEN, acc_shr, bc_shr);
@@ -106,11 +106,11 @@ TEST(vect_complex_conj_macc, vect_complex_s16_conj_macc)
 
 #define THRESHOLD  2
           if(expected.re - A.re[i] > THRESHOLD || A.re[i] - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A.re[%d] = %d\n", v, exp.a, i, expected.re, expected_fp.re, i, A.re[i]);
+            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A.re[%d] = %d\n", v, exp.a, i, expected.re, expected_fp.re, i, A.re[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.re, A.re[i], "Error not within threshold. (real)");
 
           if(expected.im - A.im[i] > THRESHOLD || A.im[i] - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %d  ( %f );   A.im[%d] = %d\n", v, exp.a, i, expected.im, expected_fp.im, i, A.im[i]);
+            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A.im[%d] = %d\n", v, exp.a, i, expected.im, expected_fp.im, i, A.im[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.im, A.im[i], "Error not within threshold. (imag)");
 #undef THRESHOLD
         }
@@ -163,8 +163,8 @@ TEST(vect_complex_conj_macc, vect_complex_s16_conj_nmacc)
         hr.c = vect_complex_s16_headroom(C.re, C.im, LEN);
 
         right_shift_t acc_shr, bc_shr;
-        vect_complex_s16_conj_macc_prepare(&exp.a, &acc_shr, &bc_shr, 
-                                          exp.a, exp.b, exp.c, 
+        vect_complex_s16_conj_macc_prepare(&exp.a, &acc_shr, &bc_shr,
+                                          exp.a, exp.b, exp.c,
                                           hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s16_conj_nmacc(A.re, A.im, B.re, B.im, C.re, C.im, LEN, acc_shr, bc_shr);
@@ -186,11 +186,11 @@ TEST(vect_complex_conj_macc, vect_complex_s16_conj_nmacc)
 
 #define THRESHOLD  2
           if(expected.re - A.re[i] > THRESHOLD || A.re[i] - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A.re[%d] = %d\n", v, exp.a, i, expected.re, expected_fp.re, i, A.re[i]);
+            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A.re[%d] = %d\n", v, exp.a, i, expected.re, expected_fp.re, i, A.re[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.re, A.re[i], "Error not within threshold. (real)");
 
           if(expected.im - A.im[i] > THRESHOLD || A.im[i] - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %d  ( %f );   A.im[%d] = %d\n", v, exp.a, i, expected.im, expected_fp.im, i, A.im[i]);
+            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A.im[%d] = %d\n", v, exp.a, i, expected.im, expected_fp.im, i, A.im[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.im, A.im[i], "Error not within threshold. (imag)");
 #undef THRESHOLD
         }
@@ -240,8 +240,8 @@ TEST(vect_complex_conj_macc, vect_complex_s32_conj_macc)
         hr.c = vect_complex_s32_headroom(C, LEN);
 
         right_shift_t acc_shr, b_shr, c_shr;
-        vect_complex_s32_macc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr, 
-                                          exp.a, exp.b, exp.c, 
+        vect_complex_s32_macc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr,
+                                          exp.a, exp.b, exp.c,
                                           hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s32_conj_macc(A, B, C, LEN, acc_shr, b_shr, c_shr);
@@ -271,7 +271,7 @@ TEST(vect_complex_conj_macc, vect_complex_s32_conj_macc)
 
           if(expected.im - A[i].im > THRESHOLD || A[i].im - expected.im > THRESHOLD){
             printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A[%d].im = %ld\n", v, exp.a, i, expected.im, expected_fp.im, i, A[i].im);
-            printf("B[%d] = %f + i*%f;   C = %f + i*%f\n", i, B_fp[i].re, B_fp[i].im, C_fp[i].re, C_fp[i].im); 
+            printf("B[%d] = %f + i*%f;   C = %f + i*%f\n", i, B_fp[i].re, B_fp[i].im, C_fp[i].re, C_fp[i].im);
           }
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.im, A[i].im, "Error not within threshold (imag).");
@@ -323,8 +323,8 @@ TEST(vect_complex_conj_macc, vect_complex_s32_conj_nmacc)
         hr.c = vect_complex_s32_headroom(C, LEN);
 
         right_shift_t acc_shr, b_shr, c_shr;
-        vect_complex_s32_conj_macc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr, 
-                                          exp.a, exp.b, exp.c, 
+        vect_complex_s32_conj_macc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr,
+                                          exp.a, exp.b, exp.c,
                                           hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s32_conj_nmacc(A, B, C, LEN, acc_shr, b_shr, c_shr);

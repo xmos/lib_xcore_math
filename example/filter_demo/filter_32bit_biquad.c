@@ -89,7 +89,7 @@ void filter_32bit_biquad()
     int32_t input_sample = rand() << 1;
     int32_t output_sample = filter_biquad_s32(&filter, input_sample);
 
-    printf("input[% 4d] = % 13ld;  output[% 4d] = % 13d\n", k, input_sample, k, output_sample);
+    printf("input[% 4d] = % 13ld;  output[% 4d] = % 13ld\n", k, input_sample, k, output_sample);
   }
 
 }

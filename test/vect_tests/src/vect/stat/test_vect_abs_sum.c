@@ -27,7 +27,7 @@ TEST_SETUP(vect_abs_sum) { fflush(stdout); }
 TEST_TEAR_DOWN(vect_abs_sum) {}
 
 
-static char msg_buff[200];
+// static char msg_buff[200];
 
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)   do{       \

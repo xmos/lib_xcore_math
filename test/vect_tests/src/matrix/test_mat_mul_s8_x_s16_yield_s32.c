@@ -22,7 +22,7 @@ TEST_GROUP(mat_mul_s8_x_s16_yield_s32);
 TEST_SETUP(mat_mul_s8_x_s16_yield_s32) { fflush(stdout); }
 TEST_TEAR_DOWN(mat_mul_s8_x_s16_yield_s32) {}
 
-static char detail_buff[200];
+// static char detail_buff[200];
 
 
 #define MAX_OUT_GROUPS  (16)
@@ -62,7 +62,7 @@ TEST(mat_mul_s8_x_s16_yield_s32, mat_mul_s8_x_s16_yield_s32)
 
   int8_t DWORD_ALIGNED scratch[MAX_COLS];
 
-  float max_ratio = 0;
+  // float max_ratio = 0;
 
   // printf("\n\n\n");
 

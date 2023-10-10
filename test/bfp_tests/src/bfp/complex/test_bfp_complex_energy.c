@@ -70,8 +70,6 @@ TEST(bfp_complex_energy, bfp_complex_s16_energy)
 
         TEST_ASSERT_EQUAL(0, conv_error);
 
-        unsigned threshold = (unsigned) ceil(log2(B.length));
-
         TEST_ASSERT_EQUAL_INT64_MESSAGE(expected, result.mant, "");
     }
 }

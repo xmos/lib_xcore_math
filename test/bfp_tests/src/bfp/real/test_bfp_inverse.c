@@ -25,8 +25,7 @@ TEST_GROUP(bfp_inverse);
 TEST_SETUP(bfp_inverse) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_inverse) {}
 
-
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define MAX_LEN     30
 #define REPS        30
@@ -47,7 +46,7 @@ TEST(bfp_inverse, bfp_s16_inverse)
 
         bfp_s16_t A, B;
 
-        bfp_s16_init(&B, B_data, 
+        bfp_s16_init(&B, B_data,
                           pseudo_rand_int(&seed, -30, 30),
                           pseudo_rand_uint(&seed, 0, MAX_LEN-1), 0);
         bfp_s16_init(&A, A_data, 0, B.length, 0);
@@ -92,7 +91,7 @@ TEST(bfp_inverse, bfp_s32_inverse)
 
         bfp_s32_t A, B;
 
-        bfp_s32_init(&B, B_data, 
+        bfp_s32_init(&B, B_data,
                           pseudo_rand_int(&seed, -30, 30),
                           pseudo_rand_uint(&seed, 0, MAX_LEN-1), 0);
         bfp_s32_init(&A, A_data, 0, B.length, 0);

@@ -51,9 +51,6 @@ TEST(vect_copy, vect_s32_copy)
     for(unsigned int i = 0; i < len; i++)
         B[i] = pseudo_rand_int32(&seed) >> b_hr;
 
-    
-    headroom_t hr = vect_s32_copy(A, B, len);
-
     TEST_ASSERT_EQUAL_INT32_ARRAY_MESSAGE(B, A, len, "");
   }
 }

@@ -32,8 +32,7 @@ TEST_TEAR_DOWN(bfp_complex_real_mul) {}
 #  define MAX_LEN    (512)
 #endif
 
-
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \
@@ -71,7 +70,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
 
-        bfp_complex_s16_init(&B, B_data.real, B_data.imag, 
+        bfp_complex_s16_init(&B, B_data.real, B_data.imag,
             pseudo_rand_int(&seed, -30, 30),
             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
@@ -139,7 +138,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
 
-        bfp_complex_s32_init(&B, B_data, 
+        bfp_complex_s32_init(&B, B_data,
             pseudo_rand_int(&seed, -30, 30),
             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
         
@@ -186,8 +185,8 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
 /**
   *  astew: 2022/07/01 -- Test case comes from Shuchita via issue #102.
   *         Added to unit tests to make sure this loop is closed.
-  *  
-  *  This test case demonstrated a bug in the logic of vect_complex_s32_real_mul_prepare(), 
+  *
+  *  This test case demonstrated a bug in the logic of vect_complex_s32_real_mul_prepare(),
   *   which was allowing the input vectors to be left-shifted more bits than they had headroom.
   *   vect_complex_s32_real_mul_prepare() has been fixed, so this should no longer be an issue.
   */
@@ -233,7 +232,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mulB)
   bfp_complex_s32_t output;
   bfp_complex_s32_init(&output, out_data, 0, 10, 0);
 
-  bfp_complex_s32_real_mul(&output, &input, &scale); // Error_ap[0][f] * 
+  bfp_complex_s32_real_mul(&output, &input, &scale); // Error_ap[0][f] *
 
   bfp_complex_s32_shl(&output, &output, output.hr);
   bfp_complex_s32_shl(&input, &input, input.hr);

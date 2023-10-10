@@ -42,7 +42,6 @@ TEST_TEAR_DOWN(vect_log) {}
 
 TEST(vect_log, chunk_float_s32_log_CORRECTNESS)
 {
-  unsigned seed = SEED_FROM_FUNC_NAME();
 
   // If it gets these correct it will probably get everything else correct.
   float_s32_t DWORD_ALIGNED B[VPU_INT32_EPV] = {
@@ -69,8 +68,6 @@ TEST(vect_log, chunk_float_s32_log_CORRECTNESS)
     Q24(2.0),
   };
 
-  unsigned max_max_error = 0;
-
   chunk_float_s32_log(A, B);
 
   TEST_ASSERT_INT32_WITHIN(0,     expected[0], A[0]);
@@ -96,9 +93,6 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
-  // printf("\n");
-
-
   float_s32_t DWORD_ALIGNED B[VPU_INT32_EPV];
   q8_24 DWORD_ALIGNED A[VPU_INT32_EPV];
 
@@ -111,9 +105,6 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
 
     unsigned length = 8;
 
-    const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
-    headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
-
     for(unsigned int i = 0; i < length; i++){
       B[i].exp = pseudo_rand_int(&seed, -30, 30);
       B[i].mant = pseudo_rand_uint(&seed, 0, INT32_MAX);
@@ -125,13 +116,13 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
       expected[i] = lround(ldexp(exp_dbl, 24));
     }
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     chunk_float_s32_log(A, B);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = (float) (delta_ticks / 100.0);
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
     int max_error = 0;
     for(unsigned int i = 0; i < length; i++){
@@ -160,8 +151,6 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
 
 TEST(vect_log, chunk_s32_log_correctness)
 {
-  unsigned seed = SEED_FROM_FUNC_NAME();
-
   // If it gets these correct it will probably get everything else correct.
 
   exponent_t b_exp = -28;
@@ -182,8 +171,6 @@ TEST(vect_log, chunk_s32_log_correctness)
     Q24(2.0),             // ln(e^2) = 2.0
     0,0,0,0               // don't care.
   };
-
-  unsigned max_max_error = 0;
 
   chunk_s32_log(A, B, b_exp);
 
@@ -233,13 +220,13 @@ TEST(vect_log, chunk_s32_log)
       else            expected[i] = lround(ldexp(exp_dbl, 24));
     }
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     chunk_s32_log(A, B, b_exp);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = (float) (delta_ticks / 100.0);
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
     int max_error = 0;
     for(unsigned int i = 0; i < length; i++){
@@ -309,33 +296,33 @@ TEST(vect_log, vect_s32_log)
       expected[i] = lround(ldexp(exp_dbl, 24));
     }
 
-    volatile uint32_t t0;
-    volatile uint32_t t1;
+    // volatile uint32_t t0;
+    // volatile uint32_t t1;
     switch(output_base){
       case 1:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_s32_log(A, B, b_exp, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       case 2:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_s32_log2(A, B, b_exp, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       case 10:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_s32_log10(A, B, b_exp, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       default:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_s32_log_base(A, B, b_exp, inv_ln_output_base_q30, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
     }
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = (float) (delta_ticks / 100.0);
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
     int max_error = 0;
     for(unsigned int i = 0; i < length; i++){
@@ -382,9 +369,6 @@ TEST(vect_log, vect_float_s32_log)
     const double inv_ln_output_base  = 1.0 / log(output_base);
     const q2_30 inv_ln_output_base_q30 = Q30( inv_ln_output_base );
 
-    const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
-    headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
-
     for(unsigned int i = 0; i < length; i++){
       B[i].exp = pseudo_rand_int(&seed, -30, 30);
       B[i].mant = pseudo_rand_uint(&seed, 0, INT32_MAX);
@@ -404,33 +388,33 @@ TEST(vect_log, vect_float_s32_log)
       expected[i] = lround(ldexp(exp_dbl, 24));
     }
 
-    volatile uint32_t t0;
-    volatile uint32_t t1;
+    // volatile uint32_t t0;
+    // volatile uint32_t t1;
     switch(output_base){
       case 1:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_float_s32_log(A, B, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       case 2:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_float_s32_log2(A, B, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       case 10:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_float_s32_log10(A, B, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       default:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_float_s32_log_base(A, B, inv_ln_output_base_q30, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
     }
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = (float) (delta_ticks / 100.0);
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
     int max_error = 0;
     for(unsigned int i = 0; i < length; i++){

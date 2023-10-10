@@ -61,13 +61,13 @@ TEST(vect_exp, chunk_q30_exp_small_RANDOM)
       expected[i] = lround(ldexp(exp_dbl, 30));
     }
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     chunk_q30_exp_small(A, B);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = (float) ( delta_ticks / 100.0);
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) ( delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
     // printf("!! B[0] = %f (0x%08X << -30);  ", ldexp(B[0], -30), (unsigned) B[0]);
     // printf("expected: %f (0x%08X << -30);  ", ldexp(expected[0], -30), (unsigned) expected[0]);
@@ -125,13 +125,13 @@ TEST(vect_exp, vect_q30_exp_small_RANDOM)
       expected[i] = lround(ldexp(exp_dbl, 30));
     }
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     vect_q30_exp_small(A, B, length);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = (float) (delta_ticks / 100.0);
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
     // printf("!! B[0] = %f (0x%08X << -30);  ", ldexp(B[0], -30), (unsigned) B[0]);
     // printf("expected: %f (0x%08X << -30);  ", ldexp(expected[0], -30), (unsigned) expected[0]);

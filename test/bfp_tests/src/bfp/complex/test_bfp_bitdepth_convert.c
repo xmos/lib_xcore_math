@@ -33,7 +33,7 @@ TEST_TEAR_DOWN(bfp_complex_depth_convert) {}
 #endif
 
 
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \
@@ -44,8 +44,6 @@ static char msg_buff[200];
 
 TEST(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16)
 {
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
     int16_t A_real[MAX_LEN];
     int16_t A_imag[MAX_LEN];
     complex_s32_t B_data[MAX_LEN];
