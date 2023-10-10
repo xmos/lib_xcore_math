@@ -11,7 +11,7 @@
 // Prints a BFP vector both in its mantissa-exponent form and as a floating point vector. Also
 // prints headroom.
 static void print_vector_s32(
-    const int32_t vect[], 
+    const int32_t vect[],
     const char* name,
     const exponent_t exp,
     const unsigned length,
@@ -20,7 +20,7 @@ static void print_vector_s32(
   // First, the raw mantissas
   printf("%s = [", name);
   for(unsigned int k = 0; k < length; k++)
-    printf("%ld, ", vect[k]);
+    printf("%d, ", vect[k]);
   printf("] * 2**(%d)\t// (line %u)\n", exp, line);
 
   // Next, the float equivalent
@@ -89,7 +89,7 @@ void vect_s32_example()
     parameters to be output by this function. b_shr and c_shr are the shift parameters to be passed
     on to vect_s32_mul() and a_exp is the exponent that should be associated with the product vector
     a[]. The inputs b_exp and c_exp are the exponents associated with input vectors b[] and c[]
-    respectively. 
+    respectively.
 
     Exponents come into play because the prepare functions assume that a block floating-point-like
     behavior is desired. In general, the product of two 32-bit integers will not fit into a 32-bit
@@ -116,7 +116,7 @@ void vect_s32_example()
     headroom_t hr;
   } A, B, C;
 
-  // Note that this struct is similar to the bfp_s32_t struct, except 
+  // Note that this struct is similar to the bfp_s32_t struct, except
   //    1) it contains no length because here we're using a static length of LENGTH
   //    2) instead of a pointer to a mantissa buffer, the buffer is part of the struct.
 
@@ -226,7 +226,7 @@ void vect_s32_example()
     // The remaining steps are identical to the pure block floating-point case above.
     A.hr = vect_s32_mul(A.data, B.data, C.data, LENGTH, b_shr, c_shr);
 
-    PRINT_VECT_S32(A); 
+    PRINT_VECT_S32(A);
     // Note that the printed floating point output values are (nearly) the same as above, indicating
     // we've done this correctly.
     printf("A.hr --> %u\n", A.hr);

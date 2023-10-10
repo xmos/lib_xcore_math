@@ -9,7 +9,7 @@
 
 
 void print_vect_complex_s16(
-    complex_s16_t * B, 
+    complex_s16_t * B,
     const exponent_t B_exp,
     unsigned length,
     conv_error_e* error)
@@ -24,7 +24,7 @@ void print_vect_complex_s16(
 }
 
 void print_vect_complex_s16_fft(
-    complex_s16_t * B, 
+    complex_s16_t * B,
     const exponent_t B_exp,
     unsigned length,
     conv_error_e* error)
@@ -39,7 +39,7 @@ void print_vect_complex_s16_fft(
 }
 
 void print_vect_complex_s32(
-    complex_s32_t * B, 
+    complex_s32_t * B,
     const exponent_t B_exp,
     unsigned length,
     conv_error_e* error)
@@ -54,7 +54,7 @@ void print_vect_complex_s32(
 }
 
 void print_vect_complex_s32_fft(
-    complex_s32_t * B, 
+    complex_s32_t * B,
     const exponent_t B_exp,
     unsigned length,
     conv_error_e* error)
@@ -69,30 +69,30 @@ void print_vect_complex_s32_fft(
 }
 
 void print_vect_complex_s32_raw(
-    complex_s32_t * B, 
+    complex_s32_t * B,
     unsigned length)
 {
     printf("np.asarray([");
     for(unsigned i = 0; i < length; i++){
-        printf("%ld + %ldj, ", B[i].re, B[i].im);
+        printf("%d + %dj, ", B[i].re, B[i].im);
     }
     printf("])\n");
 }
 
 void print_vect_complex_s32_fft_raw(
-    complex_s32_t * B, 
+    complex_s32_t * B,
     unsigned length)
 {
-    printf("np.asarray([%ld, ", B[0].re);
+    printf("np.asarray([%d, ", B[0].re);
     for(unsigned i = 1; i < length; i++){
-        printf("%ld + %ldj, ", B[i].re, B[i].im);
+        printf("%d + %dj, ", B[i].re, B[i].im);
     }
-    printf("%ld])\n", B[0].im);
+    printf("%d])\n", B[0].im);
 }
 
 void print_vect_complex_double(
-    complex_double_t * B, 
-    unsigned length, 
+    complex_double_t * B,
+    unsigned length,
     conv_error_e* error)
 {
     printf("np.asarray([");
@@ -103,8 +103,8 @@ void print_vect_complex_double(
 }
 
 void print_vect_complex_double_fft(
-    complex_double_t * B, 
-    unsigned length, 
+    complex_double_t * B,
+    unsigned length,
     conv_error_e* error)
 {
     printf("np.asarray([%.*f, ", TESTING_FLOAT_NUM_DIGITS, B[0].re);
@@ -114,10 +114,10 @@ void print_vect_complex_double_fft(
     printf("%.*f])\n", TESTING_FLOAT_NUM_DIGITS, B[0].im);
 }
 
-void print_vect_s8 ( 
-    int8_t * B, 
+void print_vect_s8 (
+    int8_t * B,
     const exponent_t B_exp,
-    unsigned length, 
+    unsigned length,
     conv_error_e* error)
 {
     printf("np.asarray([");
@@ -126,10 +126,10 @@ void print_vect_s8 (
     printf("])\n");
 }
 
-void print_vect_s16 ( 
-    int16_t * B, 
+void print_vect_s16 (
+    int16_t * B,
     const exponent_t B_exp,
-    unsigned length, 
+    unsigned length,
     conv_error_e* error)
 {
     printf("np.asarray([");
@@ -138,10 +138,10 @@ void print_vect_s16 (
     printf("])\n");
 }
 
-void print_vect_s32 ( 
-    int32_t * B, 
+void print_vect_s32 (
+    int32_t * B,
     const exponent_t B_exp,
-    unsigned length, 
+    unsigned length,
     conv_error_e* error)
 {
     printf("np.asarray([");
@@ -150,10 +150,10 @@ void print_vect_s32 (
     printf("])\n");
 }
 
-void print_vect_s64 ( 
-    int64_t * B, 
+void print_vect_s64 (
+    int64_t * B,
     const exponent_t B_exp,
-    unsigned length, 
+    unsigned length,
     conv_error_e* error)
 {
     printf("np.asarray([");
@@ -163,9 +163,9 @@ void print_vect_s64 (
 }
 
 void print_vect_u8(
-    uint8_t * B, 
+    uint8_t * B,
     const exponent_t B_exp,
-    unsigned length, 
+    unsigned length,
     conv_error_e* error)
 {
     printf("np.asarray([");
@@ -175,9 +175,9 @@ void print_vect_u8(
 }
 
 void print_vect_u16(
-    uint16_t * B, 
+    uint16_t * B,
     const exponent_t B_exp,
-    unsigned length, 
+    unsigned length,
     conv_error_e* error)
 {
     printf("np.asarray([");
@@ -187,9 +187,9 @@ void print_vect_u16(
 }
 
 void print_vect_u32(
-    uint32_t * B, 
+    uint32_t * B,
     const exponent_t B_exp,
-    unsigned length, 
+    unsigned length,
     conv_error_e* error)
 {
     printf("np.asarray([");
@@ -199,9 +199,9 @@ void print_vect_u32(
 }
 
 void print_vect_u64(
-    uint64_t * B, 
+    uint64_t * B,
     const exponent_t B_exp,
-    unsigned length, 
+    unsigned length,
     conv_error_e* error)
 {
     printf("np.asarray([");
@@ -211,8 +211,8 @@ void print_vect_u64(
 }
 
 void print_vect_double (
-    double * B, 
-    unsigned length, 
+    double * B,
+    unsigned length,
     conv_error_e* error)
 
 {
