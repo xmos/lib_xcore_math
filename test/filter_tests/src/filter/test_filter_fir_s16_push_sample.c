@@ -24,9 +24,9 @@ TEST_GROUP(filter_fir_s16_push_sample);
 TEST_SETUP(filter_fir_s16_push_sample) { fflush(stdout); }
 TEST_TEAR_DOWN(filter_fir_s16_push_sample) {}
 
-
+#if !SMOKE_TEST
 static char msg_buff[200];
-
+#endif
 
 void filter_fir_s16_push_sample_down(
     int16_t* buffer,
