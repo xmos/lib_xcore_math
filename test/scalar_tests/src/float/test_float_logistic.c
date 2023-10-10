@@ -45,9 +45,9 @@ TEST(float_logistic, q24_logistic)
     max_error = (error > max_error)? error : max_error;
     max_time = (timing > max_time)? timing : max_time;
     if(error > 100){
-      printf("x = %f  (%ld << -24)\n", xf, x);
-      printf("exp = %f  (%ld << -24)\n", expected_f, expected_q24);
-      printf("y = %f  (%ld << -24)\n", ldexp(y, -24), y);
+      printf("x = %f  (%d << -24)\n", xf, (int) x);
+      printf("exp = %f  (%d << -24)\n", expected_f, (int) expected_q24);
+      printf("y = %f  (%d << -24)\n", ldexp(y, -24), (int) y);
       printf("error = %d\n", error);
     }
     TEST_ASSERT_INT32_WITHIN(100, expected_q24, y);
@@ -73,9 +73,9 @@ TEST(float_logistic, q24_logistic_fast)
     max_error = (error > max_error)? error : max_error;
     max_time = (timing > max_time)? timing : max_time;
     if(error > 112000){
-      printf("x = %f  (%ld << -24)\n", xf, x);
-      printf("exp = %f  (%ld << -24)\n", expected_f, expected_q24);
-      printf("y = %f  (%ld << -24)\n", ldexp(y, -24), y);
+      printf("x = %f  (%d << -24)\n", xf, (int) x);
+      printf("exp = %f  (%d << -24)\n", expected_f, (int) expected_q24);
+      printf("y = %f  (%d << -24)\n", ldexp(y, -24), (int) y);
       printf("error = %d\n", error);
     }
     TEST_ASSERT_INT32_WITHIN(112000, expected_q24, y);

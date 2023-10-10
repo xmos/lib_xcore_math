@@ -213,7 +213,7 @@ TEST(vect_complex_mag, vect_complex_s16_mag_basic)
 
                 TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, casse->expected, A[i],
                     "(test vector %d @ line %u) (length: %u) (index %d): mag( (%d + i*%d) >> %d )   (delta = %d)",
-                        v, casse->line, len, i, B.real[i], B.imag[i], casse->b_shr, A[i] - casse->expected );
+                        v, casse->line, len, i, (int) B.real[i], (int) B.imag[i], casse->b_shr, (int) (A[i] - casse->expected) );
 
                 max_abs_delta = MAX(max_abs_delta, abs_delta);
             }
@@ -284,7 +284,7 @@ TEST(vect_complex_mag, vect_complex_s16_mag_random)
 
             TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, expected, A[i],
                 "(rep %d; seed: 0x%08X) A[%i]: mag( (%d + i*%d) >> %d ) (delta = %d) (B_hr: %d)",
-                       v, rep_seed, i, B.real[i], B.imag[i], b_shr, A[i] - expected, B_hr );
+                       v, rep_seed, i, (int) B.real[i], (int) B.imag[i], b_shr, (int) (A[i] - expected), B_hr );
 
             max_abs_delta = MAX(max_abs_delta, abs_delta);
         }
@@ -373,8 +373,8 @@ TEST(vect_complex_mag, vect_complex_s32_mag_basic)
                 unsigned abs_delta = abs(A[i] - casse->expected);
 
                 TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, casse->expected, A[i],
-                    "(test vector %d @ line %u) (length: %u) (index %d): mag(( %ld + i*%ld) >> %d)   (delta = %ld)",
-                        v, casse->line, len, i, B[i].re, B[i].im, casse->b_shr, A[i] - casse->expected );
+                    "(test vector %d @ line %u) (length: %u) (index %d): mag(( %d + i*%d) >> %d)   (delta = %d)",
+                        v, casse->line, len, i, (int) B[i].re, (int) B[i].im, casse->b_shr, (int) (A[i] - casse->expected) );
 
                 max_abs_delta = MAX(max_abs_delta, abs_delta);
             }
@@ -442,8 +442,8 @@ TEST(vect_complex_mag, vect_complex_s32_mag_random)
             unsigned abs_delta = abs(A[i] - expected);
 
             TEST_ASSERT_INT32_WITHIN_MSG(THRESHOLD, expected, A[i],
-                "(rep %d; seed: 0x%08X) A[%i]: mag(( %ld + i*%ld) >> %d) (delta = %ld) (B_hr: %d)",
-                       v, rep_seed, i, B[i].re, B[i].im, b_shr, A[i] - expected, B_hr );
+                "(rep %d; seed: 0x%08X) A[%i]: mag(( %d + i*%d) >> %d) (delta = %d) (B_hr: %d)",
+                       v, rep_seed, i, (int) B[i].re, (int) B[i].im, b_shr, (int) (A[i] - expected), B_hr );
 
             max_abs_delta = MAX(max_abs_delta, abs_delta);
         }
