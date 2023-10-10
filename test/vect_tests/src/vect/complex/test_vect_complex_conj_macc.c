@@ -106,11 +106,11 @@ TEST(vect_complex_conj_macc, vect_complex_s16_conj_macc)
 
 #define THRESHOLD  2
           if(expected.re - A.re[i] > THRESHOLD || A.re[i] - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A.re[%d] = %d\n", v, exp.a, i, expected.re, expected_fp.re, i, A.re[i]);
+            printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A.re[%d] = %d\n", v, exp.a, i, (int) expected.re, expected_fp.re, i, A.re[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.re, A.re[i], "Error not within threshold. (real)");
 
           if(expected.im - A.im[i] > THRESHOLD || A.im[i] - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A.im[%d] = %d\n", v, exp.a, i, expected.im, expected_fp.im, i, A.im[i]);
+            printf("[%d]  exp.a = %d; expected[%d].im = %d  ( %f );   A.im[%d] = %d\n", v, exp.a, i, (int) expected.im, expected_fp.im, i, A.im[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.im, A.im[i], "Error not within threshold. (imag)");
 #undef THRESHOLD
         }
