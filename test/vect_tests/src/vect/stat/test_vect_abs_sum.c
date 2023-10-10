@@ -184,7 +184,7 @@ TEST(vect_abs_sum, vect_s32_abs_sum_basic)
             int64_t exp = t * len;
 
             if(exp != result){
-                printf("Expected %lld was %lld\n", exp, result);
+                printf("Expected %lld was %lld\n", (long long) exp, (long long) result);
             }
 
             TEST_ASSERT(exp == result);
