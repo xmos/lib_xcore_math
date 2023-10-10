@@ -161,8 +161,8 @@ TEST(vect_complex_mul, vect_complex_s32_mul_prepare)
         right_shift_t b_shr, c_shr;
 
         // a_exp and a_shr should be calculated for exactly this case
-        complex_s32_t WORD_ALIGNED B = {(-(int32_t)0x80000000) >> b_hr, (-(int32_t)0x80000000) >> b_hr};
-        complex_s32_t WORD_ALIGNED C = {(-(int32_t)0x80000000) >> c_hr, (-(int32_t)0x80000000) >> c_hr};
+        complex_s32_t WORD_ALIGNED B = {((int) (0-0x80000000)) >> b_hr, ((int) (0-0x80000000)) >> b_hr};
+        complex_s32_t WORD_ALIGNED C = {((int) (0-0x80000000)) >> c_hr, ((int) (0-0x80000000)) >> c_hr};
         complex_s32_t WORD_ALIGNED A;
 
         vect_complex_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);

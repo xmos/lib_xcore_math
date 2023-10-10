@@ -227,7 +227,7 @@ TEST(vect_complex_sum, vect_complex_s32_sum_basic)
         {   {      -0x00000001,     0x000000000 },     0,  __LINE__},
         {   {       0x00020000,     0x000000000 },     0,  __LINE__},
         {   {       0x7FFFFFFF,     0x000000000 },     0,  __LINE__},
-        {   { -(int)0x80000000,     0x000000000 },     0,  __LINE__},
+        {   { (int) (0-0x80000000),     0x000000000 },     0,  __LINE__},
     };
 
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);

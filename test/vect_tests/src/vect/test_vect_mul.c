@@ -143,8 +143,8 @@ TEST(vect_mul, vect_s32_mul_prepare)
         vect_s32_mul_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
         // a_exp and a_shr should be calculated for exactly this case
-        int32_t WORD_ALIGNED B = -(int)0x80000000;
-        int32_t WORD_ALIGNED C = -(int)0x80000000;
+        int32_t WORD_ALIGNED B = (int) (0-0x80000000);
+        int32_t WORD_ALIGNED C = (int) (0-0x80000000);
         B = B >> b_hr;
         C = C >> c_hr;
         int32_t WORD_ALIGNED A;
@@ -330,7 +330,7 @@ TEST(vect_mul, vect_s32_mul_basic)
         {       {       0x00000400,     0x00000400 },     {  0,  0 },      0x00000000,       __LINE__},
         {       {       0x7f000000,     0x7f000000 },     {  0,  0 },      0x7fffffff,       __LINE__},
         {       {       0x7f000000,    -0x7f000000 },     {  0,  0 },     -0x7fffffff,       __LINE__},
-        {       { -(int)0x80000000,     0x40000000 },     {  0,  0 },     -0x7fffffff,       __LINE__},
+        {       { (int) (0-0x80000000),     0x40000000 },     {  0,  0 },     -0x7fffffff,       __LINE__},
         {       {       0x40000000,     0x40000000 },     {  1,  0 },      0x20000000,       __LINE__},
         {       {       0x40000000,     0x40000000 },     {  0,  1 },      0x20000000,       __LINE__},
         {       {       0x40000000,     0x40000000 },     {  1,  1 },      0x10000000,       __LINE__},

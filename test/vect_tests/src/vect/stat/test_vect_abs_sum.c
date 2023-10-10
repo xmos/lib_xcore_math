@@ -153,7 +153,7 @@ TEST(vect_abs_sum, vect_s32_abs_sum_basic)
         {      -0x00000001,    __LINE__},
         {       0x00020000,    __LINE__},
         {       0x7FFFFFFF,    __LINE__},
-        { -(int)0x80000000,    __LINE__},
+        { (int) (0-0x80000000),    __LINE__},
     };
 
     const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);

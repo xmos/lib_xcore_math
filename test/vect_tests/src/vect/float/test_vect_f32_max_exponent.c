@@ -51,7 +51,7 @@ TEST(vect_f32_max_exponent, vect_f32_max_exponent)
 
     // printf("seed = 0x%08X\n", old_seed);
 
-    exponent_t max_exponent = -(int)0x80000000;
+    exponent_t max_exponent = (int) (0-0x80000000);
 
     // Create a bunch of random floats.
     for(unsigned int i = 0; i < len; i++){

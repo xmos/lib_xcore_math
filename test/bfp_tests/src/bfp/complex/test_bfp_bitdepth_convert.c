@@ -121,7 +121,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16_2)
         // First 2 elements aren't random
         B.data[0].re =  0x7FFF0000 >> B.hr;
         B.data[0].im =  0x40000000 >> B.hr;
-        B.data[1].re = (-(int)0x80000000) >> B.hr;
+        B.data[1].re = ((int) (0-0x80000000)) >> B.hr;
         B.data[1].im = -0x40000000 >> B.hr;
 
         expected.real[0] =  (B.data[0].re << B.hr) >> 16; // lower bits of expectation depends on headroom
