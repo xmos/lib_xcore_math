@@ -74,7 +74,7 @@ void print_vect_complex_s32_raw(
 {
     printf("np.asarray([");
     for(unsigned i = 0; i < length; i++){
-        printf("%d + %dj, ", B[i].re, B[i].im);
+        printf("%d + %dj, ", (int)B[i].re, (int)B[i].im);
     }
     printf("])\n");
 }
@@ -83,11 +83,11 @@ void print_vect_complex_s32_fft_raw(
     complex_s32_t * B,
     unsigned length)
 {
-    printf("np.asarray([%d, ", B[0].re);
+    printf("np.asarray([%d, ", (int)B[0].re);
     for(unsigned i = 1; i < length; i++){
-        printf("%d + %dj, ", B[i].re, B[i].im);
+        printf("%d + %dj, ", (int)B[i].re, (int)B[i].im);
     }
-    printf("%d])\n", B[0].im);
+    printf("%d])\n", (int)B[0].im);
 }
 
 void print_vect_complex_double(

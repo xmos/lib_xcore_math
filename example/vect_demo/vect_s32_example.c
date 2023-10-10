@@ -20,7 +20,7 @@ static void print_vector_s32(
   // First, the raw mantissas
   printf("%s = [", name);
   for(unsigned int k = 0; k < length; k++)
-    printf("%d, ", vect[k]);
+    printf("%d, ", (int) vect[k]);
   printf("] * 2**(%d)\t// (line %u)\n", exp, line);
 
   // Next, the float equivalent
