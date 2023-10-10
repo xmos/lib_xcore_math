@@ -54,7 +54,9 @@ TEST(filter_fir_s16_push_sample, filter_fir_s16_push_sample_down)
     int16_t buff_exp[MAX_LEN];
 
     for(unsigned int v = 0; v < REPS; v++){
+#if !SMOKE_TEST
         unsigned old_seed = seed;
+#endif
         unsigned length = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
 
 #if !SMOKE_TEST
