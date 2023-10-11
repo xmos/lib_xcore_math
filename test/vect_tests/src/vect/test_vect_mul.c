@@ -437,7 +437,7 @@ TEST(vect_mul, vect_s32_mul_random)
         hr = vect_s32_mul(A, B, C, len, b_shr, c_shr);
 
         XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
-            debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
+            debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
         
         // A <-- B
@@ -446,7 +446,7 @@ TEST(vect_mul, vect_s32_mul_random)
         hr = vect_s32_mul(A, A, C, len, b_shr, c_shr);
 
         XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
-            debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
+            debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
         
         // A <-- C
@@ -455,7 +455,7 @@ TEST(vect_mul, vect_s32_mul_random)
         hr = vect_s32_mul(A, B, A, len, b_shr, c_shr);
 
         XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
-            debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
+            debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
         
     }

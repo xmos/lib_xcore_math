@@ -138,7 +138,7 @@ TEST(bfp_complex_use_exponent, bfp_complex_s32_use_exponent)
       "end_exp: %d\n"
       "Expected: %ld * 2^(%d)  <--  (%ld >> %d) * 2^(%d + %d)  // was: %ld\n",
       init_exp, end_exp,
-      ((int32_t*)expected)[i], end_exp, ((int32_t*)dataA_copy)[i], delta_p, init_exp, delta_p, ((int32_t*)dataA)[i]);
+      (long int)((int32_t*)expected)[i], end_exp, (long int)((int32_t*)dataA_copy)[i], delta_p, init_exp, delta_p, (long int)((int32_t*)dataA)[i]);
       
   }
 }

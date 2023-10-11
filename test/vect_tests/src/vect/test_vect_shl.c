@@ -282,7 +282,7 @@ TEST(vect_shl, vect_s32_shl_random)
                 }
                 
                 if(((int32_t)exp) != A[i]){
-                    sprintf(msg_buff, "rep(%d)[%d]: %ld <-- (%ld << %d)     (A[i]=0x%04X; B[i]=0x%04X)\n",v, i, A[i], B[i], shl,  (unsigned)A[i],  (unsigned)B[i]);
+                    sprintf(msg_buff, "rep(%d)[%d]: %ld <-- (%ld << %d)     (A[i]=0x%04X; B[i]=0x%04X)\n",v, i, (long int) A[i],  (long int) B[i], shl,  (unsigned) A[i],  (unsigned) B[i]);
                 }
                 TEST_ASSERT_EQUAL_MESSAGE((int32_t)exp, A[i], msg_buff);
             }

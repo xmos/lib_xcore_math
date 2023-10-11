@@ -87,10 +87,10 @@ TEST(vpu_scalar_ops_s32, vladd32)
         int32_t res = vladd32(x, y);
 
         if(exp != res){
-            printf("x = %ld\n", x);
-            printf("y = %ld\n", y);
-            printf("exp = %lld\n", exp);
-            printf("res = %ld\n", res);
+            printf("x = %ld\n", (long int) x);
+            printf("y = %ld\n", (long int) y);
+            printf("exp = %lld\n", (long long int) exp);
+            printf("res = %ld\n", (long int) res);
         }
 
         TEST_ASSERT_EQUAL_INT32((int32_t)exp, res);
@@ -361,11 +361,11 @@ TEST(vpu_scalar_ops_s32, vlmacc32)
         vpu_int32_acc_t res = vlmacc32(acc, x, y);
 
         if(res != exp){
-            printf("acc = %lld     (0x%010llX)\n", acc,   (uint64_t) acc);
-            printf("x = %ld     (0x%08lX)\n", x,   (uint32_t) x);
-            printf("y = %ld     (0x%08lX)\n", y,   (uint32_t) y);
-            printf("exp = %lld     (0x%010llX)\n", exp,   (uint64_t) exp);
-            printf("res = %lld     (0x%010llX)\n", res,   (uint64_t) res);
+            printf("acc = %lld     (0x%010llX)\n", (long long int) acc,   (long long unsigned int) acc);
+            printf("x = %ld     (0x%08lX)\n",  (long int) x,   (long unsigned int) x);
+            printf("y = %ld     (0x%08lX)\n",  (long int) y,   (long unsigned int) y);
+            printf("exp = %lld     (0x%010llX)\n",  (long long int) exp,   (long long unsigned int) exp);
+            printf("res = %lld     (0x%010llX)\n",  (long long int) res,   (long long unsigned int) res);
         }
 
         TEST_ASSERT_EQUAL(exp, res);

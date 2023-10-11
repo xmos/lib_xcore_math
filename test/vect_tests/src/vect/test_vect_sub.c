@@ -381,7 +381,7 @@ TEST(vect_sub, vect_s32_sub_random)
 
         for(unsigned int i = 0; i < len; i++){
             int32_t expected = sub_s32(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i], (unsigned)B[i],  (unsigned)C[i]);
+            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, (long int) A[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (unsigned)A[i], (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
@@ -391,7 +391,7 @@ TEST(vect_sub, vect_s32_sub_random)
 
         for(unsigned int i = 0; i < len; i++){
             int32_t expected = sub_s32(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
+            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, (long int) A[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
@@ -401,7 +401,7 @@ TEST(vect_sub, vect_s32_sub_random)
 
         for(unsigned int i = 0; i < len; i++){
             int32_t expected = sub_s32(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
+            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, (long int) A[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);

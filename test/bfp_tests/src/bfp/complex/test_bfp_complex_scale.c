@@ -118,8 +118,8 @@ TEST(bfp_complex_scale, bfp_complex_s32_scale_prepare)
         exponent_t c_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t c_hr  = pseudo_rand_uint(&seed, 0, 31);
 
-        complex_s32_t WORD_ALIGNED B = {((int32_t)-(int32_t)0x80000000) >> b_hr, ((int32_t)-(int32_t)0x80000000) >> b_hr};
-        complex_s32_t WORD_ALIGNED C = {((int32_t)-(int32_t)0x80000000) >> c_hr, ((int32_t)-(int32_t)0x80000000) >> c_hr};
+        complex_s32_t WORD_ALIGNED B = {((int) (0-0x80000000)) >> b_hr, ((int) (0-0x80000000)) >> b_hr};
+        complex_s32_t WORD_ALIGNED C = {((int) (0-0x80000000)) >> c_hr, ((int) (0-0x80000000)) >> c_hr};
         complex_s32_t WORD_ALIGNED A;
 
         exponent_t a_exp;

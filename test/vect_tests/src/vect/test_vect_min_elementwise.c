@@ -146,7 +146,7 @@ TEST(vect_min_elementwise, vect_s32_min_elementwise)
         // Not in-place
         hr = vect_s32_min_elementwise(A, B, C, len, b_shr, c_shr);
         XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
-            debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
+            debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
         
         // In-place arg-2
@@ -154,7 +154,7 @@ TEST(vect_min_elementwise, vect_s32_min_elementwise)
         hr = vect_s32_min_elementwise(A, A, C, len, b_shr, c_shr);
 
         XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
-            debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
+            debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
         
         // In-place arg-3 NOT SUPPORTED

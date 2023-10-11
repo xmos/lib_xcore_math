@@ -67,10 +67,10 @@ TEST(vect_zip, vect_s32_zip)
         for(unsigned int k = 0; k < len; k++){
 
           if(A[k].re != expected[k].re){
-            printf("\nB[%d] = %ld;  b_shr = %d\n", k, B[k], b_shr);
+            printf("\nB[%d] = %ld;  b_shr = %d\n", k,  (long int) B[k], b_shr);
           }
           if(A[k].im != expected[k].im){
-            printf("\nC[%d] = %ld;  c_shr = %d\n", k, C[k], c_shr);
+            printf("\nC[%d] = %ld;  c_shr = %d\n", k,  (long int) C[k], c_shr);
           }
 
           TEST_ASSERT_EQUAL_INT32_MESSAGE(expected[k].re, A[k].re, "");
@@ -116,10 +116,10 @@ TEST(vect_zip, vect_s32_unzip)
         for(unsigned int k = 0; k < len; k++){
 
           if(A[k] != expectedA[k])
-            printf("\nC[%d].re = %ld\n", k, C[k].re);
+            printf("\nC[%d].re = %ld\n", k,  (long int) C[k].re);
           
           if(B[k] != expectedB[k])
-            printf("\nC[%d].im = %ld\n", k, C[k].im);
+            printf("\nC[%d].im = %ld\n", k, (long int) C[k].im);
           
 
           TEST_ASSERT_EQUAL_INT32_MESSAGE(expectedA[k], A[k], "");

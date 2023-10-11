@@ -106,11 +106,11 @@ TEST(vect_complex_macc, vect_complex_s16_macc)
 
 #define THRESHOLD  3
           if(expected.re - A.re[i] > THRESHOLD || A.re[i] - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A.re[%d] = %d\n", v, exp.a, i, (int) expected.re, expected_fp.re, i, (int) A.re[i]);
+            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A.re[%d] = %ld\n", v, exp.a, i, (long int) expected.re, expected_fp.re, i, (long int) A.re[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.re, A.re[i], "Error not within threshold. (real)");
 
           if(expected.im - A.im[i] > THRESHOLD || A.im[i] - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %d  ( %f );   A.im[%d] = %d\n", v, exp.a, i, (int) expected.im, expected_fp.im, i, (int) A.im[i]);
+            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A.im[%d] = %ld\n", v, exp.a, i, (long int) expected.im, expected_fp.im, i, (long int) A.im[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.im, A.im[i], "Error not within threshold. (imag)");
 #undef THRESHOLD
         }
@@ -186,11 +186,11 @@ TEST(vect_complex_macc, vect_complex_s16_nmacc)
 
 #define THRESHOLD  3
           if(expected.re - A.re[i] > THRESHOLD || A.re[i] - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A.re[%d] = %d\n", v, exp.a, i, (int) expected.re, expected_fp.re, i, (int) A.re[i]);
+            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A.re[%d] = %ld\n", v, exp.a, i, (long int) expected.re, expected_fp.re, i, (long int) A.re[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.re, A.re[i], "Error not within threshold. (real)");
 
           if(expected.im - A.im[i] > THRESHOLD || A.im[i] - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %d  ( %f );   A.im[%d] = %d\n", v, exp.a, i, (int) expected.im, expected_fp.im, i, (int) A.im[i]);
+            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A.im[%d] = %ld\n", v, exp.a, i, (long int) expected.im, expected_fp.im, i, (long int) A.im[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.im, A.im[i], "Error not within threshold. (imag)");
 #undef THRESHOLD
         }
@@ -263,12 +263,12 @@ TEST(vect_complex_macc, vect_complex_s32_macc)
 
 #define THRESHOLD  3
           if(expected.re - A[i].re > THRESHOLD || A[i].re - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A[%d].re = %d\n", v, exp.a, i, (int) expected.re, expected_fp.re, i, (int) A[i].re);
+            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A[%d].re = %ld\n", v, exp.a, i, (long int) expected.re, expected_fp.re, i, (long int) A[i].re);
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.re, A[i].re, "Error not within threshold (real).");
 
           if(expected.im - A[i].im > THRESHOLD || A[i].im - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %d  ( %f );   A[%d].im = %d\n", v, exp.a, i, (int) expected.im, expected_fp.im, i, (int) A[i].im);
+            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A[%d].im = %ld\n", v, exp.a, i, (long int) expected.im, expected_fp.im, i, (long int) A[i].im);
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.im, A[i].im, "Error not within threshold (imag).");
 #undef THRESHOLD
@@ -342,12 +342,12 @@ TEST(vect_complex_macc, vect_complex_s32_nmacc)
 
 #define THRESHOLD  3
           if(expected.re - A[i].re > THRESHOLD || A[i].re - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A[%d].re = %d\n", v, exp.a, i, (int) expected.re, expected_fp.re, i, (int) A[i].re);
+            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A[%d].re = %ld\n", v, exp.a, i, (long int) expected.re, expected_fp.re, i, (long int) A[i].re);
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.re, A[i].re, "Error not within threshold (real).");
 
           if(expected.im - A[i].im > THRESHOLD || A[i].im - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %d  ( %f );   A[%d].im = %d\n", v, exp.a, i, (int) expected.im, expected_fp.im, i, (int) A[i].im);
+            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A[%d].im = %ld\n", v, exp.a, i, (long int) expected.im, expected_fp.im, i, (long int) A[i].im);
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.im, A[i].im, "Error not within threshold (imag).");
 #undef THRESHOLD

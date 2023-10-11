@@ -107,7 +107,7 @@ void filter_32bit_fir()
   
   printf("b = [");
   for(int k = 0; k < TAP_COUNT; k++){
-    printf("% 11d, ", (int) filter.coef[k]);
+    printf("% 11ld, ", (long int) filter.coef[k]);
     if(k % 8 == 7) printf("\n     ");
   }
   printf("]\n");
@@ -134,7 +134,7 @@ void filter_32bit_fir()
     int32_t input_sample = rand() << 1;
     filter_fir_s32_add_sample(&filter, input_sample);
 
-    printf("input[% 4d] = % 12d;  output[% 4d] =      (N/A)\n", k, (int) input_sample, k);
+    printf("input[% 4d] = % 12ld;  output[% 4d] =      (N/A)\n", k, (long int) input_sample, k);
   }
   printf("\n");
 
@@ -146,7 +146,7 @@ void filter_32bit_fir()
     int32_t input_sample = rand() << 1;
     int32_t output_sample = filter_fir_s32(&filter, input_sample);
 
-    printf("input[% 4d] = % 12d;  output[% 4d] = % 12d\n", k, (int) input_sample, k, (int) output_sample);
+    printf("input[% 4d] = % 12ld;  output[% 4d] = % 12ld\n", k, (long int) input_sample, k, (long int) output_sample);
   }
 
 }

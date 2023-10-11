@@ -214,7 +214,7 @@ TEST(vect_macc, vect_s32_macc)
 
 #define THRESHOLD  3
           if(expected - A[i] > THRESHOLD || A[i] - expected > THRESHOLD){
-            printf("[%d]  exp.a = %d; expected[%d] = %ld  ( %f );   A[%d] = %ld\n", v, exp.a, i, expected, expected_fp, i, A[i]);
+            printf("[%d]  exp.a = %d; expected[%d] = %ld  ( %f );   A[%d] = %ld\n", v, exp.a, i, (long int) expected, expected_fp, i, (long int) A[i]);
           }
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected, A[i], "Error not within threshold.");
 #undef THRESHOLD
@@ -277,7 +277,7 @@ TEST(vect_macc, vect_s32_nmacc)
 
 #define THRESHOLD  3
           if(expected - A[i] > THRESHOLD || A[i] - expected > THRESHOLD){
-            printf("[%d]  exp.a = %d; expected[%d] = %ld  ( %f );   A[%d] = %ld\n", v, exp.a, i, expected, expected_fp, i, A[i]);
+            printf("[%d]  exp.a = %d; expected[%d] = %ld  ( %f );   A[%d] = %ld\n", v, exp.a, i, (long int) expected, expected_fp, i, (long int) A[i]);
           }
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected, A[i], "Error not within threshold.");
 #undef THRESHOLD

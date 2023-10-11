@@ -116,7 +116,7 @@ TEST(bfp_scale, bfp_s32_scale)
 
         XTEST_ASSERT_VECT_S32_WITHIN(1, expA, A.data, A.length,
             "Expected: %ld  <-- %ld * 2^(%d)  * %ld * 2^(%d) \nActual: %ld * 2^(%d)\n",
-            expA[i], B.data[i], B.exp, alpha.mant, alpha.exp, A.data[i], A.exp);
+            (long int) expA[i], (long int) B.data[i], B.exp, (long int) alpha.mant, alpha.exp, (long int) A.data[i], A.exp);
     }
 }
 

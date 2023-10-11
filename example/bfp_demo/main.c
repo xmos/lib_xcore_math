@@ -47,7 +47,7 @@ static void print_vector(
   // First, the raw mantissas
   printf("%s = [", name);
   for(unsigned int k = 0; k < vect->length; k++)
-    printf("%d, ", (int)vect->data[k]);
+    printf("%ld, ", (long int)vect->data[k]);
   printf("] * 2**(%d)\n", vect->exp);
 
   // Next, the float equivalent

@@ -266,12 +266,12 @@ TEST(vect_inverse, vect_s32_inverse)
                 printf("b_exp = %d\n", b_exp);
                 printf("scale = %u\n", scale);
                 for(unsigned int i = 0; i < length; i++)
-                    printf("  b[%d] = %ld    (0x%08X)\n", i, B[i], (unsigned) B[i] );
+                    printf("  b[%d] = %ld    (0x%08X)\n", i, (unsigned long int) B[i], (unsigned) B[i] );
 
 
                 printf("a_exp = %d\n", a_exp);
                 for(unsigned int i = 0; i < length; i++)
-                    printf("  a[%d] = %ld    (0x%08X)\n", i, A[i], (unsigned) A[i] );
+                    printf("  a[%d] = %ld    (0x%08X)\n", i, (unsigned long int) A[i], (unsigned) A[i] );
 
             }
 
