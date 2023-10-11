@@ -93,7 +93,7 @@ TEST(bfp_use_exponent, bfp_s32_use_exponent)
   bfp_s32_t A;
   
 
-  for(int r = 0; r < REPS; r++){
+  for(int r = 0; r < REPS; r++){p
     const unsigned old_seed = seed;
     
     const unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);

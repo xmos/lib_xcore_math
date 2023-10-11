@@ -296,16 +296,16 @@ TEST(vpu_scalar_ops_s32, vlmul32)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    TEST_ASSERT_EQUAL_INT32(             0, vlmul32(                  0,            0));
-    TEST_ASSERT_EQUAL_INT32(             1, vlmul32(                  1,   0x40000000));
-    TEST_ASSERT_EQUAL_INT32(            -1, vlmul32(                  1,  -0x40000000));
-    TEST_ASSERT_EQUAL_INT32(           123, vlmul32(                123,   0x40000000));
-    TEST_ASSERT_EQUAL_INT32(          -123, vlmul32(                123,  -0x40000000));
-    TEST_ASSERT_EQUAL_INT32(        -12322, vlmul32(              24644,  -0x20000000));
-    TEST_ASSERT_EQUAL_INT32(         12322, vlmul32(              24644,   0x20000000));
-    TEST_ASSERT_EQUAL_INT32(         12323, vlmul32(              24645,   0x20000000));
-    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MIN, vlmul32(   (int) (0-0x80000000),   0x40000000));
-    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MAX, vlmul32(        -0x7FFFFFFF,  -0x7FFFFFFF));
+    TEST_ASSERT_EQUAL_INT32(             0, vlmul32(                       0,            0));
+    TEST_ASSERT_EQUAL_INT32(             1, vlmul32(                       1,   0x40000000));
+    TEST_ASSERT_EQUAL_INT32(            -1, vlmul32(                       1,  -0x40000000));
+    TEST_ASSERT_EQUAL_INT32(           123, vlmul32(                     123,   0x40000000));
+    TEST_ASSERT_EQUAL_INT32(          -123, vlmul32(                     123,  -0x40000000));
+    TEST_ASSERT_EQUAL_INT32(        -12322, vlmul32(                   24644,  -0x20000000));
+    TEST_ASSERT_EQUAL_INT32(         12322, vlmul32(                   24644,   0x20000000));
+    TEST_ASSERT_EQUAL_INT32(         12323, vlmul32(                   24645,   0x20000000));
+    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MIN, vlmul32(    (int) (0-0x80000000),   0x40000000));
+    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MAX, vlmul32(             -0x7FFFFFFF,  -0x7FFFFFFF));
 
 
     for(unsigned int v = 0; v < REPS; v++){
