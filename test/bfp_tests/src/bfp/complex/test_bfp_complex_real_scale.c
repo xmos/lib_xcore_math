@@ -31,9 +31,7 @@ TEST_TEAR_DOWN(bfp_complex_real_scale) {}
 #  define MAX_LEN    (512)
 #endif
 
-
-static char msg_buff[200];
-
+// static char msg_buff[200];
 
 TEST(bfp_complex_real_scale, bfp_complex_s16_real_scale)
 {
@@ -49,7 +47,7 @@ TEST(bfp_complex_real_scale, bfp_complex_s16_real_scale)
     struct {
         double real[MAX_LEN];
         double imag[MAX_LEN];
-    } Af, Bf;
+    } Af;
 
     struct {
         int16_t real[MAX_LEN];
@@ -74,7 +72,7 @@ TEST(bfp_complex_real_scale, bfp_complex_s16_real_scale)
         float C = s32_to_f32( pseudo_rand_int16(&seed) >> c_hr,
                                   pseudo_rand_int(&seed, -100, 100) );
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
 
@@ -86,12 +84,12 @@ TEST(bfp_complex_real_scale, bfp_complex_s16_real_scale)
 
         bfp_complex_s16_real_scale(&A, &B, C);
 
-        TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr, 
+        TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s16_headroom(A.real, A.imag, A.length), A.hr,
                       "[A.hr is wrong.]");
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN_MESSAGE(1, expA.real[i], A.real[i], "");
             TEST_ASSERT_INT16_WITHIN_MESSAGE(1, expA.imag[i], A.imag[i], "");
         }
@@ -136,7 +134,7 @@ TEST(bfp_complex_real_scale, bfp_complex_s32_real_scale)
             pseudo_rand_int(&seed, -100, 100),
         };
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i].re = pseudo_rand_int32(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int32(&seed) >> B.hr;
 
@@ -155,7 +153,7 @@ TEST(bfp_complex_real_scale, bfp_complex_s32_real_scale)
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(2, expA[i].re, A.data[i].re);
             TEST_ASSERT_INT32_WITHIN(2, expA[i].im, A.data[i].im);
         }

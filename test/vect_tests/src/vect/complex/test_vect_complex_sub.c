@@ -68,7 +68,7 @@ TEST(vect_complex_sub, vect_complex_s16_sub)
 
         vect_complex_s16_sub_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> b_hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> b_hr;
 
@@ -85,7 +85,7 @@ TEST(vect_complex_sub, vect_complex_s16_sub)
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, length, a_exp);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
 
             // if(abs(expA.real[i] - A.real[i]) > 2) 
             //     printf("((%d * 2^%d ) >> %d) - ((%d * 2^%d ) >> %d) = ( %d << %d)   // %d\n", B.real[i], b_exp, b_shr, C.real[i], c_exp, c_shr, A.real[i], a_exp, expA.real[i]);
@@ -130,7 +130,7 @@ TEST(vect_complex_sub, vect_complex_s32_sub)
         exponent_t a_exp;
         vect_complex_s32_sub_prepare(&a_exp, &b_shr, &c_shr, b_exp, c_exp, b_hr, c_hr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> b_hr;
             B[i].im = pseudo_rand_int32(&seed) >> b_hr;
 
@@ -147,7 +147,7 @@ TEST(vect_complex_sub, vect_complex_s32_sub)
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, length, a_exp);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
 
             // printf("(%ld >> %d) - (%ld >> %d) = ( %ld << %d)   // %ld\n", B[i].re, b_shr, C[i].re, c_shr, A[i].re, a_exp, expA[i].re);
 

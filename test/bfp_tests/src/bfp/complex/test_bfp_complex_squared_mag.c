@@ -31,8 +31,7 @@ TEST_TEAR_DOWN(bfp_complex_squared_mag) {}
 #  define MAX_LEN    (512)
 #endif
 
-
-static char msg_buff[200];
+// static char msg_buff[200];
 
 
 TEST(bfp_complex_squared_mag, bfp_complex_s16_squared_mag)
@@ -51,11 +50,6 @@ TEST(bfp_complex_squared_mag, bfp_complex_s16_squared_mag)
 
     double Af[MAX_LEN];
 
-    struct {
-        double real[MAX_LEN];
-        double imag[MAX_LEN];
-    } Bf;
-
     int16_t expA[MAX_LEN];
 
 
@@ -70,11 +64,11 @@ TEST(bfp_complex_squared_mag, bfp_complex_s16_squared_mag)
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
 
-            Af[i] = ldexp(B.real[i], B.exp) * ldexp(B.real[i], B.exp) 
+            Af[i] = ldexp(B.real[i], B.exp) * ldexp(B.real[i], B.exp)
                   + ldexp(B.imag[i], B.exp) * ldexp(B.imag[i], B.exp);
         }
 
@@ -86,7 +80,7 @@ TEST(bfp_complex_squared_mag, bfp_complex_s16_squared_mag)
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
         }
 
@@ -106,10 +100,6 @@ TEST(bfp_complex_squared_mag, bfp_complex_s32_squared_mag)
 
     complex_s32_t DWORD_ALIGNED B_data[MAX_LEN];
     bfp_complex_s32_t B;
-    struct {
-        double real[MAX_LEN];
-        double imag[MAX_LEN];
-    } Bf;
 
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
@@ -122,7 +112,7 @@ TEST(bfp_complex_squared_mag, bfp_complex_s32_squared_mag)
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i].re = pseudo_rand_int32(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int32(&seed) >> B.hr;
 
@@ -140,7 +130,7 @@ TEST(bfp_complex_squared_mag, bfp_complex_s32_squared_mag)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             // astew: 2022/06/30 -- Increased threshold from 3 to 4. Test was failing after I fixed
             //        the random number generation problem. (Threshold is observed, not theoretical)
             TEST_ASSERT_INT32_WITHIN(4, expA[i], A.data[i]);

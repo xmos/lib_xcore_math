@@ -33,7 +33,7 @@ TEST_TEAR_DOWN(bfp_complex_depth_convert) {}
 #endif
 
 
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \
@@ -44,8 +44,6 @@ static char msg_buff[200];
 
 TEST(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16)
 {
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
     int16_t A_real[MAX_LEN];
     int16_t A_imag[MAX_LEN];
     complex_s32_t B_data[MAX_LEN];
@@ -123,7 +121,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16_2)
         // First 2 elements aren't random
         B.data[0].re =  0x7FFF0000 >> B.hr;
         B.data[0].im =  0x40000000 >> B.hr;
-        B.data[1].re = ((int)-0x80000000) >> B.hr;
+        B.data[1].re = ((int) (0-0x80000000)) >> B.hr;
         B.data[1].im = -0x40000000 >> B.hr;
 
         expected.real[0] =  (B.data[0].re << B.hr) >> 16; // lower bits of expectation depends on headroom
@@ -133,7 +131,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s32_to_bfp_complex_s16_2)
 
         right_shift_t exp_sh = MAX(0, B.hr-16);
 
-        for(int i = 2; i < B.length; i++){
+        for(unsigned int i = 2; i < B.length; i++){
 
             expected.real[i] = (pseudo_rand_int16(&seed) >> exp_sh) << exp_sh;
             expected.imag[i] = (pseudo_rand_int16(&seed) >> exp_sh) << exp_sh;
@@ -198,7 +196,7 @@ TEST(bfp_complex_depth_convert, bfp_complex_s16_to_bfp_complex_s32)
         expected[0].im = B.imag[0] = -0x8000 >> B.hr;
         
 
-        for(int i = 1; i < B.length; i++){
+        for(unsigned int i = 1; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
             

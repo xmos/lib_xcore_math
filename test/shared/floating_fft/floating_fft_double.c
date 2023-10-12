@@ -16,7 +16,7 @@ void flt_bit_reverse_indexes_double(
     const unsigned length)
 {
     size_t logn = u32_ceil_log2(length);
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         unsigned rev = flt_bitrev(i, logn);
         if(rev < i) continue;
 
@@ -29,7 +29,7 @@ void flt_bit_reverse_indexes_double(
 
 
 void flt_make_sine_table_double(
-    double sine_lut[], 
+    double sine_lut[],
     const unsigned N)
 {
     for(unsigned i = 0; i < (N/4) + 1; i++){
@@ -149,14 +149,14 @@ void flt_fft_inverse_double (
     unsigned log2_N = 31-cls(N);
 
     for(unsigned i=0;i<N;i++){
-        pts[i].re = ldexp(pts[i].re, -log2_N);
-        pts[i].im = ldexp(pts[i].im, -log2_N);
+        pts[i].re = ldexp(pts[i].re, (int)-(int)log2_N);
+        pts[i].im = ldexp(pts[i].im, (int)-(int)log2_N);
     }
 }
 
 
-void flt_fft_split_spectrum_double( 
-    complex_double_t pts[], 
+void flt_fft_split_spectrum_double(
+    complex_double_t pts[],
     const unsigned N)
 {
 
@@ -205,7 +205,7 @@ void flt_fft_split_spectrum_double(
 
 
 void flt_fft_merge_spectra_double(
-    complex_double_t pts[], 
+    complex_double_t pts[],
     const unsigned N)
 {
     //pts[0:N/2] is a spectrum A[f] of a real signal a[n]

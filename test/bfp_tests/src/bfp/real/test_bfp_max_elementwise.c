@@ -61,7 +61,7 @@ TEST(bfp_max_elementwise, bfp_s16_max_elementwise)
         test_double_from_s16(Bf, &B);
         test_double_from_s16(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = (Bf[i] >= Cf[i])? Bf[i] : Cf[i];
         }
 
@@ -69,7 +69,7 @@ TEST(bfp_max_elementwise, bfp_s16_max_elementwise)
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
         }
     }
@@ -104,7 +104,7 @@ TEST(bfp_max_elementwise, bfp_s32_max_elementwise)
         C.exp = B.exp + pseudo_rand_int(&seed, -10, 10);
 
         //Just to make the test easier.
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = B.data[i] & 0xFFFFFFFE;
             C.data[i] = C.data[i] & 0xFFFFFFFE;
         }
@@ -118,7 +118,7 @@ TEST(bfp_max_elementwise, bfp_s32_max_elementwise)
         test_double_from_s32(Bf, &B);
         test_double_from_s32(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = (Bf[i] >= Cf[i])? Bf[i] : Cf[i];
         }
 
@@ -126,7 +126,7 @@ TEST(bfp_max_elementwise, bfp_s32_max_elementwise)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             // printf("B[%d] = %e = %ld * 2**(%d)\n", i, ldexp(B.data[i], B.exp), B.data[i], B.exp);
             // printf("C[%d] = %e = %ld * 2**(%d)\n", i, ldexp(C.data[i], C.exp), C.data[i], C.exp);
             // printf("A[%d] = %e = %ld * 2**(%d)\n", i, ldexp(A.data[i], A.exp), A.data[i], A.exp);

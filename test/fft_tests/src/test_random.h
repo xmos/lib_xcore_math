@@ -52,7 +52,7 @@ void test_random_bfp_s16(
     unsigned max_len, 
     unsigned* seed,
     bfp_s16_t* A,
-    int length);
+    unsigned int length);
 
 
 EXTERN_C
@@ -61,7 +61,7 @@ void test_random_bfp_s32(
     unsigned max_len, 
     unsigned* seed,
     bfp_s32_t* A,
-    int length);
+    unsigned int length);
 
 EXTERN_C
 void test_random_bfp_complex_s16(
@@ -69,7 +69,7 @@ void test_random_bfp_complex_s16(
     unsigned max_len, 
     unsigned* seed,
     bfp_complex_s16_t* A,
-    int length);
+    unsigned int length);
 
 EXTERN_C
 void test_random_bfp_complex_s32(
@@ -77,4 +77,4 @@ void test_random_bfp_complex_s32(
     unsigned max_len, 
     unsigned* seed,
     bfp_complex_s32_t* A,
-    int length);
+    unsigned int length);

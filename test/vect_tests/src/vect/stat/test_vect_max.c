@@ -44,7 +44,7 @@ TEST(vect_max, vect_s16_max_random)
     int16_t result;
     int16_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         // len = 32;
@@ -53,7 +53,7 @@ TEST(vect_max, vect_s16_max_random)
 
         int16_t max = -0x8000;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int16(&seed);
             max = MAX(max, B[i]);
         }
@@ -74,16 +74,16 @@ TEST(vect_max, vect_s32_max_random)
     int32_t result;
     int32_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         // len = 8;
 
         setExtraInfo_RSL(v, seed, len);
 
-        int32_t max = -0x80000000;
+        int32_t max = (int) (0-0x80000000);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed);
             max = MAX(max, B[i]);
         }

@@ -44,7 +44,7 @@ TEST(float_convert, float_s32_to_float_s64)
   float_s32_t x;
   conv_error_e error = 0;
   
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
@@ -75,7 +75,7 @@ TEST(float_convert, float_s64_to_float_s32)
   float_s64_t x;
   conv_error_e error = 0;
   
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
@@ -85,7 +85,7 @@ TEST(float_convert, float_s64_to_float_s32)
 
     float_s32_t actual = float_s64_to_float_s32(x);
     
-    double expected_f = ldexp(x.mant, x.exp);
+    double expected_f = ldexp((double) x.mant, x.exp);
 
     int32_t expected_mant = conv_double_to_s32(expected_f, actual.exp, &error);
 
@@ -105,7 +105,7 @@ TEST(float_convert, float_s32_to_float)
 
   float_s32_t x;
   
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed) ;
 
@@ -115,11 +115,11 @@ TEST(float_convert, float_s32_to_float)
 
     float actual = float_s32_to_float(x);
     
-    float expected = ldexpf(x.mant, x.exp);
+    float expected = ldexpf((float) x.mant, x.exp);
 
     // printf("\n\n\n");
     // printf("x.mant = 0x%08X  (%ld)\n", (unsigned) x.mant, x.mant);
-    // printf("x.exp = %d\n", x.exp);  
+    // printf("x.exp = %d\n", x.exp);
     // printf("x = %e\n", ldexpf(x.mant, x.exp));
     // printf("actual = %e\n", actual);
     // printf("expected = %e\n", expected);
@@ -135,7 +135,7 @@ TEST(float_convert, float_s32_to_double)
 
   float_s32_t x;
   
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
@@ -157,17 +157,17 @@ TEST(float_convert, f32_to_float_s32)
 
   float x;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
-    x = ldexpf(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 40));
+    x = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 40));
 
     float_s32_t actual = f32_to_float_s32(x);
 
-    float diff  = fabsf(x - ldexpf(actual.mant + 0, actual.exp));
-    float diffP = fabsf(x - ldexpf(actual.mant + 1, actual.exp));
-    float diffM = fabsf(x - ldexpf(actual.mant - 1, actual.exp));
+    float diff  = fabsf(x - ldexpf((float) (actual.mant + 0), actual.exp));
+    float diffP = fabsf(x - ldexpf((float) (actual.mant + 1), actual.exp));
+    float diffM = fabsf(x - ldexpf((float) (actual.mant - 1), actual.exp));
 
     TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(diff, diffP, "");
     TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(diff, diffM, "");
@@ -181,11 +181,11 @@ TEST(float_convert, f64_to_float_s32)
 
   double x;
   
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
-    x = ldexp(pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 40));
+    x = ldexp((double) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 40));
 
     float_s32_t actual = f64_to_float_s32(x);
 

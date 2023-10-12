@@ -147,7 +147,7 @@ FUNCTION_NAME:
             int16_t lo_thing = VPU_INT16_MIN - lower;
 
             // 7 instructions required
-            for(int i = 0; i < length; i++){
+            for(unsigned int i = 0; i < length; i++){
 
                 int16_t tmp = input[i] >> input_shr;
                 tmp = SATURATING_ADD(tmp, up_thing);
@@ -172,7 +172,7 @@ FUNCTION_NAME:
             }
 
             // 9 instructions required
-            for(int i = 0; i < length; i++){
+            for(unsigned int i = 0; i < length; i++){
 
                 int16_t tmp = input[i] >> input_shr;
                 tmp = SATURATING_ADD(tmp, one);

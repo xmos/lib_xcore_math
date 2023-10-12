@@ -47,7 +47,7 @@ void dbl_transpose_8x8(
 
 static
 void dbl_dct8x8_stageA(
-    double y[8][8], 
+    double y[8][8],
     double x[8][8])
 {
   // Do row-by-row DCT8 and then transpose
@@ -70,7 +70,7 @@ void dbl_dct8x8_stageA(
 
 static
 void dbl_dct8x8_stageB(
-    double y[8][8], 
+    double y[8][8],
     double x[8][8],
     right_shift_t sat)
 {
@@ -84,7 +84,7 @@ void dbl_dct8x8_stageB(
 
   // dct8x8_stageB is formulated such that the output is effectively
   // the true DCT values with an implied exponent of (sat+11). So, dividing
-  // everything by 2**(sat+11) here should give us the same result as 
+  // everything by 2**(sat+11) here should give us the same result as
   // dct8x8_stageB
   
   for(int r = 0; r < 8; r++)
@@ -95,7 +95,7 @@ void dbl_dct8x8_stageB(
 
 static
 void dbl_idct8x8_stageA(
-    double y[8][8], 
+    double y[8][8],
     double x[8][8])
 {
   // Do row-by-row DCT8 and then transpose
@@ -117,7 +117,7 @@ void dbl_idct8x8_stageA(
 
 static
 void dbl_idct8x8_stageB(
-    double y[8][8], 
+    double y[8][8],
     double x[8][8],
     right_shift_t sat)
 {
@@ -131,7 +131,7 @@ void dbl_idct8x8_stageB(
 
   // dct8_inversex8_stageB is formulated such that the output is effectively
   // the true DCT values with an implied exponent of (sat+7). So, dividing
-  // everything by 2**(sat+7) here should give us the same result as 
+  // everything by 2**(sat+7) here should give us the same result as
   // dct8_inversex8_stageB
   
   for(int r = 0; r < 8; r++)
@@ -144,7 +144,7 @@ void dbl_idct8x8_stageB(
 
 static
 void dbl_dct8x8(
-    double y[8][8], 
+    double y[8][8],
     double x[8][8],
     right_shift_t sat)
 {
@@ -157,7 +157,7 @@ void dbl_dct8x8(
 
 static
 void dbl_idct8x8(
-    double y[8][8], 
+    double y[8][8],
     double x[8][8],
     right_shift_t sat)
 {
@@ -182,7 +182,7 @@ TEST(dct8x8, dct8x8_stageA)
   unsigned r = 1;
 
   float worst_timing = 0.0f;
-  
+
   for(unsigned t = 0; t < (1<<LOOPS_LOG2); t++){
   
     DWORD_ALIGNED int8_t x[8][8];
@@ -190,8 +190,6 @@ TEST(dct8x8, dct8x8_stageA)
 
     double ref_in[8][8];
     double ref_out[8][8];
-
-    int32_t ref_out_s32[8][8];
 
     for(int row = 0; row < 8; row++){
       for(unsigned col = 0; col < 8; col++){
@@ -234,7 +232,7 @@ TEST(dct8x8, dct8x8_stageA)
 
     for(int row = 0; row < 8; row++){
       for(unsigned col = 0; col < 8; col++){
-        float ref_val = ref_out[row][col];
+        float ref_val = (float) ref_out[row][col];
         float act_val = y[row][col];
 
         TEST_ASSERT_FLOAT_WITHIN(max_allowed_diff, ref_val, act_val);
@@ -244,7 +242,7 @@ TEST(dct8x8, dct8x8_stageA)
     headroom_t actual_hr = vect_s16_headroom(&y[0][0], 64);
     TEST_ASSERT_EQUAL(actual_hr, reported_hr);
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -279,8 +277,6 @@ TEST(dct8x8, dct8x8_stageB)
 
     double ref_in[8][8];
     double ref_out[8][8];
-
-    int32_t ref_out_s32[8][8];
 
     for(int row = 0; row < 8; row++){
       for(unsigned col = 0; col < 8; col++){
@@ -326,7 +322,7 @@ TEST(dct8x8, dct8x8_stageB)
 
     for(int row = 0; row < 8; row++){
       for(unsigned col = 0; col < 8; col++){
-        float ref_val = ref_out[row][col];
+        float ref_val = (float) ref_out[row][col];
         float act_val = y[row][col];
 
         TEST_ASSERT_FLOAT_WITHIN(max_allowed_diff, ref_val, act_val);
@@ -339,7 +335,7 @@ TEST(dct8x8, dct8x8_stageB)
 
     TEST_ASSERT_EQUAL(actual_hr, reported_hr);
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -375,8 +371,6 @@ TEST(dct8x8, dct8x8_forward)
 
     double ref_in[8][8];
     double ref_out[8][8];
-
-    int32_t ref_out_s32[8][8];
 
     for(int row = 0; row < 8; row++){
       for(unsigned col = 0; col < 8; col++){
@@ -422,7 +416,7 @@ TEST(dct8x8, dct8x8_forward)
 
       for(int row = 0; row < 8; row++){
         for(unsigned col = 0; col < 8; col++){
-          float ref_val = ref_out[row][col];
+          float ref_val = (float) ref_out[row][col];
           float act_val = y[row][col];
 
           if(ref_val > 127.0f)  ref_val =  127.0f;
@@ -438,7 +432,7 @@ TEST(dct8x8, dct8x8_forward)
 
       TEST_ASSERT_EQUAL(actual_hr, reported_hr);
 
-      float timing = (ts2-ts1)/100.0;
+      float timing = (float) ((ts2-ts1)/100.0);
       if(timing > worst_timing) worst_timing = timing;
     }
   }
@@ -475,8 +469,6 @@ TEST(dct8x8, dct8x8_inverse)
 
     double ref_in[8][8];
     double ref_out[8][8];
-
-    int32_t ref_out_s32[8][8];
 
     for(int row = 0; row < 8; row++){
       for(unsigned col = 0; col < 8; col++){
@@ -522,7 +514,7 @@ TEST(dct8x8, dct8x8_inverse)
 
       for(int row = 0; row < 8; row++){
         for(unsigned col = 0; col < 8; col++){
-          float ref_val = ref_out[row][col];
+          float ref_val = (float) ref_out[row][col];
           float act_val = y[row][col];
 
           if(ref_val > 127.0f)  ref_val =  127.0f;
@@ -538,7 +530,7 @@ TEST(dct8x8, dct8x8_inverse)
 
       TEST_ASSERT_EQUAL(actual_hr, reported_hr);
 
-      float timing = (ts2-ts1)/100.0;
+      float timing = (float) ((ts2-ts1)/100.0);
       if(timing > worst_timing) worst_timing = timing;
     }
   }

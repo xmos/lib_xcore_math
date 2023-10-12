@@ -47,7 +47,7 @@ TEST(bfp_max, bfp_s16_max)
         float expected = s32_to_f32(INT16_MIN, B.exp);
 
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
 
             expected = MAX(expected, s32_to_f32(B.data[i], B.exp));
@@ -78,7 +78,7 @@ TEST(bfp_max, bfp_s32_max)
             .exp = B.exp,
         };
         
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
             expected.mant = MAX(expected.mant, B.data[i]);
         }

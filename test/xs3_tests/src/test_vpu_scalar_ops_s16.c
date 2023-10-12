@@ -61,7 +61,7 @@ TEST(vpu_scalar_ops_s16, vladd16)
     TEST_ASSERT_EQUAL_INT16(  VPU_INT16_MIN, vladd16( -0x7F00, -0x100));
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         int16_t x = pseudo_rand_int16(&seed);
@@ -94,7 +94,7 @@ TEST(vpu_scalar_ops_s16, vlsub16)
     TEST_ASSERT_EQUAL_INT16(  VPU_INT16_MIN, vlsub16( -0x7F00,  0x100));
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         int16_t x = pseudo_rand_int16(&seed);
@@ -150,7 +150,7 @@ TEST(vpu_scalar_ops_s16, vlashr16)
     // [0] - This is different from vlsat16(-8, 4), which results in 0
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         int16_t x = pseudo_rand_int16(&seed);
@@ -161,7 +161,7 @@ TEST(vpu_scalar_ops_s16, vlashr16)
         fexp = MIN(fexp, VPU_INT16_MAX);
         fexp = MAX(fexp, VPU_INT16_MIN);
 
-        int16_t exp = fexp;
+        int16_t exp = (int16_t) fexp;
 
         int16_t res = vlashr16(x, shr);
     
@@ -220,7 +220,7 @@ TEST(vpu_scalar_ops_s16, vdepth8_16)
     {
         int8_t res = vdepth8_16( (int16_t) k );
 
-        int32_t exp = round(ldexp( k, -8) + ldexp(1, -30));
+        int32_t exp = lround(ldexp( k, -8) + ldexp(1, -30));
         exp = MIN(exp, VPU_INT8_MAX);
         exp = MAX(exp, VPU_INT8_MIN);
 
@@ -248,7 +248,7 @@ TEST(vpu_scalar_ops_s16, vlmul16)
     TEST_ASSERT_EQUAL_INT16( VPU_INT16_MAX, vlmul16( -0x7FFF,  -0x7FFF));
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         int16_t x = pseudo_rand_int16(&seed);
@@ -273,15 +273,15 @@ TEST(vpu_scalar_ops_s16, vlmacc16)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    TEST_ASSERT_EQUAL_INT32(             0, vlmacc16(              0,     0,     0) ); 
-    TEST_ASSERT_EQUAL_INT32(           100, vlmacc16(            100,     0,     0) ); 
-    TEST_ASSERT_EQUAL_INT32(          -100, vlmacc16(           -100,     0,     0) ); 
-    TEST_ASSERT_EQUAL_INT32(           100, vlmacc16(            100,     1,     0) ); 
-    TEST_ASSERT_EQUAL_INT32(            94, vlmacc16(            100,     2,    -3) ); 
-    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MIN, vlmacc16(  VPU_INT32_MIN,    -1,     1) ); 
-    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MAX, vlmacc16(  VPU_INT32_MAX,     1,     1) ); 
+    TEST_ASSERT_EQUAL_INT32(             0, vlmacc16(              0,     0,     0) );
+    TEST_ASSERT_EQUAL_INT32(           100, vlmacc16(            100,     0,     0) );
+    TEST_ASSERT_EQUAL_INT32(          -100, vlmacc16(           -100,     0,     0) );
+    TEST_ASSERT_EQUAL_INT32(           100, vlmacc16(            100,     1,     0) );
+    TEST_ASSERT_EQUAL_INT32(            94, vlmacc16(            100,     2,    -3) );
+    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MIN, vlmacc16(  VPU_INT32_MIN,    -1,     1) );
+    TEST_ASSERT_EQUAL_INT32( VPU_INT32_MAX, vlmacc16(  VPU_INT32_MAX,     1,     1) );
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         int32_t acc = pseudo_rand_int32(&seed);
@@ -307,7 +307,7 @@ TEST(vpu_scalar_ops_s16, vlmaccr16)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         int32_t acc = pseudo_rand_int32(&seed);
@@ -364,16 +364,16 @@ TEST(vpu_scalar_ops_s16, vlsat16)
     TEST_ASSERT_EQUAL_INT16(        -0x0A, vlsat16(  -0x0A800000,     24));
     TEST_ASSERT_EQUAL_INT16(        -0x0B, vlsat16(  -0x0A800001,     24));
     TEST_ASSERT_EQUAL_INT16(           -1, vlsat16(           -8,      3));
-    TEST_ASSERT_EQUAL_INT16(            0, vlsat16(           -8,      4)); // Note[0] 
+    TEST_ASSERT_EQUAL_INT16(            0, vlsat16(           -8,      4)); // Note[0]
 
     // Notes:
     // [0] - This is different than vlashr(-8,4) which results in -1
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
-        headroom_t hr = pseudo_rand_uint(&seed, 0, 32);        
+        headroom_t hr = pseudo_rand_uint(&seed, 0, 32);
         int32_t acc = pseudo_rand_int32(&seed) >> hr;
 
         int16_t shr = pseudo_rand_int(&seed, 23 - hr, 25 - hr);
@@ -390,7 +390,7 @@ TEST(vpu_scalar_ops_s16, vlsat16)
         fexp = MIN(fexp, VPU_INT16_MAX);
         fexp = MAX(fexp, VPU_INT16_MIN);
 
-        int16_t exp = fexp;
+        int16_t exp = (int16_t) fexp;
 
         int16_t res = vlsat16(acc, shr);
 
@@ -410,7 +410,7 @@ TEST(vpu_scalar_ops_s16, vadddr16)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD];
@@ -423,10 +423,10 @@ TEST(vpu_scalar_ops_s16, vadddr16)
         }
 
 
-        vpu_int16_acc_t expected = 
+        vpu_int16_acc_t expected =
             (total > VPU_INT32_MAX)? VPU_INT32_MAX
-          : (total < VPU_INT32_MIN)? VPU_INT32_MIN 
-          : total;
+          : (total < VPU_INT32_MIN)? VPU_INT32_MIN
+          : (vpu_int16_acc_t) total;
 
 
         vpu_int16_acc_t result = vadddr16(acc);

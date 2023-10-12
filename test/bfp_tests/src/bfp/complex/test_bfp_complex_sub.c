@@ -31,8 +31,7 @@ TEST_TEAR_DOWN(bfp_complex_sub) {}
 #  define MAX_LEN    (512)
 #endif
 
-
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \
@@ -79,7 +78,7 @@ TEST(bfp_complex_sub, bfp_complex_s16_sub)
         test_double_from_complex_s16(Bf.real, Bf.imag, &B);
         test_double_from_complex_s16(Cf.real, Cf.imag, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af.real[i] = Bf.real[i] - Cf.real[i];
             Af.imag[i] = Bf.imag[i] - Cf.imag[i];
         }
@@ -88,7 +87,7 @@ TEST(bfp_complex_sub, bfp_complex_s16_sub)
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(1, expA.real[i], A.real[i]);
             TEST_ASSERT_INT16_WITHIN(1, expA.imag[i], A.imag[i]);
         }
@@ -122,7 +121,7 @@ TEST(bfp_complex_sub, bfp_complex_s32_sub)
         test_random_bfp_complex_s32(&C, MAX_LEN, &seed, &A, B.length);
 
         //Just to make the test easier.
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i].re = B.data[i].re & 0xFFFFFFFE;
             C.data[i].re = C.data[i].re & 0xFFFFFFFE;
             B.data[i].im = B.data[i].im & 0xFFFFFFFE;
@@ -132,7 +131,7 @@ TEST(bfp_complex_sub, bfp_complex_s32_sub)
         test_double_from_complex_s32(Bf.real, Bf.imag, &B);
         test_double_from_complex_s32(Cf.real, Cf.imag, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af.real[i] = Bf.real[i] - Cf.real[i];
             Af.imag[i] = Bf.imag[i] - Cf.imag[i];
         }
@@ -141,7 +140,7 @@ TEST(bfp_complex_sub, bfp_complex_s32_sub)
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(1, expA[i].re, A.data[i].re);
             TEST_ASSERT_INT32_WITHIN(1, expA[i].im, A.data[i].im);
         }

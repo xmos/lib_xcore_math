@@ -59,7 +59,7 @@ TEST(bfp_scale, bfp_s16_scale)
       
         setExtraInfo_RSL(r, old_seed, B.length);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] * alpha_f;
         }
 
@@ -104,7 +104,7 @@ TEST(bfp_scale, bfp_s32_scale)
         test_double_from_s32(Bf, &B);
         double alpha_f = ldexp(alpha_mant, alpha_exp);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] * alpha_f;
         }
 
@@ -116,7 +116,7 @@ TEST(bfp_scale, bfp_s32_scale)
 
         XTEST_ASSERT_VECT_S32_WITHIN(1, expA, A.data, A.length,
             "Expected: %ld  <-- %ld * 2^(%d)  * %ld * 2^(%d) \nActual: %ld * 2^(%d)\n",
-            expA[i], B.data[i], B.exp, alpha.mant, alpha.exp, A.data[i], A.exp);
+            (long int) expA[i], (long int) B.data[i], B.exp, (long int) alpha.mant, alpha.exp, (long int) A.data[i], A.exp);
     }
 }
 

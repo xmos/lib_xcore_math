@@ -52,7 +52,7 @@ TEST(bfp_abs_sum, bfp_s16_abs_sum)
         B.exp = pseudo_rand_int(&seed, -100, 100);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
         }
 
@@ -64,7 +64,7 @@ TEST(bfp_abs_sum, bfp_s16_abs_sum)
             .mant = 0,
             .exp = B.exp };
 
-        for(int i = 0; i < B.length; i++)
+        for(unsigned int i = 0; i < B.length; i++)
             expected.mant += abs(B.data[i]);
 
         TEST_ASSERT_EQUAL(expected.exp, result.exp);
@@ -90,13 +90,11 @@ TEST(bfp_abs_sum, bfp_s32_abs_sum)
         B.exp = pseudo_rand_int(&seed, -100, 100);
         B.hr = pseudo_rand_uint(&seed, 0, 31);
         
-        int64_t sum = 0;
-
         float_s64_t expected = {
             .mant = 0,
             .exp = B.exp };
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
             expected.mant += abs( B.data[i] );
         }

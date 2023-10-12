@@ -34,8 +34,6 @@ static char msg_buff[200];
 #define MAX_TAPS    100
 TEST(filter_fir_s32, case0)
 {
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
     int32_t coefs[MAX_TAPS];
     int32_t state[MAX_TAPS];
 
@@ -75,8 +73,6 @@ TEST(filter_fir_s32, case0)
 #define MAX_TAPS    100
 TEST(filter_fir_s32, case1)
 {
-    unsigned seed = SEED_FROM_FUNC_NAME();
-
     int32_t coefs[MAX_TAPS];
     int32_t state[MAX_TAPS];
 
@@ -114,8 +110,6 @@ TEST(filter_fir_s32, case1)
 #define TAPS    32
 TEST(filter_fir_s32, case2)
 {
-    unsigned seed = SEED_FROM_FUNC_NAME();
-    
     int32_t coefs[TAPS];
     int32_t state[TAPS];
 
@@ -153,8 +147,8 @@ TEST(filter_fir_s32, case2)
 
     The maximum product of  (((int64_t)((int32_t)A))*((int32_t)B) >> 30) is -0x80000000 * -0x80000000 * N_taps >> 30
         = -(2**31) * -(2**31) * N_taps >> 30 = 2**32 * N_taps.
-    We want to avoid saturating any single accumulator, which can hold    [-(2**39), (2**39)-1]. Let's just pretend 
-    that's [- 2**39, 2**39] since getting literally all 0x80000000 from our random number generator is... unlikely. So   
+    We want to avoid saturating any single accumulator, which can hold    [-(2**39), (2**39)-1]. Let's just pretend
+    that's [- 2**39, 2**39] since getting literally all 0x80000000 from our random number generator is... unlikely. So
         2**39 = 2**32 * N_taps -->  2**(39-32) = N_taps = 2**7 = 128
     So maximum tap count should be 128.
 
@@ -177,7 +171,7 @@ TEST(filter_fir_s32, case3)
 
     filter_fir_s32_t filter;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         const unsigned old_seed = seed;
 
@@ -195,7 +189,7 @@ TEST(filter_fir_s32, case3)
 
         int64_t expected64 = 0;
 
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             coefs[i] = pseudo_rand_int32(&seed);
             state[i] = pseudo_rand_int32(&seed);
 
@@ -210,7 +204,7 @@ TEST(filter_fir_s32, case3)
             expected32 = (int32_t) ((expected64 + (1LL << (filter.shift-1))) >> filter.shift);
         } else {
             expected32 = (int32_t) (expected64 << -filter.shift);
-        }   
+        }
 
         // Apply the filter
         int32_t res = filter_fir_s32(&filter, state[0]);

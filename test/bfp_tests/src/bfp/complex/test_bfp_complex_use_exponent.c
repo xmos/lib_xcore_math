@@ -57,7 +57,7 @@ TEST(bfp_complex_use_exponent, bfp_complex_s16_use_exponent)
 
     const right_shift_t data_hr = pseudo_rand_uint(&seed, 0, 5);
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       realA[k] = pseudo_rand_int16(&seed) >> data_hr;
       imagA[k] = pseudo_rand_int16(&seed) >> data_hr;
 
@@ -78,14 +78,14 @@ TEST(bfp_complex_use_exponent, bfp_complex_s16_use_exponent)
     XTEST_ASSERT_VECT_S16_EQUAL(expected_re, realA, len,
       "init_exp: %d\n"
       "end_exp: %d\n"
-      "Expected: %d * 2^(%d)  <--  (%d >> %d) * 2^(%d + %d)  // was: %d\n", 
+      "Expected: %d * 2^(%d)  <--  (%d >> %d) * 2^(%d + %d)  // was: %d\n",
       init_exp, end_exp,
       expected_re[i], end_exp, realA_copy[i], delta_p, init_exp, delta_p, realA[i]);
 
     XTEST_ASSERT_VECT_S16_EQUAL(expected_im, imagA, len,
       "init_exp: %d\n"
       "end_exp: %d\n"
-      "Expected: %d * 2^(%d)  <--  (%d >> %d) * 2^(%d + %d)  // was: %d\n", 
+      "Expected: %d * 2^(%d)  <--  (%d >> %d) * 2^(%d + %d)  // was: %d\n",
       init_exp, end_exp,
       expected_im[i], end_exp, imagA_copy[i], delta_p, init_exp, delta_p, imagA[i]);
       
@@ -117,7 +117,7 @@ TEST(bfp_complex_use_exponent, bfp_complex_s32_use_exponent)
 
     const right_shift_t data_hr = pseudo_rand_uint(&seed, 0, 5);
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       dataA[k].re = pseudo_rand_int32(&seed) >> data_hr;
       dataA[k].im = pseudo_rand_int32(&seed) >> data_hr;
 
@@ -133,12 +133,12 @@ TEST(bfp_complex_use_exponent, bfp_complex_s32_use_exponent)
     TEST_ASSERT_EQUAL_MESSAGE(vect_complex_s32_headroom(dataA, len), A.hr, "HR is wrong.");
     TEST_ASSERT_EQUAL_MESSAGE(end_exp, A.exp, "Exponent is wrong.");
 
-    XTEST_ASSERT_VECT_S32_EQUAL(((int32_t*)expected), ((int32_t*)dataA), 2*len, 
+    XTEST_ASSERT_VECT_S32_EQUAL(((int32_t*)expected), ((int32_t*)dataA), 2*len,
       "init_exp: %d\n"
       "end_exp: %d\n"
-      "Expected: %ld * 2^(%d)  <--  (%ld >> %d) * 2^(%d + %d)  // was: %ld\n", 
+      "Expected: %ld * 2^(%d)  <--  (%ld >> %d) * 2^(%d + %d)  // was: %ld\n",
       init_exp, end_exp,
-      ((int32_t*)expected)[i], end_exp, ((int32_t*)dataA_copy)[i], delta_p, init_exp, delta_p, ((int32_t*)dataA)[i]);
+      (long int)((int32_t*)expected)[i], end_exp, (long int)((int32_t*)dataA_copy)[i], delta_p, init_exp, delta_p, (long int)((int32_t*)dataA)[i]);
       
   }
 }

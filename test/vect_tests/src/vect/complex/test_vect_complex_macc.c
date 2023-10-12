@@ -57,7 +57,7 @@ TEST(vect_complex_macc, vect_complex_s16_macc)
     exp.a = -1024;
     hr.a = vect_complex_s16_headroom(A.re, A.im, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
@@ -83,8 +83,8 @@ TEST(vect_complex_macc, vect_complex_s16_macc)
         hr.c = vect_complex_s16_headroom(C.re, C.im, LEN);
 
         right_shift_t acc_shr, bc_shr;
-        vect_complex_s16_macc_prepare(&exp.a, &acc_shr, &bc_shr, 
-                                          exp.a, exp.b, exp.c, 
+        vect_complex_s16_macc_prepare(&exp.a, &acc_shr, &bc_shr,
+                                          exp.a, exp.b, exp.c,
                                           hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s16_macc(A.re, A.im, B.re, B.im, C.re, C.im, LEN, acc_shr, bc_shr);
@@ -106,11 +106,11 @@ TEST(vect_complex_macc, vect_complex_s16_macc)
 
 #define THRESHOLD  3
           if(expected.re - A.re[i] > THRESHOLD || A.re[i] - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A.re[%d] = %d\n", v, exp.a, i, expected.re, expected_fp.re, i, A.re[i]);
+            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A.re[%d] = %ld\n", v, exp.a, i, (long int) expected.re, expected_fp.re, i, (long int) A.re[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.re, A.re[i], "Error not within threshold. (real)");
 
           if(expected.im - A.im[i] > THRESHOLD || A.im[i] - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %d  ( %f );   A.im[%d] = %d\n", v, exp.a, i, expected.im, expected_fp.im, i, A.im[i]);
+            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A.im[%d] = %ld\n", v, exp.a, i, (long int) expected.im, expected_fp.im, i, (long int) A.im[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.im, A.im[i], "Error not within threshold. (imag)");
 #undef THRESHOLD
         }
@@ -137,7 +137,7 @@ TEST(vect_complex_macc, vect_complex_s16_nmacc)
     exp.a = -1024;
     hr.a = vect_complex_s16_headroom(A.re, A.im, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
@@ -163,8 +163,8 @@ TEST(vect_complex_macc, vect_complex_s16_nmacc)
         hr.c = vect_complex_s16_headroom(C.re, C.im, LEN);
 
         right_shift_t acc_shr, bc_shr;
-        vect_complex_s16_nmacc_prepare(&exp.a, &acc_shr, &bc_shr, 
-                                           exp.a, exp.b, exp.c, 
+        vect_complex_s16_nmacc_prepare(&exp.a, &acc_shr, &bc_shr,
+                                           exp.a, exp.b, exp.c,
                                            hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s16_nmacc(A.re, A.im, B.re, B.im, C.re, C.im, LEN, acc_shr, bc_shr);
@@ -186,11 +186,11 @@ TEST(vect_complex_macc, vect_complex_s16_nmacc)
 
 #define THRESHOLD  3
           if(expected.re - A.re[i] > THRESHOLD || A.re[i] - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %d  ( %f );   A.re[%d] = %d\n", v, exp.a, i, expected.re, expected_fp.re, i, A.re[i]);
+            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A.re[%d] = %ld\n", v, exp.a, i, (long int) expected.re, expected_fp.re, i, (long int) A.re[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.re, A.re[i], "Error not within threshold. (real)");
 
           if(expected.im - A.im[i] > THRESHOLD || A.im[i] - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %d  ( %f );   A.im[%d] = %d\n", v, exp.a, i, expected.im, expected_fp.im, i, A.im[i]);
+            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A.im[%d] = %ld\n", v, exp.a, i, (long int) expected.im, expected_fp.im, i, (long int) A.im[i]);
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.im, A.im[i], "Error not within threshold. (imag)");
 #undef THRESHOLD
         }
@@ -214,7 +214,7 @@ TEST(vect_complex_macc, vect_complex_s32_macc)
     exp.a = -1024;
     hr.a = vect_complex_s32_headroom(A, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -240,8 +240,8 @@ TEST(vect_complex_macc, vect_complex_s32_macc)
         hr.c = vect_complex_s32_headroom(C, LEN);
 
         right_shift_t acc_shr, b_shr, c_shr;
-        vect_complex_s32_macc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr, 
-                                          exp.a, exp.b, exp.c, 
+        vect_complex_s32_macc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr,
+                                          exp.a, exp.b, exp.c,
                                           hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s32_macc(A, B, C, LEN, acc_shr, b_shr, c_shr);
@@ -263,12 +263,12 @@ TEST(vect_complex_macc, vect_complex_s32_macc)
 
 #define THRESHOLD  3
           if(expected.re - A[i].re > THRESHOLD || A[i].re - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A[%d].re = %ld\n", v, exp.a, i, expected.re, expected_fp.re, i, A[i].re);
+            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A[%d].re = %ld\n", v, exp.a, i, (long int) expected.re, expected_fp.re, i, (long int) A[i].re);
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.re, A[i].re, "Error not within threshold (real).");
 
           if(expected.im - A[i].im > THRESHOLD || A[i].im - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A[%d].im = %ld\n", v, exp.a, i, expected.im, expected_fp.im, i, A[i].im);
+            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A[%d].im = %ld\n", v, exp.a, i, (long int) expected.im, expected_fp.im, i, (long int) A[i].im);
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.im, A[i].im, "Error not within threshold (imag).");
 #undef THRESHOLD
@@ -293,7 +293,7 @@ TEST(vect_complex_macc, vect_complex_s32_nmacc)
     exp.a = -1024;
     hr.a = vect_complex_s32_headroom(A, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -319,8 +319,8 @@ TEST(vect_complex_macc, vect_complex_s32_nmacc)
         hr.c = vect_complex_s32_headroom(C, LEN);
 
         right_shift_t acc_shr, b_shr, c_shr;
-        vect_complex_s32_nmacc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr, 
-                                           exp.a, exp.b, exp.c, 
+        vect_complex_s32_nmacc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr,
+                                           exp.a, exp.b, exp.c,
                                            hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s32_nmacc(A, B, C, LEN, acc_shr, b_shr, c_shr);
@@ -342,12 +342,12 @@ TEST(vect_complex_macc, vect_complex_s32_nmacc)
 
 #define THRESHOLD  3
           if(expected.re - A[i].re > THRESHOLD || A[i].re - expected.re > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A[%d].re = %ld\n", v, exp.a, i, expected.re, expected_fp.re, i, A[i].re);
+            printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A[%d].re = %ld\n", v, exp.a, i, (long int) expected.re, expected_fp.re, i, (long int) A[i].re);
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.re, A[i].re, "Error not within threshold (real).");
 
           if(expected.im - A[i].im > THRESHOLD || A[i].im - expected.im > THRESHOLD)
-            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A[%d].im = %ld\n", v, exp.a, i, expected.im, expected_fp.im, i, A[i].im);
+            printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A[%d].im = %ld\n", v, exp.a, i, (long int) expected.im, expected_fp.im, i, (long int) A[i].im);
           
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.im, A[i].im, "Error not within threshold (imag).");
 #undef THRESHOLD
