@@ -31,7 +31,7 @@ TEST_TEAR_DOWN(bfp_add_scalar) {}
 
 #define MAX_LEN     18  //Smaller lengths mean larger variance w.r.t. individual element headroom
 
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \
@@ -68,7 +68,7 @@ TEST(bfp_add_scalar, bfp_s16_add_scalar)
 
         test_double_from_s16(Bf, &B);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] + C;
         }
 
@@ -79,8 +79,8 @@ TEST(bfp_add_scalar, bfp_s16_add_scalar)
         XTEST_ASSERT_VECT_S16_WITHIN(2, expA, A.data, A.length,
             "B.hr = %u\n"
             "Expected: %d * 2^%d <-- (%d * 2^%d) + %e\n"
-            "Actual: %d * 2^%d\n", 
-            B.hr, expA[i], A.exp, B.data[i], B.exp, 
+            "Actual: %d * 2^%d\n",
+            B.hr, expA[i], A.exp, B.data[i], B.exp,
             C, A.data[i], A.exp);
     }
 }
@@ -115,7 +115,7 @@ TEST(bfp_add_scalar, bfp_s32_add_scalar)
 
         test_double_from_s32(Bf, &B);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] + Cf;
         }
 
@@ -123,7 +123,7 @@ TEST(bfp_add_scalar, bfp_s32_add_scalar)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(2, expA[i], A.data[i]);
         }
     }

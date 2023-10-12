@@ -74,7 +74,7 @@ TEST(vect_sqrt, vect_s32_sqrt_prepare)
 
     const unsigned start_vector = 0;
 
-    for(int v = start_vector; v < N_vectors; v++){
+    for(unsigned int v = start_vector; v < N_vectors; v++){
 
         test_vector* vector = &test_vectors[v];
 
@@ -134,7 +134,7 @@ TEST(vect_sqrt, vect_s16_sqrt_prepare)
 
     const unsigned start_vector = 0;
 
-    for(int v = start_vector; v < N_vectors; v++){
+    for(unsigned int v = start_vector; v < N_vectors; v++){
 
         test_vector* vector = &test_vectors[v];
 
@@ -173,7 +173,7 @@ TEST(vect_sqrt, vect_s16_sqrt_A)
     int16_t WORD_ALIGNED A[MAX_LEN];
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
@@ -223,7 +223,7 @@ TEST(vect_sqrt, vect_s16_sqrt_B)
     int16_t WORD_ALIGNED A[LENGTH];
     int16_t WORD_ALIGNED A_full[LENGTH];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
@@ -272,7 +272,7 @@ TEST(vect_sqrt, vect_s32_sqrt_A)
     int32_t A[MAX_LEN];
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         const unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
@@ -324,7 +324,7 @@ TEST(vect_sqrt, vect_s32_sqrt_B)
     int32_t A[LENGTH];
     int32_t A_full[LENGTH];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 

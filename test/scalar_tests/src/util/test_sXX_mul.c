@@ -36,7 +36,7 @@ TEST(sXX_mul, s16_mul)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
@@ -60,7 +60,7 @@ TEST(sXX_mul, s16_mul)
 
         double Ef = Bf * Cf;
 
-        int16_t expected = round( ldexp(Ef, -a_exp) );
+        int16_t expected = (int16_t) lround( ldexp(Ef, -a_exp) );
 
 
         TEST_ASSERT_INT16_WITHIN_MESSAGE(2, expected, A, "");
@@ -74,7 +74,7 @@ TEST(sXX_mul, s32_mul)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
     
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_RS(v, seed);
 
@@ -98,7 +98,7 @@ TEST(sXX_mul, s32_mul)
 
         double Ef = Bf * Cf;
 
-        int32_t expected = round( ldexp(Ef, -a_exp) );
+        int32_t expected = lround( ldexp(Ef, -a_exp) );
 
 
         TEST_ASSERT_INT32_WITHIN_MESSAGE(2, expected, A, "");

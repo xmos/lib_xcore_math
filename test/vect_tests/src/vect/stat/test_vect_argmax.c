@@ -76,7 +76,7 @@ TEST(vect_argmax, vect_s16_argmax_B)
     unsigned result;
     int16_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         const unsigned init_seed = seed;
 
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
@@ -86,7 +86,7 @@ TEST(vect_argmax, vect_s16_argmax_B)
 
         unsigned exp = 0;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int16(&seed);
             exp = (B[i] > B[exp])? i : exp;
         }
@@ -136,7 +136,7 @@ TEST(vect_argmax, vect_s32_argmax_B)
     unsigned result;
     int32_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         const unsigned init_seed = seed;
 
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
@@ -145,7 +145,7 @@ TEST(vect_argmax, vect_s32_argmax_B)
 
         unsigned exp = 0;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             // printf("i = %d     &B = 0x%08X\n", i, (unsigned) B);
             B[i] = pseudo_rand_int32(&seed);
             exp = (B[i] > B[exp])? i : exp;

@@ -45,7 +45,7 @@ TEST(bfp_complex_sum, bfp_complex_s16_sum)
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
 
-        bfp_complex_s16_init(&B, B_real, B_imag, 
+        bfp_complex_s16_init(&B, B_real, B_imag,
             pseudo_rand_int(&seed, -100, 100),
             pseudo_rand_uint(&seed, 0, MAX_LEN+1), 0);
 
@@ -53,10 +53,10 @@ TEST(bfp_complex_sum, bfp_complex_s16_sum)
 
         float_complex_s32_t expected = {
             {0, 0},
-            B.exp 
+            B.exp
         };
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
 
@@ -79,8 +79,6 @@ TEST(bfp_complex_sum, bfp_complex_s32_sum)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
 
-    conv_error_e error = 0;
-
     complex_s32_t B_data[MAX_LEN];
     
     bfp_complex_s32_t B;
@@ -96,7 +94,7 @@ TEST(bfp_complex_sum, bfp_complex_s32_sum)
 
         B.hr = pseudo_rand_uint(&seed, 0, 6);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             // Use only positive values so that they tend not to cancel out (which they might in practice)
             B.data[i].re = pseudo_rand_int(&seed, 0, INT32_MAX) >> B.hr;
             B.data[i].im = pseudo_rand_int(&seed, 0, INT32_MAX) >> B.hr;
@@ -112,7 +110,7 @@ TEST(bfp_complex_sum, bfp_complex_s32_sum)
         
         complex_s64_t expected = {0, 0};
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
           expected.re += (B.data[i].re + (shr? (1<<(shr-1)) : 0)) >> shr;
           expected.im += (B.data[i].im + (shr? (1<<(shr-1)) : 0)) >> shr;
         }

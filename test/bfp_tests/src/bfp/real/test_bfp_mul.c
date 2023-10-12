@@ -31,8 +31,7 @@ TEST_TEAR_DOWN(bfp_mul) {}
 #  define MAX_LEN    (512)
 #endif
 
-
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \
@@ -70,7 +69,7 @@ TEST(bfp_mul, bfp_s16_mul)
         test_double_from_s16(Bf, &B);
         test_double_from_s16(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] * Cf[i];
         }
 
@@ -78,7 +77,7 @@ TEST(bfp_mul, bfp_s16_mul)
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
         }
     }
@@ -112,7 +111,7 @@ TEST(bfp_mul, bfp_s32_mul)
         test_random_bfp_s32(&C, MAX_LEN, &seed, &A, B.length);
 
         //Just to make the test easier.
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = B.data[i] & 0xFFFFFFFE;
             C.data[i] = C.data[i] & 0xFFFFFFFE;
         }
@@ -120,7 +119,7 @@ TEST(bfp_mul, bfp_s32_mul)
         test_double_from_s32(Bf, &B);
         test_double_from_s32(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] * Cf[i];
         }
 
@@ -128,7 +127,7 @@ TEST(bfp_mul, bfp_s32_mul)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(1, expA[i], A.data[i]);
         }
     }

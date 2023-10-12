@@ -33,7 +33,7 @@ void fft_index_bit_reversal(
     complex_s32_t* a,
     const unsigned length)
 {
-    size_t logn = u32_ceil_log2(length);
+    unsigned int logn = u32_ceil_log2(length);
     for(unsigned i = 0; i < length; i++){
         
         unsigned rev = n_bitrev(i, logn);

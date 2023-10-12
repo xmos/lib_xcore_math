@@ -43,14 +43,14 @@ TEST(vect_headroom, vect_s16_headroom)
 
     int16_t WORD_ALIGNED A[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         unsigned length = pseudo_rand_uint(&seed, 100, MAX_LEN+1);
 
         const headroom_t shr = pseudo_rand_uint(&seed, 0, 15);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             A[i] = pseudo_rand_int16(&seed) >> shr;
         }
 
@@ -58,7 +58,7 @@ TEST(vect_headroom, vect_s16_headroom)
 
         headroom_t min_hr = INT32_MAX;
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             min_hr = MIN( min_hr, HR_S16(A[i]) );
         }
 
@@ -74,14 +74,14 @@ TEST(vect_headroom, vect_s32_headroom)
 
     int32_t A[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         const unsigned length = pseudo_rand_uint(&seed, 100, MAX_LEN+1);
 
         const headroom_t shr = pseudo_rand_uint(&seed, 0, 31);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             A[i] = pseudo_rand_int32(&seed) >> shr;
         }
 
@@ -89,7 +89,7 @@ TEST(vect_headroom, vect_s32_headroom)
 
         headroom_t min_hr = INT32_MAX;
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             min_hr = MIN( min_hr, HR_S32(A[i]) );
         }
 
@@ -106,14 +106,14 @@ TEST(vect_headroom, vect_complex_s16_headroom)
     int16_t WORD_ALIGNED A_real[MAX_LEN];
     int16_t WORD_ALIGNED A_imag[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         const unsigned length = pseudo_rand_uint(&seed, 100, MAX_LEN+1);
 
         const headroom_t shr = pseudo_rand_uint(&seed, 0, 15);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             A_real[i] = pseudo_rand_int16(&seed) >> shr;
             A_imag[i] = pseudo_rand_int16(&seed) >> shr;
         }
@@ -122,7 +122,7 @@ TEST(vect_headroom, vect_complex_s16_headroom)
 
         headroom_t min_hr = INT32_MAX;
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             min_hr = MIN( min_hr, HR_S16(A_real[i]) );
             min_hr = MIN( min_hr, HR_S16(A_imag[i]) );
         }
@@ -139,14 +139,14 @@ TEST(vect_headroom, vect_complex_s32_headroom)
 
     complex_s32_t A[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         const unsigned length = pseudo_rand_uint(&seed, 100, MAX_LEN+1);
 
         const headroom_t shr = pseudo_rand_uint(&seed, 0, 31);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             A[i].re = pseudo_rand_int32(&seed) >> shr;
             A[i].im = pseudo_rand_int32(&seed) >> shr;
         }
@@ -155,7 +155,7 @@ TEST(vect_headroom, vect_complex_s32_headroom)
 
         headroom_t min_hr = INT32_MAX;
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             min_hr = MIN( min_hr, HR_S32(A[i].re) );
             min_hr = MIN( min_hr, HR_S32(A[i].im) );
         }

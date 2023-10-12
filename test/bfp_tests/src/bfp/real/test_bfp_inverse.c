@@ -25,8 +25,7 @@ TEST_GROUP(bfp_inverse);
 TEST_SETUP(bfp_inverse) { fflush(stdout); }
 TEST_TEAR_DOWN(bfp_inverse) {}
 
-
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define MAX_LEN     30
 #define REPS        30
@@ -42,19 +41,19 @@ TEST(bfp_inverse, bfp_s16_inverse)
     int16_t WORD_ALIGNED A_data[MAX_LEN];
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         bfp_s16_t A, B;
 
-        bfp_s16_init(&B, B_data, 
+        bfp_s16_init(&B, B_data,
                           pseudo_rand_int(&seed, -30, 30),
                           pseudo_rand_uint(&seed, 0, MAX_LEN-1), 0);
         bfp_s16_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 12);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
             if( B.data[i] == 0 )
                 B.data[i] = 1;
@@ -64,7 +63,7 @@ TEST(bfp_inverse, bfp_s16_inverse)
 
         double expected_flt[MAX_LEN];
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             expected_flt[i] = 1.0 / ldexp(B.data[i], B.exp);
         }
 
@@ -72,7 +71,7 @@ TEST(bfp_inverse, bfp_s16_inverse)
 
         test_s16_from_double(expected, expected_flt, A.length, A.exp);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             TEST_ASSERT_INT16_WITHIN(2, expected[i], A.data[i]);
         }
     }
@@ -87,19 +86,19 @@ TEST(bfp_inverse, bfp_s32_inverse)
     int32_t A_data[MAX_LEN];
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
         bfp_s32_t A, B;
 
-        bfp_s32_init(&B, B_data, 
+        bfp_s32_init(&B, B_data,
                           pseudo_rand_int(&seed, -30, 30),
                           pseudo_rand_uint(&seed, 0, MAX_LEN-1), 0);
         bfp_s32_init(&A, A_data, 0, B.length, 0);
 
         B.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
             if( B.data[i] == 0 )
                 B.data[i] = 1;
@@ -109,7 +108,7 @@ TEST(bfp_inverse, bfp_s32_inverse)
 
         double expected_flt[MAX_LEN];
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             expected_flt[i] = 1.0 / ldexp(B.data[i], B.exp);
         }
 
@@ -117,7 +116,7 @@ TEST(bfp_inverse, bfp_s32_inverse)
 
         test_s32_from_double(expected, expected_flt, A.length, A.exp);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             TEST_ASSERT_INT32_WITHIN(2, expected[i], A.data[i]);
         }
     }

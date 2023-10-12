@@ -59,7 +59,7 @@ TEST(vect_shr, vect_s16_shr_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
+    test_case_t cases[] = {
         //    value     shr     expected    line #
         {        1,      0,           1,    __LINE__},
         {        0,      0,           0,    __LINE__},
@@ -87,14 +87,14 @@ TEST(vect_shr, vect_s16_shr_basic)
         {  -0x8000,      0,     -0x7FFF,    __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         int16_t B[1] = { casse->value };
         int16_t A[1] = { 0xCC };
@@ -120,7 +120,7 @@ TEST(vect_shr, vect_s16_shr_random)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
         
@@ -183,42 +183,42 @@ TEST(vect_shr, vect_s32_shr_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
-        //    value     shr     expected    line #
-        {            1,      0,               1,    __LINE__},
-        {            0,      0,               0,    __LINE__},
-        {           -1,      0,              -1,    __LINE__},
-        {            2,      0,               2,    __LINE__},
-        {            3,      0,               3,    __LINE__},
-        {           -2,      0,              -2,    __LINE__},
-        {           -3,      0,              -3,    __LINE__},
-        {   0x00FF0000,      0,      0x00FF0000,    __LINE__},
-        {            1,     -1,               2,    __LINE__},
-        {            1,     -2,               4,    __LINE__},
-        {            1,     -3,               8,    __LINE__},
-        {            1,      1,               0,    __LINE__},
-        {            1,      2,               0,    __LINE__},
-        {   0x07F00000,     -1,      0x0FE00000,    __LINE__},
-        {   0x07F00000,      1,      0x03F80000,    __LINE__},
-        {   0x07F00000,     -2,      0x1FC00000,    __LINE__},
-        {  -0x00080000,     -1,     -0x00100000,    __LINE__},
-        {  -0x00080000,      1,     -0x00040000,    __LINE__},
-        {  -0x00080000,      2,     -0x00020000,    __LINE__},
-        {  -0x00080000,      3,     -0x00010000,    __LINE__},
-        {  -0x00080000,      4,     -0x00008000,    __LINE__},
-        {   0x10000000,     -3,      0x7FFFFFFF,    __LINE__},
-        {  -0x10000000,     -3,     -0x7FFFFFFF,    __LINE__},
-        {  -0x80000000,      0,     -0x7FFFFFFF,    __LINE__},
+    test_case_t cases[] = {
+        //                value       shr         expected       line #
+        {                     1,        0,               1,    __LINE__},
+        {                     0,        0,               0,    __LINE__},
+        {                    -1,        0,              -1,    __LINE__},
+        {                     2,        0,               2,    __LINE__},
+        {                     3,        0,               3,    __LINE__},
+        {                    -2,        0,              -2,    __LINE__},
+        {                    -3,        0,              -3,    __LINE__},
+        {            0x00FF0000,        0,      0x00FF0000,    __LINE__},
+        {                     1,       -1,               2,    __LINE__},
+        {                     1,       -2,               4,    __LINE__},
+        {                     1,       -3,               8,    __LINE__},
+        {                     1,        1,               0,    __LINE__},
+        {                     1,        2,               0,    __LINE__},
+        {            0x07F00000,       -1,      0x0FE00000,    __LINE__},
+        {            0x07F00000,        1,      0x03F80000,    __LINE__},
+        {            0x07F00000,       -2,      0x1FC00000,    __LINE__},
+        {           -0x00080000,       -1,     -0x00100000,    __LINE__},
+        {           -0x00080000,        1,     -0x00040000,    __LINE__},
+        {           -0x00080000,        2,     -0x00020000,    __LINE__},
+        {           -0x00080000,        3,     -0x00010000,    __LINE__},
+        {           -0x00080000,        4,     -0x00008000,    __LINE__},
+        {            0x10000000,       -3,      0x7FFFFFFF,    __LINE__},
+        {           -0x10000000,       -3,     -0x7FFFFFFF,    __LINE__},
+        {  (int) (0-0x80000000),        0,     -0x7FFFFFFF,    __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         int32_t B[1] = { casse->value };
         int32_t A[1] = { 0xCC };
@@ -244,7 +244,7 @@ TEST(vect_shr, vect_s32_shr_random)
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
         
@@ -283,7 +283,7 @@ TEST(vect_shr, vect_s32_shr_random)
                 }
                 
                 if(((int32_t)exp) != A[i]){
-                    sprintf(msg_buff, "rep(%d)[%d]: %ld <-- (%ld >> %d)     (A[i]=0x%04X; B[i]=0x%04X)\n",v, i, A[i], B[i], shr,  (unsigned)A[i],  (unsigned)B[i]);
+                    sprintf(msg_buff, "rep(%d)[%d]: %ld <-- (%ld >> %d)     (A[i]=0x%04X; B[i]=0x%04X)\n",v, i, (long int) A[i], (long int) B[i], shr,  (unsigned)A[i],  (unsigned)B[i]);
                 }
                 TEST_ASSERT_EQUAL_MESSAGE((int32_t)exp, A[i], msg_buff);
             }
@@ -306,7 +306,7 @@ TEST(vect_shr, vect_complex_s16_shr)
     int16_t WORD_ALIGNED B_real[MAX_LEN];
     int16_t WORD_ALIGNED B_imag[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
@@ -316,14 +316,14 @@ TEST(vect_shr, vect_complex_s16_shr)
 
         const left_shift_t shr = pseudo_rand_int(&seed, -4, 4);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B_real[i] = pseudo_rand_int16(&seed) >> hr;
             B_imag[i] = pseudo_rand_int16(&seed) >> hr;
         }
 
         vect_complex_s16_shr(A_real, A_imag, B_real, B_imag, length, shr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], shr), A_real[i] );
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_imag[i], shr), A_imag[i] );
         }
@@ -333,7 +333,7 @@ TEST(vect_shr, vect_complex_s16_shr)
 
         vect_complex_s16_shr(A_real, A_imag, A_real, A_imag, length, shr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_real[i], shr), A_real[i] );
             TEST_ASSERT_EQUAL_HEX16( ASHR16(B_imag[i], shr), A_imag[i] );
         }
@@ -350,7 +350,7 @@ TEST(vect_shr, vect_complex_s32_shr)
     complex_s32_t A[MAX_LEN];
     complex_s32_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
@@ -360,14 +360,14 @@ TEST(vect_shr, vect_complex_s32_shr)
 
         const left_shift_t shr = pseudo_rand_int(&seed, -8, 8);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             B[i].re = pseudo_rand_int32(&seed) >> hr;
             B[i].im = pseudo_rand_int32(&seed) >> hr;
         }
 
         vect_complex_s32_shr(A, B, length, shr);
 
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, shr), A[i].re );
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].im, shr), A[i].im );
         }
@@ -376,7 +376,7 @@ TEST(vect_shr, vect_complex_s32_shr)
 
         vect_complex_s32_shr(A, A, length, shr);
         
-        for(int i = 0; i < length; i++){
+        for(unsigned int i = 0; i < length; i++){
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].re, shr), A[i].re );
             TEST_ASSERT_EQUAL_HEX32( ASHR32(B[i].im, shr), A[i].im );
         }
@@ -394,7 +394,7 @@ TEST(vect_shr, vect_split_acc_s32_shr)
   int32_t expected[MAX_LEN];
   split_acc_s32_t DWORD_ALIGNED acc[(MAX_LEN + (VPU_INT16_EPV-1)) / VPU_INT16_EPV];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_R(v);
 
@@ -402,7 +402,7 @@ TEST(vect_shr, vect_split_acc_s32_shr)
 
     headroom_t hr = pseudo_rand_uint(&seed, 0, 8);
     
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       acc_s32[i] = pseudo_rand_int32(&seed) >> hr;
     }
 
@@ -410,9 +410,9 @@ TEST(vect_shr, vect_split_acc_s32_shr)
 
     hr = vect_s32_headroom(acc_s32, length);
     
-    const right_shift_t shr = pseudo_rand_int(&seed, -hr, (20-hr));
+    const right_shift_t shr = pseudo_rand_int(&seed, -(int)hr, (20-hr));
 
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       if(shr >= 0)
         expected[k] = acc_s32[k] >> shr;
       else

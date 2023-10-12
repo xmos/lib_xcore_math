@@ -32,8 +32,7 @@ TEST_TEAR_DOWN(bfp_complex_real_mul) {}
 #  define MAX_LEN    (512)
 #endif
 
-
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \
@@ -71,7 +70,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
 
-        bfp_complex_s16_init(&B, B_data.real, B_data.imag, 
+        bfp_complex_s16_init(&B, B_data.real, B_data.imag,
             pseudo_rand_int(&seed, -30, 30),
             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
 
@@ -82,7 +81,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
         B.hr = pseudo_rand_uint(&seed, 0, 12);
         C.hr = pseudo_rand_uint(&seed, 0, 12);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
             C.data[i] = pseudo_rand_int16(&seed) >> C.hr;
@@ -91,7 +90,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
         test_double_from_complex_s16(Bf.real, Bf.imag, &B);
         test_double_from_s16(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af.real[i] = Bf.real[i] * Cf[i];
             Af.imag[i] = Bf.imag[i] * Cf[i];
         }
@@ -102,7 +101,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s16_real_mul)
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
 
             // printf("A.real[%d] = %d <--  %d       %d\n", i,  A.real[i], B.real[i], C.data[i]);
             // printf("A.imag[%d] = %d <--  %d       %d\n", i,  A.imag[i], B.imag[i], C.data[i]);
@@ -139,7 +138,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
 
-        bfp_complex_s32_init(&B, B_data, 
+        bfp_complex_s32_init(&B, B_data,
             pseudo_rand_int(&seed, -30, 30),
             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
         
@@ -150,7 +149,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
         B.hr = pseudo_rand_uint(&seed, 0, 28);
         C.hr = pseudo_rand_uint(&seed, 0, 28);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
 
             B.data[i].re = pseudo_rand_int16(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int16(&seed) >> B.hr;
@@ -160,7 +159,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
         test_double_from_complex_s32(Bf.real, Bf.imag, &B);
         test_double_from_s32(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af.real[i] = Bf.real[i] * Cf[i];
             Af.imag[i] = Bf.imag[i] * Cf[i];
         }
@@ -171,7 +170,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
 
         test_complex_s32_from_double(expected, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
 
             // printf("A.real[%d] = %d <--  %d       %d\n", i,  A.real[i], B.real[i], C.data[i]);
             // printf("A.imag[%d] = %d <--  %d       %d\n", i,  A.imag[i], B.imag[i], C.data[i]);
@@ -186,8 +185,8 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mul)
 /**
   *  astew: 2022/07/01 -- Test case comes from Shuchita via issue #102.
   *         Added to unit tests to make sure this loop is closed.
-  *  
-  *  This test case demonstrated a bug in the logic of vect_complex_s32_real_mul_prepare(), 
+  *
+  *  This test case demonstrated a bug in the logic of vect_complex_s32_real_mul_prepare(),
   *   which was allowing the input vectors to be left-shifted more bits than they had headroom.
   *   vect_complex_s32_real_mul_prepare() has been fixed, so this should no longer be an issue.
   */
@@ -233,7 +232,7 @@ TEST(bfp_complex_real_mul, bfp_complex_s32_real_mulB)
   bfp_complex_s32_t output;
   bfp_complex_s32_init(&output, out_data, 0, 10, 0);
 
-  bfp_complex_s32_real_mul(&output, &input, &scale); // Error_ap[0][f] * 
+  bfp_complex_s32_real_mul(&output, &input, &scale); // Error_ap[0][f] *
 
   bfp_complex_s32_shl(&output, &output, output.hr);
   bfp_complex_s32_shl(&input, &input, input.hr);

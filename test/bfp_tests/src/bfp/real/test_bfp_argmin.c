@@ -43,7 +43,7 @@ TEST(bfp_argmin, bfp_s16_argmin)
         B.exp = pseudo_rand_int(&seed, -5, 5);
         B.hr = pseudo_rand_uint(&seed, 0, 15);
         unsigned exp = 0;
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
             exp = (B.data[exp] <= B.data[i])? exp : i;
         }
@@ -66,7 +66,7 @@ TEST(bfp_argmin, bfp_s32_argmin)
                             pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
         B.hr = pseudo_rand_uint(&seed, 0, 28);
         unsigned exp = 0;
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
             exp = (B.data[exp] <= B.data[i])? exp : i;
         }

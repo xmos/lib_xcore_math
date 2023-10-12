@@ -24,11 +24,13 @@ target_compile_options( ${APP_NAME}
 if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   target_compile_options( ${APP_NAME}
     PRIVATE
+      -Werror
       -g
   )
 else()
     target_compile_options( ${APP_NAME}
     PRIVATE
+      -WX
       # Suppress warning C4996: 'sprintf': This function or variable may be unsafe.
       # Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
       # See online help for details.

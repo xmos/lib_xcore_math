@@ -44,7 +44,7 @@ TEST(vect_min, vect_s16_min_random)
     int16_t result;
     int16_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         // len = 32;
@@ -53,7 +53,7 @@ TEST(vect_min, vect_s16_min_random)
 
         int16_t min = 0x7FFF;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int16(&seed);
             min = MIN(min, B[i]);
         }
@@ -74,7 +74,7 @@ TEST(vect_min, vect_s32_min_random)
     int32_t result;
     int32_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         // len = 1;
@@ -83,7 +83,7 @@ TEST(vect_min, vect_s32_min_random)
 
         int32_t min = 0x7FFFFFFF;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             // B[i] = pseudo_rand_int32(&seed);
             // B[i] = i;
             min = MIN(min, B[i]);

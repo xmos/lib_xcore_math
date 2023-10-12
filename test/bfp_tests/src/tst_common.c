@@ -5,8 +5,9 @@
 
 #include "unity_fixture.h"
 
+#if !(SMOKE_TEST)
 char detail_buff[200];
-
+#endif
 
 void setExtraInfo_R(
     int rep)
@@ -18,7 +19,7 @@ void setExtraInfo_R(
 }
 
 void setExtraInfo_RS(
-    int rep, 
+    int rep,
     unsigned seed)
 {
 #if !(SMOKE_TEST)
@@ -28,8 +29,8 @@ void setExtraInfo_RS(
 }
 
 void setExtraInfo_RSL(
-    int rep, 
-    unsigned seed, 
+    int rep,
+    unsigned seed,
     unsigned length)
 {
 #if !(SMOKE_TEST)

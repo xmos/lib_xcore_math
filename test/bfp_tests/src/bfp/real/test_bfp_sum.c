@@ -52,7 +52,7 @@ TEST(bfp_sum, bfp_s16_sum)
             .mant = 0,
             .exp = B.exp };
 
-        for(int i = 0; i < B.length; i++)
+        for(unsigned int i = 0; i < B.length; i++)
             expected.mant += B.data[i];
 
         TEST_ASSERT_EQUAL(expected.exp, result.exp);
@@ -80,7 +80,7 @@ TEST(bfp_sum, bfp_s32_sum)
             .mant = 0,
             .exp = B.exp };
             
-        for(int i = 0; i < B.length; i++)
+        for(unsigned int i = 0; i < B.length; i++)
             expected.mant += B.data[i];
 
         TEST_ASSERT_EQUAL(expected.exp, result.exp);

@@ -35,22 +35,22 @@ TEST(float_trig, f32_sin)
 
   // printf("\n\n");
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
     // -32.0 <= x < 32.0
-    float x = ldexpf(pseudo_rand_int32(&seed), -26);
+    float x = ldexpf((float) pseudo_rand_int32(&seed), -26);
 
     // x = -5.4977f;
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     float exp = sinf(x);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    volatile uint32_t t2 = get_reference_time();
+    // volatile uint32_t t2 = get_reference_time();
     float result = f32_sin(x);
-    volatile uint32_t t3 = get_reference_time();
+    // volatile uint32_t t3 = get_reference_time();
 
 
     // Compare as Q31
@@ -58,8 +58,8 @@ TEST(float_trig, f32_sin)
 
     TEST_ASSERT_FLOAT_WITHIN(ldexpf(1,-17), 0.0, diff);
     
-    float ref = (t1-t0) / 100.0f;
-    float mine = (t3-t2) / 100.0f;
+    // float ref = (t1-t0) / 100.0f;
+    // float mine = (t3-t2) / 100.0f;
 
     // printf("[timing] Mine: %0.04f us\tRef: %0.04f us\n", mine, ref);
   }
@@ -74,22 +74,22 @@ TEST(float_trig, f32_cos)
 
   // printf("\n\n");
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
     // -32.0 <= x < 32.0
-    float x = ldexpf(pseudo_rand_int32(&seed), -26);
+    float x = ldexpf((float) pseudo_rand_int32(&seed), -26);
 
     // x = -5.4977f;
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     float exp = cosf(x);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    volatile uint32_t t2 = get_reference_time();
+    // volatile uint32_t t2 = get_reference_time();
     float result = f32_cos(x);
-    volatile uint32_t t3 = get_reference_time();
+    // volatile uint32_t t3 = get_reference_time();
 
 
     // Compare as Q31
@@ -97,8 +97,8 @@ TEST(float_trig, f32_cos)
 
     TEST_ASSERT_FLOAT_WITHIN(ldexpf(1,-17), 0.0, diff);
     
-    float ref = (t1-t0) / 100.0f;
-    float mine = (t3-t2) / 100.0f;
+    // float ref = (t1-t0) / 100.0f;
+    // float mine = (t3-t2) / 100.0f;
 
     // printf("[timing] Mine: %0.04f us\tRef: %0.04f us\n", mine, ref);
   }

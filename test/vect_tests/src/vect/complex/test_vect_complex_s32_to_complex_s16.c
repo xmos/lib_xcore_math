@@ -69,7 +69,7 @@ TEST(vect_complex_s32_to_vect_complex_s16, vect_complex_s32_to_vect_complex_s16_
 
     const unsigned start_case = 0;
     char buff[100];
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -85,7 +85,7 @@ TEST(vect_complex_s32_to_vect_complex_s16, vect_complex_s32_to_vect_complex_s16_
         for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
             unsigned len = lengths[i];
 
-            for(int i = 0; i < MAX_LEN; i++){
+            for(unsigned int i = 0; i < MAX_LEN; i++){
                 B[i] = casse->b;
                 A.real[i] = 0xCCCC;
                 A.imag[i] = 0xCCCC;
@@ -93,7 +93,7 @@ TEST(vect_complex_s32_to_vect_complex_s16, vect_complex_s32_to_vect_complex_s16_
 
             vect_complex_s32_to_vect_complex_s16(A.real, A.imag, B, len, casse->b_shr);
 
-            for(int k = 0; k < len; k++) {
+            for(unsigned int k = 0; k < len; k++) {
                 TEST_ASSERT_EQUAL_MESSAGE(casse->expected.re, A.real[k], buff);
                 TEST_ASSERT_EQUAL_MESSAGE(casse->expected.im, A.imag[k], buff);
             }

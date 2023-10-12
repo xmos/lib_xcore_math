@@ -31,7 +31,7 @@ TEST_TEAR_DOWN(bfp_add) {}
 
 #define MAX_LEN     18  //Smaller lengths mean larger variance w.r.t. individual element headroom
 
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \
@@ -69,7 +69,7 @@ TEST(bfp_add, bfp_s16_add)
         test_double_from_s16(Bf, &B);
         test_double_from_s16(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] + Cf[i];
         }
 
@@ -81,8 +81,8 @@ TEST(bfp_add, bfp_s16_add)
             "B.hr = %u\n"
             "C.hr = %u\n"
             "Expected: %d * 2^%d <-- (%d * 2^%d) + (%d * 2^%d)\n"
-            "Actual: %d * 2^%d\n", 
-            B.hr, C.hr, expA[i], A.exp, B.data[i], B.exp, 
+            "Actual: %d * 2^%d\n",
+            B.hr, C.hr, expA[i], A.exp, B.data[i], B.exp,
             C.data[i], C.exp, A.data[i], A.exp);
     }
 }
@@ -115,7 +115,7 @@ TEST(bfp_add, bfp_s32_add)
         test_double_from_s32(Bf, &B);
         test_double_from_s32(Cf, &C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Bf[i] + Cf[i];
         }
 
@@ -123,7 +123,7 @@ TEST(bfp_add, bfp_s32_add)
 
         test_s32_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(1, expA[i], A.data[i]);
         }
     }

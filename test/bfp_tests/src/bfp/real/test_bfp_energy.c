@@ -50,7 +50,7 @@ TEST(bfp_energy, bfp_s16_energy)
 
         int64_t sum64 = 0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
 
             sum64 += ((int32_t)B.data[i]) * B.data[i];
@@ -60,8 +60,8 @@ TEST(bfp_energy, bfp_s16_energy)
 
         float_s64_t result = bfp_s16_energy(&B);
 
-        double expf = ldexp(sum64, 2*B.exp);
-        double resf = ldexp(result.mant, result.exp);
+        double expf = ldexp((double) sum64, 2*B.exp);
+        double resf = ldexp((double) result.mant, result.exp);
 
         TEST_ASSERT(expf == resf);
     }
@@ -87,7 +87,7 @@ TEST(bfp_energy, bfp_s32_energy)
 
         double expected = 0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
 
             expected += pow(ldexp(B.data[i], B.exp), 2);
@@ -97,7 +97,7 @@ TEST(bfp_energy, bfp_s32_energy)
         
         float_s64_t result = bfp_s32_energy(&B);
 
-        double diff = expected-ldexp(result.mant, result.exp);
+        double diff = expected-ldexp((double) result.mant, result.exp);
         double error = fabs(diff/expected);
 
         TEST_ASSERT( error < ldexp(1,-20) );

@@ -69,7 +69,7 @@ TEST(vect_f32_fft, fft_f32_forward)
       const exponent_t initial_exponent = sext(pseudo_rand_int32(&r), EXPONENT_SIZE);
 
       for(unsigned i = 0; i < FFT_N; i++){
-        a[i] = ldexpf(pseudo_rand_int32(&r), initial_exponent);
+        a[i] = ldexpf((float) pseudo_rand_int32(&r), initial_exponent);
         ref[i].re = a[i];
         ref[i].im = 0;
       }
@@ -82,15 +82,15 @@ TEST(vect_f32_fft, fft_f32_forward)
       complex_float_t* a_fft = fft_f32_forward(&a[0], FFT_N);
       unsigned ts2 = getTimestamp();
       
-      float timing = (ts2-ts1)/100.0;
+      float timing = (float) ((ts2-ts1)/100.0);
       if(timing > worst_timing) worst_timing = timing;
 
       // Finding the max element of each and making sure they're similar
-      // establishes a scale for the spectrum. 
+      // establishes a scale for the spectrum.
       double a_max = 0.0f;
       double ref_max = 0.0;
 
-      for(int k = 0; k < FFT_N/2; k++){
+      for(unsigned int k = 0; k < FFT_N/2; k++){
         double a_mag = a_fft[k].re * a_fft[k].re + a_fft[k].im * a_fft[k].im;
         double ref_mag = ref[k].re * ref[k].re + ref[k].im * ref[k].im;
 
@@ -104,7 +104,7 @@ TEST(vect_f32_fft, fft_f32_forward)
 
       double max_diff = ldexp(1, -17) * ref_max;
 
-      for(int k = 0; k < FFT_N/2; k++){
+      for(unsigned int k = 0; k < FFT_N/2; k++){
         TEST_ASSERT( fabs(ref[k].re - a_fft[k].re) <= max_diff );
         TEST_ASSERT( fabs(ref[k].im - a_fft[k].im) <= max_diff );
       }
@@ -154,8 +154,8 @@ TEST(vect_f32_fft, fft_f32_inverse)
       const exponent_t initial_exponent = sext(pseudo_rand_int32(&r), EXPONENT_SIZE);
       
       for(unsigned i = 0; i < N/2; i++){
-        ref[i].re = a_fft[i].re = ldexpf(pseudo_rand_int32(&r), initial_exponent);
-        ref[i].im = a_fft[i].im = ldexpf(pseudo_rand_int32(&r), initial_exponent);
+        ref[i].re = a_fft[i].re = ldexpf((float) pseudo_rand_int32(&r), initial_exponent);
+        ref[i].im = a_fft[i].im = ldexpf((float) pseudo_rand_int32(&r), initial_exponent);
         
         if(i){
           ref[N-i].re =  ref[i].re;
@@ -173,17 +173,17 @@ TEST(vect_f32_fft, fft_f32_inverse)
       float* a = fft_f32_inverse(&a_fft[0], FFT_N);
       unsigned ts2 = getTimestamp();
       
-      float timing = (ts2-ts1)/100.0;
+      float timing = (float) ((ts2-ts1)/100.0);
       if(timing > worst_timing) worst_timing = timing;
 
-      for(int i = 0; i < N; i++)
+      for(unsigned int i = 0; i < N; i++)
         ref_real[i] = ref[i].re;
 
       
       double a_max = 0.0f;
       double ref_max = 0.0;
 
-      for(int k = 0; k < FFT_N; k++){
+      for(unsigned int k = 0; k < FFT_N; k++){
         double AA = fabs(a[k]);
         double BB = fabs(ref_real[k]);
 
@@ -197,7 +197,7 @@ TEST(vect_f32_fft, fft_f32_inverse)
 
       double max_diff = ldexp(1, -17) * ref_max;
 
-      for(int k = 0; k < FFT_N; k++){
+      for(unsigned int k = 0; k < FFT_N; k++){
         TEST_ASSERT( fabs(ref_real[k] - a[k]) <= max_diff );
       }
     }

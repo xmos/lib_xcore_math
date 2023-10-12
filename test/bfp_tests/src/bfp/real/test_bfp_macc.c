@@ -73,7 +73,7 @@ TEST(bfp_macc, bfp_s16_macc)
         bfp_s16_headroom(&B);
         bfp_s16_headroom(&C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Af[i] + ldexp(B.data[i], B.exp) * ldexp(C.data[i], C.exp);
         }
 
@@ -81,7 +81,7 @@ TEST(bfp_macc, bfp_s16_macc)
 
         test_s16_from_double(expA, Af, LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(2, expA[i], A.data[i]);
         }
     }
@@ -125,7 +125,7 @@ TEST(bfp_macc, bfp_s16_nmacc)
         bfp_s16_headroom(&B);
         bfp_s16_headroom(&C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Af[i] - ldexp(B.data[i], B.exp) * ldexp(C.data[i], C.exp);
         }
 
@@ -133,7 +133,7 @@ TEST(bfp_macc, bfp_s16_nmacc)
 
         test_s16_from_double(expA, Af, LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(2, expA[i], A.data[i]);
         }
     }
@@ -177,7 +177,7 @@ TEST(bfp_macc, bfp_s32_macc)
         bfp_s32_headroom(&B);
         bfp_s32_headroom(&C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Af[i] + ldexp(B.data[i], B.exp) * ldexp(C.data[i], C.exp);
         }
 
@@ -185,7 +185,7 @@ TEST(bfp_macc, bfp_s32_macc)
 
         test_s32_from_double(expA, Af, LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(2, expA[i], A.data[i]);
         }
     }
@@ -229,7 +229,7 @@ TEST(bfp_macc, bfp_s32_nmacc)
         bfp_s32_headroom(&B);
         bfp_s32_headroom(&C);
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             Af[i] = Af[i] - ldexp(B.data[i], B.exp) * ldexp(C.data[i], C.exp);
         }
 
@@ -237,7 +237,7 @@ TEST(bfp_macc, bfp_s32_nmacc)
 
         test_s32_from_double(expA, Af, LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(2, expA[i], A.data[i]);
         }
     }

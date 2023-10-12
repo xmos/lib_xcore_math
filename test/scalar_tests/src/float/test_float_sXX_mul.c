@@ -39,7 +39,7 @@ TEST(float_sXX_mul, float_s32_mul)
   float_s32_t x, y;
   conv_error_e error = 0;
   
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
@@ -74,7 +74,7 @@ TEST(float_sXX_mul, float_complex_s16_mul)
   float_complex_s16_t x, y;
   conv_error_e error = 0;
   
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
@@ -118,7 +118,7 @@ TEST(float_sXX_mul, float_complex_s32_mul)
   float_complex_s32_t x, y;
   conv_error_e error = 0;
   
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 
