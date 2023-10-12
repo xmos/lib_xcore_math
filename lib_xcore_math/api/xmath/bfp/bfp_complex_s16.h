@@ -298,7 +298,7 @@ void bfp_complex_s16_shl(
  * @operation{
  * &    A_k \leftarrow B_k \cdot C_k                    \\
  * &        \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
+ * &        \qquad\text{where } N \text{ is the length of } \bar{B}\text{ and }\bar{C}
  * }
  * 
  * @param[out] a     Output complex BFP vector @vector{A}

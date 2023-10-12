@@ -22,11 +22,10 @@ extern "C" {
  * `x->length`. The operation is performed in-place, resulting in an @math{N/2}-element complex
  * 32-bit BFP vector.
  * 
- * The operation performed is:
- * @f[
- *      X[f] = \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)  \\
- *      \text{ for } 0 \le f \le N/2
- * @f]
+ * @operation{
+ * &    X[f] = \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)  \\
+ * &         \text{ for } 0 \le f \le N/2
+ * }
  * where @math{x[n]} is the BFP vector initially represented by `x`, and @math{X[f]} is the DFT of
  * @math{x[n]} represented by the returned pointer.
  * 
@@ -80,11 +79,10 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
  * `2*x->length`. The operation is performed in-place, resulting in an @math{N}-element real 32-bit
  * BFP vector.
  * 
- * The operation performed is:
- * @f[
- *      x[n] = \sum_{f=0}^{N/2} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
- *      \text{ for } 0 \le n < N
- * @f]
+ * @operation{
+ * &    x[n] = \sum_{f=0}^{N/2} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
+ * &         \text{ for } 0 \le n < N
+ * }
  * where @math{X[f]} is the BFP vector initially represented by `x`, and @math{x[n]} is the IDFT of
  * @math{X[f]} represented by the returned pointer.
  *
@@ -137,11 +135,10 @@ bfp_s32_t* bfp_fft_inverse_mono(
  * Performs an @math{N}-point forward complex DFT on the complex 32-bit BFP vector `x`, where
  * @math{N} is `x->length`. The operation is performed in-place.
  * 
- * The operation performed is:
- * @f[
- *      X[f] = \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)  \\
- *      \text{ for } 0 \le f < N
- * @f]
+ * @operation{
+ * &    X[f] = \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)  \\
+ * &         \text{ for } 0 \le f < N
+ * }
  * where @math{x[n]} is the BFP vector initially represented by `x`, and @math{X[f]} is the DFT of
  * @math{x[n]}, also represented by `x` upon completion.
  *
@@ -183,11 +180,10 @@ void bfp_fft_forward_complex(
  * Performs an @math{N}-point inverse complex DFT on the complex 32-bit BFP vector `x`, where
  * @math{N} is `x->length`. The operation is performed in-place.
  * 
- * The operation performed is:
- * @f[
- *      x[n] = \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
- *      \text{ for } 0 \le f < N
- * @f]
+ * @operation{
+ * &    x[n] = \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
+ * &         \text{ for } 0 \le f < N
+ * }
  * where @math{X[f]} is the BFP vector initially represented by `x`, and @math{x[n]} is the DFT of
  * @math{X[f]}, also represented by `x` upon completion.
  *
@@ -241,11 +237,10 @@ void bfp_fft_inverse_complex(
  * complex 32-bit BFP vectors. To access the spectrum, the pointers `a` and `b` should be cast to
  * `bfp_complex_s32_t*` following a call to this function.
  * 
- * The operation performed is:
- * @f[
- *      A[f] = \sum_{n=0}^{N-1} \left( a[n]\cdot e^{-j2\pi fn/N} \right) \text{ for } 0 \le f \le N/2 \\
- *      B[f] = \sum_{n=0}^{N-1} \left( b[n]\cdot e^{-j2\pi fn/N} \right) \text{ for } 0 \le f \le N/2
- * @f]
+ * @operation{
+ * &    A[f] = \sum_{n=0}^{N-1} \left( a[n]\cdot e^{-j2\pi fn/N} \right) \text{ for } 0 \le f \le N/2 \\
+ * &    B[f] = \sum_{n=0}^{N-1} \left( b[n]\cdot e^{-j2\pi fn/N} \right) \text{ for } 0 \le f \le N/2
+ * }
  * where @math{a[n]} and @math{b[n]} are the two time-domain sequences represented by input BFP
  * vectors `a` and `b`, and @math{A[f]} and @math{B[f]} are the DFT of @math{a[n]} and @math{b[n]}
  * respectively.
@@ -330,11 +325,10 @@ void bfp_fft_forward_stereo(
  * result is a @math{N/2}-element real 32-bit BFP vectors. To access the spectrum, the pointers
  * `A_fft` and `B_fft` should be cast to `bfp_s32_t*` following a call to this function.
  * 
- * The operation performed is:
- * @f[
- *      a[n] = \sum_{f=0}^{N/2-1} \left( A[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n < N \\
- *      b[n] = \sum_{f=0}^{N/2-1} \left( B[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n < N
- * @f]
+ * @operation{
+ * &    a[n] = \sum_{f=0}^{N/2-1} \left( A[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n < N \\
+ * &    b[n] = \sum_{f=0}^{N/2-1} \left( B[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n < N
+ * }
  * where @math{A[f]} and @math{B[f]} are the frequency spectra represented by BFP vectors `A_fft`
  * and `B_fft`, and @math{a[n]} and @math{b[n]} are the IDFT of @math{A[f]} and @math{B[f]}.
  *
@@ -415,12 +409,12 @@ void  bfp_fft_inverse_stereo(
  *       BFP vector must have length `FFT_N+2`, rather than `FFT_N` (`int32_t` elements), but
  *       these should NOT be reflected in the time-domain BFP vector's `length` field.
  * 
- * @f{align*}{
+ * @operation{
  * &       Re\{x_{N/2}\}  && \leftarrow  Im\{x_0\}     \\
  * &       Im\{x_0\}      && \leftarrow 0              \\
  * &       Im\{x_{N/2}\}  && \leftarrow 0              \\
  * &       x.length       && \leftarrow x.length + 1
- * @f}
+ * }
  * 
  * NOTE: Before bfp_fft_inverse_mono() may be applied, bfp_fft_pack_mono() must be called, as the
  *       inverse FFT expects the data to be packed.
@@ -461,12 +455,10 @@ void bfp_fft_pack_mono(
  * This function computes the `N`-point forward DFT of a complex input signal using the
  * decimation-in-time FFT algorithm. The result is computed in-place. 
  * 
- * Conceptually, the operation performed is the following:
- * 
- * \f[
- *      X[f] = \frac{1}{2^{\alpha}} \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)
- *      \text{ for } 0 \le f < N
- * \f]
+ * @operation{
+ * &    X[f] = \frac{1}{2^{\alpha}} \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right) \\
+ * &         \text{ for } 0 \le f < N
+ * }
  * 
  * `x[]` is interpreted to be a block floating-point vector with shared exponent `*exp` and with
  * `*hr` bits of headroom initially in `x[]`. During computation, this function monitors the
@@ -502,12 +494,10 @@ void fft_dit_forward (
  * This function computes the `N`-point inverse DFT of a complex spectrum using the
  * decimation-in-time IFFT algorithm. The result is computed in-place. 
  * 
- * Conceptually, the operation performed is the following:
- * 
- * \f[
- *      x[n] = \frac{1}{2^{\alpha}} \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right)
- *      \text{ for } 0 \le n < N
- * \f]
+ * @operation{
+ * &    x[n] = \frac{1}{2^{\alpha}} \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
+ * &         \text{ for } 0 \le n < N
+ * }
  * 
  * `x[]` is interpreted to be a block floating-point vector with shared exponent `*exp` and with
  * `*hr` bits of headroom initially in `x[]`. During computation, this function monitors the
@@ -543,12 +533,10 @@ void fft_dit_inverse (
  * This function computes the `N`-point forward DFT of a complex input signal using the
  * decimation-in-frequency FFT algorithm. The result is computed in-place. 
  * 
- * Conceptually, the operation performed is the following:
- * 
- * \f[
- *      X[f] = \frac{1}{2^{\alpha}} \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right)
- *      \text{ for } 0 \le f < N
- * \f]
+ * @operation{
+ * &    X[f] = \frac{1}{2^{\alpha}} \sum_{n=0}^{N-1} \left( x[n]\cdot e^{-j2\pi fn/N} \right) \\
+ * &         \text{ for } 0 \le f < N
+ * }
  * 
  * `x[]` is interpreted to be a block floating-point vector with shared exponent `*exp` and with
  * `*hr` bits of headroom initially in `x[]`. During computation, this function monitors the
@@ -584,12 +572,10 @@ void fft_dif_forward (
  * This function computes the `N`-point inverse DFT of a complex spectrum using the
  * decimation-in-frequency IFFT algorithm. The result is computed in-place. 
  * 
- * Conceptually, the operation performed is the following:
- * 
- * \f[
- *      x[n] = \frac{1}{2^{\alpha}} \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right)
- *      \text{ for } 0 \le n < N
- * \f]
+ * @operation{
+ * &    x[n] = \frac{1}{2^{\alpha}} \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
+ * &         \text{ for } 0 \le n < N
+ * }
  * 
  * `x[]` is interpreted to be a block floating-point vector with shared exponent `*exp` and with
  * `*hr` bits of headroom initially in `x[]`. During computation, this function monitors the

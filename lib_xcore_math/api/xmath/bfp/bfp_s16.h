@@ -455,9 +455,9 @@ void bfp_s16_scale(
  * This operation can be performed safely in-place on `b`.
  * 
  * @operation{ 
- *      A_k \leftarrow \left| B_k \right|               \\
- *          \qquad\text{for } k \in 0\ ...\ (N-1)       \\
- *          \qquad\text{where } N \text{ is the length of } \bar{B}
+ * &     A_k \leftarrow \left| B_k \right|               \\
+ * &         \qquad\text{for } k \in 0\ ...\ (N-1)       \\
+ * &         \qquad\text{where } N \text{ is the length of } \bar{B}
  * }
  * 
  * @param[out] a     Output BFP vector @vector{A}

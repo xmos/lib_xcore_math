@@ -100,3 +100,7 @@ Complex 16-bit BFP API Quick Reference
     :header-rows: 1
     :class: longtable
 
+
+.. raw:: latex
+
+  \newpage
