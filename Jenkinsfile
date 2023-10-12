@@ -162,13 +162,14 @@ pipeline {
                 script {
                   def settings = readYaml file: 'settings.yml'
                   def doc_version = settings["version"]
+                
+                  sh "docker pull ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION"
+                  sh """docker run -u "\$(id -u):\$(id -g)" \
+                      --rm \
+                      -v ${WORKSPACE}:/build \
+                      ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION -v"""
+                    zip zipFile: "docs_xcore_math_v${doc_version}.zip", archive: true, dir: "doc/_build"
                 }
-                sh "docker pull ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION"
-                sh """docker run -u "\$(id -u):\$(id -g)" \
-                    --rm \
-                    -v ${WORKSPACE}:/build \
-                    ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION -v"""
-                zip zipFile: "docs_xcore_math_v${doc_version}.zip", archive: true, dir: "doc/_build"
               } // steps
             } // Build Docs
           } // stages
