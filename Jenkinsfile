@@ -159,8 +159,10 @@ pipeline {
               steps {
                 runningOn(env.NODE_NAME)
                 checkout scm
-                def settings = readYaml file: 'settings.yml'
-                def doc_version = settings["version"]
+                script {
+                  def settings = readYaml file: 'settings.yml'
+                  def doc_version = settings["version"]
+                }
                 sh "docker pull ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION"
                 sh """docker run -u "\$(id -u):\$(id -g)" \
                     --rm \
