@@ -79,6 +79,8 @@ Running lib_xcore_math tests and examples on x86 platforms
 ----------------------------------------------------------
 
 ``lib_xcore_math`` offers the possibility to develop DSP algorithms and test them for functional correctness using an x86 processor.
+Brief descriptions of the examples are present in the ReadMe files present in the ``example`` directory and its subdirectories.
+
 To build the existing examples and tests on Linux and MacOS, you need to first configure CMake.
 From the root of the cloned repository, the following command may be used: ::
 
@@ -91,7 +93,7 @@ To run the ``bfp_tests`` for example, use the following command: ::
 
     build/test/bfp_tests/bfp_test -v
 
-where ``-v `` is an optional argument to increase verbosity.
+where ``\-v `` is an optional argument to increase verbosity.
 
 On Windows, to build the existing examples and tests, you need to first configure CMake.
 From the root of the cloned repository, the following command may be used: ::
@@ -105,7 +107,7 @@ To run the ``bfp_tests`` for example, use the following command: ::
 
     build\test\bfp_tests\bfp_test.exe -v
 
-where ``-v `` is an optional argument to increase verbosity.
+where ``\-v `` is an optional argument to increase verbosity.
 
 Including lib_xcore_math in External Applications
 -------------------------------------------------
