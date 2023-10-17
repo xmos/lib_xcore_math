@@ -73,8 +73,39 @@ Clone the Repository
 
 To clone this repository you may use the following: ::
 
-    git clone git@github.com:xmos/lib_xcore_math 
+    git clone git@github.com:xmos/lib_xcore_math
 
+Running lib_xcore_math tests and examples on x86 platforms
+----------------------------------------------------------
+
+``lib_xcore_math`` offers the possibility to develop DSP algorithms and test them for functional correctness using an x86 processor.
+To build the existing examples and tests on Linux and MacOS, you need to first configure CMake.
+From the root of the cloned repository, the following command may be used: ::
+
+    mkdir build && cd build && cmake -G"Unix Makefiles" ..
+
+To build the examples and tests, then use the ``make`` command from the ``build`` directory.
+
+The executables are available inside the ``example`` and ``test`` directories within the ``build`` directory.
+To run the ``bfp_tests`` for example, use the following command: ::
+
+    build/test/bfp_tests/bfp_test -v
+
+where ``-v `` is an optional argument to increase verbosity.
+
+On Windows, to build the existing examples and tests, you need to first configure CMake.
+From the root of the cloned repository, the following command may be used: ::
+
+    mkdir build && cd build && cmake -G Ninja ..
+
+To build the examples and tests, then use the ``ninja`` command from the ``build`` directory.
+
+The executables are available inside the ``example`` and ``test`` directories within the ``build`` directory.
+To run the ``bfp_tests`` for example, use the following command: ::
+
+    build\test\bfp_tests\bfp_test.exe -v
+
+where ``-v `` is an optional argument to increase verbosity.
 
 Including lib_xcore_math in External Applications
 -------------------------------------------------
@@ -89,7 +120,7 @@ tools are on your path): ::
 
     mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Unix Makefiles" ..
 
-Then to actually build the the library as a static binary just use the ``make`` command from the 
+Then to actually build the library as a static binary just use the ``make`` command from the 
 ``build`` directory.
 
 To include the unit tests and example applications in your build, use the following command
@@ -103,13 +134,13 @@ tools are on your path): ::
 
     mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja" ..
 
-Then to actually build the the library as a static binary just use the ``ninja`` command from the
+Then to actually build the library as a static binary just use the ``ninja`` command from the
 ``build`` directory.
 
 To include the unit tests and example applications in your build, use the following command
 instead: ::
 
-    mkdir build && cd build && cmake -DDEV_LIB_XCORE_MATH=1 -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja" ..
+    mkdir build && cd build && cmake -DDEV_LIB_XCORE_MATH=1 -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G Ninja ..
 
 If you wish to include ``lib_xcore_math`` in your own application as a static library, the generated
 ``lib_xcore_math.a`` can then be linked into your own application. Be sure to also add
