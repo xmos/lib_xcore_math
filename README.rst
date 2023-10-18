@@ -91,7 +91,7 @@ this is an optional step before porting the library to an xs3a device.
 
    The instructions in this section refer to the compilation for xs3a; the steps to compile for the x86 platforms are the same,
    except that the XTC build tools are not necessary and the default toolchain must be used. This can be done by skipping the option
-   ``--toolchain=../etc/xmos_cmake_toolchain/xs3a.cmake``  when comfiguring CMake.
+   ``--toolchain=`` pointing to ``xs3a.cmake`` when comfiguring CMake.
 
 ``lib_xcore_math`` may be included in your own applications either as source to be compiled by your
 application or as a static library to be linked into your own application. This library uses CMake
@@ -101,7 +101,7 @@ On Linux and MacOS, to configure your CMake build environment for ``lib_xcore_ma
 from the root of the cloned repository, the following command may be used (ensure that the XTC build
 tools are on your path): ::
 
-    mkdir build && cd build && cmake --toolchain=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Unix Makefiles" ..
+    mkdir build && cd build && cmake --toolchain=../etc/xmos_cmake_toolchain/xs3a.cmake ..
 
 Then to actually build the library as a static binary just use the ``make`` command from the
 ``build`` directory.
