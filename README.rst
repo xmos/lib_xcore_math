@@ -34,7 +34,7 @@ Requirements
 * Doxygen (for building documentation)
 * Python 3 (for running source generation scripts, if necessary)
 
-The recommended make tools depend on the masterment platform:
+The recommended make tools depend on the development platform:
 
 (Linux and MacOS): GNU Make - Available through your system package manager.
 
@@ -78,14 +78,14 @@ To clone this repository you may use the following: ::
 Including lib_xcore_math in External Applications
 -------------------------------------------------
 
-``lib_xcore_math`` can be compiled for both x86 platforms and xs3a architecture.
+``lib_xcore_math`` can be compiled for both x86 platforms and xs3a processors.
 
-On x86 platforms you can master DSP algorithms and test them for functional correctness;
+On x86 platforms you can develop DSP algorithms and test them for functional correctness;
 this is an optional step before porting the library to an xs3a device.
 
 .. note::
 
-   The instructions in this section refer to the compilation for xs3a; the steps to compile on the x86 platforms are the same,
+   The instructions in this section refer to the compilation for xs3a; the steps to compile for the x86 platforms are the same,
    except that the XTC build tools are not necessary and the default toolchain must be used. This can be done by skipping the option
    ``-DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake``  when comfiguring CMake.
 
@@ -155,7 +155,7 @@ xCORE.ai explorer board and x86 platforms. All unit tests are currently in the `
 
   * `bfp_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/bfp_tests/>`_ - BFP unit tests
   * `dct_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/dct_tests/>`_ - DCT unit tests
-  * `filter_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/filter_tests/>`_ - filtering unit tests
+  * `filter_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/filter_tests/>`_ - Filtering unit tests
   * `fft_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/fft_tests/>`_ - FFT unit tests
   * `scalar_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/scalar_tests/>`_ - Scalar op unit tests
   * `vect_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/vect_tests/>`_ - Vector op unit tests
@@ -167,9 +167,9 @@ All examples are currently in the `/example/
 * `/example/ <https://github.com/xmos/lib_xcore_math/tree/master/example/>`_ - Example projects for ``lib_xcore_math``:
 
   * `bfp_demo/ <https://github.com/xmos/lib_xcore_math/tree/master/test/bfp_demo/>`_ - BFP demo
-  * `filter_demo/ <https://github.com/xmos/lib_xcore_math/tree/master/test/filter_demo/>`_ - Filter demo
+  * `filter_demo/ <https://github.com/xmos/lib_xcore_math/tree/master/test/filter_demo/>`_ - Filtering demo
   * `fft_demo/ <https://github.com/xmos/lib_xcore_math/tree/master/test/fft_demo/>`_ - FFT demo
-  * `vect_demo/ <https://github.com/xmos/lib_xcore_math/tree/master/test/vect_demo/>`_ - Vect demo
+  * `vect_demo/ <https://github.com/xmos/lib_xcore_math/tree/master/test/vect_demo/>`_ - Vector op demo
 
 Each example above has a ReadMe file with a short description.
 
