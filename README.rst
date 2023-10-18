@@ -17,13 +17,13 @@ Repository Structure
 
 * `/lib_xcore_math/ <https://github.com/xmos/lib_xcore_math/lib_xcore_math>`_ - The ``lib_xcore_math`` library directory.
 
-  * `api/ <https://github.com/xmos/lib_xcore_math/tree/master/lib_xcore_math/api/>`_ - Headers containing the public API for ``lib_xcore_math``.
-  * `script/ <https://github.com/xmos/lib_xcore_math/tree/master/lib_xcore_math/script/>`_ - Scripts used for source generation.
-  * `src/ <https://github.com/xmos/lib_xcore_math/tree/master/lib_xcore_math/src/>`_ - Library source code.
+  * `api/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/api/>`_ - Headers containing the public API for ``lib_xcore_math``.
+  * `script/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/script/>`_ - Scripts used for source generation.
+  * `src/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/src/>`_ - Library source code.
 
-* `/doc/ <https://github.com/xmos/lib_xcore_math/tree/master/lib_xcore_math/doc/>`_ - Sphinx library documentation source and build directory.
-* `/example/ <https://github.com/xmos/lib_xcore_math/tree /master/example/>`_ - Example applications for ``lib_xcore_math``.
-* `/test/ <https://github.com/xmos/lib_xcore_math/tree/master/test/>`_ - Unit test projects for ``lib_xcore_math``.
+* `/doc/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/doc/>`_ - Sphinx library documentation source and build directory.
+* `/example/ <https://github.com/xmos/lib_xcore_math/tree /develop/example/>`_ - Example applications for ``lib_xcore_math``.
+* `/test/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/>`_ - Unit test projects for ``lib_xcore_math``.
 
 
 Requirements
@@ -73,7 +73,11 @@ Clone the Repository
 
 To clone this repository you may use the following: ::
 
-    git clone git@github.com:xmos/lib_xcore_math
+    git clone --recurse-submodules git@github.com:xmos/lib_xcore_math
+
+.. note::
+
+   This repository uses submodules to include the XMOS CMake toolchain
 
 Including lib_xcore_math in External Applications
 -------------------------------------------------
@@ -87,7 +91,7 @@ this is an optional step before porting the library to an xs3a device.
 
    The instructions in this section refer to the compilation for xs3a; the steps to compile for the x86 platforms are the same,
    except that the XTC build tools are not necessary and the default toolchain must be used. This can be done by skipping the option
-   ``-DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake``  when comfiguring CMake.
+   ``--toolchain=../etc/xmos_cmake_toolchain/xs3a.cmake``  when comfiguring CMake.
 
 ``lib_xcore_math`` may be included in your own applications either as source to be compiled by your
 application or as a static library to be linked into your own application. This library uses CMake
@@ -97,29 +101,23 @@ On Linux and MacOS, to configure your CMake build environment for ``lib_xcore_ma
 from the root of the cloned repository, the following command may be used (ensure that the XTC build
 tools are on your path): ::
 
-    mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Unix Makefiles" ..
+    mkdir build && cd build && cmake --toolchain=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Unix Makefiles" ..
 
 Then to actually build the library as a static binary just use the ``make`` command from the
 ``build`` directory.
 
-To include the unit tests and example applications in your build, use the following command
-instead: ::
-
-    mkdir build && cd build && cmake -DDEV_LIB_XCORE_MATH=1 -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Unix Makefiles" ..
+The unit tests and example applications are built by default when running the commands above.
 
 On Windows, to configure your CMake build environment for ``lib_xcore_math``,
 from the root of the cloned repository, the following command may be used (ensure that the XTC build
 tools are on your path): ::
 
-    mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G"Ninja" ..
+    mkdir build && cd build && cmake --toolchain=../etc/xmos_cmake_toolchain/xs3a.cmake -G Ninja ..
 
 Then to actually build the library as a static binary just use the ``ninja`` command from the
 ``build`` directory.
 
-To include the unit tests and example applications in your build, use the following command
-instead: ::
-
-    mkdir build && cd build && cmake -DDEV_LIB_XCORE_MATH=1 -DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake -G Ninja ..
+The unit tests and example applications are built by default when running the commands above.
 
 If you wish to include ``lib_xcore_math`` in your own application as a static library, the generated
 ``lib_xcore_math.a`` can then be linked into your own application. Be sure to also add
@@ -148,28 +146,28 @@ Unit Tests and Examples
 
 This project uses CMake to build the unit test and example applications. Use the steps described above to
 configure and build the unit test and example applications. Both unit test and example projects currently target the
-xCORE.ai explorer board and x86 platforms. All unit tests are currently in the `/test/
-<https://github.com/xmos/lib_xcore_math/tree/master/test/>`_ directory:
+xcore.ai explorer board and x86 platforms. All unit tests are currently in the `/test/
+<https://github.com/xmos/lib_xcore_math/tree/develop/test/>`_ directory:
 
-* `/test/ <https://github.com/xmos/lib_xcore_math/tree/master/test/>`_ - Unit test projects for ``lib_xcore_math``:
+* `/test/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/>`_ - Unit test projects for ``lib_xcore_math``:
 
-  * `bfp_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/bfp_tests/>`_ - BFP unit tests
-  * `dct_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/dct_tests/>`_ - DCT unit tests
-  * `filter_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/filter_tests/>`_ - Filtering unit tests
-  * `fft_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/fft_tests/>`_ - FFT unit tests
-  * `scalar_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/scalar_tests/>`_ - Scalar op unit tests
-  * `vect_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/vect_tests/>`_ - Vector op unit tests
-  * `xs3_tests/ <https://github.com/xmos/lib_xcore_math/tree/master/test/xs3_tests/>`_ - XS3-specific unit tests
+  * `bfp_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/bfp_tests/>`_ - BFP unit tests
+  * `dct_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/dct_tests/>`_ - DCT unit tests
+  * `filter_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/filter_tests/>`_ - Filtering unit tests
+  * `fft_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/fft_tests/>`_ - FFT unit tests
+  * `scalar_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/scalar_tests/>`_ - Scalar op unit tests
+  * `vect_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/vect_tests/>`_ - Vector op unit tests
+  * `xs3_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/xs3_tests/>`_ - XS3-specific unit tests
 
 All examples are currently in the `/example/
-<https://github.com/xmos/lib_xcore_math/tree/master/example/>`_ directory:
+<https://github.com/xmos/lib_xcore_math/tree/develop/example/>`_ directory:
 
-* `/example/ <https://github.com/xmos/lib_xcore_math/tree/master/example/>`_ - Example projects for ``lib_xcore_math``:
+* `/example/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/>`_ - Example projects for ``lib_xcore_math``:
 
-  * `bfp_demo/ <https://github.com/xmos/lib_xcore_math/tree/master/test/bfp_demo/>`_ - BFP demo
-  * `filter_demo/ <https://github.com/xmos/lib_xcore_math/tree/master/test/filter_demo/>`_ - Filtering demo
-  * `fft_demo/ <https://github.com/xmos/lib_xcore_math/tree/master/test/fft_demo/>`_ - FFT demo
-  * `vect_demo/ <https://github.com/xmos/lib_xcore_math/tree/master/test/vect_demo/>`_ - Vector op demo
+  * `bfp_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/bfp_demo/>`_ - BFP demo
+  * `filter_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/filter_demo/>`_ - Filtering demo
+  * `fft_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/fft_demo/>`_ - FFT demo
+  * `vect_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/vect_demo/>`_ - Vector op demo
 
 Each example above has a ReadMe file with a short description.
 
@@ -182,7 +180,7 @@ BFP Unit Tests
 
 This application runs unit tests for the various 16- and 32-bit BFP vectorized arithmetic functions.
 This application is located at `/test/bfp_tests/
-<https://github.com/xmos/lib_xcore_math/tree/master/test/bfp_tests>`_.
+<https://github.com/xmos/lib_xcore_math/tree/develop/test/bfp_tests>`_.
 
 To execute the BFP unit tests on the explorer board, from your CMake build directory use the
 following (after ensuring that the hardware is connected and drivers properly installed): ::
@@ -213,14 +211,14 @@ include embedded documentation with their declarations in their corresponding he
 MathJax is used to render equations, and as such, building the stand-alone HTML documentation is
 highly recommended. In addition, several non-embedded notes and guides are included in the
 stand-alone documentation (these can also be found at `/doc/src/
-<https://github.com/xmos/lib_xcore_math/tree/master/doc/>`_ ).
+<https://github.com/xmos/lib_xcore_math/tree/develop/doc/>`_ ).
 
  To build the stand-alone documentation as HTML a Doxygen install will be required. The
  documentation has been written against Doxygen version 1.8; your mileage may vary with other
  versions.
 
 With Doxygen on your path, the documentation can be built by calling ``doxygen`` from within the
-`/lib_xcore_math/doc/ <https://github.com/xmos/lib_xcore_math/tree/master/lib_xcore_math/doc/>`_
+`/lib_xcore_math/doc/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/doc/>`_
 directory.
 
 The documentation will be generated within the ``/doc/build/`` directory. To view the
