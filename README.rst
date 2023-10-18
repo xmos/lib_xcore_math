@@ -195,7 +195,7 @@ Note that running the unit tests in the simulator may be *very* slow.
 
 To execute the BFP unit tests built for an x86 host platform, from your CMake build directory run on Linux and MacOS: ::
 
-   test/bfp_tests/bfp_tests -v
+   ./test/bfp_tests/bfp_tests -v
 
 and on Windows: ::
 
