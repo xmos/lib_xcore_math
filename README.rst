@@ -91,7 +91,7 @@ this is an optional step before porting the library to an xs3a device.
 
    The instructions in this section refer to the compilation for xs3a; the steps to compile for the x86 platforms are the same,
    except that the XTC build tools are not necessary and the default toolchain must be used. This can be done by skipping the option
-   ``--toolchain=`` pointing to ``xs3a.cmake`` when comfiguring CMake.
+   ``--toolchain=`` pointing to ``xs3a.cmake`` when configuring CMake.
 
 ``lib_xcore_math`` may be included in your own applications either as source to be compiled by your
 application or as a static library to be linked into your own application. This library uses CMake
