@@ -85,7 +85,7 @@ this is an optional step before porting the library to an xs3a device.
 
 .. note::
 
-   The instructions refer to the compilation for xs3a, the steps to compile on the x86 platforms are the same,
+   The instructions in this section refer to the compilation for xs3a; the steps to compile on the x86 platforms are the same,
    except that the XTC build tools are not necessary and the default toolchain must be used. This can be done by skipping the option
    ``-DCMAKE_TOOLCHAIN_FILE=../etc/xmos_cmake_toolchain/xs3a.cmake``  when comfiguring CMake.
 
@@ -174,7 +174,6 @@ All examples are currently in the `/example/
 Each example above has a ReadMe file with a short description.
 
 
-
 All unit tests and examples are built and executed in a similar manner. The following shows how to do this with
 the BFP unit tests.
 
@@ -204,7 +203,7 @@ and on Windows: ::
 
    test\bfp_tests\bfp_tests.exe -v
 
-where `` -v `` is an optional argument to increase verbosity.
+where ``-v`` is an optional argument to increase verbosity.
 
 Building Documentation
 ----------------------
