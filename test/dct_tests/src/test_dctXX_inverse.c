@@ -27,18 +27,11 @@ TEST_SETUP(dctXX_inverse) { fflush(stdout); }
 TEST_TEAR_DOWN(dctXX_inverse) {}
 
 
-
 #define MAX_PROC_FRAME_LENGTH_LOG2 9
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
 #define MIN_DCT_N_LOG2  (3)
 #define LOOPS_LOG2  (0)
-
-
-
-
-
-
 
 
 TEST(dctXX_inverse, dct6_inverse)
@@ -86,13 +79,13 @@ TEST(dctXX_inverse, dct6_inverse)
     // printf("])\n");
 
     int32_t max_allowed_diff = DCT_N;
-    for(int n = 0; n < DCT_N; n++){
+    for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = round(ref_out[n]);
+      int32_t ref_val = lround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -156,13 +149,13 @@ TEST(dctXX_inverse, dct8_inverse)
     // printf("])\n");
 
     int32_t max_allowed_diff = DCT_N;
-    for(int n = 0; n < DCT_N; n++){
+    for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = round(ref_out[n]);
+      int32_t ref_val = lround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -225,13 +218,13 @@ TEST(dctXX_inverse, dct12_inverse)
     // printf("])\n");
 
     int32_t max_allowed_diff = 8;
-    for(int n = 0; n < DCT_N; n++){
+    for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = round(ref_out[n]);
+      int32_t ref_val = lround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -295,13 +288,13 @@ TEST(dctXX_inverse, dct16_inverse)
     // printf("])\n");
 
     int32_t max_allowed_diff = 2*DCT_N;
-    for(int n = 0; n < DCT_N; n++){
+    for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = round(ref_out[n]);
+      int32_t ref_val = lround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -365,13 +358,13 @@ TEST(dctXX_inverse, dct24_inverse)
     // printf("])\n");
 
     int32_t max_allowed_diff = 2*DCT_N;
-    for(int n = 0; n < DCT_N; n++){
+    for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = round(ref_out[n]);
+      int32_t ref_val = lround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -435,13 +428,13 @@ TEST(dctXX_inverse, dct32_inverse)
     // printf("])\n");
 
     int32_t max_allowed_diff = 2*DCT_N;
-    for(int n = 0; n < DCT_N; n++){
+    for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = round(ref_out[n]);
+      int32_t ref_val = lround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -505,13 +498,13 @@ TEST(dctXX_inverse, dct48_inverse)
     // printf("])\n");
 
     int32_t max_allowed_diff = 5*DCT_N;
-    for(int n = 0; n < DCT_N; n++){
+    for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = round(ref_out[n]);
+      int32_t ref_val = lround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
   }
 
@@ -575,13 +568,13 @@ TEST(dctXX_inverse, dct64_inverse)
     // printf("])\n");
 
     int32_t max_allowed_diff = 6*DCT_N;
-    for(int n = 0; n < DCT_N; n++){
+    for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = round(ref_out[n]);
+      int32_t ref_val = lround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
   }
 

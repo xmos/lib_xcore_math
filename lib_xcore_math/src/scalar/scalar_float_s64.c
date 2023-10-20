@@ -21,7 +21,7 @@ float_s32_t float_s64_to_float_s32(
 
   if(x_hr < 32) {
     right_shift_t shr = 32 - x_hr;
-    res.mant = x.mant >> shr;
+    res.mant = (int32_t) (x.mant >> shr);
     res.exp = x.exp + shr;
   }
 

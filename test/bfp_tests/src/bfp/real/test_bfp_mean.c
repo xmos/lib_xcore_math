@@ -53,7 +53,7 @@ TEST(bfp_mean, bfp_s16_mean)
 
         double sum = 0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
 
             sum += B.data[i];
@@ -95,7 +95,7 @@ TEST(bfp_mean, bfp_s32_mean)
 
         double sum = 0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
 
             sum += B.data[i];

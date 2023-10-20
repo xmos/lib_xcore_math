@@ -111,7 +111,7 @@ TEST(vect_clip, vect_s16_clip_basic) //
     for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
         unsigned len = lengths[l];
 
-        for(int v = start_case; v < N_cases; v++){
+        for(unsigned int v = start_case; v < N_cases; v++){
             setExtraInfo_R(v);
             
             test_case_t* casse = &casses[v];
@@ -120,7 +120,7 @@ TEST(vect_clip, vect_s16_clip_basic) //
             int16_t A[40];
             int16_t B[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B[i] = casse->b;
             }
@@ -128,7 +128,7 @@ TEST(vect_clip, vect_s16_clip_basic) //
 
             hr = vect_s16_clip(A, B, len, casse->lower, casse->upper, casse->b_shr);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
@@ -136,7 +136,7 @@ TEST(vect_clip, vect_s16_clip_basic) //
             memcpy(A, B, sizeof(A));
             hr = vect_s16_clip(A, A, len, casse->lower, casse->upper, casse->b_shr);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
@@ -213,7 +213,7 @@ TEST(vect_clip, vect_s32_clip_basic)
     for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
         unsigned len = lengths[l];
 
-        for(int v = start_case; v < N_cases; v++){
+        for(unsigned int v = start_case; v < N_cases; v++){
             setExtraInfo_R(v);
             
             test_case_t* casse = &casses[v];
@@ -222,7 +222,7 @@ TEST(vect_clip, vect_s32_clip_basic)
             int32_t A[40];
             int32_t B[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCCCCCC;
                 B[i] = casse->b;
             }
@@ -230,7 +230,7 @@ TEST(vect_clip, vect_s32_clip_basic)
 
             hr = vect_s32_clip(A, B, len, casse->lower, casse->upper, casse->b_shr);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, casse->line);
             }
@@ -238,7 +238,7 @@ TEST(vect_clip, vect_s32_clip_basic)
             memcpy(A, B, sizeof(A));
             hr = vect_s32_clip(A, A, len, casse->lower, casse->upper, casse->b_shr);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, casse->line);
             }

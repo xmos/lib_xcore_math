@@ -1,11 +1,11 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
 
 
@@ -22,7 +22,7 @@ int64_t vect_s16_dot(
     const int64_t upper_sat_bound = 0x7FFFFFFFFFFFLL;
     const int64_t lower_sat_bound = -upper_sat_bound;
 
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         acc += vlmacc16(0, b[k], c[k]);
         acc = MAX(lower_sat_bound, MIN(upper_sat_bound, acc));
     }
@@ -42,7 +42,7 @@ int64_t vect_s32_dot(
 
     vpu_int32_acc_t accs[VPU_INT32_EPV] = {0};
 
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
 
         int j = k % VPU_INT32_EPV;
 

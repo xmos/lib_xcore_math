@@ -12,13 +12,13 @@
 
 
 unsigned flt_bitrev(
-    const unsigned index, 
+    const unsigned index,
     const size_t bit_width)
 {
     unsigned inp = index;
     unsigned res = 0;
 
-    for(int i = 0; i < bit_width; i++, inp >>= 1){
+    for(unsigned int i = 0; i < bit_width; i++, inp >>= 1){
         res = ((res<<1) | (inp & 0x1));
     }
 

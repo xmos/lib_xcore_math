@@ -42,38 +42,38 @@ TEST(vect_exp, chunk_q30_exp_small_RANDOM)
 
   int32_t expected[VPU_INT32_EPV];
 
-  unsigned max_max_error = 0;
+  int max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = VPU_INT32_EPV;
 
     const exponent_t b_exp = -30;
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i] = pseudo_rand_int32(&seed) / 4;
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl = exp(bi);
-      expected[i] = round(ldexp(exp_dbl, 30));
+      expected[i] = lround(ldexp(exp_dbl, 30));
     }
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     chunk_q30_exp_small(A, B);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = delta_ticks / 100.0;
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) ( delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
     // printf("!! B[0] = %f (0x%08X << -30);  ", ldexp(B[0], -30), (unsigned) B[0]);
     // printf("expected: %f (0x%08X << -30);  ", ldexp(expected[0], -30), (unsigned) expected[0]);
     // printf("A[0] = %f (0x%08X << -30) \n", ldexp(A[0], -30), (unsigned) A[0]);
 
-    unsigned max_error = 0;
+    int max_error = 0;
     for(int i = 0; i < VPU_INT32_EPV; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
@@ -81,7 +81,7 @@ TEST(vect_exp, chunk_q30_exp_small_RANDOM)
       TEST_ASSERT_INT32_WITHIN(3, expected[i], A[i]);
     }
 
-    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n", 
+    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n",
     //     length, delta_us, delta_us_per_elm, max_error);
 
     max_max_error = (max_error > max_max_error)? max_error : max_max_error;
@@ -106,46 +106,46 @@ TEST(vect_exp, vect_q30_exp_small_RANDOM)
 
   int32_t expected[MAX_LEN];
 
-  unsigned max_max_error = 0;
+  int max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
     const exponent_t b_exp = -30;
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i] = pseudo_rand_int32(&seed) / 4;
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl = exp(bi);
-      expected[i] = round(ldexp(exp_dbl, 30));
+      expected[i] = lround(ldexp(exp_dbl, 30));
     }
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     vect_q30_exp_small(A, B, length);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = delta_ticks / 100.0;
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
     // printf("!! B[0] = %f (0x%08X << -30);  ", ldexp(B[0], -30), (unsigned) B[0]);
     // printf("expected: %f (0x%08X << -30);  ", ldexp(expected[0], -30), (unsigned) expected[0]);
     // printf("A[0] = %f (0x%08X << -30) \n", ldexp(A[0], -30), (unsigned) A[0]);
 
-    unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    int max_error = 0;
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 
       TEST_ASSERT_INT32_WITHIN(4, expected[i], A[i]);
     }
 
-    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n", 
+    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n",
     //     length, delta_us, delta_us_per_elm, max_error);
 
     max_max_error = (max_error > max_max_error)? max_error : max_max_error;

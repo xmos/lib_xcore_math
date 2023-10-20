@@ -51,7 +51,7 @@ static char msg_buff[300];
 
 
 static int16_t squared_mag_complex_s16(
-    complex_s16_t b, 
+    complex_s16_t b,
     right_shift_t sat)
 {
     int32_t bp_re = b.re;
@@ -65,7 +65,7 @@ static int16_t squared_mag_complex_s16(
 
 
 static int32_t squared_mag_complex_s32(
-    complex_s32_t b, 
+    complex_s32_t b,
     right_shift_t b_shr)
 {
     int64_t bp_re = b.re;
@@ -117,7 +117,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_prepare)
         TEST_ASSERT_TRUE( (A_mag == 0x7FFF && 1) || (p == q) );
 
         if( acc < 0x8000 ){
-            // Because sat cannot be negative, if the accumulator value would be less than 0x8000, the result is 
+            // Because sat cannot be negative, if the accumulator value would be less than 0x8000, the result is
             // just the direct squared magnitude.
             
             TEST_ASSERT_EQUAL_HEX16(acc, A_mag);
@@ -216,12 +216,12 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         // setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
 
-        TEST_ASSERT_EQUAL_MSG(casse->expected, 
+        TEST_ASSERT_EQUAL_MSG(casse->expected,
                         squared_mag_complex_s16(casse->b, casse->sat), casse->line);
 
         unsigned lengths[] = {1, 4, 16, 32, 34 };
@@ -236,7 +236,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_basic)
                 int16_t imag[40];
             } B;
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B.real[i] = casse->b.re;
                 B.imag[i] = casse->b.im;
@@ -244,7 +244,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_basic)
 
             hr = vect_complex_s16_squared_mag(A, B.real, B.imag, len, casse->sat);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[i], casse->line);
             }
 
@@ -274,7 +274,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_random)
         int16_t imag[MAX_LEN];
     } B;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         // unsigned rep_seed = seed;
 
@@ -282,7 +282,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_random)
         
         headroom_t B_hr = pseudo_rand_uint32(&seed) % 4;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B_hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B_hr;
         }
@@ -301,7 +301,7 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_random)
         
         hr = vect_complex_s16_squared_mag(A, B.real, B.imag, len, sat);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             complex_s16_t bbb = {B.real[i], B.imag[i]};
             int16_t expected = squared_mag_complex_s16(bbb, sat);
 
@@ -358,7 +358,7 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         // setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -372,7 +372,7 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_basic)
             int32_t DWORD_ALIGNED A[40];
             complex_s32_t DWORD_ALIGNED B[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B[i].re = casse->b.re;
                 B[i].im = casse->b.im;
@@ -380,10 +380,10 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_basic)
 
             hr = vect_complex_s32_squared_mag(A, B, len, casse->b_shr);
 
-            for(int i = 0; i < len; i++){
-                TEST_ASSERT_EQUAL_MSG_FMT(casse->expected, A[i], 
-                  "(test vect %d @ line %u) (len: %u) (index %d): (mag(( %ld + i*%ld) >> %d))**2",
-                   v, casse->line, len, i, B[i].re, B[i].im, casse->b_shr);
+            for(unsigned int i = 0; i < len; i++){
+                TEST_ASSERT_EQUAL_MSG_FMT(casse->expected, A[i],
+                  "(test vect %d @ line %u) (len: %u) (index %d): (mag(( %d + i*%d) >> %d))**2",
+                   v, casse->line, len, i, (int) B[i].re, (int) B[i].im, casse->b_shr);
             }
             TEST_ASSERT_EQUAL_MSG(vect_s32_headroom((int32_t*) A, len), hr, casse->line);
         }
@@ -407,14 +407,14 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_random)
     int32_t DWORD_ALIGNED A[MAX_LEN];
     complex_s32_t DWORD_ALIGNED B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         // setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
         headroom_t B_hr = pseudo_rand_uint32(&seed) % 8;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i].re = pseudo_rand_int32(&seed) >> B_hr;
             B[i].im = pseudo_rand_int32(&seed) >> B_hr;
         }
@@ -424,7 +424,7 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_random)
         // with 0 bits of headroom, B could be -0x8000000 + 0x8000000j = -(2**31) + -(2**31)j
         // Squared mag would be:   (-(2**31))**2 + (-(2**31))**2 = 2**62 + 2**62 = 2**63
         // But the multiplication shifts down by 30 --> 2**33. But we can't go above 2**30 if
-        // we want to avoid saturation. Right-shifting the input by 1 bit will reduce the 
+        // we want to avoid saturation. Right-shifting the input by 1 bit will reduce the
         // products by a factor of 4, resulting in  2**60 >> 30 = 2**30.
         // So, ideally we shift to get exactly 1 bit of headroom.
 
@@ -432,11 +432,11 @@ TEST(vect_complex_squared_mag, vect_complex_s32_squared_mag_random)
         
         hr = vect_complex_s32_squared_mag(A, B, len, b_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int32_t expected = squared_mag_complex_s32(B[i], b_shr);
-            TEST_ASSERT_EQUAL_MSG_FMT(expected, A[i], 
-                  "(test vect %d) (len: %u) (index %d): (mag(( %ld + i*%ld) >> %d))**2",
-                   v, len, i, B[i].re, B[i].im, b_shr);
+            TEST_ASSERT_EQUAL_MSG_FMT(expected, A[i],
+                  "(test vect %d) (len: %u) (index %d): (mag(( %d + i*%d) >> %d))**2",
+                   v, len, i, (int) B[i].re, (int) B[i].im, b_shr);
         }
         TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, v);
     }

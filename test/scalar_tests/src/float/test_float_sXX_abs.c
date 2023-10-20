@@ -37,7 +37,7 @@ TEST(float_sXX_abs, float_s32_abs)
 
   float_s32_t x;
   
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 

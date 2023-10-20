@@ -30,7 +30,7 @@ static char msg_buff[200];
 
 #define MAX_TAPS    100
 TEST(filter_fir_s16, case0)
-{   
+{
     int16_t coefs[MAX_TAPS];
     int16_t state[MAX_TAPS];
 
@@ -123,7 +123,7 @@ TEST(filter_fir_s16, case2)
 
     filter_fir_s16_t filter;
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         const unsigned old_seed = seed;
 
@@ -140,12 +140,12 @@ TEST(filter_fir_s16, case2)
 
         int32_t expected32 = 0;
 
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             coefs[i] = pseudo_rand_int16(&seed) >> log2_N;
             state[i] = pseudo_rand_int16(&seed) >> log2_N;
         }
 
-        for(int i = 1; i < N; i++){
+        for(unsigned int i = 1; i < N; i++){
             expected32 += coefs[i] * state[i-1];
         }
 
@@ -164,7 +164,7 @@ TEST(filter_fir_s16, case2)
             expected16 = (int16_t) ((expected32 + (1LL << (filter.shift-1))) >> filter.shift);
         } else {
             expected16 = (int16_t) (expected32 << -filter.shift);
-        }   
+        }
 
         // Apply the filter
         int16_t res = filter_fir_s16(&filter, new_sample);

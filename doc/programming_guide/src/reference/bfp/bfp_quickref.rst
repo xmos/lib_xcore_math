@@ -14,17 +14,21 @@ the function's full documentation to get more detailed information.
 
 The following symbols are used in the signatures:
 
-+--------------------------------------+---------------------------------------------+
-|  Symbol                              | Description                                 |
-+======================================+=============================================+
-| :math:`\mathbb{S}`                   | A scalar input or output value.             |
-+--------------------------------------+---------------------------------------------+
-| :math:`\mathbb{V}`                   | A vector-valued input or output.            |
-+--------------------------------------+---------------------------------------------+
-| :math:`\mathbb{M}`                   | A matrix-valued input or output.            |
-+--------------------------------------+---------------------------------------------+
-| :math:`\varnothing`                  | Placeholder indicating no input or output.  |
-+--------------------------------------+---------------------------------------------+
+.. table::
+    :widths: 40 60
+    :class: longtable
+
+    +--------------------------------------+---------------------------------------------+
+    |  Symbol                              | Description                                 |
+    +======================================+=============================================+
+    | :math:`\mathbb{S}`                   | A scalar input or output value.             |
+    +--------------------------------------+---------------------------------------------+
+    | :math:`\mathbb{V}`                   | A vector-valued input or output.            |
+    +--------------------------------------+---------------------------------------------+
+    | :math:`\mathbb{M}`                   | A matrix-valued input or output.            |
+    +--------------------------------------+---------------------------------------------+
+    | :math:`\varnothing`                  | Placeholder indicating no input or output.  |
+    +--------------------------------------+---------------------------------------------+
 
 For example, the operation signature :math:`(\mathbb{V \times V \times S}) \to \mathbb{V}` indicates
 the operation takes two vector inputs and a scalar input, and the output is a vector.
@@ -46,9 +50,9 @@ the operation takes two vector inputs and a scalar input, and the output is a ve
 
 .. csv-table:: 32-Bit BFP API - Quick Reference
     :file: csv/32bit_bfp_quickref.csv
-    :widths: 35, 5, 20, 40
+    :widths: 42, 5, 20, 33
     :header-rows: 1
-
+    :class: longtable
 
 .. raw:: latex
 
@@ -61,9 +65,9 @@ the operation takes two vector inputs and a scalar input, and the output is a ve
 
 .. csv-table:: 16-Bit BFP API - Quick Reference
     :file: csv/16bit_bfp_quickref.csv
-    :widths: 35, 5, 20, 40
+    :widths: 42, 5, 20, 33
     :header-rows: 1
-
+    :class: longtable
 
 .. raw:: latex
 
@@ -76,8 +80,9 @@ Complex 32-bit BFP API Quick Reference
 
 .. csv-table:: Complex 32-Bit BFP API - Quick Reference
     :file: csv/complex_32bit_bfp_quickref.csv
-    :widths: 35, 5, 20, 40
+    :widths: 42, 5, 20, 33
     :header-rows: 1
+    :class: longtable
 
 
 .. raw:: latex
@@ -91,6 +96,11 @@ Complex 16-bit BFP API Quick Reference
 
 .. csv-table:: Complex 16-Bit BFP API - Quick Reference
     :file: csv/complex_16bit_bfp_quickref.csv
-    :widths: 35, 5, 20, 40
+    :widths: 42, 5, 20, 33
     :header-rows: 1
+    :class: longtable
 
+
+.. raw:: latex
+
+  \newpage

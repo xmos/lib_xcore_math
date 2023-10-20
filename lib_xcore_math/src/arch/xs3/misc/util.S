@@ -11,25 +11,36 @@
 .align 4;
 .issue_mode dual
 /*  
-void unpack_float(
+void f32_unpack(
     int32_t* mantissa,
     exponent_t* exp,
     float input);
 */
-#define FUNCTION_NAME   unpack_float
+#define FUNCTION_NAME   f32_unpack
 #define NSTACKWORDS     (0)
+
+#define mant_out    r0
+#define exp_out     r1
+#define input       r2
+#define sign        r3
+#define exp         r11
 
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
 FUNCTION_NAME:
     dualentsp NSTACKWORDS
-    fsexp r3, r11, r2
-    fmant r2, r2
-    ldaw r11, r11[-6]
-{   add r11, r11, 1             ;   bf r3, .L_xuf_lblA          }
-{   neg r2, r2                  ;                               }
+    fsexp sign, exp, input
+    fmant input, input
+
+#undef input
+#define mant        r2
+
+    // interesting way of subtracting 23 without using registers
+    ldaw exp, exp[-6]
+{   add exp, exp, 1             ;   bf sign, .L_xuf_lblA        }
+{   neg mant, mant              ;                               }
     .L_xuf_lblA:
-{                               ;   stw r2, r0[0]               }
-{                               ;   stw r11, r1[0]              }
+{                               ;   stw mant, mant_out[0]       }
+{                               ;   stw exp, exp_out[0]         }
     retsp NSTACKWORDS
 .L_func_end_unpack:
 .cc_bottom FUNCTION_NAME.function
@@ -44,15 +55,20 @@ FUNCTION_NAME:
 
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
+#undef mant_out
+#undef exp_out
+#undef mant
+#undef exp
+#undef sign
 
 
 
 /*  
-float float_s32_to_f32(
+float s32_to_f32(
     const int32_t mantissa,
     const exponent_t exp);
 */
-#define FUNCTION_NAME   float_s32_to_f32
+#define FUNCTION_NAME   s32_to_f32
 #define NSTACKWORDS     (0)
 
 #define mant        r0
@@ -89,10 +105,4 @@ FUNCTION_NAME:
 #undef FUNCTION_NAME
 
 
-
-
-
 #endif //defined(__XS3A__)
-
-
-

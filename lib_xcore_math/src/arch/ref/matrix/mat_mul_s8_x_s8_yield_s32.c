@@ -1,11 +1,11 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
 
 
@@ -37,7 +37,7 @@ void mat_mul_s8_x_s8_yield_s32 (
 
       int32_t acc = merge_acc(accumulators[ag].vD[o], accumulators[ag].vR[o]);
 
-      for(int k = 0; k < N_cols; k++){
+      for(unsigned k = 0; k < N_cols; k++){
         acc += ((int32_t)input_vect[k]) * matrix[row * N_cols + k];
       }
 

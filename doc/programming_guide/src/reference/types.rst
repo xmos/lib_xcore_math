@@ -16,6 +16,7 @@ types.
     :file: csv/common_vector_types.csv
     :widths: 25, 25, 50
     :header-rows: 1
+    :class: longtable
 
 Common Scalar Types
 -------------------
@@ -27,6 +28,7 @@ types.
     :file: csv/common_scalar_types.csv
     :widths: 25, 25, 50
     :header-rows: 1
+    :class: longtable
 
 .. raw:: latex
   

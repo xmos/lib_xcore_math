@@ -46,7 +46,6 @@ TEST(fft_helpers, fft_index_bit_reversal)
 #endif
 
     unsigned r = 1;
-    conv_error_e error = 0;
 
     for(unsigned k = MIN_N_LOG2; k <= MAX_PROC_FRAME_LENGTH_LOG2; k++){
 
@@ -67,10 +66,10 @@ TEST(fft_helpers, fft_index_bit_reversal)
             fft_index_bit_reversal(a, N);
             unsigned ts2 = getTimestamp();
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
-            for(int i = 0; i < N; i++){
+            for(unsigned int i = 0; i < N; i++){
               int dex = n_bitrev(i, k);
               TEST_ASSERT_EQUAL_INT32(a_copy[dex].re, a[i].re);
               TEST_ASSERT_EQUAL_INT32(a_copy[dex].re, a[i].re);
@@ -119,7 +118,7 @@ TEST(fft_helpers, vect_complex_s32_tail_reverse)
             vect_complex_s32_tail_reverse(a, N);
             unsigned ts2 = getTimestamp();
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
             TEST_ASSERT_EQUAL_INT32_ARRAY((int32_t*) ref, (int32_t*) a, 2*N);
@@ -181,7 +180,7 @@ TEST(fft_helpers, fft_spectra_split)
             headroom_t got_hr = fft_spectra_split(a, N);
             unsigned ts2 = getTimestamp();
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
             unsigned diff = abs_diff_vect_complex_s32(a, 0, A, N, &error);
@@ -244,7 +243,7 @@ TEST(fft_helpers, fft_spectra_merge)
             headroom_t got_hr = fft_spectra_merge(a, N);
             unsigned ts2 = getTimestamp();
 
-            float timing = (ts2-ts1)/100.0;
+            float timing = (float) ((ts2-ts1)/100.0);
             if(timing > worst_timing) worst_timing = timing;
 
             unsigned diff = abs_diff_vect_complex_s32(a, 0, A, N, &error);

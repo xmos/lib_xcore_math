@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
@@ -9,7 +9,7 @@
 #include "xmath/xmath.h"
 
 
-static inline 
+static inline
 int16_t safe_ashr16(int16_t x, right_shift_t shr)
 {
   if(shr >= 16){
@@ -21,8 +21,6 @@ int16_t safe_ashr16(int16_t x, right_shift_t shr)
   }
 }
 
-
-    
 headroom_t bfp_s16_headroom(
     bfp_s16_t* a)
 {
@@ -69,8 +67,8 @@ void bfp_s16_shl(
 
 
 void bfp_s16_add(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -88,8 +86,8 @@ void bfp_s16_add(
 
 
 void bfp_s16_add_scalar(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const float c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -103,19 +101,19 @@ void bfp_s16_add_scalar(
     exponent_t c_exp;
     f32_unpack_s16(&c_mant, &c_exp, c);
 
-    vect_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp, 
+    vect_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp,
                                     b->hr, HR_S16(c_mant));
 
     int16_t cc = safe_ashr16(c_mant, c_shr);
 
-    a->hr = vect_s16_add_scalar(a->data, b->data, cc, b->length, 
+    a->hr = vect_s16_add_scalar(a->data, b->data, cc, b->length,
                                     b_shr);
 }
 
 
 void bfp_s16_sub(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -133,8 +131,8 @@ void bfp_s16_sub(
 
 
 void bfp_s16_mul(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -153,8 +151,8 @@ void bfp_s16_mul(
 
 
 void bfp_s16_scale(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const float alpha)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -204,7 +202,7 @@ float_s32_t bfp_s16_sum(
 
 
 float_s64_t bfp_s16_dot(
-    const bfp_s16_t* b, 
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -220,10 +218,10 @@ float_s64_t bfp_s16_dot(
 
 
 void bfp_s16_clip(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
-    const int16_t lower_bound, 
-    const int16_t upper_bound, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
+    const int16_t lower_bound,
+    const int16_t upper_bound,
     const int bound_exp)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -341,14 +339,12 @@ float bfp_s16_mean(
     headroom_t hr = HR_S32(sum) + 32;
     int64_t sum64 = ((int64_t)sum) << hr;
     int64_t mean64 = sum64 / ((int)b->length);
-    right_shift_t shr = MAX(0, 48 - HR_S64(mean64));
+    right_shift_t shr = MAX(0, 32 - HR_S64(mean64));
 
-    //TODO: astew: there's no reason to force the precision down to 16 bits after
-    //             getting rid of float_s16_t because s32_to_f32 handles 32 bits
-    if(shr > 0) 
-        mean64 += 1 << (shr-1);
+    if(shr > 0)
+        mean64 += ((uint64_t)1 << (shr-1));
 
-    return s32_to_f32(mean64 >> shr, 
+    return s32_to_f32((int32_t) (mean64 >> shr),
                           b->exp - hr + shr);
 }
 
@@ -395,14 +391,14 @@ float bfp_s16_max(
     assert(b->length != 0);
 #endif
 
-    return s32_to_f32(vect_s16_max(b->data, b->length), 
+    return s32_to_f32(vect_s16_max(b->data, b->length),
                           b->exp);
 }
 
 
 void bfp_s16_max_elementwise(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -415,11 +411,11 @@ void bfp_s16_max_elementwise(
   // We'll choose the smallest exponent that leaves at least 1 bit of headroom.
   const unsigned min_required_operand_headroom = 1;
   right_shift_t b_shr, c_shr;
-  vect_2vec_prepare(&a->exp, &b_shr, &c_shr, 
-                        b->exp, c->exp, b->hr, c->hr, 
+  vect_2vec_prepare(&a->exp, &b_shr, &c_shr,
+                        b->exp, c->exp, b->hr, c->hr,
                         min_required_operand_headroom);
 
-  a->hr = vect_s16_max_elementwise(a->data, b->data, c->data, 
+  a->hr = vect_s16_max_elementwise(a->data, b->data, c->data,
                                        b->length, b_shr, c_shr);
 }
 
@@ -431,14 +427,14 @@ float bfp_s16_min(
     assert(b->length != 0);
 #endif
 
-    return s32_to_f32(vect_s16_min(b->data, b->length), 
+    return s32_to_f32(vect_s16_min(b->data, b->length),
                           b->exp);
 }
 
 
 void bfp_s16_min_elementwise(
-    bfp_s16_t* a, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* a,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -451,11 +447,11 @@ void bfp_s16_min_elementwise(
   // We'll choose the smallest exponent that leaves at least 1 bit of headroom.
   const unsigned min_required_operand_headroom = 1;
   right_shift_t b_shr, c_shr;
-  vect_2vec_prepare(&a->exp, &b_shr, &c_shr, 
-                        b->exp, c->exp, b->hr, c->hr, 
+  vect_2vec_prepare(&a->exp, &b_shr, &c_shr,
+                        b->exp, c->exp, b->hr, c->hr,
                         min_required_operand_headroom);
 
-  a->hr = vect_s16_min_elementwise(a->data, b->data, c->data, 
+  a->hr = vect_s16_min_elementwise(a->data, b->data, c->data,
                                        b->length, b_shr, c_shr);
 }
 
@@ -485,7 +481,7 @@ unsigned bfp_s16_argmin(
 void bfp_s16_to_bfp_s32(
     bfp_s32_t* a,
     const bfp_s16_t* b)
-{    
+{
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
     assert(b->length == a->length);
     assert(b->length != 0);
@@ -501,8 +497,8 @@ void bfp_s16_to_bfp_s32(
 
 
 void bfp_s16_macc(
-    bfp_s16_t* acc, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* acc,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -520,8 +516,8 @@ void bfp_s16_macc(
 
 
 void bfp_s16_nmacc(
-    bfp_s16_t* acc, 
-    const bfp_s16_t* b, 
+    bfp_s16_t* acc,
+    const bfp_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -549,12 +545,11 @@ headroom_t bfp_s16_accumulate(
 
   const unsigned chunks = b->length >> VPU_INT16_EPV_LOG2;
   const unsigned tail = b->length & (VPU_INT16_EPV - 1);
-
   const right_shift_t b_shr = acc_exp - b->exp;
 
   unsigned vpu_ctrl = VPU_INT16_CTRL_INIT; // VPU 16-bit mode with zeroed headroom
 
-  for(int k = 0; k < chunks; k++){
+  for(unsigned k = 0; k < chunks; k++){
     vpu_ctrl = chunk_s16_accumulate(
         &acc[k], &b->data[k << VPU_INT16_EPV_LOG2], b_shr, vpu_ctrl);
   }

@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 // XMOS Public License: Version 1
 
@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
 
 
@@ -26,7 +26,7 @@ headroom_t vect_complex_s16_conj_macc(
     const right_shift_t acc_shr,
     const right_shift_t bc_sat)
 {
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
 
         acc_real[k] = vlashr16( acc_real[k], acc_shr );
         acc_imag[k] = vlashr16( acc_imag[k], acc_shr );
@@ -60,7 +60,7 @@ headroom_t vect_complex_s16_conj_nmacc(
     const right_shift_t acc_shr,
     const right_shift_t bc_sat)
 {
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
 
         acc_real[k] = vlashr16( acc_real[k], acc_shr );
         acc_imag[k] = vlashr16( acc_imag[k], acc_shr );
@@ -103,7 +103,7 @@ headroom_t vect_complex_s32_conj_macc(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         
         complex_s32_t B = {
             ASHR(32)(b[k].re, b_shr), 
@@ -135,7 +135,7 @@ headroom_t vect_complex_s32_conj_nmacc(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         
         complex_s32_t B = {
             ASHR(32)(b[k].re, b_shr), 

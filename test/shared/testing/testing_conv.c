@@ -10,8 +10,8 @@
  * Type conversion
  */
 double conv_s8_to_double (
-    const int8_t x,  
-    const exponent_t x_exp, 
+    const int8_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     //TODO check for errors
@@ -19,16 +19,16 @@ double conv_s8_to_double (
 }
 
 double conv_u8_to_double(
-    const uint8_t x, 
-    const exponent_t x_exp, 
+    const uint8_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     return (double) ldexp((double)x, x_exp);
 }
 
 double conv_s16_to_double(
-    const int16_t x,  
-    const exponent_t x_exp, 
+    const int16_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     //TODO check for errors
@@ -36,40 +36,40 @@ double conv_s16_to_double(
 }
 
 double conv_u16_to_double(
-    const uint16_t x, 
-    const exponent_t x_exp, 
+    const uint16_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     return (double) ldexp((double)x, x_exp);
 }
 
 double conv_s32_to_double (
-    const int32_t x, 
-    const exponent_t x_exp, 
+    const int32_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     return (double) ldexp((double)x, x_exp);
 }
 
 double conv_u32_to_double(
-    const uint32_t x, 
-    const exponent_t x_exp, 
+    const uint32_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     return (double) ldexp((double)x, x_exp);
 }
 
 double conv_s64_to_double (
-    const int64_t x, 
-    const exponent_t x_exp, 
+    const int64_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     return (double) ldexp((double)x, x_exp);
 }
 
 double conv_u64_to_double(
-    const uint64_t x, 
-    const exponent_t x_exp, 
+    const uint64_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     return (double) ldexp((double)x, x_exp);
@@ -77,8 +77,8 @@ double conv_u64_to_double(
 
 
 int8_t  conv_double_to_s8 (
-    double d, 
-    const exponent_t d_exp, 
+    double d,
+    const exponent_t d_exp,
     conv_error_e* error)
 {
     exponent_t m_exp;
@@ -93,12 +93,12 @@ int8_t  conv_double_to_s8 (
         return 0;
     }
     error = 0;
-    return r;
+    return (int8_t) r;
 }
 
 uint8_t conv_double_to_u8(
-    double d, 
-    const exponent_t d_exp, 
+    double d,
+    const exponent_t d_exp,
     conv_error_e* error)
 {
     exponent_t m_exp;
@@ -109,12 +109,12 @@ uint8_t conv_double_to_u8(
         return 0;
     }
     error = 0;
-    return ldexp(m, m_exp - d_exp);
+    return (uint8_t) ldexp(m, m_exp - d_exp);
 }
 
 int16_t  conv_double_to_s16 (
-    double d, 
-    const exponent_t d_exp, 
+    double d,
+    const exponent_t d_exp,
     conv_error_e* error)
 {
     exponent_t m_exp;
@@ -129,12 +129,12 @@ int16_t  conv_double_to_s16 (
         return 0;
     }
     error = 0;
-    return r;
+    return (int16_t) r;
 }
 
 uint16_t conv_double_to_u16(
-    double d, 
-    const exponent_t d_exp, 
+    double d,
+    const exponent_t d_exp,
     conv_error_e* error)
 {
     exponent_t m_exp;
@@ -146,12 +146,12 @@ uint16_t conv_double_to_u16(
     }
 
     error = 0;
-    return ldexp(m, m_exp - d_exp);
+    return (uint16_t) ldexp(m, m_exp - d_exp);
 }
 
 int32_t  conv_double_to_s32 (
-    double d, 
-    const exponent_t d_exp, 
+    double d,
+    const exponent_t d_exp,
     conv_error_e* error)
 {
     exponent_t m_exp;
@@ -168,12 +168,12 @@ int32_t  conv_double_to_s32 (
 
     error = 0;
 
-    return r;
+    return (int32_t) r;
 }
 
 uint32_t conv_double_to_u32(
-    double d, 
-    const exponent_t d_exp, 
+    double d,
+    const exponent_t d_exp,
     conv_error_e* error)
 {
     exponent_t m_exp;
@@ -185,12 +185,12 @@ uint32_t conv_double_to_u32(
     }
     error = 0;
 
-    return ldexp(m, m_exp - d_exp);
+    return (uint32_t) ldexp(m, m_exp - d_exp);
 }
 
 int64_t  conv_double_to_s64 (
-    double d, 
-    const exponent_t d_exp, 
+    double d,
+    const exponent_t d_exp,
     conv_error_e* error)
 {
     exponent_t m_exp;
@@ -206,12 +206,12 @@ int64_t  conv_double_to_s64 (
     }
     error = 0;
 
-    return r;
+    return (int64_t) r;
 }
 
 uint64_t conv_double_to_u64(
-    double d, 
-    const exponent_t d_exp, 
+    double d,
+    const exponent_t d_exp,
     conv_error_e* error)
 {
     exponent_t m_exp;
@@ -223,12 +223,12 @@ uint64_t conv_double_to_u64(
     }
     error = 0;
 
-    return (uint64_t)ldexp(m, m_exp - d_exp);
+    return (uint64_t) ldexp(m, m_exp - d_exp);
 }
 
 complex_double_t conv_complex_s16_to_complex_double(
-    complex_s16_t x, 
-    const exponent_t x_exp, 
+    complex_s16_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     complex_double_t r;
@@ -239,8 +239,8 @@ complex_double_t conv_complex_s16_to_complex_double(
 }
 
 complex_double_t conv_complex_s32_to_complex_double(
-    complex_s32_t x, 
-    const exponent_t x_exp, 
+    complex_s32_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     complex_double_t r;
@@ -251,8 +251,8 @@ complex_double_t conv_complex_s32_to_complex_double(
 }
 
 complex_s16_t conv_complex_double_to_complex_s16(
-    complex_double_t x, 
-    const exponent_t x_exp, 
+    complex_double_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     complex_s16_t r;
@@ -263,8 +263,8 @@ complex_s16_t conv_complex_double_to_complex_s16(
 }
 
 complex_s32_t conv_complex_double_to_complex_s32(
-    complex_double_t x, 
-    const exponent_t x_exp, 
+    complex_double_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     complex_s32_t r;
@@ -275,8 +275,8 @@ complex_s32_t conv_complex_double_to_complex_s32(
 }
 
 complex_s64_t conv_complex_double_to_complex_s64(
-    complex_double_t x, 
-    const exponent_t x_exp, 
+    complex_double_t x,
+    const exponent_t x_exp,
     conv_error_e* error)
 {
     complex_s64_t r;
@@ -293,65 +293,65 @@ complex_s64_t conv_complex_double_to_complex_s64(
 
 
 void conv_vect_s16_to_double(
-    double output[], 
-    const int16_t input[], 
-    const unsigned length, 
-    const exponent_t input_exp, 
+    double output[],
+    const int16_t input[],
+    const unsigned length,
+    const exponent_t input_exp,
     conv_error_e *error)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         output[i] = conv_s16_to_double(input[i], input_exp, error);
     }
 }
 
 void conv_vect_s32_to_double(
-    double output[], 
-    const int32_t input[], 
-    const unsigned length, 
-    const exponent_t input_exp, 
+    double output[],
+    const int32_t input[],
+    const unsigned length,
+    const exponent_t input_exp,
     conv_error_e *error)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         output[i] = conv_s32_to_double(input[i], input_exp, error);
     }
 }
 
 
 void conv_vect_complex_s16_to_complex_double(
-    complex_double_t output[], 
-    const complex_s16_t input[], 
-    const unsigned length, 
-    const exponent_t input_exp, 
+    complex_double_t output[],
+    const complex_s16_t input[],
+    const unsigned length,
+    const exponent_t input_exp,
     conv_error_e *error)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         output[i].re = conv_s16_to_double(input[i].re, input_exp, error);
         output[i].im = conv_s16_to_double(input[i].im, input_exp, error);
     }
 }
 
 void conv_vect_complex_s32_to_complex_double(
-    complex_double_t output[], 
-    const complex_s32_t input[], 
-    const unsigned length, 
-    const exponent_t input_exp, 
+    complex_double_t output[],
+    const complex_s32_t input[],
+    const unsigned length,
+    const exponent_t input_exp,
     conv_error_e *error)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         output[i].re = conv_s32_to_double(input[i].re, input_exp, error);
         output[i].im = conv_s32_to_double(input[i].im, input_exp, error);
     }
 }
 
 void conv_vect_complex_s32_to_complex_double_v2(
-    double out_real[], 
-    double out_imag[], 
-    const complex_s32_t input[], 
-    const unsigned length, 
-    const exponent_t input_exp, 
+    double out_real[],
+    double out_imag[],
+    const complex_s32_t input[],
+    const unsigned length,
+    const exponent_t input_exp,
     conv_error_e *error)
 {
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
         out_real[i] = conv_s32_to_double(input[i].re, input_exp, error);
         out_imag[i] = conv_s32_to_double(input[i].im, input_exp, error);
     }

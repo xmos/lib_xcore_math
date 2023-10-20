@@ -51,7 +51,7 @@ TEST(vect_complex_conjugate, vect_complex_s32_conjugate)
 
     setExtraInfo_RSL(r, old_seed, length);
 
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       B[k].re = pseudo_rand_int32(&seed);
       B[k].im = pseudo_rand_int32(&seed);
 
@@ -61,7 +61,7 @@ TEST(vect_complex_conjugate, vect_complex_s32_conjugate)
     
     vect_complex_s32_conjugate(A, B, length);
 
-    for(int k = 0; k < length; k++){
+    for(unsigned int k = 0; k < length; k++){
       TEST_ASSERT_EQUAL(expected[k].re, A[k].re);
       TEST_ASSERT_EQUAL(expected[k].im, A[k].im);
     }

@@ -1,14 +1,14 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../../vect/vpu_const_vects.h"
+#include "vpu_const_vects.h"
 
 
 #define negative_one_s16    (vpu_vec_neg_0x4000[0])
@@ -23,7 +23,7 @@ headroom_t vect_complex_s16_mag(
     const int16_t* rot_table,
     const unsigned table_rows)
 {
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         
         complex_s16_t B = {
             vlashr16(b_real[k], b_shr),
@@ -33,7 +33,7 @@ headroom_t vect_complex_s16_mag(
         B.re = vlmul16(vsign16(B.re), B.re);
         B.im = vlmul16(vsign16(B.im), B.im);
 
-        for(int iter = 0; iter < table_rows; iter++){
+        for(unsigned iter = 0; iter < table_rows; iter++){
             vpu_int16_acc_t acc;
 
             complex_s16_t rot = {
@@ -80,11 +80,11 @@ headroom_t vect_complex_s32_mag(
     const unsigned table_rows)
 {
 
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         
         // Apply a right-shift to b[k]
         complex_s32_t B = {
-            vlashr32(b[k].re, b_shr), 
+            vlashr32(b[k].re, b_shr),
             vlashr32(b[k].im, b_shr),
         };
 
@@ -92,7 +92,7 @@ headroom_t vect_complex_s32_mag(
         B.re = vlmul32(vsign32(B.re), B.re);
         B.im = vlmul32(vsign32(B.im), B.im);
 
-        for(int iter = 0; iter < table_rows; iter++){
+        for(unsigned iter = 0; iter < table_rows; iter++){
 
             complex_s32_t rot = {
                 rot_table[iter * 4].re,
@@ -128,7 +128,7 @@ headroom_t vect_complex_s16_squared_mag(
     const unsigned length,
     const right_shift_t a_shr)
 {
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
 
         vpu_int16_acc_t acc = 0;
 
@@ -150,7 +150,7 @@ headroom_t vect_complex_s32_squared_mag(
     const right_shift_t b_shr)
 {
 
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
 
         complex_s32_t B = {
             vlashr32(b[k].re, b_shr),

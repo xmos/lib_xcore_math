@@ -1,19 +1,25 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
-#include "../../../vect/vpu_const_vects.h"
+#include "vpu_helper.h"
+#include "vpu_const_vects.h"
 #include "xmath_fft_lut.h"
 
 #include "xmath/xs3/vpu_scalar_ops.h"
 
+// Disable warning messages C4293:
+// warning C4293: '<<': shift count negative or too big, undefined behavior
+#ifdef _WIN32
+#pragma warning( disable : 4293)
+#endif
+
 
 //load 4 complex 32-bit values into a buffer
 static void load_vec(
-    complex_s32_t dst[], 
+    complex_s32_t dst[],
     const complex_s32_t src[])
 {
     for(int i = 0; i < 4; i++){
@@ -27,8 +33,8 @@ void fft_index_bit_reversal(
     complex_s32_t* a,
     const unsigned length)
 {
-    size_t logn = u32_ceil_log2(length);
-    for(int i = 0; i < length; i++){
+    unsigned int logn = u32_ceil_log2(length);
+    for(unsigned i = 0; i < length; i++){
         
         unsigned rev = n_bitrev(i, logn);
         if(rev < i) continue;
@@ -61,7 +67,7 @@ headroom_t fft_spectra_split(
     complex_s32_t XN = X[K];
     
     // If we change [X[0].re, X[0].im, X[K].re, X[K].im] to be this:
-    //  [DC.re - Ny.im,  Ny.re + DC.im,   DC.re + Ny.im,  -Ny.re + DC.im  ]  
+    //  [DC.re - Ny.im,  Ny.re + DC.im,   DC.re + Ny.im,  -Ny.re + DC.im  ]
     // then we can just compute those bins in the loop below. Not very important
     // here, but makes the assembly much faster.
     // This does unfortunately introduce the requirement that the input have at least 1 bit of headroom.
@@ -187,7 +193,7 @@ void fft_mono_adjust(
         p_X_lo = tmp;
     }
 
-    for(int k = 0; k < (FFT_N/4); k+=4){
+    for(unsigned k = 0; k < (FFT_N/4); k+=4){
 
         complex_s32_t X_lo[VEC_ELMS], X_hi[VEC_ELMS], tmp[VEC_ELMS], A[VEC_ELMS], B[VEC_ELMS];
 
@@ -212,7 +218,7 @@ void fft_mono_adjust(
         //     B[i].re = ASHR(32)(((int64_t) 0x40000000) + tmp[i].re, 1);
         //     B[i].im = ASHR(32)(((int64_t) 0x00000000) + tmp[i].im, 1);
         // }
-        vect_complex_s32_sub(A, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1); 
+        vect_complex_s32_sub(A, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1);
         vect_complex_s32_add(B, vpu_vec_complex_ones, tmp, VEC_ELMS, 1, 1);
 
 
@@ -252,7 +258,7 @@ void vect_complex_s32_tail_reverse(
     complex_s32_t x[],
     const unsigned N)
 {
-    for(int i = 1; i < N/2; i++){
+    for(unsigned i = 1; i < N/2; i++){
         int k = N-i;
 
         complex_s32_t tmp = x[i];

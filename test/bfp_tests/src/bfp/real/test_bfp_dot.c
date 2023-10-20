@@ -58,7 +58,7 @@ TEST(bfp_dot, bfp_s16_dot)
 
         double expected = 0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_uint(&seed, 0, INT16_MAX) >> B.hr;
             C.data[i] = pseudo_rand_uint(&seed, 0, INT16_MAX) >> C.hr;
 
@@ -70,7 +70,7 @@ TEST(bfp_dot, bfp_s16_dot)
         
         float_s64_t result = bfp_s16_dot(&B, &C);
 
-        double diff = expected-ldexp(result.mant, result.exp);
+        double diff = expected-ldexp((double) result.mant, result.exp);
         double error = fabs(diff/expected);
 
         double max_error = ldexp(1, u32_ceil_log2(B.length) - 8 - (B.hr+C.hr));
@@ -130,7 +130,7 @@ TEST(bfp_dot, bfp_s32_dot)
     const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
 
         test_case_t* casse = &casses[v];
@@ -141,7 +141,7 @@ TEST(bfp_dot, bfp_s32_dot)
         B.exp = casse->b.exp;
         C.exp = casse->c.exp;
 
-        for(int k = 0; k < casse->length; k++){
+        for(unsigned int k = 0; k < casse->length; k++){
             B.data[k] = casse->b.value;
             C.data[k] = casse->c.value;
         }
@@ -156,7 +156,7 @@ TEST(bfp_dot, bfp_s32_dot)
         int64_t exp_mod = (shr >= 0)? (casse->expected.value >> shr) : (casse->expected.value << -shr);
 
         TEST_ASSERT(exp_mod == result.mant);
-    } 
+    }
 }
 
 TEST(bfp_dot, bfp_s32_dot_2)
@@ -185,7 +185,7 @@ TEST(bfp_dot, bfp_s32_dot_2)
 
         double expected = 0;
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i] = pseudo_rand_int32(&seed) >> B.hr;
             C.data[i] = pseudo_rand_int32(&seed) >> C.hr;
 
@@ -197,7 +197,7 @@ TEST(bfp_dot, bfp_s32_dot_2)
         
         float_s64_t result = bfp_s32_dot(&B, &C);
 
-        double diff = expected - ldexp(result.mant, result.exp);
+        double diff = expected - ldexp((double) result.mant, result.exp);
         double error = fabs(diff/expected);
         int extr = (int) floor(log2(B.length));
         // astew: 2022/06/30 -- if B.length == 1, log2(B.length) = 0, which means ldexp(extr,-20) = 0.0
@@ -205,10 +205,10 @@ TEST(bfp_dot, bfp_s32_dot_2)
         if(extr == 0) extr = 1; // for when B.length == 0
 
         double thresh = ldexp(extr, -20);
-        XTEST_ASSERT( error < thresh, 
+        XTEST_ASSERT( error < thresh,
           "\n%e not less than %e\n"
           "B.hr = %u\n"
-          "C.hr = %u\n", 
+          "C.hr = %u\n",
           error, thresh, B.hr, C.hr );
     }
 }

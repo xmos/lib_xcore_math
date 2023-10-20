@@ -103,7 +103,7 @@ TEST(vect_sub, vect_s16_sub_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
+    test_case_t cases[] = {
         // value{       b         c }   shr{  b   c }        exp        line num
         {       {  0x0000,  -0x0000 },     {  0,  0 },    0x0000,       __LINE__},
         {       {  0x0001,  -0x0000 },     {  0,  0 },    0x0001,       __LINE__},
@@ -134,14 +134,14 @@ TEST(vect_sub, vect_s16_sub_basic)
         
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
         
         //Verify sub_s16() is correct. It's used in other test cases.
         TEST_ASSERT_EQUAL_MSG(casse->expected, sub_s16(casse->value.b, casse->value.c, casse->shr.b, casse->shr.c), casse->line);
@@ -156,7 +156,7 @@ TEST(vect_sub, vect_s16_sub_basic)
             int16_t B[40];
             int16_t C[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B[i] = casse->value.b;
                 C[i] = casse->value.c;
@@ -165,7 +165,7 @@ TEST(vect_sub, vect_s16_sub_basic)
 
             hr = vect_s16_sub(A, B, C, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
@@ -173,7 +173,7 @@ TEST(vect_sub, vect_s16_sub_basic)
             memcpy(A, B, sizeof(A));
             hr = vect_s16_sub(A, A, C, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
@@ -181,7 +181,7 @@ TEST(vect_sub, vect_s16_sub_basic)
             memcpy(A, C, sizeof(A));
             hr = vect_s16_sub(A, B, A, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
@@ -202,13 +202,13 @@ TEST(vect_sub, vect_s16_sub_random)
     int16_t B[MAX_LEN];
     int16_t C[MAX_LEN];
     
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int16(&seed) >> shr;
             C[i] = pseudo_rand_int16(&seed) >> shr;
@@ -221,7 +221,7 @@ TEST(vect_sub, vect_s16_sub_random)
 
         hr = vect_s16_sub(A, B, C, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int16_t expected = sub_s16(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
@@ -231,7 +231,7 @@ TEST(vect_sub, vect_s16_sub_random)
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s16_sub(A, A, C, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int16_t expected = sub_s16(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i],  (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
@@ -241,7 +241,7 @@ TEST(vect_sub, vect_s16_sub_random)
         memcpy(A, C, sizeof(A[0])*len);
         hr = vect_s16_sub(A, B, A, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int16_t expected = sub_s16(B[i], C[i], b_shr, c_shr);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (uint16_t)A[i],  (uint16_t)B[i],  (uint16_t)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
@@ -263,44 +263,44 @@ TEST(vect_sub, vect_s32_sub_basic)
         unsigned line;
     } test_case_t;
 
-    test_case_t casses[] = {
-        // value{           b             c }   shr{   b    c }            exp        line num
-        {       {  0x00000000,  -0x00000000 },     {   0,   0 },    0x00000000,       __LINE__},
-        {       {  0x00000001,  -0x00000000 },     {   0,   0 },    0x00000001,       __LINE__},
-        {       {  0x00000000,  -0x00000001 },     {   0,   0 },    0x00000001,       __LINE__},
-        {       {  0x00000001,  -0x00000001 },     {   0,   0 },    0x00000002,       __LINE__},
-        {       { -0x00000001,  -0x00000001 },     {   0,   0 },    0x00000000,       __LINE__},
-        {       {  0x00001010,  -0x00000101 },     {   0,   0 },    0x00001111,       __LINE__},
-        {       { -0x00001010,   0x00000101 },     {   0,   0 },   -0x00001111,       __LINE__},
-        {       { -0x80000000,  -0x00000000 },     {   0,   0 },   -0x7FFFFFFF,       __LINE__},
-        {       {  0x40000000,  -0x40000000 },     {   0,   0 },    0x7FFFFFFF,       __LINE__},
-        {       {  0x7FFFFFFF,  -0x7FFFFFFF },     {   0,   0 },    0x7FFFFFFF,       __LINE__},
+    test_case_t cases[] = {
+        // value{                    b               c }   shr{   b    c }            exp        line num
+        {       {           0x00000000,    -0x00000000 },     {   0,   0 },    0x00000000,       __LINE__},
+        {       {           0x00000001,    -0x00000000 },     {   0,   0 },    0x00000001,       __LINE__},
+        {       {           0x00000000,    -0x00000001 },     {   0,   0 },    0x00000001,       __LINE__},
+        {       {           0x00000001,    -0x00000001 },     {   0,   0 },    0x00000002,       __LINE__},
+        {       {          -0x00000001,    -0x00000001 },     {   0,   0 },    0x00000000,       __LINE__},
+        {       {           0x00001010,    -0x00000101 },     {   0,   0 },    0x00001111,       __LINE__},
+        {       {          -0x00001010,     0x00000101 },     {   0,   0 },   -0x00001111,       __LINE__},
+        {       { (int) (0-0x80000000),    -0x00000000 },     {   0,   0 },   -0x7FFFFFFF,       __LINE__},
+        {       {           0x40000000,    -0x40000000 },     {   0,   0 },    0x7FFFFFFF,       __LINE__},
+        {       {           0x7FFFFFFF,    -0x7FFFFFFF },     {   0,   0 },    0x7FFFFFFF,       __LINE__},
 
-        {       {  0x00000001,  -0x00000001 },     {   1,   0 },    0x00000001,       __LINE__},
-        {       {  0x00000001,  -0x00000001 },     {   1,   1 },    0x00000001,       __LINE__},
-        {       {  0x00000002,  -0x00000002 },     {   1,   1 },    0x00000002,       __LINE__},
-        {       {  0x00000010,  -0x00000020 },     {   1,   1 },    0x00000018,       __LINE__},
-        {       {  0x00000011,  -0x00000021 },     {   4,   5 },    0x00000003,       __LINE__},
-        {       { -0x00000010,   0x00000020 },     {   4,   4 },   -0x00000003,       __LINE__},
-        {       { -0x00000011,  -0x00000000 },     {   1,   0 },   -0x00000009,       __LINE__}, //truncation of negative rounds towards negative infinity
-        {       { -0x00000001,   0x00000001 },     {  10,  10 },   -0x00000001,       __LINE__},
+        {       {           0x00000001,    -0x00000001 },     {   1,   0 },    0x00000001,       __LINE__},
+        {       {           0x00000001,    -0x00000001 },     {   1,   1 },    0x00000001,       __LINE__},
+        {       {           0x00000002,    -0x00000002 },     {   1,   1 },    0x00000002,       __LINE__},
+        {       {           0x00000010,    -0x00000020 },     {   1,   1 },    0x00000018,       __LINE__},
+        {       {           0x00000011,    -0x00000021 },     {   4,   5 },    0x00000003,       __LINE__},
+        {       {          -0x00000010,     0x00000020 },     {   4,   4 },   -0x00000003,       __LINE__},
+        {       {          -0x00000011,    -0x00000000 },     {   1,   0 },   -0x00000009,       __LINE__}, //truncation of negative rounds towards negative infinity
+        {       {          -0x00000001,     0x00000001 },     {  10,  10 },   -0x00000001,       __LINE__},
 
-        {       {  0x00000001,  -0x00000001 },     {  -1,   0 },    0x00000003,       __LINE__},
-        {       {  0x00000001,  -0x00000001 },     {   0,  -1 },    0x00000003,       __LINE__},
-        {       {  0x00000001,  -0x00000001 },     {  -1,  -1 },    0x00000004,       __LINE__},
-        {       {  0x00000010,  -0x00000020 },     {  -1,  -1 },    0x00000060,       __LINE__},
-        {       {  0x00000010,  -0x00000020 },     {  -8,  -8 },    0x00003000,       __LINE__},
-        {       {  0x00000FFF,   0x00000FFF },     { -20, -16 },    0x7000FFFF,       __LINE__},
+        {       {           0x00000001,    -0x00000001 },     {  -1,   0 },    0x00000003,       __LINE__},
+        {       {           0x00000001,    -0x00000001 },     {   0,  -1 },    0x00000003,       __LINE__},
+        {       {           0x00000001,    -0x00000001 },     {  -1,  -1 },    0x00000004,       __LINE__},
+        {       {           0x00000010,    -0x00000020 },     {  -1,  -1 },    0x00000060,       __LINE__},
+        {       {           0x00000010,    -0x00000020 },     {  -8,  -8 },    0x00003000,       __LINE__},
+        {       {           0x00000FFF,     0x00000FFF },     { -20, -16 },    0x7000FFFF,       __LINE__},
     };
 
-    const unsigned N_cases = sizeof(casses)/sizeof(test_case_t);
+    const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
-        test_case_t* casse = &casses[v];
+        test_case_t* casse = &cases[v];
 
         //Verify sub_s32() is correct. It's used in other test cases.
         TEST_ASSERT_EQUAL_MSG(casse->expected, sub_s32(casse->value.b, casse->value.c, casse->shr.b, casse->shr.c), casse->line);
@@ -316,7 +316,7 @@ TEST(vect_sub, vect_s32_sub_basic)
             int32_t B[40];
             int32_t C[40];
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 A[i] = 0xCC;
                 B[i] = casse->value.b;
                 C[i] = casse->value.c;
@@ -324,7 +324,7 @@ TEST(vect_sub, vect_s32_sub_basic)
 
             hr = vect_s32_sub(A, B, C, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, casse->line);
             }
@@ -332,7 +332,7 @@ TEST(vect_sub, vect_s32_sub_basic)
             memcpy(A, B, sizeof(A));
             hr = vect_s32_sub(A, A, C, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, casse->line);
             }
@@ -340,7 +340,7 @@ TEST(vect_sub, vect_s32_sub_basic)
             memcpy(A, C, sizeof(A));
             hr = vect_s32_sub(A, B, A, len, casse->shr.b, casse->shr.c);
 
-            for(int i = 0; i < len; i++){
+            for(unsigned int i = 0; i < len; i++){
                 TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s32_headroom(A, len), hr, casse->line);
             }
@@ -360,13 +360,13 @@ TEST(vect_sub, vect_s32_sub_random)
     int32_t B[MAX_LEN];
     int32_t C[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int32(&seed) >> shr;
             C[i] = pseudo_rand_int32(&seed) >> shr;
@@ -379,9 +379,9 @@ TEST(vect_sub, vect_s32_sub_random)
 
         hr = vect_s32_sub(A, B, C, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int32_t expected = sub_s32(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i], (unsigned)B[i],  (unsigned)C[i]);
+            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, (long int) A[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (unsigned)A[i], (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
@@ -389,9 +389,9 @@ TEST(vect_sub, vect_s32_sub_random)
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s32_sub(A, A, C, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int32_t expected = sub_s32(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
+            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, (long int) A[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
@@ -399,9 +399,9 @@ TEST(vect_sub, vect_s32_sub_random)
         memcpy(A, C, sizeof(A[0])*len);
         hr = vect_s32_sub(A, B, A, len, b_shr, c_shr);
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             int32_t expected = sub_s32(B[i], C[i], b_shr, c_shr);
-            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], b_shr, C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
+            if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, (long int) A[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (unsigned)A[i],  (unsigned)B[i],  (unsigned)C[i]);
             TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
         }
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);

@@ -7,9 +7,9 @@
 
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../vect/vpu_const_vects.h"
+#include "vpu_const_vects.h"
 
 typedef union {
   int32_t s32[VPU_INT32_EPV];
@@ -114,9 +114,11 @@ unsigned vect_sXX_add_scalar(
     case 0x0200: // 8-bit
       // @todo: There is currently no vect_s8_headroom()
       assert(0); // Not supported on x86 at the moment.
+      return 0; // add return value to avoid warning C4715: 'vect_sXX_add_scalar': not all control paths return a value
       // return 7 - vect_s8_headroom((void*) a, length_bytes);
       break;
     default:
       assert(0); // shouldn't happen
+      return 0; // add return value to avoid warning C4715: 'vect_sXX_add_scalar': not all control paths return a value
   }
 }

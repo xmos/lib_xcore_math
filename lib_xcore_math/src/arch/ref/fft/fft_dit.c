@@ -1,11 +1,11 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath_fft_lut.h"
 
 //load 4 complex 32-bit values into a buffer
@@ -96,7 +96,7 @@ void fft_dit_forward (
     exp_modifier += shift_mode;
 
 
-    for(int j = 0; j < (N>>2); j++){
+    for(unsigned j = 0; j < (N>>2); j++){
         load_vec(vD, &x[4*j]);
         vfttf(vD, shift_mode);
         load_vec(&x[4*j], vD);
@@ -106,7 +106,7 @@ void fft_dit_forward (
 
         // int a = N >> 3;
 
-        for(int n = 0; n < FFT_N_LOG2-2; n++){
+        for(unsigned n = 0; n < FFT_N_LOG2-2; n++){
             
             int b = 1<<(n+2);
             int a = 1<<((FFT_N_LOG2-3)-n);
@@ -170,7 +170,7 @@ void fft_dit_inverse (
     exp_modifier += shift_mode;
     exp_modifier += -2;
 
-    for(int j = 0; j < (N>>2); j++){
+    for(unsigned j = 0; j < (N>>2); j++){
         load_vec(vD, &x[4*j]);
         vfttb(vD, shift_mode);
         load_vec(&x[4*j], vD);
@@ -178,7 +178,7 @@ void fft_dit_inverse (
 
     if(N != 4){
 
-        for(int n = 0; n < FFT_N_LOG2-2; n++){
+        for(unsigned n = 0; n < FFT_N_LOG2-2; n++){
             
             int b = 1<<(n+2);
             int a = 1<<((FFT_N_LOG2-3)-n);

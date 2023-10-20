@@ -1,4 +1,4 @@
-// Copyright 2021-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 // XMOS Public License: Version 1
 
@@ -46,36 +46,36 @@ unsigned test_random_vect_complex_s16(
 
 EXTERN_C
 void test_random_bfp_s16(
-    bfp_s16_t* B, 
-    unsigned max_len, 
+    bfp_s16_t* B,
+    unsigned max_len,
     unsigned* seed,
     bfp_s16_t* A,
-    int length);
+    unsigned int length);
 
 
 EXTERN_C
 void test_random_bfp_s32(
-    bfp_s32_t* B, 
-    unsigned max_len, 
+    bfp_s32_t* B,
+    unsigned max_len,
     unsigned* seed,
     bfp_s32_t* A,
-    int length);
+    unsigned int length);
 
 EXTERN_C
 void test_random_bfp_complex_s16(
-    bfp_complex_s16_t* B, 
-    unsigned max_len, 
+    bfp_complex_s16_t* B,
+    unsigned max_len,
     unsigned* seed,
     bfp_complex_s16_t* A,
-    int length);
+    unsigned int length);
 
 EXTERN_C
 void test_random_bfp_complex_s32(
-    bfp_complex_s32_t* B, 
-    unsigned max_len, 
+    bfp_complex_s32_t* B,
+    unsigned max_len,
     unsigned* seed,
     bfp_complex_s32_t* A,
-    int length);
+    unsigned int length);
 
 EXTERN_C
 void test_double_from_s16(

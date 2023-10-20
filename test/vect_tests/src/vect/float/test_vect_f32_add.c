@@ -49,25 +49,25 @@ TEST(vect_f32_add, vect_f32_add)
   DWORD_ALIGNED
   float c[MAX_LEN];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     const unsigned old_seed = seed;
 
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN-1);
-    setExtraInfo_RSL(v, old_seed, len);  
+    setExtraInfo_RSL(v, old_seed, len);
     // printf("0x%08X\n", old_seed);
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       exponent_t exponent = pseudo_rand_int(&seed, -50, 2);
-      b[k] = ldexpf(pseudo_rand_int32(&seed) & 0xFFFFFF00, 
+      b[k] = ldexpf((float) (pseudo_rand_int32(&seed) & 0xFFFFFF00),
                       exponent);
-      c[k] = ldexpf(pseudo_rand_int32(&seed) & 0xFFFFFF00, 
+      c[k] = ldexpf((float) (pseudo_rand_int32(&seed) & 0xFFFFFF00),
                       exponent);
       expected[k] = b[k] + c[k];
     }
     
     vect_f32_add(a, b, c, len);
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       float delta = a[k] - expected[k];
       float ppo = delta/expected[k];
       // printf("Got: %e;\t Expected %e;\t Delta: %e\n", a[k], expected[k], delta);

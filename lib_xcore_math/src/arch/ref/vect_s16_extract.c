@@ -1,16 +1,12 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
-
-
-
-
 
 
 void vect_s16_extract_high_byte(
@@ -18,7 +14,7 @@ void vect_s16_extract_high_byte(
     const int16_t b[],
     const unsigned len)
 {
-  for(int k = 0; k < len; k++){
+  for(unsigned k = 0; k < len; k++){
     a[k] = (b[k] & 0xFF00) >> 8;
   }
 }
@@ -28,7 +24,7 @@ void vect_s16_extract_low_byte(
     const int16_t b[],
     const unsigned len)
 {
-  for(int k = 0; k < len; k++){
+  for(unsigned k = 0; k < len; k++){
     a[k] = (b[k] & 0x00FF);
   }
 }

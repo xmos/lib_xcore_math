@@ -7,7 +7,7 @@
 #include <string.h>
 
 #include "xmath/xmath.h"
-#include "../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 
 int16_t dct8_matrix_16bit[8][16] = {

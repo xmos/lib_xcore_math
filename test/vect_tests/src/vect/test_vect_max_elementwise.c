@@ -60,16 +60,16 @@ TEST(vect_max_elementwise, vect_s16_max_elementwise)
 
     const char debug_fmt[] = "Expected: %d <-- max((%d >> %d), (%d >> %d)) \nActual: %d\n";
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
-        unsigned len = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
+        unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         setExtraInfo_RSL(v, old_seed, len);
 
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 5);
         headroom_t c_hr = pseudo_rand_uint(&seed, 0, 5);
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int16(&seed) >> b_hr;
             C[i] = pseudo_rand_int16(&seed) >> c_hr;
         }
@@ -81,7 +81,7 @@ TEST(vect_max_elementwise, vect_s16_max_elementwise)
         right_shift_t c_shr = pseudo_rand_int(&seed, 1-c_hr, 5);
         
         // Determine expected outputs
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
           expected[i] = max_s16(B[i], C[i], b_shr, c_shr);
         }
         
@@ -118,16 +118,16 @@ TEST(vect_max_elementwise, vect_s32_max_elementwise)
 
     const char debug_fmt[] = "Expected: %ld <-- max((%ld >> %d), (%ld >> %d)) \nActual: %ld\n";
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
-        unsigned len = pseudo_rand_uint(&seed, 0, MAX_LEN+1);
+        unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         setExtraInfo_RSL(v, old_seed, len);
 
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 5);
         headroom_t c_hr = pseudo_rand_uint(&seed, 0, 5);
         
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed) >> b_hr;
             C[i] = pseudo_rand_int32(&seed) >> c_hr;
         }
@@ -139,14 +139,14 @@ TEST(vect_max_elementwise, vect_s32_max_elementwise)
         right_shift_t c_shr = pseudo_rand_int(&seed, 1-c_hr, 5);
         
         // Determine expected outputs
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
           expected[i] = max_s32(B[i], C[i], b_shr, c_shr);
         }
         
         // Not in-place
         hr = vect_s32_max_elementwise(A, B, C, len, b_shr, c_shr);
         XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
-            debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
+            debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
         
         // In-place arg-2
@@ -154,7 +154,7 @@ TEST(vect_max_elementwise, vect_s32_max_elementwise)
         hr = vect_s32_max_elementwise(A, A, C, len, b_shr, c_shr);
 
         XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
-            debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
+            debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
         
         // In-place arg-3 NOT SUPPORTED

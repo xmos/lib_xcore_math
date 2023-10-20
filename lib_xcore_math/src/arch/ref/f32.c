@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -6,9 +6,9 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../vect/vpu_const_vects.h"
+#include "vpu_const_vects.h"
 
 
 extern const float sin_coef[];
@@ -33,7 +33,7 @@ float f32_sin(
   }
 
   if(rho > 1.0){
-    rho = 2.0 - rho;
+    rho = (float) (2.0) - rho;
   }
 
   float phi = rho * rho;
@@ -65,7 +65,7 @@ float f32_power_series(
 {
   float y = x;
   float res = 0;
-  for(int k = 0; k < terms_count; k++){
+  for(unsigned k = 0; k < terms_count; k++){
     res += coef[k] * y;
     y *= x;
   }

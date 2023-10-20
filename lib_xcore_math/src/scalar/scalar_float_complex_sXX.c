@@ -19,7 +19,7 @@ static inline int32_t ashr32(int32_t x, right_shift_t shr)
 
   if(tmp > INT32_MAX)       return INT32_MAX;
   else if(tmp < INT32_MIN)  return INT32_MIN;
-  else                      return tmp;
+  else                      return (int32_t) tmp;
 }
 
 // Non-saturating
@@ -45,8 +45,8 @@ float_complex_s32_t float_complex_s32_mul(
 
   right_shift_t p_shr = 32 - p_hr;
 
-  res.mant.re = ashr64(p_re, p_shr);
-  res.mant.im = ashr64(p_im, p_shr);
+  res.mant.re = (int32_t) ashr64(p_re, p_shr);
+  res.mant.im = (int32_t) ashr64(p_im, p_shr);
   res.exp = p_exp + p_shr;
   return res;
 }
@@ -117,8 +117,8 @@ float_complex_s16_t float_complex_s16_mul(
   right_shift_t p_shr = 16 - p_hr;
 
   float_complex_s16_t res;
-  res.mant.re = ashr32(p_re, p_shr);
-  res.mant.im = ashr32(p_im, p_shr);
+  res.mant.re = (int16_t) ashr32(p_re, p_shr);
+  res.mant.im = (int16_t) ashr32(p_im, p_shr);
   res.exp = p_exp + p_shr;
   return res;
 }
@@ -141,8 +141,8 @@ float_complex_s16_t float_complex_s16_add(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant.re = ashr32(x.mant.re, x_shr) + ashr32(y.mant.re, y_shr);
-  res.mant.im = ashr32(x.mant.im, x_shr) + ashr32(y.mant.im, y_shr);
+  res.mant.re = (int16_t) ( ashr32(x.mant.re, x_shr) + ashr32(y.mant.re, y_shr) );
+  res.mant.im = (int16_t) ( ashr32(x.mant.im, x_shr) + ashr32(y.mant.im, y_shr) );
 
   return res;
 }
@@ -165,8 +165,8 @@ float_complex_s16_t float_complex_s16_sub(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant.re = ashr32(x.mant.re, x_shr) - ashr32(y.mant.re, y_shr);
-  res.mant.im = ashr32(x.mant.im, x_shr) - ashr32(y.mant.im, y_shr);
+  res.mant.re = (int16_t) ( ashr32(x.mant.re, x_shr) - ashr32(y.mant.re, y_shr) );
+  res.mant.im = (int16_t) ( ashr32(x.mant.im, x_shr) - ashr32(y.mant.im, y_shr) );
 
   return res;
 }

@@ -39,7 +39,7 @@ TEST(float_sXX_sqrt, float_s32_sqrt)
   float_s32_t x;
   conv_error_e error = 0;
   
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
 

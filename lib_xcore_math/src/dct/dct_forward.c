@@ -7,7 +7,7 @@
 #include <string.h>
 
 #include "xmath/xmath.h"
-#include "../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 #ifndef __XS3A__
 # include "xmath/xs3/vpu_scalar_ops.h"

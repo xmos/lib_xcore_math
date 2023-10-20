@@ -82,10 +82,10 @@ TEST(bfp_complex_macc, bfp_complex_s16_macc)
         bfp_complex_s16_headroom(&B);
         bfp_complex_s16_headroom(&C);
 
-        for(int i = 0; i < B.length; i++){
-            Af.real[i] = Af.real[i] + (  ldexp(B.real[i], B.exp) * ldexp(C.real[i], C.exp) 
+        for(unsigned int i = 0; i < B.length; i++){
+            Af.real[i] = Af.real[i] + (  ldexp(B.real[i], B.exp) * ldexp(C.real[i], C.exp)
                                        - ldexp(B.imag[i], B.exp) * ldexp(C.imag[i], C.exp));
-            Af.imag[i] = Af.imag[i] + (  ldexp(B.real[i], B.exp) * ldexp(C.imag[i], C.exp) 
+            Af.imag[i] = Af.imag[i] + (  ldexp(B.real[i], B.exp) * ldexp(C.imag[i], C.exp)
                                        + ldexp(B.imag[i], B.exp) * ldexp(C.real[i], C.exp));
         }
 
@@ -93,7 +93,7 @@ TEST(bfp_complex_macc, bfp_complex_s16_macc)
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(2, expA.real[i], A.real[i]);
             TEST_ASSERT_INT16_WITHIN(2, expA.imag[i], A.imag[i]);
         }
@@ -148,10 +148,10 @@ TEST(bfp_complex_macc, bfp_complex_s16_nmacc)
         bfp_complex_s16_headroom(&B);
         bfp_complex_s16_headroom(&C);
 
-        for(int i = 0; i < B.length; i++){
-            Af.real[i] = Af.real[i] - (  ldexp(B.real[i], B.exp) * ldexp(C.real[i], C.exp) 
+        for(unsigned int i = 0; i < B.length; i++){
+            Af.real[i] = Af.real[i] - (  ldexp(B.real[i], B.exp) * ldexp(C.real[i], C.exp)
                                        - ldexp(B.imag[i], B.exp) * ldexp(C.imag[i], C.exp));
-            Af.imag[i] = Af.imag[i] - (  ldexp(B.real[i], B.exp) * ldexp(C.imag[i], C.exp) 
+            Af.imag[i] = Af.imag[i] - (  ldexp(B.real[i], B.exp) * ldexp(C.imag[i], C.exp)
                                        + ldexp(B.imag[i], B.exp) * ldexp(C.real[i], C.exp));
         }
 
@@ -159,7 +159,7 @@ TEST(bfp_complex_macc, bfp_complex_s16_nmacc)
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(2, expA.real[i], A.real[i]);
             TEST_ASSERT_INT16_WITHIN(2, expA.imag[i], A.imag[i]);
         }
@@ -211,10 +211,10 @@ TEST(bfp_complex_macc, bfp_complex_s32_macc)
         bfp_complex_s32_headroom(&B);
         bfp_complex_s32_headroom(&C);
 
-        for(int i = 0; i < B.length; i++){
-            Af.real[i] = Af.real[i] + (  ldexp(B.data[i].re, B.exp) * ldexp(C.data[i].re, C.exp) 
+        for(unsigned int i = 0; i < B.length; i++){
+            Af.real[i] = Af.real[i] + (  ldexp(B.data[i].re, B.exp) * ldexp(C.data[i].re, C.exp)
                                        - ldexp(B.data[i].im, B.exp) * ldexp(C.data[i].im, C.exp));
-            Af.imag[i] = Af.imag[i] + (  ldexp(B.data[i].re, B.exp) * ldexp(C.data[i].im, C.exp) 
+            Af.imag[i] = Af.imag[i] + (  ldexp(B.data[i].re, B.exp) * ldexp(C.data[i].im, C.exp)
                                        + ldexp(B.data[i].im, B.exp) * ldexp(C.data[i].re, C.exp));
         }
 
@@ -222,7 +222,7 @@ TEST(bfp_complex_macc, bfp_complex_s32_macc)
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(3, expA[i].re, A.data[i].re);
             TEST_ASSERT_INT32_WITHIN(3, expA[i].im, A.data[i].im);
         }
@@ -274,10 +274,10 @@ TEST(bfp_complex_macc, bfp_complex_s32_nmacc)
         bfp_complex_s32_headroom(&B);
         bfp_complex_s32_headroom(&C);
 
-        for(int i = 0; i < B.length; i++){
-            Af.real[i] = Af.real[i] - (  ldexp(B.data[i].re, B.exp) * ldexp(C.data[i].re, C.exp) 
+        for(unsigned int i = 0; i < B.length; i++){
+            Af.real[i] = Af.real[i] - (  ldexp(B.data[i].re, B.exp) * ldexp(C.data[i].re, C.exp)
                                        - ldexp(B.data[i].im, B.exp) * ldexp(C.data[i].im, C.exp));
-            Af.imag[i] = Af.imag[i] - (  ldexp(B.data[i].re, B.exp) * ldexp(C.data[i].im, C.exp) 
+            Af.imag[i] = Af.imag[i] - (  ldexp(B.data[i].re, B.exp) * ldexp(C.data[i].im, C.exp)
                                        + ldexp(B.data[i].im, B.exp) * ldexp(C.data[i].re, C.exp));
         }
 
@@ -285,7 +285,7 @@ TEST(bfp_complex_macc, bfp_complex_s32_nmacc)
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(3, expA[i].re, A.data[i].re);
             TEST_ASSERT_INT32_WITHIN(3, expA[i].im, A.data[i].im);
         }
