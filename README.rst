@@ -164,10 +164,10 @@ All examples are currently in the `/example/
 
 * `/example/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/>`_ - Example projects for ``lib_xcore_math``:
 
-  * `bfp_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/bfp_demo/>`_ - BFP demo
-  * `filter_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/filter_demo/>`_ - Filtering demo
-  * `fft_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/fft_demo/>`_ - FFT demo
-  * `vect_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/vect_demo/>`_ - Vector op demo
+  * `bfp_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/bfp_demo/>`_ - BFP demo
+  * `filter_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/filter_demo/>`_ - Filtering demo
+  * `fft_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/fft_demo/>`_ - FFT demo
+  * `vect_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/vect_demo/>`_ - Vector op demo
 
 Each example above has a ReadMe file with a short description.
 
@@ -205,6 +205,9 @@ where ``-v`` is an optional argument to increase verbosity.
 
 Building Documentation
 ----------------------
+
+The following information is intended for XMOS users. Pre-built documentation may be found on the
+`XMOS website <https://www.xmos.com>`_.
 
 This project currently uses Doxygen and Sphinx for library and API documentation. API functions
 include embedded documentation with their declarations in their corresponding header files, however,
