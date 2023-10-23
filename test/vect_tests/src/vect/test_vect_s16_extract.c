@@ -27,10 +27,10 @@ TEST_TEAR_DOWN(vect_extract) {}
 
 #if SMOKE_TEST
 #  define REPS       (100)
-#  define MAX_LEN    (127)
+#  define MAX_LEN    (128)
 #else
 #  define REPS       (1000)
-#  define MAX_LEN    (1023)
+#  define MAX_LEN    (1024)
 #endif
 
 
@@ -42,13 +42,13 @@ TEST(vect_extract, vect_s16_extract_high_byte)
     int8_t WORD_ALIGNED A[MAX_LEN];
     int16_t WORD_ALIGNED B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned length = (v < 48)? v :  pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         setExtraInfo_RSL(v, seed, length);
 
-        for(int k = 0; k < length; k++)
+        for(unsigned int k = 0; k < length; k++)
           B[k] = pseudo_rand_int16(&seed);
 
         B[0] = 0x8000;
@@ -60,7 +60,7 @@ TEST(vect_extract, vect_s16_extract_high_byte)
 
         vect_s16_extract_high_byte(A, B, length);
 
-        for(int i = 0; i < length; i++) {
+        for(unsigned int i = 0; i < length; i++) {
           int8_t should_be = (int8_t) (((B[i] & 0xFF00) >> 8) & 0x00FF);
 
           if(A[i] != should_be){
@@ -91,13 +91,13 @@ TEST(vect_extract, vect_s16_extract_low_byte)
     int8_t WORD_ALIGNED A[MAX_LEN];
     int16_t WORD_ALIGNED B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned length = (v < 48)? v :  pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
         setExtraInfo_RSL(v, seed, length);
 
-        for(int k = 0; k < length; k++)
+        for(unsigned int k = 0; k < length; k++)
           B[k] = pseudo_rand_int16(&seed);
 
         B[0] = 0x0080;
@@ -108,7 +108,7 @@ TEST(vect_extract, vect_s16_extract_low_byte)
 
         vect_s16_extract_low_byte(A, B, length);
 
-        for(int i = 0; i < length; i++) {
+        for(unsigned int i = 0; i < length; i++) {
           int8_t should_be = (int8_t) (B[i] & 0x00FF);
 
           if(A[i] != should_be){

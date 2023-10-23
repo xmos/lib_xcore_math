@@ -12,11 +12,11 @@
 bfp_complex_s32_t* bfp_fft_forward_mono(
     bfp_s32_t* x)
 {
-#if (BFP_DEBUG_CHECK_LENGTHS)
+#if (XMATH_BFP_DEBUG_CHECK_LENGTHS)
     // Length must be 2^p where p is a non-negative integer
     assert(x->length != 0);
     // for a positive power of 2, subtracting 1 should increase its headroom.
-    assert(cls(x->length - 1) > cls(x->length)); 
+    assert(cls(x->length - 1) > cls(x->length));
 #endif
 
     // The returned BFP vector is just a recasting of the input vector
@@ -24,7 +24,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
 
     const unsigned FFT_N = x->length;
 
-    // fft_dit_forward() requires (at least) two bits of headroom in the 
+    // fft_dit_forward() requires (at least) two bits of headroom in the
     // mantissa vector
     right_shift_t x_shr = 2 - x->hr;
     vect_s32_shl(x->data, x->data, x->length, -x_shr);
@@ -35,13 +35,13 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
 
     // NOTE: A real, mono FFT of length FFT_N is implemented using an FFT with
     //       length FFT_N/2 because it is more efficient in compute and memory.
-    x->length = FFT_N/2; 
+    x->length = FFT_N/2;
 
     // The low-level FFT functions require the elements of the input vector to be jumbled
-    // such that the new index of each element is a bit-reversal (ignoring endianness!) of 
-    // the index of its original position, considering only the least significant 
+    // such that the new index of each element is a bit-reversal (ignoring endianness!) of
+    // the index of its original position, considering only the least significant
     // log2(FFT_N) bits of the original index.
-    // For example, 
+    // For example,
     //    (int32_t) 0x22 (34) in binary: 00000000 00000000 00000000 00100010
     //  For 256-point FFT,  0x22 =  0b00100010 -->  0b01000100 = 0x44
     //  For 512-point FFT,  0x22 = 0b000100010 --> 0b010001000 = 0x88
@@ -62,11 +62,11 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
 bfp_s32_t* bfp_fft_inverse_mono(
     bfp_complex_s32_t* X)
 {
-#if (BFP_DEBUG_CHECK_LENGTHS)
+#if (XMATH_BFP_DEBUG_CHECK_LENGTHS)
     // Length must be 2^p where p is a non-negative integer
     assert(X->length != 0);
     // for a positive power of 2, subtracting 1 should increase its headroom.
-    assert(cls(X->length - 1) > cls(X->length)); 
+    assert(cls(X->length - 1) > cls(X->length));
 #endif
 
     // Because the real, mono FFT only includes half a period of the spectrum,
@@ -76,7 +76,7 @@ bfp_s32_t* bfp_fft_inverse_mono(
     // The returned BFP vector is just a recasting of the input vector
     bfp_s32_t* x = (bfp_s32_t*)X;
     
-    // fft_dit_inverse() requires (at least) two bits of headroom in the 
+    // fft_dit_inverse() requires (at least) two bits of headroom in the
     // mantissa vector
     right_shift_t X_shr = 2 - X->hr;
     vect_s32_shl((int32_t*) X->data, (int32_t*) X->data, FFT_N, -X_shr);
@@ -93,7 +93,7 @@ bfp_s32_t* bfp_fft_inverse_mono(
     // using a half-length FFT)
     fft_mono_adjust(X->data, FFT_N, 1);
 
-    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by 
+    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by
     // fft_dit_inverse(). (See comment above in bfp_fft_forward_mono())
     fft_index_bit_reversal(X->data, FFT_N/2);
 
@@ -107,22 +107,22 @@ bfp_s32_t* bfp_fft_inverse_mono(
 void bfp_fft_forward_complex(
     bfp_complex_s32_t* samples)
 {
-#if (BFP_DEBUG_CHECK_LENGTHS)
+#if (XMATH_BFP_DEBUG_CHECK_LENGTHS)
     // Length must be 2^p where p is a non-negative integer
     assert(samples->length != 0);
     // for a positive power of 2, subtracting 1 should increase its headroom.
-    assert(cls(samples->length - 1) > cls(samples->length)); 
+    assert(cls(samples->length - 1) > cls(samples->length));
 #endif
 
     //The FFT implementation requires 2 bits of headroom to ensure no saturation occurs
     if(samples->hr < 2){
         left_shift_t shl = samples->hr - 2;
-        samples->hr = vect_s32_shl((int32_t*) samples->data,(int32_t*)  samples->data, 
+        samples->hr = vect_s32_shl((int32_t*) samples->data,(int32_t*)  samples->data,
                                        2*samples->length, shl);
         samples->exp -= shl;
     }
 
-    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by 
+    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by
     // fft_dit_forward(). (See comment above in bfp_fft_forward_mono())
     fft_index_bit_reversal(samples->data, samples->length);
 
@@ -134,11 +134,11 @@ void bfp_fft_forward_complex(
 void bfp_fft_inverse_complex(
     bfp_complex_s32_t* spectrum)
 {
-#if (BFP_DEBUG_CHECK_LENGTHS)
+#if (XMATH_BFP_DEBUG_CHECK_LENGTHS)
     // Length must be 2^p where p is a non-negative integer
     assert(spectrum->length != 0);
     // for a positive power of 2, subtracting 1 should increase its headroom.
-    assert(cls(spectrum->length - 1) > cls(spectrum->length)); 
+    assert(cls(spectrum->length - 1) > cls(spectrum->length));
 #endif
 
     //The FFT implementation requires 2 bits of headroom to ensure no saturation occurs
@@ -146,9 +146,9 @@ void bfp_fft_inverse_complex(
         left_shift_t shl = spectrum->hr - 2;
         spectrum->hr = vect_s32_shl((int32_t*) spectrum->data,(int32_t*)  spectrum->data, 2*spectrum->length, shl);
         spectrum->exp -= shl;
-    }   
+    }
 
-    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by 
+    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by
     // fft_dit_forward(). (See comment above in bfp_fft_forward_mono())
     fft_index_bit_reversal(spectrum->data, spectrum->length);
     
@@ -162,13 +162,13 @@ void bfp_fft_forward_stereo(
     bfp_s32_t* b,
     complex_s32_t scratch[])
 {
-#if (BFP_DEBUG_CHECK_LENGTHS)
+#if (XMATH_BFP_DEBUG_CHECK_LENGTHS)
     // Length must be 2^p where p is a non-negative integer
     assert(a->length != 0);
     // Length of a and b must be the same
     assert(a->length == b->length);
     // for a positive power of 2, subtracting 1 should increase its headroom.
-    assert(cls(a->length - 1) > cls(a->length)); 
+    assert(cls(a->length - 1) > cls(a->length));
 #endif
 
     const unsigned FFT_N = a->length;
@@ -183,11 +183,11 @@ void bfp_fft_forward_stereo(
     b->hr += b_shr;
     b->exp += b_shr;
 
-    // The stereo FFT requires the input samples from a and b to be interleaved into a single 
+    // The stereo FFT requires the input samples from a and b to be interleaved into a single
     // buffer. We'll zip them into scratch and apply the shifts.
     vect_s32_zip(scratch, a->data, b->data, FFT_N, a_shr, b_shr);
 
-    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by 
+    // Boggle the elements of the input spectrum as required (bit-reversed indexing) by
     // fft_dit_forward(). (See comment above in bfp_fft_forward_mono())
     fft_index_bit_reversal(scratch, FFT_N);
 
@@ -198,7 +198,7 @@ void bfp_fft_forward_stereo(
     headroom_t hr = a->hr;
 
     // Do the actual FFT
-    fft_dit_forward(scratch, FFT_N, &hr, &exp_diff); 
+    fft_dit_forward(scratch, FFT_N, &hr, &exp_diff);
 
     // Aliased input BFP vectors
     bfp_complex_s32_t* a_fft = (bfp_complex_s32_t*) a;
@@ -217,7 +217,7 @@ void bfp_fft_forward_stereo(
     //a and b might actually have different headroom, but the fft_spectra_split() only
     // computes the headroom of the entire FFT_N-element complex spectrum, which is the same
     // as the minimum of the headroom of the two spectra. If a user needs a more accurate
-    // count of each spectrum's headroom, bfp_complex_s32_headroom() should be called on 
+    // count of each spectrum's headroom, bfp_complex_s32_headroom() should be called on
     // each output BFP vector.
     a_fft->hr = b_fft->hr = hr;
 
@@ -234,7 +234,7 @@ void  bfp_fft_inverse_stereo(
     bfp_complex_s32_t* b_fft,
     complex_s32_t scratch[])
 {
-#if (BFP_DEBUG_CHECK_LENGTHS)
+#if (XMATH_BFP_DEBUG_CHECK_LENGTHS)
     // The two input vectors must be the same length
     assert(a_fft->length == b_fft->length);
     // Length must be 2^p where p is a non-negative integer

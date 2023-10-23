@@ -10,7 +10,7 @@ include(CMakeDependentOption)
 set(DEV_LIB_XCORE_MATH OFF CACHE BOOL "Include unit tests and examples as CMake Targets." )
 
 ## If enabled, the unit tests will be run fewer repetitions of each test to speed up execution time
-option(XCORE_MATH_SMOKE_TEST "Build unit tests in 'smoke test' mode. This mostly just reduces the number of repetitions to reduce simulation time." OFF)
+option(XMATH_SMOKE_TEST "Build unit tests in 'smoke test' mode. This mostly just reduces the number of repetitions to reduce simulation time." OFF)
 
 ## If enabled, the FFT look-up tables will be auto-generated at build time (requires Python 3 and numpy)
 set( XCORE_MATH_GEN_FFT_LUT  OFF CACHE BOOL "Auto-generate FFT look-up tables." )

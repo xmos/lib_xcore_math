@@ -37,7 +37,7 @@
 
 #define XTEST_ASSERT_VECT_S16_EQUAL(EXPECTED, ACTUAL, LEN, FMT, ...)        \
   do {                                                                      \
-    for(int i = 0; i < (LEN); i++) {                                        \
+    for(unsigned int i = 0; i < (LEN); i++) {                                        \
       if(((int16_t)(EXPECTED)[i]) != ((int16_t)(ACTUAL)[i])) {              \
         printf("\n*** %s[%d] != %s[%d] ***\n", #EXPECTED, i, #ACTUAL, i);   \
         printf(FMT, __VA_ARGS__ );                                          \
@@ -49,7 +49,7 @@
 
 #define XTEST_ASSERT_VECT_S32_EQUAL(EXPECTED, ACTUAL, LEN, FMT, ...)        \
   do {                                                                      \
-    for(int i = 0; i < (LEN); i++) {                                        \
+    for(unsigned int i = 0; i < (LEN); i++) {                                        \
       if(((int32_t)(EXPECTED)[i]) != ((int32_t)(ACTUAL)[i])) {              \
         printf("\n*** %s[%d] != %s[%d] ***\n", #EXPECTED, i, #ACTUAL, i);   \
         printf(FMT, __VA_ARGS__ );                                          \

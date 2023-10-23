@@ -42,7 +42,6 @@ TEST_TEAR_DOWN(vect_log) {}
 
 TEST(vect_log, chunk_float_s32_log_CORRECTNESS)
 {
-  unsigned seed = SEED_FROM_FUNC_NAME();
 
   // If it gets these correct it will probably get everything else correct.
   float_s32_t DWORD_ALIGNED B[VPU_INT32_EPV] = {
@@ -69,8 +68,6 @@ TEST(vect_log, chunk_float_s32_log_CORRECTNESS)
     Q24(2.0),
   };
 
-  unsigned max_max_error = 0;
-
   chunk_float_s32_log(A, B);
 
   TEST_ASSERT_INT32_WITHIN(0,     expected[0], A[0]);
@@ -96,52 +93,46 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
-  // printf("\n");
-
-
   float_s32_t DWORD_ALIGNED B[VPU_INT32_EPV];
   q8_24 DWORD_ALIGNED A[VPU_INT32_EPV];
 
   q8_24 expected[VPU_INT32_EPV];
 
-  unsigned max_max_error = 0;
+  int max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = 8;
 
-    const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
-    headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
-
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i].exp = pseudo_rand_int(&seed, -30, 30);
       B[i].mant = pseudo_rand_uint(&seed, 0, INT32_MAX);
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i].mant, B[i].exp);
       double exp_dbl = log(bi);
-      expected[i] = round(ldexp(exp_dbl, 24));
+      expected[i] = lround(ldexp(exp_dbl, 24));
     }
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     chunk_float_s32_log(A, B);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = delta_ticks / 100.0;
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
-    unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    int max_error = 0;
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 
       TEST_ASSERT_INT32_WITHIN(70000, expected[i], A[i]);
     }
 
-    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n", 
+    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n",
     //     length, delta_us, delta_us_per_elm, max_error);
 
     max_max_error = (max_error > max_max_error)? max_error : max_max_error;
@@ -160,17 +151,15 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
 
 TEST(vect_log, chunk_s32_log_correctness)
 {
-  unsigned seed = SEED_FROM_FUNC_NAME();
-
   // If it gets these correct it will probably get everything else correct.
 
   exponent_t b_exp = -28;
   int32_t DWORD_ALIGNED B[VPU_INT32_EPV] = {
     Q28(0.0),
     Q28(1.0),
-    Q28(M_E),               
-    Q28((M_E * M_E)),       
-    0,0,0,0,                
+    Q28(M_E),
+    Q28((M_E * M_E)),
+    0,0,0,0,
   };
 
   q8_24 DWORD_ALIGNED A[VPU_INT32_EPV];
@@ -182,8 +171,6 @@ TEST(vect_log, chunk_s32_log_correctness)
     Q24(2.0),             // ln(e^2) = 2.0
     0,0,0,0               // don't care.
   };
-
-  unsigned max_max_error = 0;
 
   chunk_s32_log(A, B, b_exp);
 
@@ -211,9 +198,9 @@ TEST(vect_log, chunk_s32_log)
 
   q8_24 expected[VPU_INT32_EPV];
 
-  unsigned max_max_error = 0;
+  int max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = 8;
@@ -221,35 +208,35 @@ TEST(vect_log, chunk_s32_log)
     const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
     headroom_t b_hr = pseudo_rand_uint(&seed, 0, 5);
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i] = pseudo_rand_uint(&seed, 0, INT32_MAX) >> b_hr;
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl = log(bi);
 
       if( B[i] == 0 ) expected[i] = -INT32_MAX;
-      else            expected[i] = round(ldexp(exp_dbl, 24));
+      else            expected[i] = lround(ldexp(exp_dbl, 24));
     }
 
-    volatile uint32_t t0 = get_reference_time();
+    // volatile uint32_t t0 = get_reference_time();
     chunk_s32_log(A, B, b_exp);
-    volatile uint32_t t1 = get_reference_time();
+    // volatile uint32_t t1 = get_reference_time();
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = delta_ticks / 100.0;
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
-    unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    int max_error = 0;
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 
       TEST_ASSERT_INT32_WITHIN(70000, expected[i], A[i]);
     }
 
-    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n", 
+    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n",
     //     length, delta_us, delta_us_per_elm, max_error);
 
     max_max_error = (max_error > max_max_error)? max_error : max_max_error;
@@ -276,9 +263,9 @@ TEST(vect_log, vect_s32_log)
 
   q8_24 expected[MAX_LEN];
 
-  unsigned max_max_error = 0;
+  int max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
@@ -291,11 +278,11 @@ TEST(vect_log, vect_s32_log)
     const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
     headroom_t b_hr = pseudo_rand_uint(&seed, 0, 5);
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i] = pseudo_rand_uint(&seed, 0, INT32_MAX) >> b_hr;
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl;
       
@@ -306,46 +293,46 @@ TEST(vect_log, vect_s32_log)
         default:  exp_dbl = log(bi) * inv_ln_output_base;
       }
 
-      expected[i] = round(ldexp(exp_dbl, 24));
+      expected[i] = lround(ldexp(exp_dbl, 24));
     }
 
-    volatile uint32_t t0;
-    volatile uint32_t t1;
+    // volatile uint32_t t0;
+    // volatile uint32_t t1;
     switch(output_base){
       case 1:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_s32_log(A, B, b_exp, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       case 2:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_s32_log2(A, B, b_exp, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       case 10:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_s32_log10(A, B, b_exp, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       default:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_s32_log_base(A, B, b_exp, inv_ln_output_base_q30, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
     }
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = delta_ticks / 100.0;
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
-    unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    int max_error = 0;
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 
       TEST_ASSERT_INT32_WITHIN_MESSAGE(700000, expected[i], A[i], "");
     }
 
-    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n", 
+    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n",
     //     length, delta_us, delta_us_per_elm, max_error);
 
     max_max_error = (max_error > max_max_error)? max_error : max_max_error;
@@ -370,9 +357,9 @@ TEST(vect_log, vect_float_s32_log)
 
   q8_24 expected[MAX_LEN];
 
-  unsigned max_max_error = 0;
+  int max_max_error = 0;
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
     unsigned length = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
@@ -382,15 +369,12 @@ TEST(vect_log, vect_float_s32_log)
     const double inv_ln_output_base  = 1.0 / log(output_base);
     const q2_30 inv_ln_output_base_q30 = Q30( inv_ln_output_base );
 
-    const exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
-    headroom_t b_hr = pseudo_rand_uint(&seed, 0, 28);
-
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       B[i].exp = pseudo_rand_int(&seed, -30, 30);
       B[i].mant = pseudo_rand_uint(&seed, 0, INT32_MAX);
     }
 
-    for(int i = 0; i < length; i++){
+    for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i].mant, B[i].exp);
       double exp_dbl;
       
@@ -401,46 +385,46 @@ TEST(vect_log, vect_float_s32_log)
         default:  exp_dbl = log(bi) * inv_ln_output_base;
       }
 
-      expected[i] = round(ldexp(exp_dbl, 24));
+      expected[i] = lround(ldexp(exp_dbl, 24));
     }
 
-    volatile uint32_t t0;
-    volatile uint32_t t1;
+    // volatile uint32_t t0;
+    // volatile uint32_t t1;
     switch(output_base){
       case 1:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_float_s32_log(A, B, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       case 2:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_float_s32_log2(A, B, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       case 10:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_float_s32_log10(A, B, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
         break;
       default:
-        t0 = get_reference_time();
+        // t0 = get_reference_time();
         vect_float_s32_log_base(A, B, inv_ln_output_base_q30, length);
-        t1 = get_reference_time();
+        // t1 = get_reference_time();
     }
 
-    uint32_t delta_ticks = t1 - t0;
-    float delta_us = delta_ticks / 100.0;
-    float delta_us_per_elm = delta_us / length;
+    // uint32_t delta_ticks = t1 - t0;
+    // float delta_us = (float) (delta_ticks / 100.0);
+    // float delta_us_per_elm = delta_us / length;
 
-    unsigned max_error = 0;
-    for(int i = 0; i < length; i++){
+    int max_error = 0;
+    for(unsigned int i = 0; i < length; i++){
       int32_t error = abs(expected[i] - A[i]);
       max_error = (error > max_error)? error : max_error;
 
       TEST_ASSERT_INT32_WITHIN(70000, expected[i], A[i]);
     }
 
-    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n", 
+    // printf("Len: % 3u;  time: % 7.02f us;      time/elm:  % 7.02f us;   max error: %u\n",
     //     length, delta_us, delta_us_per_elm, max_error);
 
     max_max_error = (max_error > max_max_error)? max_error : max_max_error;

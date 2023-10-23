@@ -68,6 +68,9 @@
 #define XMATH_BFP_SQRT_DEPTH_S32 (VECT_SQRT_S32_MAX_DEPTH)
 #endif
 
+#ifdef _WIN32
+#include <stdlib.h> // needed for malloc() and free()
+#endif
 
 #ifndef XMATH_MALLOC
 /**

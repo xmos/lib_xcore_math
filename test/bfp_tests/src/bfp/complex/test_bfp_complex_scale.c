@@ -55,7 +55,7 @@ TEST(bfp_complex_scale, bfp_complex_s16_scale)
     struct {
         double real[MAX_LEN];
         double imag[MAX_LEN];
-    } Af, Bf;
+    } Af;
 
     struct {
         int16_t real[MAX_LEN];
@@ -76,19 +76,19 @@ TEST(bfp_complex_scale, bfp_complex_s16_scale)
 
         const headroom_t c_hr = pseudo_rand_uint(&seed, 0, 12);
 
-        float_complex_s16_t C = {   
+        float_complex_s16_t C = {
             {   pseudo_rand_int16(&seed) >> c_hr,
                 pseudo_rand_int16(&seed) >> c_hr },
             pseudo_rand_int(&seed, -100, 100),
         };
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> B.hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> B.hr;
 
-            Af.real[i] = ldexp(B.real[i], B.exp) * ldexp(C.mant.re, C.exp) 
+            Af.real[i] = ldexp(B.real[i], B.exp) * ldexp(C.mant.re, C.exp)
                        - ldexp(B.imag[i], B.exp) * ldexp(C.mant.im, C.exp);
-            Af.imag[i] = ldexp(B.real[i], B.exp) * ldexp(C.mant.im, C.exp) 
+            Af.imag[i] = ldexp(B.real[i], B.exp) * ldexp(C.mant.im, C.exp)
                        + ldexp(B.imag[i], B.exp) * ldexp(C.mant.re, C.exp);
         }
 
@@ -98,7 +98,7 @@ TEST(bfp_complex_scale, bfp_complex_s16_scale)
         
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT16_WITHIN(1, expA.real[i], A.real[i]);
             TEST_ASSERT_INT16_WITHIN(1, expA.imag[i], A.imag[i]);
         }
@@ -118,8 +118,8 @@ TEST(bfp_complex_scale, bfp_complex_s32_scale_prepare)
         exponent_t c_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t c_hr  = pseudo_rand_uint(&seed, 0, 31);
 
-        complex_s32_t WORD_ALIGNED B = {((int32_t)-0x80000000) >> b_hr, ((int32_t)-0x80000000) >> b_hr};
-        complex_s32_t WORD_ALIGNED C = {((int32_t)-0x80000000) >> c_hr, ((int32_t)-0x80000000) >> c_hr};
+        complex_s32_t WORD_ALIGNED B = {((int) (0-0x80000000)) >> b_hr, ((int) (0-0x80000000)) >> b_hr};
+        complex_s32_t WORD_ALIGNED C = {((int) (0-0x80000000)) >> c_hr, ((int) (0-0x80000000)) >> c_hr};
         complex_s32_t WORD_ALIGNED A;
 
         exponent_t a_exp;
@@ -151,7 +151,7 @@ TEST(bfp_complex_scale, bfp_complex_s32_scale)
     struct {
         double real[MAX_LEN];
         double imag[MAX_LEN];
-    } Af, Bf;
+    } Af;
 
     complex_s32_t expA[MAX_LEN];
 
@@ -174,13 +174,13 @@ TEST(bfp_complex_scale, bfp_complex_s32_scale)
             pseudo_rand_int(&seed, -100, 100),
         };
 
-        for(int i = 0; i < B.length; i++){
+        for(unsigned int i = 0; i < B.length; i++){
             B.data[i].re = pseudo_rand_int32(&seed) >> B.hr;
             B.data[i].im = pseudo_rand_int32(&seed) >> B.hr;
 
-            Af.real[i] = ldexp(B.data[i].re, B.exp) * ldexp(C.mant.re, C.exp) 
+            Af.real[i] = ldexp(B.data[i].re, B.exp) * ldexp(C.mant.re, C.exp)
                        - ldexp(B.data[i].im, B.exp) * ldexp(C.mant.im, C.exp);
-            Af.imag[i] = ldexp(B.data[i].re, B.exp) * ldexp(C.mant.im, C.exp) 
+            Af.imag[i] = ldexp(B.data[i].re, B.exp) * ldexp(C.mant.im, C.exp)
                        + ldexp(B.data[i].im, B.exp) * ldexp(C.mant.re, C.exp);
         }
 
@@ -192,7 +192,7 @@ TEST(bfp_complex_scale, bfp_complex_s32_scale)
 
         // astew: 2022/06/30 -- Increased threshold from 2 to 3. Test was failing after I fixed
         //        the random number generation problem. (Threshold is observed, not theoretical)
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             TEST_ASSERT_INT32_WITHIN(3, expA[i].re, A.data[i].re);
             TEST_ASSERT_INT32_WITHIN(3, expA[i].im, A.data[i].im);
         }

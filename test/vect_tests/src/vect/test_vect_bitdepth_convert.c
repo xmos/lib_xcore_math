@@ -72,7 +72,7 @@ TEST(vect_bitdepth_convert, vect_s16_to_vect_s32_basic)
 
     const unsigned start_case = 0;
 
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -84,14 +84,14 @@ TEST(vect_bitdepth_convert, vect_s16_to_vect_s32_basic)
         for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
             unsigned len = lengths[i];
 
-            for(int i = 0; i < MAX_LEN; i++){
+            for(unsigned int i = 0; i < MAX_LEN; i++){
                 B[i] = i < len? casse->input : 0xBBBB;
                 A[i] = 0xCCCCCCCC;
             }
 
             vect_s16_to_vect_s32(A, B, len);
 
-            for(int k = 0; k < MAX_LEN; k++){
+            for(unsigned int k = 0; k < MAX_LEN; k++){
                 int32_t exp = k < len? ((int32_t)casse->input) << 8 : 0xCCCCCCCC;
                 TEST_ASSERT_EQUAL_MSG(exp, A[k], casse->line);
             }
@@ -110,13 +110,13 @@ TEST(vect_bitdepth_convert, vect_s16_to_vect_s32_random)
     int32_t DWORD_ALIGNED A[MAX_LEN];
     int16_t DWORD_ALIGNED B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         setExtraInfo_R(v);
 
         const unsigned len = pseudo_rand_uint32(&seed) % MAX_LEN;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 10;
             B[i] = pseudo_rand_int16(&seed) >> shr;
         }
@@ -124,7 +124,7 @@ TEST(vect_bitdepth_convert, vect_s16_to_vect_s32_random)
         memset(A, 0xCC, sizeof(A));
         vect_s16_to_vect_s32(A, B, len);
 
-        for(int k = 0; k < MAX_LEN; k++){
+        for(unsigned int k = 0; k < MAX_LEN; k++){
             int32_t exp = k < len? ((int32_t)B[k]) << 8 : 0xCCCCCCCC;
             TEST_ASSERT_EQUAL_MSG(exp, A[k], v);
         }
@@ -162,7 +162,7 @@ TEST(vect_bitdepth_convert, vect_s32_to_vect_s16_basic)
 
     const unsigned start_case = 0;
     char buff[100];
-    for(int v = start_case; v < N_cases; v++){
+    for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
         
         test_case_t* casse = &casses[v];
@@ -175,21 +175,21 @@ TEST(vect_bitdepth_convert, vect_s32_to_vect_s16_basic)
         for(int i = 0; i < sizeof(lengths)/sizeof(lengths[0]); i++){
             unsigned len = lengths[i];
 
-            for(int i = 0; i < MAX_LEN; i++){
+            for(unsigned int i = 0; i < MAX_LEN; i++){
                 B[i] = casse->input;
                 A[i] = 0xCCCC;
             }
 
             vect_s32_to_vect_s16(A, B, len, casse->b_shr);
 
-            for(int k = 0; k < len; k++)
+            for(unsigned int k = 0; k < len; k++)
                 TEST_ASSERT_EQUAL_MESSAGE(casse->expected, A[k], buff);
             for(int k = len; k < MAX_LEN; k++)
                 TEST_ASSERT_EQUAL_MESSAGE((int16_t)0xCCCC, A[k], buff);
 
             vect_s32_to_vect_s16((int16_t*)B, B, len, casse->b_shr);
 
-            for(int k = 0; k < len; k++)
+            for(unsigned int k = 0; k < len; k++)
                 TEST_ASSERT_EQUAL_MESSAGE(casse->expected, ((int16_t*)B)[k], buff);
         }
     }

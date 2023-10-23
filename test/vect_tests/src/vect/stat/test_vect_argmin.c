@@ -76,7 +76,7 @@ TEST(vect_argmin, vect_s16_argmin_B)
     unsigned result;
     int16_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
         // len = 32;
@@ -85,7 +85,7 @@ TEST(vect_argmin, vect_s16_argmin_B)
 
         unsigned exp = 0;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int16(&seed);
             exp = (B[i] < B[exp])? i : exp;
         }
@@ -135,7 +135,7 @@ TEST(vect_argmin, vect_s32_argmin_B)
     unsigned result;
     int32_t B[MAX_LEN];
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
 
         unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
@@ -143,7 +143,7 @@ TEST(vect_argmin, vect_s32_argmin_B)
 
         unsigned exp = 0;
 
-        for(int i = 0; i < len; i++){
+        for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed);
             exp = (B[i] < B[exp])? i : exp;
         }

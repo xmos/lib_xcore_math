@@ -52,13 +52,13 @@ TEST(vect_complex_add_scalar, vect_complex_s16_add_scalar)
   int16_t expected_real[MAX_LEN];
   int16_t expected_imag[MAX_LEN];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     const unsigned old_seed = seed;
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
     setExtraInfo_RSL(v, old_seed, len);
     
-    for(int i = 0; i < len; i++){
+    for(unsigned int i = 0; i < len; i++){
         unsigned shr = pseudo_rand_uint(&seed, 0, 8);
         B_real[i] = pseudo_rand_int16(&seed) >> shr;
         B_imag[i] = pseudo_rand_int16(&seed) >> shr;
@@ -72,7 +72,7 @@ TEST(vect_complex_add_scalar, vect_complex_s16_add_scalar)
     int b_shr = pseudo_rand_uint(&seed, -2, 3);
 
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       expected_real[k] = vladd16(vlashr16(B_real[k], b_shr), C.re);
       expected_imag[k] = vladd16(vlashr16(B_imag[k], b_shr), C.im);
     }
@@ -98,13 +98,13 @@ TEST(vect_complex_add_scalar, vect_complex_s32_add_scalar)
 
   complex_s32_t expected[MAX_LEN];
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
 
     const unsigned old_seed = seed;
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
     setExtraInfo_RSL(v, old_seed, len);
     
-    for(int i = 0; i < len; i++){
+    for(unsigned int i = 0; i < len; i++){
         unsigned shr = pseudo_rand_uint(&seed, 0, 8);
         B[i].re = pseudo_rand_int32(&seed) >> shr;
         B[i].im = pseudo_rand_int32(&seed) >> shr;
@@ -118,7 +118,7 @@ TEST(vect_complex_add_scalar, vect_complex_s32_add_scalar)
     int b_shr = pseudo_rand_uint(&seed, -2, 3);
 
 
-    for(int k = 0; k < len; k++){
+    for(unsigned int k = 0; k < len; k++){
       expected[k].re = vladd32(vlashr32(B[k].re, b_shr), C.re);
       expected[k].im = vladd32(vlashr32(B[k].im, b_shr), C.im);
     }

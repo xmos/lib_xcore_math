@@ -28,7 +28,7 @@ extern "C" {
  * 
  * @see vect_s32_add_prepare()
  * 
- * @ingroup vect16_prepare
+ * @ingroup vect_s16_prepare_api
  */
 #define vect_s16_add_prepare vect_s32_add_prepare
 
@@ -43,7 +43,7 @@ extern "C" {
  * 
  * @see vect_s32_add_prepare()
  * 
- * @ingroup vect16_prepare
+ * @ingroup vect_s16_prepare_api
  */
 #define vect_s16_add_scalar_prepare vect_s32_add_prepare
 
@@ -84,7 +84,7 @@ extern "C" {
  * 
  * @see vect_s16_clip
  * 
- * @ingroup vect16_prepare
+ * @ingroup vect_s16_prepare_api
  */
 C_API
 void vect_s16_clip_prepare(
@@ -127,7 +127,7 @@ void vect_s16_clip_prepare(
  * 
  * @see vect_s16_inverse
  * 
- * @ingroup vect16_prepare
+ * @ingroup vect_s16_prepare_api
  */
 C_API
 void vect_s16_inverse_prepare(
@@ -212,7 +212,7 @@ void vect_s16_inverse_prepare(
  *
  * @see vect_s16_macc
  *
- * @ingroup vect16_prepare
+ * @ingroup vect_s16_prepare_api
  */
 C_API
 void vect_s16_macc_prepare(
@@ -237,7 +237,7 @@ void vect_s16_macc_prepare(
  *
  * @see vect_s16_macc_prepare(), vect_s16_nmacc()
  *
- * @ingroup vect16_prepare
+ * @ingroup vect_s16_prepare_api
  */
 #define vect_s16_nmacc_prepare  vect_s16_macc_prepare
 
@@ -306,7 +306,7 @@ void vect_s16_macc_prepare(
  * 
  * @see vect_s16_mul
  * 
- * @ingroup vect16_prepare
+ * @ingroup vect_s16_prepare_api
  */
 C_API
 void vect_s16_mul_prepare(
@@ -382,7 +382,7 @@ void vect_s16_mul_prepare(
  * 
  * @see vect_s16_scale
  * 
- * @ingroup vect16_prepare
+ * @ingroup vect_s16_prepare_api
  */
 C_API
 void vect_s16_scale_prepare(
@@ -449,7 +449,7 @@ void vect_s16_scale_prepare(
  * 
  * @see vect_s16_sqrt
  * 
- * @ingroup vect16_prepare
+ * @ingroup vect_s16_prepare_api
  */
 C_API
 void vect_s16_sqrt_prepare(
@@ -469,7 +469,7 @@ void vect_s16_sqrt_prepare(
  * 
  * @see vect_s32_add_prepare()
  * 
- * @ingroup vect16_prepare
+ * @ingroup vect_s16_prepare_api
  */
 #define vect_s16_sub_prepare vect_s32_add_prepare
 

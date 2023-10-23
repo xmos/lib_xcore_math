@@ -53,7 +53,7 @@ TEST(vect_macc, vect_s16_macc)
     exp.a = -1024;
     hr.a = vect_s16_headroom(A, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
@@ -115,7 +115,7 @@ TEST(vect_macc, vect_s16_nmacc)
     exp.a = -1024;
     hr.a = vect_s16_headroom(A, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
@@ -176,7 +176,7 @@ TEST(vect_macc, vect_s32_macc)
     exp.a = -1024;
     hr.a = vect_s32_headroom(A, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -214,7 +214,7 @@ TEST(vect_macc, vect_s32_macc)
 
 #define THRESHOLD  3
           if(expected - A[i] > THRESHOLD || A[i] - expected > THRESHOLD){
-            printf("[%d]  exp.a = %d; expected[%d] = %ld  ( %f );   A[%d] = %ld\n", v, exp.a, i, expected, expected_fp, i, A[i]);
+            printf("[%d]  exp.a = %d; expected[%d] = %ld  ( %f );   A[%d] = %ld\n", v, exp.a, i, (long int) expected, expected_fp, i, (long int) A[i]);
           }
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected, A[i], "Error not within threshold.");
 #undef THRESHOLD
@@ -239,7 +239,7 @@ TEST(vect_macc, vect_s32_nmacc)
     exp.a = -1024;
     hr.a = vect_s32_headroom(A, LEN);
 
-    for(int v = 0; v < REPS; v++){
+    for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
         
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
@@ -277,7 +277,7 @@ TEST(vect_macc, vect_s32_nmacc)
 
 #define THRESHOLD  3
           if(expected - A[i] > THRESHOLD || A[i] - expected > THRESHOLD){
-            printf("[%d]  exp.a = %d; expected[%d] = %ld  ( %f );   A[%d] = %ld\n", v, exp.a, i, expected, expected_fp, i, A[i]);
+            printf("[%d]  exp.a = %d; expected[%d] = %ld  ( %f );   A[%d] = %ld\n", v, exp.a, i, (long int) expected, expected_fp, i, (long int) A[i]);
           }
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected, A[i], "Error not within threshold.");
 #undef THRESHOLD

@@ -27,18 +27,16 @@ TEST_SETUP(dctXX_forward) { fflush(stdout); }
 TEST_TEAR_DOWN(dctXX_forward) {}
 
 
-
 #define MAX_PROC_FRAME_LENGTH_LOG2 9
 #define MAX_PROC_FRAME_LENGTH (1<<MAX_PROC_FRAME_LENGTH_LOG2)
 
 #define MIN_DCT_N_LOG2  (3)
-#define LOOPS_LOG2  (6)
 
-
-
-
-
-
+#if SMOKE_TEST
+#  define LOOPS_LOG2       (2)
+#else
+#  define LOOPS_LOG2       (8)
+#endif
 
 
 TEST(dctXX_forward, dct6_forward)
@@ -96,13 +94,13 @@ TEST(dctXX_forward, dct6_forward)
     unsigned dsp_ts1 = getTimestamp();
     dsp_dct_forward6(dsp_out, dsp_in);
     unsigned dsp_ts2 = getTimestamp();
-    dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
+    dsp_timing = (float) ((dsp_ts2 - dsp_ts1)/100.0);
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
 
 
 
     
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -181,10 +179,10 @@ TEST(dctXX_forward, dct8_forward)
     unsigned dsp_ts1 = getTimestamp();
     dsp_dct_forward8(dsp_out, dsp_in);
     unsigned dsp_ts2 = getTimestamp();
-    dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
+    dsp_timing = (float) ((dsp_ts2 - dsp_ts1)/100.0);
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
     
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -264,10 +262,10 @@ TEST(dctXX_forward, dct12_forward)
     unsigned dsp_ts1 = getTimestamp();
     dsp_dct_forward12(dsp_out, dsp_in);
     unsigned dsp_ts2 = getTimestamp();
-    dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
+    dsp_timing = (float) ((dsp_ts2 - dsp_ts1)/100.0);
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = 1<<3;
@@ -346,10 +344,10 @@ TEST(dctXX_forward, dct16_forward)
     unsigned dsp_ts1 = getTimestamp();
     dsp_dct_forward16(dsp_out, dsp_in);
     unsigned dsp_ts2 = getTimestamp();
-    dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
+    dsp_timing = (float) ((dsp_ts2 - dsp_ts1)/100.0);
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
     
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -419,7 +417,7 @@ TEST(dctXX_forward, dct24_forward)
     dct24_forward(&y[0], &x[0]);
     // dct24_forward_v2(&y[0], &x[0]);
     unsigned ts2 = getTimestamp();
-    x_exp += dct24_exp; 
+    x_exp += dct24_exp;
     // memcpy(y, x, sizeof(x));
     
     // printf("y = np.array([ ");
@@ -430,10 +428,10 @@ TEST(dctXX_forward, dct24_forward)
     unsigned dsp_ts1 = getTimestamp();
     dsp_dct_forward24(dsp_out, dsp_in);
     unsigned dsp_ts2 = getTimestamp();
-    dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
+    dsp_timing = (float) ((dsp_ts2 - dsp_ts1)/100.0);
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -512,10 +510,10 @@ TEST(dctXX_forward, dct32_forward)
     unsigned dsp_ts1 = getTimestamp();
     dsp_dct_forward32(dsp_out, dsp_in);
     unsigned dsp_ts2 = getTimestamp();
-    dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
+    dsp_timing = (float) ((dsp_ts2 - dsp_ts1)/100.0);
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
     
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -584,7 +582,7 @@ TEST(dctXX_forward, dct48_forward)
     unsigned ts1 = getTimestamp();
     dct48_forward(&y[0], &x[0]);
     unsigned ts2 = getTimestamp();
-    x_exp += dct48_exp; 
+    x_exp += dct48_exp;
     // memcpy(y, x, sizeof(x));
     
     // printf("y = np.array([ ");
@@ -595,10 +593,10 @@ TEST(dctXX_forward, dct48_forward)
     unsigned dsp_ts1 = getTimestamp();
     dsp_dct_forward48(dsp_out, dsp_in);
     unsigned dsp_ts2 = getTimestamp();
-    dsp_timing = (dsp_ts2 - dsp_ts1)/100.0;
+    dsp_timing = (float) ((dsp_ts2 - dsp_ts1)/100.0);
     if(dsp_timing > worst_timing_dsp) worst_timing_dsp = dsp_timing;
 
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = DCT_N;
@@ -644,8 +642,6 @@ TEST(dctXX_forward, dct64_forward)
 
     double ref_in[DCT_N];
     double ref_out[DCT_N];
-    int32_t dsp_in[DCT_N];
-    int32_t dsp_out[DCT_N];
 
     int32_t ref_out_s32[DCT_N];
 
@@ -672,7 +668,7 @@ TEST(dctXX_forward, dct64_forward)
 
     x_exp += dct64_exp;
     
-    float timing = (ts2-ts1)/100.0;
+    float timing = (float) ((ts2-ts1)/100.0);
     if(timing > worst_timing) worst_timing = timing;
     test_s32_from_double(ref_out_s32, ref_out, DCT_N, x_exp);
     int32_t max_allowed_diff = 8;

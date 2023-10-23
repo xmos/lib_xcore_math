@@ -7,6 +7,7 @@ Filtering API
     :file: filter_functions.csv
     :widths: 15,40,45
     :header-rows: 1
+    :class: longtable
 
 .. raw:: latex
 

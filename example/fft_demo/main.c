@@ -69,7 +69,7 @@ void fft_mono_example()
   // Before doing the forward FFT the input vector needs to be initialized. In many situations there
   // is no obvious natural exponent to associate with the time-domain signal (such as PCM audio
   // streams). In such a situation, it is often convenient to select an exponent that normalizes the
-  // data to a known range, such as [-1.0, 1.0). For 32-bit signed data, an exponent of -31 does 
+  // data to a known range, such as [-1.0, 1.0). For 32-bit signed data, an exponent of -31 does
   // that.
   // Note that the final parameter is instructing the init function to compute the headroom of the
   // input vector. If we instead chose to fill buffer[] with random data *after* initializing x,
@@ -81,7 +81,7 @@ void fft_mono_example()
   // Print out the floating point equivalent values of the input vector's elements prior to applying
   // the FFT.
   printf("x = [");
-  for(int k = 0; k < x.length; k++)
+  for(unsigned int k = 0; k < x.length; k++)
     printf("%0.04f, ", ldexp(x.data[k], x.exp));
   printf("]\n\n");
 
@@ -118,10 +118,10 @@ void fft_mono_example()
     If the user wishes, she can allocate space for 2 extra int32_t elements (same as 1 complex_s32_t
     element) in the time-domain buffer (but *not* identified in the length of the time-domain BFP
     vector, as that must be a power of 2), and unpack the Nyquist component after the FFT is applied
-    (making sure to modify the frequency-domain BFP vectors length by adding 1). Note that  
+    (making sure to modify the frequency-domain BFP vectors length by adding 1). Note that
     bfp_fft_inverse_mono() however expects the data to be packed as bfp_fft_forward_mono() left it.
 
-    Note also that the inverse mono FFT also assumes the conjugate symmetry of the frequency 
+    Note also that the inverse mono FFT also assumes the conjugate symmetry of the frequency
     spectrum, meaning that the inverse transform is guaranteed to yield a purely real signal.
   */
 
@@ -138,9 +138,9 @@ void fft_mono_example()
 #endif
   printf("X->length --> %u\n\n", X->length);
 
-  // Print out the complex BFP vector X  
+  // Print out the complex BFP vector X
   printf("X = [");
-  for(int k = 0; k < X->length; k++)
+  for(unsigned int k = 0; k < X->length; k++)
     printf("(%0.04f + %0.04fj), ", ldexp(X->data[k].re, X->exp), ldexp(X->data[k].im, X->exp) );
   printf("]\n\n");
 
@@ -165,7 +165,7 @@ void fft_mono_example()
   // Finally, print out the inverse transformed signal, which should match the original signal to
   // within the arithmetic precision of the forward and inverse transform pair.
   printf("x = [");
-  for(int k = 0; k < x.length; k++)
+  for(unsigned int k = 0; k < x.length; k++)
     printf("%0.04f, ", ldexp(x.data[k], x.exp));
   printf("]\n\n");
 
@@ -192,7 +192,7 @@ void fft_stereo_example()
   
   // bfp_fft_forward_stereo() requires 2 input BFP vectors of type bfp_s32_t, whose  mantissa
   // vectors are backed by a int32_t arrays. The +1 is because we're going to do some unpacking of
-  // the spectra after applying the FFT. See fft_mono_example() for unpacking explanation. 
+  // the spectra after applying the FFT. See fft_mono_example() for unpacking explanation.
   // The DWORD_ALIGNED qualifier instructs the compiler to ensure the arrays start at an
   // 8-byte-aligned memory offset.
   int32_t DWORD_ALIGNED bufferA[LENGTH + 1];
@@ -227,17 +227,17 @@ void fft_stereo_example()
   // Print out the floating point equivalent values of the input vectors' elements prior to applying
   // the FFT.
   printf("a = [");
-  for(int k = 0; k < a.length; k++)
+  for(unsigned int k = 0; k < a.length; k++)
     printf("%0.04f, ", ldexp(a.data[k], a.exp));
   printf("]\n\n");
 
   printf("b = [");
-  for(int k = 0; k < b.length; k++)
+  for(unsigned int k = 0; k < b.length; k++)
     printf("%0.04f, ", ldexp(b.data[k], b.exp));
   printf("]\n\n");
 
   // Apply the FFT.
-  // 
+  //
   // This function takes a pointer to the input BFP vectors and a scratch buffer
   bfp_fft_forward_stereo(&a, &b, scratch);
 
@@ -287,12 +287,12 @@ void fft_stereo_example()
 
   // Print out the floating-point equivalent of the channel A and B frequency spectra.
   printf("ChA = [");
-  for(int k = 0; k < ChA->length; k++)
+  for(unsigned int k = 0; k < ChA->length; k++)
     printf("(%0.04f + %0.04fj), ", ldexp(ChA->data[k].re, ChA->exp), ldexp(ChA->data[k].im, ChA->exp) );
   printf("]\n\n");
 
   printf("ChB = [");
-  for(int k = 0; k < ChB->length; k++)
+  for(unsigned int k = 0; k < ChB->length; k++)
     printf("(%0.04f + %0.04fj), ", ldexp(ChB->data[k].re, ChB->exp), ldexp(ChB->data[k].im, ChB->exp) );
   printf("]\n\n");
 
@@ -320,12 +320,12 @@ void fft_stereo_example()
   // Finally, print out the inverse transformed signal, which should match the original signal to
   // within the arithmetic precision of the forward and inverse transform pair.
   printf("a = [");
-  for(int k = 0; k < a.length; k++)
+  for(unsigned int k = 0; k < a.length; k++)
     printf("%0.04f, ", ldexp(a.data[k], a.exp));
   printf("]\n\n");
 
   printf("b = [");
-  for(int k = 0; k < b.length; k++)
+  for(unsigned int k = 0; k < b.length; k++)
     printf("%0.04f, ", ldexp(b.data[k], b.exp));
   printf("]\n\n");
 
@@ -342,17 +342,17 @@ void fft_complex_example()
   
   /*
     This function demonstrates how apply the forward and inverse FFT to single channel containing
-    containing a sequence of complex sample data.  This is accomplished using the 
+    containing a sequence of complex sample data.  This is accomplished using the
     bfp_fft_forward_complex() and bfp_fft_inverse_complex() functions respectively.
 
     bfp_complex_s32_t --bfp_fft_forward_complex()--> bfp_complex_s32_t
     bfp_complex_s32_t --bfp_fft_inverse_complex()--> bfp_complex_s32_t
   */
 
-  // bfp_fft_forward_complex() requires an input BFP vector of type bfp_complex_s32_t, whose 
+  // bfp_fft_forward_complex() requires an input BFP vector of type bfp_complex_s32_t, whose
   // mantissa vector is backed by a complex_s32_t array.
-  // The complex_s32_t struct contains 2 fields, `re` for the real part and `im` for the 
-  // imaginary part of an element.  The buffer is then an alternating sequence of real and 
+  // The complex_s32_t struct contains 2 fields, `re` for the real part and `im` for the
+  // imaginary part of an element.  The buffer is then an alternating sequence of real and
   // imaginary parts for successive elements.
   complex_s32_t buffer[LENGTH];
   
@@ -362,13 +362,13 @@ void fft_complex_example()
     buffer[k].im = rand() << 1;
   }
 
-  // Before doing the forward FFT the array needs to be turned into a proper BFP vector. So we 
+  // Before doing the forward FFT the array needs to be turned into a proper BFP vector. So we
   // initialize a bfp_complex_s32_t with bfp_complex_s32_init().
-  // In many situations there is no obvious natural exponent to associate with the time-domain 
-  // signal. In such a situation, it is often convenient to select an exponent that normalizes 
-  // the data to a known range, such as [-1.0, 1.0). For 32-bit signed data, an exponent of -31 
+  // In many situations there is no obvious natural exponent to associate with the time-domain
+  // signal. In such a situation, it is often convenient to select an exponent that normalizes
+  // the data to a known range, such as [-1.0, 1.0). For 32-bit signed data, an exponent of -31
   // does that.
-  // Alternatively, initializing with an exponent of 0 has the advantage that, after having 
+  // Alternatively, initializing with an exponent of 0 has the advantage that, after having
   // applied the inverse transform, the resulting exponent indicates the overall level of scaling
   // applied throughout the process.
   // Note that the final parameter is instructing the init function to compute the headroom of the
@@ -381,7 +381,7 @@ void fft_complex_example()
   // Print out the floating point equivalent values of the input vector's elements prior to applying
   // the FFT.
   printf("x = [");
-  for(int k = 0; k < x.length; k++)
+  for(unsigned int k = 0; k < x.length; k++)
     printf("%0.04f + %0.04fj, ", ldexp(x.data[k].re, x.exp), ldexp(x.data[k].im, x.exp));
   printf("]\n\n");
 
@@ -398,19 +398,19 @@ void fft_complex_example()
   bfp_fft_forward_complex(&x);
 
   /*
-    Unlike bfp_fft_forward_mono() and bfp_fft_forward_stereo(), the input signal for 
+    Unlike bfp_fft_forward_mono() and bfp_fft_forward_stereo(), the input signal for
     bfp_fft_forward_complex() is not purely real. As such, a full FFT_N complex elements are
     required to represent the spectrum.
     
-    Additionally there is no packing of the Nyquist component's real part into the DC component's 
+    Additionally there is no packing of the Nyquist component's real part into the DC component's
     imaginary part.
 
     bfp_fft_forward_complex() can be used to perform a DFT on a single channel of purely real data
-    by simply placing that signal in the real parts of a complex vector, with each element's 
+    by simply placing that signal in the real parts of a complex vector, with each element's
     imaginary part being zero. It's worth noting a few differences between doing this and just using
     bfp_fft_forward_mono().
 
-    1) The complex input vector requires twice as much memory. For long FFTs, this may be 
+    1) The complex input vector requires twice as much memory. For long FFTs, this may be
        appreciable.
     2) The cycles taken for bfp_fft_forward_mono() to compute an FFT_N-point DFT is approximately the
        same as the cycles taken to perform an FFT_N/2-point DFT using bfp_fft_forward_complex().
@@ -429,7 +429,7 @@ void fft_complex_example()
   
   // Print out the floating-point equivalent of the complex frequency spectrum
   printf("X = [");
-  for(int k = 0; k < X->length; k++)
+  for(unsigned int k = 0; k < X->length; k++)
     printf("(%0.04f + %0.04fj), ", ldexp(X->data[k].re, X->exp), ldexp(X->data[k].im, X->exp) );
   printf("]\n\n");
 
@@ -445,7 +445,7 @@ void fft_complex_example()
   // Finally, print out the inverse transformed signal, which should match the original signal to
   // within the arithmetic precision of the forward and inverse transform pair.
   printf("x = [");
-  for(int k = 0; k < x.length; k++)
+  for(unsigned int k = 0; k < x.length; k++)
     printf("%0.04f + %0.04fj, ", ldexp(x.data[k].re, x.exp), ldexp(x.data[k].im, x.exp));
   printf("]\n\n");
 

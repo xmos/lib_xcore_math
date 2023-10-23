@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 #include "xmath/xs3/vpu_scalar_ops.h"
 
@@ -25,16 +25,16 @@ int32_t filter_fir_s32(
 
     vpu_int32_acc_t acc = 0;
 
-    for(int i = 0; i < N_A; i++)
+    for(unsigned i = 0; i < N_A; i++)
         acc = vlmacc32(acc, filter->state[N_B + i], filter->coef[i]);
 
-    for(int i = 0; i < N_B; i++)
+    for(unsigned i = 0; i < N_B; i++)
         acc = vlmacc32(acc, filter->state[i], filter->coef[N_A + i]);
 
 
     if(filter->shift >= 0){
         if(filter->shift != 0)
-            acc += (1 << (filter->shift-1));
+            acc += (vpu_int32_acc_t) (1 << (filter->shift-1));
         acc = acc >> filter->shift;
     } else {
         acc = acc << (-filter->shift);

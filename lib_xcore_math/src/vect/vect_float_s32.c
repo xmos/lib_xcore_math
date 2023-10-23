@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -6,8 +6,6 @@
 #include <string.h>
 
 #include "xmath/xmath.h"
-
-
 
 
 void vect_float_s32_log_base(
@@ -19,7 +17,7 @@ void vect_float_s32_log_base(
   const unsigned full_chunks = length >> 3;
   const unsigned tail = length & 0x7;
 
-  for(int k = 0; k < full_chunks; k++)
+  for(unsigned k = 0; k < full_chunks; k++)
     chunk_float_s32_log(&a[k<<3], &b[k<<3]);
 
   if(tail){

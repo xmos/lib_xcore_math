@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -24,7 +24,7 @@ int32_t s64_to_s32(
   const headroom_t b_hr = HR_S64(b);
   const right_shift_t shr = MAX( 0, (int)(32-b_hr) );
   *a_exp = b_exp + shr;
-  return b >> shr;
+  return (int32_t) (b >> shr);
 }
 
 
@@ -36,10 +36,10 @@ int16_t s32_to_s16(
   const headroom_t b_hr = HR_S32(b);
   const right_shift_t shr = MAX( 0, (int)(16-b_hr) );
   *a_exp = b_exp + shr;
-  return b >> shr;
+  return (int16_t) (b >> shr);
 }
     
-int32_t scalar_s16_to_s32(
+int32_t s16_to_s32(
     exponent_t* a_exp,
     const int16_t b,
     const exponent_t b_exp,
@@ -88,10 +88,10 @@ int16_t s16_inverse(
     const int16_t b)
 {
   const headroom_t b_hr = HR_S16(b);
-  const unsigned scale = 2*14 - b_hr;
+  const signed scale = 2*14 - b_hr; // Declare as signed to avoid warning C4146: unary minus operator applied to unsigned type, result still unsigned
   const int32_t dividend = 1 << scale;
   *a_exp = -scale;
-  return dividend / b;
+  return (int16_t) (dividend / b);
 }
 
 
@@ -100,9 +100,9 @@ int32_t s32_inverse(
     const int32_t b)
 {
   const headroom_t b_hr = HR_S32(b);
-  const unsigned scale = 2*30 - b_hr;
+  const signed scale = 2*30 - b_hr;  // Declare as signed to avoid warning C4146: unary minus operator applied to unsigned type, result still unsigned
   const int64_t dividend = 1LL << scale;
   *a_exp = -scale;
-  return dividend / b;
+  return (int32_t) (dividend / b);
 
 }

@@ -1,13 +1,13 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 #include "xmath/xs3/vpu_scalar_ops.h"
-#include "../../vect/vpu_const_vects.h"
+#include "vpu_const_vects.h"
 
 
 headroom_t vect_s16_copy(
@@ -15,7 +15,7 @@ headroom_t vect_s16_copy(
   const int16_t b[],
   const unsigned length)
 {
-  for(int i = 0; i < length; i++)
+  for(unsigned i = 0; i < length; i++)
     a[i] = b[i];
 
   return vect_s16_headroom(a, length);
@@ -26,7 +26,7 @@ headroom_t vect_s32_copy(
   const int32_t b[],
   const unsigned length)
 {
-  for(int i = 0; i < length; i++)
+  for(unsigned i = 0; i < length; i++)
     a[i] = b[i];
 
   return vect_s32_headroom(a, length);

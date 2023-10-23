@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
@@ -7,10 +7,10 @@
 #include <string.h>
 
 #include "xmath/xmath.h"
-#include "../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
-const extern unsigned rot_table16_rows;
-const extern int16_t rot_table16[14][2][16];
+extern const unsigned rot_table16_rows;
+extern const int16_t rot_table16[14][2][16];
 
 
 static inline 

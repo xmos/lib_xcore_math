@@ -42,7 +42,7 @@ TEST(bfp_fft_packing, bfp_fft_mono_unpack_pack)
 
   for(int rep = 0; rep < REPS; rep++){
 
-    for(int k = 0; k < X.length; k++){
+    for(unsigned int k = 0; k < X.length; k++){
       X.data[k].re = pseudo_rand_int32(&seed);
       X.data[k].im = pseudo_rand_int32(&seed);
     }

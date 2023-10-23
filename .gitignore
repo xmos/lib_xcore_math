@@ -8,6 +8,7 @@
 **/.ipynb_checkpoints/*
 **/*.egg-info/*
 Pipfile.lock
+.python-version
 
 # build cruft
 _build
@@ -25,3 +26,4 @@ lib_xcore_math/lib/
 
 # test cruft
 test/deps
+*.csv

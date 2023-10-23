@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -45,7 +45,7 @@ void vect_s16_macc_prepare(
   const exponent_t bc_exp = b_exp + c_exp - bc_hr + 16;
 
   // The exponent that acc[] would have if it had exactly one bit of headroom.
-  // This way 
+  // This way
   const exponent_t tmp_exp = acc_exp - acc_hr + 1;
 
   // The new exponent should be whichever of those two exponents is greater.
@@ -59,7 +59,7 @@ void vect_s16_macc_prepare(
     
 /* ******************
  *
- * 
+ *
  * ******************/
 void vect_s16_mul_prepare(
     exponent_t* a_exp,
@@ -93,7 +93,7 @@ void vect_s16_clip_prepare(
     const exponent_t bound_exp,
     const headroom_t b_hr)
 {
-
+    (void) b_hr;
     // Suppose we say a->exp = b->exp. Then, we have to shift the bounds so that
     //  they match b->exp. So, bound_shr = b->exp - bound_exp. Two possibilities:
     //  A) bound_shr is negative (gets larger)
@@ -119,10 +119,10 @@ void vect_s16_clip_prepare(
         int32_t ub32 = ((int32_t)*upper_bound) << (-bound_shr);
         int32_t lb32 = ((int32_t)*lower_bound) << (-bound_shr);
 
-        ub = (ub32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (ub32 <= VPU_INT16_MIN)? VPU_INT16_MIN : ub32;
-        lb = (lb32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (lb32 <= VPU_INT16_MIN)? VPU_INT16_MIN : lb32;
+        ub = (ub32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (ub32 <= VPU_INT16_MIN)? VPU_INT16_MIN : (int16_t) ub32;
+        lb = (lb32 >= VPU_INT16_MAX)? VPU_INT16_MAX : (lb32 <= VPU_INT16_MIN)? VPU_INT16_MIN : (int16_t) lb32;
     } else {
-        // TODO: Should force upper_bound to round downwards to enforce the guarantee that no output can be larger than 
+        // TODO: Should force upper_bound to round downwards to enforce the guarantee that no output can be larger than
         // upper bound?
         ub = *upper_bound >> bound_shr;
         // And lower bound upwards?
@@ -174,7 +174,7 @@ void vect_s32_macc_prepare(
   */
 
   *b_shr = 1-b_hr;
-  *c_shr = 1-c_hr; 
+  *c_shr = 1-c_hr;
 
   // exponent_t p_exp = b_exp + c_exp + *b_shr + *c_shr + 30;
   exponent_t p_exp = b_exp + c_exp - b_hr - c_hr + 32;
@@ -197,7 +197,7 @@ void vect_s32_macc_prepare(
  *  Note: this is the same for both 16 and 32 bits. Might warrant a renaming?
  *        Used by at least 3 different functions. although the output a_exp needs
  *        to be adjusted for 16-bit... so maybe just create a second function?
- * 
+ *
  * ******************/
 void vect_s32_mul_prepare(
     exponent_t* a_exp,
@@ -285,9 +285,9 @@ void vect_s16_sqrt_prepare(
 
     *b_shr = -((int)b_hr);
 
-    // sqrt(X * 2^P) = sqrt(X) * sqrt(2^P) 
+    // sqrt(X * 2^P) = sqrt(X) * sqrt(2^P)
     //               = sqrt(X) * 2^(P/2)
-    // But we can't have fractional exponents, so leave one bit of headroom if b_shr would cause 
+    // But we can't have fractional exponents, so leave one bit of headroom if b_shr would cause
     // the exponent to be odd.
     if( ((unsigned)(b_exp + *b_shr)) % 2 == 1){
         *b_shr += 1;
@@ -301,12 +301,12 @@ void vect_s16_sqrt_prepare(
 
 
 static int16_t min_abs_s16(
-    const int16_t b[], 
+    const int16_t b[],
     const unsigned length)
 {
     int16_t m = INT16_MAX;
 
-    for(int i = 0; i < length; i++){
+    for(unsigned i = 0; i < length; i++){
         int16_t tmp = vlmul16(b[i], vsign16(b[i]));
         m = MIN(m, tmp);
     }
@@ -315,12 +315,12 @@ static int16_t min_abs_s16(
 }
 
 static int32_t min_abs_s32(
-    const int32_t b[], 
+    const int32_t b[],
     const unsigned length)
 {
     int32_t m = INT32_MAX;
 
-    for(int i = 0; i < length; i++){
+    for(unsigned i = 0; i < length; i++){
         int32_t tmp = vlmul32(b[i], vsign32(b[i]));
         m = MIN(m, tmp);
     }
@@ -338,7 +338,7 @@ void vect_s16_inverse_prepare(
 
     // Performing a signed division
 
-    //   0x40000000 / b[k] 
+    //   0x40000000 / b[k]
     // = 2^30 / b[k]
     // = 2^30 * (1/b[k])
 
@@ -346,7 +346,7 @@ void vect_s16_inverse_prepare(
 
     int16_t a = min_abs_s16( b, length );
 
-    headroom_t hr = HR_S16(a);    
+    headroom_t hr = HR_S16(a);
 
     //  2^(14-hr) <= abs(a)
     //  with equality:
@@ -380,7 +380,7 @@ void vect_s16_inverse_prepare(
 
 
 
-/*            
+/*
     A = B + C
 
     Bf[] = B[] * 2^(B.exp)
@@ -407,7 +407,7 @@ void vect_s16_inverse_prepare(
     
 /* ******************
  *
- * 
+ *
  * ******************/
 void vect_s32_add_prepare(
     exponent_t* a_exp,
@@ -431,7 +431,7 @@ void vect_s32_add_prepare(
     
 /* ******************
  *
- * 
+ *
  * ******************/
 void vect_s32_dot_prepare(
     exponent_t* a_exp,
@@ -448,7 +448,7 @@ void vect_s32_dot_prepare(
     Operation is
         A = sum[k]{ (B[k] >> b_shr) * (C[k] >> c_shr) >> 30 }
 
-    Worst case result is when each B[k] = (-0x80000000 >> b_hr) = -2^(31-b_hr) 
+    Worst case result is when each B[k] = (-0x80000000 >> b_hr) = -2^(31-b_hr)
     and each C[k] = (-0x80000000 >> c_hr) = -2^(31-c_hr), then the result is
 
         A = length * (  (-2^(31-b_hr) >> b_shr)  *  (-2^(31-b_hr) >> c_shr)  ) >> 30
@@ -481,12 +481,13 @@ void vect_s32_dot_prepare(
     const headroom_t total_hr = b_hr + c_hr;
     right_shift_t total_shr = K - 7;
 
-    *b_shr = (int) -b_hr;
-    *c_shr = (int) -c_hr;
+    *b_shr = -(int)b_hr;
+    *c_shr = -(int)c_hr;
 
     if(total_shr < 0){
         // Do nothing. We've already eliminated all our headroom.
-    } else if(total_shr >= total_hr){
+        // we know that total_shr is more than zero, so safely recasting to unsigned
+    } else if((unsigned)total_shr >= total_hr){
 
         *b_shr += b_hr;
         *c_shr += c_hr;
@@ -496,8 +497,8 @@ void vect_s32_dot_prepare(
 
     } else {
 
-        *b_shr += MIN(b_hr, total_shr);
-        *c_shr += total_shr - MIN(b_hr, total_shr);
+        *b_shr += MIN(b_hr, (unsigned)total_shr);
+        *c_shr += total_shr - MIN(b_hr, (unsigned)total_shr);
 
     }
 
@@ -515,9 +516,9 @@ void vect_s32_sqrt_prepare(
 
     *b_shr = -((int)b_hr);
 
-    // sqrt(X * 2^P) = sqrt(X) * sqrt(2^P) 
+    // sqrt(X * 2^P) = sqrt(X) * sqrt(2^P)
     //               = sqrt(X) * 2^(P/2)
-    // But we can't have fractional exponents, so leave one bit of headroom if b_shr would cause 
+    // But we can't have fractional exponents, so leave one bit of headroom if b_shr would cause
     // the exponent to be odd.
     if( ((unsigned)(b_exp + *b_shr)) % 2 == 1){
         *b_shr += 1;
@@ -540,7 +541,7 @@ void vect_s32_inverse_prepare(
 
     int32_t a = min_abs_s32( b, length );
 
-    headroom_t hr = HR_S32(a);    
+    headroom_t hr = HR_S32(a);
     //      2^(30-hr)  <=  a  <  2^(31-hr)
 
 
@@ -613,7 +614,7 @@ void vect_s32_energy_prepare(
                     = 2^(32 - 2*(b_hr+b_shr)) * 2^(u32_ceil_log2(len))
                     = 2^(32 - 2*(b_hr+b_shr) + u32_ceil_log2(len))
 
-        The accumulator is 40 bits. The max value we can hit is 2^39 - 1. So set the target based on whether 
+        The accumulator is 40 bits. The max value we can hit is 2^39 - 1. So set the target based on whether
         allow_saturation is true or not
 
         2^(38+allow_sat) = 2^(32 - 2*(b_hr+b_shr) + u32_ceil_log2(len))
@@ -654,7 +655,7 @@ void vect_s32_clip_prepare(
     const exponent_t bound_exp,
     const headroom_t b_hr)
 {
-
+    (void) b_hr;
     // Suppose we say a->exp = b->exp. Then, we have to shift the bounds so that
     //  they match b->exp. So, bound_shr = b->exp - bound_exp. Two possibilities:
     //  A) bound_shr is negative (gets larger)
@@ -680,10 +681,10 @@ void vect_s32_clip_prepare(
         int64_t ub64 = ((int64_t)*upper_bound) << (-bound_shr);
         int64_t lb64 = ((int64_t)*lower_bound) << (-bound_shr);
 
-        ub = (ub64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (ub64 <= VPU_INT32_MIN)? VPU_INT32_MIN : ub64;
-        lb = (lb64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (lb64 <= VPU_INT32_MIN)? VPU_INT32_MIN : lb64;
+        ub = (ub64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (ub64 <= VPU_INT32_MIN)? VPU_INT32_MIN : (int32_t) ub64;
+        lb = (lb64 >= VPU_INT32_MAX)? VPU_INT32_MAX : (lb64 <= VPU_INT32_MIN)? VPU_INT32_MIN : (int32_t) lb64;
     } else {
-        // TODO: Should force upper_bound to round downwards to enforce the guarantee that no output can be larger than 
+        // TODO: Should force upper_bound to round downwards to enforce the guarantee that no output can be larger than
         // upper bound?
         ub = *upper_bound >> bound_shr;
         // And lower bound upwards?
@@ -712,7 +713,7 @@ void vect_2vec_prepare(
     const headroom_t b_hr,
     const headroom_t c_hr,
     const headroom_t extra_operand_hr)
-{ 
+{
   const exponent_t b_min_exp = b_exp - b_hr + extra_operand_hr;
   const exponent_t c_min_exp = c_exp - c_hr + extra_operand_hr;
   *a_exp = (b_min_exp > c_min_exp)? b_min_exp : c_min_exp;

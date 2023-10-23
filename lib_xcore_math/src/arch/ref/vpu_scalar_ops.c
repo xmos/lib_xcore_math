@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 
 #define SAT40(X)   ( ((X) > VPU_INT40_MAX)? VPU_INT40_MAX           \

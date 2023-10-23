@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
@@ -76,7 +76,7 @@ int32_t filter_biquads_s32(
 {
     int32_t smp = new_sample;
 
-    for(int i = 0; i < block_count; i++)
+    for(unsigned i = 0; i < block_count; i++)
         smp = filter_biquad_s32(&biquads[i], smp);
     
     return smp;

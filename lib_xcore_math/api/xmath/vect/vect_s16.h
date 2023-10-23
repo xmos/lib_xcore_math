@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
@@ -302,8 +302,8 @@ unsigned vect_s16_argmin(
  * &     b_k' \leftarrow sat_{16}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor) \\
  * &     a_k \leftarrow \begin\{cases\}
  *           lower\_bound & b_k' \le lower\_bound                        \\
- * &         upper\_bound & b_k' \ge upper\_bound                        \\
- * &         b_k' & otherwise \end\{cases\}                              \\
+ *           upper\_bound & b_k' \ge upper\_bound                        \\
+ *           b_k' & otherwise \end\{cases\}                              \\
  * &     \qquad\text{ for }k\in 0\ ...\ (length-1)
  * }
  * 

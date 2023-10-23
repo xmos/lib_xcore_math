@@ -32,10 +32,10 @@ TEST(float_log, f32_normA)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
-    float x = ldexp(pseudo_rand_uint(&seed, 1, INT32_MAX), 
+    float x = (float) ldexp((double) pseudo_rand_uint(&seed, 1, INT32_MAX),
                     pseudo_rand_int(&seed, -10, 10));
 
     int expected_exp;
@@ -56,7 +56,7 @@ TEST(float_log, f32_normA)
     
 
     double diff = fabs(expected_f - actual_f);
-    double ratio = fabs(diff / expected_f); 
+    double ratio = fabs(diff / expected_f);
 
     if( ratio > ldexp(1, -18)){
       printf("x = %f\n", x);
@@ -72,7 +72,6 @@ TEST(float_log, f32_normA)
     TEST_ASSERT_FLOAT_WITHIN(ldexpf(1,-18), x, ldexpf(expected_f, expected_exp));
     TEST_ASSERT_FLOAT_WITHIN(ldexpf(1,-18), x, ldexpf(actual_f, actual_exp));
 
-
   }
 }
 
@@ -82,10 +81,10 @@ TEST(float_log, f32_log2)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
-  for(int v = 0; v < REPS; v++){
+  for(unsigned int v = 0; v < REPS; v++){
     setExtraInfo_RS(v, seed);
 
-    float x = ldexp(pseudo_rand_uint(&seed, 1, INT32_MAX), 
+    float x = (float) ldexp((double) pseudo_rand_uint(&seed, 1, INT32_MAX),
       pseudo_rand_int(&seed, -10, 10));
 
     float actual, exp;
@@ -94,7 +93,7 @@ TEST(float_log, f32_log2)
     TIME_STATEMENT(exp = log2f(x), delta_us_ref);
 
     double diff = fabs(exp - actual);
-    double ratio = fabs(diff / exp); 
+    double ratio = fabs(diff / exp);
 
 
     if( ratio > ldexp(1, -11)){

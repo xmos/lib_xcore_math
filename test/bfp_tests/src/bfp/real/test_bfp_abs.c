@@ -31,7 +31,7 @@ TEST_TEAR_DOWN(bfp_abs) {}
 #  define MAX_LEN    (512)
 #endif
 
-static char msg_buff[200];
+// static char msg_buff[200];
 
 #define TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, EXTRA, LINE_NUM)   do{          \
     if((EXPECTED)!=(ACTUAL)) {                                                  \
@@ -64,7 +64,7 @@ TEST(bfp_abs, bfp_s16_abs)
         
         TEST_ASSERT_EQUAL(B.exp,  A.exp );
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             int16_t expected = abs(B.data[i]);
             TEST_ASSERT_EQUAL(expected, A.data[i]);
         }
@@ -96,7 +96,7 @@ TEST(bfp_abs, bfp_s32_abs)
         
         TEST_ASSERT_EQUAL(B.exp,  A.exp );
 
-        for(int i = 0; i < A.length; i++){
+        for(unsigned int i = 0; i < A.length; i++){
             int32_t expected = abs(B.data[i]);
             TEST_ASSERT_EQUAL(expected, A.data[i]);
         }

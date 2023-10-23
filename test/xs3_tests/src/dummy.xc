@@ -1,3 +1,5 @@
+// Copyright 2022-2023 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
 // This file is here to close the loop on issue #106 (https://github.com/xmos/lib_xcore_math/issues/106)

@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
@@ -360,8 +360,8 @@ unsigned vect_s32_argmin(
  * &     b_k' \leftarrow sat_{32}(\lfloor b_k \cdot 2^{-b\_shr} \rfloor) \\
  * &     a_k \leftarrow \begin\{cases\}
  *           lower\_bound & b_k' \le lower\_bound                        \\
- * &         upper\_bound & b_k' \ge upper\_bound                        \\
- * &         b_k' & otherwise \end\{cases\}                              \\
+ *           upper\_bound & b_k' \ge upper\_bound                        \\
+ *           b_k' & otherwise \end\{cases\}                              \\
  * &     \qquad\text{ for }k\in 0\ ...\ (length-1)
  * }
  * 
@@ -1032,7 +1032,7 @@ headroom_t vect_s32_nmacc(
  * &     a_k \leftarrow 
  *           \begin\{cases\}
  *               b_k & b_k > 0 \\ 
- * &             0 & b_k \leq 0
+ *               0 & b_k \leq 0
  *       \end\{cases\}           \\
  * &     \qquad\text{ for }k\in 0\ ...\ (length-1)
  * }
@@ -1753,13 +1753,13 @@ void vect_s32_merge_accs(
  * 
  * This function is most efficient (in terms of cycles/accumulator) when `length` is a multiple of
  * 16. In any case, `length` will be rounded up such that a multiple of 16 accumulators will always
- * be merged.
+ * be split.
  * 
  * This function can safely split accumulators in-place.
  * 
  * @param[out]  a       Output vector of split_acc_s32_t 
  * @param[in]   b       Input vector of int32_t
- * @param[in]   length  Number of accumulators to merge
+ * @param[in]   length  Number of accumulators to split
  * 
  * @exception ET_LOAD_STORE Raised if `b` or `a` is not word-aligned (See @ref note_vector_alignment)
  * 
@@ -1809,8 +1809,9 @@ void vect_split_acc_s32_shr(
  * explanation, @vector{c} is considered to be single-dimensional, without redundancy.)
  * 
  * @operation{
- * &    b_{k,0} = 2^{30}                                                                   \\
- * &    b_{k,i} = round\left(\frac{b_{k,i-1}\cdot{}b_k}{2^{30}}\right)\qquad\text{for }i \in \{1..(N-1)\}    \\
+ * &    b_{k,0} = 2^{30}                                                                    \\
+ * &    b_{k,i} = round\left(\frac{b_{k,i-1}\cdot{}b_k}{2^{30}}\right)                      \\
+ * &    \qquad\text{for }i \in \{1..(N-1)\}                                                 \\
  * &    a_k \leftarrow  \sum_{i=0}^{N-1}  round\left( \frac{b_{k,i}\cdot c_i}{2^{30}}  \right) \\
  * &    \qquad\text{for }k \in \{0..\mathtt{length}-1\}
  * }

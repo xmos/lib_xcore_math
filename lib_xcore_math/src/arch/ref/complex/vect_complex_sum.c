@@ -1,11 +1,11 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "../../../vect/vpu_helper.h"
+#include "vpu_helper.h"
 
 
 
@@ -35,7 +35,7 @@ void vect_complex_s32_sum(
     int64_t sum_real = 0;
     int64_t sum_imag = 0;
 
-    for(int k = 0; k < length; k++){
+    for(unsigned k = 0; k < length; k++){
         
         complex_s32_t B = {
             ROUND_SHR(b[k].re, b_shr), 
