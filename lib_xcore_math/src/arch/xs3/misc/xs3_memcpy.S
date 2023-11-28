@@ -28,7 +28,7 @@ void xs3_memcpy(
 FUNCTION_NAME:
     dualentsp NSTACKWORDS
   { shr tmp, len, 5               ; zext len, 5                   }
-  { ldc r11, 32                   ; bt tmp, .L_loop_bot           } 
+  { ldc r11, 32                   ; bf tmp, .L_loop_bot           } 
   .L_loop_top:
     { add b, b, r11                 ; vldd b[0]                     }
     { sub tmp, tmp, 1               ; vstd a[0]                     }
