@@ -184,3 +184,14 @@ headroom_t dct8x8_stageB(
     const int16_t x[8][8],
     const int16_t matrix[8][16],
     const right_shift_t sat);
+    
+    
+
+/**
+ * 
+*/
+C_API
+void dct8x8_stageB_16bit(
+    int16_t y[8][8],
+    const int16_t x[8][8],
+    const int16_t matrix[8][16]);

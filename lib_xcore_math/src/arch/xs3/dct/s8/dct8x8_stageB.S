@@ -21,7 +21,7 @@ Whether the forward or inverse DCT is performed depends on whether the
 matrix[][] argument points to dct8_matrix_16bit[][] or 
 idct8_matrix_16bit[][].
 
-headroom_t dct8_inversex8_stageB(
+headroom_t dct8x8_stageB(
     int8_t y[8][8],
     const int16_t x[8][8],
     const int16_t matrix[8][16],
