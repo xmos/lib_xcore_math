@@ -152,7 +152,7 @@ pipeline {
             label 'docker'
           }
           environment {
-            XMOSDOC_VERSION = "v4.0"
+            XMOSDOC_VERSION = "v5.1"
           }
           stages {
             stage('Build Docs') {
