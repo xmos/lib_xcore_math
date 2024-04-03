@@ -11,7 +11,8 @@
 
 
 
-// On the VPU the result is actually int34_t
+// On the VPU the result is actually int34_t, using int32_t would cause
+// overflow as the shift by 30 does not leave enough headroom.
 #define MUL32(X, Y)     ((int64_t)(((((int64_t)(X)) * (Y)) + (1<<29)) >> 30))
 
 
@@ -51,8 +52,8 @@ int32_t filter_biquad_s32(
         printf("%" PRId64 "\n", accs[i]);
         fflush(stdout);
 
-        // saturate at +(2**31-1) and -2**31 (slight hack to get -2**31 declared)
-        accs[i] = accs[i] > 2147483647 ? 2147483647 : (accs[i] < (-2147483647 - 1) ? (-2147483647 - 1) : accs[i]);
+        // saturate at +(2**31-1) and -2**31
+        accs[i] = accs[i] > INT32_MAX ? INT32_MAX : (accs[i] < INT32_MIN ? INT32_MIN : accs[i]);
 
         // The output is the input to the next biquad
         filter->state[0][i+1] = (int32_t) accs[i];
