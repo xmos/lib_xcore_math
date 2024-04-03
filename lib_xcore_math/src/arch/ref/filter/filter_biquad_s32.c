@@ -11,8 +11,8 @@
 
 
 
-
-#define MUL32(X, Y)     ((int32_t)(((((int64_t)(X)) * (Y)) + (1<<29)) >> 30))
+// On the VPU the result is actually int34_t
+#define MUL32(X, Y)     ((int64_t)(((((int64_t)(X)) * (Y)) + (1<<29)) >> 30))
 
 
 int32_t filter_biquad_s32(
@@ -20,6 +20,7 @@ int32_t filter_biquad_s32(
     const int32_t new_sample)
 {
 
+    // on the VPU this is actually int40_t
     int64_t accs[8] = { 0 };
 
     // -a2 * y[n-2]
