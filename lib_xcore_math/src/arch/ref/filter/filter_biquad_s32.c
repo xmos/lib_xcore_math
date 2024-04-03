@@ -48,6 +48,7 @@ int32_t filter_biquad_s32(
         accs[i] += MUL32(filter->state[0][i], filter->coef[0][i]);
         
         printf("%" PRId64 "\n", accs[i]);
+        fflush(stdout);
 
         // saturate at +(2**31-1) and -2**31 (slight hack to get -2**31 declared)
         accs[i] = accs[i] > 2147483647 ? 2147483647 : (accs[i] < (-2147483647 - 1) ? (-2147483647 - 1) : accs[i]);
