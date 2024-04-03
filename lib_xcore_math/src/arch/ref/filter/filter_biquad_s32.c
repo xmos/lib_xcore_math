@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <inttypes.h>
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
@@ -46,6 +47,8 @@ int32_t filter_biquad_s32(
     for(unsigned i = 0; i < filter->biquad_count; i++){
         accs[i] += MUL32(filter->state[0][i], filter->coef[0][i]);
         
+        printf("%" PRId64 "\n", accs[i]);
+
         // saturate at +(2**31-1) and -2**31 (slight hack to get -2**31 declared)
         accs[i] = accs[i] > 2147483647 ? 2147483647 : (accs[i] < (-2147483647 - 1) ? (-2147483647 - 1) : accs[i]);
 
