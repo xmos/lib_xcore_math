@@ -181,7 +181,7 @@ TEST(filter_biquad_s32, case4)
     res = filter_biquad_s32(&filter, 50);
     TEST_ASSERT_EQUAL(75, res);
 
-    // this should saturate
+    // this should saturate as it's already 2**31-1
     res = filter_biquad_s32(&filter, 2147483647);
     TEST_ASSERT_EQUAL(2147483647, res);
 

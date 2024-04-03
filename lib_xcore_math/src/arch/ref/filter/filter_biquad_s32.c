@@ -46,6 +46,9 @@ int32_t filter_biquad_s32(
     for(unsigned i = 0; i < filter->biquad_count; i++){
         accs[i] += MUL32(filter->state[0][i], filter->coef[0][i]);
         
+        // saturate at +(2**31-1) and -2**31
+        accs[i] = accs[i] > 2147483647 ? 2147483647 : (accs[i] < -2147483648 ? -2147483648 : accs[i]);
+
         // The output is the input to the next biquad
         filter->state[0][i+1] = (int32_t) accs[i];
     }
