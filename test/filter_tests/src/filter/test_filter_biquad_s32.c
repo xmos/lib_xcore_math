@@ -17,6 +17,7 @@ TEST_GROUP_RUNNER(filter_biquad_s32) {
   RUN_TEST_CASE(filter_biquad_s32, case1);
   RUN_TEST_CASE(filter_biquad_s32, case2);
   RUN_TEST_CASE(filter_biquad_s32, case3);
+  RUN_TEST_CASE(filter_biquad_s32, case4);
 }
 
 TEST_GROUP(filter_biquad_s32);
@@ -149,5 +150,39 @@ TEST(filter_biquad_s32, case3)
         TEST_ASSERT_EQUAL_MESSAGE(Y_exp[i], y, msg_buff);
     }
 
+
+}
+
+// Test saturation by using a biquad that just amplifies the input by 1.5
+TEST(filter_biquad_s32, case4)
+{
+    filter_biquad_s32_t filter;
+
+    filter.biquad_count = 1;
+
+    memset(filter.state, 0, sizeof(filter.state));
+
+    for(int i = 0; i < 5; i++){
+        for(unsigned int j = 0; j < filter.biquad_count; j++)
+            if (i == 0){
+                filter.coef[i][j] = 0x60000000;
+            }
+            else {
+                // y coeffs are zero so no feedback, keeps the maths easy
+                filter.coef[i][j] = 0;
+            }
+        for(int j = filter.biquad_count; j < 8; j++)
+            filter.coef[i][j] = 0;
+    }
+
+    int32_t res = filter_biquad_s32(&filter, 100);
+    TEST_ASSERT_EQUAL(150, res);
+
+    res = filter_biquad_s32(&filter, 50);
+    TEST_ASSERT_EQUAL(75, res);
+
+    // this should saturate
+    res = filter_biquad_s32(&filter, 2147483647);
+    TEST_ASSERT_EQUAL(2147483647, res);
 
 }
