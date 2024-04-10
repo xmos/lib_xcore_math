@@ -51,7 +51,6 @@ TEST(filter_biquad_s32, case0)
 
     res = filter_biquad_s32(&filter, 4000);
     TEST_ASSERT_EQUAL(4500, res);
-
 }
 
 TEST(filter_biquad_s32, case1)
@@ -86,7 +85,6 @@ TEST(filter_biquad_s32, case1)
     // y[1][n] = 1.0 * ( 4500 +  250 +  100 +  450 +  100  ) = 5400
     res = filter_biquad_s32(&filter, 4000);
     TEST_ASSERT_EQUAL(5400, res);
-
 }
 
 TEST(filter_biquad_s32, case2)
@@ -124,9 +122,7 @@ TEST(filter_biquad_s32, case2)
     // y[2][n] = 0.5 * ( 5400 +  450 +  100 +  300 +   50  ) = 3150
     res = filter_biquad_s32(&filter, 4000);
     TEST_ASSERT_EQUAL(3150, res);
-
 }
-
 
 // 8 random biquad filters generated via a python script with 178 samples
 TEST(filter_biquad_s32, case3)
@@ -149,8 +145,6 @@ TEST(filter_biquad_s32, case3)
 
         TEST_ASSERT_EQUAL_MESSAGE(Y_exp[i], y, msg_buff);
     }
-
-
 }
 
 // Test saturation by using a biquad that just amplifies the input by 1.5
@@ -186,6 +180,5 @@ TEST(filter_biquad_s32, case4)
     TEST_ASSERT_EQUAL(INT32_MAX, res);
 
     res = filter_biquad_s32(&filter, INT32_MIN);
-    TEST_ASSERT_EQUAL(INT32_MIN, res);
-
+    TEST_ASSERT_EQUAL(INT32_MIN + 1, res);
 }

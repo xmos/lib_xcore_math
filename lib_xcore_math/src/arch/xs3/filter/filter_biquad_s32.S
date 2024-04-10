@@ -75,23 +75,25 @@ FUNCTION_NAME:
     // state = &(filter->state[0][0])
     // coef = &(filter->coef[0][0])
 
-#undef _36
+//#undef _36
 #define N       r5      // ![%d]
 
     // Move filter->state[0][:] to filter->state[1][:]
 
-    {   add tmp, state, _32                     ;   ldc r5, 36                              }
-    {   add r11, state, r5                      ;   vldc state[0]                           }
+    {   add tmp, state, _32                     ;   add r11, state, _36                     }
+    {   ldc r5, 3                               ;   vldc state[0]                           }
     {   add r11, r11, _32                       ;   vstc r11[0]                             }
     {                                           ;   ldw tmp, tmp[0]                         }
     {                                           ;   stw tmp, r11[0]                         }
 
     // Place the newest input sample in state[0][0]
-    {   ldc tmp, 16                             ;   ldw N, filter[FILT_N]                   }
-    {   shl N, N, 1                             ;   stw sample, state[0]                    }
+    {   ldc tmp, 24                             ;   ldw r4, filter[FILT_N]                   }
+    {   /*shl N, N, 1*/                             ;   stw sample, state[0]                    }
+    mul N, r4, r5
 
     // Overwrite state[0][1:9] with 0's
         ldaw r11, cp[vpu_vec_zero]
+        add r4, r11, 0
     {   add r11, state, 4                       ;   vldc r11[0]                             }
     {   sub N, tmp, N                           ;   vstc r11[0]                             }
 
@@ -109,24 +111,38 @@ FUNCTION_NAME:
     // the input to the next. Because we've set the state[0][1:0] to zeros, when we're working on
     // the k'th filter section, MACCing against that will not affect accumulators > k. Then we write
     // out the output of section k. We do the MACC again, **which will corrupt the accumulators 
-    // which are LESS THAN k.... but that's FINE because we're not going to write them out again.   
+    // which are LESS THAN k.... but that's FINE because we're not going to write them out again.
     {   mkmsk tmp, 4                            ;   vlmacc state[0]                         }
+        vlsat r4[0]
         vstrpv r11[0], tmp
     {                                           ;   bru N /* Do N-1 remaining biquads */    }
 
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
+        vlsat r4[0]
         vstrpv r11[0], tmp
+
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
+        vlsat r4[0]
         vstrpv r11[0], tmp
+
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
+        vlsat r4[0]
         vstrpv r11[0], tmp
+
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
+        vlsat r4[0]
         vstrpv r11[0], tmp
+
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
+        vlsat r4[0]
         vstrpv r11[0], tmp
+
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
+        vlsat r4[0]
         vstrpv r11[0], tmp
+
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
+        vlsat r4[0]
         vstrpv r11[0], tmp
 
     // Final vstrpv should have written the output to filt->state[0][N]. filt->state should
