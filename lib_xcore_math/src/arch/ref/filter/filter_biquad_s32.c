@@ -52,8 +52,8 @@ int32_t filter_biquad_s32(
         printf("%" PRId64 "\n", accs[i]);
         fflush(stdout);
 
-        // saturate at +(2**31-1) and -2**31
-        accs[i] = accs[i] > INT32_MAX ? INT32_MAX : (accs[i] < INT32_MIN ? INT32_MIN : accs[i]);
+        // saturate at +(2**31-1) and -2**31 + 1 to match VPU
+        accs[i] = accs[i] > INT32_MAX ? INT32_MAX : (accs[i] < (INT32_MIN + 1) ? (INT32_MIN + 1) : accs[i]);
 
         // The output is the input to the next biquad
         filter->state[0][i+1] = (int32_t) accs[i];
