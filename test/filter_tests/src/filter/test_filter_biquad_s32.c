@@ -18,6 +18,7 @@ TEST_GROUP_RUNNER(filter_biquad_s32) {
   RUN_TEST_CASE(filter_biquad_s32, case2);
   RUN_TEST_CASE(filter_biquad_s32, case3);
   RUN_TEST_CASE(filter_biquad_s32, case4);
+  RUN_TEST_CASE(filter_biquad_s32, case5);
 }
 
 TEST_GROUP(filter_biquad_s32);
@@ -181,4 +182,36 @@ TEST(filter_biquad_s32, case4)
 
     res = filter_biquad_s32(&filter, INT32_MIN);
     TEST_ASSERT_EQUAL(INT32_MIN + 1, res);
+}
+
+// Test a biquad that overflows halfway through the accumulator, 
+// but ends up back in the safe zone
+TEST(filter_biquad_s32, case5)
+{
+    filter_biquad_s32_t filter;
+
+    filter.biquad_count = 1;
+
+    memset(filter.state, 0, sizeof(filter.state));
+
+    // with these coeffs, if b0 = 0 the output would overflow
+    // [1.0, -1.5, 0.5625, 1.5, -0.5625]
+    filter.coef[0][0] = 0x40000000;
+    filter.coef[1][0] = 0xa0000000;
+    filter.coef[2][0] = 0x24000000;
+    filter.coef[3][0] = 0x60000000;
+    filter.coef[4][0] = 0xdc000000;
+
+    int32_t res = filter_biquad_s32(&filter, 1073741823);
+    TEST_ASSERT_EQUAL(1073741823, res);
+
+    res = filter_biquad_s32(&filter, 1073741823);
+    TEST_ASSERT_EQUAL(1073741824, res);
+
+    // this should saturate as it's already 2**31-1
+    res = filter_biquad_s32(&filter, 1073741823);
+    TEST_ASSERT_EQUAL(1073741825, res);
+
+    res = filter_biquad_s32(&filter, 1073741823);
+    TEST_ASSERT_EQUAL(1073741826, res);
 }
