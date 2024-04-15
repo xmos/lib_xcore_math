@@ -22,8 +22,11 @@ int32_t filter_biquad_s32(
 
 #define FUNCTION_NAME filter_biquad_s32
 
-#define NSTACKVECS      (0)
+#define NSTACKVECS      (2)
 #define NSTACKWORDS     (4+8*NSTACKVECS)
+
+#define STACK_TMP_VR    (NSTACKWORDS - 16)
+#define STACK_TMP_VD    (NSTACKWORDS -  8)
 
 #define FILT_N          0
 #define FILT_STATE      1
@@ -75,30 +78,38 @@ FUNCTION_NAME:
     // state = &(filter->state[0][0])
     // coef = &(filter->coef[0][0])
 
-//#undef _36
-#define N       r5      // ![%d]
-
     // Move filter->state[0][:] to filter->state[1][:]
 
     {   add tmp, state, _32                     ;   add r11, state, _36                     }
-    {   ldc r5, 3                               ;   vldc state[0]                           }
+    {   ldc r5, 7                               ;   vldc state[0]                           }
     {   add r11, r11, _32                       ;   vstc r11[0]                             }
     {                                           ;   ldw tmp, tmp[0]                         }
     {                                           ;   stw tmp, r11[0]                         }
 
+#undef _36
+#define N       r5      // ![%d]
+
     // Place the newest input sample in state[0][0]
-    {   ldc tmp, 24                             ;   ldw r4, filter[FILT_N]                   }
-    {   /*shl N, N, 1*/                             ;   stw sample, state[0]                    }
+    {   ldc tmp, 56                             ;   ldw r4, filter[FILT_N]                  }
+    {                                           ;   stw sample, state[0]                    }
     mul N, r4, r5
+
+#undef sample
+#define zeros r1
 
     // Overwrite state[0][1:9] with 0's
         ldaw r11, cp[vpu_vec_zero]
-        add r4, r11, 0
+    {   add zeros, r11, 0                       ;   ldc _32, 32                             }
     {   add r11, state, 4                       ;   vldc r11[0]                             }
     {   sub N, tmp, N                           ;   vstc r11[0]                             }
 
     // vC[:] <-- coef[b0][:]
     {                                           ;   vldc coef[0]                            }
+
+#undef coef
+#define state_p1 r2
+
+    {  add state_p1, r11, 0                     ;   ldaw r11, sp[STACK_TMP_VR]              }
 
     // Every element in r11[0:8] except for r11[0] is zero, so a VLMACC shouldn't affect them.
     // Subsequent VLMACCs will corrupt the accumulators, but The Mask will stop that from being a
@@ -112,47 +123,86 @@ FUNCTION_NAME:
     // the k'th filter section, MACCing against that will not affect accumulators > k. Then we write
     // out the output of section k. We do the MACC again, **which will corrupt the accumulators 
     // which are LESS THAN k.... but that's FINE because we're not going to write them out again.
+
+    // instead of using _32 could just use that register as a second pointer for the vD temp stack,
+    // wouldn't need to recalculate the stack pointer every time, doesn't      _       _
+    // matter here as we're not most of the resourse line instructions anyway   \(`~`)/
+
     {   mkmsk tmp, 4                            ;   vlmacc state[0]                         }
-        vlsat r4[0]
-        vstrpv r11[0], tmp
+    {   add r11, r11, _32                       ;   vstr r11[0]                             }
+    {                                           ;   vstd r11[0]                             }
+    {                                           ;   vlsat zeros[0]                          }
+        vstrpv state_p1[0], tmp
+
     {                                           ;   bru N /* Do N-1 remaining biquads */    }
 
+    {   sub r11, r11, _32                       ;   vldd r11[0]                             }
+    {                                           ;   vldr r11[0]                             }
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
-        vlsat r4[0]
-        vstrpv r11[0], tmp
+    {   add r11, r11, _32                       ;   vstr r11[0]                             }
+    {                                           ;   vstd r11[0]                             }
+    {                                           ;   vlsat zeros[0]                          }
+        vstrpv state_p1[0], tmp
 
-    {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
-        vlsat r4[0]
-        vstrpv r11[0], tmp
 
+    {   sub r11, r11, _32                       ;   vldd r11[0]                             }
+    {                                           ;   vldr r11[0]                             }
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
-        vlsat r4[0]
-        vstrpv r11[0], tmp
+    {   add r11, r11, _32                       ;   vstr r11[0]                             }
+    {                                           ;   vstd r11[0]                             }
+    {                                           ;   vlsat zeros[0]                          }
+        vstrpv state_p1[0], tmp
 
-    {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
-        vlsat r4[0]
-        vstrpv r11[0], tmp
 
+    {   sub r11, r11, _32                       ;   vldd r11[0]                             }
+    {                                           ;   vldr r11[0]                             }
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
-        vlsat r4[0]
-        vstrpv r11[0], tmp
+    {   add r11, r11, _32                       ;   vstr r11[0]                             }
+    {                                           ;   vstd r11[0]                             }
+    {                                           ;   vlsat zeros[0]                          }
+        vstrpv state_p1[0], tmp
 
-    {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
-        vlsat r4[0]
-        vstrpv r11[0], tmp
 
+    {   sub r11, r11, _32                       ;   vldd r11[0]                             }
+    {                                           ;   vldr r11[0]                             }
     {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
-        vlsat r4[0]
-        vstrpv r11[0], tmp
+    {   add r11, r11, _32                       ;   vstr r11[0]                             }
+    {                                           ;   vstd r11[0]                             }
+    {                                           ;   vlsat zeros[0]                          }
+        vstrpv state_p1[0], tmp
+
+
+    {   sub r11, r11, _32                       ;   vldd r11[0]                             }
+    {                                           ;   vldr r11[0]                             }
+    {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
+    {   add r11, r11, _32                       ;   vstr r11[0]                             }
+    {                                           ;   vstd r11[0]                             }
+    {                                           ;   vlsat zeros[0]                          }
+        vstrpv state_p1[0], tmp
+
+
+    {   sub r11, r11, _32                       ;   vldd r11[0]                             }
+    {                                           ;   vldr r11[0]                             }
+    {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
+    {   add r11, r11, _32                       ;   vstr r11[0]                             }
+    {                                           ;   vstd r11[0]                             }
+    {                                           ;   vlsat zeros[0]                          }
+        vstrpv state_p1[0], tmp
+
+
+    {   sub r11, r11, _32                       ;   vldd r11[0]                             }
+    {                                           ;   vldr r11[0]                             }
+    {   shl tmp, tmp, 4                         ;   vlmacc state[0]                         }
+    {   add r11, r11, _32                       ;   vstr r11[0]                             }
+    {                                           ;   vstd r11[0]                             }
+    {                                           ;   vlsat zeros[0]                          }
+        vstrpv state_p1[0], tmp
 
     // Final vstrpv should have written the output to filt->state[0][N]. filt->state should
     // still be pointing at filt->state[0][0]
 
     {                                           ;   ldw N, filter[FILT_N]                   }
     {                                           ;   ldw r0, state[N]                        }
-
-
-.L_done:
     {                                           ;   ldw r10, sp[1]                          }
         ldd r4, r5, sp[1]
         retsp NSTACKWORDS

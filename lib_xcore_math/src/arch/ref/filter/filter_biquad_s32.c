@@ -3,8 +3,6 @@
 
 
 #include <stdint.h>
-#include <stdio.h>
-#include <inttypes.h>
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
@@ -44,13 +42,14 @@ int32_t filter_biquad_s32(
     for(int i = 0; i < 9; i++)
         filter->state[1][i] = filter->state[0][i];
 
+    // Overwrite state[0][1:9] with 0's
+    for(int i = 1; i < 9; i++)
+        filter->state[0][i] = 0;
+
     // And calculate each new output
     filter->state[0][0] = new_sample;
     for(unsigned i = 0; i < filter->biquad_count; i++){
         accs[i] += MUL32(filter->state[0][i], filter->coef[0][i]);
-        
-        printf("%" PRId64 "\n", accs[i]);
-        fflush(stdout);
 
         // saturate at +(2**31-1) and -2**31 + 1 to match VPU
         accs[i] = accs[i] > INT32_MAX ? INT32_MAX : (accs[i] < (INT32_MIN + 1) ? (INT32_MIN + 1) : accs[i]);
