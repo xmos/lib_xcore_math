@@ -80,7 +80,7 @@ bfp_complex_s32_t* bfp_fft_forward_mono(
  * BFP vector.
  * 
  * @operation{
- * &    x[n] = \sum_{f=0}^{N/2} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
+ * &    x[n] = \frac{1}{N}\sum_{f=0}^{N/2} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
  * &         \text{ for } 0 \le n < N
  * }
  * where @math{X[f]} is the BFP vector initially represented by `x`, and @math{x[n]} is the IDFT of
@@ -181,7 +181,7 @@ void bfp_fft_forward_complex(
  * @math{N} is `x->length`. The operation is performed in-place.
  * 
  * @operation{
- * &    x[n] = \sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
+ * &    x[n] = \frac{1}{N}\sum_{f=0}^{N-1} \left( X[f]\cdot e^{j2\pi fn/N} \right) \\
  * &         \text{ for } 0 \le f < N
  * }
  * where @math{X[f]} is the BFP vector initially represented by `x`, and @math{x[n]} is the DFT of
@@ -326,8 +326,8 @@ void bfp_fft_forward_stereo(
  * `A_fft` and `B_fft` should be cast to `bfp_s32_t*` following a call to this function.
  * 
  * @operation{
- * &    a[n] = \sum_{f=0}^{N/2-1} \left( A[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n < N \\
- * &    b[n] = \sum_{f=0}^{N/2-1} \left( B[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n < N
+ * &    a[n] = \frac{1}{N}\sum_{f=0}^{N/2-1} \left( A[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n < N \\
+ * &    b[n] = \frac{1}{N}\sum_{f=0}^{N/2-1} \left( B[f]\cdot e^{j2\pi fn/N} \right) \text{ for } 0 \le n < N
  * }
  * where @math{A[f]} and @math{B[f]} are the frequency spectra represented by BFP vectors `A_fft`
  * and `B_fft`, and @math{a[n]} and @math{b[n]} are the IDFT of @math{A[f]} and @math{B[f]}.
@@ -506,7 +506,7 @@ void fft_dit_forward (
  * bits that the data was right-shifted by.
  * 
  * Upon completion, `*hr` is updated with the final headroom in `x[]`, and the exponent `*exp` is
- * incremented by @math{\alpha}.
+ * incremented by @math{\alpha - log_2\left(N)}.
  * 
  * @note In order to guarantee that saturation will not occur, `x[]` must have an _initial_ headroom
  *       of at least 2 bits.
@@ -584,7 +584,7 @@ void fft_dif_forward (
  * bits that the data was right-shifted by.
  * 
  * Upon completion, `*hr` is updated with the final headroom in `x[]`, and the exponent `*exp` is
- * incremented by @math{\alpha}.
+ * incremented by @math{\alpha - log_2\left(N)}.
  * 
  * @note In order to guarantee that saturation will not occur, `x[]` must have an _initial_ headroom
  *       of at least 2 bits.
