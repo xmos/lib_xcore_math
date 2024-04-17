@@ -149,7 +149,7 @@ pipeline {
 
         stage ('Build Documentation') {
           agent {
-            label 'docker'
+            label 'documentation'
           }
           environment {
             PYTHON_VERSION = "3.10.0"
