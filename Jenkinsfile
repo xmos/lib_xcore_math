@@ -163,12 +163,14 @@ pipeline {
                 createVenv()
                 withTools(params.TOOLS_VERSION) {
                   withVenv {
-                    def settings = readYaml file: 'settings.yml'
-                    def doc_version = settings["version"]
-                    sh 'pip install git+ssh://git@github.com/xmos/xmosdoc@v5.1.1'
-                    sh 'xmosdoc'
+                    script {
+                      def settings = readYaml file: 'settings.yml'
+                      def doc_version = settings["version"]
+                      sh 'pip install git+ssh://git@github.com/xmos/xmosdoc@v5.1.1'
+                      sh 'xmosdoc'
 
-                    zip zipFile: "docs_xcore_math_v${doc_version}.zip", archive: true, dir: "doc/_build"
+                      zip zipFile: "docs_xcore_math_v${doc_version}.zip", archive: true, dir: "doc/_build"
+                    }
                   }
                 }
               } // steps

@@ -216,9 +216,9 @@ highly recommended. In addition, several non-embedded notes and guides are inclu
 stand-alone documentation (these can also be found at `/doc/src/
 <https://github.com/xmos/lib_xcore_math/tree/develop/doc/>`_ ).
 
- To build the stand-alone documentation as HTML a Doxygen install will be required. The
- documentation has been written against Doxygen version 1.8; your mileage may vary with other
- versions.
+To build the stand-alone documentation as HTML a Doxygen install will be required. The
+documentation has been written against Doxygen version 1.8; your mileage may vary with other
+versions.
 
 With Doxygen on your path, the documentation can be built by calling ``doxygen`` from within the
 `/lib_xcore_math/doc/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/doc/>`_
