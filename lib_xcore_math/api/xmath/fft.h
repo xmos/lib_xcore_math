@@ -506,7 +506,7 @@ void fft_dit_forward (
  * bits that the data was right-shifted by.
  * 
  * Upon completion, `*hr` is updated with the final headroom in `x[]`, and the exponent `*exp` is
- * incremented by @math{\alpha - log_2\left(N)}.
+ * incremented by @math{\alpha - log_2(N)}.
  * 
  * @note In order to guarantee that saturation will not occur, `x[]` must have an _initial_ headroom
  *       of at least 2 bits.
@@ -584,7 +584,7 @@ void fft_dif_forward (
  * bits that the data was right-shifted by.
  * 
  * Upon completion, `*hr` is updated with the final headroom in `x[]`, and the exponent `*exp` is
- * incremented by @math{\alpha - log_2\left(N)}.
+ * incremented by @math{\alpha - log_2(N)}.
  * 
  * @note In order to guarantee that saturation will not occur, `x[]` must have an _initial_ headroom
  *       of at least 2 bits.

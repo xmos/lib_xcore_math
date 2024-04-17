@@ -152,23 +152,24 @@ pipeline {
             label 'docker'
           }
           environment {
-            XMOSDOC_VERSION = "v4.0"
+            PYTHON_VERSION = "3.10.0"
+            PIP_VERSION = "21.2.3"
           }
           stages {
             stage('Build Docs') {
               steps {
                 runningOn(env.NODE_NAME)
                 checkout scm
-                script {
-                  def settings = readYaml file: 'settings.yml'
-                  def doc_version = settings["version"]
-                
-                  sh "docker pull ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION"
-                  sh """docker run -u "\$(id -u):\$(id -g)" \
-                      --rm \
-                      -v ${WORKSPACE}:/build \
-                      ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION -v"""
+                createVenv()
+                withTools(params.TOOLS_VERSION) {
+                  withVenv {
+                    def settings = readYaml file: 'settings.yml'
+                    def doc_version = settings["version"]
+                    sh 'pip install git+ssh://git@github.com/xmos/xmosdoc@v5.1.1'
+                    sh 'xmosdoc'
+
                     zip zipFile: "docs_xcore_math_v${doc_version}.zip", archive: true, dir: "doc/_build"
+                  }
                 }
               } // steps
             } // Build Docs
