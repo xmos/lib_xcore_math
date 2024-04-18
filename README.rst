@@ -209,21 +209,4 @@ Building Documentation
 The following information is intended for XMOS users. Pre-built documentation may be found on the
 `XMOS website <https://www.xmos.com>`_.
 
-This project currently uses Doxygen and Sphinx for library and API documentation. API functions
-include embedded documentation with their declarations in their corresponding header files, however,
-MathJax is used to render equations, and as such, building the stand-alone HTML documentation is
-highly recommended. In addition, several non-embedded notes and guides are included in the
-stand-alone documentation (these can also be found at `/doc/src/
-<https://github.com/xmos/lib_xcore_math/tree/develop/doc/>`_ ).
-
-To build the stand-alone documentation as HTML a Doxygen install will be required. The
-documentation has been written against Doxygen version 1.8; your mileage may vary with other
-versions.
-
-With Doxygen on your path, the documentation can be built by calling ``doxygen`` from within the
-`/lib_xcore_math/doc/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/doc/>`_
-directory.
-
-The documentation will be generated within the ``/doc/build/`` directory. To view the
-HTML version of the documentation, open ``/doc/build/html/index.html`` in a browser.
-
+The documentation is build using the `xmosdoc <https://github.com/xmos/xmosdoc>`_ tool. Refer to it's readme for the build instructions.
