@@ -209,4 +209,4 @@ Building Documentation
 The following information is intended for XMOS users. Pre-built documentation may be found on the
 `XMOS website <https://www.xmos.com>`_.
 
-The documentation is build using the `xmosdoc <https://github.com/xmos/xmosdoc>`_ tool. Refer to it's readme for the build instructions.
+The documentation is built using the `xmosdoc <https://github.com/xmos/xmosdoc>`_ tool. Refer to it's readme for the build instructions.
