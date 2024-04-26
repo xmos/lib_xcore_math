@@ -584,11 +584,11 @@ int16_t filter_fir_s16(
  * 
  * Contains the coeffient and state information for a cascade of up to 8 biquad filter sections. 
  * 
- * To process a new input sample, filter_biquad_s32() can be used with a pointer to one of these
- * structs.
+ * To process a new input sample, filter_biquad_s32() or filter_biquad_sat_s32() can be used with 
+ * a pointer to one of these structs.
  * 
  * For longer cascades, an array of `filter_biquad_s32_t` structs can be used with
- * filter_biquads_s32().
+ * filter_biquads_s32() or filter_biquads_sat_s32().
  * 
  * @par Filter Conversion
  * @parblock
@@ -651,6 +651,26 @@ int32_t filter_biquad_s32(
     filter_biquad_s32_t* filter,
     const int32_t new_sample);
 
+/**
+ * This function implements a 32-bit Biquad filter with saturation.
+ * 
+ * Works the same as filter_biquad_s32(), but saturates the output to the symmetric 32-bit range.
+ * 
+ * @param[inout]    filter          Filter to be processed
+ * @param[in]       new_sample      New input sample to be processed by `filter`
+ * 
+ * @returns     Next filtered output sample
+ * 
+ * @see filter_biquad_s32_t,
+ *      filter_biquad_s32,
+ *      filter_biquads_sat_s32
+ * 
+ * @ingroup filter_api
+ */
+C_API
+int32_t filter_biquad_sat_s32(
+    filter_biquad_s32_t* filter,
+    const int32_t new_sample);
 
 /**
  * This function implements a 32-bit Biquad filter. 
@@ -677,7 +697,27 @@ int32_t filter_biquads_s32(
     filter_biquad_s32_t biquads[],
     const unsigned block_count,
     const int32_t new_sample);
-    
+
+/**
+ * This function implements a 32-bit Biquad filter with saturation.
+ * 
+ * Works the same as filter_biquads_s32(), but saturates the output to the symmetric 32-bit range.
+ * 
+ * @param[inout]    biquads         Filter blocks to be processed
+ * @param[in]       block_count     Number of filter blocks in `biquads`
+ * @param[in]       new_sample      New input sample to be processed by `filter`
+ * 
+ * @returns     Next filtered output sample
+ * 
+ * @see filter_biquad_s32_t,
+ *      filter_biquads_s32,
+ *      filter_biquad_sat_s32
+ */
+C_API
+int32_t filter_biquads_sat_s32(
+    filter_biquad_s32_t biquads[],
+    const unsigned block_count,
+    const int32_t new_sample);
 
 #ifdef __XC__
 } // extern "C"
