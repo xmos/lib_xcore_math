@@ -56,8 +56,8 @@ Building
 --------
 
 This library makes use of the CMake build system. See the 
-`GitHub page <https://github.com/xmos/lib_xcore_math#readme>`_ for instructions on obtaining this
-library's source code and including it in your application's build.
+`GitHub page <https://github.com/xmos/lib_xcore_math/blob/develop/README.rst>`_ for instructions on
+obtaining this library's source code and including it in your application's build.
 
 Usage
 -----
@@ -177,7 +177,7 @@ fixed memory footprint (currently 32 bytes, or 8 32-bit elements) meant to match
 architecture's vector registers.
 
 As an example of a function from the vector API, see :c:func:`vect_s32_mul()` (from 
-``vect_s32.h``)), which multiplies together two ``int32_t`` vectors element by element.
+``vect_s32.h``), which multiplies together two ``int32_t`` vectors element by element.
 
 .. code-block:: c
 
