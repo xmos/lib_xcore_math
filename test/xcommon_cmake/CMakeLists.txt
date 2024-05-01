@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 include($ENV{XMOS_CMAKE_PATH}/xcommon.cmake)
-project(test)
+project(xcommon_cmake_build)
 
 set(APP_HW_TARGET XCORE-AI-EXPLORER)
 set(APP_INCLUDES src)
@@ -25,8 +25,8 @@ set(APP_DEPENDENT_MODULES lib_xcore_math)
 
 XMOS_REGISTER_APP()
 
-if(BUILD_NATIVE)
+#if(BUILD_NATIVE)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE m)
+#target_link_libraries(${PROJECT_NAME} PRIVATE m)
 
-endif()
+#endif()

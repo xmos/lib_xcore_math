@@ -38,6 +38,8 @@ pipeline {
             stage('Build') {
               steps {
                 runningOn(env.NODE_NAME)
+                sh "git clone -b ${params.XCOMMON_CMAKE_VERSION} git@github.com:xmos/xcommon_cmake"
+                sh 'git -C xcommon_cmake rev-parse HEAD'
                 dir('lib_xcore_math') {
                   checkout scm
                   // fetch submodules
@@ -53,6 +55,14 @@ pipeline {
                     dir('test/legacy_build') {
                       sh 'xmake -j4'
                       sh 'xrun --io --id 0 bin/legacy_build.xe'
+                    }
+                    // xcommon_cmake build
+                    withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
+                      dir('test/xcommon_cmake') {
+                        sh 'cmake -B build'
+                        sh 'make -C build'
+                        sh 'xrun --io --id 0 bin/xcommon_cmake_build.xe'
+                      }
                     }
                   }
                 }
