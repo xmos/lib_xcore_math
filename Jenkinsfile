@@ -98,7 +98,7 @@ pipeline {
                 }
                 withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
                   dir('lib_xcore_math/test/xcommon_cmake') {
-                    sh 'cmake -DBUILD_NAIVE=1 -B build'
+                    sh 'cmake -DBUILD_NATIVE=1 -B build'
                     sh 'make -C build -j'
                     sh './bin/xcommon_cmake_build'
                     sh 'rm -rf build/ bin/'
