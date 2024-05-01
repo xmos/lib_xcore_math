@@ -9,12 +9,11 @@ set(APP_COMPILER_FLAGS
   -Os
   -g
   -Wall
-  -Werror
-  -mcmodel=large)
+  -Werror)
 
 if(NOT BUILD_NATIVE)
 
-set(APP_COMPILER_FLAGS ${APP_COMPILER_FLAGS} -report -fxscope)
+set(APP_COMPILER_FLAGS ${APP_COMPILER_FLAGS} -report)
 
 endif()
 
@@ -24,9 +23,3 @@ set(APP_DEPENDENT_MODULES lib_xcore_math)
 
 
 XMOS_REGISTER_APP()
-
-#if(BUILD_NATIVE)
-
-#target_link_libraries(${PROJECT_NAME} PRIVATE m)
-
-#endif()

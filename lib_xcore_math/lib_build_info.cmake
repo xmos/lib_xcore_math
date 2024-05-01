@@ -32,30 +32,30 @@ else() # native or non-xs3a
                                   "${LIB_XMATH_PATH}/src/arch/ref/*.c" )
   set(LIB_ASM_SRCS "")
 
-  # Add options for different compilers
-  if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    list(APPEND LIB_COMPILER_FLAGS
-      -g
-      -Wextra
-      -Werror
-    )
-  else()
-    list(APPEND LIB_COMPILER_FLAGS
-      -WX
-      # Suppress warning C4996: 'sprintf': This function or variable may be unsafe.
-      # Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
-      # See online help for details.
-      -D_CRT_SECURE_NO_WARNINGS
-      # Suppress warning C5045: Compiler will insert Spectre mitigation for memory load if /wd5045 switch specified
-      /wd5045
-    )
-  endif()
-
   if(BUILD_NATIVE)
-    list(APPEND LIB_COMPILER_FLAGS
-      -lm
-    )
+    foreach(APP_TARGET ${APP_BUILD_TARGETS})
+      target_link_libraries(${APP_TARGET} PRIVATE m)
+    endforeach()
   endif()
+endif()
+
+# Add options for different compilers
+if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+list(APPEND LIB_COMPILER_FLAGS
+  -g
+  -Wextra
+  -Werror
+)
+else()
+list(APPEND LIB_COMPILER_FLAGS
+  -WX
+  # Suppress warning C4996: 'sprintf': This function or variable may be unsafe.
+  # Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
+  # See online help for details.
+  -D_CRT_SECURE_NO_WARNINGS
+  # Suppress warning C5045: Compiler will insert Spectre mitigation for memory load if /wd5045 switch specified
+  /wd5045
+)
 endif()
 
 set(LIB_C_SRCS ${SOURCES_C} ${SOURCES_REF})
