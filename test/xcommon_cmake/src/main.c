@@ -1,7 +1,7 @@
 
 #include "xmath/xmath.h"
 
-int main()
+int main(void)
 {
   // Just reference a few symbols to make sure that they can be linked in
   headroom_t (*ptr0) (int32_t *, const int32_t*, const int32_t*, const unsigned, const right_shift_t, const right_shift_t);

@@ -21,6 +21,11 @@ file( GLOB_RECURSE SOURCES_C RELATIVE ${LIB_XMATH_PATH}
                                   "${LIB_XMATH_PATH}/src/filter/*.c"
                                   "${LIB_XMATH_PATH}/src/scalar/*.c")
 
+
+include(CMakePrintHelpers)
+cmake_print_variables(BUILD_NATIVE)
+cmake_print_variables(APP_BUILD_ARCH)
+cmake_print_variables(CMAKE_CXX_COMPILER_ID)
 # Platform specific things
 if(APP_BUILD_ARCH STREQUAL "xs3a")
 
@@ -32,7 +37,7 @@ else() # native or non-xs3a
                                   "${LIB_XMATH_PATH}/src/arch/ref/*.c" )
   set(LIB_ASM_SRCS "")
 
-  if(BUILD_NATIVE)
+  if(BUILD_NATIVE AND (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
     foreach(APP_TARGET ${APP_BUILD_TARGETS})
       target_link_libraries(${APP_TARGET} PRIVATE m)
     endforeach()
@@ -40,7 +45,7 @@ else() # native or non-xs3a
 endif()
 
 # Add options for different compilers
-if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 list(APPEND LIB_COMPILER_FLAGS
   -g
   -Wextra

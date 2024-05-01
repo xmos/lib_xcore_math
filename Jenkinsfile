@@ -157,6 +157,16 @@ pipeline {
                   bat 'vect_tests\\vect_tests.exe      -v'
                   bat 'xs3_tests\\xs3_tests.exe        -v'
                 }
+                withTools(params.TOOLS_VERSION) {
+                  withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
+                    dir('lib_xcore_math/test/xcommon_cmake') {
+                      bat 'cmake -DBUILD_NATIVE -B build -G Ninja'
+                      bat 'ninja -C build'
+                      bat 'bin\\xcommon_cmake_build.exe'
+                      bat 'rm -rf build bin'
+                    }
+                  }
+                }
               }
             } // Unit tests x86
           } // stages
