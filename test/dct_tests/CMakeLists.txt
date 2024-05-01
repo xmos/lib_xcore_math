@@ -62,9 +62,6 @@ target_link_options( ${APP_NAME}
 
 target_compile_definitions( ${APP_NAME}
   PRIVATE
-    $<$<PLATFORM_ID:Linux>:USE_REF=1>
-    $<$<PLATFORM_ID:Darwin>:USE_REF=1>
-    $<$<PLATFORM_ID:Windows>:USE_REF=1>
     SMOKE_TEST=$<BOOL:${XMATH_SMOKE_TEST}>
 )
 

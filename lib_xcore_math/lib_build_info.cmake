@@ -22,10 +22,6 @@ file( GLOB_RECURSE SOURCES_C RELATIVE ${LIB_XMATH_PATH}
                                   "${LIB_XMATH_PATH}/src/scalar/*.c")
 
 
-include(CMakePrintHelpers)
-cmake_print_variables(BUILD_NATIVE)
-cmake_print_variables(APP_BUILD_ARCH)
-cmake_print_variables(CMAKE_CXX_COMPILER_ID)
 # Platform specific things
 if(APP_BUILD_ARCH STREQUAL "xs3a")
 
