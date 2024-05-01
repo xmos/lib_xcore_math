@@ -96,12 +96,14 @@ pipeline {
                   sh './vect_tests/vect_tests      -v'
                   sh './xs3_tests/xs3_tests        -v'
                 }
-                withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
-                  dir('lib_xcore_math/test/xcommon_cmake') {
-                    sh 'cmake -DBUILD_NATIVE=1 -B build'
-                    sh 'make -C build -j'
-                    sh './bin/xcommon_cmake_build'
-                    sh 'rm -rf build/ bin/'
+                withTools(params.TOOLS_VERSION) {
+                  withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
+                    dir('lib_xcore_math/test/xcommon_cmake') {
+                      sh 'cmake -DBUILD_NATIVE=1 -B build'
+                      sh 'make -C build -j'
+                      sh './bin/xcommon_cmake_build'
+                      sh 'rm -rf build/ bin/'
+                    }
                   }
                 }
               }
