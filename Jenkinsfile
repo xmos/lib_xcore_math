@@ -165,12 +165,14 @@ pipeline {
                   bat 'xs3_tests\\xs3_tests.exe        -v'
                 }
                 withTools(params.TOOLS_VERSION) {
-                  withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
-                    dir('lib_xcore_math/test/xcommon_cmake') {
-                      bat 'cmake -DBUILD_NATIVE=1 -B build -G Ninja'
-                      bat 'ninja -C build'
-                      bat 'bin\\xcommon_cmake_build.exe'
-                      bat 'rm -rf build bin'
+                  withVS {
+                    withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
+                      dir('lib_xcore_math/test/xcommon_cmake') {
+                        bat 'cmake -DBUILD_NATIVE=1 -B build -G Ninja'
+                        bat 'ninja -C build'
+                        bat 'bin\\xcommon_cmake_build.exe'
+                        bat 'rm -rf build bin'
+                      }
                     }
                   }
                 }
