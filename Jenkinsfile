@@ -20,6 +20,11 @@ pipeline {
       defaultValue: true,
       description: 'Enable smoke run'
     )
+    string(
+      name: 'XCOMMON_CMAKE_VERSION',
+      defaultValue: 'v1.0.0',
+      description: 'The xcommon cmake version'
+    )
   } // parameters
   options {
     skipDefaultCheckout()
@@ -38,7 +43,7 @@ pipeline {
             stage('Build') {
               steps {
                 runningOn(env.NODE_NAME)
-                sh "git clone -b v1.0.0 git@github.com:xmos/xcommon_cmake"
+                sh "git clone -b ${params.XCOMMON_CMAKE_VERSION} git@github.com:xmos/xcommon_cmake"
                 sh 'git -C xcommon_cmake rev-parse HEAD'
                 dir('lib_xcore_math') {
                   checkout scm
@@ -124,6 +129,8 @@ pipeline {
             stage('Build') {
               steps {
                 runningOn(env.NODE_NAME)
+                sh "git clone -b ${params.XCOMMON_CMAKE_VERSION} git@github.com:xmos/xcommon_cmake"
+                sh 'git -C xcommon_cmake rev-parse HEAD'
                 dir('lib_xcore_math') {
                   checkout scm
                   // fetch submodules
