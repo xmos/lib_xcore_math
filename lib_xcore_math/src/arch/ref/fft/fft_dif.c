@@ -89,7 +89,7 @@ void fft_dif_forward (
     exponent_t exp_modifier = 0;
     right_shift_t shift_mode = 0;
 
-    complex_s32_t vD[4] = {{0}}, vR[4] = {{0}}, vC[4] = {{0}};
+    complex_s32_t vD[4] = {{0, 0}}, vR[4] = {{0, 0}}, vC[4] = {{0, 0}};
 
     shift_mode = (*hr == 3)? 0 : (*hr < 3)? 1 : -1;
     exp_modifier += shift_mode;
@@ -163,7 +163,7 @@ void fft_dif_inverse (
     exponent_t exp_modifier = -(int)FFT_N_LOG2;
     right_shift_t shift_mode = 0;
 
-    complex_s32_t vD[4] = {{0}}, vR[4] = {{0}}, vC[4] = {{0}};
+    complex_s32_t vD[4] = {{0, 0}}, vR[4] = {{0, 0}}, vC[4] = {{0, 0}};
 
     shift_mode = (*hr == 3)? 0 : (*hr < 3)? 1 : -1;
     exp_modifier += shift_mode;

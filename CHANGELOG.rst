@@ -4,6 +4,7 @@ lib_xcore_math change log
 2.1.4
 -----
 
+* Adds XCommon CMake build system support.
 * Fixes bug (issue #170) in `xs3_memcpy()`.
 * Removes depricated `numpy` types in `xmath_script.py` (issue #139). 
 

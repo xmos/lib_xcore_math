@@ -6,8 +6,6 @@
 #include <string.h>
 
 #include "xmath/xmath.h"
-#include "xmath_fft_lut.h"
-
 
 bfp_complex_s32_t* bfp_fft_forward_mono(
     bfp_s32_t* x)
