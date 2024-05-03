@@ -18,6 +18,7 @@ New Functions
 Miscellaneous
 *************
 
+* Adds XCommon CMake build system support.
 * Removes depricated `numpy` types in `xmath_script.py` (issue #139).
 * Makes FFT documentation more clear (issue #169).
 

@@ -47,13 +47,6 @@ target_link_options( ${APP_NAME}
     $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
 )
 
-target_compile_definitions( ${APP_NAME}
-  PRIVATE
-    $<$<PLATFORM_ID:Linux>:USE_REF=1>
-    $<$<PLATFORM_ID:Darwin>:USE_REF=1>
-    $<$<PLATFORM_ID:Windows>:USE_REF=1>
-)
-
 target_link_libraries( ${APP_NAME}
   lib_xcore_math
     $<$<PLATFORM_ID:Linux>:m>
