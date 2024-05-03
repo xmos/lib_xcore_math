@@ -1,7 +1,7 @@
 ---
 project: lib_xcore_math
 title: XMath
-version: 2.1.4
+version: 2.2.0
 
 documentation:
   exclude_patterns_path: doc/exclude_patterns.inc
