@@ -8,14 +8,16 @@ F30 = lambda x: x / 2 ** 30
 
 def mul_q30(x, y):
     p = ((x * y) + (1 << 29)) >> 30
-    assert (-0x80000000 <= p) and (p < 0x80000000)
+    # note this is 2**33
+    assert (-2**33 <= p) and (p < 2**33)
     return p
 
 
 def macc_q30(acc, x, y):
     p = mul_q30(x, y)
     acc += p
-    assert (-0x80000000 <= acc) and (acc < 0x80000000)
+    # VPU is 40b
+    assert (-2**39 <= acc) and (acc < 2**39-1)
     return acc
 
 
@@ -131,10 +133,13 @@ def print_arr_c(name, arr, val_fmtr=str):
     print(f"int32_t {name}{dims} = {array_to_string(arr,val_fmtr=val_fmtr)};")
 
 
+def neg_hex(val):
+    return (hex(val & (2**32-1)))
+
 print("    ", end="")
 print_arr_c("samples", samples.astype(np.int64))
 print("    ", end="")
-print_arr_c("coef", pcoef, val_fmtr=hex)
+print_arr_c("coef", pcoef, val_fmtr=neg_hex)
 print("    ", end="")
 print_arr_c("Y_exp", y_q30.astype(np.int64))
 
