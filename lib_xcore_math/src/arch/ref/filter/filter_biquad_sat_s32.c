@@ -14,7 +14,7 @@
 #define MUL32(X, Y)     ((int64_t)(((((int64_t)(X)) * (Y)) + (1<<29)) >> 30))
 
 
-int32_t filter_biquad_s32(
+int32_t filter_biquad_sat_s32(
     filter_biquad_s32_t* filter,
     const int32_t new_sample)
 {
@@ -50,6 +50,9 @@ int32_t filter_biquad_s32(
     filter->state[0][0] = new_sample;
     for(unsigned i = 0; i < filter->biquad_count; i++){
         accs[i] += MUL32(filter->state[0][i], filter->coef[0][i]);
+
+        // saturate at +(2**31-1) and -2**31 + 1 to match VPU
+        accs[i] = accs[i] > INT32_MAX ? INT32_MAX : (accs[i] < (INT32_MIN + 1) ? (INT32_MIN + 1) : accs[i]);
 
         // The output is the input to the next biquad
         filter->state[0][i+1] = (int32_t) accs[i];

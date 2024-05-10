@@ -1,12 +1,26 @@
 lib_xcore_math change log
 =========================
 
-2.1.4
+2.2.0
 -----
 
-* Adds XCommon CMake build system support.
+Bugfixes
+********
+
 * Fixes bug (issue #170) in `xs3_memcpy()`.
-* Removes depricated `numpy` types in `xmath_script.py` (issue #139). 
+
+New Functions
+*************
+* Biquad filtering
+
+  * `filter_biquad_sat_s32()` -- Apply a biquad filter to a 32-bit signal with saturation.
+
+Miscellaneous
+*************
+
+* Adds XCommon CMake build system support.
+* Removes depricated `numpy` types in `xmath_script.py` (issue #139).
+* Makes FFT documentation more clear (issue #169).
 
 2.1.3
 -----

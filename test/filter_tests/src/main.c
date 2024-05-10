@@ -22,6 +22,7 @@ int main(int argc, const char* argv[])
   RUN_TEST_GROUP(filter_fir_s32);
   RUN_TEST_GROUP(filter_fir_s16_push_sample);
   RUN_TEST_GROUP(filter_biquad_s32);
+  RUN_TEST_GROUP(filter_biquad_sat_s32);
 
   return UNITY_END();
 }
