@@ -174,9 +174,17 @@ FUNCTION_NAME:
 
     .L_left_shift:
 
-    // If we're left-shifting, assume there's nothing of interest in r1. Basically, assume 
-    //      -(2**31) <= r0 < 2**31
-    {   shl r0, r0, r3                          ;   bu .L_done                              }
+    // If we're left-shifting (or zero-shift), we still need to saturate to q31
+    // lsats has a bug which doesn't allow to use it with 0, so we'll have to 
+    // add 1 to our shift, but it's fine, cause we know where to extract from
+    add r3, r3, 1
+    ldc r11, 0
+    shl r1, r1, r3
+    linsert r1, r11, r0, r3, 32
+    lsats r1, r11, r5
+    lextract r0, r1, r11, r5, 32
+    bu .L_done
+    //{   shl r0, r0, r3                          ;   bu .L_done                              }
 .L_pre_done:
     {   ldc r0, 0                               ;                                           }
 
