@@ -165,7 +165,7 @@ FUNCTION_NAME:
     {   neg r3, r2                              ;   bf r3, .L_left_shift                    }
     
     .L_right_shift:
-        // (from the block above):  r5 = 1      r4 = 1<<(r2-1)
+        // (from the block above):  r5 = 1, r4 = 1<<(r2-1)
         // adding r4*r5 (=r4) to r1:r0 effectively rounds it when we extract it.
         maccs r1, r0, r4, r5
         lsats r1, r0, r2
@@ -173,20 +173,15 @@ FUNCTION_NAME:
         bu .L_done
 
     .L_left_shift:
-
-    // If we're left-shifting (or zero-shift), we still need to saturate to q31
-    // lsats has a bug which doesn't allow to use it with 0, so we'll have to 
-    // add 1 to our shift, but it's fine, cause we know where to extract from
-    add r3, r3, 1
-    ldc r11, 0
-    shl r1, r1, r3
-    linsert r1, r11, r0, r3, 32
-    lsats r1, r11, r5
-    lextract r0, r1, r11, r5, 32
-    bu .L_done
-    //{   shl r0, r0, r3                          ;   bu .L_done                              }
-.L_pre_done:
-    {   ldc r0, 0                               ;                                           }
+        // (from the block above):  r5 = 1, r10 = 0
+        // If we're left-shifting (or zero-shifting), we still need to saturate to q31.
+        // lsats has a bug which doesn't allow to use it with 0, so we'll have to 
+        // add 1 to our shift, left-shift, saturate and extract with 1, no need to round here.
+        {   add r3, r3, 1                           ;                                           }
+        {   shl r1, r1, r3                          ;                                           }
+        linsert r1, r10, r0, r3, 32
+        lsats r1, r10, r5
+        lextract r0, r1, r10, r5, 32
 
 .L_done:
         ldd r8, r9, sp[3]
