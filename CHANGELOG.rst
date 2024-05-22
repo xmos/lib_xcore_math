@@ -8,6 +8,7 @@ Bugfixes
 ********
 
 * Fixes bug (issue #170) in `xs3_memcpy()`.
+* Fixes saturation in `filter_fir_s32()` for when `shift <= 0`.
 
 New Functions
 *************

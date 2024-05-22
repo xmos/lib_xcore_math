@@ -144,41 +144,43 @@ FUNCTION_NAME:
 #undef N_B
 #undef coef_B
 
-// Now combine the 40-bit accumulators.
+// Now combine the 40-bit accumulators, assumes that r10 points to the stack.
 // (the logic for this is a too complicated to explain here)
         ldaw r11, cp[vpu_vec_0x40000000]
     {                                           ;   ldw r2, filter[FILT_SHIFT]              }
-    {   ldaw r11, sp[STACK_VEC_TMP]             ;   vldc r11[0]                             }
-    {                                           ;   vstr r11[0]                             }
+    {   sub r4, r2, 1                           ;   vldc r11[0]                             }
+    {   ldc r5, 1                               ;   vstr r10[0]                             }
         ldaw r11, cp[vpu_vec_0x80000000]
-    {                                           ;   vlmacc r11[0]                           }
+    {   shl r4, r5, r4                          ;   vlmacc r11[0]                           }
         ldaw r11, cp[vpu_vec_zero]
-    {   ldaw r11, sp[STACK_VEC_TMP]             ;   vldr r11[0]                             }
-    {   sub r4, r2, 1                           ;   vlmaccr r11[0]                          }
-    {   ldc r10, 0                              ;   vstd r11[0]                             }
-    {   lss r3, r10, r2                         ;   vlmaccr r11[0]                          }
-    {   ldc r5, 1                               ;   vstr r11[0]                             }
-    {   shl r4, r5, r4                          ;   ldw r1, r11[0]                          }
-    {   add r1, r1, 8                           ;   ldw r0, r11[1]                          }
+    {   ldc r11, 0                              ;   vldr r11[0]                             }
+    {   lss r3, r11, r2                         ;   vlmaccr r10[0]                          }
+    {   neg r6, r2                              ;   vstd r10[0]                             }
+    {   add r6, r6, 1                           ;   vlmaccr r10[0]                          }
+    {                                           ;   vstr r10[0]                             }
 
-// r1 and r0 now contain a 64-bit result. Left or right-shift that as appropriate.
-    {   neg r3, r2                              ;   bf r3, .L_left_shift                    }
-    
+// r1 and r0 will contain a 64-bit result. Left or right-shift that as appropriate.
+
+        ldd r0, r1, r10[0]
+    {   add r1, r1, 8                           ;   bf r3, .L_left_shift                    }
+
     .L_right_shift:
-        // (from the block above):  r5 = 1      r4 = 1<<(r2-1)
+        // (from the block above):  r5 = 1, r4 = 1<<(r2 - 1)
         // adding r4*r5 (=r4) to r1:r0 effectively rounds it when we extract it.
         maccs r1, r0, r4, r5
         lsats r1, r0, r2
         lextract r0, r1, r0, r2, 32
-        bu .L_done
+    {                                           ;   bu .L_done                              }
 
     .L_left_shift:
-
-    // If we're left-shifting, assume there's nothing of interest in r1. Basically, assume 
-    //      -(2**31) <= r0 < 2**31
-    {   shl r0, r0, r3                          ;   bu .L_done                              }
-.L_pre_done:
-    {   ldc r0, 0                               ;                                           }
+        // (from the block above):  r5 = 1, r6 = -r2 + 1, r11 = 0
+        // If we're left-shifting (or zero-shifting), we still need to saturate to q31.
+        // lsats has a bug which doesn't allow to use it with 0, so we'll have to 
+        // add 1 to our shift, left-shift, saturate and extract with 1, no need to round here.
+    {   shl r1, r1, r6                          ;                                           }
+        linsert r1, r11, r0, r6, 32
+        lsats r1, r11, r5
+        lextract r0, r1, r11, r5, 32
 
 .L_done:
         ldd r8, r9, sp[3]
