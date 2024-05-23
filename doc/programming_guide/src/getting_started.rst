@@ -56,7 +56,7 @@ Building
 --------
 
 This library makes use of the CMake build system. See the 
-`GitHub page <https://github.com/xmos/lib_xcore_math/blob/develop/README.rst>`_ for instructions on
+`GitHub readme <https://github.com/xmos/lib_xcore_math>`_ for instructions on
 obtaining this library's source code and including it in your application's build.
 
 Usage

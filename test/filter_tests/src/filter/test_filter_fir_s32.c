@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2024 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -23,8 +23,6 @@ TEST_GROUP_RUNNER(filter_fir_s32) {
   RUN_TEST_CASE(filter_fir_s32, case4);
   RUN_TEST_CASE(filter_fir_s32, case5);
   RUN_TEST_CASE(filter_fir_s32, case6);
-
-
 }
 
 TEST_GROUP(filter_fir_s32);

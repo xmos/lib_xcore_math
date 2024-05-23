@@ -8,7 +8,7 @@ Bugfixes
 ********
 
 * Fixes bug (issue #170) in `xs3_memcpy()`.
-* Fixes saturation in `filter_fir_s32()` for when `shift <= 0`.
+* Fixes saturation in `filter_fir_s32()` when `shift <= 0`.
 
 New Functions
 *************
@@ -20,7 +20,7 @@ Miscellaneous
 *************
 
 * Adds XCommon CMake build system support.
-* Removes depricated `numpy` types in `xmath_script.py` (issue #139).
+* Removes deprecated `numpy` types in `xmath_script.py` (issue #139).
 * Makes FFT documentation more clear (issue #169).
 
 2.1.3
