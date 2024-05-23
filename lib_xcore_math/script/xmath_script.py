@@ -1,5 +1,4 @@
-# Copyright 2021-2022 XMOS LIMITED.
-# This Software is subject to the terms of the XMOS Public Licence: Version 1.
+# Copyright 2021-2024 XMOS LIMITED.
 # This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 import numpy as np
@@ -17,7 +16,7 @@ def fir_coefs_file(fpath):
     lines = " ".join(lines)
     lines = lines.replace(",", " ")
     coefs = lines.split()
-    coefs = np.array([float(x) for x in coefs], dtype=np.float)
+    coefs = np.array([float(x) for x in coefs], dtype=np.float64)
     return coefs
 
 
@@ -35,7 +34,7 @@ def biquad_sections_file(fpath):
       assert(len(coefs) == 5)
       sections.append(coefs)
 
-  sections = np.array(sections, dtype=np.float)
+  sections = np.array(sections, dtype=np.float64)
   return sections.transpose()
 
 # Regex pattern for filter names (C identifier)

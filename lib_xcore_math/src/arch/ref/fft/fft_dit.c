@@ -1,4 +1,4 @@
-// Copyright 2020-2023 XMOS LIMITED.
+// Copyright 2020-2024 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -90,7 +90,7 @@ void fft_dit_forward (
 
     right_shift_t shift_mode = 0;
 
-    complex_s32_t vD[4] = {{0}}, vR[4] = {{0}}, vC[4] = {{0}};
+    complex_s32_t vD[4] = {{0, 0}}, vR[4] = {{0, 0}}, vC[4] = {{0, 0}};
 
     shift_mode = (*hr == 3)? 0 : (*hr < 3)? 1 : -1;
     exp_modifier += shift_mode;
@@ -164,7 +164,7 @@ void fft_dit_inverse (
 
     right_shift_t shift_mode = 0;
 
-    complex_s32_t vD[4] = {{0}}, vR[4] = {{0}}, vC[4] = {{0}};
+    complex_s32_t vD[4] = {{0, 0}}, vR[4] = {{0, 0}}, vC[4] = {{0, 0}};
 
     shift_mode = (*hr == 3)? 0 : (*hr < 3)? 1 : -1;
     exp_modifier += shift_mode;

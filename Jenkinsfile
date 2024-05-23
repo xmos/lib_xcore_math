@@ -20,6 +20,11 @@ pipeline {
       defaultValue: true,
       description: 'Enable smoke run'
     )
+    string(
+      name: 'XCOMMON_CMAKE_VERSION',
+      defaultValue: 'v1.0.0',
+      description: 'The xcommon cmake version'
+    )
   } // parameters
   options {
     skipDefaultCheckout()
@@ -38,6 +43,8 @@ pipeline {
             stage('Build') {
               steps {
                 runningOn(env.NODE_NAME)
+                sh "git clone -b ${params.XCOMMON_CMAKE_VERSION} git@github.com:xmos/xcommon_cmake"
+                sh 'git -C xcommon_cmake rev-parse HEAD'
                 dir('lib_xcore_math') {
                   checkout scm
                   // fetch submodules
@@ -45,10 +52,10 @@ pipeline {
                   withTools(params.TOOLS_VERSION) {
                     // xs3a build
                     sh "cmake -B build_xs3a -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake"
-                    sh 'make -C build_xs3a -j4'
+                    sh 'make -C build_xs3a -j'
                     // x86 build
                     sh "cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST}"
-                    sh 'make -C build_x86 -j4'
+                    sh 'make -C build_x86 -j'
                     // xmake build
                     dir('test/legacy_build') {
                       sh 'xmake -j4'
@@ -61,8 +68,8 @@ pipeline {
 
             stage('Unit tests xs3a') {
               steps {
-                dir('lib_xcore_math/build_xs3a/test') {
-                  withTools(params.TOOLS_VERSION) {
+                withTools(params.TOOLS_VERSION) {
+                  dir('lib_xcore_math/build_xs3a/test') {
                     sh 'xrun --xscope --id 0 --args bfp_tests/bfp_tests.xe        -v'
                     sh 'xrun --xscope --id 0 --args dct_tests/dct_tests.xe        -v'
                     sh 'xrun --xscope --id 0 --args fft_tests/fft_tests.xe        -v'
@@ -70,6 +77,14 @@ pipeline {
                     sh 'xrun --xscope --id 0 --args scalar_tests/scalar_tests.xe  -v'
                     sh 'xrun --xscope --id 0 --args vect_tests/vect_tests.xe      -v'
                     sh 'xrun --xscope --id 0 --args xs3_tests/xs3_tests.xe        -v'
+                  }
+                  withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
+                    dir('lib_xcore_math/test/xcommon_cmake') {
+                      sh 'cmake -B build'
+                      sh 'make -C build -j'
+                      sh 'xsim bin/xcommon_cmake_build.xe'
+                      sh 'rm -rf build/ bin/'
+                    }
                   }
                 }
               }
@@ -85,6 +100,16 @@ pipeline {
                   sh './scalar_tests/scalar_tests  -v'
                   sh './vect_tests/vect_tests      -v'
                   sh './xs3_tests/xs3_tests        -v'
+                }
+                withTools(params.TOOLS_VERSION) {
+                  withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
+                    dir('lib_xcore_math/test/xcommon_cmake') {
+                      sh 'cmake -DBUILD_NATIVE=1 -B build'
+                      sh 'make -C build -j'
+                      sh './bin/xcommon_cmake_build'
+                      sh 'rm -rf build/ bin/'
+                    }
+                  }
                 }
               }
             } // Unit tests x86
@@ -104,6 +129,8 @@ pipeline {
             stage('Build') {
               steps {
                 runningOn(env.NODE_NAME)
+                sh "git clone -b ${params.XCOMMON_CMAKE_VERSION} git@github.com:xmos/xcommon_cmake"
+                sh 'git -C xcommon_cmake rev-parse HEAD'
                 dir('lib_xcore_math') {
                   checkout scm
                   // fetch submodules
@@ -137,6 +164,18 @@ pipeline {
                   bat 'vect_tests\\vect_tests.exe      -v'
                   bat 'xs3_tests\\xs3_tests.exe        -v'
                 }
+                withTools(params.TOOLS_VERSION) {
+                  withVS {
+                    withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
+                      dir('lib_xcore_math/test/xcommon_cmake') {
+                        bat 'cmake -DBUILD_NATIVE=1 -B build -G Ninja'
+                        bat 'ninja -C build'
+                        bat 'bin\\xcommon_cmake_build.exe'
+                        bat 'rm -rf build bin'
+                      }
+                    }
+                  }
+                }
               }
             } // Unit tests x86
           } // stages
@@ -149,26 +188,25 @@ pipeline {
 
         stage ('Build Documentation') {
           agent {
-            label 'docker'
+            label 'documentation'
           }
           environment {
-            XMOSDOC_VERSION = "v4.0"
+            PYTHON_VERSION = "3.10.0"
+            PIP_VERSION = "21.2.3"
           }
           stages {
             stage('Build Docs') {
               steps {
                 runningOn(env.NODE_NAME)
                 checkout scm
-                script {
-                  def settings = readYaml file: 'settings.yml'
-                  def doc_version = settings["version"]
-                
-                  sh "docker pull ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION"
-                  sh """docker run -u "\$(id -u):\$(id -g)" \
-                      --rm \
-                      -v ${WORKSPACE}:/build \
-                      ghcr.io/xmos/xmosdoc:$XMOSDOC_VERSION -v"""
-                    zip zipFile: "docs_xcore_math_v${doc_version}.zip", archive: true, dir: "doc/_build"
+                createVenv()
+                withTools(params.TOOLS_VERSION) {
+                  withVenv {
+                    sh 'pip install git+ssh://git@github.com/xmos/xmosdoc@v5.1.1'
+                    sh 'xmosdoc -vv'
+
+                    zip zipFile: "docs_xcore_math.zip", archive: true, dir: "doc/_build"
+                  }
                 }
               } // steps
             } // Build Docs

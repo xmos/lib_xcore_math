@@ -1,4 +1,4 @@
-// Copyright 2020-2022 XMOS LIMITED.
+// Copyright 2020-2024 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -20,6 +20,9 @@ TEST_GROUP_RUNNER(filter_fir_s32) {
   RUN_TEST_CASE(filter_fir_s32, case1);
   RUN_TEST_CASE(filter_fir_s32, case2);
   RUN_TEST_CASE(filter_fir_s32, case3);
+  RUN_TEST_CASE(filter_fir_s32, case4);
+  RUN_TEST_CASE(filter_fir_s32, case5);
+  RUN_TEST_CASE(filter_fir_s32, case6);
 }
 
 TEST_GROUP(filter_fir_s32);
@@ -141,6 +144,110 @@ TEST(filter_fir_s32, case2)
 }
 #undef TAPS
 
+
+// Tests whether the logic for summing up the accumulators works correctly
+// and that saturation occurs with 0 shift
+#define TAPS    32
+TEST(filter_fir_s32, case4)
+{
+    int32_t coefs[TAPS];
+    int32_t state[TAPS];
+
+    filter_fir_s32_t filter;
+
+    filter_fir_s32_init(&filter, state, TAPS, coefs, 0);
+
+    for(int i = 0; i < TAPS; i++){
+        coefs[i] = 0x40000000;
+        state[i] = 0x40000000;
+    }
+    
+    //All coefs and samples are 0x40000000. So each of them should add 0x40000000 to the sum
+    // which should be split evenly across 8 accumulators.
+    // res = 32 * 2**30 = 2**35
+    // So this should saturate if our shift is zero
+
+    filter.shift = 0;
+
+    for(int i = 0; i < 2*TAPS; i++){
+        int32_t res = filter_fir_s32(&filter, 0x40000000);
+        int64_t exp = INT32_MAX;
+
+        TEST_ASSERT_EQUAL(exp, res);
+    }
+
+}
+#undef TAPS
+
+
+// Tests whether the logic for summing up the accumulators works correctly,
+// and that saturation occurs with a negative shift
+#define TAPS    32
+TEST(filter_fir_s32, case5)
+{
+    int32_t coefs[TAPS];
+    int32_t state[TAPS];
+
+    filter_fir_s32_t filter;
+
+    filter_fir_s32_init(&filter, state, TAPS, coefs, 0);
+
+    for(int i = 0; i < TAPS; i++){
+        coefs[i] = 0x40000000;
+        state[i] = 0x40000000;
+    }
+    
+    //All coefs and samples are 0x40000000. So each of them should add 0x40000000 to the sum
+    // which should be split evenly across 8 accumulators.
+    // res = 32 * 2**30 = 2**35
+    // So this should saturate if our shift is zero, and really saturate if the shift is negative
+
+    filter.shift = -1;
+
+    for(int i = 0; i < 2*TAPS; i++){
+        int32_t res = filter_fir_s32(&filter, 0x40000000);
+        int64_t exp = INT32_MAX;
+
+        TEST_ASSERT_EQUAL(exp, res);
+    }
+
+}
+#undef TAPS
+
+
+// Tests whether the logic for summing up the accumulators works correctly,
+// and that saturation occurs with a positive shift
+#define TAPS    32
+TEST(filter_fir_s32, case6)
+{
+    int32_t coefs[TAPS];
+    int32_t state[TAPS];
+
+    filter_fir_s32_t filter;
+
+    filter_fir_s32_init(&filter, state, TAPS, coefs, 0);
+
+    for(int i = 0; i < TAPS; i++){
+        coefs[i] = 0x40000000;
+        state[i] = 0x40000000;
+    }
+    
+    //All coefs and samples are 0x40000000. So each of them should add 0x40000000 to the sum
+    // which should be split evenly across 8 accumulators.
+    // res = 32 * 2**30 = 2**35
+    // So this should saturate if our shift is 1.
+
+    filter.shift = 1;
+
+    for(int i = 0; i < 2*TAPS; i++){
+        int32_t res = filter_fir_s32(&filter, 0x40000000);
+        int64_t exp = INT32_MAX;
+
+        TEST_ASSERT_EQUAL(exp, res);
+    }
+
+}
+#undef TAPS
 
 /*
     Random Taps/data.
