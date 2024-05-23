@@ -219,6 +219,3 @@ FUNCTION_NAME:
 
 
 #endif //defined(__XS3A__)
-
-
-

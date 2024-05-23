@@ -1,4 +1,4 @@
-// Copyright 2020-2023 XMOS LIMITED.
+// Copyright 2020-2024 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
@@ -199,9 +199,4 @@ FUNCTION_NAME:
 
 #undef FUNCTION_NAME
 
-
-
 #endif //defined(__XS3A__)
-
-
-
