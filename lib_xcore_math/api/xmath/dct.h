@@ -683,6 +683,17 @@ headroom_t dct8x8_inverse(
     const int8_t x[8][8],
     const right_shift_t sat);
 
+
+
+
+/**
+ * 
+ */
+C_API
+void dct8x8_forward_16bit(
+    int16_t y[8][8],
+    const int8_t x[8][8]);
+
     
 #ifdef __XC__
 } // extern "C"
