@@ -641,7 +641,7 @@ typedef struct {
  * 
  * @returns     Next filtered output sample
  * 
- * @note When the result exceedes the 32-bit range, the output will overflow.
+ * @note When the result exceeds the 32-bit range, the output will overflow.
  * 
  * @see filter_biquad_s32_t,
  *      filter_biquads_s32
@@ -657,7 +657,7 @@ int32_t filter_biquad_s32(
  * This function implements a 32-bit Biquad filter with saturation.
  * 
  * Works the same as filter_biquad_s32(), but saturates the output to the symmetric 32-bit range
- * at the cost of several compute cycles. The cost will depend on the number of biquads and the target artitecture.
+ * at the cost of several compute cycles. The cost will depend on the number of biquads and the target architecture.
  * 
  * @param[inout]    filter          Filter to be processed
  * @param[in]       new_sample      New input sample to be processed by `filter`
@@ -690,7 +690,7 @@ int32_t filter_biquad_sat_s32(
  * 
  * @returns     Next filtered output sample
  * 
- * @note When the result exceedes the 32-bit range, the output will overflow.
+ * @note When the result exceeds the 32-bit range, the output will overflow.
  * 
  * @see filter_biquad_s32_t,
  *      filter_biquad_s32
