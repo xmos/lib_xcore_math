@@ -2,7 +2,7 @@
 # compiled for. It either refers to an XN file in the source directories
 # or a valid argument for the --target option when compiling.
 
-TARGET = XCORE-AI-EXPLORER
+TARGET = XK-EVK-XU316
 
 # The APP_NAME variable determines the name of the final .xe file. It should
 # not include the .xe postfix. If left blank the name will default to
@@ -19,7 +19,7 @@ APP_NAME = legacy_build
 # xcc for the final link (mapping) stage.
 
 XCC_FLAGS = 
-XCC_FLAGS_main.xc = -O0
+XCC_FLAGS_main.c = -O0
 
 # The USED_MODULES variable lists other module used by the application.
 

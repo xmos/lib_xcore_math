@@ -58,8 +58,13 @@ pipeline {
                     sh 'make -C build_x86 -j'
                     // xmake build
                     dir('test/legacy_build') {
+                      // legacy XCommon
                       sh 'xmake -j4'
                       sh 'xrun --io --id 0 bin/legacy_build.xe'
+                      // legacy CMake
+                      sh "cmake -B build --toolchain=${WORKSPACE}/lib_xcore_math/etc/xmos_cmake_toolchain/xs3a.cmake"
+                      sh 'make -C build -j'
+                      sh 'xrun --io --id 0 build/legacy_cmake_build.xe'
                     }
                   }
                 }
@@ -145,7 +150,11 @@ pipeline {
                       bat "ninja -C build_x86"
                       // xmake build
                       dir('test/legacy_build') {
+                        // legacy XCommon
                         bat 'xmake --jobs 4'
+                        // legacy CMake
+                        bat "cmake -B build --toolchain=${WORKSPACE}/lib_xcore_math/etc/xmos_cmake_toolchain/xs3a.cmake -G Ninja"
+                        bat 'ninja -C build'
                       }
                     }
                   }
