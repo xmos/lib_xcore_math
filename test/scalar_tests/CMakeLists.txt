@@ -1,76 +1,54 @@
-set( APP_NAME  scalar_tests )
+cmake_minimum_required(VERSION 3.21)
+include($ENV{XMOS_CMAKE_PATH}/xcommon.cmake)
+project(scalar_tests)
 
-## If XCORE_TARGET hasn't been specified, default to XCORE-AI-EXPLORER
-if( NOT DEFINED XCORE_TARGET )
-  set( XCORE_TARGET XCORE-AI-EXPLORER )
-endif()
-
-
-## Sources
-file( GLOB_RECURSE SOURCES_C  src/*.c )
-file( GLOB_RECURSE SOURCES_XC src/*.xc )
-
-add_executable( ${APP_NAME} )
-
-target_sources( ${APP_NAME}
-  PRIVATE
-    ${SOURCES_C}
-    $<$<PLATFORM_ID:XCORE_XS3A>:${SOURCES_XC}>
-)
-
-target_include_directories( ${APP_NAME}
-  PRIVATE
-    src
-)
-
-target_compile_options( ${APP_NAME}
-  PRIVATE
-    -Os
-    $<$<PLATFORM_ID:XCORE_XS3A>:-MMD>
-    $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
-    $<$<PLATFORM_ID:XCORE_XS3A>:-mcmodel=large>
-    $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
-)
-
-# Add options for different compilers
-if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  target_compile_options( ${APP_NAME}
-    PRIVATE
-      -Werror
-      -g
-  )
+if(DEFINED XCORE_TARGET)
+    set(APP_HW_TARGET ${XCORE_TARGET})
 else()
-    target_compile_options( ${APP_NAME}
-    PRIVATE
-      -WX
-      # Suppress warning C4996: 'sprintf': This function or variable may be unsafe.
-      # Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
-      # See online help for details.
-      -D_CRT_SECURE_NO_WARNINGS
-      # Suppress warning C5045: Compiler will insert Spectre mitigation for memory load if /wd5045 switch specified
-      /wd5045
-  )
+    set(APP_HW_TARGET XK-EVK-XU316)
 endif()
 
-target_link_options( ${APP_NAME}
-  PRIVATE
-    $<$<PLATFORM_ID:XCORE_XS3A>:-target=${XCORE_TARGET}>
-    $<$<PLATFORM_ID:XCORE_XS3A>:-report>
-    $<$<PLATFORM_ID:XCORE_XS3A>:-fcmdline-buffer-bytes=1024>
-    $<$<PLATFORM_ID:XCORE_XS3A>:-fxscope>
-)
+set(XMOS_SANDBOX_DIR ${CMAKE_CURRENT_LIST_DIR}/../../..)
 
-target_compile_definitions( ${APP_NAME}
-  PRIVATE
-    SMOKE_TEST=$<BOOL:${XMATH_SMOKE_TEST}>
-)
+include(${CMAKE_CURRENT_LIST_DIR}/../test_deps.cmake)
 
-target_link_libraries( ${APP_NAME}
-  lib_xcore_math
-  test_shared
-  unity
-  $<$<PLATFORM_ID:Linux>:m>
-  $<$<PLATFORM_ID:Darwin>:m>
-)
+file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_LIST_DIR} src/*.c)
+set(APP_C_SRCS ${SOURCES})
+set(APP_INCLUDES src)
 
-add_dependencies( lib_xcore_math-tests  ${APP_NAME} )
+include(${CMAKE_CURRENT_LIST_DIR}/../shared/shared.cmake)
+
+set(APP_COMPILER_FLAGS -Os
+                       -DSMOKE_TEST=$<BOOL:${XMATH_SMOKE_TEST}>
+                       -DUNITY_INCLUDE_CONFIG_H
+                       )
+
+if(NOT BUILD_NATIVE)
+    list(APPEND APP_COMPILER_FLAGS -MMD
+                                   -fxscope
+                                   -mcmodel=large
+                                   -Wno-xcore-fptrgroup
+                                   -fcmdline-buffer-bytes=1024
+                                   -report
+                                   )
+endif()
+
+if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    list(APPEND APP_COMPILER_FLAGS -Werror
+                                   -g
+                                   )
+else()
+    list(APPEND APP_COMPILER_FLAGS # Suppress warning C4996: 'sprintf': This function or variable may be unsafe.
+                                   # Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
+                                   # See online help for details.
+                                   -D_CRT_SECURE_NO_WARNINGS
+                                   # Suppress warning C5045: Compiler will insert Spectre mitigation for memory load if /wd5045 switch specified
+                                   /wd5045
+                                   )
+endif()
+
+if(PLATFORM_ID STREQUAL Linux OR PLATFORM_ID STREQUAL Darwin)
+    list(APPEND APP_COMPILER_FLAGS -lm)
+endif()
+
+XMOS_REGISTER_APP()
