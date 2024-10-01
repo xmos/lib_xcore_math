@@ -12,18 +12,13 @@ pipeline {
   parameters {
     string(
       name: 'TOOLS_VERSION',
-      defaultValue: '15.2.1',
+      defaultValue: '15.3.0',
       description: 'The XTC tools version'
     )
     booleanParam(
       name: 'XMATH_SMOKE_TEST',
       defaultValue: true,
       description: 'Enable smoke run'
-    )
-    string(
-      name: 'XCOMMON_CMAKE_VERSION',
-      defaultValue: 'v1.0.0',
-      description: 'The xcommon cmake version'
     )
   } // parameters
   options {
@@ -43,27 +38,26 @@ pipeline {
             stage('Build') {
               steps {
                 runningOn(env.NODE_NAME)
-                sh "git clone -b ${params.XCOMMON_CMAKE_VERSION} git@github.com:xmos/xcommon_cmake"
-                sh 'git -C xcommon_cmake rev-parse HEAD'
                 dir('lib_xcore_math') {
                   checkout scm
                   // fetch submodules
                   sh 'git submodule update --init --recursive --jobs 4'
                   withTools(params.TOOLS_VERSION) {
-                    // xs3a build
-                    sh "cmake -B build_xs3a -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake"
-                    sh 'make -C build_xs3a -j'
-                    // x86 build
-                    sh "cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST}"
-                    sh 'make -C build_x86 -j'
-                    // xmake build
-                    dir('test/legacy_build') {
+                    dir('examples') {
+                      // xs3a build
+                      sh 'cmake -B build_xs3a -G "Unix Makefiles"'
+                      sh 'xmake -C build_xs3a -j'
+                      // x86 build
+                      sh 'cmake -B build_x86 -G "Unix Makefiles" -D BUILD_NATIVE=TRUE'
+                      sh 'xmake -C build_x86 -j'
+                    }
+                    dir('tests/legacy_build') {
                       // legacy XCommon
                       sh 'xmake -j4'
                       sh 'xrun --io --id 0 bin/legacy_build.xe'
                       // legacy CMake
                       sh "cmake -B build --toolchain=${WORKSPACE}/lib_xcore_math/etc/xmos_cmake_toolchain/xs3a.cmake"
-                      sh 'make -C build -j'
+                      sh 'xmake -C build -j'
                       sh 'xrun --io --id 0 build/legacy_cmake_build.xe'
                     }
                   }
@@ -74,22 +68,17 @@ pipeline {
             stage('Unit tests xs3a') {
               steps {
                 withTools(params.TOOLS_VERSION) {
-                  dir('lib_xcore_math/build_xs3a/test') {
-                    sh 'xrun --xscope --id 0 --args bfp_tests/bfp_tests.xe        -v'
-                    sh 'xrun --xscope --id 0 --args dct_tests/dct_tests.xe        -v'
-                    sh 'xrun --xscope --id 0 --args fft_tests/fft_tests.xe        -v'
-                    sh 'xrun --xscope --id 0 --args filter_tests/filter_tests.xe  -v'
-                    sh 'xrun --xscope --id 0 --args scalar_tests/scalar_tests.xe  -v'
-                    sh 'xrun --xscope --id 0 --args vect_tests/vect_tests.xe      -v'
-                    sh 'xrun --xscope --id 0 --args xs3_tests/xs3_tests.xe        -v'
-                  }
-                  withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
-                    dir('lib_xcore_math/test/xcommon_cmake') {
-                      sh 'cmake -B build'
-                      sh 'make -C build -j'
-                      sh 'xsim bin/xcommon_cmake_build.xe'
-                      sh 'rm -rf build/ bin/'
-                    }
+                  dir('lib_xcore_math/tests') {
+                    sh "cmake -B build_xs3a  -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G \"Unix Makefiles\""
+                    sh 'xmake -C build_xs3a -j'
+
+                    sh 'xrun --xscope --id 0 --args bfp_tests/bin/bfp_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args dct_tests/bin/dct_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args fft_tests/bin/fft_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args filter_tests/bin/filter_tests.xe  -v'
+                    sh 'xrun --xscope --id 0 --args scalar_tests/bin/scalar_tests.xe  -v'
+                    sh 'xrun --xscope --id 0 --args vect_tests/bin/vect_tests.xe      -v'
+                    sh 'xrun --xscope --id 0 --args xs3_tests/bin/xs3_tests.xe        -v'
                   }
                 }
               }
@@ -97,23 +86,18 @@ pipeline {
 
             stage('Unit tests x86') {
               steps {
-                dir('lib_xcore_math/build_x86/test') {
-                  sh './bfp_tests/bfp_tests        -v'
-                  sh './dct_tests/dct_tests        -v'
-                  sh './fft_tests/fft_tests        -v'
-                  sh './filter_tests/filter_tests  -v'
-                  sh './scalar_tests/scalar_tests  -v'
-                  sh './vect_tests/vect_tests      -v'
-                  sh './xs3_tests/xs3_tests        -v'
-                }
                 withTools(params.TOOLS_VERSION) {
-                  withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
-                    dir('lib_xcore_math/test/xcommon_cmake') {
-                      sh 'cmake -DBUILD_NATIVE=1 -B build'
-                      sh 'make -C build -j'
-                      sh './bin/xcommon_cmake_build'
-                      sh 'rm -rf build/ bin/'
-                    }
+                  dir('lib_xcore_math/tests') {
+                    sh "cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G \"Unix Makefiles\" -D BUILD_NATIVE=TRUE"
+                    sh 'xmake -C build_x86 -j'
+
+                    sh './bfp_tests/bin/bfp_tests        -v'
+                    sh './dct_tests/bin/dct_tests        -v'
+                    sh './fft_tests/bin/fft_tests        -v'
+                    sh './filter_tests/bin/filter_tests  -v'
+                    sh './scalar_tests/bin/scalar_tests  -v'
+                    sh './vect_tests/bin/vect_tests      -v'
+                    sh './xs3_tests/bin/xs3_tests        -v'
                   }
                 }
               }
@@ -134,22 +118,21 @@ pipeline {
             stage('Build') {
               steps {
                 runningOn(env.NODE_NAME)
-                sh "git clone -b ${params.XCOMMON_CMAKE_VERSION} git@github.com:xmos/xcommon_cmake"
-                sh 'git -C xcommon_cmake rev-parse HEAD'
                 dir('lib_xcore_math') {
                   checkout scm
                   // fetch submodules
                   bat 'git submodule update --init --recursive --jobs 4'
                   withTools(params.TOOLS_VERSION) {
                     withVS {
-                      // xs3a build
-                      bat "cmake -B build_xs3a -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} --toolchain=etc/xmos_cmake_toolchain/xs3a.cmake -G Ninja"
-                      bat "ninja -C build_xs3a"
-                      // x86 build
-                      bat "cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G Ninja"
-                      bat "ninja -C build_x86"
-                      // xmake build
-                      dir('test/legacy_build') {
+                      dir('examples') {
+                        // xs3a build
+                        bat 'cmake -B build_xs3a -G "Unix Makefiles"'
+                        bat 'xmake -C build_xs3a'
+                        // x86 build
+                        bat 'cmake -B build_x86 -G Ninja -D BUILD_NATIVE=TRUE'
+                        bat 'ninja -C build_x86'
+                      }
+                      dir('tests/legacy_build') {
                         // legacy XCommon
                         bat 'xmake --jobs 4'
                         // legacy CMake
@@ -164,24 +147,19 @@ pipeline {
 
             stage('Unit tests x86') {
               steps {
-                dir('lib_xcore_math/build_x86/test') {
-                  bat 'bfp_tests\\bfp_tests.exe        -v'
-                  bat 'dct_tests\\dct_tests.exe        -v'
-                  bat 'fft_tests\\fft_tests.exe        -v'
-                  bat 'filter_tests\\filter_tests.exe  -v'
-                  bat 'scalar_tests\\scalar_tests.exe  -v'
-                  bat 'vect_tests\\vect_tests.exe      -v'
-                  bat 'xs3_tests\\xs3_tests.exe        -v'
-                }
-                withTools(params.TOOLS_VERSION) {
-                  withVS {
-                    withEnv(["XMOS_CMAKE_PATH=${WORKSPACE}/xcommon_cmake"]) {
-                      dir('lib_xcore_math/test/xcommon_cmake') {
-                        bat 'cmake -DBUILD_NATIVE=1 -B build -G Ninja'
-                        bat 'ninja -C build'
-                        bat 'bin\\xcommon_cmake_build.exe'
-                        bat 'rm -rf build bin'
-                      }
+                dir('lib_xcore_math/tests') {
+                  withTools(params.TOOLS_VERSION) {
+                    withVS {
+                      bat 'cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G Ninja -D BUILD_NATIVE=TRUE'
+                      bat 'ninja -C build_x86'
+
+                      bat 'bfp_tests\\bin\\bfp_tests.exe        -v'
+                      bat 'dct_tests\\bin\\dct_tests.exe        -v'
+                      bat 'fft_tests\\bin\\fft_tests.exe        -v'
+                      bat 'filter_tests\\bin\\filter_tests.exe  -v'
+                      bat 'scalar_tests\\bin\\scalar_tests.exe  -v'
+                      bat 'vect_tests\\bin\\vect_tests.exe      -v'
+                      bat 'xs3_tests\\bin\\xs3_tests.exe        -v'
                     }
                   }
                 }
