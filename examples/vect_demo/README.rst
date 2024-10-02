@@ -17,9 +17,10 @@ Building
 ********
 
 After configuring the CMake project, the following commands can be used to build and run this
-example application using the XCORE-AI-EXPLORER board as a target:
+example application using the XK-EVK-XU316 board as a target:
 
 ::
 
-    make vect_demo
-    xrun --xscope example/vect_demo/vect_demo.xe
+    cmake -B build -G "Unix Makefiles"
+    xmake -C build
+    xrun --xscope vect_demo/bin/vect_demo.xe

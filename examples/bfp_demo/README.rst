@@ -16,9 +16,10 @@ Building
 ********
 
 After configuring the CMake project, the following commands can be used (from the build directory)
-to build and run this example application using the XCORE-AI-EXPLORER board as a target:
+to build and run this example application using the XK-EVK-XU316 board as a target:
 
 ::
 
-    make bfp_demo
-    xrun --xscope example/bfp_demo/bfp_demo.xe
+    cmake -B build -G "Unix Makefiles"
+    xmake -C build
+    xrun --xscope bfp_demo/bin/bfp_demo.xe

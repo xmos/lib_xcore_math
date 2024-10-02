@@ -16,9 +16,10 @@ Building
 ********
 
 After configuring the CMake project, the following commands can be used to build and run this
-example application using the XCORE-AI-EXPLORER board as a target:
+example application using the XK-EVK-XU316 board as a target:
 
 ::
 
-    make filter_demo
-    xrun --xscope example/filter_demo/filter_demo.xe
+    cmake -B build -G "Unix Makefiles"
+    xmake -C build
+    xrun --xscope filter_demo/bin/filter_demo.xe
