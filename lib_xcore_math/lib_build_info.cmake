@@ -3,7 +3,7 @@ set(LIB_NAME lib_xcore_math)
 set(LIB_XMATH_PATH ${XMOS_SANDBOX_DIR}/lib_xcore_math/lib_xcore_math)
 include(${XMOS_SANDBOX_DIR}/lib_xcore_math/etc/build_options.cmake)
 
-set(LIB_VERSION 2.2.0)
+set(LIB_VERSION 2.3.0)
 
 set(LIB_INCLUDES api
                 src/vect)

@@ -1,6 +1,11 @@
 lib_xcore_math change log
 =========================
 
+2.3.0
+-----
+
+* Changes examples and tests to build using XCommon CMake
+
 2.2.0
 -----
 
