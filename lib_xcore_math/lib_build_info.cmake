@@ -3,7 +3,7 @@ set(LIB_NAME lib_xcore_math)
 set(LIB_XMATH_PATH ${XMOS_SANDBOX_DIR}/lib_xcore_math/lib_xcore_math)
 include(${XMOS_SANDBOX_DIR}/lib_xcore_math/etc/build_options.cmake)
 
-set(LIB_VERSION 2.2.0)
+set(LIB_VERSION 2.3.0)
 
 set(LIB_INCLUDES api
                 src/vect)
@@ -50,7 +50,6 @@ if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   )
 else()
   list(APPEND LIB_COMPILER_FLAGS
-    -WX
     # Suppress warning C4996: 'sprintf': This function or variable may be unsafe.
     # Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
     # See online help for details.

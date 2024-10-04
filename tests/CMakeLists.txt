@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.21)
+include($ENV{XMOS_CMAKE_PATH}/xcommon.cmake)
+project(tests)
+
+add_subdirectory(bfp_tests)
+add_subdirectory(dct_tests)
+add_subdirectory(fft_tests)
+add_subdirectory(filter_tests)
+add_subdirectory(scalar_tests)
+add_subdirectory(vect_tests)
+add_subdirectory(xs3_tests)
