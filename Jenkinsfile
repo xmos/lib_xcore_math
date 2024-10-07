@@ -1,4 +1,4 @@
-@Library('xmos_jenkins_shared_library@v0.27.0')
+@Library('xmos_jenkins_shared_library@v0.34.0')
 
 def runningOn(machine) {
   println "Stage running on:"
@@ -8,7 +8,9 @@ def runningOn(machine) {
 getApproval()
 pipeline {
   agent none
-
+    environment {
+    REPO = 'lib_xcore_math'
+  }
   parameters {
     string(
       name: 'TOOLS_VERSION',
@@ -19,6 +21,11 @@ pipeline {
       name: 'XMATH_SMOKE_TEST',
       defaultValue: true,
       description: 'Enable smoke run'
+    )
+    string(
+      name: 'XMOSDOC_VERSION',
+      defaultValue: 'v6.1.0',
+      description: 'The xmosdoc version'
     )
   } // parameters
   options {
@@ -182,21 +189,19 @@ pipeline {
             PIP_VERSION = "21.2.3"
           }
           stages {
-            stage('Build Docs') {
+            stage('Build Documentation') {
               steps {
                 runningOn(env.NODE_NAME)
-                checkout scm
-                createVenv()
-                withTools(params.TOOLS_VERSION) {
-                  withVenv {
-                    sh 'pip install git+ssh://git@github.com/xmos/xmosdoc@v5.1.1'
-                    sh 'xmosdoc -vv'
-
-                    zip zipFile: "docs_xcore_math.zip", archive: true, dir: "doc/_build"
-                  }
+                dir("${REPO}") {
+                  checkout scm
                 }
+                dir("${REPO}") {
+                  warnError("Docs") {
+                    buildDocs()
+                  } // warnError("Docs")
+                } // dir("${REPO}")
               } // steps
-            } // Build Docs
+            } // stage('Build Documentation')
           } // stages
           post {
             cleanup {
