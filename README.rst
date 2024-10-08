@@ -1,13 +1,20 @@
+:orphan:
+
 ##############
 lib_xcore_math
 ##############
 
-************
-Library Info
-************
+:vendor: XMOS
+:version: 2.3.0
+:scope: General Use
+:description: Arithmetic and DSP library
+:category: General Purpose
+:keywords: Arithmetic, DSP, VPU
+:devices: xcore.ai
 
-Summary
-=======
+********
+Overview
+********
 
 ``lib_xcore_math`` is an arithmetic and DSP library which leverages the XS3 Vector Processing Unit
 (VPU) to accelerate costly operations on vectors of 16- or 32-bit data.  Included are functions for
