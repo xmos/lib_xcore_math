@@ -39,14 +39,14 @@ the operation takes two vector inputs and a scalar input, and the output is a ve
 * `Complex 32-Bit BFP Ops <bfp32_complex_api_>`_
 * `Complex 16-Bit BFP Ops <bfp16_complex_api_>`_
 
-.. raw:: latex
-
-  \newpage
+|newpage|
 
 32-Bit BFP API Quick Reference
 ------------------------------
 
 .. _bfp32_api:
+
+|beginfullwidth|
 
 .. csv-table:: 32-Bit BFP API - Quick Reference
     :file: csv/32bit_bfp_quickref.csv
@@ -54,14 +54,16 @@ the operation takes two vector inputs and a scalar input, and the output is a ve
     :header-rows: 1
     :class: longtable
 
-.. raw:: latex
+|endfullwidth|
 
-  \newpage
+|newpage|
 
 16-Bit BFP API Quick Reference
 ------------------------------
 
 .. _bfp16_api:
+
+|beginfullwidth|
 
 .. csv-table:: 16-Bit BFP API - Quick Reference
     :file: csv/16bit_bfp_quickref.csv
@@ -69,14 +71,16 @@ the operation takes two vector inputs and a scalar input, and the output is a ve
     :header-rows: 1
     :class: longtable
 
-.. raw:: latex
+|endfullwidth|
 
-  \newpage
+|newpage|
 
 Complex 32-bit BFP API Quick Reference
 --------------------------------------
 
 .. _bfp32_complex_api:
+
+|beginfullwidth|
 
 .. csv-table:: Complex 32-Bit BFP API - Quick Reference
     :file: csv/complex_32bit_bfp_quickref.csv
@@ -85,14 +89,16 @@ Complex 32-bit BFP API Quick Reference
     :class: longtable
 
 
-.. raw:: latex
+|endfullwidth|
 
-  \newpage
+|newpage|
 
 Complex 16-bit BFP API Quick Reference
 --------------------------------------
 
 .. _bfp16_complex_api:
+
+|beginfullwidth|
 
 .. csv-table:: Complex 16-Bit BFP API - Quick Reference
     :file: csv/complex_16bit_bfp_quickref.csv
@@ -101,6 +107,6 @@ Complex 16-bit BFP API Quick Reference
     :class: longtable
 
 
-.. raw:: latex
+|endfullwidth|
 
-  \newpage
+|newpage|

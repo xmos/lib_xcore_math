@@ -68,7 +68,6 @@ extern "C" {
  * logic applied by the accumulators).
  * 
  * @f[
- * 
  * &    y[t] = sat_{32} \left(
  *               round \left( 
  *                 \left(
@@ -78,7 +77,6 @@ extern "C" {
  *             \right)                                                          \\
  * &        \qquad\text{where } sat_{32}() \text{ saturates to } \pm(2^{31}-1)  \\
  * &        \qquad\text{  and } round() \text{ rounds to the nearest integer, with ties rounding towards } +\!\infty
- * 
  * @f]
  * @endparblock
  * 

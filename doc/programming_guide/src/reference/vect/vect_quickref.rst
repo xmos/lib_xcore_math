@@ -540,6 +540,8 @@ optimized for the XS3 VPU.
 
 .. _vect_conversion_api:
 
+|beginfullwidth|
+
 .. table::
     :widths: 50 25 25
     :class: longtable
@@ -564,3 +566,5 @@ optimized for the XS3 VPU.
     | :c:func:`vect_complex_s32_to_vect_complex_s16()` | :c:struct:`complex_s32_t` | :c:struct:`complex_s16_t` |
     +--------------------------------------------------+---------------------------+---------------------------+
 
+
+|endfullwidth|

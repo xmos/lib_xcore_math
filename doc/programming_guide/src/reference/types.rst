@@ -12,11 +12,15 @@ Common Vector Types
 The following table indicates the types and abbreviations associated with various common vector 
 types.
 
+|beginfullwidth|
+
 .. csv-table:: Common Vector Types
     :file: csv/common_vector_types.csv
     :widths: 25, 25, 50
     :header-rows: 1
     :class: longtable
+
+|endfullwidth|
 
 Common Scalar Types
 -------------------
@@ -24,15 +28,17 @@ Common Scalar Types
 The following table indicates the types and abbreviations associated with various common scalar
 types.
 
+|beginfullwidth|
+
 .. csv-table:: Common Scalar Types
     :file: csv/common_scalar_types.csv
     :widths: 25, 25, 50
     :header-rows: 1
     :class: longtable
 
-.. raw:: latex
-  
-  \newpage
+|endfullwidth|
+
+|newpage|
  
 
 Block Floating-Point Types
