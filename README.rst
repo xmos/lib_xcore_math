@@ -1,11 +1,13 @@
+##############
 lib_xcore_math
-==============
+##############
 
+************
 Library Info
-############
+************
 
 Summary
--------
+=======
 
 ``lib_xcore_math`` is an arithmetic and DSP library which leverages the XS3 Vector Processing Unit
 (VPU) to accelerate costly operations on vectors of 16- or 32-bit data.  Included are functions for
@@ -13,7 +15,7 @@ block floating-point arithmetic, fast Fourier transforms, discrete cosine transf
 filtering and more.
 
 Repository Structure
---------------------
+====================
 
 * `/lib_xcore_math/ <https://github.com/xmos/lib_xcore_math/lib_xcore_math>`_ - The ``lib_xcore_math`` library directory.
 
@@ -27,7 +29,7 @@ Repository Structure
 
 
 Requirements
-------------
+============
 
 * xTIMEcomposer tools version 15.0.6 or later
 * CMake (for building the library and unit tests, version 3.14 or later)
@@ -49,7 +51,7 @@ install with ``winget`` by running the following commands in PowerShell:
 		$env:Path=[System.Environment]::GetEnvironmentVariable("Path","User")
 
 API Structure
--------------
+=============
 
 This library is organized around several sub-APIs.  These APIs collect the provided operations into
 coherent groups based on the kind of operation or the types of object being acted upon.
@@ -65,11 +67,12 @@ The current APIs are:
 
 See the full documentation for more details about each of these as well as usage examples.
 
+********************
 Getting and Building
-####################
+********************
 
 Clone the Repository
---------------------
+====================
 
 To clone this repository you may use the following: ::
 
@@ -80,7 +83,7 @@ To clone this repository you may use the following: ::
    This repository uses submodules to include the XMOS CMake toolchain
 
 Including lib_xcore_math in External Applications
--------------------------------------------------
+=================================================
 
 ``lib_xcore_math`` can be compiled for both x86 platforms and xs3a processors.
 
@@ -142,7 +145,7 @@ For other build systems
 Then, from your source files, include ``xmath/xmath.h``.
 
 Unit Tests and Examples
------------------------
+=======================
 
 This project uses CMake to build the unit test and example applications. Use the steps described above to
 configure and build the unit test and example applications. Both unit test and example projects currently target the
@@ -176,7 +179,7 @@ All unit tests and examples are built and executed in a similar manner. The foll
 the BFP unit tests.
 
 BFP Unit Tests
-**************
+--------------
 
 This application runs unit tests for the various 16- and 32-bit BFP vectorized arithmetic functions.
 This application is located at `/test/bfp_tests/
@@ -203,8 +206,9 @@ and on Windows: ::
 
 where ``-v`` is an optional argument to increase verbosity.
 
+**********************
 Building Documentation
-----------------------
+**********************
 
 The following information is intended for XMOS users. Pre-built documentation may be found on the
 `XMOS website <https://www.xmos.com>`_.
