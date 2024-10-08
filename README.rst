@@ -1,11 +1,20 @@
+:orphan:
+
+##############
 lib_xcore_math
-==============
+##############
 
-Library Info
-############
+:vendor: XMOS
+:version: 2.3.0
+:scope: General Use
+:description: Arithmetic and DSP library
+:category: General Purpose
+:keywords: Arithmetic, DSP, VPU
+:devices: xcore.ai
 
-Summary
--------
+********
+Overview
+********
 
 ``lib_xcore_math`` is an arithmetic and DSP library which leverages the XS3 Vector Processing Unit
 (VPU) to accelerate costly operations on vectors of 16- or 32-bit data.  Included are functions for
@@ -13,24 +22,24 @@ block floating-point arithmetic, fast Fourier transforms, discrete cosine transf
 filtering and more.
 
 Repository Structure
---------------------
+====================
 
-* `/lib_xcore_math/ <https://github.com/xmos/lib_xcore_math/lib_xcore_math>`_ - The ``lib_xcore_math`` library directory.
+* `/lib_xcore_math/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math>`_ - The ``lib_xcore_math`` library directory.
 
   * `api/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/api/>`_ - Headers containing the public API for ``lib_xcore_math``.
   * `script/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/script/>`_ - Scripts used for source generation.
   * `src/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/src/>`_ - Library source code.
 
-* `/doc/ <https://github.com/xmos/lib_xcore_math/tree/develop/lib_xcore_math/doc/>`_ - Sphinx library documentation source and build directory.
-* `/example/ <https://github.com/xmos/lib_xcore_math/tree /develop/example/>`_ - Example applications for ``lib_xcore_math``.
-* `/test/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/>`_ - Unit test projects for ``lib_xcore_math``.
+* `/doc/ <https://github.com/xmos/lib_xcore_math/tree/develop/doc>`_ - Sphinx library documentation source and build directory.
+* `/examples/ <https://github.com/xmos/lib_xcore_math/tree/develop/examples>`__ - Example applications for ``lib_xcore_math``.
+* `/tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/tests>`__ - Unit test projects for ``lib_xcore_math``.
 
 
 Requirements
-------------
+============
 
-* xTIMEcomposer tools version 15.0.6 or later
-* CMake (for building the library and unit tests, version 3.14 or later)
+* xTIMEcomposer tools version 15.3.0 or later
+* CMake (for building the library and unit tests, version 3.21 or later)
 * Doxygen (for building documentation)
 * Python 3 (for running source generation scripts, if necessary)
 
@@ -49,7 +58,7 @@ install with ``winget`` by running the following commands in PowerShell:
 		$env:Path=[System.Environment]::GetEnvironmentVariable("Path","User")
 
 API Structure
--------------
+=============
 
 This library is organized around several sub-APIs.  These APIs collect the provided operations into
 coherent groups based on the kind of operation or the types of object being acted upon.
@@ -65,11 +74,12 @@ The current APIs are:
 
 See the full documentation for more details about each of these as well as usage examples.
 
+********************
 Getting and Building
-####################
+********************
 
 Clone the Repository
---------------------
+====================
 
 To clone this repository you may use the following: ::
 
@@ -80,7 +90,7 @@ To clone this repository you may use the following: ::
    This repository uses submodules to include the XMOS CMake toolchain
 
 Including lib_xcore_math in External Applications
--------------------------------------------------
+=================================================
 
 ``lib_xcore_math`` can be compiled for both x86 platforms and xs3a processors.
 
@@ -142,32 +152,32 @@ For other build systems
 Then, from your source files, include ``xmath/xmath.h``.
 
 Unit Tests and Examples
------------------------
+=======================
 
 This project uses CMake to build the unit test and example applications. Use the steps described above to
 configure and build the unit test and example applications. Both unit test and example projects currently target the
-xcore.ai explorer board and x86 platforms. All unit tests are currently in the `/test/
-<https://github.com/xmos/lib_xcore_math/tree/develop/test/>`_ directory:
+xcore.ai explorer board and x86 platforms. All unit tests are currently in the `/tests/
+<https://github.com/xmos/lib_xcore_math/tree/develop/tests/>`_ directory:
 
-* `/test/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/>`_ - Unit test projects for ``lib_xcore_math``:
+* `/tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/tests/>`_ - Unit test projects for ``lib_xcore_math``:
 
-  * `bfp_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/bfp_tests/>`_ - BFP unit tests
-  * `dct_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/dct_tests/>`_ - DCT unit tests
-  * `filter_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/filter_tests/>`_ - Filtering unit tests
-  * `fft_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/fft_tests/>`_ - FFT unit tests
-  * `scalar_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/scalar_tests/>`_ - Scalar op unit tests
-  * `vect_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/vect_tests/>`_ - Vector op unit tests
-  * `xs3_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/test/xs3_tests/>`_ - XS3-specific unit tests
+  * `bfp_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/tests/bfp_tests/>`_ - BFP unit tests
+  * `dct_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/tests/dct_tests/>`_ - DCT unit tests
+  * `filter_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/tests/filter_tests/>`_ - Filtering unit tests
+  * `fft_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/tests/fft_tests/>`_ - FFT unit tests
+  * `scalar_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/tests/scalar_tests/>`_ - Scalar op unit tests
+  * `vect_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/tests/vect_tests/>`_ - Vector op unit tests
+  * `xs3_tests/ <https://github.com/xmos/lib_xcore_math/tree/develop/tests/xs3_tests/>`_ - XS3-specific unit tests
 
-All examples are currently in the `/example/
-<https://github.com/xmos/lib_xcore_math/tree/develop/example/>`_ directory:
+All examples are currently in the `/examples/
+<https://github.com/xmos/lib_xcore_math/tree/develop/examples/>`_ directory:
 
-* `/example/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/>`_ - Example projects for ``lib_xcore_math``:
+* `/examples/ <https://github.com/xmos/lib_xcore_math/tree/develop/examples/>`_ - Example projects for ``lib_xcore_math``:
 
-  * `bfp_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/bfp_demo/>`_ - BFP demo
-  * `filter_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/filter_demo/>`_ - Filtering demo
-  * `fft_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/fft_demo/>`_ - FFT demo
-  * `vect_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/example/vect_demo/>`_ - Vector op demo
+  * `bfp_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/examples/bfp_demo/>`_ - BFP demo
+  * `filter_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/examples/filter_demo/>`_ - Filtering demo
+  * `fft_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/examples/fft_demo/>`_ - FFT demo
+  * `vect_demo/ <https://github.com/xmos/lib_xcore_math/tree/develop/examples/vect_demo/>`_ - Vector op demo
 
 Each example above has a ReadMe file with a short description.
 
@@ -176,37 +186,30 @@ All unit tests and examples are built and executed in a similar manner. The foll
 the BFP unit tests.
 
 BFP Unit Tests
-**************
+--------------
 
 This application runs unit tests for the various 16- and 32-bit BFP vectorized arithmetic functions.
-This application is located at `/test/bfp_tests/
-<https://github.com/xmos/lib_xcore_math/tree/develop/test/bfp_tests>`_.
+This application is located at `/tests/bfp_tests/
+<https://github.com/xmos/lib_xcore_math/tree/develop/tests/bfp_tests>`_.
 
 To execute the BFP unit tests on the explorer board, from your CMake build directory use the
 following (after ensuring that the hardware is connected and drivers properly installed): ::
 
-    xrun --xscope test/bfp_tests/bfp_tests.xe
+    xrun --xscope tests/bfp_tests/bfp_tests.xe
 
 Or, to run the unit tests in the software simulator: ::
 
-    xsim test/bfp_tests/bfp_tests.xe
+    xsim tests/bfp_tests/bfp_tests.xe
 
 Note that running the unit tests in the simulator may be *very* slow.
 
 To execute the BFP unit tests built for an x86 host platform, from your CMake build directory run on Linux and MacOS: ::
 
-   ./test/bfp_tests/bfp_tests -v
+   ./tests/bfp_tests/bfp_tests -v
 
 and on Windows: ::
 
-   test\bfp_tests\bfp_tests.exe -v
+   tests\bfp_tests\bfp_tests.exe -v
 
 where ``-v`` is an optional argument to increase verbosity.
 
-Building Documentation
-----------------------
-
-The following information is intended for XMOS users. Pre-built documentation may be found on the
-`XMOS website <https://www.xmos.com>`_.
-
-The documentation is built using the `xmosdoc <https://github.com/xmos/xmosdoc>`_ tool. Refer to it's readme for the build instructions.

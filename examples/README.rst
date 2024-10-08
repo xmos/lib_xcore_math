@@ -1,3 +1,5 @@
+:orphan:
+
 This folder contains example applications.
 
 The example applications are intended to demonstrate use of the ``lib_xcore_math`` APIs through
