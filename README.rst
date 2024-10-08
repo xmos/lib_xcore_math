@@ -38,8 +38,8 @@ Repository Structure
 Requirements
 ============
 
-* xTIMEcomposer tools version 15.0.6 or later
-* CMake (for building the library and unit tests, version 3.14 or later)
+* xTIMEcomposer tools version 15.3.0 or later
+* CMake (for building the library and unit tests, version 3.21 or later)
 * Doxygen (for building documentation)
 * Python 3 (for running source generation scripts, if necessary)
 
