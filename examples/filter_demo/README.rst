@@ -1,3 +1,6 @@
+
+:orphan:
+
 Example App: filter_demo
 ========================
 
