@@ -184,10 +184,6 @@ pipeline {
           agent {
             label 'documentation'
           }
-          environment {
-            PYTHON_VERSION = "3.10.0"
-            PIP_VERSION = "21.2.3"
-          }
           stages {
             stage('Build Documentation') {
               steps {
