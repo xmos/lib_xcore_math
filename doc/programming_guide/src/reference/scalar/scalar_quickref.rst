@@ -15,11 +15,15 @@ Scalar Type Conversion
 
 .. _scalar_type_conversion:
 
+|beginfullwidth|
+
 .. csv-table:: Scalar Type Conversion
     :file: csv/scalar_type_conversion.csv
     :widths: 40,30,30
     :header-rows: 1
     :class: longtable
+
+|endfullwidth|
 
 
 

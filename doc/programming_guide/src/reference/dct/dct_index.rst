@@ -17,9 +17,7 @@ and Type-III are supported here.
     :class: longtable
 
 
-.. raw:: latex
-
-  \newpage
+|newpage|
 
 
 .. doxygengroup:: dct_api

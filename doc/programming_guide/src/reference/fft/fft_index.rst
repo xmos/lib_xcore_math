@@ -7,6 +7,8 @@ Fast Fourier Transform API
 FFT API Quick Reference
 -----------------------
 
+|beginfullwidth|
+
 .. csv-table:: FFT Functions - Quick Reference
     :file: fft_functions.csv
     :widths: 40, 30, 30
@@ -14,9 +16,9 @@ FFT API Quick Reference
     :class: longtable
 
 
-.. raw:: latex
+|endfullwidth|
 
-  \newpage
+|newpage|
 
 
 .. doxygengroup:: fft_api
