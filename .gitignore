@@ -1,29 +1,52 @@
-# editor cruft
+
+# Tmp files & logs
+*.settings
+*.bin
+*.zip
+*.log
+*.vcd
+*.swp
+*.*~
+*.xmt
+*.swo
+*.swn
+*~
+*.DS_Store
 **/.vscode/
 
-# python cruft
-**/*.pyc
-**/__pycache__/*
-.venv/*
-**/.ipynb_checkpoints/*
-**/*.egg-info/*
-Pipfile.lock
+# Python
+*.pyc
+**/*.egg-info/
+**/.venv*/
 .python-version
+**/__pycache__/*
+**/.ipynb_checkpoints/*
+Pipfile.lock
 
-# build cruft
-_build
-**/.build*/
-**/build*/
-**/bin/
-lib_xcore_math/lib/
+# XMOS temp files
+**/*build*/*
+*/bin/*
+**/flash_bin_node*
+**/fw-*
+**/s2l-*
+**/spanning-xn-*
+**/target-xn*
+*.xi
+*.o
+*.i
+*.a
+*.d
+*.decouple
+*.pca.xml
+**/CMakeFiles/*
 
-# MacOS cruft
-.DS_Store
+# XMOS binaries
+*.xe
 
-# misc cruft
-**/*.local.*
-**/*.local/
+# Built documentation
+doc/_build/pdf/*.pdf
+**/doc/pdf/*.pdf
 
-# test cruft
-test/deps
-*.csv
+# Binaries
+**/bin/*
+
