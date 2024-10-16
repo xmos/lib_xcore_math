@@ -3,7 +3,7 @@
 include(CMakeDependentOption)
 
 
-#### BUILD OPTIONS ####  
+#### BUILD OPTIONS ####
 
 ### Indicates that you're developing lib_xcore_math in this build
 ## If enabled, the unit tests and examples will also be built.

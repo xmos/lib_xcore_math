@@ -1,13 +1,13 @@
 # This file provides overrides to the Doxyfile configuration
 
 PROJECT_NAME           = lib_xcore_math
-PROJECT_BRIEF          = "VPU-optimized math for the XMOS xcore architecture"
+PROJECT_BRIEF          = "xcore optimised math"
 
 EXTRACT_STATIC         = YES
 
-INPUT                  = ../lib_xcore_math/api  ../doc/programming_guide
+INPUT                  = ../lib_xcore_math/api  ../doc/rst
 
-PREDEFINED             = C_API= EXTERN_C= 
+PREDEFINED             = C_API= EXTERN_C=
 
 USE_MATHJAX            = YES
 MATHJAX_FORMAT         = HTML-CSS
