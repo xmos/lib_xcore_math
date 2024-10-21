@@ -1,23 +1,25 @@
+# This file relates to internal XMOS infrastructure and should be ignored by external users
 ---
 lib_name: lib_xcore_math
 project: '{{lib_name}}'
-title: '{{lib_name}}: XMath'
+title: '{{lib_name}}: xcore optimised math'
 version: 2.3.0
 
 documentation:
   exclude_patterns_path: doc/exclude_patterns.inc
-  root_doc: doc/programming_guide/index.rst
+  root_doc: doc/rst/lib_xcore_math.rst
   cognidox_part_number: XM-015059-UG
   doxygen_projects:
     lib_xcore_math:
       doxyfile_path: doc/Doxyfile.inc
   pdfs:
-    doc/programming_guide/index.rst:
-      pdf_title: "{{title}} - Programming Guide"
-      pdf_filename: "{{project}}_programming_guide_v{{version}}"
+    doc/rst/lib_xcore_math.rst:
+      pdf_title: '{{title}}'
+      pdf_filename: '{{lib_name}}_v{{version}}'
     README.rst:
       pdf_title: '{{title}} (README)'
       pdf_filename: '{{lib_name}}_v{{version}}_readme'
       pdf_short: yes
 software:
   cognidox_part_number: XM-015084-SM
+

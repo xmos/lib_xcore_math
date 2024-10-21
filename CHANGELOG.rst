@@ -1,10 +1,15 @@
 lib_xcore_math change log
 =========================
 
+UNRELEASED
+----------
+
+  * CHANGED: Documentation updated
+
 2.3.0
 -----
 
-* Changes examples and tests to build using XCommon CMake
+  * CHANGED: Examples and tests to build using XCommon CMake
 
 2.2.0
 -----
@@ -181,18 +186,18 @@ New Functions
       packed representation.
     * `bfp_fft_pack_mono()` -- Opposite of `bfp_fft_unpack_mono()`. Used to repack the spectrum into
       a form suitable for calling `bfp_fft_inverse_mono()`.
-  
+
   * Dynamic BFP vector allocation
-  
+
     * Functions for allocating and deallocating BFP vectors dynamically from the heap.
     * `bfp_sXX_alloc()`, `bfp_complex_sXX_alloc()`
     * `bfp_sXX_dealloc()`, `bfp_complex_sXX_dealloc()`
 
   * Multiply-accumulate functions
-    
+
     * A handful of element-wise multiply-accumulate functions have been added for both 16-bit and
       32-bit, and both real and complex vector types. e.g...
-    
+
     * `bfp_sXX_macc()` -- Element-wise multiply accumulate for real 16/32-bit vectors
     * `bfp_sXX_nmacc()` -- Element-wise negated multiply accumulate (i.e. multiply-subtract) for
       real vectors
@@ -200,7 +205,7 @@ New Functions
     * `bfp_complex_sXX_conj_macc()` -- Element-wise conjugate multiply accumulate for complex
       vectors.
     * (and various others)
-  
+
   * `bfp_complex_sXX_conjugate()` -- Get the complex conjugate of a vector
   * `bfp_complex_sXX_energy()` -- Compute the sum of a complex vector's elements' squared
     magnitudes.
@@ -210,10 +215,10 @@ New Functions
     short convolution kernel. Both "valid" and "same" padding modes are supported.
   * `xs3_vect_sXX_add_scalar()` / `xs3_vect_complex_sXX_add_scalar()` -- Functions to add scalar to
     a vector (16/32-bit real/complex)
-    
+
 
 * Vector API
-  
+
   * Functions supporting mixed-depth operations
 
     * `xs3_mat_mul_s8_x_s8_yield_s32()` -- Multiply-accumulate an 8-bit vector by an 8-bit matrix
@@ -255,7 +260,7 @@ New Functions
 
   * `dctXX_forward()` / `dctXX_inverse()` -- Forward (type-II) and inverse (type-III) `XX`-point DCT
     implementations.
-  
+
     * Current sizes supported are `6`, `8`, `12`, `16`, `24`, `32`, `48` and `64`
 
   * `dct8x8_forward()` / `dct8x8_inverse()` -- Fast 2D 8-by-8 forward and inverse DCTs.
@@ -283,7 +288,7 @@ Miscellaneous
 
   * Includes automatic fetching of Unity repository during build
 
-  
+
 
 1.0.0
 -----
