@@ -14,75 +14,70 @@ UNRELEASED
 2.2.0
 -----
 
-Bugfixes
-********
-
-* Fixes bug (issue #170) in `xs3_memcpy()`.
-* Fixes saturation in `filter_fir_s32()` when `shift <= 0`.
-
-New Functions
-*************
-* Biquad filtering
-
-  * `filter_biquad_sat_s32()` -- Apply a biquad filter to a 32-bit signal with saturation.
-
-Miscellaneous
-*************
-
-* Adds XCommon CMake build system support.
-* Removes deprecated `numpy` types in `xmath_script.py` (issue #139).
-* Makes FFT documentation more clear (issue #169).
+  * ADDED:   `filter_biquad_sat_s32()` - Apply a biquad filter to a 32-bit
+    signal with saturation.
+  * ADDED:   XCommon CMake build system support.
+  * CHANGED: Removed deprecated `numpy` types in `xmath_script.py` (issue #139).
+  * CHANGED: Made FFT documentation more clear (issue #169).
+  * FIXED:   Bug (issue #170) in `xs3_memcpy()`.
+  * FIXED:   Saturation in `filter_fir_s32()` when `shift <= 0`.
 
 2.1.3
 -----
 
-* Fixes bug (issue #147) in `s16_to_s32()`.
-* Fixes bug (issue #146) in `bfp_s32_macc()` and `bfp_s32_nmacc()`.
-* Fixes bug with the `vect_s32_prepare_api` not appearing in the documentation.
-* Fixes bug in `bfp_s32_mean()` and `bfp_s16_mean()` when hitting a corner case scenario.
-* Cleans up internal functions.
-* Allows compiling and running demos and tests on Windows Native x86 platforms.
-* Removes several warnings.
+  * Fixes bug (issue #147) in `s16_to_s32()`.
+  * Fixes bug (issue #146) in `bfp_s32_macc()` and `bfp_s32_nmacc()`.
+  * Fixes bug with the `vect_s32_prepare_api` not appearing in the
+    documentation.
+  * Fixes bug in `bfp_s32_mean()` and `bfp_s16_mean()` when hitting a corner
+    case scenario.
+  * Cleans up internal functions.
+  * Allows compiling and running demos and tests on Windows Native x86
+    platforms.
+  * Removes several warnings.
 
 2.1.2
 -----
 
-* Optimization fix (issue #128) for `filter_fir_s32()`
-* Documentation improvements.
+  * Optimisation fix (issue #128) for `filter_fir_s32()`
+  * Documentation improvements.
 
 2.1.1
 -----
 
-* Fixes bug (issue #116) in `vect_packed_complex_s32_macc()`.
-* Fixes bug (issue #119) in `filter_fir_s32()`.
-* Adds `--scale` option to the filter conversion script `gen_biquad_filter_s32.py`
-
-  * If internal filter states (outputs from internal biquad sections) grow too large
-  integer overflows may occur. Using the `--scale` option can help avoid this by
-  effectively applying a gain factor to all coefficients.
-
-* Fixes bug (mentioned in issue #119) in the `gen_fir_filter_s32.py` and
-`gen_fir_filter_s16.py` filter conversion scripts where in a certain corner case
-filter coefficients can overflow.
+  * Fixes bug (issue #116) in `vect_packed_complex_s32_macc()`.
+  * Fixes bug (issue #119) in `filter_fir_s32()`.
+  * Adds `--scale` option to the filter conversion script
+    `gen_biquad_filter_s32.py`
+  * If internal filter states (outputs from internal biquad sections) grow too
+    large integer overflows may occur. Using the `--scale` option can help avoid
+    this by effectively applying a gain factor to all coefficients.
+  * Fixes bug (mentioned in issue #119) in the `gen_fir_filter_s32.py` and
+    `gen_fir_filter_s16.py` filter conversion scripts where in a certain corner
+    case filter coefficients can overflow.
 
 2.1.0
 -----
 
-* Adds several new operations for IEEE float vectors.
-* Corrects `module_build_info` for legacy build tools.
-* Fixes potential issue with include paths.
+  * Adds several new operations for IEEE float vectors.
+  * Corrects `module_build_info` for legacy build tools.
+  * Fixes potential issue with include paths.
 
 2.0.2
 -----
 
-* Updated CMake configuration to support Darwin platform.
+  * Updated CMake configuration to support Darwin platform.
 
 2.0.1
 -----
 
-* Bugfix: Fixed issue with including ``xmath/xmath.h`` from XC files.
-* Doc Update: Corrected instructions for configuring CMake using XS3 toolchain.
+  * Bugfix: Fixed issue with including ``xmath/xmath.h`` from XC files.
+  * Doc Update: Corrected instructions for configuring CMake using XS3
+    toolchain.
 
+
+Legacy release history
+======================
 
 2.0.0
 -----
@@ -288,9 +283,8 @@ Miscellaneous
 
   * Includes automatic fetching of Unity repository during build
 
-
-
 1.0.0
 -----
 
   * Initial version
+
