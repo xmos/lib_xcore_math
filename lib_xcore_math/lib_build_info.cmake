@@ -1,7 +1,7 @@
 set(LIB_NAME lib_xcore_math)
 
 set(LIB_XMATH_PATH ${XMOS_SANDBOX_DIR}/lib_xcore_math/lib_xcore_math)
-include(${XMOS_SANDBOX_DIR}/lib_xcore_math/etc/build_options.cmake)
+include(${LIB_XMATH_PATH}/build_options.cmake)
 
 set(LIB_VERSION 2.3.0)
 
@@ -29,7 +29,7 @@ if(APP_BUILD_ARCH STREQUAL "xs3a")
 
 else() # native or non-xs3a
 
-  file( GLOB_RECURSE SOURCES_REF RELATIVE ${LIB_XMATH_PATH} 
+  file( GLOB_RECURSE SOURCES_REF RELATIVE ${LIB_XMATH_PATH}
                                   "${LIB_XMATH_PATH}/src/arch/ref/*.c" )
   set(LIB_ASM_SRCS "")
 
@@ -79,7 +79,7 @@ if ( ${XMATH_GEN_FFT_LUT} )
                         "Disable the XMATH_GEN_FFT_LUT option to use the version included with the repository (max FFT length=1024). "
                         "Disable the XMATH_USE_DEFAULT_FFT_LUT option if you've manually generated the LUT.")
   endif()
-  
+
   set( XMATH_AUTOGEN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src.gen )
 
   file(MAKE_DIRECTORY ${XMATH_AUTOGEN_DIR})
@@ -88,7 +88,7 @@ if ( ${XMATH_GEN_FFT_LUT} )
   set( FFT_LUT_FILE "xmath_fft_lut" )
   set( FFT_LUT_FILE_SOURCE  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.c )
   set( FFT_LUT_FILE_HEADER  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.h )
- 
+
   list(APPEND FFT_SCRIPT_ARGS --out_file ${FFT_LUT_FILE})
   list(APPEND FFT_SCRIPT_ARGS --out_dir ${XMATH_AUTOGEN_DIR})
   list(APPEND FFT_SCRIPT_ARGS --max_fft_log2 ${XMATH_MAX_FFT_LEN_LOG2})
