@@ -53,7 +53,6 @@ pipeline {
                 runningOn(env.NODE_NAME)
                 dir("${REPO}") {
                   checkout scm
-                  // fetch submodules
                   withTools(params.TOOLS_VERSION) {
                     dir('examples') {
                       // xs3a build
@@ -122,11 +121,11 @@ pipeline {
                     dir('tests/legacy_build') {
                       // legacy XCommon
                       sh 'xmake -j4'
-                      //sh 'xrun --io --id 0 bin/legacy_build.xe'
+                      sh 'xrun --io --id 0 bin/legacy_build.xe'
                       // legacy CMake
                       sh "cmake -B build --toolchain=${WORKSPACE}/xmos_cmake_toolchain/xs3a.cmake"
                       sh 'xmake -C build -j'
-                      //sh 'xrun --io --id 0 build/legacy_cmake_build.xe'
+                      sh 'xrun --io --id 0 build/legacy_cmake_build.xe'
                     }
                   }
                 }
@@ -151,11 +150,11 @@ pipeline {
                 dir('lib_xcore_math') {
                   checkout scm
                   withTools(params.TOOLS_VERSION) {
-                    withVS {
-                      dir('examples') {
-                        // xs3a build
-                        bat 'cmake -B build_xs3a -G "Unix Makefiles"'
-                        bat 'xmake -C build_xs3a'
+                    dir('examples') {
+                      // xs3a build
+                      bat 'cmake -B build_xs3a -G "Unix Makefiles"'
+                      bat 'xmake -C build_xs3a'
+                      withVS {
                         // x86 build
                         bat 'cmake -B build_x86 -G Ninja -D BUILD_NATIVE=TRUE'
                         bat 'ninja -C build_x86'
