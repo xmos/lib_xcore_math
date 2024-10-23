@@ -5,6 +5,8 @@ UNRELEASED
 ----------
 
   * CHANGED: Documentation updated
+  * CHANGED: Renamed examples to app_
+  * FIXED:   Added missing xcore_math.h
 
 2.3.0
 -----

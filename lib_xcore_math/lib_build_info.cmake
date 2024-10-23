@@ -1,7 +1,7 @@
 set(LIB_NAME lib_xcore_math)
 
 set(LIB_XMATH_PATH ${XMOS_SANDBOX_DIR}/lib_xcore_math/lib_xcore_math)
-include(${LIB_XMATH_PATH}/build_options.cmake)
+include(${XMOS_SANDBOX_DIR}/lib_xcore_math/lib_xcore_math/build_options.cmake)
 
 set(LIB_VERSION 2.3.0)
 
@@ -84,7 +84,7 @@ if ( ${XMATH_GEN_FFT_LUT} )
 
   file(MAKE_DIRECTORY ${XMATH_AUTOGEN_DIR})
 
-  set( FFT_LUT_SCRIPT ${LIB_XMATH_PATH}/script/gen_fft_table.py )
+  set( FFT_LUT_SCRIPT ${LIB_XMATH_PATH}/python/gen_fft_table.py )
   set( FFT_LUT_FILE "xmath_fft_lut" )
   set( FFT_LUT_FILE_SOURCE  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.c )
   set( FFT_LUT_FILE_HEADER  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.h )
