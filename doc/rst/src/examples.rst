@@ -7,10 +7,10 @@ Example Applications
 Several example applications are offered to demonstrate use of the ``lib_xcore_math`` APIs through
 simple code examples.
 
-  * ``bfp_demo`` - Demonstration of the block floating-point arithmetic API
-  * ``vect_demo`` - Demonstration of the low-level vectorized arithmetic API
-  * ``fft_demo`` - Demonstration of the Fast Fourier Transform API
-  * ``filter_demo`` - Demonstration of the filtering API
+  * ``app_bfp_demo`` - Demonstration of the block floating-point arithmetic API
+  * ``app_vect_demo`` - Demonstration of the low-level vectorized arithmetic API
+  * ``app_fft_demo`` - Demonstration of the Fast Fourier Transform API
+  * ``app_filter_demo`` - Demonstration of the filtering API
 
 This section assumes you have downloaded and installed the `XMOS XTC tools <https://www.xmos.com/software-tools/>`_
 (see `README` for required version).
@@ -47,14 +47,14 @@ command::
 
 For instance, to run the ``bfp_demo`` example, use::
 
-    xrun --xscope examples/bfp_demo/bin/bfp_demo.xe
+    xrun --xscope examples/app_bfp_demo/bin/app_bfp_demo.xe
 
 To run the example using the ``xcore`` simulator instead, use::
 
     xsim examples/EXAMPLE_NAME/bin/EXAMPLE_NAME.xe
 
-bfp_demo
-========
+app_bfp_demo
+=============
 
 The purpose of this example application is to demonstrate how the arithmetic functions of
 ``lib_xcore_math``'s block floating-point API may be used.
@@ -66,8 +66,8 @@ The example only demonstrates the real 32-bit arithmetic BFP functions (that is,
 names ``bfp_s32_*``). The real 16-bit (``bfp_s16_*``), complex 32-bit (``bfp_complex_s32_*``) and
 complex 16-bit (``bfp_complex_s16_*``) functions all use similar naming conventions.
 
-vect_demo
-=========
+app_vect_demo
+=============
 
 The purpose of this example application is to demonstrate how the arithmetic functions of
 ``lib_xcore_math``'s lower-level vector API may be used.
@@ -81,16 +81,16 @@ default behavior of the high-level block floating-point API is required. Given t
 showcasing the breadth of operations available, this example examines first how to achieve
 comparable behavior to the BFP API, and then ways in which that behavior can be modified.
 
-fft_demo
-========
+app_fft_demo
+============
 
 The purpose of this example application is to demonstrate how the FFT functions of
 ``lib_xcore_math``'s block floating-point API may be used.
 
 In this example we demonstrate each of the offered forward and inverse FFTs of the BFP API.
 
-filter_demo
-===========
+app_filter_demo
+===============
 
 The purpose of this example application is to demonstrate how the functions of
 ``lib_xcore_math``'s filtering vector API may be used.

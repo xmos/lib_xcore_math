@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "xmath/xmath.h"
+#include "xcore_math.h"
 
 
 // Prints a BFP vector both in its mantissa-exponent form and as a floating point vector. Also
@@ -133,7 +133,7 @@ void vect_s32_example()
       B.data[k] = rand();
       C.data[k] = rand();
     }
-    
+
     //use an exponent of -31 on each, just to keep the values tractable
     B.exp = -31;
     C.exp = -31;
@@ -142,7 +142,7 @@ void vect_s32_example()
     PRINT_VECT_S32(C);
 
   }
-  
+
   // We don't yet know the headroom of B[] and C[], so we'll find that next
   {
     printf("\n\n\n============ Step 2 ============\n");
@@ -204,14 +204,14 @@ void vect_s32_example()
     // This is the number of bits the mantissas must be right-shifted to achieve the required
     // exponents
     const int adjustment = required_exponent - A.exp;
-    
+
     /*
      Here it becomes important that you understand the particular operation under consideration.
      This is element-wise multiplication, such that
- 
+
        A[k] * 2^(A.exp) = B[k] * 2^(B.exp) * C[k] * 2^(C.exp)
                         = B[k] * C[k] * 2^(B.exp + C.exp)
- 
+
      The temptation at this point might be to add 'adjustment' to both b_shr and c_shr. But because
      multiplication of exponentials (with a common base) results in adding together their exponents,
      in order to achieve the desired output exponent, we instead need to add a _total_ of
@@ -273,7 +273,7 @@ void vect_s32_example()
     // as follows
     for(int k = 0; k < LENGTH; k++)
       C.data[k] = ((uint32_t)C.data[k]) >> 1;
-  
+
     C.exp += 1;
     PRINT_VECT_S32( C );
 
@@ -295,5 +295,5 @@ void vect_s32_example()
     // trick should, in general, never be needed with vectors that result from lib_xcore_math
     // operators.
   }
-  
+
 }
