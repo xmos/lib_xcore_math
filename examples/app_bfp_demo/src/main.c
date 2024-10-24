@@ -9,7 +9,7 @@
 # include <xscope.h>
 #endif
 
-#include "xmath/xmath.h"
+#include "xcore_math.h"
 
 void bfp_s32_example();
 
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 
   // This example app only demonstrates the real 32-bit BFP functions, but the other three main categories of
   // arithmetic BFP functions, real 16-bit, complex 32-bit and complex 16-bit, all work in a very similar way.
-  
+
   // The slight caveat is that in a complex 32-bit BFP vector the real and imaginary parts of a given element are
   // stored in adjacent memory locations, in a complex 16-bit BFP vector the real and imaginary parts are stored in
   // separate buffers.
@@ -75,7 +75,7 @@ void bfp_s32_example()
   printf("###################################\n");
   printf("### 32-bit block floating-point ###\n");
   printf("###################################\n\n");
-  
+
   // Let's use 3 BFP vectors, A, B and C for this example. For real 32-bit BFP vectors, we use the type bfp_s32_t.
   bfp_s32_t A, B, C;
 
@@ -96,7 +96,7 @@ void bfp_s32_example()
   bfp_s32_init(&A, buffer_A, -31, LENGTH, 0);
   bfp_s32_init(&B, buffer_B, -31, LENGTH, 0);
   bfp_s32_init(&C, buffer_C, -31, LENGTH, 0);
-  
+
   // Above we specified an initial exponent of -31. For a signed 32-bit value, which can hold integers between
   // (and including) -(2^31) and (2^31)-1, an exponent of -31 means the representable range is -1.0 to 1.0,
   // including the former, but not the latter.
@@ -139,7 +139,7 @@ void bfp_s32_example()
     // exponent of B by 10.
     printf("\n\n");
   }
-  
+
 
   // Now let's try adding together vectors B and C element-wise.
   {
@@ -156,7 +156,7 @@ void bfp_s32_example()
     printf("\n\n");
   }
 
-  
+
   // In the previous step, we updated A with the sum of vector's B and C. But, if we have no need to keep the contents
   // of B around (e.g. it's needed for a subsequent stage), we may be able to forego the memory cost of a third
   // vector (A) just for the output by updating B in-place.
@@ -169,8 +169,8 @@ void bfp_s32_example()
     // pointer to an output vector) can safely update one or the other of the input vectors in-place.
     printf("\n\n");
   }
-  
-  
+
+
   // Element-wise multiplication works just like addition:
   {
     printf("A[k] <-- B[k] * C[k]\n");
@@ -178,10 +178,10 @@ void bfp_s32_example()
     PRINT_VECT(A);
     printf("\n\n");
   }
-  
 
 
-  
+
+
   // There are several BFP functions that take only a single input vector:
 
   // Rectify a vector so that all elements are non-negative
@@ -224,7 +224,7 @@ void bfp_s32_example()
     PRINT_SCALAR(alpha);
     printf("\n\n");
   }
-  
+
 
   // Maximum element of a BFP vector
   {
@@ -243,5 +243,5 @@ void bfp_s32_example()
     printf("\n\n");
   }
 
-  
+
 }
