@@ -7,6 +7,7 @@ UNRELEASED
   * CHANGED: Documentation updated
   * CHANGED: Renamed examples to app_
   * FIXED:   Added missing xcore_math.h
+  * REMOVED: xmos_cmake_toolchain submodule
 
 2.3.0
 -----
