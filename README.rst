@@ -12,9 +12,9 @@ lib_xcore_math: xcore optimised math
 :keywords: arithmetic, DSP, VPU, math
 :devices: xcore.ai
 
-********
-Overview
-********
+*******
+Summary
+*******
 
 ``lib_xcore_math`` is an arithmetic and DSP library which leverages the Vector Processing Unit
 (VPU) of XS3/`xcore.ai` based devices in order to accelerate costly operations on vectors of 16-
