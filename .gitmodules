@@ -1,3 +1,0 @@
-[submodule "etc/xmos_cmake_toolchain"]
-	path = etc/xmos_cmake_toolchain
-	url = git@github.com:xmos/xmos_cmake_toolchain

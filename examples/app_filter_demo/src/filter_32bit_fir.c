@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "xmath/xmath.h"
+#include "xcore_math.h"
 
 
 #define TAP_COUNT     (35)
@@ -104,7 +104,7 @@ void filter_32bit_fir()
 
   // Print out the filter coefficients
   printf("Filter Coefficients:\n");
-  
+
   printf("b = [");
   for(int k = 0; k < TAP_COUNT; k++){
     printf("% 11ld, ", (long int) filter.coef[k]);
@@ -114,7 +114,7 @@ void filter_32bit_fir()
 
   printf("filter_shr = %d\n\n", filter.shift);
 
-  
+
   // Print the equivalent floating-point FIR filter coefficients
   printf("b_float = [");
   for(int k = 0; k < TAP_COUNT; k++){

@@ -1,13 +1,13 @@
-VERSION = 2.3.0
+VERSION = 2.4.0
 
-DEPENDENT_MODULES = 
+DEPENDENT_MODULES =
 
 MODULE_XCC_FLAGS = $(XCC_FLAGS) -g -Os -Wall -Wextra -Werror
 
 EXPORT_INCLUDE_DIRS = api src/etc
 
 # INCLUDE_DIRS = $(EXPORT_INCLUDE_DIRS) api/xmath/vect api/xmath/bfp api/xmath/scalar api/xmath/xs3  \
-#                 src/arch/xs3 src/vect src/etc/xmath_fft_lut 
+#                 src/arch/xs3 src/vect src/etc/xmath_fft_lut
 
 SOURCE_DIRS = src                             \
               src/arch/xs3                    \
@@ -35,4 +35,4 @@ SOURCE_DIRS = src                             \
               src/fft                         \
               src/filter                      \
               src/scalar                      \
-              src/vect                        
+              src/vect
