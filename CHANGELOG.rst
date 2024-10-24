@@ -1,8 +1,8 @@
 lib_xcore_math change log
 =========================
 
-UNRELEASED
-----------
+2.4.0
+-----
 
   * CHANGED: Documentation updated
   * CHANGED: Renamed examples to app_

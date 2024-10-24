@@ -3,7 +3,7 @@
 lib_name: lib_xcore_math
 project: '{{lib_name}}'
 title: '{{lib_name}}: xcore optimised math'
-version: 2.3.0
+version: 2.4.0
 
 documentation:
   exclude_patterns_path: doc/exclude_patterns.inc
