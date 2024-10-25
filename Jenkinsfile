@@ -114,7 +114,7 @@ pipeline {
             stage('Legacy build') {
               steps {
                 runningOn(env.NODE_NAME)
-                sh 'git clone git@github.com:xmos/xmos_cmake_toolchain'
+                sh 'git clone --branch=v1.0.0 git@github.com:xmos/xmos_cmake_toolchain'
                 dir("${REPO}") {
                   checkout scm
                   withTools(params.TOOLS_VERSION) {
@@ -189,7 +189,7 @@ pipeline {
             stage('Legacy build') {
               steps {
                 runningOn(env.NODE_NAME)
-                bat 'git clone git@github.com:xmos/xmos_cmake_toolchain'
+                bat 'git clone --branch=v1.0.0 git@github.com:xmos/xmos_cmake_toolchain'
                 dir('lib_xcore_math') {
                   checkout scm
                   withTools(params.TOOLS_VERSION) {
