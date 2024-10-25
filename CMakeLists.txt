@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 ## Set up the build options
-include(etc/build_options.cmake)
+include(lib_xcore_math/build_options.cmake)
 
 find_package( Python3 COMPONENTS Interpreter )
 

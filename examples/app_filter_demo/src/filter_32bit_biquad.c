@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "xmath/xmath.h"
+#include "xcore_math.h"
 
 // Each filter_biquad_s32_t can store (up to) 8 biquad filter sections
 #define SECTION_COUNT   8
@@ -21,7 +21,7 @@
 filter_biquad_s32_t filter = {
   // Number of biquad sections in this filter block
   .biquad_count = SECTION_COUNT,
-  
+
   // Filter state, initialized to 0
   .state = {{0}},
 

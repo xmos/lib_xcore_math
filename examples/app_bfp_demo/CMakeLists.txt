@@ -1,12 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
 include($ENV{XMOS_CMAKE_PATH}/xcommon.cmake)
-project(vect_demo)
+project(app_bfp_demo)
 
-if(DEFINED XCORE_TARGET)
-    set(APP_HW_TARGET ${XCORE_TARGET})
-else()
-    set(APP_HW_TARGET XK-EVK-XU316)
-endif()
+set(APP_HW_TARGET XK-EVK-XU316)
 
 set(XMOS_SANDBOX_DIR ${CMAKE_CURRENT_LIST_DIR}/../../..)
 

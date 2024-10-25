@@ -10,7 +10,7 @@
 # include <xscope.h>
 #endif
 
-#include "xmath/xmath.h"
+#include "xcore_math.h"
 
 void fft_mono_example();
 void fft_stereo_example();
@@ -51,21 +51,21 @@ void fft_mono_example()
     This function demonstrates how apply the forward and inverse FFT to a single channel of
     real data.  This is accomplished using the bfp_fft_forward_mono() and bfp_fft_inverse_mono()
     functions respectively.
- 
+
     bfp_s32_t         --bfp_fft_forward_mono()--> bfp_complex_s32_t
     bfp_complex_s32_t --bfp_fft_inverse_mono()--> bfp_s32_t
   */
-  
+
   // bfp_fft_forward_mono() requires an input BFP vector of type bfp_s32_t, whose mantissa vector
   // is backed by an int32_t array.
   // The +2 below is so spectrum unpacking can be demonstrated (more on this below).
   int32_t buffer[LENGTH+2];
-  
+
   // We'll just fill that vector with random mantissas.
   for(int k = 0; k < LENGTH; k++){
     buffer[k] = rand() << 1;
   }
-  
+
   // Before doing the forward FFT the input vector needs to be initialized. In many situations there
   // is no obvious natural exponent to associate with the time-domain signal (such as PCM audio
   // streams). In such a situation, it is often convenient to select an exponent that normalizes the
@@ -189,7 +189,7 @@ void fft_stereo_example()
     2 x bfp_s32_t     --bfp_fft_forward_stereo()--> 2 x bfp_complex_s32_t
     2 x bfp_complex_s32_t --bfp_fft_inverse_stereo()--> 2 x bfp_s32_t
   */
-  
+
   // bfp_fft_forward_stereo() requires 2 input BFP vectors of type bfp_s32_t, whose  mantissa
   // vectors are backed by a int32_t arrays. The +1 is because we're going to do some unpacking of
   // the spectra after applying the FFT. See fft_mono_example() for unpacking explanation.
@@ -201,7 +201,7 @@ void fft_stereo_example()
   // bfp_fft_forward_stereo() and bfp_fft_inverse_stereo() also require a scratch buffer with
   // element type complex_s32_t which is the same length (in elements) of the input vectors.
   complex_s32_t DWORD_ALIGNED scratch[LENGTH];
-  
+
   // Fill in the buffers with random mantissas (left shift is to ensure some are negative).
   for(int k = 0; k < LENGTH; k++){
     bufferA[k] = rand() << 1;
@@ -302,7 +302,7 @@ void fft_stereo_example()
   // ...
   ///////////////////////////////
 
-  
+
   // Repack the spectra
   if(UNPACK_SPECTRA_STEREO) {
     bfp_fft_pack_mono(ChA);
@@ -339,7 +339,7 @@ void fft_complex_example()
   printf("###################\n");
   printf("### Complex FFT ###\n");
   printf("###################\n\n");
-  
+
   /*
     This function demonstrates how apply the forward and inverse FFT to single channel containing
     containing a sequence of complex sample data.  This is accomplished using the
@@ -355,7 +355,7 @@ void fft_complex_example()
   // imaginary part of an element.  The buffer is then an alternating sequence of real and
   // imaginary parts for successive elements.
   complex_s32_t buffer[LENGTH];
-  
+
   // Fill in the buffer with random mantissas (left shift is to ensure some are negative).
   for(int k = 0; k < LENGTH; k++){
     buffer[k].re = rand() << 1;
@@ -401,7 +401,7 @@ void fft_complex_example()
     Unlike bfp_fft_forward_mono() and bfp_fft_forward_stereo(), the input signal for
     bfp_fft_forward_complex() is not purely real. As such, a full FFT_N complex elements are
     required to represent the spectrum.
-    
+
     Additionally there is no packing of the Nyquist component's real part into the DC component's
     imaginary part.
 
@@ -426,7 +426,7 @@ void fft_complex_example()
   printf("&X->data[0] --> 0x%08X\n", (unsigned) &X->data[0]);
 #endif
   printf("X->length --> %u\n\n", X->length);
-  
+
   // Print out the floating-point equivalent of the complex frequency spectrum
   printf("X = [");
   for(unsigned int k = 0; k < X->length; k++)

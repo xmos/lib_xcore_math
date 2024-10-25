@@ -53,7 +53,6 @@ pipeline {
                 runningOn(env.NODE_NAME)
                 dir("${REPO}") {
                   checkout scm
-                  // fetch submodules
                   withTools(params.TOOLS_VERSION) {
                     dir('examples') {
                       // xs3a build
@@ -115,17 +114,16 @@ pipeline {
             stage('Legacy build') {
               steps {
                 runningOn(env.NODE_NAME)
+                sh 'git clone --branch=v1.0.0 git@github.com:xmos/xmos_cmake_toolchain'
                 dir("${REPO}") {
                   checkout scm
-                  // fetch submodules
-                  sh 'git submodule update --init --recursive --jobs 4'
                   withTools(params.TOOLS_VERSION) {
                     dir('tests/legacy_build') {
                       // legacy XCommon
                       sh 'xmake -j4'
                       sh 'xrun --io --id 0 bin/legacy_build.xe'
                       // legacy CMake
-                      sh "cmake -B build --toolchain=${WORKSPACE}/lib_xcore_math/etc/xmos_cmake_toolchain/xs3a.cmake"
+                      sh "cmake -B build --toolchain=${WORKSPACE}/xmos_cmake_toolchain/xs3a.cmake"
                       sh 'xmake -C build -j'
                       sh 'xrun --io --id 0 build/legacy_cmake_build.xe'
                     }
@@ -141,7 +139,7 @@ pipeline {
           }
         } // Linux build and test
 
-        stage('Windows buildi & test') {
+        stage('Windows build & test') {
           agent {
             label 'windows10&&unified'
           }
@@ -152,11 +150,11 @@ pipeline {
                 dir('lib_xcore_math') {
                   checkout scm
                   withTools(params.TOOLS_VERSION) {
-                    withVS {
-                      dir('examples') {
-                        // xs3a build
-                        bat 'cmake -B build_xs3a -G "Unix Makefiles"'
-                        bat 'xmake -C build_xs3a'
+                    dir('examples') {
+                      // xs3a build
+                      bat 'cmake -B build_xs3a -G "Unix Makefiles"'
+                      bat 'xmake -C build_xs3a'
+                      withVS {
                         // x86 build
                         bat 'cmake -B build_x86 -G Ninja -D BUILD_NATIVE=TRUE'
                         bat 'ninja -C build_x86'
@@ -191,17 +189,16 @@ pipeline {
             stage('Legacy build') {
               steps {
                 runningOn(env.NODE_NAME)
+                bat 'git clone --branch=v1.0.0 git@github.com:xmos/xmos_cmake_toolchain'
                 dir('lib_xcore_math') {
                   checkout scm
-                  // fetch submodules
-                  bat 'git submodule update --init --recursive --jobs 4'
                   withTools(params.TOOLS_VERSION) {
                     withVS {
                       dir('tests/legacy_build') {
                         // legacy XCommon
                         bat 'xmake --jobs 4'
                         // legacy CMake
-                        bat "cmake -B build --toolchain=${WORKSPACE}/lib_xcore_math/etc/xmos_cmake_toolchain/xs3a.cmake -G Ninja"
+                        bat "cmake -B build --toolchain=${WORKSPACE}/xmos_cmake_toolchain/xs3a.cmake -G Ninja"
                         bat 'ninja -C build'
                       }
                     }
