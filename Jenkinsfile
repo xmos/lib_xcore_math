@@ -29,7 +29,7 @@ pipeline {
     )
     string(
         name: 'INFR_APPS_VERSION',
-        defaultValue: 'develop',
+        defaultValue: 'v2.0.1',
         description: 'The infr_apps version'
     )
   } // parameters
