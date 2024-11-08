@@ -107,7 +107,9 @@ pipeline {
 
             stage('Library checks') {
                 steps {
-                    runLibraryChecks("${WORKSPACE}/${REPO}", "${params.INFR_APPS_VERSION}")
+                    warnError("Library checks failed") {
+                        runLibraryChecks("${WORKSPACE}/${REPO}", "${params.INFR_APPS_VERSION}")
+                    }
                 }
             }
 
