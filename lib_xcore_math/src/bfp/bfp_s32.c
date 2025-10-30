@@ -1,4 +1,4 @@
-// Copyright 2020-2023 XMOS LIMITED.
+// Copyright 2020-2025 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 
@@ -567,7 +567,6 @@ void bfp_s32_convolve_same(
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
     assert(b->length >= filter_tap_count);
-    const unsigned P = filter_tap_count >> 1;
     assert(a->length == b->length);
     assert((filter_tap_count > 0) && (filter_tap_count <= VPU_INT32_EPV) && (filter_tap_count & 1));
 #endif

@@ -1,6 +1,11 @@
 lib_xcore_math change log
 =========================
 
+UNRELEASED
+----------
+
+  * FIXED: Build with `XMATH_BFP_DEBUG_CHECK_LENGTHS` enabled
+
 2.4.0
 -----
 
