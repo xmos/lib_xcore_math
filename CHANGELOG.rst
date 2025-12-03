@@ -5,6 +5,7 @@ UNRELEASED
 ----------
 
   * FIXED: Build with `XMATH_BFP_DEBUG_CHECK_LENGTHS` enabled
+  * FIXED: FFT Lookup script path in CMakeLists.txt
 
 2.4.0
 -----
