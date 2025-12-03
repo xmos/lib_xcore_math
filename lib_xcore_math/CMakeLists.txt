@@ -90,7 +90,7 @@ if ( ${XMATH_GEN_FFT_LUT} )
 
   file(MAKE_DIRECTORY ${XMATH_AUTOGEN_DIR})
 
-  set( FFT_LUT_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/script/gen_fft_table.py )
+  set( FFT_LUT_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/python/gen_fft_table.py )
   set( FFT_LUT_FILE "xmath_fft_lut" )
   set( FFT_LUT_FILE_SOURCE  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.c )
   set( FFT_LUT_FILE_HEADER  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.h )
