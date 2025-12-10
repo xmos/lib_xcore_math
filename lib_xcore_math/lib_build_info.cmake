@@ -1,7 +1,6 @@
 set(LIB_NAME lib_xcore_math)
 
-set(LIB_XMATH_PATH ${XMOS_SANDBOX_DIR}/lib_xcore_math/lib_xcore_math)
-include(${XMOS_SANDBOX_DIR}/lib_xcore_math/lib_xcore_math/build_options.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/build_options.cmake)
 
 set(LIB_VERSION 2.4.0)
 
@@ -13,13 +12,13 @@ set(LIB_COMPILER_FLAGS -Os
 
 set(LIB_DEPENDENT_MODULES "")
 
-file( GLOB_RECURSE SOURCES_C RELATIVE ${LIB_XMATH_PATH}
-                                  "${LIB_XMATH_PATH}/src/vect/*.c"
-                                  "${LIB_XMATH_PATH}/src/bfp/*.c"
-                                  "${LIB_XMATH_PATH}/src/dct/*.c"
-                                  "${LIB_XMATH_PATH}/src/fft/*.c"
-                                  "${LIB_XMATH_PATH}/src/filter/*.c"
-                                  "${LIB_XMATH_PATH}/src/scalar/*.c")
+file( GLOB_RECURSE SOURCES_C RELATIVE ${CMAKE_CURRENT_LIST_DIR}
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/vect/*.c"
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/bfp/*.c"
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/dct/*.c"
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/fft/*.c"
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/filter/*.c"
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/scalar/*.c")
 
 
 # Platform specific things
@@ -29,8 +28,8 @@ if(APP_BUILD_ARCH STREQUAL "xs3a")
 
 else() # native or non-xs3a
 
-  file( GLOB_RECURSE SOURCES_REF RELATIVE ${LIB_XMATH_PATH}
-                                  "${LIB_XMATH_PATH}/src/arch/ref/*.c" )
+  file( GLOB_RECURSE SOURCES_REF RELATIVE ${CMAKE_CURRENT_LIST_DIR}
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/arch/ref/*.c" )
   set(LIB_ASM_SRCS "")
 
   # need to link m on x86 non-windows platforms
@@ -84,7 +83,7 @@ if ( ${XMATH_GEN_FFT_LUT} )
 
   file(MAKE_DIRECTORY ${XMATH_AUTOGEN_DIR})
 
-  set( FFT_LUT_SCRIPT ${LIB_XMATH_PATH}/python/gen_fft_table.py )
+  set( FFT_LUT_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/python/gen_fft_table.py )
   set( FFT_LUT_FILE "xmath_fft_lut" )
   set( FFT_LUT_FILE_SOURCE  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.c )
   set( FFT_LUT_FILE_HEADER  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.h )
