@@ -46,8 +46,18 @@ target_compile_options( ${LIB_NAME}
   PRIVATE
     -Os
     -Wall
-    $<$<OR:$<PLATFORM_ID:XCORE_XS3A>,$<PLATFORM_ID:XCORE_VX4B>>:-Wno-xcore-fptrgroup>
+    $<$<PLATFORM_ID:XCORE_XS3A>:-Wno-xcore-fptrgroup>
+    $<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Darwin>>:-fPIC>
+    $<$<AND:$<PLATFORM_ID:Windows>,$<NOT:$<CXX_COMPILER_ID:MSVC>>>:-fPIC>
 )
+
+# Link libm on non-xcore platforms (Linux, macOS, and non-MSVC Windows)
+target_link_libraries(${LIB_NAME}
+  PUBLIC
+  $<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Darwin>>:m>
+  $<$<AND:$<PLATFORM_ID:Windows>,$<NOT:$<CXX_COMPILER_ID:MSVC>>>:m>
+)
+
 
 # Add options for different compilers
 if ( NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -87,7 +97,7 @@ if ( ${XMATH_GEN_FFT_LUT} )
                         "Disable the XMATH_GEN_FFT_LUT option to use the version included with the repository (max FFT length=1024). "
                         "Disable the XMATH_USE_DEFAULT_FFT_LUT option if you've manually generated the LUT.")
   endif()
-  
+
   set( XMATH_AUTOGEN_DIR  ${CMAKE_CURRENT_BINARY_DIR}/src.gen )
 
   file(MAKE_DIRECTORY ${XMATH_AUTOGEN_DIR})
@@ -96,7 +106,7 @@ if ( ${XMATH_GEN_FFT_LUT} )
   set( FFT_LUT_FILE "xmath_fft_lut" )
   set( FFT_LUT_FILE_SOURCE  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.c )
   set( FFT_LUT_FILE_HEADER  ${XMATH_AUTOGEN_DIR}/${FFT_LUT_FILE}.h )
- 
+
   list(APPEND FFT_SCRIPT_ARGS --out_file ${FFT_LUT_FILE})
   list(APPEND FFT_SCRIPT_ARGS --out_dir ${XMATH_AUTOGEN_DIR})
   list(APPEND FFT_SCRIPT_ARGS --max_fft_log2 ${XMATH_MAX_FFT_LEN_LOG2})
