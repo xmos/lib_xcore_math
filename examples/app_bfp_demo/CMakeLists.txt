@@ -30,8 +30,4 @@ else()
                                    )
 endif()
 
-if(PLATFORM_ID STREQUAL Linux OR PLATFORM_ID STREQUAL Darwin)
-    list(APPEND APP_COMPILER_FLAGS -lm)
-endif()
-
 XMOS_REGISTER_APP()
