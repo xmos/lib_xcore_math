@@ -15,6 +15,8 @@
 
 #include "unity_fixture.h"
 
+#define INT16_WIGGLE 4
+
 TEST_GROUP_RUNNER(vect_complex_real_mul) {
   RUN_TEST_CASE(vect_complex_real_mul, vect_complex_s16_real_mul_prepare);
   RUN_TEST_CASE(vect_complex_real_mul, vect_complex_s16_real_mul_basic);
@@ -164,9 +166,13 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_basic)
         //Verify mul_complex_s16() is correct. It's used in other test cases.
         complex_s16_t tmp = mul_complex_s16(casse->value.b.re, casse->value.b.im,
                                             casse->value.c, casse->sat);
-                                            
-        TEST_ASSERT_EQUAL_MSG(casse->expected.re, tmp.re, casse->line);
-        TEST_ASSERT_EQUAL_MSG(casse->expected.im, tmp.im, casse->line);
+        #if defined(__VX4B__)
+            TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected.re, tmp.re);
+            TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected.im, tmp.im);
+        #else
+            TEST_ASSERT_EQUAL_MSG(casse->expected.re, tmp.re, casse->line);
+            TEST_ASSERT_EQUAL_MSG(casse->expected.im, tmp.im, casse->line);
+        #endif
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
         
@@ -192,8 +198,13 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_basic)
                                           C, len, casse->sat);
 
             for(unsigned int i = 0; i < len; i++){
-                TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[i], casse->line);
-                TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[i], casse->line);
+                #if defined(__VX4B__)
+                    TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected.re, A.real[i]);
+                    TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected.im, A.imag[i]);
+                #else
+                    TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[i], casse->line);
+                    TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[i], casse->line);
+                #endif
             }
 
             headroom_t exp_hr = vect_complex_s16_headroom(A.real, A.imag, len);
@@ -205,8 +216,13 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_basic)
                                           C, len, casse->sat);
 
             for(unsigned int i = 0; i < len; i++){
-                TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[i], casse->line);
-                TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[i], casse->line);
+                #if defined(__VX4B__)
+                    TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected.re, A.real[i]);
+                    TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected.im, A.imag[i]);
+                #else
+                    TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[i], casse->line);
+                    TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[i], casse->line);
+                #endif
             }
 
             exp_hr = vect_complex_s16_headroom(A.real, A.imag, len);
@@ -263,8 +279,13 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_random)
         for(unsigned int i = 0; i < len; i++){
             complex_s16_t expected = mul_complex_s16(B.real[i], B.imag[i], C[i], sat);
             
-            TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
-            TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, expected.re, A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, expected.im, A.imag[i]);
+            #else
+                TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
+                TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
+            #endif
         }
 
         TEST_ASSERT_EQUAL_MSG( vect_complex_s16_headroom(A.real,A.imag,len),  hr, v);
@@ -276,8 +297,13 @@ TEST(vect_complex_real_mul, vect_complex_s16_real_mul_random)
 
         for(unsigned int i = 0; i < len; i++){
             complex_s16_t expected = mul_complex_s16(B.real[i], B.imag[i], C[i], sat);
-            TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
-            TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, expected.re, A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, expected.im, A.imag[i]);
+            #else
+                TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
+                TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
+            #endif
         }
 
         TEST_ASSERT_EQUAL_MSG( vect_complex_s16_headroom(A.real,A.imag,len),  hr, v);

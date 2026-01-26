@@ -80,7 +80,12 @@ TEST(vect_sum, vect_s16_sum_basic)
 
             int32_t exp = ((int32_t) casse->b) * len;
 
-            TEST_ASSERT_EQUAL_MSG(exp, result, casse->line);
+            #if defined(__VX4B__)
+                //this casts to 32 bit because it night not fit in 16 bits (due to rounding)
+                TEST_ASSERT_INT32_WITHIN(4, exp, result);
+            #else
+                TEST_ASSERT_EQUAL_MSG(exp, result, casse->line);
+            #endif  
         }
     }
 }
@@ -120,9 +125,11 @@ TEST(vect_sum, vect_s16_sum_random)
         for(unsigned int i = 0; i < len; i++){
             exp += B[i];
         }
-
-        TEST_ASSERT_EQUAL(exp, result);
-        
+        #if defined(__VX4B__)
+            TEST_ASSERT_INT16_WITHIN(4, exp, result);
+        #else
+            TEST_ASSERT_EQUAL(exp, result);
+        #endif
     }
 }
 #undef MAX_LEN

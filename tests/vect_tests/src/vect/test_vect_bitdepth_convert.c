@@ -151,7 +151,7 @@ TEST(vect_bitdepth_convert, vect_s32_to_vect_s16_basic)
         {   0x00000100,      0,      0x0100,    __LINE__},
         {  -0x00000100,      0,     -0x0100,    __LINE__},
         {   0x00008000,      0,      0x7FFF,    __LINE__},
-        {  -0x00008000,      0,     -0x7FFF,    __LINE__},
+        {  -0x00008000,      0,     VPU_INT16_MIN,    __LINE__},
         {   0x00000001,      1,      0x0001,    __LINE__},
         {  -0x00000001,      1,      0x0000,    __LINE__}, //ties round towards positive infty
         {   0x00018000,     16,      0x0002,    __LINE__},

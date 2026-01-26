@@ -182,7 +182,7 @@ TEST(filter_biquad_sat_s32, case4)
     TEST_ASSERT_EQUAL(INT32_MAX, res);
 
     res = filter_biquad_sat_s32(&filter, INT32_MIN);
-    TEST_ASSERT_EQUAL(INT32_MIN + 1, res);
+    TEST_ASSERT_EQUAL(INT32_MIN, res);
 }
 
 // Test a biquad that overflows halfway through the accumulator, 

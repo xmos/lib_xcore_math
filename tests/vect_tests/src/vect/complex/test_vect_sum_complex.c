@@ -157,8 +157,14 @@ TEST(vect_complex_sum, vect_complex_s16_sum_basic)
                 ((int32_t) casse->b.re) * len,
                 ((int32_t) casse->b.im) * len};
 
-            TEST_ASSERT_EQUAL_MSG(exp.re, result.re, casse->line);
-            TEST_ASSERT_EQUAL_MSG(exp.im, result.im, casse->line);
+            #if defined(__VX4B__)
+                //this casts to 32 bit because it night not fit in 16 bits (due to rounding)
+                TEST_ASSERT_INT32_WITHIN(4, exp.re, result.re);
+                TEST_ASSERT_INT32_WITHIN(4, exp.im, result.im);
+            #else
+                TEST_ASSERT_EQUAL_MSG(exp.re, result.re, casse->line);
+                TEST_ASSERT_EQUAL_MSG(exp.im, result.im, casse->line);
+            #endif  
         }
     }
 }
@@ -201,8 +207,14 @@ TEST(vect_complex_sum, vect_complex_s16_sum_random)
 
         result = vect_complex_s16_sum(B.real, B.imag, len);
 
-        TEST_ASSERT_EQUAL(expected.re, result.re);
-        TEST_ASSERT_EQUAL(expected.im, result.im);
+        #if defined(__VX4B__)
+            //this casts to 32 bit because it night not fit in 16 bits (due to rounding)
+            TEST_ASSERT_INT32_WITHIN(4, expected.re, result.re);
+            TEST_ASSERT_INT32_WITHIN(4, expected.im, result.im);
+        #else        
+            TEST_ASSERT_EQUAL(expected.re, result.re);
+            TEST_ASSERT_EQUAL(expected.im, result.im);
+        #endif 
         
     }
 }

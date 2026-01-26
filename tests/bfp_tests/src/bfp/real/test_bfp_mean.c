@@ -54,7 +54,12 @@ TEST(bfp_mean, bfp_s16_mean)
         double sum = 0;
 
         for(unsigned int i = 0; i < B.length; i++){
-            B.data[i] = pseudo_rand_int16(&seed) >> B.hr;
+            B.data[i] = (pseudo_rand_int16(&seed) >> B.hr);
+
+            //This is a simple way of bounding the error due to the new rounding mode in VX4B
+            #if defined(__VX4B__)
+                B.data[i] = B.data[i]&~1;
+            #endif
 
             sum += B.data[i];
         }

@@ -1,0 +1,97 @@
+// Copyright 2020-2022 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
+
+#if defined(__VX4B__)
+
+#include "../asm_helper.h"
+
+.text
+.align 16; /* Translation error on this line: unexpected token at position 9. */ 
+
+/*  
+
+The first time this is called on a vector, `vpu_init` should be set
+to 0x0100  (16-bit mode with no headroom mask).  This function will
+vsetc with that value, and the result of vgetc will be returned at
+the end of this function. This way the caller need not repeatedly
+compare headroom for each chunk with the minimum found so far.
+
+Instead, after all chunks have been processed, the headroom can be
+computed from the final value returned.
+
+unsigned chunk_s16_accumulate(
+    split_acc_s32_t* acc,
+    const int16_t b[VPU_INT16_EPV],
+    const right_shift_t b_shr,
+    const unsigned vpu_ctrl);
+*/
+#define FUNCTION_NAME   chunk_s16_accumulate
+#define NSTACKWORDS     (4 + 8+4)
+
+#define STACK_VEC_C     (NSTACKWORDS - 8-4)
+
+#define acc       x10
+#define b         x11
+#define b_shr     x12
+#define vec_c     x13
+
+
+
+FUNCTION_NAME:
+  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+
+{ mv t3, a3                 ; xm.vldd acc}
+{ nop                       ; xm.vsetc t3}
+{ xm.cls t3, b_shr          ; nop}
+{ addi vec_c,sp, (STACK_VEC_C)*4 ; xm.brff t3, .L_b_shr_neg        }/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+
+.L_b_shr_pos:
+    // non-neg b_shr means we want vlashr
+    la t3, vpu_vec_0x0001
+    xm.vlashr b, b_shr
+  { xm.mkmski b_shr, 32             ; xm.vldc t3}
+    xm.vstrpv vec_c, b_shr
+    addi t3, acc, 32
+  { nop                             ; xm.vldd acc}
+  { nop                             ; xm.vldr t3}
+  { nop                             ; xm.vlmacc0 vec_c}
+  xm.vlmacc1 vec_c
+  { nop                             ; xm.vstd acc}
+    xm.vstrpv t3, b_shr
+  { nop                             ; xm.vgetc t3}
+  { mv a0, t3                 ; xm.retsp (NSTACKWORDS)*4           }
+
+.L_b_shr_neg:
+    // neg b_shr means we want to set c[] to a power of 2
+    la t3, vpu_vec_0x0001
+    xm.vlashr t3, b_shr
+  { xm.mkmski b_shr, 32             ; xm.vldd acc}
+    xm.vstrpv vec_c, b_shr
+  { nop                             ; xm.vldc vec_c}
+    addi t3, acc, 32
+  { nop                             ; xm.vldr t3}
+  { nop                             ; xm.vlmacc0 b}
+  xm.vlmacc1 vec_c
+  { nop                             ; xm.vstd acc}
+    xm.vstrpv t3, b_shr
+  { nop                             ; xm.vgetc t3}
+  { mv a0, t3                 ; xm.retsp (NSTACKWORDS)*4           }
+
+.L_func_end_unpack:
+
+.global FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.size FUNCTION_NAME,.L_func_end_unpack - FUNCTION_NAME
+
+#undef NSTACKWORDS
+#undef FUNCTION_NAME
+
+
+#endif //defined(__VX4B__)
+
+
+

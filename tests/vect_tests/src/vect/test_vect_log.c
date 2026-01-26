@@ -113,7 +113,7 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
     for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i].mant, B[i].exp);
       double exp_dbl = log(bi);
-      expected[i] = lround(ldexp(exp_dbl, 24));
+      expected[i] = llround(ldexp(exp_dbl, 24));
     }
 
     // volatile uint32_t t0 = get_reference_time();
@@ -217,7 +217,7 @@ TEST(vect_log, chunk_s32_log)
       double exp_dbl = log(bi);
 
       if( B[i] == 0 ) expected[i] = -INT32_MAX;
-      else            expected[i] = lround(ldexp(exp_dbl, 24));
+      else            expected[i] = llround(ldexp(exp_dbl, 24));
     }
 
     // volatile uint32_t t0 = get_reference_time();
@@ -293,7 +293,7 @@ TEST(vect_log, vect_s32_log)
         default:  exp_dbl = log(bi) * inv_ln_output_base;
       }
 
-      expected[i] = lround(ldexp(exp_dbl, 24));
+      expected[i] = llround(ldexp(exp_dbl, 24));
     }
 
     // volatile uint32_t t0;
@@ -385,7 +385,7 @@ TEST(vect_log, vect_float_s32_log)
         default:  exp_dbl = log(bi) * inv_ln_output_base;
       }
 
-      expected[i] = lround(ldexp(exp_dbl, 24));
+      expected[i] = llround(ldexp(exp_dbl, 24));
     }
 
     // volatile uint32_t t0;

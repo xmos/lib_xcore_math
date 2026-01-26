@@ -83,8 +83,8 @@ TEST(vect_shr, vect_s16_shr_basic)
         {  -0x0008,      3,     -0x0001,    __LINE__},
         {  -0x0008,      4,     -0x0001,    __LINE__},
         {   0x1000,     -3,      0x7FFF,    __LINE__},
-        {  -0x1000,     -3,     -0x7FFF,    __LINE__},
-        {  -0x8000,      0,     -0x7FFF,    __LINE__},
+        {  -0x1000,     -3,     VPU_INT16_MIN,    __LINE__},
+        {  -0x8000,      0,     VPU_INT16_MIN,    __LINE__},
     };
 
     const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
@@ -207,8 +207,8 @@ TEST(vect_shr, vect_s32_shr_basic)
         {           -0x00080000,        3,     -0x00010000,    __LINE__},
         {           -0x00080000,        4,     -0x00008000,    __LINE__},
         {            0x10000000,       -3,      0x7FFFFFFF,    __LINE__},
-        {           -0x10000000,       -3,     -0x7FFFFFFF,    __LINE__},
-        {  (int) (0-0x80000000),        0,     -0x7FFFFFFF,    __LINE__},
+        {           -0x10000000,       -3,      VPU_INT32_MIN,    __LINE__},
+        {  (int) (0-0x80000000),        0,      VPU_INT32_MIN,    __LINE__},
     };
 
     const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);

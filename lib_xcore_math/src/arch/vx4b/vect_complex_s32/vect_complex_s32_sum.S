@@ -1,0 +1,150 @@
+// Copyright 2020-2022 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
+
+#if defined(__VX4B__)
+
+#include "../asm_helper.h"
+
+/*  
+
+
+void vect_complex_s32_sum(
+    const complex_s64_t* res,
+    const complex_s32_t* b,
+    const unsigned length,
+    const right_shift_t b_shr);
+
+
+*/
+
+.text
+.p2align 2
+
+#define NSTACKVECS      (2)
+#define NSTACKWORDS     (8+(8*NSTACKVECS)+4)
+
+#define b           x10
+#define b_shr       x11
+#define length      x12
+#define _32         x13
+#define tmp         x18
+#define tail_bytes  x19
+
+#define STACK_VEC_ZEROS     (NSTACKWORDS- 8-4)
+#define STACK_VEC_TMP       (NSTACKWORDS-16-4)
+
+#define STACK_RES   (1)
+
+#define FUNCTION_NAME vect_complex_s32_sum
+    
+
+
+FUNCTION_NAME:
+
+        xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+        xm.stdsp  s3,s2,8
+        xm.stdsp  s5,s4,16
+
+    {   mv b, a1                               ;   sw a0, (STACK_RES)*4                   (sp)}
+
+
+    {   mv b_shr, a3                           ;   slli tail_bytes, length, 3               }
+    { nop                                           ;   xm.zexti tail_bytes, 5                      }
+
+    {   addi t3,sp, (STACK_VEC_ZEROS)*4           ;   xm.vclrdr                                  }
+    {   li t3, 0                              ;   xm.vstd t3}
+    {   xm.slt tmp, b_shr, t3                     ;   xm.vsetc t3}
+    {   addi tmp,sp, (STACK_VEC_TMP)*4             ;   xm.assertn tmp /*Cannot be negative shift*/ }
+lui t3, %hi(vpu_vec_0x40000000)
+        addi t3,t3, %lo(vpu_vec_0x40000000)
+        xm.vlashr t3, b_shr
+    {   li t3, 0                              ;   xm.vstr tmp}
+    {   srli length, length, 2                   ;   xm.vldc tmp}
+    {   li _32, 32                             ;   xm.vsetc t3}
+    { nop                                           ;   xm.vclrdr                                  }
+
+    { nop                                           ;   xm.brff length, .L_loop_bot                  }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+
+    .L_loop_top:
+
+        {   addi length, length, -1               ;   xm.vlmacc0 b}
+        {   add b, b, _32                       ;   xm.bt length, .L_loop_top                  }
+
+    .L_loop_bot:
+
+    {   addi t3,sp, (STACK_VEC_ZEROS)*4           ;   xm.brff tail_bytes, .L_get_res               }/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+    {   sub t3, t3, tail_bytes                ; nop                                           }
+    { nop                                           ;   xm.vldc t3}
+    {   addi t3,sp, (STACK_VEC_ZEROS)*4           ;   xm.vlmacc0 b}
+        
+
+/*  We've got 8 40-bit accumulators. Lower 32 bits are in vR, upper 8 in vD.
+    vD does appear to sign-extend the values up to 64 bits.
+
+    (vD:vR)[k] ==  ((int32_t)vD[k])*(2^32) + ((uint32_t)vR[k]) */
+
+#define real_hi     x10
+#define real_lo     x11
+#define imag_hi     x12
+#define imag_lo     x13
+#define num         x19
+#define tmp_re      x20
+#define tmp_im      x21
+
+// astew [2020-10-16]: There's probably a faster way to do this. See the VPU-based solution I found for vect_s32_sum for
+//                     non-complex values
+
+.L_get_res:
+    {   li real_hi, 0                          ;   li imag_hi, 0                          }
+    {   li num, 1                              ;   xm.vstr tmp}
+        xm.lddi  real_lo,imag_lo, 0(tmp)
+        xm.lddi  tmp_re,tmp_im, 8(tmp)
+        xm.maccu real_hi, real_lo, num, tmp_re
+        xm.maccu imag_hi, imag_lo, num, tmp_im
+        xm.lddi  tmp_re,tmp_im, 16(tmp)
+        xm.maccu real_hi, real_lo, num, tmp_re
+        xm.maccu imag_hi, imag_lo, num, tmp_im
+        xm.lddi  tmp_re,tmp_im, 24(tmp)
+        xm.maccu real_hi, real_lo, num, tmp_re
+        xm.maccu imag_hi, imag_lo, num, tmp_im
+    { nop                                           ;   xm.vfttf                                   }
+    {   li num, 2                              ;   xm.vstd t3}
+        xm.lddi  tmp_re,tmp_im, 0(t3)
+    {   add real_hi, real_hi, tmp_re            ;   add imag_hi, imag_hi, tmp_im            }
+
+    // astew [2021-09-28]: ... what was the purpose of these next 4 instructions..?
+    //                     maybe at the time I was thinking the lower word should be
+    //                     interpreted as signed?
+    // {   shr tmp_re, real_lo, 1                  ;   zext real_lo, 1                         }
+    // {   shr tmp_im, imag_lo, 1                  ;   zext imag_lo, 1                         }
+    //     maccs real_hi, real_lo, num, tmp_re
+    //     maccs imag_hi, imag_lo, num, tmp_im
+    { nop                                           ;   lw tmp, (STACK_RES)*4                  (sp)}
+        xm.stdi  real_lo,real_hi, 0(tmp)
+        xm.stdi  imag_lo,imag_hi, 8(tmp)
+
+    
+
+.L_done:
+        xm.lddsp  s3,s2,8
+        xm.lddsp  s5,s4,16
+        xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+
+.L_func_end:
+
+.globl FUNCTION_NAME
+.type FUNCTION_NAME,@function
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
+
+#undef FUNCTION_NAME
+
+
+
+#endif //defined(__VX4B__)
+
+
+

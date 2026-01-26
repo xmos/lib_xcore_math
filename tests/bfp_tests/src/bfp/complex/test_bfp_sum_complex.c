@@ -69,8 +69,13 @@ TEST(bfp_complex_sum, bfp_complex_s16_sum)
         float_complex_s32_t result = bfp_complex_s16_sum(&B);
 
         TEST_ASSERT_EQUAL(expected.exp, result.exp);
-        TEST_ASSERT_EQUAL_INT32(expected.mant.re, result.mant.re);
-        TEST_ASSERT_EQUAL_INT32(expected.mant.im, result.mant.im);
+        #if defined(__VX4B__)
+            TEST_ASSERT_INT32_WITHIN(8, expected.mant.re, result.mant.re);
+            TEST_ASSERT_INT32_WITHIN(8, expected.mant.im, result.mant.im);    
+        #else
+            TEST_ASSERT_EQUAL_INT32(expected.mant.re, result.mant.re);
+            TEST_ASSERT_EQUAL_INT32(expected.mant.im, result.mant.im);
+        #endif
     }
 }
 

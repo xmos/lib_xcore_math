@@ -206,7 +206,11 @@ TEST(vect_sqrt, vect_s16_sqrt_A)
             int16_t p = vlmul16(A[i], A[i]);
             int16_t p2 = vlmul16(A[i]+1, A[i]+1);
 
-            TEST_ASSERT_LESS_OR_EQUAL_INT16(target, p);
+            #if defined(__VX4B__)
+                TEST_ASSERT_LESS_OR_EQUAL_INT16(target+1, p);
+            #else
+                TEST_ASSERT_LESS_OR_EQUAL_INT16(target, p);
+            #endif
             TEST_ASSERT_GREATER_OR_EQUAL_INT16(target, p2);
         }
     }

@@ -80,8 +80,12 @@ TEST(bfp_complex_squared_mag, bfp_complex_s16_squared_mag)
 
         test_s16_from_double(expA, Af, MAX_LEN, A.exp);
 
-        for(unsigned int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]);
+        for(unsigned int i = 0; i < A.length; i++){           
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(2, expA[i], A.data[i]); 
+            #else
+                TEST_ASSERT_INT16_WITHIN(1, expA[i], A.data[i]); 
+            #endif
         }
 
         

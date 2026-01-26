@@ -150,6 +150,13 @@ int16_t vlmul16(
     const int16_t y);
 
 /**
+ * Implements the logic of the VLMUL instruction in 16-bit mode.
+ */
+int16_t vlmul16_vx4b(
+    const int16_t x,
+    const int16_t y);
+
+/**
  * Implements the logic of the VLMACC instruction in 16-bit mode.
  */
 vpu_int16_acc_t vlmacc16(
@@ -170,7 +177,11 @@ vpu_int16_acc_t vlmaccr16(
  */
 int16_t vlsat16(
     const vpu_int16_acc_t acc,
+    #if defined(__VX4B__)
+    const right_shift_t sat);
+    #else
     const unsigned sat);
+    #endif
 
 /**
  * Implements the logic of the VADDDR instruction in 16-bit mode.

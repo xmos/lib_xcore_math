@@ -66,7 +66,11 @@ TEST(bfp_abs, bfp_s16_abs)
 
         for(unsigned int i = 0; i < A.length; i++){
             int16_t expected = abs(B.data[i]);
-            TEST_ASSERT_EQUAL(expected, A.data[i]);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(1, expected, A.data[i]);
+            #else
+                TEST_ASSERT_EQUAL(expected, A.data[i]);
+            #endif
         }
     }
 }

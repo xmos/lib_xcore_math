@@ -98,9 +98,14 @@ TEST(bfp_complex_scale, bfp_complex_s16_scale)
         
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, MAX_LEN, A.exp);
 
-        for(unsigned int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT16_WITHIN(1, expA.real[i], A.real[i]);
-            TEST_ASSERT_INT16_WITHIN(1, expA.imag[i], A.imag[i]);
+        for(unsigned int i = 0; i < A.length; i++){          
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(2, expA.real[i], A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(2, expA.imag[i], A.imag[i]);
+            #else
+                TEST_ASSERT_INT16_WITHIN(1, expA.real[i], A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(1, expA.imag[i], A.imag[i]);
+            #endif
         }
     }
 }

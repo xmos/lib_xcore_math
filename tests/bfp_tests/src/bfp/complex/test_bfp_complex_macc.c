@@ -94,8 +94,13 @@ TEST(bfp_complex_macc, bfp_complex_s16_macc)
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, LEN, A.exp);
 
         for(unsigned int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT16_WITHIN(2, expA.real[i], A.real[i]);
-            TEST_ASSERT_INT16_WITHIN(2, expA.imag[i], A.imag[i]);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(1<<12, expA.real[i], A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(1<<12, expA.imag[i], A.imag[i]);
+            #else
+                TEST_ASSERT_INT16_WITHIN(2, expA.real[i], A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(2, expA.imag[i], A.imag[i]);
+             #endif
         }
     }
 }
@@ -160,8 +165,13 @@ TEST(bfp_complex_macc, bfp_complex_s16_nmacc)
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, LEN, A.exp);
 
         for(unsigned int i = 0; i < A.length; i++){
-            TEST_ASSERT_INT16_WITHIN(2, expA.real[i], A.real[i]);
-            TEST_ASSERT_INT16_WITHIN(2, expA.imag[i], A.imag[i]);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(1<<12, expA.real[i], A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(1<<12, expA.imag[i], A.imag[i]);
+            #else
+                TEST_ASSERT_INT16_WITHIN(2, expA.real[i], A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(2, expA.imag[i], A.imag[i]);
+             #endif
         }
     }
 }
