@@ -16,7 +16,7 @@ file( GLOB_RECURSE    SOURCES_C   "src/vect/*.c"
                                   "src/scalar/*.c" )
 file( GLOB_RECURSE    SOURCES_CPP "src/*.cpp" )
 file( GLOB_RECURSE    SOURCES_ASM_XS3 "src/arch/xs3/*.S" )
-file( GLOB_RECURSE    SOURCES_ASM_VX4B "src/arch/vx4/*.S" )
+file( GLOB_RECURSE    SOURCES_ASM_VX4B "src/arch/vx4b/*.S" )
 file( GLOB_RECURSE    SOURCES_REF "src/arch/ref/*.c" )
 
 add_library( ${LIB_NAME}  STATIC )
