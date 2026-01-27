@@ -74,7 +74,7 @@ enum {
 */
 #if defined(__VX4B__)
 #define VPU_INT8_MIN  (  INT8_MIN)
-#elif defined(__XS3A__)
+#else
 #define VPU_INT8_MIN  ( -0x7F )
 #endif
 /** The upper saturation bound for 16-bit elements
@@ -88,7 +88,7 @@ enum {
 */
 #if defined(__VX4B__)
 #define VPU_INT16_MIN  (  INT16_MIN)
-#elif defined(__XS3A__)
+#else
 #define VPU_INT16_MIN  ( -0x7FFF )
 #endif
 /** The upper saturation bound for 32-bit elements and 32-bit accumulators
@@ -102,7 +102,7 @@ enum {
 */
 #if defined(__VX4B__)
 #define VPU_INT32_MIN  (  INT32_MIN)
-#elif defined(__XS3A__)
+#else
 #define VPU_INT32_MIN  ( -0x7FFFFFFF )
 #endif
 /** The upper saturation bound for 40-bit accumulators
@@ -116,7 +116,7 @@ enum {
 */
 #if defined(__VX4B__)
 #define VPU_INT40_MIN  ( -0x8000000000LL)
-#elif defined(__XS3A__)
+#else
 #define VPU_INT40_MIN  ( -0x7FFFFFFFFFLL )
 #endif
 

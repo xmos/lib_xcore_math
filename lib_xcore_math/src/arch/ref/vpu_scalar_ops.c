@@ -83,12 +83,10 @@ int8_t vlmul8(
 {
     int32_t p = ((int32_t)x)*y;
     
-    #if defined(__XS3A__)
-    p = ROUND_SHR32(p, 6);
-    #elif defined(__VX4B__)
+    #if defined(__VX4B__)
     p = ROUND_SHR32(p, 7);
     #else
-    #error "Unknown architecture"
+    p = ROUND_SHR32(p, 6);
     #endif
     return SAT(8)(p);
 }
