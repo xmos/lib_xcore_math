@@ -15,9 +15,9 @@
 
 
 TEST_GROUP_RUNNER(vect_sub) {
-//   RUN_TEST_CASE(vect_sub, vect_s16_sub_basic);
-//   RUN_TEST_CASE(vect_sub, vect_s16_sub_random);
-//   RUN_TEST_CASE(vect_sub, vect_s32_sub_basic);
+  RUN_TEST_CASE(vect_sub, vect_s16_sub_basic);
+  RUN_TEST_CASE(vect_sub, vect_s16_sub_random);
+  RUN_TEST_CASE(vect_sub, vect_s32_sub_basic);
   RUN_TEST_CASE(vect_sub, vect_s32_sub_random);
 }
 
@@ -372,8 +372,8 @@ TEST(vect_sub, vect_s32_sub_random)
             C[i] = pseudo_rand_int32(&seed) >> shr;
         }
 
-        int b_shr = 0;(pseudo_rand_uint32(&seed) % 5) - 2;
-        int c_shr = 0;(pseudo_rand_uint32(&seed) % 5) - 2;
+        int b_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
+        int c_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
         
         const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) - (%ld >> %d))     (A[i]=0x%08X; B[i]=0x%08X; C[i]=0x%08X)";
 

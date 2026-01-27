@@ -35,12 +35,6 @@ static char msg_buff[200];
       TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
     }} while(0)
 
-#if defined(__VX4B__)
-    #define XTEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM) TEST_ASSERT_INT16_WITHIN(4, EXPECTED, ACTUAL)
-#else 
-    #define XTEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM) TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM) 
-#endif
-
 static int16_t scalar_mul_s16(int16_t b, int16_t c, right_shift_t sat)
 {
     return vlsat16( ((int32_t)b) * c  , sat);
@@ -235,7 +229,11 @@ TEST(vect_scale, vect_s16_scale_random)
         for(unsigned int i = 0; i < len; i++){
             int16_t expected = scalar_mul_s16(B[i], alpha, sat);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], sat, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
-            XTEST_ASSERT_EQUAL_MSG(expected, A[i], msg_buff);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(4, expected, A[i]);
+            #else 
+                TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
+            #endif
         }
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
         
@@ -245,7 +243,11 @@ TEST(vect_scale, vect_s16_scale_random)
         for(unsigned int i = 0; i < len; i++){
             int16_t expected = scalar_mul_s16(B[i], alpha, sat);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], sat, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
-            XTEST_ASSERT_EQUAL_MSG(expected, A[i], msg_buff);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(4, expected, A[i]);
+            #else 
+                TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
+            #endif
         }
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
     }
