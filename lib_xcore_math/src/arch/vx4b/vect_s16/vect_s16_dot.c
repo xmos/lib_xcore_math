@@ -1,5 +1,6 @@
-// Copyright 2020-2023 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
+#if defined (__VX4B__)
 
 #include <stdint.h>
 #include <stdio.h>
@@ -31,3 +32,5 @@ int64_t vect_s16_dot(
 
     return acc;
 }
+
+#endif

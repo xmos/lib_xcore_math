@@ -1,6 +1,6 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
-
+#if defined (__VX4B__)
 #include <stdint.h>
 #include <stdio.h>
 
@@ -44,3 +44,4 @@ unsigned chunk_s16_accumulate(
 }
 
 
+#endif
