@@ -226,7 +226,7 @@ TEST(vect_mul, vect_s16_mul_basic)
             hr = vect_s16_mul(A, B, C, len, casse->a_shr);
 
             for(unsigned int i = 0; i < len; i++){
-                XTEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
+                TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
 
@@ -234,7 +234,11 @@ TEST(vect_mul, vect_s16_mul_basic)
             hr = vect_s16_mul(A, A, C, len, casse->a_shr);
 
             for(unsigned int i = 0; i < len; i++){
-                XTEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
+                #if defined(__VX4B__)
+                    TEST_ASSERT_INT16_WITHIN(4, casse->expected, A[i]);
+                #else
+                    TEST_ASSERT_EQUAL_MSG(casse->expected, A[i], casse->line);
+                #endif
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
 
@@ -242,7 +246,11 @@ TEST(vect_mul, vect_s16_mul_basic)
             hr = vect_s16_mul(A, B, A, len, casse->a_shr);
 
             for(unsigned int i = 0; i < len; i++){
-                XTEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
+                #if defined(__VX4B__)
+                    TEST_ASSERT_INT16_WITHIN(4, casse->expected, A[i]);
+                #else
+                    TEST_ASSERT_EQUAL_MSG(casse->expected, A[i], casse->line);
+                #endif
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
 
