@@ -81,7 +81,7 @@ TEST(dctXX_inverse, dct6_inverse)
     int32_t max_allowed_diff = DCT_N;
     for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = lround(ref_out[n]);
+      int32_t ref_val = llround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
@@ -151,7 +151,7 @@ TEST(dctXX_inverse, dct8_inverse)
     int32_t max_allowed_diff = DCT_N;
     for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = lround(ref_out[n]);
+      int32_t ref_val = llround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
@@ -220,7 +220,7 @@ TEST(dctXX_inverse, dct12_inverse)
     int32_t max_allowed_diff = 8;
     for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = lround(ref_out[n]);
+      int32_t ref_val = llround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
@@ -290,7 +290,7 @@ TEST(dctXX_inverse, dct16_inverse)
     int32_t max_allowed_diff = 2*DCT_N;
     for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = lround(ref_out[n]);
+      int32_t ref_val = llround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
@@ -360,7 +360,7 @@ TEST(dctXX_inverse, dct24_inverse)
     int32_t max_allowed_diff = 2*DCT_N;
     for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = lround(ref_out[n]);
+      int32_t ref_val = llround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
@@ -430,7 +430,7 @@ TEST(dctXX_inverse, dct32_inverse)
     int32_t max_allowed_diff = 2*DCT_N;
     for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = lround(ref_out[n]);
+      int32_t ref_val = llround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
@@ -500,7 +500,7 @@ TEST(dctXX_inverse, dct48_inverse)
     int32_t max_allowed_diff = 5*DCT_N;
     for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = lround(ref_out[n]);
+      int32_t ref_val = llround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 
@@ -570,7 +570,7 @@ TEST(dctXX_inverse, dct64_inverse)
     int32_t max_allowed_diff = 6*DCT_N;
     for(unsigned int n = 0; n < DCT_N; n++){
       int32_t act_val = y[n];
-      int32_t ref_val = lround(ref_out[n]);
+      int32_t ref_val = llround(ref_out[n]);
       TEST_ASSERT_INT32_WITHIN(max_allowed_diff, ref_val, act_val);
     }
 

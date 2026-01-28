@@ -16,15 +16,12 @@ headroom_t dct_adsb_s32(
 */
 
 #define FUNCTION_NAME   dct_adsb_s32
-#define NSTACKWORDS 4
+#define NSTACKWORDS 8
 
 .text
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
 .p2align 2
-
-#define STK_CHUNKS  (NSTACKWORDS+1)
-#define STK_LUT     (NSTACKWORDS+2)
 
 #define sums        x10
 #define diffs       x11
@@ -40,8 +37,12 @@ FUNCTION_NAME:
   xm.stdsp  s3,s2,0
   xm.stdsp  s5,s4,8
 
-{ li _32, 32                 ; lw chunks, (STK_CHUNKS)*4  (sp)}
-{ xm.shli t3, _32, 2             ; lw lut, (STK_LUT)*4        (sp)}
+{ li _32, 32                 ; nop}
+mv chunks, a4
+
+{ xm.shli t3, _32, 2             ; nop}
+mv lut, a5
+
 { mv t3, tail               ; xm.vsetc t3}
 
 .L_loop_top:

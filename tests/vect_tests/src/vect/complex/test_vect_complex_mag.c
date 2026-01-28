@@ -67,7 +67,7 @@ static int16_t mag_complex_s16(complex_s16_t b, right_shift_t b_shr)
 
     double mag = sqrt(sqr_mag);
 
-    int16_t a = (int16_t) lround(mag);
+    int16_t a = (int16_t) llround(mag);
     
     return SAT(16)(a);
 }
@@ -88,7 +88,7 @@ static int32_t mag_complex_s32(complex_s32_t b, right_shift_t b_shr)
 
     double mag = sqrt((double) sqr_mag);
 
-    int32_t a = lround(mag);
+    int32_t a = llround(mag);
     
     return SAT(32)(a);
 }

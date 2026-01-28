@@ -37,7 +37,7 @@ headroom_t dct8_inversex8_stageB(
 .type FUNCTION_NAME,@function
 .p2align 4
 
-#define STK_BUFF      (NSTACKWORDS - 32)
+#define STK_BUFF      (NSTACKWORDS - 32-1)
 
 #define y       x10
 #define x       x11
@@ -85,30 +85,60 @@ xm.zip t3, a3, 4
 .L_loop_top:
   { add t3, t3, _32           ; xm.vclrdr                      }
   { mv A, x                    ; xm.vldc t3}
-  /*
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub t3, t3, _32           ; xm.vlmaccr A}
+
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { sub t3, t3, _32           ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
   { mv A, x                    ; xm.vldc t3}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-  { sub A, A, _16               ; xm.vlmaccr A}
-    */
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 A}
+  xm.vlmaccr1 A
+  { sub A, A, _16         ; nop}
+
   { add t3, t3, _32           ; xm.vlmaccr0 A}
   xm.vlmaccr1 A
   { add t3, t3, _32           ; nop}
   xm.vlsat y
   { addi count, count, -1         ; xm.vstr buff}
-  { add buff, buff, _32         ; xm.bt count, .L_loop_top       }
+  { add buff, buff, _32         ; nop}
+  bnez count, .L_loop_top       
 .L_loop_bot:
 
 // We could get the headroom right now on the 16-bit values, but

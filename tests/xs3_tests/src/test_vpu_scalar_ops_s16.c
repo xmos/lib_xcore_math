@@ -220,7 +220,7 @@ TEST(vpu_scalar_ops_s16, vdepth8_16)
     {
         int8_t res = vdepth8_16( (int16_t) k );
 
-        int32_t exp = lround(ldexp( k, -8) + ldexp(1, -30));
+        int32_t exp = llround(ldexp( k, -8) + ldexp(1, -30));
         exp = MIN(exp, VPU_INT8_MAX);
         exp = MAX(exp, VPU_INT8_MIN);
 

@@ -58,7 +58,7 @@ TEST(vect_exp, chunk_q30_exp_small_RANDOM)
     for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl = exp(bi);
-      expected[i] = lround(ldexp(exp_dbl, 30));
+      expected[i] = llround(ldexp(exp_dbl, 30));
     }
 
     // volatile uint32_t t0 = get_reference_time();
@@ -122,7 +122,7 @@ TEST(vect_exp, vect_q30_exp_small_RANDOM)
     for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl = exp(bi);
-      expected[i] = lround(ldexp(exp_dbl, 30));
+      expected[i] = llround(ldexp(exp_dbl, 30));
     }
 
     // volatile uint32_t t0 = get_reference_time();

@@ -21,7 +21,7 @@ void dct12_forward(
 .type FUNCTION_NAME,@function
 .p2align 2
 
-#define VEC_TMP       (NSTACKWORDS - 8)
+#define VEC_TMP       (NSTACKWORDS - 8 - 2)
 
 #define y         x10
 #define x         x11

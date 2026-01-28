@@ -33,8 +33,8 @@ headroom_t dct8x8_stageA(
 .type FUNCTION_NAME,@function
 .p2align 4
 
-#define STK_BUFF      (NSTACKWORDS - 32)
-#define STK_LAST_ROW  (NSTACKWORDS - 4) // will point to last row of 16-bit buffered input matrix
+#define STK_BUFF      (NSTACKWORDS - 32-1)
+#define STK_LAST_ROW  (NSTACKWORDS - 4-1) // will point to last row of 16-bit buffered input matrix
 
 #define y       x10
 #define x       x11
@@ -109,30 +109,60 @@ lui t3, %hi(.L_sat_vec)
 .L_loop_top:
   { add t3, t3, _32           ; xm.vclrdr                      }
   { addi buff,sp, (STK_LAST_ROW)*4 ; xm.vldc t3}
-  /*
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub t3, t3, _32           ; xm.vlmaccr buff}
+  
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { sub t3, t3, _32           ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
   { addi buff,sp, (STK_LAST_ROW)*4 ; xm.vldc t3}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  { sub buff, buff, _16         ; xm.vlmaccr buff}
-  */
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  { nop                         ; xm.vlmaccr0 buff}
+  xm.vlmaccr1 buff
+  { sub buff, buff, _16         ; nop}
+  
   { addi count, count, -1         ; xm.vlmaccr0 buff}
   xm.vlmaccr1 buff
   { add t3, t3, _32           ; nop}
    xm.vlsat sat
   { add t3, t3, _32           ; xm.vstr y}
-  { add y, y, _32               ; xm.bt count, .L_loop_top       }
+  { add y, y, _32               ; nop}
+  bnez count, .L_loop_top   
 .L_loop_bot:
 
   xm.lddsp  s3,s2,0

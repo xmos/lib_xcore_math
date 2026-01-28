@@ -16,7 +16,7 @@ void dct_deconvolve_s32(
 */
 
 #define FUNCTION_NAME   dct_deconvolve_s32
-#define NSTACKWORDS 4
+#define NSTACKWORDS 8
 
 .text
 .global FUNCTION_NAME

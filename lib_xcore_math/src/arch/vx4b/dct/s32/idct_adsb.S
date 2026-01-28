@@ -15,7 +15,7 @@ void idct_adsb(
 */
 
 #define FUNCTION_NAME   idct_adsb
-#define NSTACKWORDS 4
+#define NSTACKWORDS 8
 
 .text
 .global FUNCTION_NAME
@@ -37,7 +37,11 @@ FUNCTION_NAME:
   xm.stdsp  s3,s2,0
   xm.stdsp  s5,s4,8
 
-{ li _32, 32                 ; lw chunks, (STK_CHUNKS)*4  (sp)}
+//{ li _32, 32                 ; lw chunks, (STK_CHUNKS)*4  (sp)}
+  { li _32, 32                 ; nop }
+  mv chunks, a4
+
+
 { li t3, 0                  ; nop                             }
 { mv t3, t_tilde            ; xm.vsetc t3}
 

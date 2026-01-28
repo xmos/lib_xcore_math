@@ -73,7 +73,7 @@ TEST(bfp_rms, bfp_s16_rms)
         const double expectedF = sqrt(mean_energy);
 
         float_s32_t ideal_result = {
-            .mant = lround( expectedF / ldexp((double) 1,result.exp) ),
+            .mant = llround( expectedF / ldexp((double) 1,result.exp) ),
             .exp = (exponent_t) floor( log2(expectedF) ) - 30 };
 
 
@@ -123,7 +123,7 @@ TEST(bfp_rms, bfp_s32_rms)
         const double expectedF = sqrt(mean_energy);
 
         float_s32_t ideal_result = {
-            .mant = lround( expectedF / ldexp((double) 1,result.exp) ),
+            .mant = llround( expectedF / ldexp((double) 1,result.exp) ),
             .exp = (exponent_t) floor( log2(expectedF) ) - 30 };
 
         TEST_ASSERT_INT32_WITHIN(3, ideal_result.exp, result.exp);

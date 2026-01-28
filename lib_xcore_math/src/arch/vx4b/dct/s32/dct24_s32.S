@@ -18,15 +18,15 @@ void dct24_forward(
 */
 
 #define FUNCTION_NAME   dct24_forward
-#define NSTACKWORDS 40
+#define NSTACKWORDS 44
 
 .text
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
 .p2align 2
 
-#define STK_VEC_HEAD       (NSTACKWORDS - 16)
-#define STK_VEC_TAIL       (NSTACKWORDS - 8)
+#define STK_VEC_HEAD       (NSTACKWORDS - 16-2)
+#define STK_VEC_TAIL       (NSTACKWORDS - 8-2)
 
 #define y         x10
 #define x         x11
