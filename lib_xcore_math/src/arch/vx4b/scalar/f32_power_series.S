@@ -42,7 +42,7 @@ float f32_power_series(
 
 FUNCTION_NAME:
   xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
-  xm.stdsp  s3,s2,8
+  xm.stdsp  s3,s2,0
 
 { li acc, 0                  ; mv pow, x                  }
 { srli t3, count, UNROLL_LOG2 ; nop                             }/* XAT Warning: "Falling back on assumption: the int != 32 for the integer value of the item at position 2 in the instruction's operands in  shri t3, count, UNROLL_LOG2 \nMessage: The shift amount is not 32" */
@@ -113,7 +113,7 @@ FUNCTION_NAME:
 
 .L_finish:
   mv a0, acc
-  xm.lddsp  s3,s2,8
+  xm.lddsp  s3,s2,0
   xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
 .L_func_end:
 

@@ -21,7 +21,7 @@
 #define FUNCTION_NAME   sbrad_tan
 #define NSTACKWORDS     (16)
 
-#define VEC_R           (NSTACKWORDS - 8)
+#define VEC_R           (NSTACKWORDS - 12)
 
 #define a         x10
 #define r         x11
@@ -64,12 +64,12 @@
   .word 0x40000000, 0x40000000, 0x40000000, 0x40000000
   
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+  xm.entsp (NSTACKWORDS)*4
   xm.stdsp  s3,s2,8
-  xm.stdsp  s5,s4,16
-{ li t3, 0                  ; addi vec_r,sp, (VEC_R)*4       }
-{ xm.slt out_mul, a, t3         ; xm.vsetc t3} // Result gets multiplied by -1 if
-{ li _30, 30                 ; xm.brff out_mul, .L_hgfd         } /* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */// the input was negative
+  xm.stdsp  s5,s4,0
+{ li t3, 0                       ; addi vec_r,sp, (VEC_R)*4        }
+{ xm.slt out_mul, a, t3          ; xm.vsetc t3                     } // Result gets multiplied by -1 if
+{ li _30, 30                     ; xm.brff out_mul, .L_hgfd        } 
 { xm.neg a, a                    ; nop                             }
 .L_hgfd:
 
@@ -105,24 +105,24 @@ FUNCTION_NAME:
 // Note: All coefficients are positive and so are all elements or vec_r[],
 //       and we know they can't add to more than 1.0
 
-{ xm.ldap t3, .L_vec_b          ; xm.vclrdr                      }
-{ xm.ldap t3, .L_vec_s_hat      ; xm.vldc t3} // vC[] <-- P.S. coefficients
+{ xm.ldap t3, .L_vec_b            ; xm.vclrdr                      }
+{ xm.ldap t3, .L_vec_s_hat        ; xm.vldc t3} // vC[] <-- P.S. coefficients
 { nop                             ; xm.vlmacc0 vec_r} // inner product with power vect
 xm.vlsat t3
-{ mv t3, vec_r              ; nop } // ensure they're all in the same q-format
+{ mv t3, vec_r                    ; nop } // ensure they're all in the same q-format
 { nop                             ; xm.vstr t3} 
-{ xm.ldap t3, .L_weights        ; xm.vclrdr                      }
+{ xm.ldap t3, .L_weights          ; xm.vclrdr                      }
 { nop                             ; xm.vldc t3} 
-{ mv t3, vec_r              ; xm.vlmaccr0 vec_r} // add them together
+{ mv t3, vec_r                    ; xm.vlmaccr0 vec_r} // add them together
 { nop                             ; xm.vstr t3}
 { nop                             ; lw a0,0            ( vec_r)}
   xm.lddsp  s3,s2,8 
-  xm.lddsp  s5,s4,16 
+  xm.lddsp  s5,s4,0 
 { nop                             ; xm.bt out_mul, .L_gpgp         }
 { nop                             ; xm.retsp (NSTACKWORDS)*4           }
 .L_gpgp:
-{ xm.neg a0, a0                  ; nop}
-{xm.retsp (NSTACKWORDS*4)    ; nop}      
+{ xm.neg a0, a0                   ; nop}
+{ xm.retsp (NSTACKWORDS*4)        ; nop}      
 
 .L_func_end:
 

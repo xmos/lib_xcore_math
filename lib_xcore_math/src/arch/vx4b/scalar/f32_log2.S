@@ -22,11 +22,9 @@ float f32_log2(
 #define _0    x13
 
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
-
+  xm.entsp (NSTACKWORDS)*4
 { mv a1, a0                  ; addi a0,sp, 4              }
-lui t3, %hi(f32_normA)
-  addi t3,t3, %lo(f32_normA)
+  la t3, f32_normA
   jalr t3
 
 { li tmp, 1                  ; li t3, 23                 }
@@ -34,17 +32,14 @@ lui t3, %hi(f32_normA)
   xm.fmake tmp, _0, t3, _0, tmp
   xm.fsub x, x, tmp
   xm.fmake exp, _0, t3, _0, exp
-lui t3, %hi(log2_ps)       
-  addi t3,t3, %lo(log2_ps)       
+la t3, log2_ps       
 { nop                             ; sw exp, 4              (sp)}
 { mv a1, t3                 ; li a2, 11                  }
-lui t3, %hi(f32_power_series)
-  addi t3,t3, %lo(f32_power_series)
+la t3, f32_power_series
   jalr t3
 { nop                             ; lw exp, 4              (sp)}
   xm.fadd x, x, exp
-  xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
-
+  xm.retsp (NSTACKWORDS)*4
 .L_func_end_unpack:
 
 .global FUNCTION_NAME

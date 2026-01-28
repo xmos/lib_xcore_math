@@ -66,7 +66,7 @@ TEST(float_exp, float_s32_exp_SPECIFIC_CASES)
 
   // exp(0.0) = 1.0
   x.mant = Q24(0.0);
-  x.exp = -24;
+  x.exp = -23;
   res = float_s32_exp(x);
   TEST_ASSERT( diff_ratio(res, 1.0) < ldexp(1,-24)  );
 
@@ -123,7 +123,7 @@ TEST(float_exp, float_s32_exp_RANDOM)
 
     float_s32_t actual = float_s32_exp(x);
     double expected_f = exp(ldexp(x.mant, x.exp));
-    int32_t expected_mant = lround(ldexp(expected_f,-actual.exp));
+    int32_t expected_mant = llround(ldexp(expected_f,-actual.exp));
 
     if(expected_mant == 0){
       // Just make sure our answer is real close to zero.

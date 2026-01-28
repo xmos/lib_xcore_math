@@ -18,7 +18,7 @@ int32_t sbrad_sin(
 #define FUNCTION_NAME   sbrad_sin
 #define NSTACKWORDS     (16)
 
-#define VEC_R           (NSTACKWORDS - 8)
+#define VEC_R           (NSTACKWORDS - 12)
 
 #define a         x10
 #define r         x11
@@ -43,10 +43,10 @@ int32_t sbrad_sin(
 FUNCTION_NAME:
   xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
   xm.stdsp  s3,s2,8
-  xm.stdsp  s5,s4,16
-{ li t3, 0                  ; addi vec_r,sp, (VEC_R)*4       }
-{ xm.slt out_mul, a, t3         ; xm.vsetc t3}
-{ li _31, 31                 ; xm.brff out_mul, .L_hgfd         }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+  xm.stdsp  s5,s4,0
+{ li t3, 0                       ; addi vec_r,sp, (VEC_R)*4        }
+{ xm.slt out_mul, a, t3          ; xm.vsetc t3                     }
+{ li _31, 31                     ; xm.brff out_mul, .L_hgfd        }
 { xm.neg a, a                    ; nop                             }
 .L_hgfd:
 
@@ -72,31 +72,25 @@ FUNCTION_NAME:
   xm.lextract tmpA, tmpA, tmpC, _31, 32
   xm.stdi  tmpB,tmpA, 16 (vec_r)// a^9, 1^11
 
-  // lmul tmpA, tmpB, tmpA, r, x28, x28
-  // lextract tmpB, tmpA, tmpB, _31, 32
-  // lmul tmpA, tmpC, tmpB, r, x28, x28
-  // lextract tmpA, tmpA, tmpC, _31, 32
-  // std tmpA, tmpB, vec_r[3]
-
 // Now that we've filled in vec_R[], we just need to do the VPU stuff.
-{ xm.ldap t3, .L_vec_b          ; xm.vclrdr                      }
-{ xm.ldap t3, .L_vec_s_hat      ; xm.vldc t3}
+{ xm.ldap t3, .L_vec_b            ; xm.vclrdr                      }
+{ xm.ldap t3, .L_vec_s_hat        ; xm.vldc t3}
 { nop                             ; xm.vlmacc0 vec_r}
  xm.vlsat t3
-{ mv t3, vec_r              ; nop}
+{ mv t3, vec_r                    ; nop}
 { nop                             ; xm.vstr t3}
-{ xm.ldap t3, .L_weights        ; xm.vclrdr                      }
+{ xm.ldap t3, .L_weights          ; xm.vclrdr                      }
 { nop                             ; xm.vldc t3}
-{ mv t3, vec_r              ; xm.vlmaccr0 vec_r}
+{ mv t3, vec_r                    ; xm.vlmaccr0 vec_r}
 { nop                             ; xm.vstr t3}
 { nop                             ; lw a0,0            ( vec_r)}
   xm.lddsp  s3,s2,8
-  xm.lddsp  s5,s4,16
+  xm.lddsp  s5,s4,0
 { nop                             ; xm.bt out_mul, .L_gpgp         }
 { nop                             ; xm.retsp (NSTACKWORDS)*4           }
 .L_gpgp:
-{ xm.neg a0, a0                  ; nop}
-xm.retsp (NSTACKWORDS*4)     
+{ xm.neg a0, a0                   ; nop}
+{ xm.retsp (NSTACKWORDS*4)        ; nop}   
 
 .L_func_end:
 

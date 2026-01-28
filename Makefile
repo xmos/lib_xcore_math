@@ -62,6 +62,7 @@ SRC_ARCH_vx4b := \
 			$(wildcard $(ROOT_DIR)/lib_xcore_math/src/arch/vx4b/*.c) \
 			$(ROOT_DIR)/lib_xcore_math/src/arch/vx4b/vect_s16/vect_s16_dot.c \
 			$(ROOT_DIR)/lib_xcore_math/src/arch/vx4b/chunk_s16/chunk_s16_accumulate.c \
+			$(ROOT_DIR)/lib_xcore_math/src/arch/vx4b/scalar/float_s32.c \
 			$(ROOT_DIR)/lib_xcore_math/src/arch/ref/vpu_scalar_ops.c
 
 
@@ -111,7 +112,7 @@ COMMON_FLAGS := -Os
 # Enable section-level GC: compile into individual sections and ask the linker
 # to drop unused sections. These flags are safe for host builds but are
 # essential for cross-built vx4 binaries to reduce final size.
-COMMON_FLAGS += -ffunction-sections -fdata-sections -DUNITY_SUPPORT_64=1
+COMMON_FLAGS += -ffunction-sections -fdata-sections -DUNITY_SUPPORT_64=1 -DUNITY_INCLUDE_DOUBLE
 
 # Linker flags (pass to the linker via the compiler driver)
 LDFLAGS := -Wl,--gc-sections
@@ -200,9 +201,9 @@ clean:
 run: 
 # 	- xsim $(BINDIR)/bfp --config-file config.xml
 # 	- xsim $(BINDIR)/dct --config-file config.xml
-	- xsim $(BINDIR)/fft --config-file config.xml
+# 	- xsim $(BINDIR)/fft --config-file config.xml
 # 	- xsim $(BINDIR)/filter --config-file config.xml
-# 	- xsim $(BINDIR)/scalar --config-file config.xml
+	- xsim $(BINDIR)/scalar --config-file config.xml 
 # 	- xsim $(BINDIR)/vect --config-file config.xml
 
 trace: 

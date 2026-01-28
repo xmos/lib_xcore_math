@@ -10,56 +10,50 @@
 .align 4; /* Translation error on this line: unexpected token at position 8. */ 
 
 /*  
-void float_s32_exp(
-    float_s32_t* a,
-    const float_s32_t b);
-
-    OR
-    
 float_s32_t float_s32_exp(
     const float_s32_t b);
-
-  (The ABI means these are equivalent)
 */
 #define FUNCTION_NAME   float_s32_exp
 #define NSTACKWORDS     (8)
 
 
-#define STACK_RHO       (7)
-#define STACK_A         (6)
+#define STACK_RHO       (0)
+#define STACK_A         (1)
 
 
-#define a       x10
-#define b       x11
+
+#define b_0       x10
+#define b_1       x11
+
 #define tmp1    x12
 #define tmp2    x13
 #define tmp3    x18
 #define consts  x19
 
 .L_consts: 
-.L_none:   .word 0x00000000 /* Translation error on this line: unexpected token at position 11. */ 
-.L_one:    .word 0x40000000 /* Translation error on this line: unexpected token at position 11. */ 
-.L_sqrt_2: .word 0x5a82799a /* Translation error on this line: unexpected token at position 11. */ 
-.L_log2_e: .word 0x5c551d95 /* Translation error on this line: unexpected token at position 11. */ 
-.L_ln_2:   .word 0x2c5c85fe /* Translation error on this line: unexpected token at position 11. */ 
+.L_none:   .word 0x00000000 
+.L_one:    .word 0x40000000 
+.L_sqrt_2: .word 0x5a82799a 
+.L_log2_e: .word 0x5c551d95 
+.L_ln_2:   .word 0x2c5c85fe 
 
 
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+  xm.entsp (NSTACKWORDS)*4
   xm.stdsp  s3,s2,8
-
-lui t3, %hi(.L_consts)
-  addi t3,t3, %lo(.L_consts)
+  xm.stdsp  s5,s4,16
+la t3, .L_consts
 // Load input, reformat to have 1 bit of headroom and store in
 // output.
-{ mv consts, t3             ; lw tmp1,0              ( b)}
-{ xm.cls t3, tmp1               ; nop}
-{nop;xm.ldwi tmp2, 4(b)              }
+
+{ mv consts, t3; nop}
+{ xm.cls t3, b_0               ; nop}
+
 { addi t3, t3, -1             ; nop                             }
 { xm.shl tmp1, tmp1, t3         ; addi t3, t3, -1             }
   srai tmp1, tmp1, 1
-{ sub tmp2, tmp2, t3         ; sw tmp1,0              ( a)}
-{ nop                             ; sw tmp2,4              ( a)}
+{ sub tmp2, b_1, t3              ; mv s4, tmp1}//a[0]
+{ nop                             ; mv s5, tmp2} //a[1]
 
 #undef b
 #define y     x11
@@ -134,6 +128,7 @@ lui t3, %hi(q30_exp_small)
 
 .L_finish:
   xm.lddsp  s3,s2,8
+  xm.lddsp  s5,s4,16
   xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
 
 .L_func_end_unpack:

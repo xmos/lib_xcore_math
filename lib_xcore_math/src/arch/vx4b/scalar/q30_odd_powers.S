@@ -34,7 +34,7 @@ void s32_odd_powers(
 FUNCTION_NAME:
 
   xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
-  xm.stdsp  s3,s2,8
+  xm.stdsp  s3,s2,0
 
 { nop                             ; addi len, len, -1             }
 { li acc_lo, 0               ; li acc_hi, 0               }
@@ -50,7 +50,7 @@ FUNCTION_NAME:
 
   sw b,0( a)
 
-  xm.lddsp  s3,s2,8
+  xm.lddsp  s3,s2,0
   xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
 
 .L_func_end_unpack:

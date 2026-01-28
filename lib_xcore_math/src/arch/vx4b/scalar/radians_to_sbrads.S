@@ -13,7 +13,7 @@ sbrad_t radians_to_sbrads(
 */
 
 #define FUNCTION_NAME   radians_to_sbrads
-#define NSTACKWORDS     (0)
+#define NSTACKWORDS     (4)
 
 #define theta       x10
 #define tmp         x11
@@ -57,8 +57,9 @@ FUNCTION_NAME:
 { nop                             ; lw t3,0             ( t3)}
   xm.maccs accA, accB, t3, theta
   xm.lextract theta, accA, accB, tmp, 32
-{ li t3, 30-1                 ; nop                             }
+{ li t3, 30                 ; nop                             }
 { xm.shr tmp, theta, t3         ; slli theta, theta, 1         }
+{xm.shli tmp, tmp, 2; nop}
 { nop                             ; xm.bru tmp                     }
 { mv a0, theta                   ; nop           }
 {xm.retsp (NSTACKWORDS)*4  ; nop           }

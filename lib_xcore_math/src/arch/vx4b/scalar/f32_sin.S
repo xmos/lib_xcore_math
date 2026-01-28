@@ -33,8 +33,8 @@ FUNCTION_NAME:
   xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
   xm.stdsp  s3,s2,8
   xm.stdsp  s5,s4,16
-  xm.stdsp  s7,s6,24
-{ li _0, 0                   ; sw s8, 4              (sp)}
+  xm.stdsp  s7,s6,0
+{ li _0, 0                   ; sw s8, 24              (sp)}
   xm.flt t3, r, _0
 { nop                             ; li _1, 1                   }
 { li out_mul, 23             ; xm.bt t3, .L_neg              }
@@ -115,10 +115,10 @@ PS_TERM(7)
 // Apply final output multiplier
   xm.fmul a0, total, out_mul
 
-  xm.lddsp  s7,s6,24
+  xm.lddsp  s7,s6,0
   xm.lddsp  s5,s4,16
   xm.lddsp  s3,s2,8
-{ nop                             ; lw s8, 4              (sp)}
+{ nop                             ; lw s8, 24              (sp)}
 { nop                             ; xm.retsp (NSTACKWORDS)*4           }
 
 .L_func_end:

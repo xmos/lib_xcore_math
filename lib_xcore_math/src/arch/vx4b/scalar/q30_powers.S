@@ -7,7 +7,7 @@
 #include "../asm_helper.h"
 
 .text
-.align 4; /* Translation error on this line: unexpected token at position 8. */ 
+.align 4;
 
 /*  
 void q30_powers(
@@ -18,8 +18,8 @@ void q30_powers(
 #define FUNCTION_NAME   q30_powers
 #define NSTACKWORDS     (8+(8*2))
 
-#define ST_VEC_TMP2     (NSTACKWORDS-8)
-#define ST_VEC_TMP      (NSTACKWORDS-16)
+#define ST_VEC_TMP2     (NSTACKWORDS-8-2)
+#define ST_VEC_TMP      (NSTACKWORDS-16-2)
 
 #define a             x10
 #define b             x11
@@ -34,7 +34,8 @@ void q30_powers(
 FUNCTION_NAME:
   xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
   xm.stdsp  s3,s2,8
-  xm.stdsp  s5,s4,16
+  xm.stdsp  s5,s4,0
+  xm.stdsp  s7,s6,16 
 
 { addi vec_tmp,sp, (ST_VEC_TMP)*4;  li t3, 0                 }
 { li t3, 0                  ; nop                             }
@@ -63,6 +64,7 @@ FUNCTION_NAME:
 { li tmpB, 32                ; xm.vclrdr                      }
 { addi t3,sp, (ST_VEC_TMP2)*4   ; xm.vladd vec_tmp}
 { xm.mkmski tmpA, 16              ; xm.vlmul0 t3}
+
   addi t3, vec_tmp, 16
   xm.vstrpv t3, tmpA
 
@@ -83,7 +85,8 @@ FUNCTION_NAME:
   
 .L_finish:
   xm.lddsp  s3,s2,8
-  xm.lddsp  s5,s4,16
+  xm.lddsp  s5,s4,0
+  xm.lddsp  s7,s6,16 
   xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
 
 .L_func_end_unpack:

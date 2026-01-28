@@ -60,7 +60,7 @@ TEST(sXX_mul, s16_mul)
 
         double Ef = Bf * Cf;
 
-        int16_t expected = (int16_t) lround( ldexp(Ef, -a_exp) );
+        int16_t expected = (int16_t) llround( ldexp(Ef, -a_exp) );
 
 
         TEST_ASSERT_INT16_WITHIN_MESSAGE(2, expected, A, "");
@@ -98,7 +98,7 @@ TEST(sXX_mul, s32_mul)
 
         double Ef = Bf * Cf;
 
-        int32_t expected = lround( ldexp(Ef, -a_exp) );
+        int32_t expected = llround( ldexp(Ef, -a_exp) );
 
 
         TEST_ASSERT_INT32_WITHIN_MESSAGE(2, expected, A, "");

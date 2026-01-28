@@ -16,7 +16,7 @@ q8_24 q24_logistic_fast(
 #define FUNCTION_NAME   q24_logistic_fast
 #define NSTACKWORDS     (8+8)
 
-#define STACK_VEC   (NSTACKWORDS-8)
+#define STACK_VEC   (NSTACKWORDS-10)
 
 .L_log_slope: 
   .word  1015490930, 640498971, 297985800, 120120271, 46079377, 17219453, 6371555, 3717288
