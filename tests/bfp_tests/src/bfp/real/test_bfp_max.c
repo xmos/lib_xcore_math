@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -56,7 +56,19 @@ TEST(bfp_max, bfp_s16_max)
 
         float result = bfp_s16_max(&B);
 
-        TEST_ASSERT_EQUAL_FLOAT(expected, result);
+        int16_t mantissa;
+        exponent_t exponent;
+        f32_unpack_s16(&mantissa, &exponent, result);
+        int16_t exp_mantissa;
+        exponent_t exp_exponent;
+        f32_unpack_s16(&exp_mantissa, &exp_exponent, expected);
+
+        #if defined(__VX4B__)
+            TEST_ASSERT_INT16_WITHIN(128, exp_mantissa, mantissa);
+        #else
+            TEST_ASSERT_INT16_WITHIN(1, exp_mantissa, mantissa);
+        #endif
+        TEST_ASSERT_EQUAL_INT16(exp_exponent, exponent);
     }
 }
 

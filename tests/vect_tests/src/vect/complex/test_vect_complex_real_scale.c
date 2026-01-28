@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -136,7 +136,7 @@ TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
 
                 TEST_ASSERT_INT16_WITHIN(1, exp, A.real[i]);
 
-                exp = lround(ldexp( ((int32_t)B.imag[i]) * C, -sat) + ldexp(1, -40));
+                exp = llround(ldexp( ((int32_t)B.imag[i]) * C, -sat) + ldexp(1, -40));
                 exp = MIN(exp, VPU_INT16_MAX);
                 exp = MAX(exp, VPU_INT16_MIN);
                 TEST_ASSERT_INT16_WITHIN(1, exp, A.imag[i]);
@@ -162,7 +162,7 @@ TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
                 exp = MAX(exp, VPU_INT16_MIN);
                 TEST_ASSERT_INT16_WITHIN(1, exp, A.real[i]);
 
-                exp = lround(ldexp( ((int32_t)B.imag[i]) * C, -sat) + ldexp(1, -40));
+                exp = llround(ldexp( ((int32_t)B.imag[i]) * C, -sat) + ldexp(1, -40));
                 exp = MIN(exp, VPU_INT16_MAX);
                 exp = MAX(exp, VPU_INT16_MIN);
                 TEST_ASSERT_INT16_WITHIN(1, exp, A.imag[i]);

@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -179,10 +179,10 @@ TEST(filter_biquad_sat_s32, case4)
 
     // this should saturate as it's already 2**31-1
     res = filter_biquad_sat_s32(&filter, INT32_MAX);
-    TEST_ASSERT_EQUAL(INT32_MAX, res);
+    TEST_ASSERT_EQUAL(VPU_INT32_MAX, res);
 
     res = filter_biquad_sat_s32(&filter, INT32_MIN);
-    TEST_ASSERT_EQUAL(INT32_MIN + 1, res);
+    TEST_ASSERT_EQUAL(VPU_INT32_MIN, res);
 }
 
 // Test a biquad that overflows halfway through the accumulator, 

@@ -1,4 +1,4 @@
-// Copyright 2020-2023 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
@@ -238,12 +238,16 @@ void xs3_memcpy(
 static inline unsigned cls(
     const int32_t a)
 {
-#ifdef __XS3A__
+#if defined(__XS3A__)
 
     unsigned res;
     asm( "cls %0, %1" : "=r"(res) : "r"(a) );
     return res;
+#elif defined(__VX4B__)
 
+    unsigned res;
+    asm( "xm.cls %0, %1" : "=r"(res) : "r"(a) );
+    return res;
 #else
 
     if(a == 0 || a == -1)

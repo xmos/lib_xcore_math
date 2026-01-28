@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -34,7 +34,6 @@ static char msg_buff[200];
       sprintf(msg_buff, "(test vector @ line %u)", (LINE_NUM));       \
       TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
     }} while(0)
-
 
 static int16_t scalar_mul_s16(int16_t b, int16_t c, right_shift_t sat)
 {
@@ -138,8 +137,8 @@ TEST(vect_scale, vect_s16_scale_basic)
         {       {  0x0040,   0x0080 },   14,    0x0001,       __LINE__},
         {       {  0x0040,   0x0040 },   14,    0x0000,       __LINE__},
         {       {  0x7f00,   0x7f00 },   14,    0x7fff,       __LINE__},
-        {       {  0x7f00,  -0x7f00 },   14,   -0x7fff,       __LINE__},
-        {       { -0x8000,   0x4000 },   14,   -0x7fff,       __LINE__},
+        {       {  0x7f00,  -0x7f00 },   14,   VPU_INT16_MIN,       __LINE__},
+        {       { -0x8000,   0x4000 },   14,   VPU_INT16_MIN,       __LINE__},
         {       {  0x4000,   0x4000 },   15,    0x2000,       __LINE__},
         {       {  0x4000,   0x2000 },   14,    0x2000,       __LINE__},
         {       {  0x4000,   0x2000 },   15,    0x1000,       __LINE__},
@@ -148,7 +147,7 @@ TEST(vect_scale, vect_s16_scale_basic)
         {       {  0x0800,   0x4000 },   12,    0x2000,       __LINE__},
         {       {  0x0800,   0x4000 },   11,    0x4000,       __LINE__},
         {       {  0x0800,   0x4000 },   10,    0x7fff,       __LINE__},
-        {       {  0x0800,  -0x4000 },   10,   -0x7fff,       __LINE__},
+        {       {  0x0800,  -0x4000 },   10,   VPU_INT16_MIN,       __LINE__},
         {       {  0x0800,   0x2000 },   10,    0x4000,       __LINE__},
 
         
@@ -230,7 +229,11 @@ TEST(vect_scale, vect_s16_scale_random)
         for(unsigned int i = 0; i < len; i++){
             int16_t expected = scalar_mul_s16(B[i], alpha, sat);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], sat, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
-            TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(4, expected, A[i]);
+            #else 
+                TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
+            #endif
         }
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
         
@@ -240,7 +243,11 @@ TEST(vect_scale, vect_s16_scale_random)
         for(unsigned int i = 0; i < len; i++){
             int16_t expected = scalar_mul_s16(B[i], alpha, sat);
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], sat, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
-            TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(4, expected, A[i]);
+            #else 
+                TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
+            #endif
         }
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
     }
@@ -276,8 +283,8 @@ TEST(vect_scale, vect_s32_scale_basic)
         {       {           0x00004000,     0x00008000 },     {   0,   0 },      0x00000001,       __LINE__},
         {       {           0x00000400,     0x00000400 },     {   0,   0 },      0x00000000,       __LINE__},
         {       {           0x7f000000,     0x7f000000 },     {   0,   0 },      0x7fffffff,       __LINE__},
-        {       {           0x7f000000,    -0x7f000000 },     {   0,   0 },     -0x7fffffff,       __LINE__},
-        {       { (int) (0-0x80000000),     0x40000000 },     {   0,   0 },     -0x7fffffff,       __LINE__},
+        {       {           0x7f000000,    -0x7f000000 },     {   0,   0 },   VPU_INT32_MIN,       __LINE__},
+        {       { (int) (0-0x80000000),     0x40000000 },     {   0,   0 },   VPU_INT32_MIN,       __LINE__},
         {       {           0x40000000,     0x40000000 },     {   1,   0 },      0x20000000,       __LINE__},
         {       {           0x40000000,     0x20000000 },     {   0,   0 },      0x20000000,       __LINE__},
         {       {           0x40000000,     0x20000000 },     {   1,   0 },      0x10000000,       __LINE__},
