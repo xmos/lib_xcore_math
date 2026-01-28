@@ -6,7 +6,7 @@
 # else
 CC := clang
 # endif
-ROOT_DIR := $(shell pwd)
+ROOT_DIR := $(shell pwd)/..
 ARCH ?= vx4b
 
 SRC_BFP_COMMON := \
