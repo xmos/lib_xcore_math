@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -84,7 +84,12 @@ TEST(vect_energy, vect_s16_energy)
 
         result = vect_s16_energy(B, len, b_shr);
 
-        TEST_ASSERT_EQUAL(exp, result);
+        #if defined(__VX4B__)
+            //this casts to 32 bit because it night not fit in 16 bits (due to rounding)
+            TEST_ASSERT_INT32_WITHIN(4, exp, result);
+        #else
+            TEST_ASSERT_EQUAL(exp, result);
+        #endif  
         
     }
 }

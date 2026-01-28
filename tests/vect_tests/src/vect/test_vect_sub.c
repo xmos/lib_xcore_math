@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -112,7 +112,7 @@ TEST(vect_sub, vect_s16_sub_basic)
         {       { -0x0001,  -0x0001 },     {  0,  0 },    0x0000,       __LINE__},
         {       {  0x1010,  -0x0101 },     {  0,  0 },    0x1111,       __LINE__},
         {       { -0x1010,   0x0101 },     {  0,  0 },   -0x1111,       __LINE__},
-        {       { -0x8000,  -0x0000 },     {  0,  0 },   -0x7FFF,       __LINE__},
+        {       { -0x8000,  -0x0000 },     {  0,  0 },   VPU_INT16_MIN,       __LINE__},
         {       {  0x4000,  -0x4000 },     {  0,  0 },    0x7FFF,       __LINE__},
         {       {  0x7FFF,  -0x7FFF },     {  0,  0 },    0x7FFF,       __LINE__},
 
@@ -272,7 +272,7 @@ TEST(vect_sub, vect_s32_sub_basic)
         {       {          -0x00000001,    -0x00000001 },     {   0,   0 },    0x00000000,       __LINE__},
         {       {           0x00001010,    -0x00000101 },     {   0,   0 },    0x00001111,       __LINE__},
         {       {          -0x00001010,     0x00000101 },     {   0,   0 },   -0x00001111,       __LINE__},
-        {       { (int) (0-0x80000000),    -0x00000000 },     {   0,   0 },   -0x7FFFFFFF,       __LINE__},
+        {       { (int) (0-0x80000000),    -0x00000000 },     {   0,   0 },   VPU_INT32_MIN,       __LINE__},
         {       {           0x40000000,    -0x40000000 },     {   0,   0 },    0x7FFFFFFF,       __LINE__},
         {       {           0x7FFFFFFF,    -0x7FFFFFFF },     {   0,   0 },    0x7FFFFFFF,       __LINE__},
 
@@ -375,7 +375,7 @@ TEST(vect_sub, vect_s32_sub_random)
         int b_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
         int c_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
         
-        const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) + (%ld >> %d))     (A[i]=0x%08X; B[i]=0x%08X; C[i]=0x%08X)";
+        const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) - (%ld >> %d))     (A[i]=0x%08X; B[i]=0x%08X; C[i]=0x%08X)";
 
         hr = vect_s32_sub(A, B, C, len, b_shr, c_shr);
 

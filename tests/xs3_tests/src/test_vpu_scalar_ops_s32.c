@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -247,7 +247,7 @@ TEST(vpu_scalar_ops_s32, vdepth8_32)
 
         int8_t res = vdepth8_32( (int32_t) k );
 
-        int32_t exp = lround(ldexp( (double) k, -24) + ldexp(1, -40));
+        int32_t exp = llround(ldexp( (double) k, -24) + ldexp(1, -40));
         exp = MIN(exp, VPU_INT8_MAX);
         exp = MAX(exp, VPU_INT8_MIN);
 
@@ -279,7 +279,7 @@ TEST(vpu_scalar_ops_s32, vdepth16_32)
 
         int8_t res = (int8_t) vdepth16_32( (int32_t) k );
 
-        int32_t exp = lround(ldexp( (double) k, -16) + ldexp(1, -40));
+        int32_t exp = llround(ldexp( (double) k, -16) + ldexp(1, -40));
         exp = MIN(exp, VPU_INT16_MAX);
         exp = MAX(exp, VPU_INT16_MIN);
 

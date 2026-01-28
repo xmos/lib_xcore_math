@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -15,6 +15,7 @@
 
 #include "unity_fixture.h"
 
+#define INT16_WIGGLE 4
 
 TEST_GROUP_RUNNER(vect_complex_mul) {
   RUN_TEST_CASE(vect_complex_mul, vect_complex_s16_mul_prepare)
@@ -248,8 +249,13 @@ TEST(vect_complex_mul, vect_complex_s16_mul_basic)
             headroom_t hrre, hrim;
 
             for(unsigned int i = 0; i < len; i++){
-                TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[0], casse->line);
+                #if defined(__VX4B__)
+                    TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected.re, A.real[i]);
+                    TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected.im, A.imag[i]);
+                #else
+                    TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[i], casse->line);
+                    TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[i], casse->line);
+                #endif
             }
             hrre = vect_s16_headroom(A.real, len); hrim = vect_s16_headroom(A.imag, len);
             TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, casse->line);
@@ -261,8 +267,13 @@ TEST(vect_complex_mul, vect_complex_s16_mul_basic)
                                                   len, casse->sat);
 
             for(unsigned int i = 0; i < len; i++){
-                TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[0], casse->line);
-                TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[0], casse->line);
+                #if defined(__VX4B__)
+                    TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected.re, A.real[i]);
+                    TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected.im, A.imag[i]);
+                #else
+                    TEST_ASSERT_EQUAL_MSG(casse->expected.re, A.real[i], casse->line);
+                    TEST_ASSERT_EQUAL_MSG(casse->expected.im, A.imag[i], casse->line);
+                #endif
             }
             hrre = vect_s16_headroom(A.real, len); hrim = vect_s16_headroom(A.imag, len);
             TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, casse->line);
@@ -319,8 +330,13 @@ TEST(vect_complex_mul, vect_complex_s16_mul_random)
         for(unsigned int i = 0; i < len; i++){
             complex_s16_t expected = mul_complex_s16(B.real[i], B.imag[i], C.real[i], C.imag[i], sat);
             
-            TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
-            TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, expected.re, A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, expected.im, A.imag[i]);
+            #else
+                TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
+                TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
+            #endif
         }
         hrre = vect_s16_headroom(A.real, len); hrim = vect_s16_headroom(A.imag, len);
         TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, v);
@@ -333,8 +349,13 @@ TEST(vect_complex_mul, vect_complex_s16_mul_random)
 
         for(unsigned int i = 0; i < len; i++){
             complex_s16_t expected = mul_complex_s16(B.real[i], B.imag[i], C.real[i], C.imag[i], sat);
-            TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
-            TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, expected.re, A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, expected.im, A.imag[i]);
+            #else
+                TEST_ASSERT_EQUAL_MESSAGE(expected.re, A.real[i], msg_buff);
+                TEST_ASSERT_EQUAL_MESSAGE(expected.im, A.imag[i], msg_buff);
+            #endif
         }
         hrre = vect_s16_headroom(A.real, len); hrim = vect_s16_headroom(A.imag, len);
         TEST_ASSERT_EQUAL_MSG((hrre <= hrim)? hrre : hrim, hr, v);

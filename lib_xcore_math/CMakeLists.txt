@@ -15,7 +15,8 @@ file( GLOB_RECURSE    SOURCES_C   "src/vect/*.c"
                                   "src/filter/*.c"
                                   "src/scalar/*.c" )
 file( GLOB_RECURSE    SOURCES_CPP "src/*.cpp" )
-file( GLOB_RECURSE    SOURCES_ASM "src/*.S"   )
+file( GLOB_RECURSE    SOURCES_ASM_XS3 "src/arch/xs3/*.S" )
+file( GLOB_RECURSE    SOURCES_ASM_VX4B "src/arch/vx4b/*.S" )
 file( GLOB_RECURSE    SOURCES_REF "src/arch/ref/*.c" )
 
 add_library( ${LIB_NAME}  STATIC )
@@ -24,7 +25,8 @@ target_sources( ${LIB_NAME}
   PRIVATE
     ${SOURCES_C}
     ${SOURCES_CPP}
-    $<$<PLATFORM_ID:XCORE_XS3A>:${SOURCES_ASM}>
+    $<$<PLATFORM_ID:XCORE_XS3A>:${SOURCES_ASM_XS3}>
+    $<$<PLATFORM_ID:XCORE_VX4B>:${SOURCES_ASM_VX4B}>
     $<$<PLATFORM_ID:Linux>:${SOURCES_REF}>
     $<$<PLATFORM_ID:Darwin>:${SOURCES_REF}>
     $<$<PLATFORM_ID:Windows>:${SOURCES_REF}>

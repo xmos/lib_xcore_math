@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -121,7 +121,7 @@ TEST(fixed_trig, sbrad_sin)
     volatile int32_t result_q30 = sbrad_sin(alpha);
     // volatile uint32_t t3 = get_reference_time();
 
-    int32_t exp_q30 = lround(ldexp(exp,30));
+    int32_t exp_q30 = llround(ldexp(exp,30));
 
     int32_t er = exp_q30 - result_q30;
     er = (er < 0)? -er : er;
@@ -184,7 +184,7 @@ TEST(fixed_trig, sbrad_tan)
     volatile q2_30 result_q30 = sbrad_tan(alpha_q31);
     // volatile uint32_t t3 = get_reference_time();
 
-    q2_30 expected_q30 = lround(ldexp(expected,30));
+    q2_30 expected_q30 = llround(ldexp(expected,30));
 
     // q2_30 just_for_timing_q30 = round(ldexp(just_for_timing, 30));
 
@@ -235,7 +235,7 @@ TEST(fixed_trig, q24_sin)
     volatile q2_30 result_q30 = q24_sin(theta_q24);
     // volatile uint32_t t3 = get_reference_time();
 
-    q2_30 exp_q30 = lround(ldexp(exp,30));
+    q2_30 exp_q30 = llround(ldexp(exp,30));
 
     q2_30 er = exp_q30 - result_q30;
     er = (er < 0)? -er : er;
@@ -284,7 +284,7 @@ TEST(fixed_trig, q24_cos)
     volatile q2_30 result_q30 = q24_cos(theta_q24);
     // volatile uint32_t t3 = get_reference_time();
 
-    q2_30 exp_q30 = lround(ldexp(exp,30));
+    q2_30 exp_q30 = llround(ldexp(exp,30));
 
     q2_30 er = exp_q30 - result_q30;
     er = (er < 0)? -er : er;
@@ -331,7 +331,7 @@ TEST(fixed_trig, q24_tan)
     volatile float_s32_t result = q24_tan(theta_q24);
     // volatile uint32_t t3 = get_reference_time();
 
-    int32_t exp_fixed = lround(ldexp(exp,-result.exp));
+    int32_t exp_fixed = llround(ldexp(exp,-result.exp));
 
     if(result.exp != -30)
       TEST_ASSERT_LESS_THAN_INT32(2, HR_S32(result.mant));
@@ -350,8 +350,8 @@ TEST(fixed_trig, q24_tan)
       // If we're really that close to the singular point, let's invert both the
       // expected result and actual result to see whether the output of sbrad_tan()
       // was very close to what it should have been.
-      int32_t exp_inv_q30 = lround(ldexp(1/exp, 30));
-      int32_t act_inv_q30 = lround(ldexp(1/ldexp(result.mant, result.exp), 30));
+      int32_t exp_inv_q30 = llround(ldexp(1/exp, 30));
+      int32_t act_inv_q30 = llround(ldexp(1/ldexp(result.mant, result.exp), 30));
 
       TEST_ASSERT_INT32_WITHIN(100, exp_inv_q30, act_inv_q30);
       
