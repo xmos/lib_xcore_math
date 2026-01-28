@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -11,6 +11,7 @@
 #include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../tst_common.h"
+//#include "../tst_asserts.h"
 #include "unity_fixture.h"
 
 TEST_GROUP(vect_max_elementwise);

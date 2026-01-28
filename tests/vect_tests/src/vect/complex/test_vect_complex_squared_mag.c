@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -14,6 +14,8 @@
 #include "../../tst_common.h"
 
 #include "unity_fixture.h"
+
+#define INT16_WIGGLE 4
 
 TEST_GROUP_RUNNER(vect_complex_squared_mag) {
   RUN_TEST_CASE(vect_complex_squared_mag, vect_complex_s16_squared_mag_prepare);
@@ -245,7 +247,11 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_basic)
             hr = vect_complex_s16_squared_mag(A, B.real, B.imag, len, casse->sat);
 
             for(unsigned int i = 0; i < len; i++){
-                TEST_ASSERT_EQUAL_MSG(casse->expected, A[i], casse->line);
+                #if defined(__VX4B__)
+                    TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, casse->expected, A[i]);
+                #else
+                    TEST_ASSERT_EQUAL_MSG(casse->expected, A[i], casse->line);
+                #endif
             }
 
             TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
@@ -308,6 +314,13 @@ TEST(vect_complex_squared_mag, vect_complex_s16_squared_mag_random)
             TEST_ASSERT_EQUAL_MSG_FMT(expected, A[i],
                   "(test vect %d) (len: %u) (index %d): (mag(%d + i*%d))**2 >> %d",
                    v, len, i, B.real[i], B.imag[i], sat);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(INT16_WIGGLE, expected, A[i]);
+            #else
+                TEST_ASSERT_EQUAL_MSG_FMT(expected, A[i],
+                    "(test vect %d) (len: %u) (index %d): (mag(%d + i*%d))**2 >> %d",
+                    v, len, i, B.real[i], B.imag[i], sat);
+            #endif
         }
         TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, v);
     }

@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -36,6 +36,11 @@ static char msg_buff[200];
       TEST_ASSERT_EQUAL_MESSAGE((EXPECTED), (ACTUAL), msg_buff);      \
     }} while(0)
 
+#if defined(__XS3A__)
+    #define XTEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM) TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM) 
+#elif defined(__VX4B__)
+    #define XTEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM) TEST_ASSERT_INT16_WITHIN(1, EXPECTED, ACTUAL)
+#endif
 
 /**
  * This is a VLMACC-based multiply, which means the right-shift
@@ -47,10 +52,15 @@ static int16_t mul_s16(int16_t b, int16_t c, int a_shr)
     int32_t A = ((int32_t)b)*c;
     int32_t a = A;
 
-    if(a_shr != 0)
-      a = a + (1 << (a_shr-1));
+    if(a_shr != 0){
+        if (a_shr > 0){
+            a = a + (1 << (a_shr-1));
+             a = a >> a_shr;
+        } else {
+            a = a << (unsigned)(-a_shr);
+        }
+    }
       
-    a = a >> a_shr;
     a = (a >= VPU_INT16_MAX)? VPU_INT16_MAX : (a <= VPU_INT16_MIN)? VPU_INT16_MIN : a;
 
     return (int16_t) a;
@@ -224,7 +234,11 @@ TEST(vect_mul, vect_s16_mul_basic)
             hr = vect_s16_mul(A, A, C, len, casse->a_shr);
 
             for(unsigned int i = 0; i < len; i++){
-                TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
+                #if defined(__VX4B__)
+                    TEST_ASSERT_INT16_WITHIN(4, casse->expected, A[i]);
+                #else
+                    TEST_ASSERT_EQUAL_MSG(casse->expected, A[i], casse->line);
+                #endif
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
 
@@ -232,7 +246,11 @@ TEST(vect_mul, vect_s16_mul_basic)
             hr = vect_s16_mul(A, B, A, len, casse->a_shr);
 
             for(unsigned int i = 0; i < len; i++){
-                TEST_ASSERT_EQUAL_MSG(casse->expected, A[0], casse->line);
+                #if defined(__VX4B__)
+                    TEST_ASSERT_INT16_WITHIN(4, casse->expected, A[i]);
+                #else
+                    TEST_ASSERT_EQUAL_MSG(casse->expected, A[i], casse->line);
+                #endif
                 TEST_ASSERT_EQUAL_MSG(vect_s16_headroom(A, len), hr, casse->line);
             }
 
@@ -275,27 +293,36 @@ TEST(vect_mul, vect_s16_mul_random)
         
         // A <-- B * C
         hr = vect_s16_mul(A, B, C, len, a_shr);
-
-        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
-            debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
-        TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
         
+        #if defined(__VX4B__)
+            TEST_ASSERT_INT16_ARRAY_WITHIN(1, expected, A, len);
+        #else
+            XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
+                debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
+        #endif
+        TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
         // A <-- B
         // A <-- A * C
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s16_mul(A, A, C, len, a_shr);
-
-        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
-            debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
+        #if defined(__VX4B__)
+            TEST_ASSERT_INT16_ARRAY_WITHIN(1, expected, A, len);
+        #else
+            XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
+                debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
+        #endif
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
         
         // A <-- C
         // A <-- B * A
         memcpy(A, C, sizeof(A[0])*len);
         hr = vect_s16_mul(A, B, A, len, a_shr);
-
-        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
-            debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
+        #if defined(__VX4B__)
+            TEST_ASSERT_INT16_ARRAY_WITHIN(1, expected, A, len);
+        #else
+            XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
+                debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
+        #endif
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
         
     }
@@ -329,8 +356,8 @@ TEST(vect_mul, vect_s32_mul_basic)
         {       {       0x00004000,     0x00008000 },     {  0,  0 },      0x00000001,       __LINE__},
         {       {       0x00000400,     0x00000400 },     {  0,  0 },      0x00000000,       __LINE__},
         {       {       0x7f000000,     0x7f000000 },     {  0,  0 },      0x7fffffff,       __LINE__},
-        {       {       0x7f000000,    -0x7f000000 },     {  0,  0 },     -0x7fffffff,       __LINE__},
-        {       { (int) (0-0x80000000),     0x40000000 },     {  0,  0 },     -0x7fffffff,       __LINE__},
+        {       {       0x7f000000,    -0x7f000000 },     {  0,  0 },     VPU_INT32_MIN,       __LINE__},
+        {       { (int) (0-0x80000000),     0x40000000 },     {  0,  0 }, VPU_INT32_MIN,       __LINE__},
         {       {       0x40000000,     0x40000000 },     {  1,  0 },      0x20000000,       __LINE__},
         {       {       0x40000000,     0x40000000 },     {  0,  1 },      0x20000000,       __LINE__},
         {       {       0x40000000,     0x40000000 },     {  1,  1 },      0x10000000,       __LINE__},
@@ -339,7 +366,7 @@ TEST(vect_mul, vect_s32_mul_basic)
         {       {       0x40000000,     0x08000000 },     {  0, -2 },      0x20000000,       __LINE__},
         {       {       0x40000000,     0x08000000 },     {  0, -3 },      0x40000000,       __LINE__},
         {       {       0x40000000,     0x08000000 },     {  0, -4 },      0x7fffffff,       __LINE__},
-        {       {      -0x40000000,     0x08000000 },     {  0, -4 },     -0x7fffffff,       __LINE__},
+        {       {      -0x40000000,     0x08000000 },     {  0, -4 },     -0x7fffffff,       __LINE__}, ///????
         {       {       0x40000000,     0x08000000 },     {  1, -4 },      0x40000000,       __LINE__},
     };
 

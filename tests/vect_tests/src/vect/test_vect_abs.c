@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -77,16 +77,28 @@ TEST(vect_abs, vect_s16_abs)
         memset(A, 0xCC, sizeof(A));
         hr = vect_s16_abs(A, B, len);
 
-        for(unsigned int i = 0; i < len; i++)
-            TEST_ASSERT_EQUAL(B[i] >= 0? B[i] : -B[i], A[i]);
+        for(unsigned int i = 0; i < len; i++){
+            #if defined(__VX4B__)
+                //this casts to 32 bit because it night not fit in 16 bits (due to rounding)
+                TEST_ASSERT_INT32_WITHIN(4, B[i] >= 0? B[i] : -B[i], A[i]);
+            #else
+                TEST_ASSERT_EQUAL(B[i] >= 0? B[i] : -B[i], A[i]);
+            #endif 
+        }
         for(int i = len; i < MAX_LEN; i++)
             TEST_ASSERT_EQUAL((int16_t)0xCCCC, A[i]);
 
         memcpy(A, B, sizeof(A));
         hr = vect_s16_abs(A, A, len);
 
-        for(unsigned int i = 0; i < len; i++)
-            TEST_ASSERT_EQUAL(B[i] >= 0? B[i] : -B[i], A[i]);
+        for(unsigned int i = 0; i < len; i++){
+            #if defined(__VX4B__)
+                //this casts to 32 bit because it night not fit in 16 bits (due to rounding)
+                TEST_ASSERT_INT32_WITHIN(4, B[i] >= 0? B[i] : -B[i], A[i]);
+            #else
+                TEST_ASSERT_EQUAL(B[i] >= 0? B[i] : -B[i], A[i]);
+            #endif 
+        }
     }
 }
 

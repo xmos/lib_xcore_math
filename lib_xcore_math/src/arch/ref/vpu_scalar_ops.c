@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdio.h>
@@ -82,7 +82,12 @@ int8_t vlmul8(
     const int8_t y)
 {
     int32_t p = ((int32_t)x)*y;
+    
+    #if defined(__VX4B__)
+    p = ROUND_SHR32(p, 7);
+    #else
     p = ROUND_SHR32(p, 6);
+    #endif
     return SAT(8)(p);
 }
 
@@ -197,6 +202,15 @@ int16_t vlmul16(
     return SAT(16)(p);
 }
 
+int16_t vlmul16_vx4b(
+    const int16_t x,
+    const int16_t y)
+{
+    int32_t p = ((int32_t)x)*y;
+    p = ROUND_SHR32(p, 15);
+    return SAT(16)(p);
+}
+
 
 vpu_int16_acc_t vlmacc16(
     const vpu_int16_acc_t acc,
@@ -225,11 +239,20 @@ vpu_int16_acc_t vlmaccr16(
 
 int16_t vlsat16(
     const vpu_int16_acc_t acc,
+    #if defined(__VX4B__)
+    const right_shift_t sat)
+    #else
     const unsigned sat)
+    #endif
 {
-    vpu_int16_acc_t s = acc;
+    int64_t s = acc;
 
-    if(sat >= 32) return (acc >= 0)? 0 : -1;
+    #if defined(__VX4B__)
+        if(sat < 0)
+            s = s << (-sat);
+     #else
+        if(sat >= 32) return (acc >= 0)? 0 : -1;
+    #endif
 
     if(sat > 0)
         s = ((acc >> (sat-1)) + 1) >> 1;

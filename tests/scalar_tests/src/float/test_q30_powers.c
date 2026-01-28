@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -46,7 +46,7 @@ TEST(q30_powers, q30_powers)
     double pow = 1.0;
     for(unsigned int i = 1; i < length; i++){
       pow *= bf;
-      expected[i] = lround(ldexp(pow, 30));
+      expected[i] = llround(ldexp(pow, 30));
     }
 
     // volatile uint32_t t0 = get_reference_time();

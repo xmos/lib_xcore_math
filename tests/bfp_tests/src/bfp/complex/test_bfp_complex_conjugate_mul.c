@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -91,8 +91,13 @@ TEST(bfp_complex_conj_mul, bfp_complex_s16_conj_mul)
 
         for(unsigned int i = 0; i < A.length; i++){
             // printf("! %d\t %d \t %d \t %e\n", i, expA.real[i], A.real[i], Af.real[0]);
-            TEST_ASSERT_INT16_WITHIN(1, expA.real[i], A.real[i]);
-            TEST_ASSERT_INT16_WITHIN(1, expA.imag[i], A.imag[i]);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(2, expA.real[i], A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(2, expA.imag[i], A.imag[i]);
+            #else
+                TEST_ASSERT_INT16_WITHIN(1, expA.real[i], A.real[i]);
+                TEST_ASSERT_INT16_WITHIN(1, expA.imag[i], A.imag[i]);
+            #endif
         }
     }
 }

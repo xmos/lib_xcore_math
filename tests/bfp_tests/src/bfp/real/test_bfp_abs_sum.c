@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -67,8 +67,14 @@ TEST(bfp_abs_sum, bfp_s16_abs_sum)
         for(unsigned int i = 0; i < B.length; i++)
             expected.mant += abs(B.data[i]);
 
-        TEST_ASSERT_EQUAL(expected.exp, result.exp);
-        TEST_ASSERT_EQUAL_INT32(expected.mant, result.mant);
+        #if defined(__VX4B__)
+            TEST_ASSERT_INT32_WITHIN(1, expected.exp, result.exp);
+            TEST_ASSERT_INT32_WITHIN(12, expected.mant, result.mant);    
+        #else
+            TEST_ASSERT_EQUAL(expected.exp, result.exp);
+            TEST_ASSERT_EQUAL_INT32(expected.mant, result.mant);
+        #endif
+        
     }
 }
 

@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #pragma once
@@ -72,7 +72,11 @@ enum {
  *
  * @ingroup xs3_vpu_info
 */
-#define VPU_INT8_MIN   ( -0x7F )
+#if defined(__VX4B__)
+#define VPU_INT8_MIN  (  INT8_MIN)
+#else
+#define VPU_INT8_MIN  ( -0x7F )
+#endif
 /** The upper saturation bound for 16-bit elements
  *
  * @ingroup xs3_vpu_info
@@ -82,7 +86,11 @@ enum {
  *
  * @ingroup xs3_vpu_info
 */
+#if defined(__VX4B__)
+#define VPU_INT16_MIN  (  INT16_MIN)
+#else
 #define VPU_INT16_MIN  ( -0x7FFF )
+#endif
 /** The upper saturation bound for 32-bit elements and 32-bit accumulators
  *
  * @ingroup xs3_vpu_info
@@ -92,7 +100,11 @@ enum {
  *
  * @ingroup xs3_vpu_info
 */
+#if defined(__VX4B__)
+#define VPU_INT32_MIN  (  INT32_MIN)
+#else
 #define VPU_INT32_MIN  ( -0x7FFFFFFF )
+#endif
 /** The upper saturation bound for 40-bit accumulators
  *
  * @ingroup xs3_vpu_info
@@ -102,7 +114,11 @@ enum {
  *
  * @ingroup xs3_vpu_info
 */
+#if defined(__VX4B__)
+#define VPU_INT40_MIN  ( -0x8000000000LL)
+#else
 #define VPU_INT40_MIN  ( -0x7FFFFFFFFFLL )
+#endif
 
 /**
  * Number of accumulator bits in each operating mode.

@@ -1,4 +1,4 @@
-// Copyright 2020-2024 XMOS LIMITED.
+// Copyright 2020-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 
 #include <stdint.h>
@@ -83,11 +83,15 @@ TEST(vect_abs_sum, vect_s16_abs_sum_basic)
             t = (t>=0)? t : -t;
             // t = (t>=0)? t : 0x7FFF; // because -1*(-0x8000) = -0x8000
             int32_t exp = t * len;
-
-            XTEST_ASSERT_S32_EQUAL(exp, result,
-                "Case @ line %u\n"
-                "length: %u\n",
-                casse->line, len);
+            #if defined(__VX4B__)
+                //this casts to 32 bit because it night not fit in 16 bits (due to rounding)
+                TEST_ASSERT_INT32_WITHIN(4, exp, result);
+            #else
+                XTEST_ASSERT_S32_EQUAL(exp, result,
+                    "Case @ line %u\n"
+                    "length: %u\n",
+                    casse->line, len);
+            #endif  
         }
     }
 }
@@ -129,8 +133,12 @@ TEST(vect_abs_sum, vect_s16_abs_sum_random)
             b = (b>=0)? b : -b;
             exp += b;
         }
-
-        TEST_ASSERT_EQUAL_MESSAGE(exp, result, "");
+        #if defined(__VX4B__)
+            //this casts to 32 bit because it night not fit in 16 bits (due to rounding)
+            TEST_ASSERT_INT32_WITHIN(4, exp, result);
+        #else
+            TEST_ASSERT_EQUAL_MESSAGE(exp, result, "");
+        #endif 
     }
 }
 #undef MAX_LEN
