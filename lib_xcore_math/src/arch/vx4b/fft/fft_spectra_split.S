@@ -12,7 +12,7 @@ headroom_t fft_spectra_split(
 
 
 #define FUNCTION_NAME   fft_spectra_split
-#define NSTACKWORDS     (32)
+#define NSTACKWORDS     (8)
 
 #define X       x10
 #define N       x11
@@ -23,37 +23,37 @@ headroom_t fft_spectra_split(
 .p2align 4
 
 FUNCTION_NAME:
-        xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
-        xm.stdsp  s3,s2,8
-        xm.stdsp  s5,s4,16
-        xm.stdsp  s7,s6,24
-   {   li t3, 0                              ;   sw s8, 4                          (sp)}
-    {   srli s8, N, 3                           ;   xm.vsetc t3}
+    xm.entsp (NSTACKWORDS)*4
+    xm.stdsp  s3,s2,8
+    xm.stdsp  s5,s4,16
+    xm.stdsp  s7,s6,0
+    { li t3, 0                           ; sw s8, 24                       (sp) }
+    { srli s8, N, 3                     ; xm.vsetc t3                           }
 
-  #if (XS3_CONFIG_MIN_FFT_LEN <= 4)
-    { nop                                           ;   xm.bt s8, .L_split_the_spectrum           }
+  #if (VX4_CONFIG_MIN_FFT_LEN <= 4)
+    { nop                               ; xm.bt s8, .L_split_the_spectrum       }
   #endif
 
 #if (CONFIG_MIN_FFT_LEN <= 4)
 .L_fft_length_4:
 
     // If the FFT length is 4, just do the work here. This keeps the code below simpler.
-    {   xm.mkmski s8, 8                            ; nop                                           }
-    {   slli t3, s8, 16                        ;   lw s2,4                            ( X)}
-    {   add s8, s8, t3                       ;   lw s3,16                            ( X)}
-    {   li t3, 1                              ;   sw s2,16 /* X[2].re <- X[0].im */   ( X)}
-    {   xm.not s8, s8                            ;   sw s3,4 /* X[0].im <- X[2].re */   ( X)}
-        xm.vlashr X, t3
-        xm.vstrpv X, s8
-        xm.lddi  s2,s3, 8(X)
-        xm.lddi  s4,s5, 24(X)
-    {   add s8, s2, s4                         ;   sub t3, s3, s5                         }
-        xm.stdi  s8,t3, 8(X)
-    {   add s8, s3, s5                         ;   sub t3, s4, s2                         }
-        xm.stdi  s8,t3, 24(X)
-    { nop                                           ;   xm.vldd X}
-    { nop                                           ;   xm.vstd X}
-    { nop                                           ;   xm.bu .L_finish                            }
+    { xm.mkmski s8, 8                   ; nop                                   }
+    { slli t3, s8, 16                   ; lw s2,4                          ( X) }
+    { add s8, s8, t3                    ; lw s3,16                         ( X) }
+    { li t3, 1                          ; sw s2,16 /* X[2].re <- X[0].im */( X) }
+    { xm.not s8, s8                     ; sw s3,4 /* X[0].im <- X[2].re */ ( X) }
+    xm.vlashr X, t3
+    xm.vstrpv X, s8
+    xm.lddi  s2,s3, 8(X)
+    xm.lddi  s4,s5, 24(X)
+    { add s8, s2, s4                    ; sub t3, s3, s5                        }
+    xm.stdi  s8,t3, 8(X)
+    { add s8, s3, s5                    ; sub t3, s4, s2                        }
+    xm.stdi  s8,t3, 24(X)
+    { nop                               ; xm.vldd X                             }
+    { nop                               ; xm.vstd X                             }
+    { nop                               ; xm.bu .L_finish                       }
 
 #endif
 
@@ -62,11 +62,11 @@ FUNCTION_NAME:
 .L_split_the_spectrum:
 
     // First, reverse the tail
-    {   mv s2, X                               ;   mv s3, N                               }
-        sh2add X, N, X
-    {   srli N, N, 1                             ; nop                                           }
-        call vect_complex_s32_tail_reverse
-    {   mv X, s2                               ;   mv N, s3                               }
+    { mv s2, X                          ; mv s3, N                              }
+    sh2add X, N, X
+    { srli N, N, 1                      ; nop                                   }
+    call vect_complex_s32_tail_reverse
+    { mv X, s2                          ; mv N, s3                              }
 
 #define X_lo    X
 #define i       x12
@@ -84,13 +84,13 @@ FUNCTION_NAME:
     // of elements is a multiple of 4, which means this loop will have no tail, AND it will have
     // captured the headroom of the vector (although it will be the lesser of the lower and upper
     // halves)
-    {   li _32, 32                             ;   srli i, N, 1                             }
-        xm.lddi  DC_re,DC_im, 0(X)
-        xm.ldd  Ny_re,Ny_im, i(X)
-    {   sub s7, DC_re, Ny_im                   ;   add t3, DC_im, Ny_re                   }
-        xm.stdi  s7,t3, 0(X)
-    {   add s7, DC_re, Ny_im                    ;   sub t3, DC_im, Ny_re                   }
-        xm.std  s7,t3, i  (X)
+    { li _32, 32                        ; srli i, N, 1                          }
+    xm.lddi  DC_re,DC_im, 0(X)
+    xm.ldd  Ny_re,Ny_im, i(X)
+    { sub s7, DC_re, Ny_im              ; add t3, DC_im, Ny_re                  }
+    xm.stdi  s7,t3, 0(X)
+    { add s7, DC_re, Ny_im              ; sub t3, DC_im, Ny_re                  }
+    xm.std  s7,t3, i  (X)
 
 #undef DC_re
 #undef DC_im
@@ -101,43 +101,41 @@ FUNCTION_NAME:
 
 
     sh2add X_hi, N, X_lo
-       li x28, 0x0080                                                                      /* Translation error on this line: unexpected token at position 92. */ 
-    {   srli i, i, 2                             ;   xm.vsetc t3}
-lui t3, %hi(vpu_vec_complex_neg_j)
-        addi t3,t3, %lo(vpu_vec_complex_neg_j)
-    { nop                                           ;   xm.vldc t3}
-lui t3, %hi(vpu_vec_complex_conj_op)
-        addi t3,t3, %lo(vpu_vec_complex_conj_op)
-    { nop                                           ;   xm.bu .L_syzygy                            }
+    li x28, 0x0080                                                                     
+    { srli i, i, 2                      ; xm.vsetc t3                           }
+    la t3, vpu_vec_complex_neg_j
+    { nop                               ; xm.vldc t3                            }
+    la t3, vpu_vec_complex_conj_op
+    { nop                               ; xm.bu .L_syzygy                       }
 
 .p2align 4
 .L_syzygy:
-        {   addi i, i, -1                             ;   xm.vldr t3}
-        { nop                                           ;   xm.vlmul0 X_hi}
-        { nop                                           ;   xm.vladsb X_lo}
-        {   add X_lo, X_lo, _32                     ;   xm.vstr X_lo}
-        { nop                                           ;   xm.vcmr0                                   }
-        { nop                                           ;   xm.vcmi0                                    }
-        {   add X_hi, X_hi, _32                     ;   xm.vstr X_hi}
-        { nop                                           ;   xm.bt i, .L_syzygy                         }
+        { addi i, i, -1                 ; xm.vldr t3                            }
+        { nop                           ; xm.vlmul0 X_hi                        }
+        { nop                           ; xm.vladsb X_lo                        }
+        { add X_lo, X_lo, _32           ; xm.vstr X_lo                          }
+        { nop                           ; xm.vcmr0                              }
+        { nop                           ; xm.vcmi0                              }
+        { add X_hi, X_hi, _32           ; xm.vstr X_hi                          }
+        { nop                           ; xm.bt i, .L_syzygy                    }
 
 
 .L_finish:
-    {   li a0, 31                              ;   xm.vgetc t3}
-    {   xm.zexti t3, 5                             ; nop                                           }
-    {   sub a0, a0, t3                         ;   lw s8, 4                          (sp)}
+    { li a0, 31                         ; xm.vgetc t3                           }
+    { xm.zexti t3, 5                    ; nop                                   }
+    { sub a0, a0, t3                    ; lw s8, 24                          (sp) }
 
-     xm.lddsp  s3,s2,8
-        xm.lddsp  s5,s4,16
-        xm.lddsp  s7,s6,24
-        xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+    xm.lddsp  s3,s2,8
+    xm.lddsp  s5,s4,16
+    xm.lddsp  s7,s6,0
+    xm.retsp (NSTACKWORDS)*4
 
-//.cc_bottom FUNCTION_NAME.function;  /* Translation error on this line: unexpected token at position 33. */ 
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS + vect_complex_s32_tail_reverse.nstackwords;      /* Translation error on this line: unexpected token at position 86. */ 
-                                                .global FUNCTION_NAME.nstackwords;  /* Translation error on this line: unexpected token at position 81. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores;  /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers;  /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends;  /* Translation error on this line: unexpected token at position 32. */ 
+//.cc_bottom FUNCTION_NAME.function; 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS + vect_complex_s32_tail_reverse.nstackwords;     
+                                                .global FUNCTION_NAME.nstackwords; 
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends; 
 .L_function_end: 
     .size FUNCTION_NAME, .L_function_end - FUNCTION_NAME
 
