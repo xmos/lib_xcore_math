@@ -307,7 +307,7 @@ TEST(filter_fir_s32, case3)
 
         int32_t expected32;
 
-        if(filter.shift >= 0){
+        if(filter.shift > 0){
             expected32 = (int32_t) ((expected64 + (1LL << (filter.shift-1))) >> filter.shift);
         } else {
             expected32 = (int32_t) (expected64 << -filter.shift);
