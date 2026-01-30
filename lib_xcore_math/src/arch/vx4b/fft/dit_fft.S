@@ -146,7 +146,7 @@ dit_fft_done:
     
 //update the hr
 { xm.vgetc t3                       ; li s, 31                              }
-xm.zexti x28, 5                             
+xm.zexti t3, 5                             
 sub s, s, t3
 xm.lddsp  hr_p,s2,0
 sw s,0( hr_p)
