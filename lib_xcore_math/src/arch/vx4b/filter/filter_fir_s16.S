@@ -32,9 +32,9 @@ int16_t filter_fir_s16(
 #define FILT_STATE      3
 
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
+#define STACK_VEC_TMP2  (NSTACKWORDS-8-1)
 #define STACK_VEC_VR    (NSTACKWORDS-16-1)
-#define STACK_VEC_TMP2  (NSTACKWORDS-24-1)
+#define STACK_VEC_TMP   (NSTACKWORDS-24-1)
 
 #define STACK_FILTER    (8)
 
