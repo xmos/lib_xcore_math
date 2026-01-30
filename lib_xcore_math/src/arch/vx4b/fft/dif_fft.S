@@ -184,7 +184,7 @@ dif_ifft_impl_start:
 	{ mv exp_modifier, t3                  ; xm.vsetc t3                           }
 
 	{ srli s, n, 3                         ; sw n, (STACK_N)*4                (sp) }
-	{ mv t3, x_p                           ; ;   xm.brff s, dif_ifft_last_two_rounds_4_point }
+	{ mv t3, x_p                           ; xm.brff s, dif_ifft_last_two_rounds_4_point     }
 
 	mul b, n, _32                                                                        
 	{ srli b, b, 3                         ; mv a, _32                             }
