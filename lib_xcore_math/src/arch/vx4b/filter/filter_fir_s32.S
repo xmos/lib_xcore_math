@@ -37,8 +37,8 @@ int32_t filter_fir_s32(
 #define STACK_VEC_TMP   (NSTACKWORDS-8-1)
 
 
-#define filter      x23
-#define sample      x11
+#define filter      s7
+#define sample      a1
 #define tmp1        x18
 #define tmp2        x22    
     
@@ -65,14 +65,14 @@ FUNCTION_NAME:
 
 // I'm just going to create two sets of registers, corresponding to each of the two parts. That's what this is.
 
-#define state_A     x10
+#define state_A     a0
 #define state_B     x19
 
-#define N_A         x12    
-#define N_B         x21
+#define N_A         a2    
+#define N_B         s5
 
-#define coef_A      x11
-#define coef_B      x20
+#define coef_A      a1
+#define coef_B      s4
 
     // Get the current head position, which is also the number of taps in part B
     { nop                               ; lw N_B,(FILT_HEAD)*4        ( filter) }
@@ -141,7 +141,7 @@ FUNCTION_NAME:
 #undef N_B
 #undef coef_B
 
-// Now combine the 40-bit accumulators, assumes that x24 points to the stack.
+// Now combine the 40-bit accumulators, assumes that s8 points to the stack.
 // (the logic for this is a too complicated to explain here)
     la t3, vpu_vec_0x40000000
     { nop                               ; lw a2,(FILT_SHIFT)*4        ( filter) }
@@ -152,26 +152,26 @@ FUNCTION_NAME:
     la t3, vpu_vec_zero
     { li t3, 0                          ; xm.vldr t3                            }
     { xm.slt a3, t3, a2                 ; xm.vlmaccr0 s8                        }
-    { nop                               ; xm.vstd x24                           }
-    { xm.neg x20, x12                   ; nop                                   }
+    { nop                               ; xm.vstd s8                           }
+    { xm.neg s4, a2                   ; nop                                   }
     { addi s4, s4, 1                    ; xm.vlmaccr0 s8                        }
     { nop                               ; xm.vstr s8                            }
 
-// x11 and x10 will contain a 64-bit result. Left or right-shift that as appropriate.
+// a1 and a0 will contain a 64-bit result. Left or right-shift that as appropriate.
 
     xm.lddi  a1,a0, 0(s8)
     { addi a1, a1, 8                    ; xm.brff a3, .L_left_shift             }
 
     .L_right_shift:
-        // (from the block above):  x19 = 1, x18 = 1<<(x12 - 1)
-        // adding x18*x19 (=x18) to x11:x10 effectively rounds it when we extract it.
+        // (from the block above):  x19 = 1, x18 = 1<<(a2 - 1)
+        // adding x18*x19 (=x18) to a1:a0 effectively rounds it when we extract it.
         xm.maccs a1, a0, s2, s3
         xm.lsats a1, a0, a2
         xm.lextract a0, a1, a0, a2, 32
     { nop                               ; xm.bu .L_done                         }
 
     .L_left_shift:
-        // (from the block above):  x19 = 1, x20 = -x12 + 1, t3 = 0
+        // (from the block above):  x19 = 1, s4 = -a2 + 1, t3 = 0
         // If we're left-shifting (or zero-shifting), we still need to saturate to q31.
         // lsats has a bug which doesn't allow to use it with 0, so we'll have to 
         // add 1 to our shift, left-shift, saturate and extract with 1, no need to round here.

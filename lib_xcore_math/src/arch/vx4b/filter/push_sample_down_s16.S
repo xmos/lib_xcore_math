@@ -27,15 +27,15 @@ void filter_fir_s16_push_sample_down(
 #define STACK_VEC_TMP   (NSTACKWORDS-8-1)
 
 
-#define buff        x10
-#define length      x11
-#define value       x12
-#define _60         x13
+#define buff        a0
+#define length      a1
+#define value       a2
+#define _60         a3
 #define mask        x18
 #define tail_start  x19
-#define buff_end    x20
-#define buffD       x21
-#define tmp         x24
+#define buff_end    s4
+#define buffD       s5
+#define tmp         s8
     
 .text
 .globl FUNCTION_NAME;

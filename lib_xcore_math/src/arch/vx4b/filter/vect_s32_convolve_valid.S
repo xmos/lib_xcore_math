@@ -25,15 +25,15 @@ headroom_t vect_s32_convolve_valid(
 #define STACK_VEC_TMP   (NSTACKWORDS-8-2)
 
 
-#define sig_out     x10
-#define sig_in      x11
-#define filter      x12
-#define len         x13
+#define sig_out     a0
+#define sig_in      a1
+#define filter      a2
+#define len         a3
 
 #define tmpA        x18
 #define _32         x19
-#define vec_tmp     x20
-#define tmpB        x21
+#define vec_tmp     s4
+#define tmpB        s5
 
 
 #define P           filter    // P = (filter_taps >> 1)

@@ -38,15 +38,15 @@ int16_t filter_fir_s16(
 
 #define STACK_FILTER    (8)
 
-#define buff        x10
-#define length      x11
-#define sample      x12
-#define tmpA        x13
+#define buff        a0
+#define length      a1
+#define sample      a2
+#define tmpA        a3
 #define _32         x18
 #define coef        x19
 
 
-#define filter      x24
+#define filter      s8
     
 .text
 .globl FUNCTION_NAME;
@@ -99,11 +99,11 @@ FUNCTION_NAME:
     { nop                               ; xm.vlmaccr0 coef                      }
     xm.vlmaccr1 coef
 
-    xm.st16 x12, tmpA(t3)
+    xm.st16 a2, tmpA(t3)
 
     xm.vlsat t3
     { nop                               ; xm.vstr t3                            }
-    xm.ld16s x10, tmpA(t3) 
+    xm.ld16s a0, tmpA(t3) 
 .L_done:
     { nop                               ; lw s8, 24                          (sp) }
         xm.lddsp  s7,s6,0

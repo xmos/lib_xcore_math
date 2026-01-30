@@ -33,13 +33,13 @@ int32_t filter_biquad_s32(
 #define STATE_START     10
 
 
-#define state       x10      // ![0x%08X]
-#define sample      x11      // ![%d]
-#define coef        x12      // ![0x%08X]
-#define tmp         x13      // ![%d]
+#define state       a0      // ![0x%08X]
+#define sample      a1      // ![%d]
+#define coef        a2      // ![0x%08X]
+#define tmp         a3      // ![%d]
 #define _32         x18      // ![%d]
 #define _36         x19      // ![%d]
-#define filter      x24      // ![0x%08X]
+#define filter      s8      // ![0x%08X]
     
 .text
 .globl FUNCTION_NAME;

@@ -36,13 +36,13 @@ int32_t filter_biquad_sat_s32(
 #define STATE_START     10
 
 
-#define state       x10      // ![0x%08X]
-#define sample      x11      // ![%d]
-#define coef        x12      // ![0x%08X]
-#define tmp         x13      // ![%d]
+#define state       a0      // ![0x%08X]
+#define sample      a1      // ![%d]
+#define coef        a2      // ![0x%08X]
+#define tmp         a3      // ![%d]
 #define _32         x18      // ![%d]
 #define _36         x19      // ![%d]
-#define filter      x24     // ![0x%08X]
+#define filter      s8     // ![0x%08X]
     
 .text
 .globl FUNCTION_NAME;
@@ -92,7 +92,7 @@ FUNCTION_NAME:
     { sub N, tmp, N                     ; sw sample,0                  ( state) }
 
 #undef sample
-#define zeros x11
+#define zeros a1
 
     // Overwrite state[0][1:9] with 0's
     la t3, vpu_vec_zero
@@ -104,7 +104,7 @@ FUNCTION_NAME:
     { nop                               ; xm.vldc coef                          }
 
 #undef coef
-#define state_p1 x12
+#define state_p1 a2
 
     { addi state_p1, t3, 0              ; addi t3,sp, (STACK_TMP_VR)*4          }
 
