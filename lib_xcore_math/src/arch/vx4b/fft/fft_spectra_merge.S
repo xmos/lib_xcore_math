@@ -15,7 +15,7 @@ headroom_t fft_spectra_merge(
 #define FUNCTION_NAME   fft_spectra_merge
 #define NSTACKWORDS     (8)
 
-#define XS3_CONFIG_MIN_FFT_LEN (4)
+#define VX4_CONFIG_MIN_FFT_LEN (4)
 
 #define X       x10
 #define N       x11
@@ -33,7 +33,7 @@ FUNCTION_NAME:
         xm.stdsp  s7,s6,0
     { li t3, 0                          ; sw s8, 24                          (sp) }
     { srli t3, N, 3                     ; xm.vsetc t3                           }
-#if (XS3_CONFIG_MIN_FFT_LEN <= 4)
+#if (VX4_CONFIG_MIN_FFT_LEN <= 4)
     { nop                               ; xm.brff t3, .L_fft_length_4           }
     { nop                               ; xm.bu .L_pre_boggle                   }
 #endif
