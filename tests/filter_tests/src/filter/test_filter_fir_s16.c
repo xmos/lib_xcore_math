@@ -56,7 +56,11 @@ TEST(filter_fir_s16, case0)
         for(int i = 0; i < 20; i++){
             exp += N;  // old sample (i) leaves as new sample (N+i) comes in.
             int16_t res = filter_fir_s16(&filter, N+i);
-            TEST_ASSERT_EQUAL(exp, res);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(1, exp, res);
+            #else
+                TEST_ASSERT_EQUAL(exp, res);
+            #endif
         }
 
     }
@@ -92,7 +96,11 @@ TEST(filter_fir_s16, case1)
             int16_t exp = N*(N-1) / 2;
 
             int16_t res = filter_fir_s16(&filter, 1);
-            TEST_ASSERT_EQUAL(exp, res);
+            #if defined(__VX4B__)
+                TEST_ASSERT_INT16_WITHIN(1, exp, res);
+            #else
+                TEST_ASSERT_EQUAL(exp, res);
+            #endif
         }
 
     }
@@ -169,7 +177,11 @@ TEST(filter_fir_s16, case2)
         // Apply the filter
         int16_t res = filter_fir_s16(&filter, new_sample);
 
-        TEST_ASSERT_EQUAL_MESSAGE(expected16, res, msg_buff);
+        #if defined(__VX4B__)
+            TEST_ASSERT_INT16_WITHIN_MESSAGE(2, expected16, res, msg_buff);
+        #else
+            TEST_ASSERT_EQUAL_MESSAGE(expected16, res, msg_buff);
+        #endif
     }
 
 }

@@ -25,7 +25,7 @@ int32_t filter_fir_s32(
 #define FUNCTION_NAME filter_fir_s32
 
 #define NSTACKVECS      (1)
-#define NSTACKWORDS     (12+8*NSTACKVECS)
+#define NSTACKWORDS     (8+8*NSTACKVECS)
 
 #define FILT_N          0
 #define FILT_HEAD       1
@@ -34,28 +34,28 @@ int32_t filter_fir_s32(
 #define FILT_STATE      4
 
 
-#define STACK_VEC_TMP   (NSTACKWORDS-12)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
 
 
-#define filter      x23
-#define sample      x11
+#define filter      s7
+#define sample      a1
 #define tmp1        x18
 #define tmp2        x22    
     
 .text
-.globl FUNCTION_NAME; /* Translation error on this line: unexpected token at position 20. */ 
+.globl FUNCTION_NAME;
 .type FUNCTION_NAME,@function
 .p2align 4
 
 FUNCTION_NAME:
-        xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
-        xm.stdsp  s3,s2,8
-        xm.stdsp  s5,s4,16
-        xm.stdsp  s7,s6,24
-    {   li t3, 0                              ;   sw s8, 4                          (sp)}
+    xm.entsp (NSTACKWORDS)*4
+    xm.stdsp  s3,s2,8
+    xm.stdsp  s5,s4,16
+    xm.stdsp  s7,s6,0
+    { li t3, 0                          ; sw s8, 24                          (sp) }
 
     // Set VPU mode to 32-bit
-    {   mv filter, a0                          ;   xm.vsetc t3}
+    { mv filter, a0                     ; xm.vsetc t3                           }
 
 
 // The field filter->head points to where the newest sample will go, which is probably somewhere in the middle of the 
@@ -65,139 +65,133 @@ FUNCTION_NAME:
 
 // I'm just going to create two sets of registers, corresponding to each of the two parts. That's what this is.
 
-#define state_A     x10
+#define state_A     a0
 #define state_B     x19
 
-#define N_A         x12    
-#define N_B         x21
+#define N_A         a2    
+#define N_B         s5
 
-#define coef_A      x11
-#define coef_B      x20
+#define coef_A      a1
+#define coef_B      s4
 
     // Get the current head position, which is also the number of taps in part B
-    { nop                                           ;   lw N_B,(FILT_HEAD)*4              ( filter)}
+    { nop                               ; lw N_B,(FILT_HEAD)*4        ( filter) }
 
     // If N_B is currently zero, then the next head is the final index. Otherwise it's just
     // the head decremented by 1.
-    {   addi t3, N_B, -1                         ;   lw N_A,(FILT_N)*4                 ( filter)}
-    { nop                                           ;   xm.bt N_B, .L_no_reset                     }
-    {   addi t3, N_A, -1                         ; nop                                           }
+    { addi t3, N_B, -1                  ; lw N_A,(FILT_N)*4           ( filter) }
+    { nop                               ; xm.bt N_B, .L_no_reset                }
+    { addi t3, N_A, -1                  ; nop                                   }
 
     .L_no_reset:
-    { nop                                           ;   sw t3,(FILT_HEAD)*4              ( filter)}
+    { nop                               ; sw t3,(FILT_HEAD)*4         ( filter) }
 
     // Store the newest sample in the state. And grab the rest of the state/coef/N values
-    { nop                                           ;   lw state_B,(FILT_STATE)*4         ( filter)}
-        sh2add state_A, N_B, state_B
-    {   sub N_A, N_A, N_B                       ;   sw sample,0                  ( state_A)}
-    {   slli tmp1, N_A, 2                        ;   lw coef_A,(FILT_COEF)*4           ( filter)}
-        sh2add coef_B, N_A, coef_A
+    { nop                               ; lw state_B,(FILT_STATE)*4   ( filter) }
+    sh2add state_A, N_B, state_B
+    { sub N_A, N_A, N_B                 ; sw sample,0                ( state_A) }
+    { slli tmp1, N_A, 2                 ; lw coef_A,(FILT_COEF)*4     ( filter) }
+    sh2add coef_B, N_A, coef_A
 #undef sample
 
     // Each part has its own tail. We'll handle both of those first (by masking the state with zeros), then we'll do the 
     // bulk of the work after
 
-    {   addi s8,sp, (STACK_VEC_TMP)*4             ;   xm.vclrdr                                  }
-    {   mv t3, state_A                        ;   xm.vstd s8}
-    {   xm.zexti tmp1, 5                            ;   xm.vldr t3}
-    {   xm.mkmsk t3, tmp1                         ;   srli N_A, N_A, 3                         }
-        xm.vstrpv s8, t3
-    {   mv t3, state_B                        ;   xm.vldc s8}
-    {   slli tmp2, N_B, 2                        ;   xm.vldr t3}
-    {   xm.zexti tmp2, 5                            ;   xm.vstd s8}
-    {   xm.mkmsk t3, tmp2                         ;   srli N_B, N_B, 3                         }
-        xm.vstrpv s8, t3
-    {   add state_A, state_A, tmp1              ;   xm.vclrdr                                  }
-    {   add coef_A, coef_A, tmp1                ;   xm.vlmaccr0 coef_A}
-    {   add state_B, state_B, tmp2              ;   xm.vldc s8}
-    {   add coef_B, coef_B, tmp2                ;   xm.vlmaccr0 coef_B}
+    { addi s8,sp, (STACK_VEC_TMP)*4     ; xm.vclrdr                             }
+    { mv t3, state_A                    ; xm.vstd s8                            }
+    { xm.zexti tmp1, 5                  ; xm.vldr t3                            }
+    { xm.mkmsk t3, tmp1                 ; srli N_A, N_A, 3                      }
+     xm.vstrpv s8, t3
+    { mv t3, state_B                    ; xm.vldc s8                            }
+    { slli tmp2, N_B, 2                 ; xm.vldr t3                            }
+    { xm.zexti tmp2, 5                  ; xm.vstd s8                            }
+    { xm.mkmsk t3, tmp2                 ; srli N_B, N_B, 3                      }
+    xm.vstrpv s8, t3
+    { add state_A, state_A, tmp1        ; xm.vclrdr                             }
+    { add coef_A, coef_A, tmp1          ; xm.vlmaccr0 coef_A                    }
+    { add state_B, state_B, tmp2        ; xm.vldc s8                            }
+    { add coef_B, coef_B, tmp2          ; xm.vlmaccr0 coef_B                    }
 
 // Now, go back through and do full vectors.
 
 #undef tmp2
 #define _32     x22
 
-    tail .L_part_A_start
     .p2align 4
     .L_part_A_start:
-        {   li _32, 32                             ;   xm.brff N_A, .L_part_A_end                   }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+        { li _32, 32                    ; xm.brff N_A, .L_part_A_end            }
         .L_part_A_loop_top:
-            {   add state_A, state_A, _32               ;   xm.vldc state_A}
-            {   addi N_A, N_A, -1                         ;   xm.vlmaccr0 coef_A}
-            {   add coef_A, coef_A, _32                 ;   xm.bt N_A, .L_part_A_loop_top              }
+            { add state_A, state_A, _32 ; xm.vldc state_A                       }
+            { addi N_A, N_A, -1         ; xm.vlmaccr0 coef_A                    }
+            { add coef_A, coef_A, _32   ; xm.bt N_A, .L_part_A_loop_top         }
     .L_part_A_end:
 #undef state_A
 #undef N_A
 #undef coef_A
 
     .L_part_B_start:
-        {   li _32, 32                             ;   xm.brff N_B, .L_part_B_end                   }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+        { li _32, 32                    ; xm.brff N_B, .L_part_B_end            }
         .L_part_B_loop_top:
-            {   add state_B, state_B, _32               ;   xm.vldc state_B}
-            {   addi N_B, N_B, -1                         ;   xm.vlmaccr0 coef_B}
-            {   add coef_B, coef_B, _32                 ;   xm.bt N_B, .L_part_B_loop_top              }
+            { add state_B, state_B, _32 ; xm.vldc state_B                       }
+            { addi N_B, N_B, -1         ; xm.vlmaccr0 coef_B                    }
+            { add coef_B, coef_B, _32   ; xm.bt N_B, .L_part_B_loop_top         }
     .L_part_B_end:
     
 #undef state_B
 #undef N_B
 #undef coef_B
 
-// Now combine the 40-bit accumulators, assumes that x24 points to the stack.
+// Now combine the 40-bit accumulators, assumes that s8 points to the stack.
 // (the logic for this is a too complicated to explain here)
-lui t3, %hi(vpu_vec_0x40000000)
-        addi t3,t3, %lo(vpu_vec_0x40000000)
-    { nop                                           ;   lw a2,(FILT_SHIFT)*4              ( filter)}
-    {   addi s2, a2, -1                           ;   xm.vldc t3}
-    {   li s3, 1                               ;   xm.vstr s8}
-lui t3, %hi(vpu_vec_0x80000000)
-        addi t3,t3, %lo(vpu_vec_0x80000000)
-    {   xm.shl s2, s3, s2                          ;   xm.vlmacc0 t3}
-lui t3, %hi(vpu_vec_zero)
-        addi t3,t3, %lo(vpu_vec_zero)
-    {   li t3, 0                              ;   xm.vldr t3}
-    {   xm.slt a3, t3, a2                         ;   xm.vlmaccr0 s8}
+    la t3, vpu_vec_0x40000000
+    { nop                               ; lw a2,(FILT_SHIFT)*4        ( filter) }
+    { addi s2, a2, -1                   ; xm.vldc t3                            }
+    { li s3, 1                          ; xm.vstr s8                            }
+    la t3, vpu_vec_0x80000000
+    { xm.shl s2, s3, s2                 ; xm.vlmacc0 t3                         }
+    la t3, vpu_vec_zero
+    { li t3, 0                          ; xm.vldr t3                            }
+    { xm.slt a3, t3, a2                 ; xm.vlmaccr0 s8                        }
+    { nop                               ; xm.vstd s8                           }
+    { xm.neg s4, a2                   ; nop                                   }
+    { addi s4, s4, 1                    ; xm.vlmaccr0 s8                        }
+    { nop                               ; xm.vstr s8                            }
 
-    { nop ; xm.vstd x24}
-    { xm.neg x20, x12 ; nop}
-//{   neg s4, a2                              ;   vstd s8}"
-    {   addi s4, s4, 1                           ;   xm.vlmaccr0 s8}
-    { nop                                           ;   xm.vstr s8}
+// a1 and a0 will contain a 64-bit result. Left or right-shift that as appropriate.
 
-// x11 and x10 will contain a 64-bit result. Left or right-shift that as appropriate.
-
-        xm.lddi  a1,a0, 0(s8)
-    {   addi a1, a1, 8                           ;   xm.brff a3, .L_left_shift                    }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+    xm.lddi  a1,a0, 0(s8)
+    { addi a1, a1, 8                    ; xm.brff a3, .L_left_shift             }
 
     .L_right_shift:
-        // (from the block above):  x19 = 1, x18 = 1<<(x12 - 1)
-        // adding x18*x19 (=x18) to x11:x10 effectively rounds it when we extract it.
+        // (from the block above):  x19 = 1, x18 = 1<<(a2 - 1)
+        // adding x18*x19 (=x18) to a1:a0 effectively rounds it when we extract it.
         xm.maccs a1, a0, s2, s3
         xm.lsats a1, a0, a2
         xm.lextract a0, a1, a0, a2, 32
-    { nop                                           ;   xm.bu .L_done                              }
+    { nop                               ; xm.bu .L_done                         }
 
     .L_left_shift:
-        // (from the block above):  x19 = 1, x20 = -x12 + 1, x28 = 0
+        // (from the block above):  x19 = 1, s4 = -a2 + 1, t3 = 0
         // If we're left-shifting (or zero-shifting), we still need to saturate to q31.
         // lsats has a bug which doesn't allow to use it with 0, so we'll have to 
         // add 1 to our shift, left-shift, saturate and extract with 1, no need to round here.
-    {   xm.shl a1, a1, s4                          ; nop                                           }
-        xm.linsert a1, t3, a0, s4, 32
-        xm.lsats a1, t3, s3
-        xm.lextract a0, a1, t3, s3, 32
+    { xm.shl a1, a1, s4                 ; nop                                   }
+    xm.linsert a1, t3, a0, s4, 32
+    xm.lsats a1, t3, s3
+    xm.lextract a0, a1, t3, s3, 32
 
 .L_done:
-        xm.lddsp  s7,s6,24
+        xm.lddsp  s7,s6,0
         xm.lddsp  s5,s4,16
         xm.lddsp  s3,s2,8
-    { nop                                           ;   lw s8, 4                          (sp)}
-        xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+    { nop                               ; lw s8, 24                          (sp) }
+        xm.retsp (NSTACKWORDS)*4
 
-//.cc_bottom FUNCTION_NAME.function;  /* Translation error on this line: unexpected token at position 33. */ 
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords;  /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores;  /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers;  /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends;  /* Translation error on this line: unexpected token at position 32. */ 
+//.cc_bottom FUNCTION_NAME.function; 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords; 
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends; 
 .L_size_end:
     .size FUNCTION_NAME, .L_size_end - FUNCTION_NAME
 

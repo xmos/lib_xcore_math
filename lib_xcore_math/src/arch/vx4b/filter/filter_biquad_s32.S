@@ -23,7 +23,7 @@ int32_t filter_biquad_s32(
 #define FUNCTION_NAME filter_biquad_s32
 
 #define NSTACKVECS      (0)
-#define NSTACKWORDS     (32+8*NSTACKVECS)
+#define NSTACKWORDS     (4+8*NSTACKVECS)
 
 #define FILT_N          0
 #define FILT_STATE      1
@@ -33,41 +33,41 @@ int32_t filter_biquad_s32(
 #define STATE_START     10
 
 
-#define state       x10      // ![0x%08X]
-#define sample      x11      // ![%d]
-#define coef        x12      // ![0x%08X]
-#define tmp         x13      // ![%d]
+#define state       a0      // ![0x%08X]
+#define sample      a1      // ![%d]
+#define coef        a2      // ![0x%08X]
+#define tmp         a3      // ![%d]
 #define _32         x18      // ![%d]
 #define _36         x19      // ![%d]
-#define filter      x24     // ![0x%08X]
+#define filter      s8      // ![0x%08X]
     
 .text
-.globl FUNCTION_NAME; /* Translation error on this line: unexpected token at position 20. */ 
+.globl FUNCTION_NAME;
 .type FUNCTION_NAME,@function
 .p2align 4
 
 FUNCTION_NAME:
-        xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
-        xm.stdsp  s3,s2,8
-    {   li t3, 0                              ;   sw s8, 4                          (sp)}
-    {   mv filter, a0                          ;   xm.vsetc t3}
-    {   xm.ldcu tmp, FILT_STATE + STATE_START       ; nop                                           }
-        sh2add state, tmp, filter          // state <-- &(filter->state[1][1])
-    {   xm.ldcu tmp, FILT_COEF + COEF_START         ;   xm.vclrdr                                  }
-        sh2add coef,  tmp , filter           // coef <-- &(filter->coef[4][0])
+    xm.entsp (NSTACKWORDS)*4
+    xm.stdsp  s3,s2,0
+    { li t3, 0                          ; sw s8, 8                         (sp) }
+    { mv filter, a0                     ; xm.vsetc t3                           }
+    { xm.ldcu tmp, FILT_STATE + STATE_START ; nop                               }
+    sh2add state, tmp, filter          // state <-- &(filter->state[1][1])
+    { xm.ldcu tmp, FILT_COEF + COEF_START ; xm.vclrdr                           }
+    sh2add coef,  tmp , filter           // coef <-- &(filter->coef[4][0])
 
-    {   li _36, 36                             ;   li _32, 32                             }
+    { li _36, 36                        ; li _32, 32                            }
 
 // Deal with the b2 and -a2 coefficients before b1 and -a1, so we can overwrite them easily.
 
-    {   sub state, state, _36                   ;   xm.vldc state}
-    {   sub coef, coef, _32                     ;   xm.vlmacc0 coef}
-    {   add state, state, _32                   ;   xm.vldc state}
-    {   sub coef, coef, _32                     ;   xm.vlmacc0 coef}
-    {   sub state, state, _36                   ;   xm.vldc state}
-    {   sub coef, coef, _32                     ;   xm.vlmacc0 coef}
-    { nop                                       ;   xm.vldc state}
-    {   sub coef, coef, _32                     ;   xm.vlmacc0 coef}
+    { sub state, state, _36             ; xm.vldc state                         }
+    { sub coef, coef, _32               ; xm.vlmacc0 coef                       }
+    { add state, state, _32             ; xm.vldc state                         }
+    { sub coef, coef, _32               ; xm.vlmacc0 coef                       }
+    { sub state, state, _36             ; xm.vldc state                         }
+    { sub coef, coef, _32               ; xm.vlmacc0 coef                       }
+    { nop                               ; xm.vldc state                         }
+    { sub coef, coef, _32               ; xm.vlmacc0 coef                       }
 
     // Now acc[k] =  b1[k] * x[n-1][k] + b2[k] * x[n-2][k] - a1[k] * y[n-1][k] - a2[k] * y[n-2][k]
     // state = &(filter->state[0][0])
@@ -78,25 +78,24 @@ FUNCTION_NAME:
 
     // Move filter->state[0][:] to filter->state[1][:]
 
-    {   add t3, state, s3                      ;   xm.vldc state}
-    {   add tmp, state, _32                     ;   lw N,(FILT_N)*4                   ( filter)}
-    {   add t3, t3, _32                       ;   xm.vstc t3}
-    {   slli N, N, 1                             ;   lw tmp,0                         ( tmp)}
-    {   li tmp, 6                             ;   sw tmp,0                         ( t3)}
+    { add t3, state, s3                 ; xm.vldc state                         }
+    { add tmp, state, _32               ; lw N,(FILT_N)*4             ( filter) }
+    { add t3, t3, _32                   ; xm.vstc t3                            }
+    { slli N, N, 1                      ; lw tmp,0                       ( tmp) }
+    { li tmp, 6                         ; sw tmp,0                        ( t3) }
 
     // Place the newest input sample in state[0][0]
-    {   sub N, tmp, N                           ;   sw sample,0                    ( state)}
+    { sub N, tmp, N                     ; sw sample,0                  ( state) }
 
     // Overwrite state[0][1:9] with 0's
-lui t3, %hi(vpu_vec_zero)
-        addi t3,t3, %lo(vpu_vec_zero)
-    {   addi t3, state, 4                       ;   xm.vldc t3}
-    { nop                                           ;   xm.vstc t3}
+la t3, vpu_vec_zero
+    { addi t3, state, 4                 ; xm.vldc t3                            }
+    { nop                               ; xm.vstc t3                            }
 
     // vC[:] <-- coef[b0][:]
-    { nop                                           ;   xm.vldc coef}
+    { nop                               ; xm.vldc coef                          }
 
-    // Every element in x28[0:8] except for x28[0] is zero, so a VLMACC shouldn't affect them.
+    // Every element in t3[0:8] except for t3[0] is zero, so a VLMACC shouldn't affect them.
     // Subsequent VLMACCs will corrupt the accumulators, but The Mask will stop that from being a
     // problem. Smokin'!
 
@@ -108,24 +107,24 @@ lui t3, %hi(vpu_vec_zero)
     // the k'th filter section, MACCing against that will not affect accumulators > k. Then we write
     // out the output of section k. We do the MACC again, **which will corrupt the accumulators 
     // which are LESS THAN k.... but that's FINE because we're not going to write them out again.   
-    {   xm.mkmski tmp, 4                            ;   xm.vlmacc0 state}
+    { xm.mkmski tmp, 4                  ; xm.vlmacc0 state                      }
         xm.vstrpv t3, tmp
         li N, 0
-    { nop                                           ;   xm.bru N /* Do N-1 remaining biquads */    }
+    { nop                               ; xm.bru N /* Do N-1 remaining biquads */ }
 
-    {   slli tmp, tmp, 4                         ;   xm.vlmacc0 state}
+    { slli tmp, tmp, 4                  ; xm.vlmacc0 state                      }
         xm.vstrpv t3, tmp
-    {   slli tmp, tmp, 4                         ;   xm.vlmacc0 state}
+    { slli tmp, tmp, 4                  ; xm.vlmacc0 state                      }
         xm.vstrpv t3, tmp
-    {   slli tmp, tmp, 4                         ;   xm.vlmacc0 state}
+    { slli tmp, tmp, 4                  ; xm.vlmacc0 state                      }
         xm.vstrpv t3, tmp
-    {   slli tmp, tmp, 4                         ;   xm.vlmacc0 state}
+    { slli tmp, tmp, 4                  ; xm.vlmacc0 state                      }
         xm.vstrpv t3, tmp
-    {   slli tmp, tmp, 4                         ;   xm.vlmacc0 state}
+    { slli tmp, tmp, 4                  ; xm.vlmacc0 state                      }
         xm.vstrpv t3, tmp
-    {   slli tmp, tmp, 4                         ;   xm.vlmacc0 state}
+    { slli tmp, tmp, 4                  ; xm.vlmacc0 state                      }
         xm.vstrpv t3, tmp
-    {   slli tmp, tmp, 4                         ;   xm.vlmacc0 state}
+    { slli tmp, tmp, 4                  ; xm.vlmacc0 state                      }
         xm.vstrpv t3, tmp
    
     // Final vstrpv should have written the output to filt->state[0][N]. filt->state should
@@ -134,22 +133,19 @@ lui t3, %hi(vpu_vec_zero)
     lw N,(FILT_N)*4                   ( filter)
     xm.ldw a0,N                        ( state)
 
-
 .L_done:
-    { nop                                           ;   lw s8, 4                          (sp)}
-        xm.lddsp  s3,s2,8
-        xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+    { nop                               ; lw s8, 8                          (sp) }
+        xm.lddsp  s3,s2,0
+        xm.retsp (NSTACKWORDS)*4
 
-//.cc_bottom FUNCTION_NAME.function;  /* Translation error on this line: unexpected token at position 33. */ 
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords;  /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores;  /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers;  /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends;  /* Translation error on this line: unexpected token at position 32. */ 
+//.cc_bottom FUNCTION_NAME.function; 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords; 
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends; 
 .L_size_end:
     .size FUNCTION_NAME, .L_size_end - FUNCTION_NAME
 
 #undef FUNCTION_NAME
-
-
 
 #endif //defined(__VX4B__)
