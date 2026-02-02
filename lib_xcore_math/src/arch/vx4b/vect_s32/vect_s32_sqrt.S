@@ -33,38 +33,38 @@ headroom_t vect_s32_sqrt(
 
 #define STACK_DEPTH     0
 
-#define a           x10
-#define b           x11
-#define length      x12
-#define b_shr       x13
+#define a           a0
+#define b           a1
+#define length      a2
+#define b_shr       a3
 
 #define depth       x18
 #define mask_vec    x19
-#define _32         x20
-#define _1          x21
-#define tmp         x24
+#define _32         s4
+#define _1          s5
+#define tmp         s8
 
 .text
 .p2align 2
 
 
 FUNCTION_NAME:
-    xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+    xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
     xm.stdsp  s7,s6,24
     sw a4, (STACK_DEPTH)*4                (sp)
 // Set VPU mode to 32-bit
 // (length << 2) is the length of the vector in bytes.
-{   li t3, 0                              ;   sw s8, 4                          (sp)}
-{   slli length, length, 2                   ;   xm.vsetc t3}
+{ li t3, 0                              ; sw s8, 4                          (sp) }
+{ slli length, length, 2                ; xm.vsetc t3                           }
 
 // Maximum supported depth is 31
-{   li tmp, 31                             ;   lw t3, (STACK_DEPTH)*4                (sp)}
-{   xm.assert t3                              ; nop                                           }
-{   xm.sltu t3, tmp, t3                       ;   li _1, 1                               }
-{   li _32, 32                             ;   xm.brff t3, .L_vect_loop_top                }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
-    { nop                                           ;   sw tmp, (STACK_DEPTH)*4                (sp)}
+{ li tmp, 31                            ; lw t3, (STACK_DEPTH)*4                (sp) }
+{ xm.assert t3                          ; nop                                   }
+{ xm.sltu t3, tmp, t3                   ; li _1, 1                              }
+{ li _32, 32                            ; xm.brff t3, .L_vect_loop_top          }
+    { nop                               ; sw tmp, (STACK_DEPTH)*4                (sp) }
 
 
 .L_vect_loop_top:
@@ -72,26 +72,26 @@ FUNCTION_NAME:
     // mask_vec is a byte mask for the elements of a[] that we're currently working on.
     // using VSTRPV with mask_vec prevents us from corrupting the headroom register.
     // depth is the number of MSBs that we're solving for
-    {   xm.mkmsk mask_vec, length                  ;   lw depth, (STACK_DEPTH)*4              (sp)}
+    { xm.mkmsk mask_vec, length         ; lw depth, (STACK_DEPTH)*4              (sp) }
 
     // First initialize the target vector using b[]
     // (Doing this first allows this function to operate in-place on b[] if desired)
     // @todo If we wanted to, we could do a VSIGN + VLMUL here to take an absolute value of each b[k],
     //       since this function will not work for any negative b[k].
         xm.vlashr b, b_shr
-    {   addi t3,sp, (STACK_VEC_TARGET)*4          ;   add b, b, _32                           }
+    { addi t3,sp, (STACK_VEC_TARGET)*4  ; add b, b, _32                         }
         xm.vstrpv t3, mask_vec
 
     // Initialize the result (a[]) with 0's
-    { nop                                           ;   xm.vclrdr                                  }
+    { nop                               ; xm.vclrdr                             }
         xm.vstrpv a, mask_vec
 
     // VEC_POW[] is the bit we're currently solving for. Initialize to the first non-sign bit.
     // (The VSTD is to zero out the VEC_POW[] elements that are going to be masked out, because
     //  we're going to use VEC_POW[] later to update the headroom register)
     la t3, vpu_vec_0x40000000
-    {   addi t3,sp, (STACK_VEC_POW)*4             ;   xm.vldr t3}
-    { nop                                           ;   xm.vstd t3}
+    { addi t3,sp, (STACK_VEC_POW)*4     ; xm.vldr t3                            }
+    { nop                               ; xm.vstd t3                            }
         xm.vstrpv t3, mask_vec 
 
     // This saves us a few cycles on the first iteration (because of loop alignment, we'd need a 
@@ -99,7 +99,7 @@ FUNCTION_NAME:
     // we don't want to right-shift VEC_POW[] on the first iteration (it's already 2^30), and we 
     // can't fix that by initializing VEC_POW[] to 0x80000000 above because that's negative and 
     // VLASHR is an arithmetic shift.
-    {   addi t3,sp, (STACK_VEC_TARGET)*4          ;   xm.bu .L_first_iter                        }
+    { addi t3,sp, (STACK_VEC_TARGET)*4  ; xm.bu .L_first_iter                   }
 
     // Inner loop. Iteratively solving for the square root bit-by-bit
     // 12 instructions + 1 FNOP
@@ -112,33 +112,33 @@ FUNCTION_NAME:
 
         // Add the current power of 2 to each a[] to get the next value to be tested.
         // test[k] <-- a[k] + VEC_POW
-        {   addi t3,sp, (STACK_VEC_TMP)*4             ;   xm.vladd a}
+        { addi t3,sp, (STACK_VEC_TMP)*4 ; xm.vladd a                            }
 
 
         // vR[] contains the values we're testing. Store it and square it
         // vR[k] <-- ( test[k] * test[k] ) >> 30
             xm.vstrpv t3, mask_vec
-        {   addi t3,sp, (STACK_VEC_TARGET)*4          ;   xm.vlmul0 t3}
+        { addi t3,sp, (STACK_VEC_TARGET)*4 ; xm.vlmul0 t3                          }
 
         .L_first_iter:
 
         // Subtract the squared test values from the target vector   
         // vR[k] <-- target[k] - (( test[k] * test[k] ) >> 30)
-        { nop                                           ;   xm.vlsub t3}
+        { nop                           ; xm.vlsub t3                           }
 
         // If vR[k] is negative, the test value was too large, so we don't want to update those a[k]
         // for which vR[k] is negative.
 
         //  vR[k] = a[k] + MAX( signum( vR[k] ), 0 ) * VEC_POW[k]
 
-        {   addi depth, depth, -1                     ;   xm.vsign                                   }
-        {   addi t3,sp, (STACK_VEC_POW)*4             ;   xm.vpos                                    }
-        { nop                                           ;   xm.vlmul0 t3}
-        { nop                                           ;   xm.vladd a}
+        { addi depth, depth, -1         ; xm.vsign                              }
+        { addi t3,sp, (STACK_VEC_POW)*4 ; xm.vpos                               }
+        { nop                           ; xm.vlmul0 t3                          }
+        { nop                           ; xm.vladd a                            }
 
         // Store the updated results in a[]
             xm.vstrpv a, mask_vec
-        { nop                                           ;   xm.bt depth, .L_sqrt_loop_top              }
+        { nop                           ; xm.bt depth, .L_sqrt_loop_top         }
     .L_sqrt_loop_bot:
 
     // a[] now contains the results, but we haven't updated the headroom register because we've only
@@ -147,13 +147,13 @@ FUNCTION_NAME:
     // headroom, because we got rid of the headroom of b[]? Should work out the math on this later.
     
     // We used mask_vec when initializing VEC_POW[], so we can use that here to avoid corrupting
-    // the headroom register with data that comes after a[]. x28 is already pointing at VEC_POW[].
+    // the headroom register with data that comes after a[]. t3 is already pointing at VEC_POW[].
         xm.vstrpv t3, mask_vec
-    {   sub length, length, _32                 ;   xm.vldr t3}
+    { sub length, length, _32           ; xm.vldr t3                            }
 
     // If (length - 32) < 1 we're done.
-    {   xm.slt tmp, length, _1                     ;   xm.vstr t3}
-    {   add a, a, _32                           ;   nop             }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+    { xm.slt tmp, length, _1            ; xm.vstr t3                            }
+    { add a, a, _32                     ; nop                                   }
     beqz tmp, .L_vect_loop_top 
 .L_vect_loop_bot:
 
@@ -162,9 +162,9 @@ FUNCTION_NAME:
     xm.lddsp  s3,s2,8
     xm.lddsp  s5,s4,16
     xm.lddsp  s7,s6,24
-{   li a0, 31                              ;   xm.vgetc t3}
-{   xm.zexti t3, 5                             ;   lw s8, 4                      (sp)}
-{   sub a0, a0, t3                         ;   xm.retsp (NSTACKWORDS)*4                   } 
+{ li a0, 31                             ; xm.vgetc t3                           }
+{ xm.zexti t3, 5                        ; lw s8, 4                      (sp)    }
+{ sub a0, a0, t3                        ; xm.retsp (NSTACKWORDS)*4              } 
 
 
 .L_func_end:
@@ -172,10 +172,10 @@ FUNCTION_NAME:
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 

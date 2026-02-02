@@ -24,15 +24,15 @@ headroom_t vect_complex_s32_scale(
 
 #define NSTACKWORDS     (8+8+4)
 
-#define a           x10 
-#define b           x11 
-#define c_real      x12
-#define c_imag      x13
+#define a           a0 
+#define b           a1 
+#define c_real      a2
+#define c_imag      a3
 #define length      x18
 #define b_shr       x19
 
-#define _32         x20
-#define tmp_vec     x21
+#define _32         s4
+#define tmp_vec     s5
 
 
 #define STACK_VEC_TMP   (NSTACKWORDS-8-4)
@@ -41,12 +41,12 @@ headroom_t vect_complex_s32_scale(
     
     
 FUNCTION_NAME:
-    xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+    xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
     
-    {   addi tmp_vec,sp, (STACK_VEC_TMP)*4         ;   li t3, 0                              }
-    {   li _32, 32                             ;   xm.vsetc t3}
+    { addi tmp_vec,sp, (STACK_VEC_TMP)*4 ; li t3, 0                              }
+    { li _32, 32                        ; xm.vsetc t3                           }
     
         xm.stdi  c_real,c_imag, 0(tmp_vec)
         xm.stdi  c_real,c_imag, 8(tmp_vec)
@@ -54,41 +54,41 @@ FUNCTION_NAME:
         xm.stdi  c_real,c_imag, 24(tmp_vec)
 
     mv c_real, a6
-    {   xm.mkmski c_imag, 32                        ;   nop}
+    { xm.mkmski c_imag, 32              ; nop                                   }
         xm.vlashr tmp_vec, c_real
         xm.vstrpv tmp_vec, c_imag
 
-    { nop                                           ;   xm.vldc tmp_vec}
+    { nop                               ; xm.vldc tmp_vec                       }
 
     #undef c_real
     #undef c_imag
-    #define vec_count   x12
-    #define tail_bytes  x13
+    #define vec_count   a2
+    #define tail_bytes  a3
 
     mv length, a4
  //   { nop                                           ;   lw length, (STACK_LENGTH)*4            (sp)}
  mv b_shr, a5
-    {   slli tail_bytes, length, 3               ;   nop}
-    {   xm.zexti tail_bytes, 5                      ;   srli vec_count, length, 2                }
+    { slli tail_bytes, length, 3        ; nop                                   }
+    { xm.zexti tail_bytes, 5            ; srli vec_count, length, 2             }
 
     #undef length
 
-    {   xm.mkmsk tail_bytes, tail_bytes            ;   xm.mkmski t3, 32                           }
-    { nop                                           ;   xm.brff vec_count, .L_loop_bot               }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+    { xm.mkmsk tail_bytes, tail_bytes   ; xm.mkmski t3, 32                      }
+    { nop                               ; xm.brff vec_count, .L_loop_bot        }
     
 
     .L_loop_top:
             xm.vlashr b, b_shr
             xm.vstrpv tmp_vec, t3
-        {   addi vec_count, vec_count, -1             ;   xm.vldd tmp_vec}
-        {   add b, b, _32                           ;   xm.vcmr0                                   }
-        { nop                                           ;   xm.vcmi0                                    }
-        {   add a, a, _32                           ;   xm.vstr a}
-        { nop                                           ;   xm.bt vec_count, .L_loop_top               }
+        { addi vec_count, vec_count, -1 ; xm.vldd tmp_vec                       }
+        { add b, b, _32                 ; xm.vcmr0                              }
+        { nop                           ; xm.vcmi0                              }
+        { add a, a, _32                 ; xm.vstr a                             }
+        { nop                           ; xm.bt vec_count, .L_loop_top          }
 
 .L_loop_bot:
 
-    { nop                                           ;   xm.brff tail_bytes, .L_done                  }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+    { nop                               ; xm.brff tail_bytes, .L_done           }
 
      nop
 
@@ -123,22 +123,22 @@ FUNCTION_NAME:
 
 .p2align 2
 .L_done:
-        xm.lddsp  s3,s2,8/* XAT Warning: "Not correcting LDDSP offset because it's not in the local frame range" */
-        xm.lddsp  s5,s4,16/* XAT Warning: "Not correcting LDDSP offset because it's not in the local frame range" */
+        xm.lddsp  s3,s2,8
+        xm.lddsp  s5,s4,16
 
-    {   li a0, 31                              ;   xm.vgetc t3}
-    {   xm.zexti t3, 5                             ; nop                                           }
-    {   sub a0, a0, t3                         ;   xm.retsp (NSTACKWORDS)*4                       }
+    { li a0, 31                         ; xm.vgetc t3                           }
+    { xm.zexti t3, 5                    ; nop                                   }
+    { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 
 .L_func_end:
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 #undef FUNCTION_NAME

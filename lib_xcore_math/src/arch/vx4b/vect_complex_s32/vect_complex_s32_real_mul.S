@@ -33,36 +33,36 @@ headroom_t vect_complex_s32_real_mul(
 #define STACK_TAIL_LEN  (8)
     
 
-#define a           x10 
-#define b           x11 
-#define c           x12
-#define length      x13
+#define a           a0 
+#define b           a1 
+#define c           a2
+#define length      a3
 #define b_shr       x18
 #define c_shr       x19
-#define _32         x20
-#define vec_tmp     x21
+#define _32         s4
+#define vec_tmp     s5
 #define vec_c1      x22
-#define tmpA        x23
-#define tmpB        x24
+#define tmpA        s7
+#define tmpB        s8
 
 
 
 FUNCTION_NAME:
-    xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+    xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
     xm.stdsp  s7,s6,24
-    {   li t3, 0                              ;   sw s8, 4                          (sp)}
-    {   mv t3, length                         ;   xm.vsetc t3}
+    { li t3, 0                          ; sw s8, 4                          (sp) }
+    { mv t3, length                     ; xm.vsetc t3                           }
     mv b_shr, a4
-    {   srli length, length, 2                   ;  nop}
+    { srli length, length, 2            ; nop                                   }
     mv c_shr, a5
-    {   xm.zexti t3, 2                             ;   nop}
+    { xm.zexti t3, 2                    ; nop                                   }
     
-{   xm.ldawsp vec_tmp, STACK_VEC_TMP*4         ; nop }
-{   xm.ldawsp vec_c1, STACK_VEC_C1*4           ; nop }
-    {   xm.mkmski t3, 32                           ;   sw t3, (STACK_TAIL_LEN)*4             (sp)}
-    {   li _32, 32                             ;   xm.brff length, .L_loop_bot                  }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+{ xm.ldawsp vec_tmp, STACK_VEC_TMP*4    ; nop                                   }
+{ xm.ldawsp vec_c1, STACK_VEC_C1*4      ; nop                                   }
+    { xm.mkmski t3, 32                  ; sw t3, (STACK_TAIL_LEN)*4             (sp) }
+    { li _32, 32                        ; xm.brff length, .L_loop_bot           }
     
 
     .L_loop_top:
@@ -73,21 +73,21 @@ FUNCTION_NAME:
             xm.stdsp  tmpA,tmpA,((STACK_VEC_C1/2)  + 0)*8
             xm.stdsp  tmpB,tmpB,((STACK_VEC_C1/2)  + 1)*8
             xm.lddsp  tmpA,tmpB,((STACK_VEC_TMP/2) + 1)*8
-        {   addi c, c, 8                             ;   addi length, length, -1                   }
+        { addi c, c, 8                  ; addi length, length, -1               }
             xm.stdsp  tmpA,tmpA,((STACK_VEC_C1/2) + 2)*8
             xm.stdsp  tmpB,tmpB,((STACK_VEC_C1/2) + 3)*8
 
             xm.vlashr b, b_shr
-        {   add b, b, _32                           ;   xm.vlmul0 vec_c1}
-        {   add a, a, _32                           ;   xm.vstr a}
-        {   addi c, c, 8                             ;   xm.bt length, .L_loop_top                  }
+        { add b, b, _32                 ; xm.vlmul0 vec_c1                      }
+        { add a, a, _32                 ; xm.vstr a                             }
+        { addi c, c, 8                  ; xm.bt length, .L_loop_top             }
 
 .L_loop_bot:
 
-    {   addi t3,sp, (STACK_VEC_C1)*4              ;   lw length, (STACK_TAIL_LEN)*4          (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'LDWSP outside of known frame - offset may need correction' */
-    {   slli length, length, 3                   ;   xm.brff length, .L_done                      }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
-    {   xm.mkmsk length, length                    ;   xm.vclrdr                                  }
-    { nop                                           ;   xm.vstd vec_tmp}
+    { addi t3,sp, (STACK_VEC_C1)*4      ; lw length, (STACK_TAIL_LEN)*4          (sp) }
+    { slli length, length, 3            ; xm.brff length, .L_done               }
+    { xm.mkmsk length, length           ; xm.vclrdr                             }
+    { nop                               ; xm.vstd vec_tmp                       }
         xm.vlashr c, c_shr
         xm.vstrpv vec_tmp, length
         xm.lddsp  tmpA,tmpB,((STACK_VEC_TMP / 2) + 0)*8
@@ -97,11 +97,11 @@ FUNCTION_NAME:
         xm.stdsp  tmpA,tmpA,((STACK_VEC_C1  / 2) + 2)*8
         xm.stdsp  tmpB,tmpB,((STACK_VEC_C1  / 2) + 3)*8
         xm.vlashr b, b_shr
-    { nop                                           ;   xm.vlmul0 t3}
+    { nop                               ; xm.vlmul0 t3                          }
         xm.vstrpv a, length
         xm.vstrpv vec_tmp, length
-    { nop                                           ;   xm.vldd vec_tmp}
-    { nop                                           ;   xm.vstd vec_tmp}
+    { nop                               ; xm.vldd vec_tmp                       }
+    { nop                               ; xm.vstd vec_tmp                       }
 
 
 .L_done:
@@ -109,19 +109,19 @@ FUNCTION_NAME:
         xm.lddsp  s5,s4,16
         xm.lddsp  s7,s6,24
 
-    {   li a0, 31                              ;   xm.vgetc t3}
-    {   xm.zexti t3, 5                             ;   lw s8, 4                          (sp)}
-    {   sub a0, a0, t3                         ;   xm.retsp (NSTACKWORDS)*4                       }
+    { li a0, 31                         ; xm.vgetc t3                           }
+    { xm.zexti t3, 5                    ; lw s8, 4                          (sp) }
+    { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 
 .L_func_end:
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 #undef FUNCTION_NAME
