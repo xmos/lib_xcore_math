@@ -17,17 +17,17 @@
         const unsigned term_count);
 */
 #define FUNCTION_NAME   chunk_q30_power_series
-#define NSTACKWORDS     (8 + 2 * 8 + 4)
+#define NSTACKWORDS     (8 + 2 * 8)
 
-#define VEC_POW   (NSTACKWORDS - 8-4)
-#define VEC_ACC   (NSTACKWORDS - 16-4)
+#define VEC_POW   (NSTACKWORDS - 8-1)
+#define VEC_ACC   (NSTACKWORDS - 16-1)
 
 #define a           a0
 #define b           a1
 #define coef        a2
 #define len         a3
-#define vec_pow     x18
-#define vec_acc     x19
+#define vec_pow     s2
+#define vec_acc     s3
 #define tmp         s4
 #define _32         s5
 

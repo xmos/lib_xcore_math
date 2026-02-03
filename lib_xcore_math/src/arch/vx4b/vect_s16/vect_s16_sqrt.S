@@ -19,19 +19,19 @@ headroom_t vect_s16_sqrt(
 
 
 #define NSTACKVECTS     (4)
-#define NSTACKWORDS     (12+8*(NSTACKVECTS)+4)
+#define NSTACKWORDS     (12+8*(NSTACKVECTS))
 
 #define FUNCTION_NAME   vect_s16_sqrt
 
 // Temporary vector needed because there's no instruction to do vR[] * vR[]
-#define STACK_VEC_TMP       (NSTACKWORDS-8-4)
+#define STACK_VEC_TMP       (NSTACKWORDS-8-1)
 // Holds the shifted values of b[] while we're solving it.
-#define STACK_VEC_TARGET    (NSTACKWORDS-16-4)
+#define STACK_VEC_TARGET    (NSTACKWORDS-16-1)
 // Holds the power of 2 that is currently being worked on inside hte inner loop.
 // @todo If we had an instruction that set each vR[k] to the value of a register, this wouldn't be needed.
-#define STACK_VEC_POW       (NSTACKWORDS-24-4)
+#define STACK_VEC_POW       (NSTACKWORDS-24-1)
 
-#define STACK_VEC_TMP2       (NSTACKWORDS-32-4)
+#define STACK_VEC_TMP2       (NSTACKWORDS-32-1)
 
 #define STACK_DEPTH     6
 
@@ -40,8 +40,8 @@ headroom_t vect_s16_sqrt(
 #define length      a2
 #define b_shr       a3
 
-#define depth       x18 //s2
-#define mask_vec    x19 //s3
+#define depth       s2 //s2
+#define mask_vec    s3 //s3
 #define _32         s4 //s4
 #define pow_init    s5 //s5
 #define tmp         s8 //s8

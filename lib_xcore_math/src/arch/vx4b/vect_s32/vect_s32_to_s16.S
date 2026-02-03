@@ -20,7 +20,7 @@ void vect_s32_to_vect_s16(
 .p2align 2
 
 
-#define NSTACKWORDS     (8)
+#define NSTACKWORDS     (4)
 
 #define FUNCTION_NAME   vect_s32_to_vect_s16
 
@@ -28,8 +28,8 @@ void vect_s32_to_vect_s16(
 #define b           a1
 #define len         a2
 #define b_shr       a3
-#define tail        x18
-#define _16         x19
+#define tail        s2
+#define _16         s3
 
 
 

@@ -19,17 +19,17 @@ headroom_t vect_s32_sqrt(
 
 
 #define NSTACKVECTS     (3)
-#define NSTACKWORDS     (12+8*(NSTACKVECTS)+4)
+#define NSTACKWORDS     (8+8*(NSTACKVECTS))
 
 #define FUNCTION_NAME   vect_s32_sqrt
 
 // Temporary vector needed because there's no instruction to do vR[] * vR[]
-#define STACK_VEC_TMP       (NSTACKWORDS-8-4)
+#define STACK_VEC_TMP       (NSTACKWORDS-8-1)
 // Holds the shifted values of b[] while we're solving it.
-#define STACK_VEC_TARGET    (NSTACKWORDS-16-4)
+#define STACK_VEC_TARGET    (NSTACKWORDS-16-1)
 // Holds the power of 2 that is currently being worked on inside hte inner loop.
 // @todo If we had an instruction that set each vR[k] to the value of a register, this wouldn't be needed.
-#define STACK_VEC_POW       (NSTACKWORDS-24-4)
+#define STACK_VEC_POW       (NSTACKWORDS-24-1)
 
 #define STACK_DEPTH     0
 
@@ -38,8 +38,8 @@ headroom_t vect_s32_sqrt(
 #define length      a2
 #define b_shr       a3
 
-#define depth       x18
-#define mask_vec    x19
+#define depth       s2
+#define mask_vec    s3
 #define _32         s4
 #define _1          s5
 #define tmp         s8
@@ -52,11 +52,11 @@ FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,24
+    xm.stdsp  s7,s6,0
     sw a4, (STACK_DEPTH)*4                (sp)
 // Set VPU mode to 32-bit
 // (length << 2) is the length of the vector in bytes.
-{ li t3, 0                              ; sw s8, 4                          (sp) }
+{ li t3, 0                              ; sw s8, 24                          (sp) }
 { slli length, length, 2                ; xm.vsetc t3                           }
 
 // Maximum supported depth is 31
@@ -161,9 +161,9 @@ FUNCTION_NAME:
 
     xm.lddsp  s3,s2,8
     xm.lddsp  s5,s4,16
-    xm.lddsp  s7,s6,24
+    xm.lddsp  s7,s6,0
 { li a0, 31                             ; xm.vgetc t3                           }
-{ xm.zexti t3, 5                        ; lw s8, 4                      (sp)    }
+{ xm.zexti t3, 5                        ; lw s8, 24                      (sp)    }
 { sub a0, a0, t3                        ; xm.retsp (NSTACKWORDS)*4              } 
 
 

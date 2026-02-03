@@ -21,11 +21,11 @@ headroom_t vect_complex_s16_squared_mag(
 .p2align 2
 
 #define NSTACKVECS      (4)
-#define NSTACKWORDS     (8+8*(NSTACKVECS)+4)
+#define NSTACKWORDS     (8+8*(NSTACKVECS))
 
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
-#define STACK_VEC_SAT   (NSTACKWORDS-16-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
+#define STACK_VEC_SAT   (NSTACKWORDS-16-1)
 
 #define FUNCTION_NAME vect_complex_s16_squared_mag
     
@@ -33,8 +33,8 @@ headroom_t vect_complex_s16_squared_mag(
 #define b_re        a1
 #define b_im        a2
 #define length      a3
-#define vec_tmp     x18
-#define vec_sat     x19
+#define vec_tmp     s2
+#define vec_sat     s3
 #define bytemask    s4
 #define _32         s5
 
@@ -42,7 +42,7 @@ headroom_t vect_complex_s16_squared_mag(
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
-    xm.stdsp  s5,s4,16
+    xm.stdsp  s5,s4,0
 
     mv s2, a4
     { addi t3,sp, (STACK_VEC_SAT)*4     ; nop                                   }
@@ -94,7 +94,7 @@ FUNCTION_NAME:
 
 .L_done:
     xm.lddsp  s3,s2,8
-    xm.lddsp  s5,s4,16
+    xm.lddsp  s5,s4,0
     { li a0, 15                         ; xm.vgetc t3                           }
     { xm.zexti t3, 5                    ; nop                                   }
     { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }

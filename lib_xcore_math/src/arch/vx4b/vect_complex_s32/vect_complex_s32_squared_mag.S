@@ -25,11 +25,11 @@ headroom_t vect_complex_s32_squared_mag(
 #define b               a1 
 #define length          a2
 #define b_shr           a3
-#define vec_count       x18
-#define _16             x19
+#define vec_count       s2
+#define _16             s3
 #define vec_tmp         s4
 #define tail_mask       s5
-#define vec_ones        x22
+#define vec_ones        s6
 #define tmpA            s7
 #define tmpB            s8
 

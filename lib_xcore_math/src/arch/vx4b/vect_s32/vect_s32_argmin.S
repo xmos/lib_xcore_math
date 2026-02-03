@@ -20,13 +20,13 @@ unsigned vect_s32_argmin(
 .p2align 2
 
 #define NSTACKVECS      (3)
-#define NSTACKWORDS     (8 + 8*NSTACKVECS+4)
+#define NSTACKWORDS     (8 + 8*NSTACKVECS)
 
 #define FUNCTION_NAME       vect_s32_argmin
 
-#define STACK_VEC_MAX_DEX   (NSTACKWORDS-8-4)
-#define STACK_VEC_CUR_MAX   (NSTACKWORDS-16-4)
-#define STACK_VEC_CUR_DEX   (NSTACKWORDS-24-4)
+#define STACK_VEC_MAX_DEX   (NSTACKWORDS-8-1)
+#define STACK_VEC_CUR_MAX   (NSTACKWORDS-16-1)
+#define STACK_VEC_CUR_DEX   (NSTACKWORDS-24-1)
 
 #define STACK_N     6
 
@@ -34,8 +34,8 @@ unsigned vect_s32_argmin(
 #define N           a1      // ![%d]
 #define vec_8s      a2      // ![0x%X]
 #define tmp         a3      // ![%d]
-#define tmz         x18      // ![%d]
-#define cur_min     x19      // ![0x%08X]
+#define tmz         s2      // ![%d]
+#define cur_min     s3      // ![0x%08X]
 #define mask_0xF    s4      // ![0x%04X]
 #define vec_ones    s5      // ![0x%08X]
 
@@ -117,7 +117,7 @@ xm.zip tmz, tmp, 0
 #undef vec_16s
 #undef mask_0xF
 
-#define cur_min     x19  // ![%d]
+#define cur_min     s3  // ![%d]
 #define min_dex     a2  // ![0x%08X]
 
 { addi t3,sp, (STACK_VEC_CUR_MAX)*4     ; li N, 7                               }

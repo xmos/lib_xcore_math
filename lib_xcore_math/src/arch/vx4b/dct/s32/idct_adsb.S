@@ -22,40 +22,37 @@ void idct_adsb(
 .type FUNCTION_NAME,@function
 .p2align 2
 
-#define STK_CHUNKS  (NSTACKWORDS+1)
-
-#define sums        x10
-#define diffs       x11
-#define s           x12
-#define t_tilde     x13
-#define chunks      x18
-#define _32         x19
+#define sums        a0
+#define diffs       a1
+#define s           a2
+#define t_tilde     a3
+#define chunks      s2
+#define _32         s3
 
 
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+  xm.entsp (NSTACKWORDS)*4
   xm.stdsp  s3,s2,0
   xm.stdsp  s5,s4,8
 
-//{ li _32, 32                 ; lw chunks, (STK_CHUNKS)*4  (sp)}
-  { li _32, 32                 ; nop }
+  { li _32, 32                          ; nop                                   }
   mv chunks, a4
 
 
-{ li t3, 0                  ; nop                             }
-{ mv t3, t_tilde            ; xm.vsetc t3}
+{ li t3, 0                              ; nop                                   }
+{ mv t3, t_tilde                        ; xm.vsetc t3                           }
 
 .L_loop_top:
-  { addi chunks, chunks, -1       ; xm.vldr t3}
-  { add t3, t3, _32           ; xm.vladsb s}
-  { add s, s, _32               ; xm.vstr sums}
-  { add sums, sums, _32         ; xm.vstd diffs}
-  { add diffs, diffs, _32       ; xm.bt chunks, .L_loop_top      }
+  { addi chunks, chunks, -1             ; xm.vldr t3                            }
+  { add t3, t3, _32                     ; xm.vladsb s                           }
+  { add s, s, _32                       ; xm.vstr sums                          }
+  { add sums, sums, _32                 ; xm.vstd diffs                         }
+  { add diffs, diffs, _32               ; xm.bt chunks, .L_loop_top             }
 .L_loop_bot:
 
   xm.lddsp  s5,s4,8
   xm.lddsp  s3,s2,0
-  xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+  xm.retsp (NSTACKWORDS)*4
 
 	
 .set	FUNCTION_NAME.nstackwords,NSTACKWORDS

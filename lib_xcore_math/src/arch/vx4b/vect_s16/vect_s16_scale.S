@@ -29,8 +29,8 @@
 #define b           a1 
 #define len         a2
 #define c           a3
-#define _32         x18
-#define tail        x19
+#define _32         s2
+#define tail        s3
 
 
 .text

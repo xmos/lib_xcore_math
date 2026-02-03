@@ -22,21 +22,21 @@ headroom_t vect_s16_clip(
 .p2align 2
 
 #define NSTACKVECS      (6)
-#define NSTACKWORDS     (8 + 8*(NSTACKVECS)+4)
+#define NSTACKWORDS     (8 + 8*(NSTACKVECS))
 
 #define FUNCTION_NAME   vect_s16_clip
 
-#define STACK_VEC(K)    (NSTACKWORDS - (8*((K)+1))-4)
+#define STACK_VEC(K)    (NSTACKWORDS - (8*((K)+1))-1)
 
 #define a           a0
 #define b           a1
 #define N           a2
 #define lower       a3
-#define upper       x18
-#define b_shr       x19
+#define upper       s2
+#define b_shr       s3
 #define tail        s4
 #define tmp1        s5
-#define tmp2        x22
+#define tmp2        s6
 #define int_max     s7
 #define int_min     s8
 

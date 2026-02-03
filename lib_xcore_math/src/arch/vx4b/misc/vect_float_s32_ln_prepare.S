@@ -24,11 +24,11 @@ void vect_float_s32_ln_prepare(
 #define exp_mod     a1 
 #define b           a2
 #define mantA       a3
-#define expA        x18
-#define mantB       x19
+#define expA        s2
+#define mantB       s3
 #define expB        s4
 #define tmpA        s5
-#define tmpB        x22
+#define tmpB        s6
 #define tmpC        s7
 
 .text

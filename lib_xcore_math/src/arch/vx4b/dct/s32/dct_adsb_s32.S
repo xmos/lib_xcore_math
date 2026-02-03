@@ -23,44 +23,41 @@ headroom_t dct_adsb_s32(
 .type FUNCTION_NAME,@function
 .p2align 2
 
-#define sums        x10
-#define diffs       x11
-#define head        x12
-#define tail        x13
-#define chunks      x18
-#define lut         x19
-#define _32         x20
+#define sums        a0
+#define diffs       a1
+#define head        a2
+#define tail        a3
+#define chunks      s2
+#define lut         s3
+#define _32         s4
 
 
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
-  xm.stdsp  s3,s2,0
-  xm.stdsp  s5,s4,8
+xm.entsp (NSTACKWORDS)*4
+xm.stdsp  s3,s2,0
+xm.stdsp  s5,s4,8
 
-{ li _32, 32                 ; nop}
+{ li _32, 32                            ; xm.shli t3, _32, 2                    }
 mv chunks, a4
-
-{ xm.shli t3, _32, 2             ; nop}
 mv lut, a5
-
-{ mv t3, tail               ; xm.vsetc t3}
+{ mv t3, tail                           ; xm.vsetc t3                           }
 
 .L_loop_top:
-  { addi chunks, chunks, -1       ; xm.vldr t3}
-  { add tail, tail, _32         ; xm.vladsb head}
-  { add head, head, _32         ; xm.vstr sums}
-  { mv t3, lut                ; xm.vstd diffs}
-  { add lut, lut, _32           ; xm.vldr t3}
-  { add sums, sums, _32         ; xm.vlmul0 diffs}
-  { add diffs, diffs, _32       ; xm.vstr diffs}
-  { mv t3, tail               ; xm.bt chunks, .L_loop_top      }
+  { addi chunks, chunks, -1             ; xm.vldr t3                            }
+  { add tail, tail, _32                 ; xm.vladsb head                        }
+  { add head, head, _32                 ; xm.vstr sums                          }
+  { mv t3, lut                          ; xm.vstd diffs                         }
+  { add lut, lut, _32                   ; xm.vldr t3                            }
+  { add sums, sums, _32                 ; xm.vlmul0 diffs                       }
+  { add diffs, diffs, _32               ; xm.vstr diffs                         }
+  { mv t3, tail                         ; xm.bt chunks, .L_loop_top             }
 .L_loop_bot:
 
-  xm.lddsp  s5,s4,8
-  xm.lddsp  s3,s2,0
-{ li a0, 31                ; xm.vgetc t3}
-{ xm.zexti t3, 5               ; nop                             }
-{ sub a0, a0, t3           ; xm.retsp (NSTACKWORDS)*4           }
+xm.lddsp  s5,s4,8
+xm.lddsp  s3,s2,0
+{ li a0, 31                             ; xm.vgetc t3                           }
+{ xm.zexti t3, 5                        ; nop                                   }
+{ sub a0, a0, t3                        ; xm.retsp (NSTACKWORDS)*4              }
 
 	
 .set	FUNCTION_NAME.nstackwords,NSTACKWORDS

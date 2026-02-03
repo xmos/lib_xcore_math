@@ -14,8 +14,8 @@ headroom_t fft_spectra_split(
 #define FUNCTION_NAME   fft_spectra_split
 #define NSTACKWORDS     (8)
 
-#define X       x10
-#define N       x11
+#define X       a0
+#define N       a1
 
 .text
 .global FUNCTION_NAME
@@ -69,13 +69,13 @@ FUNCTION_NAME:
     { mv X, s2                          ; mv N, s3                              }
 
 #define X_lo    X
-#define i       x12
-#define _32     x13
-#define X_hi    x18
-#define DC_im   x19
-#define DC_re   x20
-#define Ny_im   x21
-#define Ny_re   x22
+#define i       a2
+#define _32     a3
+#define X_hi    s2
+#define DC_im   s3
+#define DC_re   s4
+#define Ny_im   s5
+#define Ny_re   s6
 
     // x = [DC.re - Ny.im, Ny.re + DC.im, DC.re + Ny.im, -Ny.re + DC.im]
 
@@ -97,11 +97,11 @@ FUNCTION_NAME:
 #undef Ny_re
 #undef Ny_im
 
-#define conj_vec    x19
+#define conj_vec    s3
 
 
     sh2add X_hi, N, X_lo
-    li x28, 0x0080                                                                     
+    li t3, 0x0080                                                                     
     { srli i, i, 2                      ; xm.vsetc t3                           }
     la t3, vpu_vec_complex_neg_j
     { nop                               ; xm.vldc t3                            }

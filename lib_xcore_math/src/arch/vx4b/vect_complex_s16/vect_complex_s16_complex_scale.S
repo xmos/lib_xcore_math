@@ -21,13 +21,13 @@ headroom_t vect_complex_s16_scale(
 */
 
 #define NSTACKVECS      (4)
-#define NSTACKWORDS     (8+8*(NSTACKVECS)+4)
+#define NSTACKWORDS     (8+8*(NSTACKVECS))
 
 
-#define STACK_VEC_SAT       (NSTACKWORDS-8-4)
-#define STACK_VEC_C_REAL    (NSTACKWORDS-16-4)
-#define STACK_VEC_C_IMAG    (NSTACKWORDS-24-4)
-#define STACK_VEC_C_IMAG_N  (NSTACKWORDS-32-4)
+#define STACK_VEC_SAT       (NSTACKWORDS-8-1)
+#define STACK_VEC_C_REAL    (NSTACKWORDS-16-1)
+#define STACK_VEC_C_IMAG    (NSTACKWORDS-24-1)
+#define STACK_VEC_C_IMAG_N  (NSTACKWORDS-32-1)
 
 #define FUNCTION_NAME vect_complex_s16_scale
     
@@ -35,8 +35,8 @@ headroom_t vect_complex_s16_scale(
 #define a_imag      a1
 #define b_real      a2
 #define b_imag      a3
-#define length      x18
-#define _32         x19
+#define length      s2
+#define _32         s3
 #define bytemask    s4
 
 

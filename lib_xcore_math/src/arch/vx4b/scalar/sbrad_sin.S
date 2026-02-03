@@ -20,13 +20,13 @@ int32_t sbrad_sin(
 
 #define VEC_R           (NSTACKWORDS - 12)
 
-#define a         x10
-#define r         x11
-#define out_mul   x12
-#define vec_r     x13
-#define tmpA      x18
-#define tmpB      x19
-#define _31       x20
+#define a         a0
+#define r         a1
+#define out_mul   a2
+#define vec_r     a3
+#define tmpA      s2
+#define tmpB      s3
+#define _31       s4
 
 .text
 .p2align 4
@@ -41,13 +41,13 @@ int32_t sbrad_sin(
   .word 0x40000000, 0x40000000, 0x00000000, 0x00000000
   
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+  xm.entsp (NSTACKWORDS)*4
   xm.stdsp  s3,s2,8
   xm.stdsp  s5,s4,0
-{ li t3, 0                       ; addi vec_r,sp, (VEC_R)*4        }
-{ xm.slt out_mul, a, t3          ; xm.vsetc t3                     }
-{ li _31, 31                     ; xm.brff out_mul, .L_hgfd        }
-{ xm.neg a, a                    ; nop                             }
+{ li t3, 0                              ; addi vec_r,sp, (VEC_R)*4              }
+{ xm.slt out_mul, a, t3                 ; xm.vsetc t3                           }
+{ li _31, 31                            ; xm.brff out_mul, .L_hgfd              }
+{ xm.neg a, a                           ; nop                                   }
 .L_hgfd:
 
   xm.lmul tmpA, tmpB, a, a, t3, t3
@@ -57,7 +57,7 @@ FUNCTION_NAME:
   xm.stdi  a,tmpA, 0 (vec_r)// a, a^3
 
 #undef a  // no longer needed
-#define tmpC     x10
+#define tmpC     a0
 
   xm.lmul tmpA, tmpB, tmpA, r, t3, t3
   xm.lextract tmpB, tmpA, tmpB, _31, 32
@@ -73,33 +73,33 @@ FUNCTION_NAME:
   xm.stdi  tmpB,tmpA, 16 (vec_r)// a^9, 1^11
 
 // Now that we've filled in vec_R[], we just need to do the VPU stuff.
-{ xm.ldap t3, .L_vec_b            ; xm.vclrdr                      }
-{ xm.ldap t3, .L_vec_s_hat        ; xm.vldc t3}
-{ nop                             ; xm.vlmacc0 vec_r}
+{ xm.ldap t3, .L_vec_b                  ; xm.vclrdr                             }
+{ xm.ldap t3, .L_vec_s_hat              ; xm.vldc t3                            }
+{ nop                                   ; xm.vlmacc0 vec_r                      }
  xm.vlsat t3
-{ mv t3, vec_r                    ; nop}
-{ nop                             ; xm.vstr t3}
-{ xm.ldap t3, .L_weights          ; xm.vclrdr                      }
-{ nop                             ; xm.vldc t3}
-{ mv t3, vec_r                    ; xm.vlmaccr0 vec_r}
-{ nop                             ; xm.vstr t3}
-{ nop                             ; lw a0,0            ( vec_r)}
+{ mv t3, vec_r                          ; nop                                   }
+{ nop                                   ; xm.vstr t3                            }
+{ xm.ldap t3, .L_weights                ; xm.vclrdr                             }
+{ nop                                   ; xm.vldc t3                            }
+{ mv t3, vec_r                          ; xm.vlmaccr0 vec_r                     }
+{ nop                                   ; xm.vstr t3                            }
+{ nop                                   ; lw a0,0            ( vec_r)           }
   xm.lddsp  s3,s2,8
   xm.lddsp  s5,s4,0
-{ nop                             ; xm.bt out_mul, .L_gpgp         }
-{ nop                             ; xm.retsp (NSTACKWORDS)*4           }
+{ nop                                   ; xm.bt out_mul, .L_gpgp                }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 .L_gpgp:
-{ xm.neg a0, a0                   ; nop}
-{ xm.retsp (NSTACKWORDS*4)        ; nop}   
+{ xm.neg a0, a0                         ; nop                                   }
+{ xm.retsp (NSTACKWORDS*4)              ; nop                                   }   
 
 .L_func_end:
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME,.L_func_end - FUNCTION_NAME
 
 

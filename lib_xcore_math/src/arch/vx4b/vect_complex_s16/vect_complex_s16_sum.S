@@ -25,8 +25,8 @@ complex_s16_t vect_complex_s16_sum(
 #define b_imag      a1
 #define length      a2
 #define sat         a3
-#define _32         x18
-#define tmp         x19
+#define _32         s2
+#define tmp         s3
 #define tail_bytes  s4
 
 #define STACK_VEC_ZEROS     (NSTACKWORDS- 8-16-4)

@@ -23,8 +23,8 @@
 #define b           a1 
 #define c           a2
 #define len         a3
-#define shr_b       x18
-#define shr_c       x19
+#define shr_b       s2
+#define shr_c       s3
 #define _32         s4
 #define tmp_vec     s5
 #define bytemask    len

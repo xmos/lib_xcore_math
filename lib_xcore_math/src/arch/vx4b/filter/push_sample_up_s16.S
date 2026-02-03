@@ -31,8 +31,8 @@ void filter_fir_s16_push_sample_up(
 #define length      a1
 #define value       a2
 #define tmpB        a3
-#define mask        x18
-#define buffR       x19
+#define mask        s2
+#define buffR       s3
 #define tmpC        s4
 #define buffD       s5
 #define tmp         s8

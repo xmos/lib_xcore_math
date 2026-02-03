@@ -24,21 +24,21 @@
         const unsigned term_count);
 */
 #define FUNCTION_NAME   chunk_q20_power_series
-#define NSTACKWORDS     (12 + 4 * 8 + 4)
+#define NSTACKWORDS     (8 + 4 * 8)
 
-#define VEC_POW   (NSTACKWORDS - 8-4)
-#define VEC_ACC   (NSTACKWORDS - 16-4)
-#define VEC_TMP   (NSTACKWORDS - 24-4) // -->  [coef, coef, 0, 0, 0, 0, 0, 0]
+#define VEC_POW   (NSTACKWORDS - 8-1)
+#define VEC_ACC   (NSTACKWORDS - 16-1)
+#define VEC_TMP   (NSTACKWORDS - 24-1) // -->  [coef, coef, 0, 0, 0, 0, 0, 0]
                                      // (last six elements must stay zeros)
-#define VEC_COEF  (NSTACKWORDS - 30-4) // -->  [coef, coef, coef, coef, coef, coef, coef, coef]
+#define VEC_COEF  (NSTACKWORDS - 30-1) // -->  [coef, coef, coef, coef, coef, coef, coef, coef]
                                      // (overlaps VEC_TMP and that's fine)
 
 #define a           a0
 #define b           a1
 #define coef        a2
 #define len         a3
-#define vec_pow     x18
-#define vec_acc     x19
+#define vec_pow     s2
+#define vec_acc     s3
 #define vec_coef    s4
 #define tmp         s5
 

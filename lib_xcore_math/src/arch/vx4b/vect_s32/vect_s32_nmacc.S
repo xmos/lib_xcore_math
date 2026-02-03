@@ -20,22 +20,22 @@ headroom_t vect_s32_nmacc(
 */
 
 
-#define NSTACKWORDS     (8+8+4)
+#define NSTACKWORDS     (8+8)
 
 #define FUNCTION_NAME   vect_s32_nmacc
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
-#define STACK_BYTEMASK  7
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
+#define STACK_BYTEMASK  5
 
 #define acc         a0 
 #define b           a1 
 #define c           a2
 #define len         a3
-#define shr_b       x18
-#define shr_c       x19
+#define shr_b       s2
+#define shr_c       s3
 #define _32         s4
 #define tmp_vec     s5
-#define shr_acc     x22
+#define shr_acc     s6
 #define bytemask    len
 
 .text
@@ -46,13 +46,13 @@ headroom_t vect_s32_nmacc(
 
 FUNCTION_NAME:
         xm.entsp (NSTACKWORDS)*4
-    { li t3, 0                          ; sw s6, 24                           (sp) }
+    { li t3, 0                          ; sw s6, 16                           (sp) }
     { slli t3, len, SIZEOF_LOG2_S32     ; xm.vsetc t3                           }
     { xm.zexti t3, 5                    ; srli len, len, EPV_LOG2_S32           }
     mv shr_acc,a4
     
         xm.stdsp  s3,s2,8
-        xm.stdsp  s5,s4,16
+        xm.stdsp  s5,s4,0
     { li _32, 32                        ; xm.vclrdr                             }
     mv shr_c, a6
     { xm.mkmsk t3, t3                   ; nop                                   }
@@ -93,11 +93,11 @@ FUNCTION_NAME:
 
 .L_finish:
     xm.lddsp  s3,s2,8
-    xm.lddsp  s5,s4,16
+    xm.lddsp  s5,s4,0
 
 
     { li a0, 31                         ; xm.vgetc t3                           }
-    { xm.zexti t3, 5                    ; lw s6, 24                           (sp) }
+    { xm.zexti t3, 5                    ; lw s6, 16                           (sp) }
     { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              } 
 
 

@@ -15,7 +15,7 @@
 
 */
 
-#define NSTACKWORDS 8
+#define NSTACKWORDS 4
 #define FUNC_NAME vect_s32_to_vect_f32
     
 .globl	FUNC_NAME
@@ -26,8 +26,8 @@
 #define len     a2
 #define b_exp   a3
 
-#define _0      x18
-#define tmp1    x19
+#define _0      s2
+#define tmp1    s3
 #define tmp0    s4
 
 .p2align 4
@@ -36,7 +36,7 @@ FUNC_NAME:
     xm.stdsp  s3,s2,0
   { li _0, 0                            ; li s3, 23                             }
   { add b_exp, b_exp, s3                ; nop                                   }
-    xm.stdsp  s5,s4,8
+    sw s4, 8(sp)
 
   // handle tail first
   { srli t3, len, 1                     ; xm.zexti len, 1                       }
@@ -71,7 +71,7 @@ FUNC_NAME:
   .L_loop_end:
     
     xm.lddsp  s3,s2,0
-    xm.lddsp  s5,s4,8
+    lw s4, 8(sp)
     xm.retsp (NSTACKWORDS)*4
 
 	

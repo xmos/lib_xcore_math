@@ -22,29 +22,24 @@ headroom_t vect_complex_s32_to_vect_complex_s16(
 .text
 .p2align 2
 
-#define NSTACKVECS      (2)
-#define NSTACKWORDS     (8 + (8*NSTACKVECS)+4)
+#define NSTACKWORDS     (8)
 
 #define FUNCTION_NAME   vect_complex_s32_to_vect_complex_s16
-
-#define STACK_VEC_TMP  (NSTACKWORDS-16-4)
-
-#define STACK_B_SHR     (NSTACKWORDS+1)
 
 #define a_real      a0
 #define a_imag      a1
 #define b           a2
 #define len         a3
-#define b_shr       x18
-#define tail        x19
+#define b_shr       s2
+#define tail        s3
 #define _28         s4
 #define mask        s5
 
 
 FUNCTION_NAME:
-        xm.entsp (NSTACKWORDS)*4
-        xm.stdsp  s3,s2,8
-        xm.stdsp  s5,s4,16
+    xm.entsp (NSTACKWORDS)*4
+    xm.stdsp  s3,s2,8
+    xm.stdsp  s5,s4,0
     { li t3, 0                          ; li _28, 28                            }
     addi b,b,-4
     { li t3, 16                         ; xm.vsetc t3                           }
@@ -52,27 +47,24 @@ FUNCTION_NAME:
     mv b_shr, a4
     { xm.mkmski mask, 8                 ; nop                                   }
     { sub b_shr, b_shr, t3              ; xm.zexti tail, 3                      }
-la t3, vpu_vec_complex_pos_j
+    la t3, vpu_vec_complex_pos_j
     { xm.mkmsk tail, tail               ; xm.brff len, .L_loop_bot              }
 
     .L_loop_top:
-            xm.vlashr b, b_shr
+        xm.vlashr b, b_shr
         { addi b, b, 4                  ; xm.vlmul0 t3                          }   
         { addi len, len, -1             ; xm.vdepth16                           }
         { nop                           ; xm.vdepth16                           }
-            xm.vstrpv a_real, mask
-            xm.vlashr b, b_shr         
+        xm.vstrpv a_real, mask
+        xm.vlashr b, b_shr         
         { add b, b, _28                 ; xm.vlmul0 t3                          }
         { addi a_real, a_real, 8        ; xm.vdepth16                           }
         { nop                           ; xm.vdepth16                           }
-            xm.vstrpv a_imag, mask
+        xm.vstrpv a_imag, mask
         { addi a_imag, a_imag, 8        ; xm.bt len, .L_loop_top                }
 
 
 .L_loop_bot:
-
-
-
     beqz tail, .L_finish
     xm.vlashr b, b_shr
     xm.vlmul0 t3
@@ -86,10 +78,9 @@ la t3, vpu_vec_complex_pos_j
     xm.vdepth16
     xm.vstrpv a_imag, tail
 
-
 .L_finish:
         xm.lddsp  s3,s2,8
-        xm.lddsp  s5,s4,16
+        xm.lddsp  s5,s4,0
         xm.retsp (NSTACKWORDS)*4
 
 .L_func_end:

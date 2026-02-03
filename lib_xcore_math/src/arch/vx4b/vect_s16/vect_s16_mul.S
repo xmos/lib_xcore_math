@@ -20,14 +20,14 @@ headroom_t vect_s16_mul(
 
 #define FUNCTION_NAME   vect_s16_mul
 
-#define STACK_VEC_SAT   0
+#define STACK_VEC_SAT   4
 
 #define a           a0 
 #define b           a1 
 #define c           a2
 #define len         a3
-#define a_shr       x18
-#define _32         x19
+#define a_shr       s2
+#define _32         s3
 #define tmp         s4
 #define tail        s5
 
@@ -38,8 +38,8 @@ headroom_t vect_s16_mul(
 FUNCTION_NAME:
         xm.entsp (NSTACKWORDS)*4
         li t3, 0x100
-        xm.stdsp  s3,s2,32
-        xm.stdsp  s5,s4,40
+        xm.stdsp  s3,s2,0
+        xm.stdsp  s5,s4,8
     { slli t3, len, SIZEOF_LOG2_S16     ; xm.vsetc t3                           }
     mv a_shr, a4
     { xm.zexti t3, 5                    ; nop                                   }
@@ -81,8 +81,8 @@ FUNCTION_NAME:
     { nop                               ; xm.vstr t3                            }
 
 .L_finish:
-        xm.lddsp  s3,s2,32
-        xm.lddsp  s5,s4,40
+        xm.lddsp  s3,s2,0
+        xm.lddsp  s5,s4,8
     { li a0, 15                         ; xm.vgetc t3                           }
     { xm.zexti t3, 5                    ; nop                                   }
     { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              } 

@@ -15,23 +15,23 @@ int64_t vect_s32_dot(
 
 #include "../asm_helper.h"
 
-#define NSTACKWORDS     (8 + 24+4)
+#define NSTACKWORDS     (8 + 3*8)
 
 #define FUNCTION_NAME   vect_s32_dot
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
-#define STACK_VEC_VR    (NSTACKWORDS-16-4)
-#define STACK_VEC_VD    (NSTACKWORDS-24-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
+#define STACK_VEC_VR    (NSTACKWORDS-16-1)
+#define STACK_VEC_VD    (NSTACKWORDS-24-1)
 
 #define b           a0
 #define c           a1
 #define N           a2
 #define b_shr       a3
-#define c_shr       x18
-#define tail        x19
+#define c_shr       s2
+#define tail        s3
 #define vec_vd      s4
 #define vec_vr      s5
-#define vec_tmp     x22
+#define vec_tmp     s6
 #define _32         s7
 
 

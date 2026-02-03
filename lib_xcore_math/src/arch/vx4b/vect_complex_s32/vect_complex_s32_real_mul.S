@@ -37,11 +37,11 @@ headroom_t vect_complex_s32_real_mul(
 #define b           a1 
 #define c           a2
 #define length      a3
-#define b_shr       x18
-#define c_shr       x19
+#define b_shr       s2
+#define c_shr       s3
 #define _32         s4
 #define vec_tmp     s5
-#define vec_c1      x22
+#define vec_c1      s6
 #define tmpA        s7
 #define tmpB        s8
 

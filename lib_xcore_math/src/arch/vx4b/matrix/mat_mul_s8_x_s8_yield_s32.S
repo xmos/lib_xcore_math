@@ -24,20 +24,19 @@ void mat_mul_s8_x_s8_yield_s32 (
 
 #define FUNCTION_NAME   mat_mul_s8_x_s8_yield_s32
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
 
-#define STACK_M_ROWS      (9)
 #define STACK_INPUT_VECT  (9)
 
 #define accs            a0 
 #define matrix          a1 
 #define vector          a2
 #define rows_left       a3
-#define cols_left       x18
-#define _32             x19
+#define cols_left       s2
+#define _32             s3
 #define N_cols          s4
 #define mat_stride_B    s5
-#define mat_stride_C    x22
+#define mat_stride_C    s6
 
 #define K               s8
 
@@ -51,8 +50,8 @@ FUNCTION_NAME:
     li t3, 0x200
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,24
-  { li _32, 32                          ; sw s8, 4                            (sp) }
+    xm.stdsp  s7,s6,0
+  { li _32, 32                          ; sw s8, 24                            (sp) }
   { li s8, 15                           ; xm.vsetc t3                           }
     add rows_left, rows_left, s8
     mv N_cols, a4
@@ -105,8 +104,8 @@ FUNCTION_NAME:
 .L_finish:
       xm.lddsp  s3,s2,8
       xm.lddsp  s5,s4,16
-      xm.lddsp  s7,s6,24
-  { nop                                 ; lw s8, 4                          (sp) }
+      xm.lddsp  s7,s6,0
+  { nop                                 ; lw s8, 24                          (sp) }
   { nop                                 ; xm.retsp (NSTACKWORDS)*4              } 
 
 .L_func_end:

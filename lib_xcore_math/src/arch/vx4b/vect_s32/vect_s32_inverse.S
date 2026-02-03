@@ -18,12 +18,12 @@ headroom_t vect_s32_inverse(
 
 
 #define NSTACKVECTS     (1)
-#define NSTACKWORDS     (8+8*(NSTACKVECTS)+4)
+#define NSTACKWORDS     (8+8*(NSTACKVECTS))
 
 #define FUNCTION_NAME   vect_s32_inverse
 
 
-#define STACK_VEC_TMP       (NSTACKWORDS-8-4)
+#define STACK_VEC_TMP       (NSTACKWORDS-8-1)
 
 
 #define a               a0
@@ -31,11 +31,11 @@ headroom_t vect_s32_inverse(
 #define length          a2
 #define scale           a3
 #define div_hi          a3
-#define div_lo          x18
-#define v_mask          x19
+#define div_lo          s2
+#define v_mask          s3
 #define _32             s4
 #define val1            s5
-#define val2            x22
+#define val2            s6
 #define vec_tmp         s7
 
 .text

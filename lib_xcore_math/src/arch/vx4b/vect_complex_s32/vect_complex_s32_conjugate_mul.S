@@ -21,23 +21,23 @@ headroom_t vect_complex_s32_conj_mul(
 .p2align 2
 
 
-#define NSTACKWORDS     (8+8+4)
+#define NSTACKWORDS     (8+8)
 
 #define a           a0 
 #define b           a1 
 #define c           a2
 #define len         a3
-#define shr_b       x18
-#define shr_c       x19
+#define shr_b       s2
+#define shr_c       s3
 #define tmp         s4
 #define tmp_vec     s5
 
 #define bytemask    len
 
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
 
-#define STACK_BYTEMASK  1
+#define STACK_BYTEMASK  4
 
 #define FUNCTION_NAME vect_complex_s32_conj_mul
     
@@ -45,7 +45,7 @@ headroom_t vect_complex_s32_conj_mul(
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
-    xm.stdsp  s5,s4,16
+    xm.stdsp  s5,s4,0
     mv shr_b, a4
     { slli t3, len, 3                   ; nop                                   }
     mv shr_c, a5
@@ -89,7 +89,7 @@ FUNCTION_NAME:
 
 .L_done_s32:
         xm.lddsp  s3,s2,8
-        xm.lddsp  s5,s4,16
+        xm.lddsp  s5,s4,0
 
     { li a0, 31                         ; xm.vgetc t3                           }
     { xm.zexti t3, 5                    ; nop                                   }

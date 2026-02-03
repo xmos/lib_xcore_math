@@ -24,7 +24,7 @@ headroom_t vect_s16_to_vect_s32(
 #define b               a1
 #define len             a2
 #define _16             a3
-#define tail            x18
+#define tail            s2
 #define constsA         t3
 #define constsB         t3
 

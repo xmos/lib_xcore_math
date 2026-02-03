@@ -16,7 +16,7 @@
 */
 
 
-#define NSTACKWORDS     (4+4)
+#define NSTACKWORDS     (4)
 
 #define FUNCTION_NAME   vect_s32_unzip
 
@@ -27,8 +27,8 @@
 #define c         a2
 #define len       a3
 
-#define tmpA      x18
-#define tmpB      x19
+#define tmpA      s2
+#define tmpB      s3
 
 .text
 .p2align 2

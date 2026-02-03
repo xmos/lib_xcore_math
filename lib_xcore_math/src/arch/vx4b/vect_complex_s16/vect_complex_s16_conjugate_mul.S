@@ -23,10 +23,10 @@ headroom_t vect_complex_s16_conj_mul(
 #define FUNCTION_NAME vect_complex_s16_conj_mul
 
 #define NSTACKVECS      (4)
-#define NSTACKWORDS     (12+8*(NSTACKVECS)+4)
+#define NSTACKWORDS     (12+8*(NSTACKVECS))
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
-#define STACK_VEC_SAT   (NSTACKWORDS-16-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
+#define STACK_VEC_SAT   (NSTACKWORDS-16-1)
 
 #define STACK_BYTEMASK  8
 
@@ -35,11 +35,11 @@ headroom_t vect_complex_s16_conj_mul(
 #define a_im        a1
 #define b_re        a2
 #define b_im        a3
-#define c_re        x18
-#define c_im        x19
+#define c_re        s2
+#define c_im        s3
 #define len         s4
 #define vec_tmp     s5
-#define vec_sat     x22
+#define vec_sat     s6
 #define bytemask    s7
 
 

@@ -32,8 +32,8 @@ unsigned vect_sXX_add_scalar(
 #define b           a1 
 #define len         a2
 #define c           a3
-#define b_shr       x18
-#define _32         x19
+#define b_shr       s2
+#define _32         s3
 #define tail        s4
 
 

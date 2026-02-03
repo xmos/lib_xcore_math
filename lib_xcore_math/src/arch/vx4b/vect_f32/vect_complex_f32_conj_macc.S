@@ -21,7 +21,7 @@
 */
 
 #define FUNC_NAME     vect_complex_f32_conj_macc
-#define NSTACKWORDS   12
+#define NSTACKWORDS   8
 
 .globl	FUNC_NAME
 .type	FUNC_NAME,@function
@@ -30,11 +30,11 @@
 #define b         a1
 #define c         a2
 #define len       a3
-#define B_re      x18
-#define B_im      x19
+#define B_re      s2
+#define B_im      s3
 #define C_re      s4
 #define C_im      s5
-#define A_re      x22
+#define A_re      s6
 #define A_im      s7
 
 .p2align 4

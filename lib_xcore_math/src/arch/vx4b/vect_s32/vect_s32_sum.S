@@ -16,10 +16,10 @@
 
 
 #define FUNCTION_NAME   vect_s32_sum
-#define NSTACKWORDS     (16+4)
+#define NSTACKWORDS     (16)
 
 
-#define STACK_VEC_TMP       (NSTACKWORDS-8-4)
+#define STACK_VEC_TMP       (NSTACKWORDS-8-1)
 
 #define b           a0
 #define N           a1

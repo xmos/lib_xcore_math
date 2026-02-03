@@ -29,8 +29,8 @@ int32_t vect_s16_abs_sum(
 #define N           a1 
 #define tail        a2 
 #define tmp         a3
-#define neg_1       x18
-#define pos_2       x19
+#define neg_1       s2
+#define pos_2       s3
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function

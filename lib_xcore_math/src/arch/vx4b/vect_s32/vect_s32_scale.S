@@ -28,8 +28,8 @@ headroom_t vect_s32_scale(
 #define b           a1 
 #define len         a2
 #define c           a3
-#define shr_b       x18
-#define _32         x19
+#define shr_b       s2
+#define _32         s3
 #define tmp_vec     s4
 #define bytemask    len
 

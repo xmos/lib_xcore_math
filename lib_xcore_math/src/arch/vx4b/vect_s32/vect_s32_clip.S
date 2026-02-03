@@ -33,11 +33,11 @@ headroom_t vect_s32_clip(
 #define b           a1
 #define N           a2
 #define lower       a3
-#define upper       x18
-#define b_shr       x19
+#define upper       s2
+#define b_shr       s3
 #define tail        s4
 #define tmp1        s5
-#define tmp2        x22
+#define tmp2        s6
 #define int_max     s7
 #define int_min     s8
 

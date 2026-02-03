@@ -46,15 +46,15 @@ int32_t vladd32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   sw a1, 0                           (sp)}
-{   xm.mkmski a1, 4                             ;   xm.vladd t3}
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; sw a1, 0                           (sp) }
+{ xm.mkmski a1, 4                       ; xm.vladd t3                           }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -78,15 +78,15 @@ int32_t vlsub32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a1, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   sw a0, 0                           (sp)}
-{   xm.mkmski a1, 4                             ;   xm.vlsub t3}
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a1, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; sw a0, 0                           (sp) }
+{ xm.mkmski a1, 4                       ; xm.vlsub t3                           }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -110,13 +110,13 @@ int32_t vlashr32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{   xm.mkmski a2, 4                             ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ xm.mkmski a2, 4                       ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
     xm.vlashr t3, a1
     xm.vstrpv t3, a2
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -139,14 +139,14 @@ int32_t vpos32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{   xm.mkmski a1, 4                             ;   xm.vpos                                    }
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ xm.mkmski a1, 4                       ; xm.vpos                               }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -169,14 +169,14 @@ int32_t vsign32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{   xm.mkmski a1, 4                             ;   xm.vsign                                   }
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ xm.mkmski a1, 4                       ; xm.vsign                              }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -199,14 +199,14 @@ unsigned vdepth1_32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{   xm.mkmski a1, 4                             ;   xm.vdepth1                                 }
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ xm.mkmski a1, 4                       ; xm.vdepth1                            }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.zexti a0, 1                              ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.zexti a0, 1                        ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -230,14 +230,14 @@ int8_t vdepth8_32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{   xm.mkmski a1, 4                             ;   xm.vdepth8                                 }
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ xm.mkmski a1, 4                       ; xm.vdepth8                            }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.sext a0, 8                              ;  xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -261,14 +261,14 @@ int16_t vdepth16_32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{   xm.mkmski a1, 4                             ;   xm.vdepth16                                }
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ xm.mkmski a1, 4                       ; xm.vdepth16                           }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.sext a0, 16                             ;  xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.sext a0, 16                        ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -293,15 +293,15 @@ int32_t vlmul32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   sw a1, 0                           (sp)}
-{   xm.mkmski a1, 4                             ;   xm.vlmul0 t3}
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; sw a1, 0                           (sp) }
+{ xm.mkmski a1, 4                       ; xm.vlmul0 t3                          }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -327,21 +327,21 @@ vpu_int32_acc_t vlmacc32(
 #define NSTACKWORDS     (12)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{   addi t3,sp, 0                         ;   xm.vsetc t3}
-{ nop                                           ;   sw a1, 0                           (sp)}
-{ nop                                           ;   xm.vldd t3}
-{ nop                                           ;   sw a0, 0                           (sp)}
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   sw a2, 0                           (sp)}
-{ nop                                           ;   xm.vldc t3}
-{ nop                                           ;   sw a3, 0                           (sp)}
-{ nop                                           ;   xm.vlmacc0 t3}
-{ nop                                           ;   xm.vstd t3}
-{ nop                                           ;   lw a1, 0                           (sp)}
-{ nop                                           ;   xm.vstr t3}
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ addi t3,sp, 0                         ; xm.vsetc t3                           }
+{ nop                                   ; sw a1, 0                           (sp) }
+{ nop                                   ; xm.vldd t3                            }
+{ nop                                   ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; sw a2, 0                           (sp) }
+{ nop                                   ; xm.vldc t3                            }
+{ nop                                   ; sw a3, 0                           (sp) }
+{ nop                                   ; xm.vlmacc0 t3                         }
+{ nop                                   ; xm.vstd t3                            }
+{ nop                                   ; lw a1, 0                           (sp) }
+{ nop                                   ; xm.vstr t3                            }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -367,21 +367,21 @@ vpu_int32_acc_t vlmaccr32(
 #define NSTACKWORDS     (8)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{   addi t3,sp, 0                         ;   xm.vsetc t3}
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ addi t3,sp, 0                         ; xm.vsetc t3                           }
 
 // The *last* accumulator is the one that will be added to.
-{ nop                                           ;   sw a1, 28                           (sp)}
-{ nop                                           ;   xm.vldd t3}
-{ nop                                           ;   sw a0, 28                           (sp)}
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   xm.vldc a2}
-{ nop                                           ;   xm.vlmaccr0 a3}
-{ nop                                           ;   xm.vstd t3}
-{ nop                                           ;   lw a1, 0                           (sp)}
-{ nop                                           ;   xm.vstr t3}
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; sw a1, 28                           (sp) }
+{ nop                                   ; xm.vldd t3                            }
+{ nop                                   ; sw a0, 28                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; xm.vldc a2                            }
+{ nop                                   ; xm.vlmaccr0 a3                        }
+{ nop                                   ; xm.vstd t3                            }
+{ nop                                   ; lw a1, 0                           (sp) }
+{ nop                                   ; xm.vstr t3                            }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -406,18 +406,18 @@ int32_t vlsat32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{   addi t3,sp, 0                         ;   xm.vsetc t3}
-{ nop                                           ;   sw a1, 0                           (sp)}
-{ nop                                           ;   xm.vldd t3}
-{ nop                                           ;   sw a0, 0                           (sp)}
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   sw a2, 0                           (sp)}
-{   xm.mkmski a1, 4                             ;   nop}
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ addi t3,sp, 0                         ; xm.vsetc t3                           }
+{ nop                                   ; sw a1, 0                           (sp) }
+{ nop                                   ; xm.vldd t3                            }
+{ nop                                   ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; sw a2, 0                           (sp) }
+{ xm.mkmski a1, 4                       ; nop                                   }
 xm.vlsat t3
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -442,14 +442,14 @@ int32_t vcmr32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{   addi t3,sp, 0                         ;   xm.vsetc t3}
-{ nop                                           ;   xm.vldd a0}
-{ nop                                           ;   xm.vldc a1}
-{   xm.mkmski a1, 8                             ;   xm.vcmr0                                   }
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ addi t3,sp, 0                         ; xm.vsetc t3                           }
+{ nop                                   ; xm.vldd a0                            }
+{ nop                                   ; xm.vldc a1                            }
+{ xm.mkmski a1, 8                       ; xm.vcmr0                              }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -474,14 +474,14 @@ int32_t vcmi32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{   addi t3,sp, 0                         ;   xm.vsetc t3}
-{ nop                                           ;   xm.vldd a0}
-{ nop                                           ;   xm.vldc a1}
-{   xm.mkmski a1, 8                             ;   xm.vcmi0                                    }
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ addi t3,sp, 0                         ; xm.vsetc t3                           }
+{ nop                                   ; xm.vldd a0                            }
+{ nop                                   ; xm.vldc a1                            }
+{ xm.mkmski a1, 8                       ; xm.vcmi0                              }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 4                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 4                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -506,14 +506,14 @@ int32_t vcmcr32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{   addi t3,sp, 0                         ;   xm.vsetc t3}
-{ nop                                           ;   xm.vldd a0}
-{ nop                                           ;   xm.vldc a1}
-{   xm.mkmski a1, 8                             ;   xm.vcmcr0                                   }
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ addi t3,sp, 0                         ; xm.vsetc t3                           }
+{ nop                                   ; xm.vldd a0                            }
+{ nop                                   ; xm.vldc a1                            }
+{ xm.mkmski a1, 8                       ; xm.vcmcr0                             }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -538,14 +538,14 @@ int32_t vcmci32(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{   li t3, 0                              ;   xm.entsp (NSTACKWORDS)*4                   }
-{   addi t3,sp, 0                         ;   xm.vsetc t3}
-{ nop                                           ;   xm.vldd a0}
-{ nop                                           ;   xm.vldc a1}
-{   xm.mkmski a1, 8                             ;   xm.vcmci0                                    }
+{ li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
+{ addi t3,sp, 0                         ; xm.vsetc t3                           }
+{ nop                                   ; xm.vldd a0                            }
+{ nop                                   ; xm.vldc a1                            }
+{ xm.mkmski a1, 8                       ; xm.vcmci0                             }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 4                           (sp)}
-{ nop                                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 4                           (sp) }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME

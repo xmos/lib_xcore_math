@@ -21,19 +21,19 @@ void vect_complex_s32_sum(
 .p2align 2
 
 #define NSTACKVECS      (2)
-#define NSTACKWORDS     (8+(8*NSTACKVECS)+4)
+#define NSTACKWORDS     (8+(8*NSTACKVECS))
 
 #define b           a0
 #define b_shr       a1
 #define length      a2
 #define _32         a3
-#define tmp         x18
-#define tail_bytes  x19
+#define tmp         s2
+#define tail_bytes  s3
 
-#define STACK_VEC_ZEROS     (NSTACKWORDS- 8-4)
-#define STACK_VEC_TMP       (NSTACKWORDS-16-4)
+#define STACK_VEC_ZEROS     (NSTACKWORDS- 8-1)
+#define STACK_VEC_TMP       (NSTACKWORDS-16-1)
 
-#define STACK_RES   (1)
+#define STACK_RES   (4)
 
 #define FUNCTION_NAME vect_complex_s32_sum
     
@@ -43,7 +43,7 @@ FUNCTION_NAME:
 
         xm.entsp (NSTACKWORDS)*4
         xm.stdsp  s3,s2,8
-        xm.stdsp  s5,s4,16
+        xm.stdsp  s5,s4,0
 
     { mv b, a1                          ; sw a0, (STACK_RES)*4                   (sp) }
 
@@ -86,7 +86,7 @@ la t3, vpu_vec_0x40000000
 #define real_lo     a1
 #define imag_hi     a2
 #define imag_lo     a3
-#define num         x19
+#define num         s3
 #define tmp_re      s4
 #define tmp_im      s5
 
@@ -126,7 +126,7 @@ la t3, vpu_vec_0x40000000
 
 .L_done:
         xm.lddsp  s3,s2,8
-        xm.lddsp  s5,s4,16
+        xm.lddsp  s5,s4,0
         xm.retsp (NSTACKWORDS)*4
 
 .L_func_end:

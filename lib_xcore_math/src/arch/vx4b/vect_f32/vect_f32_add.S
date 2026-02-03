@@ -33,8 +33,8 @@
 #define b         a1
 #define c         a2
 #define len       a3
-#define B0        x18
-#define B1        x19
+#define B0        s2
+#define B1        s3
 #define C0        s4
 #define C1        s5
 

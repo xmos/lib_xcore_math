@@ -30,12 +30,12 @@
 #define b         a1
 #define c         a2
 #define len       a3
-#define b_shr     x18
-#define c_shr     x19
+#define b_shr     s2
+#define c_shr     s3
 
 #define vec_B     s4
 #define vec_C     s5
-#define _28       x22
+#define _28       s6
 #define _32       s7
 
 
@@ -108,7 +108,7 @@ xm.vstd vec_B
     xm.vlashr c, c_shr
   { addi len, len, -1                   ; xm.vstr vec_C                         }
 
-#define tmpB  x22
+#define tmpB  s6
 #define tmpC  s7
   .L_tail_loop_top:
     { nop                               ; xm.ldw tmpB,len                        ( vec_B) }

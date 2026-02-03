@@ -88,7 +88,7 @@ vect_s32_shl:
         *   b --> a1
         *   loop_count --> a2
         *   shl --> a3
-        *   tail --> x18
+        *   tail --> s2
         *   VPU mode must already be set.
 */
 
@@ -97,7 +97,7 @@ vect_s32_shl:
 #define loop_count  a2
 #define b_shl       a3
 #define b_shr         b_shl
-#define tail        x18
+#define tail        s2
 
 
 .type .L_apply_op,@function; 

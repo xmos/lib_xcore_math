@@ -39,11 +39,11 @@ headroom_t vect_complex_s16_mag(
 #define b_real      a1 
 #define b_imag      a2
 #define length      a3
-#define b_shr       x18
-#define _32         x19
+#define b_shr       s2
+#define _32         s3
 #define vec_neg_one s4
 #define mask32      s5
-#define tail_bytes  x22
+#define tail_bytes  s6
 #define iter        s7
 #define table       s8
 
@@ -51,9 +51,9 @@ FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,24
+    xm.stdsp  s7,s6,0
 
-    { li _32, 32                        ; sw s8, 4                          (sp) }
+    { li _32, 32                        ; sw s8, 24                          (sp) }
 
     { slli t3, _32, 3                   ; mv tail_bytes, length                 }
     { srli length, length, 4            ; xm.vsetc t3                           }
@@ -242,10 +242,10 @@ FUNCTION_NAME:
 .L_done:
         xm.lddsp  s3,s2,8
         xm.lddsp  s5,s4,16
-        xm.lddsp  s7,s6,24
+        xm.lddsp  s7,s6,0
 
     { li a0, 15                         ; xm.vgetc t3                           }
-    { xm.zexti t3, 5                    ; lw s8, 4                          (sp) }
+    { xm.zexti t3, 5                    ; lw s8, 24                          (sp) }
     { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 

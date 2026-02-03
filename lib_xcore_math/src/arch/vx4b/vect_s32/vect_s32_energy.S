@@ -18,19 +18,19 @@ int64_t vect_s32_energy(
 .p2align 2
 
 #define NSTACKVECS      (2)
-#define NSTACKWORDS     (8 + 8*NSTACKVECS+4)
+#define NSTACKWORDS     (8 + 8*NSTACKVECS)
 
 
 #define FUNCTION_NAME   vect_s32_energy
 
-#define STACK_VEC_TMP       (NSTACKWORDS-8-4)
-#define STACK_VEC_VR        (NSTACKWORDS-16-4)
+#define STACK_VEC_TMP       (NSTACKWORDS-8-1)
+#define STACK_VEC_VR        (NSTACKWORDS-16-1)
 
 #define b           a0
 #define N           a1
 #define b_shr       a2
 #define vec_tmp     a3
-#define tail        x18
+#define tail        s2
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function

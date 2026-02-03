@@ -42,8 +42,8 @@ int16_t filter_fir_s16(
 #define length      a1
 #define sample      a2
 #define tmpA        a3
-#define _32         x18
-#define coef        x19
+#define _32         s2
+#define coef        s3
 
 
 #define filter      s8

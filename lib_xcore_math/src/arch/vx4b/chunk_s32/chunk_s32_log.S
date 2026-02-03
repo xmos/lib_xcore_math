@@ -18,16 +18,16 @@ void chunk_s32_log(
 */
 
 
-#define NSTACKWORDS     (8+48+4)
+#define NSTACKWORDS     (8+48)
 
 #define FUNCTION_NAME   chunk_s32_log
 
-#define SP_VEC_X1    ((NSTACKWORDS) - 8 -4)
-#define SP_VEC_X2    ((NSTACKWORDS) - 16-4)
-#define SP_VEC_X3    ((NSTACKWORDS) - 24-4)
-#define SP_VEC_X4    ((NSTACKWORDS) - 32-4)
-#define SP_VEC_X5    ((NSTACKWORDS) - 40-4)
-#define SP_VEC_X6    ((NSTACKWORDS) - 48-4)
+#define SP_VEC_X1    ((NSTACKWORDS) - 8 -1)
+#define SP_VEC_X2    ((NSTACKWORDS) - 16-1)
+#define SP_VEC_X3    ((NSTACKWORDS) - 24-1)
+#define SP_VEC_X4    ((NSTACKWORDS) - 32-1)
+#define SP_VEC_X5    ((NSTACKWORDS) - 40-1)
+#define SP_VEC_X6    ((NSTACKWORDS) - 48-1)
 
 
 .text
@@ -45,8 +45,8 @@ void chunk_s32_log(
 #define b           a1
 #define b_exp       a2
 #define mantB       a3
-#define tmpA        x18
-#define tmpB        x19
+#define tmpA        s2
+#define tmpB        s3
 #define tmpC        s4
 #define vec_x       s5
 #define mantA       t3

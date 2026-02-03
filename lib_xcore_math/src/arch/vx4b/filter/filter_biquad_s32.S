@@ -37,8 +37,8 @@ int32_t filter_biquad_s32(
 #define sample      a1      // ![%d]
 #define coef        a2      // ![0x%08X]
 #define tmp         a3      // ![%d]
-#define _32         x18      // ![%d]
-#define _36         x19      // ![%d]
+#define _32         s2      // ![%d]
+#define _36         s3      // ![%d]
 #define filter      s8      // ![0x%08X]
     
 .text
@@ -74,7 +74,7 @@ FUNCTION_NAME:
     // coef = &(filter->coef[0][0])
 
 #undef _36
-#define N       x19      // ![%d]
+#define N       s3      // ![%d]
 
     // Move filter->state[0][:] to filter->state[1][:]
 

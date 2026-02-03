@@ -19,22 +19,22 @@ headroom_t vect_s16_nmacc(
 #include "../asm_helper.h"
 
 #define NSTACKVECTS     (2)
-#define NSTACKWORDS     (8 + 8*NSTACKVECTS+4)
+#define NSTACKWORDS     (8 + 8*NSTACKVECTS)
 
 #define FUNCTION_NAME   vect_s16_nmacc
 
-#define STACK_VEC_SAT   (NSTACKWORDS-8-4)
-#define STACK_VEC_TMP   (NSTACKWORDS-16-4)
+#define STACK_VEC_SAT   (NSTACKWORDS-8-2)
+#define STACK_VEC_TMP   (NSTACKWORDS-16-2)
 
 #define acc         a0 
 #define b           a1 
 #define c           a2
 #define len         a3
-#define bc_shr      x18
-#define _32         x19
+#define bc_shr      s2
+#define _32         s3
 #define tmp         s4
 #define tail        s5
-#define acc_shr     x22
+#define acc_shr     s6
 #define mask        s7
 
 .text
@@ -46,7 +46,7 @@ FUNCTION_NAME:
         li t3, 0x100
         xm.stdsp  s3,s2,8
         xm.stdsp  s5,s4,16
-        xm.stdsp  s7,s6,24
+        xm.stdsp  s7,s6,0
     { slli t3, len, SIZEOF_LOG2_S16     ; xm.vsetc t3                           }
     mv bc_shr, a5
     { xm.zexti t3, 5                    ; nop                                   }
@@ -98,7 +98,7 @@ FUNCTION_NAME:
 .L_finish:
         xm.lddsp  s3,s2,8
         xm.lddsp  s5,s4,16
-        xm.lddsp  s7,s6,24
+        xm.lddsp  s7,s6,0
     { li a0, 15                         ; xm.vgetc t3                           }
     { xm.zexti t3, 5                    ; nop                                   }
     { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              } 

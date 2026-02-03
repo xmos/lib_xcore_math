@@ -31,7 +31,7 @@ int32_t vect_s16_energy(
 #define N           a1
 #define b_shr       a2
 #define vec_tmp     a3
-#define tail        x18
+#define tail        s2
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function

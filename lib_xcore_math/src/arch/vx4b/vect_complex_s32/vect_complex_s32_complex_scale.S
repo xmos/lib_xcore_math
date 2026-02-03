@@ -22,20 +22,20 @@ headroom_t vect_complex_s32_scale(
 .p2align 2
 
 
-#define NSTACKWORDS     (8+8+4)
+#define NSTACKWORDS     (8+8)
 
 #define a           a0 
 #define b           a1 
 #define c_real      a2
 #define c_imag      a3
-#define length      x18
-#define b_shr       x19
+#define length      s2
+#define b_shr       s3
 
 #define _32         s4
 #define tmp_vec     s5
 
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
 
 #define FUNCTION_NAME vect_complex_s32_scale
     
@@ -43,7 +43,7 @@ headroom_t vect_complex_s32_scale(
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
-    xm.stdsp  s5,s4,16
+    xm.stdsp  s5,s4,0
     
     { addi tmp_vec,sp, (STACK_VEC_TMP)*4 ; li t3, 0                              }
     { li _32, 32                        ; xm.vsetc t3                           }
@@ -124,7 +124,7 @@ FUNCTION_NAME:
 .p2align 2
 .L_done:
         xm.lddsp  s3,s2,8
-        xm.lddsp  s5,s4,16
+        xm.lddsp  s5,s4,0
 
     { li a0, 31                         ; xm.vgetc t3                           }
     { xm.zexti t3, 5                    ; nop                                   }

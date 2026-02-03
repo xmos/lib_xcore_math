@@ -15,7 +15,7 @@ void vect_complex_s16_to_vect_complex_s32(
 #include "../asm_helper.h"
 
 #define NSTACKVECS      0
-#define NSTACKWORDS     (4 + (8*NSTACKVECS)+4)
+#define NSTACKWORDS     (4 + (8*NSTACKVECS))
 
 #define FUNCTION_NAME   vect_complex_s16_to_vect_complex_s32
 
@@ -23,8 +23,8 @@ void vect_complex_s16_to_vect_complex_s32(
 #define b_real          a1
 #define b_imag          a2
 #define length          a3
-#define tmp_real        x18
-#define tmp_imag        x19
+#define tmp_real        s2
+#define tmp_imag        s3
 
 .text; 
 .globl FUNCTION_NAME
@@ -34,7 +34,7 @@ void vect_complex_s16_to_vect_complex_s32(
 
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
-    xm.stdsp  s3,s2,8
+    xm.stdsp  s3,s2,0
 
     // Can this be done faster? Or with the VPU at all?
     .L_loop_top:  
@@ -44,7 +44,7 @@ FUNCTION_NAME:
         xm.std  tmp_real,tmp_imag, length(a)
         bnez length, .L_loop_top
 
-    xm.lddsp  s3,s2,8
+    xm.lddsp  s3,s2,0
     xm.retsp (NSTACKWORDS)*4       
 
     //.cc_bottom FUNCTION_NAME.function; 

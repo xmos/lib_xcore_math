@@ -27,8 +27,8 @@
 #define len       a2
 #define exp       a3
 
-#define mant1     x18
-#define mant0     x19
+#define mant1     s2
+#define mant0     s3
 #define tmp       s4
 
 

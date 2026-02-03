@@ -24,8 +24,8 @@
 #define len       a2
 #define _32       a3
 
-#define tmpR      x18
-#define tmpD      x19
+#define tmpR      s2
+#define tmpD      s3
 
 
 .text

@@ -21,10 +21,10 @@ headroom_t vect_complex_s32_mag(
 .p2align 2
 
 #define NSTACKVECS      (2)
-#define NSTACKWORDS     (8+(8*NSTACKVECS)+4)
+#define NSTACKWORDS     (8+(8*NSTACKVECS))
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
-#define STACK_VEC_TMP2  (NSTACKWORDS-16-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
+#define STACK_VEC_TMP2  (NSTACKWORDS-16-1)
 
 #define FUNCTION_NAME vect_complex_s32_mag
 
@@ -34,11 +34,11 @@ headroom_t vect_complex_s32_mag(
 #define b           a1 
 #define length      a2
 #define b_shr       a3
-#define _32         x18
-#define vec_tmp     x19
+#define _32         s2
+#define vec_tmp     s3
 #define mask32      s4
 #define tmp         s5
-#define iter        x22
+#define iter        s6
 #define tail_bytes  s7
 
 
@@ -46,8 +46,8 @@ FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,24
-    { li s8, 0                          ; sw s8, 4                          (sp) }
+    xm.stdsp  s7,s6,0
+    { li s8, 0                          ; sw s8, 24                          (sp) }
 
     { li _32, 32                        ; li t3, 0                              }
     { addi vec_tmp,sp, (STACK_VEC_TMP)*4 ; xm.vsetc t3                           }
@@ -57,13 +57,6 @@ FUNCTION_NAME:
     { slli tail_bytes, tail_bytes, 2    ; xm.brff length, .L_outer_loop_bot     }
 
     .L_outer_loop_top:
-        //     vlashr b[0], b_shr
-        //     vstrpv vec_tmp[0], mask32
-        // {   add b, b, _32                           ;   vsign                                   }
-        // {                                           ;   vlmul vec_tmp[0]                        }
-        //     vstrpv vec_tmp[0], mask32
-        // {                                           ;   ldw t3, sp[STACK_ROT_TABLE]            }
-        // {                                           ;   ldw iter, sp[STACK_TABLE_ROWS]          }        
 
             xm.vlashr b, b_shr
         { nop                           ; xm.vsign                              }
@@ -139,10 +132,10 @@ FUNCTION_NAME:
 .L_done:
         xm.lddsp  s3,s2,8
         xm.lddsp  s5,s4,16
-        xm.lddsp  s7,s6,24
+        xm.lddsp  s7,s6,0
 
     { li a0, 31                         ; xm.vgetc t3                           }
-    { xm.zexti t3, 5                    ; lw s8, 4                          (sp) }
+    { xm.zexti t3, 5                    ; lw s8, 24                          (sp) }
     { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 

@@ -10,9 +10,9 @@
 .text
 .p2align 2
 
-#define NSTACKWORDS     (8+4)
+#define NSTACKWORDS     (12)
 
-#define STACK_TMP_VEC       (NSTACKWORDS-8-4)
+#define STACK_TMP_VEC       (NSTACKWORDS-8-1)
 
 #define a           a0
 #define b           a1

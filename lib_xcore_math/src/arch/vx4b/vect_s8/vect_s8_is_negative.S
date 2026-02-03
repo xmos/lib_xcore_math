@@ -22,8 +22,8 @@ void vect_s8_is_negative(
 #define b           a1 
 #define len         a2
 #define _32         a3
-#define vec_0xC1    x18
-#define tail        x19
+#define vec_0xC1    s2
+#define tail        s3
 
 .text
 .p2align 2
@@ -32,7 +32,7 @@ void vect_s8_is_negative(
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     li t3, 0x200
-    xm.stdsp  s3,s2,8
+    xm.stdsp  s3,s2,0
   { mv t3, len                          ; xm.vsetc t3                           }
   { xm.zexti t3, 5                      ; srli len, len, EPV_LOG2_S8            }
   { li _32, 32                          ; xm.mkmsk tail, t3                     }
@@ -58,7 +58,7 @@ la t3, vpu_vec_0xC1
 
     
 .L_finish:
-        xm.lddsp  s3,s2,8
+        xm.lddsp  s3,s2,0
     { nop                               ; xm.retsp (NSTACKWORDS)*4              } 
 
 .L_func_end:

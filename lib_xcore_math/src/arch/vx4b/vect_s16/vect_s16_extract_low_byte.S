@@ -15,21 +15,21 @@ void vect_s16_extract_low_byte(
 
 #include "../asm_helper.h"
 
-#define NSTACKWORDS     (8+8+4)
+#define NSTACKWORDS     (8+8)
 
 #define FUNCTION_NAME   vect_s16_extract_low_byte
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
 
-#define STACK_LEN       (6)
-#define STACK_TMP       (7)
+#define STACK_LEN       (4)
+#define STACK_TMP       (5)
 
 #define a           a0 
 #define b           a1 
 #define len         a2
 #define tmpA        a3
-#define tmpB        x18
-#define _16         x19
+#define tmpB        s2
+#define _16         s3
 #define tail        s4
 #define vec_0x7FFF  s5
 
@@ -41,7 +41,7 @@ FUNCTION_NAME:
       xm.entsp (NSTACKWORDS)*4
       li t3, 0x100
       xm.stdsp  s3,s2,8
-      xm.stdsp  s5,s4,16
+      xm.stdsp  s5,s4,0
     { mv t3, len                        ; xm.vsetc t3                           }
     { xm.zexti t3, 4                    ; srli len, len, EPV_LOG2_S16           }
     { addi tmpA,sp, (STACK_TMP)*4       ; xm.mkmsk tail, t3                     }
@@ -107,7 +107,7 @@ FUNCTION_NAME:
     
 .L_finish:
         xm.lddsp  s3,s2,8
-        xm.lddsp  s5,s4,16
+        xm.lddsp  s5,s4,0
     { nop                               ; xm.retsp (NSTACKWORDS)*4              } 
 
 .L_func_end:

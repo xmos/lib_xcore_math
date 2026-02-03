@@ -20,18 +20,18 @@ int32_t vect_s16_max(
 .p2align 2
 
 #define NSTACKVECS      (2)
-#define NSTACKWORDS     (8 + 8*NSTACKVECS+4)
+#define NSTACKWORDS     (8 + 8*NSTACKVECS)
 
 #define FUNCTION_NAME       vect_s16_max
 
-#define STACK_VEC_TMP       (NSTACKWORDS-8-4)
-#define STACK_VEC_CUR_MAX   (NSTACKWORDS-16-4)
+#define STACK_VEC_TMP       (NSTACKWORDS-8-1)
+#define STACK_VEC_CUR_MAX   (NSTACKWORDS-16-1)
 
 #define b           a0      // ![0x%08X]
 #define N           a1      // ![%d]
 #define tail        a2      // ![0x%X]
 #define tmp         a3      // ![%d]
-#define tmz         x18      // ![%d]
+#define tmz         s2     // ![%d]
 
 
 

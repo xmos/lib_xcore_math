@@ -18,19 +18,19 @@ int64_t vect_s32_abs_sum(
 .p2align 2
 
 #define NSTACKVECS      (2)
-#define NSTACKWORDS     (8 + 8*NSTACKVECS+4)
+#define NSTACKWORDS     (4 + 8*NSTACKVECS)
 
 #define FUNCTION_NAME       vect_s32_abs_sum
 
-#define STACK_VEC_TMP       (NSTACKWORDS-8-4)
-#define STACK_VEC_VR        (NSTACKWORDS-16-4)
+#define STACK_VEC_TMP       (NSTACKWORDS-8-1)
+#define STACK_VEC_VR        (NSTACKWORDS-16-1)
 
 #define b           a0      // ![0x%08X]
 #define N           a1      // ![%d]
 #define tail        a2      // ![0x%X]
 #define _32         a3      // ![%d]
-#define tmp         x18      // ![%d]
-#define mask        x19      // ![0x%X]
+#define tmp         s2      // ![%d]
+#define mask        s3      // ![0x%X]
 
 
 

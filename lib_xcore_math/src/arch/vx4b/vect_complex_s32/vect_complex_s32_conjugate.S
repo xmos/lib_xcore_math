@@ -16,16 +16,16 @@ headroom_t vect_complex_s32_conjugate(
 .p2align 2
 
 #define NSTACKVECTS     (1)
-#define NSTACKWORDS     (4 + 8*(NSTACKVECTS)+4)
+#define NSTACKWORDS     (4 + 8*(NSTACKVECTS))
 
-#define STACK_VEC_TMP   (NSTACKWORDS - 8-4)
+#define STACK_VEC_TMP   (NSTACKWORDS - 8-1)
 
 #define a           a0 
 #define b           a1 
 #define len         a2
 
 #define _32         a3
-#define tail        x18
+#define tail        s2
 
 #define FUNCTION_NAME vect_complex_s32_conjugate
     

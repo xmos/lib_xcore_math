@@ -24,11 +24,11 @@ headroom_t vect_complex_s16_mul(
 .p2align 2
 
 #define NSTACKVECS      (4)
-#define NSTACKWORDS     (12+8*(NSTACKVECS)+4)
+#define NSTACKWORDS     (12+8*(NSTACKVECS))
 
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
-#define STACK_VEC_SAT   (NSTACKWORDS-16-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
+#define STACK_VEC_SAT   (NSTACKWORDS-16-1)
 
 #define FUNCTION_NAME vect_complex_s16_mul
     
@@ -36,11 +36,11 @@ headroom_t vect_complex_s16_mul(
 #define a_im        a1
 #define b_re        a2
 #define b_im        a3
-#define c_re        x18
-#define c_im        x19
+#define c_re        s2
+#define c_im        s3
 #define len         s4
 #define vec_tmp     s5
-#define vec_sat     x22
+#define vec_sat     s6
 #define bytemask    s7
 
 
@@ -75,12 +75,12 @@ FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,24
+    xm.stdsp  s7,s6,0
 
     mv s2, a7
     { addi t3,sp, (STACK_VEC_SAT)*4     ; nop                                   }
     { slli s3, s2, 16                   ; xm.zexti s2, 16                       }
-    { or s2, s2, s3                     ; sw s8, 4                          (sp) }
+    { or s2, s2, s3                     ; sw s8, 24                          (sp) }
         xm.stdi  s2,s2, 0(t3)
         xm.stdi  s2,s2, 8(t3)
         xm.stdi  s2,s2, 16(t3)
@@ -159,10 +159,10 @@ FUNCTION_NAME:
 .L_done:
         xm.lddsp  s3,s2,8
         xm.lddsp  s5,s4,16
-        xm.lddsp  s7,s6,24
+        xm.lddsp  s7,s6,0
 
     { li a0, 15                         ; xm.vgetc t3                           }
-    { xm.zexti t3, 5                    ; lw s8, 4                          (sp) }
+    { xm.zexti t3, 5                    ; lw s8, 24                          (sp) }
     { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 
