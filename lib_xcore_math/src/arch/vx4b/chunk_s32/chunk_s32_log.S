@@ -57,34 +57,34 @@ xm.stdsp  s3,s2,0
 xm.stdsp  s5,s4,8
 
 { addi vec_x,sp, (SP_VEC_X1)*4          ; li t3, 0                              }
-{ nop                                   ; xm.vsetc t3                         }
+{ nop                                   ; xm.vsetc t3                           }
 xm.lddi  mantA,mantB, 0(b)
-{ xm.cls tmpA, mantA                  ; nop                                   }
-{ nop                                 ; xm.cls tmpB, mantB                    }
+{ xm.cls tmpA, mantA                    ; nop                                   }
+{ nop                                   ; xm.cls tmpB, mantB                    }
 { xm.shl mantA, mantA, tmpA             ; xm.shl mantB, mantB, tmpB             }
 xm.stdi  mantA,mantB, 0(vec_x)
 { sub mantA, b_exp, tmpA                ; sub mantB, b_exp, tmpB                }
 xm.stdi  mantA,mantB, 0(a)
 
 xm.lddi  mantA,mantB, 8(b)
-{ xm.cls tmpA, mantA                  ; nop                                   }
-{ nop                                 ; xm.cls tmpB, mantB                    }
+{ xm.cls tmpA, mantA                    ; nop                                   }
+{ nop                                   ; xm.cls tmpB, mantB                    }
 { xm.shl mantA, mantA, tmpA             ; xm.shl mantB, mantB, tmpB             }
 xm.stdi  mantA,mantB, 8(vec_x)
 { sub mantA, b_exp, tmpA                ; sub mantB, b_exp, tmpB                }
 xm.stdi  mantA,mantB, 8(a)
 
 xm.lddi  mantA,mantB, 16(b)
-{ xm.cls tmpA, mantA                  ; nop                                   }
-{ nop                                 ; xm.cls tmpB, mantB                    }
+{ xm.cls tmpA, mantA                    ; nop                                   }
+{ nop                                   ; xm.cls tmpB, mantB                    }
 { xm.shl mantA, mantA, tmpA             ; xm.shl mantB, mantB, tmpB             }
 xm.stdi  mantA,mantB, 16(vec_x)
 { sub mantA, b_exp, tmpA                ; sub mantB, b_exp, tmpB                }
 xm.stdi  mantA,mantB, 16(a)
 
 xm.lddi  mantA,mantB, 24(b)
-{ xm.cls tmpA, mantA                  ; nop                                   }
-{ nop                                 ; xm.cls tmpB, mantB                    }
+{ xm.cls tmpA, mantA                    ; nop                                   }
+{ nop                                   ; xm.cls tmpB, mantB                    }
 { xm.shl mantA, mantA, tmpA             ; xm.shl mantB, mantB, tmpB             }
 xm.stdi  mantA,mantB, 24(vec_x)
 { sub mantA, b_exp, tmpA                ; sub mantB, b_exp, tmpB                }
@@ -98,7 +98,7 @@ la t3, vpu_vec_0x20000000
 xm.vlashr a, tmpA
 { xm.ldap t3, .L_ln_2                   ; xm.vladd t3                           }
 { nop                                   ; xm.vlmul0 t3                          }
-{  mv t3, vec_x                          ; xm.vstr a                             }
+{ mv t3, vec_x                          ; xm.vstr a                             }
 { nop                                   ; xm.vldr t3                            }
 la t3, vpu_vec_0x00000002
 xm.vlsat t3

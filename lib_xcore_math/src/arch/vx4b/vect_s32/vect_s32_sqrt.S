@@ -163,7 +163,7 @@ FUNCTION_NAME:
     xm.lddsp  s5,s4,16
     xm.lddsp  s7,s6,0
 { li a0, 31                             ; xm.vgetc t3                           }
-{ xm.zexti t3, 5                        ; lw s8, 24                      (sp)    }
+{ xm.zexti t3, 5                        ; lw s8, 24                      (sp)   }
 { sub a0, a0, t3                        ; xm.retsp (NSTACKWORDS)*4              } 
 
 

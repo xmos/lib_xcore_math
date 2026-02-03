@@ -47,7 +47,7 @@ FUNCTION_NAME:
     { xm.mkmski s8, 4                   ; sw s8, 24                        (sp) }
     { mv t3, len                        ; xm.vsetc t3                           }
     { xm.zexti t3, 4                    ; srli len, len, EPV_LOG2_S16           }
-    { addi vec_tmp,sp, (STACK_VEC_TMP)*4 ; xm.mkmsk tail, t3                    }
+    { addi vec_tmp,sp, (STACK_VEC_TMP)*4 ; xm.mkmsk tail, t3                     }
     { addi tmp,sp, (STACK_TMP)*4        ; sw len, (STACK_LEN)*4            (sp) }
 
 // First thing, write 0x80 to all outputs.

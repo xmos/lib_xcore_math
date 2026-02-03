@@ -82,7 +82,7 @@ xm.zip tmz, tmp, 0
 .L_loop_bot:
 
 
-    { addi t3,sp, (STACK_VEC_CUR_MAX)*4 ; lw cur_max, (STACK_VEC_CUR_MAX)*4      (sp) }
+    { addi t3,sp, (STACK_VEC_CUR_MAX)*4 ; lw cur_max, (STACK_VEC_CUR_MAX)*4(sp) }
     { li N, 7                           ; addi t3, t3, 4                        }
     .L_loop2_top:
         { addi N, N, -1                 ; lw a0,0                      ( t3)    }

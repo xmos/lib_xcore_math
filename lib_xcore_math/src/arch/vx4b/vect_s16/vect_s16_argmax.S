@@ -122,7 +122,7 @@ xm.zip tmz, tmp, 0
 #define max_dex     a2  // ![0x%08X]
 
 { addi t3,sp, (STACK_VEC_CUR_MAX)*4     ; li N, 15                              }
-{ xm.ldawsp s4, STACK_VEC_MAX_DEX *4   ; nop                                   } 
+{ xm.ldawsp s4, STACK_VEC_MAX_DEX *4    ; nop                                   } 
 xm.ld16s cur_max, N(t3)
 xm.ld16s max_dex,  N(s4)
 { addi N, N, -1                         ; nop                                   }

@@ -142,7 +142,7 @@ xm.zip tmz, tmp, 0
 
 
 { addi t3,sp, (STACK_VEC_CUR_MAX)*4     ; li N, 15                              }
-{ xm.ldawsp s4, (STACK_VEC_MAX_DEX)*4  ; nop                                   }
+{ xm.ldawsp s4, (STACK_VEC_MAX_DEX)*4   ; nop                                   }
 xm.ld16s cur_min, N(t3)
 xm.ld16s min_dex, N(s4)
 { addi N, N, -1                         ; nop                                   }

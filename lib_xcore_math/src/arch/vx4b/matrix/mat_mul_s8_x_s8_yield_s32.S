@@ -51,14 +51,14 @@ FUNCTION_NAME:
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
     xm.stdsp  s7,s6,0
-  { li _32, 32                          ; sw s8, 24                            (sp) }
+  { li _32, 32                          ; sw s8, 24                        (sp) }
   { li s8, 15                           ; xm.vsetc t3                           }
     add rows_left, rows_left, s8
     mv N_cols, a4
   { srli rows_left, rows_left, 4        ; nop                                   }
   { slli mat_stride_B, N_cols, 4        ; mv K, N_cols                          }
   { sub mat_stride_C, mat_stride_B, N_cols ; li s7, 31                             }
-  { add mat_stride_B, mat_stride_C, _32 ; sw vector, (STACK_INPUT_VECT)*4          (sp) }
+  { add mat_stride_B, mat_stride_C, _32 ; sw vector, (STACK_INPUT_VECT)*4  (sp) }
 
   { xm.zexti K, 5                       ; add s7, N_cols, s7                    }
   { sub K, _32, K                       ; srli s7, s7, 5                        }
@@ -73,7 +73,7 @@ FUNCTION_NAME:
   .L_output_group_top:
     { add t3, accs, _32                 ; xm.vldd accs                          }
     { mv cols_left, K                   ; xm.vldr t3                            }
-    { addi rows_left, rows_left, -1     ; lw vector, (STACK_INPUT_VECT)*4          (sp) }
+    { addi rows_left, rows_left, -1     ; lw vector, (STACK_INPUT_VECT)*4  (sp) }
     
     .L_input_group_top:
       { add vector, vector, _32         ; xm.vldc vector                        }
@@ -105,7 +105,7 @@ FUNCTION_NAME:
       xm.lddsp  s3,s2,8
       xm.lddsp  s5,s4,16
       xm.lddsp  s7,s6,0
-  { nop                                 ; lw s8, 24                          (sp) }
+  { nop                                 ; lw s8, 24                        (sp) }
   { nop                                 ; xm.retsp (NSTACKWORDS)*4              } 
 
 .L_func_end:
