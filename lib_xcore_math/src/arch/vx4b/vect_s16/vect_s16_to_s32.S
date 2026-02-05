@@ -54,16 +54,16 @@ FUNCTION_NAME:
     as two separate 8-bit values, we end up getting 2 adjacent accumulators, which is 32 adjacent bits in vR. It's the
     only way to expand values to a higher bit-depth inside the VPU.
 
-    Function also relies on an understanding of the endianness of the system. A 16-bit value 0a234 is stored as bytes 
-    (in order) [0x34, 0a2]. To avoid changing the value represented, we need these two bytes to also be adjacent in 
+    Function also relies on an understanding of the endianness of the system. A 16-bit value 0x1234 is stored as bytes 
+    (in order) [0x34, 0x12]. To avoid changing the value represented, we need these two bytes to also be adjacent in 
     the output value. But, because these will end up in separate accumulators (the lower 16-bits of each being in vR 
     with the rest in vD), in order to ensure this, we need one to end up in the upper byte of the 16 bits and the other 
     to end up in the lower byte, which means our only option is to multiply by 2^8.
 
-    Ultimately what we need in the first 4 bytes of vR (given the value above) is [0x00, 0x34, 0a2, 0x00] which when
+    Ultimately what we need in the first 4 bytes of vR (given the value above) is [0x00, 0x34, 0x12, 0x00] which when
     written to memory and interpreted as an int32 will be 0x00123400.
 
-    So, the 0x34 just gets MACCed by (0+0+1), leaving it in the lower bits. The 0a2 gets MACCed by (0x7F + 0x7F + 0x02 
+    So, the 0x34 just gets MACCed by (0+0+1), leaving it in the lower bits. The 0x12 gets MACCed by (0x7F + 0x7F + 0x02 
     = 0x100), pushing it into the high bits of the half word in vR.
 
 */
