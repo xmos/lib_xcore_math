@@ -5,8 +5,6 @@
 
 /*  
 
-
-
 void idct_scale(
     int32_t x[],
     const int32_t idct_lut[],
@@ -24,31 +22,31 @@ void idct_scale(
 .p2align 2
 
 
-#define x        x10
-#define lut      x11
-#define chunks   x12
-#define shr      x13
-#define _32      x18
+#define x        a0
+#define lut      a1
+#define chunks   a2
+#define shr      a3
+#define _32      s2
 
 
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+  xm.entsp (NSTACKWORDS)*4
   xm.stdsp  s3,s2,0
 
-{ li t3, 0                  ; li _32, 32                 }
-{ mv t3, lut                ; xm.vsetc t3}
+{ li t3, 0                              ; li _32, 32                            }
+{ mv t3, lut                            ; xm.vsetc t3                           }
 
 .L_loop_top:
-  { add t3, t3, _32           ; xm.vldr t3}
-  { nop                             ; xm.vlmul0 x}
-  { nop                             ; xm.vstr x}
+  { add t3, t3, _32                     ; xm.vldr t3                            }
+  { nop                                 ; xm.vlmul0 x                           }
+  { nop                                 ; xm.vstr x                             }
     xm.vlashr x, shr
-  { addi chunks, chunks, -1       ; xm.vstr x}
-  { add x, x, _32               ; xm.bt chunks, .L_loop_top      }
+  { addi chunks, chunks, -1             ; xm.vstr x                             }
+  { add x, x, _32                       ; xm.bt chunks, .L_loop_top             }
 .L_loop_bot:
   
   xm.lddsp  s3,s2,0
-  xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+  xm.retsp (NSTACKWORDS)*4
 
 	
 .set	FUNCTION_NAME.nstackwords,NSTACKWORDS

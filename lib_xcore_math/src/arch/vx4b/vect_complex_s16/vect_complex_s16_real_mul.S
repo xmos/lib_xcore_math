@@ -23,71 +23,71 @@ headroom_t vect_complex_s16_real_mul(
 .p2align 2
 
 #define NSTACKVECS      (4)
-#define NSTACKWORDS     (16+8*(NSTACKVECS)+4)
+#define NSTACKWORDS     (16+8*(NSTACKVECS))
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
-#define STACK_VEC_SAT   (NSTACKWORDS-16-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
+#define STACK_VEC_SAT   (NSTACKWORDS-16-1)
 
 
 #define FUNCTION_NAME vect_complex_s16_real_mul
     
-#define a_re        x10
-#define a_im        x11
-#define b_re        x12
-#define b_im        x13
-#define c           x18
-#define len         x19
-#define vec_tmp     x20
-#define vec_sat     x21
-#define bytemask    x22
+#define a_re        a0
+#define a_im        a1
+#define b_re        a2
+#define b_im        a3
+#define c           s2
+#define len         s3
+#define vec_tmp     s4
+#define vec_sat     s5
+#define bytemask    s6
 
 
 FUNCTION_NAME:
-    xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+    xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,24
+    xm.stdsp  s7,s6,0
 
     mv s2, a6
-    {   addi t3,sp, (STACK_VEC_SAT)*4             ;  nop}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'LDWSP outside of known frame - offset may need correction' */
-    {   slli s3, s2, 16                          ;   xm.zexti s2, 16                             }
-    {   or s2, s2, s3                           ;   sw s8, 4                          (sp)}
+    { addi t3,sp, (STACK_VEC_SAT)*4     ; nop                                   }
+    { slli s3, s2, 16                   ; xm.zexti s2, 16                       }
+    { or s2, s2, s3                     ; sw s8, 24                          (sp) }
         xm.stdi  s2,s2, 0(t3)
         xm.stdi  s2,s2, 8(t3)
         xm.stdi  s2,s2, 16(t3)
         xm.stdi  s2,s2, 24(t3)
 
     mv len, a5 
-    {   li t3, 32                             ;   mv bytemask, len}
+    { li t3, 32                         ; mv bytemask, len                      }
     mv c, a4
-    {   srli len, bytemask, 4                    ;   nop}
-    {   xm.zexti bytemask, 4                        ; nop                                           }
-    {   slli bytemask, bytemask, SIZEOF_LOG2_S16 ;   slli t3, t3, 3                         }/* XAT Warning: "Falling back on assumption: the int != 32 for the integer value of the item at position 2 in the instruction's operands in    shli bytemask, bytemask, SIZEOF_LOG2_S16 \nMessage: The shift amount is not 32" */
-    {   addi vec_tmp,sp, (STACK_VEC_TMP)*4         ;   xm.vsetc t3}
-    {   addi vec_sat,sp, (STACK_VEC_SAT)*4         ; nop                                           }
-    {   li t3, 32                             ;   xm.brff len, .L_loop_bot                     }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+    { srli len, bytemask, 4             ; nop                                   }
+    { xm.zexti bytemask, 4              ; nop                                   }
+    { slli bytemask, bytemask, SIZEOF_LOG2_S16 ; slli t3, t3, 3                        }
+    { addi vec_tmp,sp, (STACK_VEC_TMP)*4 ; xm.vsetc t3                           }
+    { addi vec_sat,sp, (STACK_VEC_SAT)*4 ; nop                                   }
+    { li t3, 32                         ; xm.brff len, .L_loop_bot              }
 
-#define _32     x28
+#define _32     t3
     .L_loop_top:
-        {   addi len, len, -1                         ;   xm.vclrdr                                  }
-        {   add c, c, _32                           ;   xm.vldc c}
-        {  nop                    ;   xm.vlmacc0 b_re}
+        { addi len, len, -1             ; xm.vclrdr                             }
+        { add c, c, _32                 ; xm.vldc c                             }
+        { nop                           ; xm.vlmacc0 b_re                       }
         xm.vlmacc1 b_re
-        {   add b_re, b_re, _32                     ;   nop}
+        { add b_re, b_re, _32           ; nop                                   }
         xm.vlsat vec_sat
-        {   add a_re, a_re, _32                     ;   xm.vstr a_re}
-        { nop                                           ;   xm.vclrdr                                  }
-        {  nop                    ;   xm.vlmacc0 b_im}
+        { add a_re, a_re, _32           ; xm.vstr a_re                          }
+        { nop                           ; xm.vclrdr                             }
+        { nop                           ; xm.vlmacc0 b_im                       }
         xm.vlmacc1 b_im
-        {   add b_im, b_im, _32                     ;  nop}
+        { add b_im, b_im, _32           ; nop                                   }
         xm.vlsat vec_sat
-        {   add a_im, a_im, _32                     ;   xm.vstr a_im}
-        { nop                                           ;   xm.bt len, .L_loop_top                     }
+        { add a_im, a_im, _32           ; xm.vstr a_im                          }
+        { nop                           ; xm.bt len, .L_loop_top                }
 
     .L_loop_bot:
 #undef _32
 
-    {   xm.mkmsk bytemask, bytemask                ;   xm.brff bytemask, .L_done                    }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+    { xm.mkmsk bytemask, bytemask       ; xm.brff bytemask, .L_done             }
 
 
 
@@ -116,20 +116,20 @@ FUNCTION_NAME:
 .L_done:
         xm.lddsp  s3,s2,8
         xm.lddsp  s5,s4,16
-        xm.lddsp  s7,s6,24
+        xm.lddsp  s7,s6,0
 
-    {   li a0, 15                              ;   xm.vgetc t3}
-    {   xm.zexti t3, 5                             ;   lw s8, 4                          (sp)}
-    {   sub a0, a0, t3                         ;   xm.retsp (NSTACKWORDS)*4                       }
+    { li a0, 15                         ; xm.vgetc t3                           }
+    { xm.zexti t3, 5                    ; lw s8, 24                          (sp) }
+    { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 .L_func_end:
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 #undef FUNCTION_NAME

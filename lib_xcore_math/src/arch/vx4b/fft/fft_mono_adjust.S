@@ -29,16 +29,16 @@ void fft_mono_adjust(
 #define STACK_W     (14)
 #define STACK_INV   (15)
 
-#define X           x10
-#define N           x11
-#define W           x12
-#define X_lo        x13        
-#define X_hi        x18  
-#define _32         x19
-#define i           x20
-#define pos_j_vect  x21      
-#define ones_vect   x22     
-#define conj_vect   x23     
+#define X           a0
+#define N           a1
+#define W           a2
+#define X_lo        a3        
+#define X_hi        s2  
+#define _32         s3
+#define i           s4
+#define pos_j_vect  s5      
+#define ones_vect   s6     
+#define conj_vect   s7     
 
 .text
 .globl FUNCTION_NAME
@@ -49,9 +49,9 @@ void fft_mono_adjust(
 
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
-    xm.stdsp  x18,x19,8
-    xm.stdsp  x20,x21,16
-    xm.stdsp  x22,x23,24
+    xm.stdsp  s2,s3,8
+    xm.stdsp  s4,s5,16
+    xm.stdsp  s6,s7,24
     
     { li t3, 0                          ; sw s8, 4                         (sp) }
     { addi s2, N, -8                    ; sw a2, (STACK_INV)*4             (sp) }
@@ -190,9 +190,9 @@ FUNCTION_NAME:
 .L_finish:
     { nop                               ; lw s8, 4                          (sp) }
 
-    xm.lddsp  x18,x19,8
-    xm.lddsp  x20,x21,16
-    xm.lddsp  x22,x23,24
+    xm.lddsp  s2,s3,8
+    xm.lddsp  s4,s5,16
+    xm.lddsp  s6,s7,24
     xm.retsp (NSTACKWORDS)*4
 
 //.cc_bottom FUNCTION_NAME.function; 

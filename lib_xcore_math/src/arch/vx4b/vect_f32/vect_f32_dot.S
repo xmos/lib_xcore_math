@@ -22,12 +22,12 @@
 
 .p2align 4
 FUNC_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+  xm.entsp (NSTACKWORDS)*4
   xm.stdsp  s3,s2,0
   xm.stdsp  s5,s4,8
 
-{ mv a3, a2                  ; xm.zexti a2, 1                  }
-{ xm.brff a2, .even                ; li t3, 0                  }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+{ mv a3, a2                             ; xm.zexti a2, 1                        }
+{ xm.brff a2, .even                     ; li t3, 0                              }
 
 .odd:
   // Deal with tail first
@@ -44,11 +44,11 @@ FUNC_NAME:
 //    b[] or c[] is DWORD aligned, and the other is not.
 // Figure out which situation applies, because it will affect whether we can
 // do load-doubles and whether the two vectors are aligned if we do.
-{ srli s4, a0, 2               ; srli s5, a1, 2               }
-{ xm.zexti s4, 1                  ; xm.zexti s5, 1                  }
-{ slli s4, s4, 1               ; mv a2, a3                  }
-{ or s4, s4, s5               ; xm.brff a2, .done                }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
-{ addi a2, a2, -1               ; xm.bru s4                      }
+{ srli s4, a0, 2                        ; srli s5, a1, 2                        }
+{ xm.zexti s4, 1                        ; xm.zexti s5, 1                        }
+{ slli s4, s4, 1                        ; mv a2, a3                             }
+{ or s4, s4, s5                         ; xm.brff a2, .done                     }
+{ addi a2, a2, -1                       ; xm.bru s4                             }
   tail .together
   tail .r1_odd
   tail .r0_odd
@@ -56,15 +56,15 @@ FUNC_NAME:
 // b[] and c[] are both not DWORD aligned.
 // deal with final element, and shift pointers to be DWORD aligned
 .r0r1_odd:
-  { addi a0, a0, -4               ; xm.ldw s4, a2              (a0)}
-  { addi a1, a1, -4               ; xm.ldw s5, a2              (a1)}
+  { addi a0, a0, -4                     ; xm.ldw s4, a2              (a0)       }
+  { addi a1, a1, -4                     ; xm.ldw s5, a2              (a1)       }
     srli a2, a2, 1
   .r0r1_odd_loop:
       xm.fmacc t3, t3, s4, s5
       xm.ldd  s4,s2, a2(a0)
       xm.ldd  s5,s3, a2(a1)
       xm.fmacc t3, t3, s2, s3
-    { addi a2, a2, -1               ; xm.bt  a2, .r0r1_odd_loop      }
+    { addi a2, a2, -1                   ; xm.bt  a2, .r0r1_odd_loop             }
   .r0r1_odd_loop_done:
     tail .done
 
@@ -72,17 +72,17 @@ FUNC_NAME:
 // Since the operands are symmetric (doesn't matter which is which), we can just
 // swap pointers and pretend it was the other way around.
 .r1_odd:
-  { mv a0, a1                  ; mv a1, a0                  }
+  { mv a0, a1                           ; mv a1, a0                             }
 // b[] was odd and c[] even.
 .r0_odd:
-  { srli a2, a2, 1               ; xm.ldw s4, a2              (a0)}
+  { srli a2, a2, 1                      ; xm.ldw s4, a2              (a0)       }
     addi a0, a0, -4
   .r0_odd_loop:
       xm.ldd  s5,s3, a2(a1)
       xm.fmacc t3, t3, s4, s3
       xm.ldd  s4,s2, a2(a0)
       xm.fmacc t3, t3, s2, s5
-    { addi a2, a2, -1               ; xm.bt  a2, .r0_odd_loop        }
+    { addi a2, a2, -1                   ; xm.bt  a2, .r0_odd_loop               }
   .r0_odd_loop_done:
     tail .done
 
@@ -95,20 +95,20 @@ FUNC_NAME:
       xm.ldd  s5,s3, a2(a1)
       xm.fmacc t3, t3, s2, s3
       xm.fmacc t3, t3, s4, s5
-    { addi a2, a2, -1               ; xm.bt  a2, .together_loop      }
+    { addi a2, a2, -1                   ; xm.bt  a2, .together_loop             }
 
 .done:
   xm.lddsp  s3,s2,0
   xm.lddsp  s5,s4,8
   addi a0, t3, 0
-  xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+  xm.retsp (NSTACKWORDS)*4
     
 	
 	// RETURN_REG_HOLDER
-	.set	FUNC_NAME.nstackwords,NSTACKWORDS;     .globl	FUNC_NAME.nstackwords /* Translation error on this line: unexpected token at position 39. */ 
-	.set	FUNC_NAME.maxcores,1;                  .globl	FUNC_NAME.maxcores /* Translation error on this line: unexpected token at position 26. */ 
-	.set	FUNC_NAME.maxtimers,0;                 .globl	FUNC_NAME.maxtimers /* Translation error on this line: unexpected token at position 27. */ 
-	.set	FUNC_NAME.maxchanends,0;               .globl	FUNC_NAME.maxchanends /* Translation error on this line: unexpected token at position 29. */ 
+	.set	FUNC_NAME.nstackwords,NSTACKWORDS;     .globl	FUNC_NAME.nstackwords
+	.set	FUNC_NAME.maxcores,1;                  .globl	FUNC_NAME.maxcores
+	.set	FUNC_NAME.maxtimers,0;                 .globl	FUNC_NAME.maxtimers
+	.set	FUNC_NAME.maxchanends,0;               .globl	FUNC_NAME.maxchanends
 .Ltmp1:
 	.size	FUNC_NAME, .Ltmp1-FUNC_NAME
 

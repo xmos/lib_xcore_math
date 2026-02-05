@@ -16,16 +16,16 @@
 
 #define FUNCTION_NAME   vect_complex_s32_tail_reverse
 
-#define X       x10
-#define N       x11
-#define X_A     x13
-#define X_C     x18
-#define mask_A  x19
-#define mask_C  x20
-#define i       x21
-#define zero    x22
-#define _16     x23
-#define X_lo    x28
+#define X       a0
+#define N       a1
+#define X_A     a3
+#define X_C     s2
+#define mask_A  s3
+#define mask_C  s4
+#define i       s5
+#define zero    s6
+#define _16     s7
+#define X_lo    t3
 
 .text
 .global FUNCTION_NAME

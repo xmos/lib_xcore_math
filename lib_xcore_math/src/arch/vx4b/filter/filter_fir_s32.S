@@ -39,8 +39,8 @@ int32_t filter_fir_s32(
 
 #define filter      s7
 #define sample      a1
-#define tmp1        x18
-#define tmp2        x22    
+#define tmp1        s2
+#define tmp2        s6    
     
 .text
 .globl FUNCTION_NAME;
@@ -66,7 +66,7 @@ FUNCTION_NAME:
 // I'm just going to create two sets of registers, corresponding to each of the two parts. That's what this is.
 
 #define state_A     a0
-#define state_B     x19
+#define state_B     s3
 
 #define N_A         a2    
 #define N_B         s5
@@ -115,7 +115,7 @@ FUNCTION_NAME:
 // Now, go back through and do full vectors.
 
 #undef tmp2
-#define _32     x22
+#define _32     s6
 
     .p2align 4
     .L_part_A_start:
@@ -163,15 +163,15 @@ FUNCTION_NAME:
     { addi a1, a1, 8                    ; xm.brff a3, .L_left_shift             }
 
     .L_right_shift:
-        // (from the block above):  x19 = 1, x18 = 1<<(a2 - 1)
-        // adding x18*x19 (=x18) to a1:a0 effectively rounds it when we extract it.
+        // (from the block above):  s3 = 1, s2 = 1<<(a2 - 1)
+        // adding s2*s3 (=s2) to a1:a0 effectively rounds it when we extract it.
         xm.maccs a1, a0, s2, s3
         xm.lsats a1, a0, a2
         xm.lextract a0, a1, a0, a2, 32
     { nop                               ; xm.bu .L_done                         }
 
     .L_left_shift:
-        // (from the block above):  x19 = 1, s4 = -a2 + 1, t3 = 0
+        // (from the block above):  s3 = 1, s4 = -a2 + 1, t3 = 0
         // If we're left-shifting (or zero-shifting), we still need to saturate to q31.
         // lsats has a bug which doesn't allow to use it with 0, so we'll have to 
         // add 1 to our shift, left-shift, saturate and extract with 1, no need to round here.

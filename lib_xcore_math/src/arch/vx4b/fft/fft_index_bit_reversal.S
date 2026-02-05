@@ -20,8 +20,8 @@ void fft_index_bit_reversal(
 
 FUNCTION_NAME:
 xm.entsp (NSTACKWORDS)*4
-xm.stdsp  x20, x21, 0
-xm.stdsp  x18, x19, 8
+xm.stdsp  s4, s5, 0
+xm.stdsp  s2, s3, 8
 xm.clz a2, a1
 { addi a2, a2, 1                    ; srli a1, a1, 1                        }
 { slli a1, a1, 1                    ; xm.bu .L_loop                         }
@@ -31,23 +31,23 @@ xm.clz a2, a1
     { xm.bitrev a3, a1                  ; xm.shl t3, a1, a2                     }
     { xm.sltu t3, a3, t3                ; xm.shr a3, a3, a2                     }
     { addi t3, a1, -1                   ; xm.brff t3, .L_dontswap               }
-    xm.ldd x18, x19, a1(a0)                                                                  
-    xm.ldd x20, x21, a3(a0)                                                                  
-    xm.std x18, x19, a3(a0)                                                                  
-    xm.std x20, x21, a1(a0)                                                                
+    xm.ldd s2, s3, a1(a0)                                                                  
+    xm.ldd s4, s5, a3(a0)                                                                  
+    xm.std s2, s3, a3(a0)                                                                  
+    xm.std s4, s5, a1(a0)                                                                
 .L_dontswap:
     { xm.bitrev a3, t3                  ; xm.shl a1, t3, a2                     }
     { xm.sltu a1, a3, a1                ; xm.shr a3, a3, a2                     }
     { addi a1, t3, -1                   ; xm.brff a1, .L_dontswap2              }
-    xm.ldd x18, x19, t3(a0)                                                                 
-    xm.ldd x20, x21, a3(a0)                                                                 
-    xm.std x18, x19, a3(a0)                                                                  
-    xm.std x20, x21, t3(a0)                                                                 
+    xm.ldd s2, s3, t3(a0)                                                                 
+    xm.ldd s4, s5, a3(a0)                                                                 
+    xm.std s2, s3, a3(a0)                                                                  
+    xm.std s4, s5, t3(a0)                                                                 
 .L_dontswap2:
     { xm.bt a1, .L_loop                 ; nop                                   }
     
-xm.lddsp  x20, x21, 0
-xm.lddsp  x18, x19, 8
+xm.lddsp  s4, s5, 0
+xm.lddsp  s2, s3, 8
 xm.retsp (NSTACKWORDS)*4
 
 	// RETURN_REG_HOLDER

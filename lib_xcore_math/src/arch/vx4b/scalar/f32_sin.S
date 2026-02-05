@@ -19,25 +19,25 @@ float f32_sin(
 
 
 
-#define r           x10
-#define phi         x11
-#define out_mul     x12
-#define tmp         x13
+#define r           a0
+#define phi         a1
+#define out_mul     a2
+#define tmp         a3
 
-#define _0          x23
-#define _1          x24
+#define _0          s7
+#define _1          s8
 
 
 
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+  xm.entsp (NSTACKWORDS)*4
   xm.stdsp  s3,s2,8
   xm.stdsp  s5,s4,16
   xm.stdsp  s7,s6,0
-{ li _0, 0                   ; sw s8, 24              (sp)}
+{ li _0, 0                              ; sw s8, 24              (sp)           }
   xm.flt t3, r, _0
-{ nop                             ; li _1, 1                   }
-{ li out_mul, 23             ; xm.bt t3, .L_neg              }
+{ nop                                   ; li _1, 1                              }
+{ li out_mul, 23                        ; xm.bt t3, .L_neg                      }
 
 // sin(-x) = -sin(x) -- sin() has odd symmetry, so let's only deal with positive angles
 .L_pos:
@@ -54,13 +54,13 @@ FUNCTION_NAME:
   lw t3, two_over_pi
   xm.fmul r, r, t3
 
-{ li t3, 21                 ; nop                             }
+{ li t3, 21                             ; nop                                   }
   xm.fmake tmp, _0, t3, _0, _1 // +0.25f
   xm.fmul tmp, r, tmp
   xm.fsexp s6, t3, tmp
   xm.fmant tmp, tmp
-{ xm.neg s6, t3                 ; li s5, 23                  }
-{ add s6, s6, s5              ; addi t3, t3, 2             }
+{ xm.neg s6, t3                         ; li s5, 23                             }
+{ add s6, s6, s5                        ; addi t3, t3, 2                        }
   xm.shr tmp, tmp, s6
   xm.shl tmp, tmp, s6
   xm.fmake tmp, _0, t3, _0, tmp  // tmp <--  4.0*floor(r/4.0)
@@ -68,18 +68,18 @@ FUNCTION_NAME:
   xm.fsub r, r, tmp  // r <-- r - 4.0*floor(r/4.0)
 
 // sin(pi + x) = -sin(x)  if   pi < x <= 2*pi
-{ li t3, 24                 ; nop                             }
+{ li t3, 24                             ; nop                                   }
   xm.fmake tmp, _0, t3, _0, _1 // +2.0f
   xm.flt t3, r, tmp
-{ nop                             ; xm.bt t3, .L_wert             }
+{ nop                                   ; xm.bt t3, .L_wert                     }
   xm.fsub r, r, tmp  // r <-- r - 2
   xm.fsub out_mul, _0, out_mul   // out_mul <-- -out_mul
 .L_wert:
 
 // sin(pi/2 + x) = sin(pi - x)
-  xm.fmul t3, out_mul, out_mul // x28 <-- out_mul^2 = 1.0 
-  xm.flt t3, r, t3     // x28 <-- r < 1.0
-{ nop                             ; xm.bt t3, .L_erty             }
+  xm.fmul t3, out_mul, out_mul // t3 <-- out_mul^2 = 1.0 
+  xm.flt t3, r, t3     // t3 <-- r < 1.0
+{ nop                                   ; xm.bt t3, .L_erty                     }
   xm.fsub r, tmp, r  // r <-- 2.0 - r
 .L_erty:
 
@@ -89,12 +89,11 @@ FUNCTION_NAME:
 
 // Now apply power series for sin()
 
-#define total         x18
-#define coefs         x19
+#define total         s2
+#define coefs         s3
 
-lui t3, %hi(sin_coef)
-  addi t3,t3, %lo(sin_coef)
-{ mv coefs, t3            ; lw tmp,0               ( t3)}
+la t3, sin_coef
+{ mv coefs, t3                          ; lw tmp,0               ( t3)          }
   xm.fmul phi, r, r
   xm.fmul total, r, tmp   
 
@@ -118,17 +117,17 @@ PS_TERM(7)
   xm.lddsp  s7,s6,0
   xm.lddsp  s5,s4,16
   xm.lddsp  s3,s2,8
-{ nop                             ; lw s8, 24              (sp)}
-{ nop                             ; xm.retsp (NSTACKWORDS)*4           }
+{ nop                                   ; lw s8, 24              (sp)           }
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 
 .L_func_end:
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME,.L_func_end - FUNCTION_NAME
 
 

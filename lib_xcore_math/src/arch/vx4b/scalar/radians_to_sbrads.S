@@ -15,10 +15,10 @@ sbrad_t radians_to_sbrads(
 #define FUNCTION_NAME   radians_to_sbrads
 #define NSTACKWORDS     (4)
 
-#define theta       x10
-#define tmp         x11
-#define accA        x12
-#define accB        x13
+#define theta       a0
+#define tmp         a1
+#define accA        a2
+#define accB        a3
 
 
 .text
@@ -51,32 +51,32 @@ sbrad_t radians_to_sbrads(
 .L_vals:
   .word 0x517cc1b7
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
-{ li tmp, 25                 ; xm.ldap t3, .L_vals           }
-{ li accA, 0                 ; li accB, 0                 }
-{ nop                             ; lw t3,0             ( t3)}
+  xm.entsp (NSTACKWORDS)*4
+{ li tmp, 25                            ; xm.ldap t3, .L_vals                   }
+{ li accA, 0                            ; li accB, 0                            }
+{ nop                                   ; lw t3,0             ( t3)             }
   xm.maccs accA, accB, t3, theta
   xm.lextract theta, accA, accB, tmp, 32
-{ li t3, 30                 ; nop                             }
-{ xm.shr tmp, theta, t3         ; slli theta, theta, 1         }
-{xm.shli tmp, tmp, 2; nop}
-{ nop                             ; xm.bru tmp                     }
-{ mv a0, theta                   ; nop           }
-{xm.retsp (NSTACKWORDS)*4  ; nop           }
-{ xm.neg a0, theta               ; nop           }
-{xm.retsp (NSTACKWORDS)*4  ; nop           }
-{ xm.neg a0, theta               ; nop           }
-{xm.retsp (NSTACKWORDS)*4  ; nop           }
-{ mv a0, theta                   ; nop           }
-{xm.retsp (NSTACKWORDS)*4  ; nop           }
+{ li t3, 30                             ; nop                                   }
+{ xm.shr tmp, theta, t3                 ; slli theta, theta, 1                  }
+{ xm.shli tmp, tmp, 2                   ; nop                                   }
+{ nop                                   ; xm.bru tmp                            }
+{ mv a0, theta                          ; nop                                   }
+{ xm.retsp (NSTACKWORDS)*4              ; nop                                   }
+{ xm.neg a0, theta                      ; nop                                   }
+{ xm.retsp (NSTACKWORDS)*4              ; nop                                   }
+{ xm.neg a0, theta                      ; nop                                   }
+{ xm.retsp (NSTACKWORDS)*4              ; nop                                   }
+{ mv a0, theta                          ; nop                                   }
+{ xm.retsp (NSTACKWORDS)*4              ; nop                                   }
 .L_func_end:
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME,.L_func_end - FUNCTION_NAME
 
 

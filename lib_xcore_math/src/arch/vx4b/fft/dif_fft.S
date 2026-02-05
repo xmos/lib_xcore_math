@@ -24,18 +24,18 @@
 #define STACK_N         (8)
 #define STACK_EXP       (9)
 
-#define x_p 			x10 
-#define n 				x11 
-#define hr_p            x12
+#define x_p 			a0 
+#define n 				a1 
+#define hr_p            a2
 #define exp_minus_one   hr_p
-#define twiddle_lut_p 	x13
-#define _32             x18
-#define j               x19
-#define k               x20
-#define a               x21
-#define b               x22
-#define exp_modifier    x23
-#define s               x24
+#define twiddle_lut_p 	a3
+#define _32             s2
+#define j               s3
+#define k               s4
+#define a               s5
+#define b               s6
+#define exp_modifier    s7
+#define s               s8
 
 
 .text
@@ -46,10 +46,10 @@
 fft_dif_forward:
 
 	xm.entsp (NSTACKWORDS)*4
-	xm.stdsp  x18,x12,0*8
-	xm.stdsp  x19,x20,1*8
-	xm.stdsp  x21,x22,2*8
-	xm.stdsp  x23,x24,3*8
+	xm.stdsp  s2,a2,0*8
+	xm.stdsp  s3,s4,1*8
+	xm.stdsp  s5,s6,2*8
+	xm.stdsp  s7,s8,3*8
 
     { nop                               ; sw a3, (STACK_EXP)*4                (sp) }
     la t3, xmath_dif_fft_lut_size
@@ -124,7 +124,7 @@ dif_fft_done:
 	{ li s, 31                             ; xm.vgetc t3                           }
 	{ xm.zexti t3, 5                       ; nop                                   }
 	{ sub s, s, t3                         ; nop                                   }
-	xm.lddsp  x18,x12,0*8
+	xm.lddsp  s2,a2,0*8
 	{ nop                                  ; sw s,0                        ( hr_p) }
 
 	//update the exponent
@@ -135,9 +135,9 @@ dif_fft_done:
 	{ add s, s, exp_modifier               ; nop                                   }
 	{ nop                                  ; sw s,0                          ( t3) }
 
-	xm.lddsp  x19,x20,1*8
-	xm.lddsp  x21,x22,2*8
-	xm.lddsp  x23,x24,3*8
+	xm.lddsp  s3,s4,1*8
+	xm.lddsp  s5,s6,2*8
+	xm.lddsp  s7,s8,3*8
 
 	xm.retsp (NSTACKWORDS)*4
 
@@ -161,10 +161,10 @@ dif_fft_done:
 .p2align 2
 fft_dif_inverse:
 	xm.entsp (NSTACKWORDS)*4
-	xm.stdsp  x18,x12,0*8
-	xm.stdsp  x19,x20,1*8
-	xm.stdsp  x21,x22,2*8
-	xm.stdsp  x23,x24,3*8
+	xm.stdsp  s2,a2,0*8
+	xm.stdsp  s3,s4,1*8
+	xm.stdsp  s5,s6,2*8
+	xm.stdsp  s7,s8,3*8
     
     { nop                                  ; sw a3, (STACK_EXP)*4             (sp) }
 	la t3, xmath_dif_fft_lut_size
@@ -239,7 +239,7 @@ dif_ifft_done:
 	{ li s, 31                             ; xm.vgetc t3                           }
 	{ xm.zexti t3, 5                       ; nop                                   }
     { sub s, s, t3                         ; nop                                   }	
-       xm.lddsp x18,x12,0*8                                                            
+       xm.lddsp s2,a2,0*8                                                            
     { nop                                  ; sw s,0                        ( hr_p) }
 
 	//update the exponent
@@ -251,9 +251,9 @@ dif_ifft_done:
 	{ nop                                  ; sw s,0                          ( t3) }
 
 	//restore the regs
-	xm.lddsp  x19,x20,1*8
-	xm.lddsp  x21,x22,2*8
-	xm.lddsp  x23,x24,3*8
+	xm.lddsp  s3,s4,1*8
+	xm.lddsp  s5,s6,2*8
+	xm.lddsp  s7,s8,3*8
     
 	 xm.retsp (NSTACKWORDS)*4
 

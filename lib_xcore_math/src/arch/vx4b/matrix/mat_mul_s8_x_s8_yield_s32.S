@@ -24,22 +24,21 @@ void mat_mul_s8_x_s8_yield_s32 (
 
 #define FUNCTION_NAME   mat_mul_s8_x_s8_yield_s32
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
 
-#define STACK_M_ROWS      (9)
 #define STACK_INPUT_VECT  (9)
 
-#define accs            x10 
-#define matrix          x11 
-#define vector          x12
-#define rows_left       x13
-#define cols_left       x18
-#define _32             x19
-#define N_cols          x20
-#define mat_stride_B    x21
-#define mat_stride_C    x22
+#define accs            a0 
+#define matrix          a1 
+#define vector          a2
+#define rows_left       a3
+#define cols_left       s2
+#define _32             s3
+#define N_cols          s4
+#define mat_stride_B    s5
+#define mat_stride_C    s6
 
-#define K               x24
+#define K               s8
 
 .text
 .p2align 2
@@ -47,77 +46,77 @@ void mat_mul_s8_x_s8_yield_s32 (
 
 
 FUNCTION_NAME:
-    xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+    xm.entsp (NSTACKWORDS)*4
     li t3, 0x200
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,24
-  { li _32, 32                               ; sw s8, 4                            (sp)}
-  { li s8, 15                               ; xm.vsetc t3}
+    xm.stdsp  s7,s6,0
+  { li _32, 32                          ; sw s8, 24                        (sp) }
+  { li s8, 15                           ; xm.vsetc t3                           }
     add rows_left, rows_left, s8
     mv N_cols, a4
-  { srli rows_left, rows_left, 4               ; nop}
-  { slli mat_stride_B, N_cols, 4               ; mv K, N_cols                             }
-  { sub mat_stride_C, mat_stride_B, N_cols    ; li s7, 31                                }
-  { add mat_stride_B, mat_stride_C, _32       ; sw vector, (STACK_INPUT_VECT)*4          (sp)}
+  { srli rows_left, rows_left, 4        ; nop                                   }
+  { slli mat_stride_B, N_cols, 4        ; mv K, N_cols                          }
+  { sub mat_stride_C, mat_stride_B, N_cols ; li s7, 31                             }
+  { add mat_stride_B, mat_stride_C, _32 ; sw vector, (STACK_INPUT_VECT)*4  (sp) }
 
-  { xm.zexti K, 5                                 ; add s7, N_cols, s7                        }
-  { sub K, _32, K                             ; srli s7, s7, 5                             }
-  { xm.zexti K, 5                                 ; nop                                           }
-  { add matrix, matrix, K                     ; sub mat_stride_C, mat_stride_C, K         }
+  { xm.zexti K, 5                       ; add s7, N_cols, s7                    }
+  { sub K, _32, K                       ; srli s7, s7, 5                        }
+  { xm.zexti K, 5                       ; nop                                   }
+  { add matrix, matrix, K               ; sub mat_stride_C, mat_stride_C, K     }
   mv a4, N_cols
-  { slli K, s7, 5                              ; nop}
+  { slli K, s7, 5                       ; nop                                   }
   
-  { add matrix, matrix, mat_stride_C          ; xm.bu .L_output_group_top                    }
+  { add matrix, matrix, mat_stride_C    ; xm.bu .L_output_group_top             }
 
   .p2align 4
   .L_output_group_top:
-    { add t3, accs, _32                        ; xm.vldd accs}
-    { mv cols_left, K                          ; xm.vldr t3}
-    { addi rows_left, rows_left, -1               ; lw vector, (STACK_INPUT_VECT)*4          (sp)}
+    { add t3, accs, _32                 ; xm.vldd accs                          }
+    { mv cols_left, K                   ; xm.vldr t3                            }
+    { addi rows_left, rows_left, -1     ; lw vector, (STACK_INPUT_VECT)*4  (sp) }
     
     .L_input_group_top:
-      { add vector, vector, _32                   ; xm.vldc vector}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub matrix, matrix, N_cols                ; xm.vlmaccr0 matrix}
-      { sub cols_left, cols_left, _32             ; xm.vlmaccr0 matrix}
-      { add matrix, matrix, mat_stride_B          ; xm.bt cols_left, .L_input_group_top          }
+      { add vector, vector, _32         ; xm.vldc vector                        }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub matrix, matrix, N_cols      ; xm.vlmaccr0 matrix                    }
+      { sub cols_left, cols_left, _32   ; xm.vlmaccr0 matrix                    }
+      { add matrix, matrix, mat_stride_B ; xm.bt cols_left, .L_input_group_top   }
     .L_input_group_bottom:
 
-    { add accs, accs, _32                       ; xm.vstd accs}
-    { add accs, accs, _32                       ; xm.vstr accs}
-    { add matrix, matrix, mat_stride_C          ; xm.bt rows_left, .L_output_group_top         }
+    { add accs, accs, _32               ; xm.vstd accs                          }
+    { add accs, accs, _32               ; xm.vstr accs                          }
+    { add matrix, matrix, mat_stride_C  ; xm.bt rows_left, .L_output_group_top  }
   .L_output_group_bottom:
     
 .L_finish:
       xm.lddsp  s3,s2,8
       xm.lddsp  s5,s4,16
-      xm.lddsp  s7,s6,24
-  { nop                                           ; lw s8, 4                          (sp)}
-  { nop                                           ; xm.retsp (NSTACKWORDS)*4                       } 
+      xm.lddsp  s7,s6,0
+  { nop                                 ; lw s8, 24                        (sp) }
+  { nop                                 ; xm.retsp (NSTACKWORDS)*4              } 
 
 .L_func_end:
 
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS; .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;              .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;             .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;           .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS; .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;              .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;             .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;           .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 

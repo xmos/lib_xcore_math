@@ -21,22 +21,21 @@
 
 #define STACK_EXP       (8)
 
-#define x_p 			x10  //astew: Value is constant. Could be thrown on stack to free up a register.
-#define n 				x11 
-#define hr_p            x12  //astew: register currently only used at very beginning and end.
-#define twiddle_lut_p 	x13
-#define _32             x18
+#define x_p 			a0  //astew: Value is constant. Could be thrown on stack to free up a register.
+#define n 				a1 
+#define hr_p            a2  //astew: register currently only used at very beginning and end.
+#define twiddle_lut_p 	a3
+#define _32             s2
 
-#define j               x19
-#define k               x20
+#define j               s3
+#define k               s4
 
-#define a               x21
-#define b               x22
+#define a               s5
+#define b               s6
 
-#define exp_modifier    x23
+#define exp_modifier    s7
 
-#define s               x24
-// #define t               x28
+#define s               s8
 
 .text
 .globl	fft_dit_forward
@@ -66,30 +65,30 @@ la t3, xmath_dit_fft_lut
 #define VEC_SH0     0x00
 
 dit_fft_impl_0_bits_hr:
-li x28, VEC_SHR                         //VEC_SHR
+li t3, VEC_SHR                         //VEC_SHR
 { addi exp_modifier, exp_modifier, 1 ; xm.bu dit_fft_impl_start              }
 
 dit_fft_impl_1_bits_hr:
-li x28, VEC_SHR                        //VEC_SHR
+li t3, VEC_SHR                        //VEC_SHR
 { addi exp_modifier, exp_modifier, 1 ; xm.bu dit_fft_impl_start              }
 
 dit_fft_impl_2_bits_hr:
-li x28, VEC_SHR                         //VEC_SHR
+li t3, VEC_SHR                         //VEC_SHR
 { addi exp_modifier, exp_modifier, 1 ; xm.bu dit_fft_impl_start              }
 
 dit_fft_impl_3_bits_hr:
-li x28, VEC_SH0                         //VEC_SH0
+li t3, VEC_SH0                         //VEC_SH0
 { addi exp_modifier, exp_modifier, 0 ; xm.bu dit_fft_impl_start              }
 
 dit_fft_impl_4_bits_hr:
-li x28, VEC_SHL                         //VEC_SHL
+li t3, VEC_SHL                         //VEC_SHL
 { addi exp_modifier, exp_modifier, -1 ; xm.bu dit_fft_impl_start              }
 
 
 dit_fft_impl_start:
     // Iterate the dit_fft_first_two_rounds_loop loop  n/4 times (via j) because vD holds 4 complex elements
     { srli j, n, 2                      ; xm.vsetc t3                           }
-    // have x28 point at the beginning of the data vector
+    // have t3 point at the beginning of the data vector
     { mv t3, x_p                        ; li _32, 32                            }
 
 
@@ -114,7 +113,7 @@ dit_fft_impl_start:
     { srli n, n, 4                      ; srli a, n, 3                          }
 
     dit_fft_round_loop:
-       la x28, fft_hr_lut	
+       la t3, fft_hr_lut	
         { mv s, t3                      ; xm.vgetc t3                           }
         { nop                           ; xm.zexti t3, 5                        }
         { sub k, b, _32                 ; xm.ldw t3, t3                         (s) }
@@ -202,23 +201,23 @@ la t3, xmath_dit_fft_lut
 { nop                               ; xm.bu dit_ifft_impl_4_bits_hr         }
 
 dit_ifft_impl_0_bits_hr:
-    li x28, 0x80                            //VEC_SHR
+    li t3, 0x80                            //VEC_SHR
 { addi exp_modifier, exp_modifier, 1 ; xm.bu dit_ifft_impl_start             }
 
 dit_ifft_impl_1_bits_hr:
-    li x28, 0x80                            //VEC_SHR
+    li t3, 0x80                            //VEC_SHR
 { addi exp_modifier, exp_modifier, 1 ; xm.bu dit_ifft_impl_start             }
 
 dit_ifft_impl_2_bits_hr:
-    li x28, 0x80                            //VEC_SHR
+    li t3, 0x80                            //VEC_SHR
 { addi exp_modifier, exp_modifier, 1 ; xm.bu dit_ifft_impl_start             }
 
 dit_ifft_impl_3_bits_hr:
-    li x28, 0x00                           //VEC_SH0
+    li t3, 0x00                           //VEC_SH0
 { addi exp_modifier, exp_modifier, 0 ; xm.bu dit_ifft_impl_start             }
 
 dit_ifft_impl_4_bits_hr:
-    li x28, 0x40                            //VEC_SHL
+    li t3, 0x40                            //VEC_SHL
 { addi exp_modifier, exp_modifier, -1 ; xm.bu dit_ifft_impl_start             }
 
 dit_ifft_impl_start:
@@ -239,7 +238,7 @@ dit_ifft_first_two_rounds_loop:
     { srli a, a, 3                      ; srli n, n, 4                          }
 
 dit_ifft_round_loop:
-    la x28, fft_hr_lut	
+    la t3, fft_hr_lut	
     { mv s, t3                          ; xm.vgetc t3                           }
     { xm.zexti t3, 5                    ; addi exp_modifier, exp_modifier, -1   }
     { sub k, b, _32                     ; xm.ldw t3, t3                         (s) }

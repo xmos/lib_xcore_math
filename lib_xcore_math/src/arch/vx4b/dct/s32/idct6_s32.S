@@ -23,29 +23,28 @@ headroom_t dct6_inverse(
 .type FUNCTION_NAME,@function
 .p2align 2
 
-#define y         x10
-#define x         x11
-#define mask      x12
-#define _32       x13
+#define y         a0
+#define x         a1
+#define mask      a2
+#define _32       a3
 
 
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
-{ li t3, 0                  ; li _32, 32                 }
-{ xm.mkmski mask, 24              ; xm.vsetc t3}
-{ nop                             ; xm.vldc x}
-lui t3, %hi(idct6_matrix)
-  addi t3,t3, %lo(idct6_matrix)
-{ nop                             ; xm.vclrdr                      }
-{ add t3, t3, _32           ; xm.vlmaccr0 t3}
-{ add t3, t3, _32           ; xm.vlmaccr0 t3}
-{ add t3, t3, _32           ; xm.vlmaccr0 t3}
-{ add t3, t3, _32           ; xm.vlmaccr0 t3}
-{ add t3, t3, _32           ; xm.vlmaccr0 t3}
-{ add t3, t3, _32           ; xm.vlmaccr0 t3}
+  xm.entsp (NSTACKWORDS)*4
+{ li t3, 0                              ; li _32, 32                            }
+{ xm.mkmski mask, 24                    ; xm.vsetc t3                           }
+{ nop                                   ; xm.vldc x                             }
+la t3, idct6_matrix
+{ nop                                   ; xm.vclrdr                             }
+{ add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
+{ add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
+{ add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
+{ add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
+{ add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
+{ add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
 xm.vlsat t3 
-  xm.vstrpv y, mask
-{ nop                             ; xm.retsp (NSTACKWORDS)*4           }
+xm.vstrpv y, mask
+{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
 
 
 	

@@ -39,26 +39,26 @@ headroom_t dct8_inversex8_stageB(
 
 #define STK_BUFF      (NSTACKWORDS - 32-1)
 
-#define y       x10
-#define x       x11
-#define mat     x12
+#define y       a0
+#define x       a1
+#define mat     a2
 #  define _32     mat
-#define buff    x13
-#define count   x18
-#define A       x19
-#define mask    x20
-#define _16     x21
-#define sat     x22
+#define buff    a3
+#define count   s2
+#define A       s3
+#define mask    s4
+#define _16     s5
+#define sat     s6
 
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+  xm.entsp (NSTACKWORDS)*4
   xm.stdsp  s3,s2,0
   xm.stdsp  s5,s4,8
   xm.stdsp  s7,s6,16
   
   li t3, 0x100 // 16-bit mode
-{ li _16, 16                 ; xm.vsetc t3}
-{ add a3, a3, _16             ; add t3, a3, _16            }
+{ li _16, 16                            ; xm.vsetc t3                           }
+{ add a3, a3, _16                       ; add t3, a3, _16                       }
 xm.zip t3, a3, 4
 
 // Store VLSAT argument vector in y[] (which won't be needed
@@ -75,69 +75,69 @@ xm.zip t3, a3, 4
 // We'll again do the transpose in-flight.
 // The stack space doesn't matter because stageA uses the same amount
 
-{ li count, 4                ; addi buff,sp, (STK_BUFF)*4     }
-{ nop                             ; li t3, 28                 }
+{ li count, 4                           ; addi buff,sp, (STK_BUFF)*4            }
+{ nop                                   ; li t3, 28                             }
 // We need to traverse the rows of x[] backwards to get elements
 // in the right output order.
   sh2add x, t3, x
-{ li _32, 32                 ; mv t3, mat                } // NOTE: _32 and mat are the same register!
+{ li _32, 32                            ; mv t3, mat                            } // NOTE: _32 and mat are the same register!
 
 .L_loop_top:
-  { add t3, t3, _32           ; xm.vclrdr                      }
-  { mv A, x                    ; xm.vldc t3}
+  { add t3, t3, _32                     ; xm.vclrdr                             }
+  { mv A, x                             ; xm.vldc t3                            }
 
-  { nop                         ; xm.vlmaccr0 A}
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { sub t3, t3, _32           ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { sub t3, t3, _32                     ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { mv A, x                    ; xm.vldc t3}
-  { nop                         ; xm.vlmaccr0 A}
+  { mv A, x                             ; xm.vldc t3                            }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
-  { nop                         ; xm.vlmaccr0 A}
+  { sub A, A, _16                       ; nop                                   }
+  { nop                                 ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { sub A, A, _16         ; nop}
+  { sub A, A, _16                       ; nop                                   }
 
-  { add t3, t3, _32           ; xm.vlmaccr0 A}
+  { add t3, t3, _32                     ; xm.vlmaccr0 A                         }
   xm.vlmaccr1 A
-  { add t3, t3, _32           ; nop}
+  { add t3, t3, _32                     ; nop                                   }
   xm.vlsat y
-  { addi count, count, -1         ; xm.vstr buff}
-  { add buff, buff, _32         ; nop}
+  { addi count, count, -1               ; xm.vstr buff                          }
+  { add buff, buff, _32                 ; nop                                   }
   bnez count, .L_loop_top       
 .L_loop_bot:
 
@@ -146,34 +146,34 @@ xm.zip t3, a3, 4
 // zero in a way that decreases headroom.
 
 // Reduce depth to 8 bits, moving to y[].
-{ addi t3,sp, (STK_BUFF)*4        ; nop                             }
-{ add t3, t3, _32             ; xm.vldr t3}
-{ nop                               ; xm.vdepth8                     }
-{ add y, y, _16                 ; xm.vstr y}
-{ add t3, t3, _32             ; xm.vldr t3}
-{ nop                               ; xm.vdepth8                     }
-{ add y, y, _16                 ; xm.vstr y}
-{ add t3, t3, _32             ; xm.vldr t3}
-{ xm.mkmski mask, 16                ; xm.vdepth8                     }
-{ add y, y, _16                 ; xm.vstr y}
-{ xm.shli t3, _32, 4 /*8-bit mode*/; xm.vldr t3}
-{ add _16, _32, _16             ; xm.vdepth8                     }
+{ addi t3,sp, (STK_BUFF)*4              ; nop                                   }
+{ add t3, t3, _32                       ; xm.vldr t3                            }
+{ nop                                   ; xm.vdepth8                            }
+{ add y, y, _16                         ; xm.vstr y                             }
+{ add t3, t3, _32                       ; xm.vldr t3                            }
+{ nop                                   ; xm.vdepth8                            }
+{ add y, y, _16                         ; xm.vstr y                             }
+{ add t3, t3, _32                       ; xm.vldr t3                            }
+{ xm.mkmski mask, 16                    ; xm.vdepth8                            }
+{ add y, y, _16                         ; xm.vstr y                             }
+{ xm.shli t3, _32, 4 /*8-bit mode*/     ; xm.vldr t3                            }
+{ add _16, _32, _16                     ; xm.vdepth8                            }
   xm.vstrpv y, mask
 
 // Load/store one last time to get headroom
-{ sub y, y, _16                 ; xm.vsetc t3}
-{ nop                               ; xm.vldd y}
-{ add y, y, _32                 ; xm.vstd y}
-{ nop                               ; xm.vldd y}
-{ nop                               ; xm.vstd y}
+{ sub y, y, _16                         ; xm.vsetc t3                           }
+{ nop                                   ; xm.vldd y                             }
+{ add y, y, _32                         ; xm.vstd y                             }
+{ nop                                   ; xm.vldd y                             }
+{ nop                                   ; xm.vstd y                             }
 
   xm.lddsp  s3,s2,0
   xm.lddsp  s5,s4,8
   xm.lddsp  s7,s6,16
 
-{ li a0, 7                   ; xm.vgetc t3}
-{ xm.zexti t3, 5                 ; nop                             }
-{ sub a0, a0, t3             ; xm.retsp (NSTACKWORDS)*4           }
+{ li a0, 7                              ; xm.vgetc t3                           }
+{ xm.zexti t3, 5                        ; nop                                   }
+{ sub a0, a0, t3                        ; xm.retsp (NSTACKWORDS)*4              }
 
 	
 .set	FUNCTION_NAME.nstackwords,NSTACKWORDS

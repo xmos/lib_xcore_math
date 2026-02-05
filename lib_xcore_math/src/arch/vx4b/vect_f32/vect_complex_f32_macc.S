@@ -21,30 +21,30 @@
 */
 
 #define FUNC_NAME     vect_complex_f32_macc
-#define NSTACKWORDS   12
+#define NSTACKWORDS   8
 
 .globl	FUNC_NAME
 .type	FUNC_NAME,@function
 
-#define a         x10
-#define b         x11
-#define c         x12
-#define len       x13
-#define B_re      x18
-#define B_im      x19
-#define C_re      x20
-#define C_im      x21
-#define A_re      x22
-#define A_im      x23
+#define a         a0
+#define b         a1
+#define c         a2
+#define len       a3
+#define B_re      s2
+#define B_im      s3
+#define C_re      s4
+#define C_im      s5
+#define A_re      s6
+#define A_im      s7
 
 .p2align 4
 FUNC_NAME:
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+  xm.entsp (NSTACKWORDS)*4
   xm.stdsp  s3,s2,0
   xm.stdsp  s5,s4,8
   xm.stdsp  s7,s6,16
 
-{ li t3, 0                  ; addi len, len, -1             }
+{ li t3, 0                              ; addi len, len, -1                     }
 .L_loop_top:
     xm.ldd  A_re,A_im, len(a)
     xm.ldd  B_re,B_im, len(b)
@@ -55,19 +55,19 @@ FUNC_NAME:
     xm.fmacc A_re, A_re, B_re, C_re   // A[k].re += B[k].re * C[k].re
     xm.fmacc A_re, A_re, B_im, C_im  // A[k].re  -= B[k].im * C[k].im
     xm.std  A_re,A_im, len(a)
-  { addi len, len, -1             ; xm.bt len, .L_loop_top         }
+  { addi len, len, -1                   ; xm.bt len, .L_loop_top                }
 .L_loop_bot:
 
 .L_done:
   xm.lddsp  s3,s2,0
   xm.lddsp  s5,s4,8
   xm.lddsp  s7,s6,16
-  xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+  xm.retsp (NSTACKWORDS)*4
     
-	.set	FUNC_NAME.nstackwords,NSTACKWORDS;     .globl	FUNC_NAME.nstackwords /* Translation error on this line: unexpected token at position 39. */ 
-	.set	FUNC_NAME.maxcores,1;                  .globl	FUNC_NAME.maxcores /* Translation error on this line: unexpected token at position 26. */ 
-	.set	FUNC_NAME.maxtimers,0;                 .globl	FUNC_NAME.maxtimers /* Translation error on this line: unexpected token at position 27. */ 
-	.set	FUNC_NAME.maxchanends,0;               .globl	FUNC_NAME.maxchanends /* Translation error on this line: unexpected token at position 29. */ 
+	.set	FUNC_NAME.nstackwords,NSTACKWORDS;     .globl	FUNC_NAME.nstackwords
+	.set	FUNC_NAME.maxcores,1;                  .globl	FUNC_NAME.maxcores
+	.set	FUNC_NAME.maxtimers,0;                 .globl	FUNC_NAME.maxtimers
+	.set	FUNC_NAME.maxchanends,0;               .globl	FUNC_NAME.maxchanends
 .Ltmp1:
 	.size	FUNC_NAME, .Ltmp1-FUNC_NAME
 

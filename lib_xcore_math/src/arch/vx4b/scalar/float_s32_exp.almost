@@ -7,7 +7,7 @@
 #include "../asm_helper.h"
 
 .text
-.align 4; /* Translation error on this line: unexpected token at position 8. */ 
+.align 4;
 
 /*  
 float_s32_t float_s32_exp(
@@ -22,13 +22,13 @@ float_s32_t float_s32_exp(
 
 
 
-#define b_0       x10
-#define b_1       x11
+#define b_0       a0
+#define b_1       a1
 
-#define tmp1    x12
-#define tmp2    x13
-#define tmp3    x18
-#define consts  x19
+#define tmp1    a2
+#define tmp2    a3
+#define tmp3    s2
+#define consts  s3
 
 .L_consts: 
 .L_none:   .word 0x00000000 
@@ -56,7 +56,7 @@ la t3, .L_consts
 { nop                             ; mv s5, tmp2} //a[1]
 
 #undef b
-#define y     x11
+#define y     a1
 
 //// Compute y = x * log2(e)
 { mv y, tmp1                 ; nop                             }
@@ -90,7 +90,7 @@ la t3, .L_consts
 { li tmp2, 30                ; nop                             }
 { xm.neg tmp2, tmp2              ; nop                             }
 { add tmp2, tmp2, t3         ; sw a, (STACK_A)*4          (sp)}
-  {xm.shr y, y, tmp2 ; nop} /* XAT Warning: "Falling back on assumption: the int != 32 for the integer value of the item at position 2 in the instruction's operands in ashri y, y, tmp2\nMessage: Shift amount may need adjustment but I don't know its value" */
+  {xm.shr y, y, tmp2 ; nop} 
 
   //// If y is negative, we need to add 1 to it
   srai tmp1, y, 31
@@ -101,7 +101,7 @@ xm.ldw tmp1, tmp1      ( consts)
 
   //// Get 2^rho
 { li tmp1, 29                ; li tmp3, 29                }
-{ xm.shr tmp2, y, tmp1           ; xm.zext y, tmp3                }/* XAT Warning: "Falling back on assumption: the int != 32 for the integer value of the item at position 2 in the instruction's operands in  shri tmp2, y, tmp1           \nMessage: The shift amount is not 32" */
+{ xm.shr tmp2, y, tmp1           ; xm.zext y, tmp3                }
 { addi consts, consts, -4       ; xm.ldw t3,tmp2       ( consts)}
 { li tmp1, 0                 ; sw t3, (STACK_RHO)*4      (sp)}
 
@@ -129,17 +129,17 @@ lui t3, %hi(q30_exp_small)
 .L_finish:
   xm.lddsp  s3,s2,8
   xm.lddsp  s5,s4,16
-  xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+  xm.retsp (NSTACKWORDS)*4
 
 .L_func_end_unpack:
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords, NSTACKWORDS + q30_exp_small.nstackwords; /* Translation error on this line: unexpected token at position 71. */ 
+.set FUNCTION_NAME.nstackwords, NSTACKWORDS + q30_exp_small.nstackwords;
 .global FUNCTION_NAME.nstackwords
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME,.L_func_end_unpack - FUNCTION_NAME
 
 #undef NSTACKWORDS

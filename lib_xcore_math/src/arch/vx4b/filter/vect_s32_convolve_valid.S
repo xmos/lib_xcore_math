@@ -30,8 +30,8 @@ headroom_t vect_s32_convolve_valid(
 #define filter      a2
 #define len         a3
 
-#define tmpA        x18
-#define _32         x19
+#define tmpA        s2
+#define _32         s3
 #define vec_tmp     s4
 #define tmpB        s5
 

@@ -7,7 +7,7 @@
 #include "../asm_helper.h"
 
 .text
-.align 4; /* Translation error on this line: unexpected token at position 8. */ 
+.align 4;
 
 /*  
 void s32_odd_powers(
@@ -19,48 +19,48 @@ void s32_odd_powers(
 #define FUNCTION_NAME   s32_odd_powers
 #define NSTACKWORDS     (4)
 
-#define a         x10
-#define b         x11
-#define len       x12
-#define shr       x13
+#define a         a0
+#define b         a1
+#define len       a2
+#define shr       a3
 
-#define acc_lo    x18
-#define acc_hi    x19
+#define acc_lo    s2
+#define acc_hi    s3
 
-#define b_sqr     x28
+#define b_sqr     t3
 
 
 
 FUNCTION_NAME:
 
-  xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+  xm.entsp (NSTACKWORDS)*4
   xm.stdsp  s3,s2,0
 
-{ nop                             ; addi len, len, -1             }
-{ li acc_lo, 0               ; li acc_hi, 0               }
+{ nop                                   ; addi len, len, -1                     }
+{ li acc_lo, 0                          ; li acc_hi, 0                          }
   xm.maccs acc_hi, acc_lo, b, b
   xm.lextract b_sqr, acc_hi, acc_lo, shr, 32
 
 .L_loop_top:
-  { addi len, len, -1             ; sw b,0                 ( a)}
-  { li acc_lo, 0               ; li acc_hi, 0               }
+  { addi len, len, -1                   ; sw b,0                 ( a)           }
+  { li acc_lo, 0                        ; li acc_hi, 0                          }
     xm.maccs acc_hi, acc_lo, b, b_sqr
     xm.lextract b, acc_hi, acc_lo, shr, 32
-  { addi a, a, 4                 ; xm.bt len, .L_loop_top         }
+  { addi a, a, 4                        ; xm.bt len, .L_loop_top                }
 
   sw b,0( a)
 
   xm.lddsp  s3,s2,0
-  xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+  xm.retsp (NSTACKWORDS)*4
 
 .L_func_end_unpack:
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME,.L_func_end_unpack - FUNCTION_NAME
 
 #undef NSTACKWORDS

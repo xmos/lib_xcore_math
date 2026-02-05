@@ -17,8 +17,8 @@ headroom_t fft_spectra_merge(
 
 #define VX4_CONFIG_MIN_FFT_LEN (4)
 
-#define X       x10
-#define N       x11
+#define X       a0
+#define N       a1
 
 
 .text
@@ -73,10 +73,10 @@ FUNCTION_NAME:
 
 .L_pre_boggle:
 
-#define DC_re   x12
-#define DC_im   x13
-#define Ny_re   x18
-#define Ny_im   x19
+#define DC_re   a2
+#define DC_im   a3
+#define Ny_re   s2
+#define Ny_im   s3
 
     // Pre-boggle the DC and Nyquist bins so we can do everything on the VPU
     // Wait, is it faster to just compute the results and hold onto them...?
@@ -95,16 +95,16 @@ FUNCTION_NAME:
 
 
 
-#define X_lo    x12
-#define X_hi    x13
-#define i       x18
-#define _32     x19
+#define X_lo    a2
+#define X_hi    a3
+#define i       s2
+#define _32     s3
 
     // Now go through and compute the outputs
 
    sh2add X_hi, N, X
 
-       li x28, 0                                                                          
+       li t3, 0                                                                          
     { srli i, N, 3                      ; xm.vsetc t3                           }
 la t3, vpu_vec_complex_neg_j
     { mv X_lo, X                        ; xm.vldc t3                            }

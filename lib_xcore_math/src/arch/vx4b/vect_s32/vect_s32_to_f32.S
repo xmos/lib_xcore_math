@@ -15,48 +15,48 @@
 
 */
 
-#define NSTACKWORDS 8
+#define NSTACKWORDS 4
 #define FUNC_NAME vect_s32_to_vect_f32
     
 .globl	FUNC_NAME
 .type	FUNC_NAME,@function
 
-#define a       x10
-#define b       x11
-#define len     x12
-#define b_exp   x13
+#define a       a0
+#define b       a1
+#define len     a2
+#define b_exp   a3
 
-#define _0      x18
-#define tmp1    x19
-#define tmp0    x20
+#define _0      s2
+#define tmp1    s3
+#define tmp0    s4
 
 .p2align 4
 FUNC_NAME:
-    xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+    xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,0
-  { li _0, 0                   ; li s3, 23                  }
-  { add b_exp, b_exp, s3        ; nop                             }
-    xm.stdsp  s5,s4,8
+  { li _0, 0                            ; li s3, 23                             }
+  { add b_exp, b_exp, s3                ; nop                                   }
+    sw s4, 8(sp)
 
   // handle tail first
-  { srli t3, len, 1             ; xm.zexti len, 1                 }
-  { mv len, t3                ; xm.brff len, .L_pre_loop         }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+  { srli t3, len, 1                     ; xm.zexti len, 1                       }
+  { mv len, t3                          ; xm.brff len, .L_pre_loop              }
     
     xm.ldd  tmp0,tmp1, len(b)
-    { xm.slt t3, tmp0, _0           ; slli tmp1, len, 1            }
+    { xm.slt t3, tmp0, _0               ; slli tmp1, len, 1                     }
     beqz t3, .L_posT
       xm.neg tmp0, tmp0
     .L_posT:
     xm.fmake tmp0, t3, b_exp, _0, tmp0
-    xm.stw tmp0,tmp1( a)/* XAT Warning: "Falling back on assumption: the int < 12 for the integer value of the item at position 2 in the instruction's operands in stwi tmp0, a,tmp1\nMessage: The offset can be encoded in s2rus immediate" */
+    xm.stw tmp0,tmp1( a)
 
   .L_pre_loop:
 
-  { addi len, len, -1               ; xm.brff len, .L_loop_end           }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+  { addi len, len, -1                   ; xm.brff len, .L_loop_end              }
   
   .L_loop:
     xm.ldd  tmp0,tmp1, len(b)
-  { xm.slt t3, tmp1, _0             ; nop                               }
+  { xm.slt t3, tmp1, _0                 ; nop                                   }
     beqz t3, .L_pos1
       xm.neg tmp1, tmp1
     .L_pos1:
@@ -67,12 +67,12 @@ FUNC_NAME:
     .L_pos0:
     xm.fmake tmp0, t3, b_exp, _0, tmp0
     xm.std  tmp0,tmp1, len(a)
-    { addi len, len, -1             ; xm.bt len, .L_loop               }
+    { addi len, len, -1                 ; xm.bt len, .L_loop                    }
   .L_loop_end:
     
     xm.lddsp  s3,s2,0
-    xm.lddsp  s5,s4,8
-    xm.retsp (NSTACKWORDS)*4/* Multiple XAT warnings: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in retsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate", 'RETSP operand may need scaling' */
+    lw s4, 8(sp)
+    xm.retsp (NSTACKWORDS)*4
 
 	
 	// RETURN_REG_HOLDER

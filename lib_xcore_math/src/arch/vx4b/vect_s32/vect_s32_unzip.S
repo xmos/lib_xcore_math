@@ -16,39 +16,39 @@
 */
 
 
-#define NSTACKWORDS     (4+4)
+#define NSTACKWORDS     (4)
 
 #define FUNCTION_NAME   vect_s32_unzip
 
 
 
-#define a         x10
-#define b         x11
-#define c         x12
-#define len       x13
+#define a         a0
+#define b         a1
+#define c         a2
+#define len       a3
 
-#define tmpA      x18
-#define tmpB      x19
+#define tmpA      s2
+#define tmpB      s3
 
 .text
 .p2align 2
 
 
 FUNCTION_NAME:
-    xm.entsp (NSTACKWORDS)*4/* XAT Warning: "Falling back on assumption: the int < 253 for the integer value of the item at position 0 in the instruction's operands in dualentsp NSTACKWORDS\nMessage: 0th operand fits in 6 bit unsigned immediate" */
+    xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,0
 
-  { addi len, len, -1                           ; xm.brff len, .L_finish                         }/* XAT Warning: 'Instruction xm.brff can only branch forwards; this branch may need revising' */
+  { addi len, len, -1                   ; xm.brff len, .L_finish                }
 
   .L_loop_top:
       xm.ldd  tmpA,tmpB, len(c)
     xm.stw tmpA,len                          ( a)
     xm.stw tmpB,len                          ( b)
-    { addi len, len, -1                           ; xm.bt len, .L_loop_top                       }
+    { addi len, len, -1                 ; xm.bt len, .L_loop_top                }
 
   .L_finish:
       xm.lddsp  s3,s2,0
-    { nop                                           ; xm.retsp (NSTACKWORDS)*4                         } 
+    { nop                               ; xm.retsp (NSTACKWORDS)*4              } 
 
 
 .L_func_end:
@@ -56,10 +56,10 @@ FUNCTION_NAME:
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS; .global FUNCTION_NAME.nstackwords /* Translation error on this line: unexpected token at position 42. */ 
-.set FUNCTION_NAME.maxcores,1;              .global FUNCTION_NAME.maxcores /* Translation error on this line: unexpected token at position 29. */ 
-.set FUNCTION_NAME.maxtimers,0;             .global FUNCTION_NAME.maxtimers /* Translation error on this line: unexpected token at position 30. */ 
-.set FUNCTION_NAME.maxchanends,0;           .global FUNCTION_NAME.maxchanends /* Translation error on this line: unexpected token at position 32. */ 
+.set FUNCTION_NAME.nstackwords,NSTACKWORDS; .global FUNCTION_NAME.nstackwords
+.set FUNCTION_NAME.maxcores,1;              .global FUNCTION_NAME.maxcores
+.set FUNCTION_NAME.maxtimers,0;             .global FUNCTION_NAME.maxtimers
+.set FUNCTION_NAME.maxchanends,0;           .global FUNCTION_NAME.maxchanends
 .size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 

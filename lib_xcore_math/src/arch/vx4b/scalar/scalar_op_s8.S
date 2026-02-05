@@ -55,16 +55,16 @@ int8_t vladd8(
 
 FUNC_START
 FUNCTION_NAME:
-{ nop                                           ;   xm.entsp (NSTACKWORDS)*4                   }
+{ nop                                   ; xm.entsp (NSTACKWORDS)*4              }
     li t3, 0x200    
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   sw a1, 0                           (sp)}
-{   xm.mkmski a1, 4                             ;   xm.vladd t3}
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; sw a1, 0                           (sp) }
+{ xm.mkmski a1, 4                       ; xm.vladd t3                           }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.sext a0, 8                              ;  xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 
 // //.cc_bottom FUNCTION_NAME.function; 
@@ -98,16 +98,16 @@ int8_t vlsub8(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{ nop                                           ;   xm.entsp (NSTACKWORDS)*4                   }
+{ nop                                   ; xm.entsp (NSTACKWORDS)*4              }
     li t3, 0x200    
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a1, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   sw a0, 0                           (sp)}
-{   xm.mkmski a1, 4                             ;   xm.vlsub t3}
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a1, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; sw a0, 0                           (sp) }
+{ xm.mkmski a1, 4                       ; xm.vlsub t3                           }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.sext a0, 16                             ;  xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.sext a0, 16                        ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -121,24 +121,24 @@ FUNC_END
 
 /* *****************************************************
 
-int8_t vlashx22(
+int8_t vlashs6(
     const int8_t x,
     const right_shift_t shr);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlashx22
+#define FUNCTION_NAME   vlashs6
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{ nop                                           ;   xm.entsp (NSTACKWORDS)*4                   }
+{ nop                                   ; xm.entsp (NSTACKWORDS)*4              }
     li t3, 0x200    
-{   xm.mkmski a2, 4                             ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
+{ xm.mkmski a2, 4                       ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
     xm.vlashr t3, a1
     xm.vstrpv t3, a2
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.sext a0, 8                              ;  xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -161,15 +161,15 @@ int8_t vpos8(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{ nop                                           ;   xm.entsp (NSTACKWORDS)*4                   }
+{ nop                                   ; xm.entsp (NSTACKWORDS)*4              }
     li t3, 0x200    
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{   xm.mkmski a1, 4                             ;   xm.vpos                                    }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ xm.mkmski a1, 4                       ; xm.vpos                               }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.sext a0, 8                              ;  xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -192,15 +192,15 @@ int8_t vsign8(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{ nop                                           ;   xm.entsp (NSTACKWORDS)*4                   }
+{ nop                                   ; xm.entsp (NSTACKWORDS)*4              }
     li t3, 0x200    
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{   xm.mkmski a1, 4                             ;   xm.vsign                                   }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ xm.mkmski a1, 4                       ; xm.vsign                              }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.sext a0, 16                             ;  xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.sext a0, 16                        ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -223,15 +223,15 @@ unsigned vdepth1_8(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{ nop                                           ;   xm.entsp (NSTACKWORDS)*4                   }
+{ nop                                   ; xm.entsp (NSTACKWORDS)*4              }
     li t3, 0x200    
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{   xm.mkmski a1, 4                             ;   xm.vdepth1                                 }
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ xm.mkmski a1, 4                       ; xm.vdepth1                            }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.zexti a0, 1                              ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.zexti a0, 1                        ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -256,16 +256,16 @@ int8_t vlmul8(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{ nop                                           ;   xm.entsp (NSTACKWORDS)*4                   }
+{ nop                                   ; xm.entsp (NSTACKWORDS)*4              }
     li t3, 0x200    
-{ nop                                           ;   xm.vsetc t3}
-{   addi t3,sp, 0                         ;   sw a0, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   sw a1, 0                           (sp)}
-{   xm.mkmski a1, 4                             ;   xm.vlmul0 t3}
+{ nop                                   ; xm.vsetc t3                           }
+{ addi t3,sp, 0                         ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; sw a1, 0                           (sp) }
+{ xm.mkmski a1, 4                       ; xm.vlmul0 t3                          }
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.sext a0, 8                              ;  xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -291,24 +291,24 @@ vpu_int8_acc_t vlmacc8(
 #define NSTACKWORDS     (8)
 FUNC_START
 FUNCTION_NAME:
-{ nop                                           ;   xm.entsp (NSTACKWORDS)*4                   }
+{ nop                                   ; xm.entsp (NSTACKWORDS)*4              }
     li t3, 0x200    
-{ nop                                           ;   xm.vsetc t3}
-{   srli a3, a0, 16                             ;   xm.zexti a0, 16                             }
-{   addi t3,sp, 0                               ;   sw a3, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldd t3}
-{ nop                                           ;   sw a0, 0                           (sp)}
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   sw a1, 0                           (sp)}
-{ nop                                           ;   xm.vldc t3}
-{ nop                                           ;   sw a2, 0                           (sp)}
-{ nop                                           ;   xm.vlmacc0 t3}
-{ nop                                           ;   xm.vstd t3}
-{ nop                                           ;   lw a1, 0                           (sp)}
-{   slli a1, a1, 16                             ;   xm.vstr t3}
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.zexti a0, 16                             ;   nop                                           }
-{   or a0, a0, a1                               ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; xm.vsetc t3                           }
+{ srli a3, a0, 16                       ; xm.zexti a0, 16                       }
+{ addi t3,sp, 0                         ; sw a3, 0                           (sp) }
+{ nop                                   ; xm.vldd t3                            }
+{ nop                                   ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; sw a1, 0                           (sp) }
+{ nop                                   ; xm.vldc t3                            }
+{ nop                                   ; sw a2, 0                           (sp) }
+{ nop                                   ; xm.vlmacc0 t3                         }
+{ nop                                   ; xm.vstd t3                            }
+{ nop                                   ; lw a1, 0                           (sp) }
+{ slli a1, a1, 16                       ; xm.vstr t3                            }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.zexti a0, 16                       ; nop                                   }
+{ or a0, a0, a1                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -323,51 +323,51 @@ FUNC_END
 
 /* *****************************************************
 
-vpu_int8_acc_t vlmaccx22(
+vpu_int8_acc_t vlmaccs6(
     const vpu_int8_acc_t acc,
     const int8_t x[VPU_INT8_EPV],
     const int8_t y[VPU_INT8_EPV]);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlmaccx22
+#define FUNCTION_NAME   vlmaccs6
 #define NSTACKWORDS     (12)
 FUNC_START
 FUNCTION_NAME:
-{ nop                                           ;   xm.entsp (NSTACKWORDS)*4                   }
-{   xm.mkmski s8, 16                           ;   sw s8, 32                          (sp)}
+{ nop                                   ; xm.entsp (NSTACKWORDS)*4              }
+{ xm.mkmski s8, 16                      ; sw s8, 32                          (sp) }
     li t3, 0x200    
-{   addi t3,sp, 0                         ;   xm.vsetc t3}
-{ nop                                           ;   xm.vclrdr                                  }
-{ nop                                           ;   xm.vstd t3}
+{ addi t3,sp, 0                         ; xm.vsetc t3                           }
+{ nop                                   ; xm.vclrdr                             }
+{ nop                                   ; xm.vstd t3                            }
 
 // The *last* accumulator is the one that will be added to.
 
-{   slli a3, a0, 16                          ;   xm.andnot a0, s8                          }
-{   addi t3,sp, 0                         ;   sw a0, 28                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldd t3}
-{ nop                                           ;   sw a3, 28                           (sp)}
-{   li a3, 31                              ;   xm.vldr t3}
+{ slli a3, a0, 16                       ; xm.andnot a0, s8                      }
+{ addi t3,sp, 0                         ; sw a0, 28                           (sp) }
+{ nop                                   ; xm.vldd t3                            }
+{ nop                                   ; sw a3, 28                           (sp) }
+{ li a3, 31                             ; xm.vldr t3                            }
 
-.L_vlmaccx22_loop_top1:
-    { nop                                           ;   xm.ld8u s8,  a3                        (a1)}
+.L_vlmaccs6_loop_top1:
+    { nop                               ; xm.ld8u s8,  a3                        (a1) }
         xm.st8 s8,  a3(t3)
-    {   addi a3, a3, -1                           ;   xm.bt a3, .L_vlmaccx22_loop_top1            }
+    { addi a3, a3, -1                   ; xm.bt a3, .L_vlmaccs6_loop_top1      }
 
-{   li a3, 31                              ;   xm.vldc t3}
+{ li a3, 31                             ; xm.vldc t3                            }
 
-.L_vlmaccx22_loop_top2:
-    { nop                                           ;   xm.ld8u s8,  a3                        (a2)}
+.L_vlmaccs6_loop_top2:
+    { nop                               ; xm.ld8u s8,  a3                        (a2) }
         xm.st8 s8,  a3(t3)
-    {   addi a3, a3, -1                           ;   xm.bt a3, .L_vlmaccx22_loop_top2            }
+    { addi a3, a3, -1                   ; xm.bt a3, .L_vlmaccs6_loop_top2      }
 
-{ nop                                           ;   xm.vlmaccr0 t3}
-{ nop                                           ;   xm.vstd t3}
-{ nop                                           ;   lw a1, 0                           (sp)}
-{ nop                                           ;   xm.vstr t3}
-{   slli a1, a1, 16                          ;   lw a0, 0                           (sp)}
-{   xm.zexti a0, 16                             ;   lw s8, 32                          (sp)}
-{   or a0, a0, a1                           ;   xm.retsp (NSTACKWORDS)*4                       }
+{ nop                                   ; xm.vlmaccr0 t3                        }
+{ nop                                   ; xm.vstd t3                            }
+{ nop                                   ; lw a1, 0                           (sp) }
+{ nop                                   ; xm.vstr t3                            }
+{ slli a1, a1, 16                       ; lw a0, 0                           (sp) }
+{ xm.zexti a0, 16                       ; lw s8, 32                          (sp) }
+{ or a0, a0, a1                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -392,20 +392,20 @@ int8_t vlsat8(
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
-{ nop                                           ;   xm.entsp (NSTACKWORDS)*4                   }
+{ nop                                   ; xm.entsp (NSTACKWORDS)*4              }
     li t3, 0x200    
-{ nop                                           ;   xm.vsetc t3}
-{   srli a3, a0, 16                          ;   xm.zexti a0, 16                             }
-{   addi t3,sp, 0                         ;   sw a3, 0                           (sp)}/* Multiple XAT warnings: 'LDAWSP outside of known frame - offset may need correction', 'STWSP outside of known frame - offset may need correction' */
-{ nop                                           ;   xm.vldd t3}
-{ nop                                           ;   sw a0, 0                           (sp)}
-{ nop                                           ;   xm.vldr t3}
-{ nop                                           ;   sw a1, 0                           (sp)}
-{   xm.mkmski a1, 4                             ;   nop}
+{ nop                                   ; xm.vsetc t3                           }
+{ srli a3, a0, 16                       ; xm.zexti a0, 16                       }
+{ addi t3,sp, 0                         ; sw a3, 0                           (sp) }
+{ nop                                   ; xm.vldd t3                            }
+{ nop                                   ; sw a0, 0                           (sp) }
+{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; sw a1, 0                           (sp) }
+{ xm.mkmski a1, 4                       ; nop                                   }
 xm.vlsat t3
     xm.vstrpv t3, a1
-{ nop                                           ;   lw a0, 0                           (sp)}
-{   xm.sext a0, 8                              ;   xm.retsp (NSTACKWORDS)*4                    }
+{ nop                                   ; lw a0, 0                           (sp) }
+{ xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
