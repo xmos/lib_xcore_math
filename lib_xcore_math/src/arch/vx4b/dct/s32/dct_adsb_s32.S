@@ -36,9 +36,10 @@ FUNCTION_NAME:
 xm.entsp (NSTACKWORDS)*4
 xm.stdsp  s3,s2,0
 xm.stdsp  s5,s4,8
-
-{ li _32, 32                            ; xm.shli t3, _32, 2                    }
 mv chunks, a4
+{ li _32, 32                            ; nop                                   }
+{nop                                    ; xm.shli t3, _32, 2                    }
+
 mv lut, a5
 { mv t3, tail                           ; xm.vsetc t3                           }
 
