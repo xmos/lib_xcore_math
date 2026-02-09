@@ -18,7 +18,7 @@ void chunk_s32_log(
 */
 
 
-#define NSTACKWORDS     (8+48)
+#define NSTACKWORDS     (8+8*6)
 
 #define FUNCTION_NAME   chunk_s32_log
 

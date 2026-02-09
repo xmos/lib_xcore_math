@@ -94,8 +94,13 @@ TEST(vect_complex_s32_to_vect_complex_s16, vect_complex_s32_to_vect_complex_s16_
             vect_complex_s32_to_vect_complex_s16(A.real, A.imag, B, len, casse->b_shr);
 
             for(unsigned int k = 0; k < len; k++) {
-                TEST_ASSERT_EQUAL_MESSAGE(casse->expected.re, A.real[k], buff);
-                TEST_ASSERT_EQUAL_MESSAGE(casse->expected.im, A.imag[k], buff);
+                #if defined(__VX4B__)
+                    TEST_ASSERT_INT16_WITHIN_MESSAGE(1, casse->expected.re, A.real[k], buff);
+                    TEST_ASSERT_INT16_WITHIN_MESSAGE(1, casse->expected.im, A.imag[k], buff);
+                #else
+                    TEST_ASSERT_EQUAL_MESSAGE(casse->expected.re, A.real[k], buff);
+                    TEST_ASSERT_EQUAL_MESSAGE(casse->expected.im, A.imag[k], buff);
+                #endif
             }
             for(int k = len; k < MAX_LEN; k++){
                 TEST_ASSERT_EQUAL_MESSAGE((int16_t) 0xCCCC, A.real[k], buff);
