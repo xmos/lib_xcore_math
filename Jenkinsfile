@@ -1,4 +1,4 @@
-@Library('xmos_jenkins_shared_library@v0.34.0')
+@Library('xmos_jenkins_shared_library@v0.45.0')
 
 def runningOn(machine) {
   println "Stage running on:"
@@ -24,12 +24,12 @@ pipeline {
     )
     string(
       name: 'XMOSDOC_VERSION',
-      defaultValue: 'v6.1.3',
+      defaultValue: 'v8.0.1',
       description: 'The xmosdoc version'
     )
     string(
         name: 'INFR_APPS_VERSION',
-        defaultValue: 'v2.0.1',
+        defaultValue: 'v3.3.0',
         description: 'The infr_apps version'
     )
   } // parameters
@@ -107,7 +107,7 @@ pipeline {
 
             stage('Library checks') {
                 steps {
-                    runLibraryChecks("${WORKSPACE}/${REPO}", "${params.INFR_APPS_VERSION}")
+                    runRepoChecks("${WORKSPACE}/${REPO}")
                 }
             }
 
@@ -119,9 +119,6 @@ pipeline {
                   checkout scm
                   withTools(params.TOOLS_VERSION) {
                     dir('tests/legacy_build') {
-                      // legacy XCommon
-                      sh 'xmake -j4'
-                      sh 'xrun --io --id 0 bin/legacy_build.xe'
                       // legacy CMake
                       sh "cmake -B build --toolchain=${WORKSPACE}/xmos_cmake_toolchain/xs3a.cmake"
                       sh 'xmake -C build -j'
@@ -195,8 +192,6 @@ pipeline {
                   withTools(params.TOOLS_VERSION) {
                     withVS {
                       dir('tests/legacy_build') {
-                        // legacy XCommon
-                        bat 'xmake --jobs 4'
                         // legacy CMake
                         bat "cmake -B build --toolchain=${WORKSPACE}/xmos_cmake_toolchain/xs3a.cmake -G Ninja"
                         bat 'ninja -C build'
