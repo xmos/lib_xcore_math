@@ -36,7 +36,7 @@ int64_t vect_s32_dot(
 
 
 
-.text; .issue_mode dual
+.text
 .p2align 2
 
 

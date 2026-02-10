@@ -25,6 +25,15 @@ file( GLOB_RECURSE SOURCES_C RELATIVE ${CMAKE_CURRENT_LIST_DIR}
 if(APP_BUILD_ARCH STREQUAL "xs3a")
 
   set(SOURCES_REF "")
+  file(GLOB_RECURSE LIB_ASM_SRCS RELATIVE ${CMAKE_CURRENT_LIST_DIR}
+                                    "${CMAKE_CURRENT_LIST_DIR}/src/arch/xs3/*.S")
+
+elseif(APP_BUILD_ARCH STREQUAL "vx4b")
+
+  file( GLOB_RECURSE SOURCES_REF RELATIVE ${CMAKE_CURRENT_LIST_DIR}
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/arch/vx4b/*.c" )
+  file(GLOB_RECURSE LIB_ASM_SRCS RELATIVE ${CMAKE_CURRENT_LIST_DIR}
+                                    "${CMAKE_CURRENT_LIST_DIR}/src/arch/vx4b/*.S")
 
 else() # native or non-xs3a
 

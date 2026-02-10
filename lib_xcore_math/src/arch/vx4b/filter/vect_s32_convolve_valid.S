@@ -40,7 +40,7 @@ headroom_t vect_s32_convolve_valid(
 
 
 
-.text; .issue_mode dual
+.text
 .p2align 2
 
 

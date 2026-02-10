@@ -5,10 +5,6 @@ include(CMakeDependentOption)
 
 #### BUILD OPTIONS ####
 
-### Indicates that you're developing lib_xcore_math in this build
-## If enabled, the unit tests and examples will also be built.
-set( DEV_LIB_XCORE_MATH OFF CACHE BOOL "Include unit tests and examples as CMake Targets." )
-
 ## If enabled, the unit tests will be run fewer repetitions of each test to speed up execution time
 option(XMATH_SMOKE_TEST "Build unit tests in 'smoke test' mode. This mostly just reduces the number of repetitions to reduce simulation time." OFF)
 
