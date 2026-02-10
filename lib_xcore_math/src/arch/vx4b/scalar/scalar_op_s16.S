@@ -13,7 +13,7 @@
 #define CAT_(A, B)    A##B
 #define CAT(A, B)     CAT_(A,B)
 
-#define FUNC_START  \                
+#define FUNC_START  \
     .text ; \
     .globl FUNCTION_NAME ; \
     .type FUNCTION_NAME,@function ; \
@@ -21,13 +21,13 @@
 
 
 #define FUNC_END                                \
-    .set FUNCTION_NAME.nstackwords,NSTACKWORDS;   \  
+    .set FUNCTION_NAME.nstackwords,NSTACKWORDS;   \
     .global FUNCTION_NAME.nstackwords;      \
-    .set FUNCTION_NAME.maxcores,1;                 \ 
+    .set FUNCTION_NAME.maxcores,1;                 \
     .global FUNCTION_NAME.maxcores;         \
-    .set FUNCTION_NAME.maxtimers,0;                \ 
+    .set FUNCTION_NAME.maxtimers,0;                \
     .global FUNCTION_NAME.maxtimers;        \
-    .set FUNCTION_NAME.maxchanends,0;              \ 
+    .set FUNCTION_NAME.maxchanends,0;              \
     .global FUNCTION_NAME.maxchanends;      \
     CAT(.L_size_end_, FUNCTION_NAME):              \
     .size FUNCTION_NAME, CAT(.L_size_end_, FUNCTION_NAME) - FUNCTION_NAME
@@ -286,7 +286,7 @@ int16_t vlmul16(
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlmful16
+#define FUNCTION_NAME   vlmul16
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:

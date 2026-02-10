@@ -9,7 +9,7 @@ lib_xcore_math: xcore optimised math
 :scope: General Use
 :description: VPU-optimized math for the xcore architecture
 :category: General Purpose
-:keywords: arithmetic, DSP, VPU, math
+:keywords: DSP, VPU
 :devices: xcore.ai
 
 *******
