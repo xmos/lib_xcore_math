@@ -8,6 +8,7 @@ version: 2.4.0
 documentation:
   exclude_patterns_path: doc/exclude_patterns.inc
   root_doc: doc/rst/lib_xcore_math.rst
+  linkcheck_ignore_regex: [".*wikipedia.*"]
   cognidox_part_number: XM-015059-UG
   doxygen_projects:
     lib_xcore_math:

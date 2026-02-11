@@ -137,3 +137,19 @@ else()
 endif()
 
 XMOS_REGISTER_MODULE()
+
+foreach(target ${APP_BUILD_TARGETS})
+
+  if(APP_BUILD_ARCH STREQUAL "vx4b")
+
+    target_compile_options(${target} PRIVATE
+      -ffunction-sections   # Put each function in its own .text.<funcname> section
+      -fdata-sections       # Put each data object in its own .data.<varname> section  
+    )
+    target_link_options(${target} PRIVATE
+      -Wl,--gc-sections     # Linker garbage-collects unreferenced sections
+    )
+
+  endif()
+
+endforeach()
