@@ -66,6 +66,11 @@ pipeline {
                 }
               }
             } // Build examples
+            stage("Archive Lib") {
+              steps {
+                archiveSandbox(REPO)
+              }
+            } //stage("Archive Lib")
 
             stage('Unit tests xs3a') {
               steps {
