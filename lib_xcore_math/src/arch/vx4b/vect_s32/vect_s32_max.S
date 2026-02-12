@@ -33,11 +33,8 @@ int32_t vect_s32_max(
 #define tmp         a3      // ![%d]
 #define tmz         s2      // ![%d]
 
-
-
-.globl FUNCTION_NAME
+.global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.align 16;
 
 FUNCTION_NAME:
 

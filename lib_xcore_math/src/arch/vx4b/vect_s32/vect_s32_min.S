@@ -37,7 +37,6 @@ int32_t vect_s32_min(
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.align 16;
 
 FUNCTION_NAME:
 

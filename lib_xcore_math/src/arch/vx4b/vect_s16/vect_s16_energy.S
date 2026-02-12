@@ -35,7 +35,6 @@ int32_t vect_s16_energy(
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.align 16;
 
 FUNCTION_NAME:
 

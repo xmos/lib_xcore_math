@@ -6,7 +6,7 @@
 #include "../asm_helper.h"
 
 .text
-.align 16;
+.p2align 2
 
 /*  
 int32_t chunk_s32_dot(

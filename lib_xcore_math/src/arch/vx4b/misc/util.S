@@ -8,7 +8,7 @@
 
 .text
 
-.align 4;
+.p2align 2
 /*  
 void f32_unpack(
     int32_t* mantissa,
@@ -74,7 +74,7 @@ float s32_to_f32(
 #define zero        a3
 #define tmp         t3
 
-.align 4;
+.p2align 2
 FUNCTION_NAME:
   
     xm.entsp (NSTACKWORDS)*4

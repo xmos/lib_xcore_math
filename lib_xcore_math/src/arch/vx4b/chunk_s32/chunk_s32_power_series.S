@@ -7,7 +7,7 @@
 #include "../asm_helper.h"
 
 .text
-.align 4;
+.p2align 2
 
 /*  
     void chunk_q30_power_series(
