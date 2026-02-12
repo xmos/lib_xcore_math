@@ -14,8 +14,13 @@ pipeline {
   parameters {
     string(
       name: 'TOOLS_VERSION',
-      defaultValue: '15.3.0',
+      defaultValue: '15.3.1',
       description: 'The XTC tools version'
+    )
+    string(
+      name: 'TOOLS_VX4_VERSION',
+      defaultValue: '-j --repo arch_vx_slipgate -b master -a XTC 112',
+      description: 'The XTC Slipgate tools version'
     )
     booleanParam(
       name: 'XMATH_SMOKE_TEST',
@@ -53,11 +58,16 @@ pipeline {
                 runningOn(env.NODE_NAME)
                 dir("${REPO}") {
                   checkout scm
-                  withTools(params.TOOLS_VERSION) {
-                    dir('examples') {
-                      // xs3a build
+                  dir('examples') {
+                    // xs3a build
+                    withTools(params.TOOLS_VERSION) {
                       sh 'cmake -B build_xs3a -G "Unix Makefiles"'
                       sh 'xmake -C build_xs3a -j'
+                    }
+                    withTools(params.TOOLS_VX4_VERSION) {
+                      // vx4b build
+                      sh 'cmake -B build_vx4b -G "Unix Makefiles" -DXCORE_TARGET=XK-EVK-XU416'
+                      sh 'xmake -C build_vx4b'
                       // x86 build
                       sh 'cmake -B build_x86 -G "Unix Makefiles" -D BUILD_NATIVE=TRUE'
                       sh 'xmake -C build_x86 -j'
@@ -70,7 +80,7 @@ pipeline {
             stage('Unit tests xs3a') {
               steps {
                 withTools(params.TOOLS_VERSION) {
-                  dir('lib_xcore_math/tests') {
+                  dir("${REPO}/tests") {
                     sh "cmake -B build_xs3a  -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G \"Unix Makefiles\""
                     sh 'xmake -C build_xs3a -j'
 
@@ -89,7 +99,7 @@ pipeline {
             stage('Unit tests x86') {
               steps {
                 withTools(params.TOOLS_VERSION) {
-                  dir('lib_xcore_math/tests') {
+                  dir("${REPO}/tests") {
                     sh "cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G \"Unix Makefiles\" -D BUILD_NATIVE=TRUE"
                     sh 'xmake -C build_x86 -j'
 
@@ -144,14 +154,20 @@ pipeline {
             stage('Examples') {
               steps {
                 runningOn(env.NODE_NAME)
-                dir('lib_xcore_math') {
+                dir("${REPO}") {
                   checkout scm
-                  withTools(params.TOOLS_VERSION) {
-                    dir('examples') {
+                  dir('examples') {
+                    withVS {
                       // xs3a build
-                      bat 'cmake -B build_xs3a -G "Unix Makefiles"'
-                      bat 'xmake -C build_xs3a'
-                      withVS {
+                      withTools(params.TOOLS_VERSION) {
+                        bat 'cmake -B build_xs3a -G Ninja'
+                        bat 'ninja -C build_xs3a'
+                      }
+                      withTools(params.TOOLS_VX4_VERSION) {
+                        // vx4b build
+                        // Currently fails sayinf command line is too long, uncomment when fixed
+                        // bat 'cmake -B build_vx4b -G Ninja -DXCORE_TARGET=XK-EVK-XU416'
+                        // bat 'ninja -C build_vx4b -j'
                         // x86 build
                         bat 'cmake -B build_x86 -G Ninja -D BUILD_NATIVE=TRUE'
                         bat 'ninja -C build_x86'
@@ -164,7 +180,7 @@ pipeline {
 
             stage('Unit tests x86') {
               steps {
-                dir('lib_xcore_math/tests') {
+                dir("${REPO}/tests") {
                   withTools(params.TOOLS_VERSION) {
                     withVS {
                       bat 'cmake -B build_x86 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G Ninja -D BUILD_NATIVE=TRUE'
@@ -187,7 +203,7 @@ pipeline {
               steps {
                 runningOn(env.NODE_NAME)
                 bat 'git clone --branch=v1.0.0 git@github.com:xmos/xmos_cmake_toolchain'
-                dir('lib_xcore_math') {
+                dir("${REPO}") {
                   checkout scm
                   withTools(params.TOOLS_VERSION) {
                     withVS {
