@@ -1,9 +1,11 @@
 lib_xcore_math change log
 =========================
 
-UNRELEASED
-----------
+2.4.1
+-----
 
+  * CHANGED: Link libm and enable position-independent code (-fPIC) for native
+    x86 builds.
   * FIXED: Build with `XMATH_BFP_DEBUG_CHECK_LENGTHS` enabled
   * FIXED: FFT Lookup script path in CMakeLists.txt
 
