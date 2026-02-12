@@ -1,4 +1,4 @@
-@Library('xmos_jenkins_shared_library@v0.34.0')
+@Library('xmos_jenkins_shared_library@v0.45.0')
 
 def runningOn(machine) {
   println "Stage running on:"
@@ -14,7 +14,7 @@ pipeline {
   parameters {
     string(
       name: 'TOOLS_VERSION',
-      defaultValue: '15.3.0',
+      defaultValue: '15.3.1',
       description: 'The XTC tools version'
     )
     booleanParam(
@@ -24,12 +24,12 @@ pipeline {
     )
     string(
       name: 'XMOSDOC_VERSION',
-      defaultValue: 'v6.1.3',
+      defaultValue: 'v8.0.1',
       description: 'The xmosdoc version'
     )
     string(
         name: 'INFR_APPS_VERSION',
-        defaultValue: 'v2.0.1',
+        defaultValue: 'v3.3.0',
         description: 'The infr_apps version'
     )
   } // parameters
@@ -107,7 +107,9 @@ pipeline {
 
             stage('Library checks') {
                 steps {
-                    runLibraryChecks("${WORKSPACE}/${REPO}", "${params.INFR_APPS_VERSION}")
+                  warnError("Repo checks failed") {
+                    runRepoChecks("${WORKSPACE}/${REPO}")
+                  }
                 }
             }
 
