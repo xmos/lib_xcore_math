@@ -6,7 +6,7 @@ include(CMakeDependentOption)
 #### BUILD OPTIONS ####
 
 ## If enabled, the unit tests will be run fewer repetitions of each test to speed up execution time
-option(XMATH_SMOKE_TEST "Build unit tests in 'smoke test' mode. This mostly just reduces the number of repetitions to reduce simulation time." OFF)
+option(XMATH_SMOKE_TEST "Build unit tests in 'smoke test' mode. This mostly just reduces the number of repetitions to reduce simulation time." ON)
 
 ## If enabled, the FFT look-up tables will be auto-generated at build time (requires Python 3 and numpy)
 set( XMATH_GEN_FFT_LUT  OFF CACHE BOOL "Auto-generate FFT look-up tables." )

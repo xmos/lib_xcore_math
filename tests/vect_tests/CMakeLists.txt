@@ -24,10 +24,7 @@ set(APP_COMPILER_FLAGS -Os
                        )
 
 if(NOT BUILD_NATIVE)
-    list(APPEND APP_COMPILER_FLAGS -MMD
-                                   -fxscope
-                                   -mcmodel=large
-                                   -Wno-xcore-fptrgroup
+    list(APPEND APP_COMPILER_FLAGS -fxscope
                                    -fcmdline-buffer-bytes=1024
                                    -report
                                    )

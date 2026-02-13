@@ -32,11 +32,8 @@ int64_t vect_s32_abs_sum(
 #define tmp         s2      // ![%d]
 #define mask        s3      // ![0x%X]
 
-
-
-.globl FUNCTION_NAME
-.type FUNCTION_NAME,@function
-.align 16;
+.global FUNCTION_NAME
+.type FUNCTION_NAME, @function
 
 FUNCTION_NAME:
 

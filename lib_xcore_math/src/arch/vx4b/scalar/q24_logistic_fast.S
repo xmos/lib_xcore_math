@@ -7,7 +7,7 @@
 #include "../asm_helper.h"
 
 .text
-.align 4;
+.p2align 2
 
 /*  
 q8_24 q24_logistic_fast(
