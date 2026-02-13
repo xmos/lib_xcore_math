@@ -76,6 +76,11 @@ pipeline {
                 }
               }
             } // Build examples
+            stage("Archive Lib") {
+              steps {
+                archiveSandbox(REPO)
+              }
+            } //stage("Archive Lib")
 
             stage('Unit tests xs3a') {
               steps {
@@ -116,9 +121,11 @@ pipeline {
             } // Unit tests x86
 
             stage('Library checks') {
-                steps {
-                    runRepoChecks("${WORKSPACE}/${REPO}")
+              steps {
+                warnError("Repo checks failed") {
+                  runRepoChecks("${WORKSPACE}/${REPO}")
                 }
+              }
             }
 
             stage('Legacy build') {
