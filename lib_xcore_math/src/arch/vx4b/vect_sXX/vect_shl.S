@@ -153,17 +153,17 @@ vect_s32_shl:
 
 .globl vect_s16_shl
 .type vect_s16_shl,@function
-.set vect_s16_shl.nstackwords,NSTACKWORDS;  .global vect_s16_shl.nstackwords
-.set vect_s16_shl.maxcores,1;               .global vect_s16_shl.maxcores
-.set vect_s16_shl.maxtimers,0;              .global vect_s16_shl.maxtimers
-.set vect_s16_shl.maxchanends,0;            .global vect_s16_shl.maxchanends
+.resource_const vect_s16_shl, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_s16_shl, "tail_callees"
+.resource_list_empty vect_s16_shl, "callees"
+.resource_list_empty vect_s16_shl, "parallel_callees"
 
 .globl vect_s32_shl
 .type vect_s32_shl,@function
-.set vect_s32_shl.nstackwords,NSTACKWORDS;  .global vect_s32_shl.nstackwords
-.set vect_s32_shl.maxcores,1;               .global vect_s32_shl.maxcores
-.set vect_s32_shl.maxtimers,0;              .global vect_s32_shl.maxtimers
-.set vect_s32_shl.maxchanends,0;            .global vect_s32_shl.maxchanends
+.resource_const vect_s32_shl, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_s32_shl, "tail_callees"
+.resource_list_empty vect_s32_shl, "callees"
+.resource_list_empty vect_s32_shl, "parallel_callees"
 
 
 #endif //defined(__VX4B__)

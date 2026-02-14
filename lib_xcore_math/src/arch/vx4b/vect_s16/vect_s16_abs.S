@@ -115,10 +115,10 @@ vect_s16_abs:
 
 .global vect_s16_abs
 .type vect_s16_abs,@function
-.set vect_s16_abs.nstackwords,NSTACKWORDS;  .global vect_s16_abs.nstackwords
-.set vect_s16_abs.maxcores,1;               .global vect_s16_abs.maxcores
-.set vect_s16_abs.maxtimers,0;              .global vect_s16_abs.maxtimers
-.set vect_s16_abs.maxchanends,0;            .global vect_s16_abs.maxchanends
+.resource_const vect_s16_abs, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_s16_abs, "tail_callees"
+.resource_list_empty vect_s16_abs, "callees"
+.resource_list_empty vect_s16_abs, "parallel_callees"
 .size vect_s16_abs, .L_func_end_s16 - vect_s16_abs
 
 #endif //defined(__VX4B__)

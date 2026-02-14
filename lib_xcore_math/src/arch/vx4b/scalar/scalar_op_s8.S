@@ -20,13 +20,13 @@
 
 
 #define FUNC_END                                \
-    .set FUNCTION_NAME.nstackwords,NSTACKWORDS;   \
+.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
     .global FUNCTION_NAME.nstackwords;      \
-    .set FUNCTION_NAME.maxcores,1;                 \
+.resource_list_empty FUNCTION_NAME, "tail_callees"
     .global FUNCTION_NAME.maxcores;         \
-    .set FUNCTION_NAME.maxtimers,0;                \
+.resource_list_empty FUNCTION_NAME, "callees"
     .global FUNCTION_NAME.maxtimers;        \
-    .set FUNCTION_NAME.maxchanends,0;              \
+.resource_list_empty FUNCTION_NAME, "parallel_callees"
     .global FUNCTION_NAME.maxchanends;      \
     CAT(.L_size_end_, FUNCTION_NAME):              \
     .size FUNCTION_NAME, CAT(.L_size_end_, FUNCTION_NAME) - FUNCTION_NAME
@@ -68,10 +68,10 @@ FUNCTION_NAME:
 FUNC_END
 
 // //.cc_bottom FUNCTION_NAME.function; 
-// .set FUNCTION_NAME.nstackwords,NSTACKWORDS; .global FUNCTION_NAME.nstackwords; 
-// .set FUNCTION_NAME.maxcores,1;              .global FUNCTION_NAME.maxcores; 
-// .set FUNCTION_NAME.maxtimers,0;             .global FUNCTION_NAME.maxtimers; 
-// .set FUNCTION_NAME.maxchanends,0;           .global FUNCTION_NAME.maxchanends; 
+//.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+//.resource_list_empty FUNCTION_NAME, "tail_callees"
+//.resource_list_empty FUNCTION_NAME, "callees"
+//.resource_list_empty FUNCTION_NAME, "parallel_callees"
 
 // CAT(.L_size_end_, FUNCTION_NAME): 
 //     .size FUNCTION_NAME, CAT(.L_size_end_, FUNCTION_NAME) - FUNCTION_NAME

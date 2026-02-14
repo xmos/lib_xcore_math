@@ -50,12 +50,12 @@ la t3, f32_power_series
 .add_to_set FUNCTION_NAME.callees,f32_normA.nstackwords
 .add_to_set FUNCTION_NAME.callees,f32_power_series.nstackwords
 .max_reduce FUNCTION_NAME.callee_maxstackwords,FUNCTION_NAME.callees,0
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS+FUNCTION_NAME.callee_maxstackwords
+.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS+FUNCTION_NAME)*4
 .global FUNCTION_NAME.nstackwords
 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
+.resource_list_empty FUNCTION_NAME, "tail_callees"
+.resource_list_empty FUNCTION_NAME, "callees"
+.resource_list_empty FUNCTION_NAME, "parallel_callees"
 .size FUNCTION_NAME,.L_func_end_unpack - FUNCTION_NAME
 
 #undef NSTACKWORDS

@@ -162,14 +162,10 @@ xm.lddsp  s6,s5,16
 xm.lddsp  s8,s7,24
 xm.retsp (NSTACKWORDS)*4
     
-    .set	    fft_dit_forward.nstackwords,NSTACKWORDS
-    .globl	    fft_dit_forward.nstackwords
-    .set	    fft_dit_forward.maxcores,1
-    .globl	    fft_dit_forward.maxcores
-    .set	    fft_dit_forward.maxtimers,0
-    .globl	    fft_dit_forward.maxtimers
-    .set	    fft_dit_forward.maxchanends,0
-    .globl	    fft_dit_forward.maxchanends
+.resource_const fft_dit_forward, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty fft_dit_forward, "tail_callees"
+.resource_list_empty fft_dit_forward, "callees"
+.resource_list_empty fft_dit_forward, "parallel_callees"
 
 .Ltmp0:
     .size	fft_dit_forward, .Ltmp0-fft_dit_forward
@@ -285,14 +281,10 @@ xm.lddsp  s6,s5,16
 xm.lddsp  s8,s7,24
 xm.retsp (NSTACKWORDS)*4   
 
-    .set	    fft_dit_inverse.nstackwords,NSTACKWORDS
-    .globl	    fft_dit_inverse.nstackwords
-    .set	    fft_dit_inverse.maxcores,1
-    .globl	    fft_dit_inverse.maxcores
-    .set	    fft_dit_inverse.maxtimers,0
-    .globl	    fft_dit_inverse.maxtimers
-    .set	    fft_dit_inverse.maxchanends,0
-    .globl	    fft_dit_inverse.maxchanends
+.resource_const fft_dit_inverse, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty fft_dit_inverse, "tail_callees"
+.resource_list_empty fft_dit_inverse, "callees"
+.resource_list_empty fft_dit_inverse, "parallel_callees"
 .Ltmp1:
     .size	fft_dit_inverse, .Ltmp1-fft_dit_inverse
 

@@ -142,11 +142,11 @@ la t3, vpu_vec_complex_conj_op
         xm.retsp (NSTACKWORDS)*4
 
 //.cc_bottom FUNCTION_NAME.function; 
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS + vect_complex_s32_tail_reverse.nstackwords;     
+.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
                                                 .global FUNCTION_NAME.nstackwords; 
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores; 
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers; 
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends; 
+.resource_list_empty FUNCTION_NAME, "tail_callees"
+.resource_list_empty FUNCTION_NAME, "callees"
+.resource_list_empty FUNCTION_NAME, "parallel_callees"
 .L_function_end: 
     .size FUNCTION_NAME, .L_function_end - FUNCTION_NAME
 

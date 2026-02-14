@@ -94,10 +94,10 @@ vect_s32_abs:
 
 .global vect_s32_abs
 .type vect_s32_abs,@function
-.set vect_s32_abs.nstackwords,NSTACKWORDS;  .global vect_s32_abs.nstackwords
-.set vect_s32_abs.maxcores,1;               .global vect_s32_abs.maxcores
-.set vect_s32_abs.maxtimers,0;              .global vect_s32_abs.maxtimers
-.set vect_s32_abs.maxchanends,0;            .global vect_s32_abs.maxchanends
+.resource_const vect_s32_abs, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_s32_abs, "tail_callees"
+.resource_list_empty vect_s32_abs, "callees"
+.resource_list_empty vect_s32_abs, "parallel_callees"
 .size vect_s32_abs, .L_func_end_s32 - vect_s32_abs
 
 

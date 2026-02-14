@@ -88,10 +88,10 @@ FUNCTION_NAME:
     xm.lddsp  s7,s6,0
     xm.retsp (NSTACKWORDS)*4
 
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;  .global FUNCTION_NAME.nstackwords; 
-.set FUNCTION_NAME.maxcores,1;               .global FUNCTION_NAME.maxcores; 
-.set FUNCTION_NAME.maxtimers,0;              .global FUNCTION_NAME.maxtimers; 
-.set FUNCTION_NAME.maxchanends,0;            .global FUNCTION_NAME.maxchanends; 
+.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty FUNCTION_NAME, "tail_callees"
+.resource_list_empty FUNCTION_NAME, "callees"
+.resource_list_empty FUNCTION_NAME, "parallel_callees"
 .L_func_end:
     .size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 

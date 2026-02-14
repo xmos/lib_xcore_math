@@ -110,24 +110,24 @@ vect_complex_s32_set:
 
 .globl vect_s16_set
 .type vect_s16_set,@function
-.set vect_s16_set.nstackwords,NSTACKWORDS;  .global vect_s16_set.nstackwords; 
-.set vect_s16_set.maxcores,1;               .global vect_s16_set.maxcores; 
-.set vect_s16_set.maxtimers,0;              .global vect_s16_set.maxtimers; 
-.set vect_s16_set.maxchanends,0;            .global vect_s16_set.maxchanends; 
+.resource_const vect_s16_set, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_s16_set, "tail_callees"
+.resource_list_empty vect_s16_set, "callees"
+.resource_list_empty vect_s16_set, "parallel_callees"
 
 .globl vect_s32_set
 .type vect_s32_set,@function
-.set vect_s32_set.nstackwords,NSTACKWORDS;  .global vect_s32_set.nstackwords; 
-.set vect_s32_set.maxcores,1;               .global vect_s32_set.maxcores; 
-.set vect_s32_set.maxtimers,0;              .global vect_s32_set.maxtimers; 
-.set vect_s32_set.maxchanends,0;            .global vect_s32_set.maxchanends; 
+.resource_const vect_s32_set, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_s32_set, "tail_callees"
+.resource_list_empty vect_s32_set, "callees"
+.resource_list_empty vect_s32_set, "parallel_callees"
 
 .globl vect_complex_s32_set
 .type vect_complex_s32_set,@function
-.set vect_complex_s32_set.nstackwords,NSTACKWORDS;  .global vect_complex_s32_set.nstackwords; 
-.set vect_complex_s32_set.maxcores,1;               .global vect_complex_s32_set.maxcores; 
-.set vect_complex_s32_set.maxtimers,0;              .global vect_complex_s32_set.maxtimers; 
-.set vect_complex_s32_set.maxchanends,0;            .global vect_complex_s32_set.maxchanends; 
+.resource_const vect_complex_s32_set, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_complex_s32_set, "tail_callees"
+.resource_list_empty vect_complex_s32_set, "callees"
+.resource_list_empty vect_complex_s32_set, "parallel_callees"
 
 
 #endif //defined(__VX4B__)
