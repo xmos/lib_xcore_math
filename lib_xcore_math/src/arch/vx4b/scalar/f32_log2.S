@@ -46,15 +46,10 @@ la t3, f32_power_series
 .type FUNCTION_NAME,@function
 
 
-.weak FUNCTION_NAME.callees
-.add_to_set FUNCTION_NAME.callees,f32_normA.nstackwords
-.add_to_set FUNCTION_NAME.callees,f32_power_series.nstackwords
-.max_reduce FUNCTION_NAME.callee_maxstackwords,FUNCTION_NAME.callees,0
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS+FUNCTION_NAME)*4
-.global FUNCTION_NAME.nstackwords
-
+.resource_const FUNCTION_NAME, "stack_frame_bytes", ( ((NSTACKWORDS)))*4
+.resource_list_add   FUNCTION_NAME, "callees", f32_normA
+.resource_list_add   FUNCTION_NAME, "callees", f32_power_series
 .resource_list_empty FUNCTION_NAME, "tail_callees"
-.resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
 .size FUNCTION_NAME,.L_func_end_unpack - FUNCTION_NAME
 

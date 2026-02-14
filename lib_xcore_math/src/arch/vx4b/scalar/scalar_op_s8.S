@@ -20,16 +20,12 @@
 
 
 #define FUNC_END                                \
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
-    .global FUNCTION_NAME.nstackwords;      \
-.resource_list_empty FUNCTION_NAME, "tail_callees"
-    .global FUNCTION_NAME.maxcores;         \
-.resource_list_empty FUNCTION_NAME, "callees"
-    .global FUNCTION_NAME.maxtimers;        \
-.resource_list_empty FUNCTION_NAME, "parallel_callees"
-    .global FUNCTION_NAME.maxchanends;      \
-    CAT(.L_size_end_, FUNCTION_NAME):              \
-    .size FUNCTION_NAME, CAT(.L_size_end_, FUNCTION_NAME) - FUNCTION_NAME
+.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4 ;\
+.resource_list_empty FUNCTION_NAME, "tail_callees" ;\
+.resource_list_empty FUNCTION_NAME, "callees" ;\
+.resource_list_empty FUNCTION_NAME, "parallel_callees" ;\
+.size FUNCTION_NAME, . - FUNCTION_NAME
+
 
 
 

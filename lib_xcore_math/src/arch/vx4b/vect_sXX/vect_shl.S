@@ -24,10 +24,6 @@ headroom_t vect_s32_shl(
 
 #define NSTACKWORDS     (8+2+2+4)
 
-#define FUNCTION_NAME   shl_vect
-#define FNAME_S16       CAT(FUNCTION_NAME, _s16)
-#define FNAME_S32       CAT(FUNCTION_NAME, _s32)
-
 #define STACK_TMP_VEC       (NSTACKWORDS-10)
 
 #define a           a0

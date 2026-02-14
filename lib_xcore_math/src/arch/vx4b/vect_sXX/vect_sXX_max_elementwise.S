@@ -185,6 +185,12 @@ vect_sXX_max_elementwise:
 
 .L_end_sXX:
 
+.resource_const vect_sXX_max_elementwise, "stack_frame_bytes", 0 ;\
+.resource_list_empty vect_sXX_max_elementwise, "tail_callees" ;\
+.resource_list_empty vect_sXX_max_elementwise, "callees" ;\
+.resource_list_empty vect_sXX_max_elementwise, "parallel_callees" ;\
+.size vect_sXX_max_elementwise, . - vect_sXX_max_elementwise
+
 
 #endif //defined(__VX4B__)
 

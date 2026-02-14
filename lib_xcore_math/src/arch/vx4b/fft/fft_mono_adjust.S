@@ -195,11 +195,9 @@ FUNCTION_NAME:
     xm.lddsp  s6,s7,24
     xm.retsp (NSTACKWORDS)*4
 
-//.cc_bottom FUNCTION_NAME.function; 
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (((NSTACKWORDS))*4
-.global FUNCTION_NAME.nstackwords; 
+.resource_const FUNCTION_NAME, "stack_frame_bytes", ( ((NSTACKWORDS)))*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
-.resource_list_empty FUNCTION_NAME, "callees"
+.resource_list_add   FUNCTION_NAME, "callees", vect_complex_s32_tail_reverse
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
 
 .L_function_end: 
