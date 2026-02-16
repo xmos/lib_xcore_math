@@ -183,8 +183,6 @@ vect_sXX_max_elementwise:
     mv a0, t3
     ret 
 
-.L_end_sXX:
-
 .resource_const vect_sXX_max_elementwise, "stack_frame_bytes", 0
 .resource_list_empty vect_sXX_max_elementwise, "tail_callees"
 .resource_list_empty vect_sXX_max_elementwise, "callees"
