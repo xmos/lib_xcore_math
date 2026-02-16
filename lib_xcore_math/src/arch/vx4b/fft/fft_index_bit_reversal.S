@@ -4,7 +4,6 @@
 #if defined(__VX4B__)
 
 /*  
-
 void fft_index_bit_reversal(
     complex_s32_t* a,
     const unsigned length);
