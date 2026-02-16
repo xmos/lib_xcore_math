@@ -111,9 +111,7 @@ FUNCTION_NAME:
         xm.lddsp  s3,s2,8
         xm.retsp (NSTACKWORDS)*4
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
-.global FUNCTION_NAME.nstackwords; 
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
