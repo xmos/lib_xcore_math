@@ -64,10 +64,10 @@ FUNC_NAME:
   xm.lddsp  s7,s6,16
   xm.retsp (NSTACKWORDS)*4
     
-	.set	FUNC_NAME.nstackwords,NSTACKWORDS;     .globl	FUNC_NAME.nstackwords
-	.set	FUNC_NAME.maxcores,1;                  .globl	FUNC_NAME.maxcores
-	.set	FUNC_NAME.maxtimers,0;                 .globl	FUNC_NAME.maxtimers
-	.set	FUNC_NAME.maxchanends,0;               .globl	FUNC_NAME.maxchanends
+.resource_const FUNC_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty FUNC_NAME, "tail_callees"
+.resource_list_empty FUNC_NAME, "callees"
+.resource_list_empty FUNC_NAME, "parallel_callees"
 .Ltmp1:
 	.size	FUNC_NAME, .Ltmp1-FUNC_NAME
 

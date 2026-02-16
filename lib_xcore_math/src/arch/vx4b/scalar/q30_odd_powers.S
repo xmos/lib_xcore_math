@@ -57,10 +57,10 @@ FUNCTION_NAME:
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.set FUNCTION_NAME.nstackwords,NSTACKWORDS;     .global FUNCTION_NAME.nstackwords
-.set FUNCTION_NAME.maxcores,1;                  .global FUNCTION_NAME.maxcores
-.set FUNCTION_NAME.maxtimers,0;                 .global FUNCTION_NAME.maxtimers
-.set FUNCTION_NAME.maxchanends,0;               .global FUNCTION_NAME.maxchanends
+.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty FUNCTION_NAME, "tail_callees"
+.resource_list_empty FUNCTION_NAME, "callees"
+.resource_list_empty FUNCTION_NAME, "parallel_callees"
 .size FUNCTION_NAME,.L_func_end_unpack - FUNCTION_NAME
 
 #undef NSTACKWORDS

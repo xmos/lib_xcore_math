@@ -24,10 +24,6 @@ headroom_t vect_s32_shl(
 
 #define NSTACKWORDS     (8+2+2+4)
 
-#define FUNCTION_NAME   shl_vect
-#define FNAME_S16       CAT(FUNCTION_NAME, _s16)
-#define FNAME_S32       CAT(FUNCTION_NAME, _s32)
-
 #define STACK_TMP_VEC       (NSTACKWORDS-10)
 
 #define a           a0
@@ -153,17 +149,17 @@ vect_s32_shl:
 
 .globl vect_s16_shl
 .type vect_s16_shl,@function
-.set vect_s16_shl.nstackwords,NSTACKWORDS;  .global vect_s16_shl.nstackwords
-.set vect_s16_shl.maxcores,1;               .global vect_s16_shl.maxcores
-.set vect_s16_shl.maxtimers,0;              .global vect_s16_shl.maxtimers
-.set vect_s16_shl.maxchanends,0;            .global vect_s16_shl.maxchanends
+.resource_const vect_s16_shl, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_s16_shl, "tail_callees"
+.resource_list_empty vect_s16_shl, "callees"
+.resource_list_empty vect_s16_shl, "parallel_callees"
 
 .globl vect_s32_shl
 .type vect_s32_shl,@function
-.set vect_s32_shl.nstackwords,NSTACKWORDS;  .global vect_s32_shl.nstackwords
-.set vect_s32_shl.maxcores,1;               .global vect_s32_shl.maxcores
-.set vect_s32_shl.maxtimers,0;              .global vect_s32_shl.maxtimers
-.set vect_s32_shl.maxchanends,0;            .global vect_s32_shl.maxchanends
+.resource_const vect_s32_shl, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_s32_shl, "tail_callees"
+.resource_list_empty vect_s32_shl, "callees"
+.resource_list_empty vect_s32_shl, "parallel_callees"
 
 
 #endif //defined(__VX4B__)

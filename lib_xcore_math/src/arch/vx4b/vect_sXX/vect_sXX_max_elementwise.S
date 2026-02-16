@@ -35,10 +35,10 @@ FUNC_NAME:
 
 .global FUNC_NAME
 .type FUNC_NAME,@function
-.set FUNC_NAME.nstackwords,NSTACKWORDS;  .global FUNC_NAME.nstackwords
-.set FUNC_NAME.maxcores,1;               .global FUNC_NAME.maxcores
-.set FUNC_NAME.maxtimers,0;              .global FUNC_NAME.maxtimers
-.set FUNC_NAME.maxchanends,0;            .global FUNC_NAME.maxchanends
+.resource_const FUNC_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty FUNC_NAME, "tail_callees"
+.resource_list_add   FUNC_NAME, "callees", vect_sXX_max_elementwise
+.resource_list_empty FUNC_NAME, "parallel_callees"
 .size FUNC_NAME, .L_end_s32 - FUNC_NAME
 #undef FUNC_NAME
   
@@ -66,10 +66,10 @@ FUNC_NAME:
 
 .global FUNC_NAME
 .type FUNC_NAME,@function
-.set FUNC_NAME.nstackwords,NSTACKWORDS;  .global FUNC_NAME.nstackwords
-.set FUNC_NAME.maxcores,1;               .global FUNC_NAME.maxcores
-.set FUNC_NAME.maxtimers,0;              .global FUNC_NAME.maxtimers
-.set FUNC_NAME.maxchanends,0;            .global FUNC_NAME.maxchanends
+.resource_const FUNC_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty FUNC_NAME, "tail_callees"
+.resource_list_add   FUNC_NAME, "callees", vect_sXX_max_elementwise
+.resource_list_empty FUNC_NAME, "parallel_callees"
 .size FUNC_NAME, .L_end_s16 - FUNC_NAME
 #undef FUNC_NAME
   
@@ -97,10 +97,10 @@ FUNC_NAME:
 
 .global FUNC_NAME
 .type FUNC_NAME,@function
-.set FUNC_NAME.nstackwords,NSTACKWORDS;  .global FUNC_NAME.nstackwords
-.set FUNC_NAME.maxcores,1;               .global FUNC_NAME.maxcores
-.set FUNC_NAME.maxtimers,0;              .global FUNC_NAME.maxtimers
-.set FUNC_NAME.maxchanends,0;            .global FUNC_NAME.maxchanends
+.resource_const FUNC_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty FUNC_NAME, "tail_callees"
+.resource_list_add   FUNC_NAME, "callees", vect_sXX_max_elementwise
+.resource_list_empty FUNC_NAME, "parallel_callees"
 .size FUNC_NAME, .L_end_s8 - FUNC_NAME
 #undef FUNC_NAME
 
@@ -183,7 +183,11 @@ vect_sXX_max_elementwise:
     mv a0, t3
     ret 
 
-.L_end_sXX:
+.resource_const vect_sXX_max_elementwise, "stack_frame_bytes", 0
+.resource_list_empty vect_sXX_max_elementwise, "tail_callees"
+.resource_list_empty vect_sXX_max_elementwise, "callees"
+.resource_list_empty vect_sXX_max_elementwise, "parallel_callees"
+.size vect_sXX_max_elementwise, . - vect_sXX_max_elementwise
 
 
 #endif //defined(__VX4B__)

@@ -131,18 +131,18 @@ vect_s32_sub:
 
 .global vect_s16_sub
 .type vect_s16_sub,@function
-.set vect_s16_sub.nstackwords,NSTACKWORDS;  .global vect_s16_sub.nstackwords
-.set vect_s16_sub.maxcores,1;               .global vect_s16_sub.maxcores
-.set vect_s16_sub.maxtimers,0;              .global vect_s16_sub.maxtimers
-.set vect_s16_sub.maxchanends,0;            .global vect_s16_sub.maxchanends
+.resource_const vect_s16_sub, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_s16_sub, "tail_callees"
+.resource_list_empty vect_s16_sub, "callees"
+.resource_list_empty vect_s16_sub, "parallel_callees"
 .size vect_s16_sub, .L_func_end_s16 - vect_s16_sub
 
 .global vect_s32_sub
 .type vect_s32_sub,@function
-.set vect_s32_sub.nstackwords,NSTACKWORDS;  .global vect_s32_sub.nstackwords
-.set vect_s32_sub.maxcores,1;               .global vect_s32_sub.maxcores
-.set vect_s32_sub.maxtimers,0;              .global vect_s32_sub.maxtimers
-.set vect_s32_sub.maxchanends,0;            .global vect_s32_sub.maxchanends
+.resource_const vect_s32_sub, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_list_empty vect_s32_sub, "tail_callees"
+.resource_list_empty vect_s32_sub, "callees"
+.resource_list_empty vect_s32_sub, "parallel_callees"
 .size vect_s32_sub, .L_func_end_s32 - vect_s32_sub
 
     
