@@ -27,8 +27,7 @@ headroom_t vect_complex_s32_conj_macc(
 
 
 #define STACK_VEC_TMP   (NSTACKWORDS-8-1)
-
-#define STACK_BYTEMASK  1
+#define STACK_BYTEMASK  (NSTACKWORDS-8-2)
 
 #define acc         a0 
 #define b           a1 
