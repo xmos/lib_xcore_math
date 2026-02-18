@@ -13,25 +13,6 @@ extern const unsigned rot_table32_rows;
 extern const complex_s32_t rot_table32[30][4];
 
 
-static inline
-complex_s32_t safe_complex_ashr32(complex_s32_t x, right_shift_t shr)
-{
-  complex_s32_t y;
-  if(shr >= 32){
-    y.re = (x.re >= 0)? 0 : -1;
-    y.im = (x.im >= 0)? 0 : -1;
-  } else if(shr >= 0){
-    y.re = x.re >> shr;
-    y.im = x.im >> shr;
-  } else {
-    y.re = x.re << (-shr);
-    y.im = x.im << (-shr);
-  }
-  return y;
-}
-
-
-
 headroom_t bfp_complex_s32_headroom(
     bfp_complex_s32_t* a)
 {
@@ -110,7 +91,10 @@ void bfp_complex_s32_add_scalar(
     vect_complex_s32_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp,
                                             c.exp, b->hr, HR_C32(c.mant));
 
-    complex_s32_t cc = safe_complex_ashr32(c.mant, c_shr);
+    complex_s32_t cc = {
+        ashr32_sat(c.mant.re, c_shr),
+        ashr32_sat(c.mant.im, c_shr)
+    };
 
     a->hr = vect_complex_s32_add_scalar(a->data, b->data, cc, b->length,
                                             b_shr);

@@ -69,8 +69,8 @@ float_complex_s32_t float_complex_s32_add(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant.re = ashr32(x.mant.re, x_shr) + ashr32(y.mant.re, y_shr);
-  res.mant.im = ashr32(x.mant.im, x_shr) + ashr32(y.mant.im, y_shr);
+  res.mant.re = ashr32_sat(x.mant.re, x_shr) + ashr32_sat(y.mant.re, y_shr);
+  res.mant.im = ashr32_sat(x.mant.im, x_shr) + ashr32_sat(y.mant.im, y_shr);
 
   return res;
 }
@@ -93,8 +93,8 @@ float_complex_s32_t float_complex_s32_sub(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant.re = ashr32(x.mant.re, x_shr) - ashr32(y.mant.re, y_shr);
-  res.mant.im = ashr32(x.mant.im, x_shr) - ashr32(y.mant.im, y_shr);
+  res.mant.re = ashr32_sat(x.mant.re, x_shr) - ashr32_sat(y.mant.re, y_shr);
+  res.mant.im = ashr32_sat(x.mant.im, x_shr) - ashr32_sat(y.mant.im, y_shr);
 
   return res;
 }
