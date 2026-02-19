@@ -269,6 +269,83 @@ static inline unsigned cls(
 #endif //__XS3A__
 }
 
+/**
+ * @brief Arithmetic shift right of an `int32_t`
+ * 
+ * When the positive `shr` value is given, returns right-shifted `x` value,
+ * filling most significant bits with a sign bit.
+ * If the shift amount is larger than the lenght of `int32_t` type, zero if returned.
+ * 
+ * When the negative `shr` value is passed, returns left-shifted `x` result.
+ * If the left shifted result is larger than the range of the `int32_t` type, output is saturated.
+ * 
+ * @param[in] x         Input value
+ * @param[in] shr       Right shift to apply to the input
+ * @return int32_t      Shifted result
+ * 
+ * @ingroup util_macros
+ */
+static inline int32_t ashr32_sat(int32_t x, right_shift_t shr){
+  int32_t res;
+
+#if defined(__VX4B__)
+
+  if (shr >= 0) {
+    // using xm.shl here as it targets the sra with the negative shift
+    // but will also work for when shr > 31
+    left_shift_t shl = -shr;
+    asm("xm.shl %0, %1, %2": "=r"(res) : "r"(x), "r"(shl));
+  }
+  else if (shr > -32) {
+    int32_t ah = 0, al = 0, sat = 0;
+    left_shift_t shl = -shr;
+    asm("xm.linsert %0, %1, %2, %3, 32": "=r" (ah), "=r"(al): "r" (x), "r" (shl), "0" (ah), "1" (al));
+    asm("xm.sext %0, %1": "=r" (ah): "r" (shl), "0" (ah));
+    asm("xm.lsats %0, %1, %2": "=r" (ah), "=r" (res): "r" (sat), "0" (ah), "1" (al));
+  }
+  else {
+    res = (x == 0) ? 0 : (x > 0) ? INT32_MAX : INT32_MIN;
+  }
+
+#elif defined(__XS3A__)
+
+  if (shr >= 0) {
+    asm("ashr %0, %1, %2": "=r" (res): "r" (x), "r" (shr));
+  }
+  else if (shr > -31){
+    // lsats doesn't work if you give in 0 on xs3a
+    // have to shift one more bit up, saturate and extract
+    // loses one bit of precision
+    int32_t ah = 0, al = 0, sat = 1;
+    left_shift_t shl = -shr + 1;
+    asm("linsert %0, %1, %2, %3, 32": "=r" (ah), "=r"(al): "r" (x), "r" (shl), "0" (ah), "1" (al));
+    asm("sext %0, %1": "=r" (ah): "r" (shl), "0" (ah));
+    asm("lsats %0, %1, %2": "=r" (ah), "=r" (al): "r" (sat), "0" (ah), "1" (al));
+    asm("lextract %0, %1, %2, %3, 32": "=r" (res): "r" (ah), "r" (al), "r" (sat));
+  }
+  else {
+    res = (x == 0) ? 0 : (x > 0) ? INT32_MAX : INT32_MIN;
+  }
+
+#else
+
+  if (shr > 31){
+    res = (x >= 0) ? 0 : 0xffffffff;
+  }
+  else if (shr >=0 ) {
+    res = x >> shr;
+  }
+  else if (shr < -31) {
+    res = (x == 0) ? 0 : (x > 0) ? INT32_MAX : INT32_MIN;
+  }
+  else {
+    int64_t tmp = ((int64_t) x) << -shr;
+    res = (tmp > INT32_MAX) ? INT32_MAX : (tmp < INT32_MIN) ? INT32_MIN : (int32_t) tmp;
+  }
+#endif
+
+  return res;
+}
 
 /**
  * @brief Reverse the bits of an integer.
@@ -291,10 +368,15 @@ static inline unsigned n_bitrev(
     const unsigned bits)
 {
   unsigned rev_index = 0;
-#ifdef __xcore__
+#if defined(__XS3A__)
 
   const unsigned shifted_index = index << (32 - bits);
   asm( "bitrev %0, %1" : "=r"(rev_index) : "r"(shifted_index) );
+
+#elif defined(__VX4B__)
+
+  const unsigned shifted_index = index << (32 - bits);
+  asm( "xm.bitrev %0, %1" : "=r"(rev_index) : "r"(shifted_index) );
 
 #else
 

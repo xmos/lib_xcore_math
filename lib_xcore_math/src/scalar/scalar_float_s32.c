@@ -8,18 +8,6 @@
 #include "xmath/xmath.h"
 
 
-static inline int32_t ashr32(int32_t x, right_shift_t shr)
-{
-  if(shr >= 0)
-    return x >> shr;
-  
-  int64_t tmp = ((int64_t)x) << -shr;
-
-  if(tmp > INT32_MAX)       return INT32_MAX;
-  else if(tmp < INT32_MIN)  return INT32_MIN;
-  else                      return (int32_t) tmp;
-}
-
 float_s64_t float_s32_to_float_s64(
     const float_s32_t x)
 {
@@ -68,7 +56,7 @@ float_s32_t float_s32_add(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant = ashr32(x.mant, x_shr) + ashr32(y.mant, y_shr);
+  res.mant = ashr32_sat(x.mant, x_shr) + ashr32_sat(y.mant, y_shr);
 
   return res;
 }
@@ -90,7 +78,7 @@ float_s32_t float_s32_sub(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant = ashr32(x.mant, x_shr) - ashr32(y.mant, y_shr);
+  res.mant = ashr32_sat(x.mant, x_shr) - ashr32_sat(y.mant, y_shr);
 
   return res;
 }
