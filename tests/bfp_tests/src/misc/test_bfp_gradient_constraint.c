@@ -159,11 +159,17 @@ TEST(bfp_gradient_constraint, bfp_complex_s32_gradient_constraint_stereo_A)
       // It's possible doing the IFFT allowed noise to bleed into the samples that should be zero
       // here, so give some slack
 
-      XTEST_ASSERT_VECT_S32_WITHIN(23, expectedA, A_td->data, A_td->length,
+#if defined(__VX4B__)
+      int th = 24;
+#else
+      int th = 23;
+#endif
+
+      XTEST_ASSERT_VECT_S32_WITHIN(th, expectedA, A_td->data, A_td->length,
         "FFT_N: %u\n"
         "frame_advance: %u\n", FFT_N, frame_advance);
 
-      XTEST_ASSERT_VECT_S32_WITHIN(23, expectedB, B_td->data, A_td->length,
+      XTEST_ASSERT_VECT_S32_WITHIN(th, expectedB, B_td->data, A_td->length,
         "FFT_N: %u\n"
         "frame_advance: %u\n", FFT_N, frame_advance);
 

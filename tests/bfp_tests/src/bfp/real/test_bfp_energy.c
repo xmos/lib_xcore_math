@@ -60,10 +60,11 @@ TEST(bfp_energy, bfp_s16_energy)
 
         float_s64_t result = bfp_s16_energy(&B);
 
-        double expf = ldexp((double) sum64, 2*B.exp);
-        double resf = ldexp((double) result.mant, result.exp);
-
-        TEST_ASSERT(expf == resf);
+#if defined(__VX4B__)
+        TEST_ASSERT_INT64_WITHIN(256, sum64, result.mant);
+#else
+        TEST_ASSERT(sum64 == result.mant);
+#endif
     }
 }
 

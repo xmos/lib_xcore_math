@@ -33,7 +33,6 @@ TEST_TEAR_DOWN(bfp_dot) {}
 #  define MAX_LEN    (512)
 #endif
 
-
 TEST(bfp_dot, bfp_s16_dot)
 {
     unsigned seed = SEED_FROM_FUNC_NAME();
@@ -48,8 +47,8 @@ TEST(bfp_dot, bfp_s16_dot)
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
 
-        bfp_s16_init(&B, dataB, pseudo_rand_int(&seed, -100, 100),
-                            pseudo_rand_uint(&seed, 1, MAX_LEN+1), 0);
+        unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
+        bfp_s16_init(&B, dataB, pseudo_rand_int(&seed, -100, 100), len, 0);
 
         bfp_s16_init(&C, dataC, pseudo_rand_int(&seed, -100, 100), B.length, 0);
 
@@ -70,12 +69,15 @@ TEST(bfp_dot, bfp_s16_dot)
         
         float_s64_t result = bfp_s16_dot(&B, &C);
 
-        double diff = expected-ldexp((double) result.mant, result.exp);
-        double error = fabs(diff/expected);
+        conv_error_e err = 0;
+        int64_t expected_s64 = conv_double_to_s64(expected, result.exp, &err);
+        TEST_ASSERT_EQUAL(0, err);
 
-        double max_error = ldexp(1, u32_ceil_log2(B.length) - 8 - (B.hr+C.hr));
-
-        TEST_ASSERT( error < max_error );
+#if defined(__VX4B__)
+        TEST_ASSERT_INT64_WITHIN(164, expected_s64, result.mant);
+#else
+        TEST_ASSERT(expected_s64 == result.mant);
+#endif
     }
 }
 
