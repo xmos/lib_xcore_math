@@ -81,7 +81,8 @@ pipeline {
                     sh 'xrun --xscope --id 0 --args filter_tests/bin/filter_tests.xe  -v'
                     sh 'xrun --xscope --id 0 --args scalar_tests/bin/scalar_tests.xe  -v'
                     sh 'xrun --xscope --id 0 --args vect_tests/bin/vect_tests.xe      -v'
-                    sh 'xrun --xscope --id 0 --args xs3_tests/bin/xs3_tests.xe        -v'
+                    // vpu scalar opts are not yet fully supported on vx4b
+                    // sh 'xrun --xscope --id 0 --args xs3_tests/bin/xs3_tests.xe        -v'
                   }
                 }
               }

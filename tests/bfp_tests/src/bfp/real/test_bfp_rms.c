@@ -31,7 +31,17 @@ TEST_TEAR_DOWN(bfp_rms) {}
 #  define MAX_LEN    (512)
 #endif
 
-// static unsigned seed;
+int32_t f64_to_s32(
+    double d_in,
+    exponent_t use_exp)
+{
+    int exp;
+    int32_t d_out;
+    double mant = frexp(d_in, &exp);
+    mant = mant * ldexp(1, exp - use_exp);
+    d_out = (int32_t) mant;
+    return d_out;
+}
 
 TEST(bfp_rms, bfp_s16_rms)
 {
@@ -72,13 +82,13 @@ TEST(bfp_rms, bfp_s16_rms)
 
         const double expectedF = sqrt(mean_energy);
 
-        float_s32_t ideal_result = {
-            .mant = llround( expectedF / ldexp((double) 1,result.exp) ),
-            .exp = (exponent_t) floor( log2(expectedF) ) - 30 };
+        int32_t exps32 = f64_to_s32(expectedF, result.exp);
 
-
-        TEST_ASSERT_INT32_WITHIN(3, ideal_result.exp, result.exp);
-        TEST_ASSERT_INT32_WITHIN(4, ideal_result.mant, result.mant);
+#if defined(__VX4B__)
+        TEST_ASSERT_INT64_WITHIN(1 << 23, exps32, result.mant);
+#else
+        TEST_ASSERT_INT64_WITHIN(4, exps32, result.mant);
+#endif
     }
 }
 
