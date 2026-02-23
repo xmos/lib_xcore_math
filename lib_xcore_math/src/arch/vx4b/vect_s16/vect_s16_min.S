@@ -42,7 +42,7 @@ FUNCTION_NAME:
 
         xm.entsp (NSTACKWORDS)*4
         xm.stdsp  s3,s2,8
-        xm.stdsp  s5,s4,0
+        xm.stdsp  s5,s4,16
         li t3, 0x100
     { slli tail, N, SIZEOF_LOG2_S16     ; xm.vsetc t3                           }
     { srli N, N, EPV_LOG2_S16           ; nop                                   }
@@ -93,7 +93,7 @@ FUNCTION_NAME:
             { mv cur_min, a0            ; nop                                   }
         { mv a0, cur_min                ; xm.bt N, .L_loop2_top                 }
 
-        xm.lddsp  s5,s4,0
+        xm.lddsp  s5,s4,16
         xm.lddsp  s3,s2,8
         xm.retsp (NSTACKWORDS)*4
 

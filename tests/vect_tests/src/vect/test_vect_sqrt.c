@@ -149,13 +149,23 @@ TEST(vect_sqrt, vect_s16_sqrt_prepare)
         int16_t WORD_ALIGNED A;
 
         const headroom_t a_hr = vect_s16_sqrt(&A, &B, 1, b_shr, VECT_SQRT_S16_MAX_DEPTH);
-        const int16_t p = vlmul16(A, A);
+        int16_t p = vlmul16(A, A);
         const int16_t target = vlashr16(B, b_shr);
+
+        // vlmul16 has a different shift in vx4b
+#if defined(__VX4B__)
+        p <<= 1;
+#endif
+
         const int16_t delta = target - p;
 
         TEST_ASSERT_EQUAL_MESSAGE(vector->expected.a_exp, a_exp, msg_buff);
         TEST_ASSERT_EQUAL_MESSAGE(vector->expected.b_shr, b_shr, msg_buff);
+#if defined(__VX4B__)        
+        TEST_ASSERT_LESS_OR_EQUAL_INT16_MESSAGE(target + 2, p, msg_buff);
+#else
         TEST_ASSERT_LESS_OR_EQUAL_INT16_MESSAGE(target, p, msg_buff);
+#endif
         TEST_ASSERT_LESS_OR_EQUAL_INT16_MESSAGE(1, delta, msg_buff);
         TEST_ASSERT_LESS_THAN_MESSAGE(2, a_hr, msg_buff);
     }
@@ -203,14 +213,19 @@ TEST(vect_sqrt, vect_s16_sqrt_A)
 
             int16_t target = vlashr16(B[i], b_shr);
 
+            #if defined(__VX4B__)
+            target >>= 1;
+            #endif
+
             int16_t p = vlmul16(A[i], A[i]);
             int16_t p2 = vlmul16(A[i]+1, A[i]+1);
 
             #if defined(__VX4B__)
-                TEST_ASSERT_LESS_OR_EQUAL_INT16(target+1, p);
+                TEST_ASSERT_LESS_OR_EQUAL_INT16(target+2, p);
             #else
                 TEST_ASSERT_LESS_OR_EQUAL_INT16(target, p);
             #endif
+            TEST_ASSERT_LESS_OR_EQUAL_INT16(2, target - p);
             TEST_ASSERT_GREATER_OR_EQUAL_INT16(target, p2);
         }
     }
