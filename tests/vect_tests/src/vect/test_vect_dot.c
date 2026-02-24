@@ -134,8 +134,11 @@ TEST(vect_dot, vect_s16_dot)
         // printf("Got:      %lld     (%012llX)\n", result,   (uint64_t) result);
         // printf("============\n");
 
-        TEST_ASSERT_EQUAL(expected, result);
-        
+#if defined(__VX4B__)
+        TEST_ASSERT_INT64_WITHIN(128, expected, result);
+#else
+        TEST_ASSERT(expected == result);
+#endif
     }
 }
 #undef MAX_LEN

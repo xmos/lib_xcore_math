@@ -117,13 +117,13 @@ FUNC_END
 
 /* *****************************************************
 
-int8_t vlashs6(
+int8_t vlashr8(
     const int8_t x,
     const right_shift_t shr);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlashs6
+#define FUNCTION_NAME   vlashr8
 #define NSTACKWORDS     (4)
 FUNC_START
 FUNCTION_NAME:
@@ -284,7 +284,7 @@ vpu_int8_acc_t vlmacc8(
 ********************************************************/
 
 #define FUNCTION_NAME   vlmacc8
-#define NSTACKWORDS     (8)
+#define NSTACKWORDS     (12)
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }

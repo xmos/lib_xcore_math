@@ -318,7 +318,7 @@ vpu_int16_acc_t vlmacc16(
 ********************************************************/
 
 #define FUNCTION_NAME   vlmacc16
-#define NSTACKWORDS     (8)
+#define NSTACKWORDS     (12)
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }

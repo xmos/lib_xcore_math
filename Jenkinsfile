@@ -47,7 +47,56 @@ pipeline {
   stages {
     stage('Build and test') {
       parallel {
-        stage('Linux build & test') {
+        stage('Linux vx4b') {
+          agent {
+            label 'vx4'
+          }
+          stages {
+
+            stage('Examples') {
+              steps {
+                runningOn(env.NODE_NAME)
+                dir("${REPO}") {
+                  checkout scm
+                  dir('examples') {
+                    withTools(params.TOOLS_VX4_VERSION) {
+                      sh 'cmake -B build_vx4b -G "Unix Makefiles" -DXCORE_TARGET=XK-EVK-XU416'
+                      sh 'xmake -C build_vx4b -j'
+                    }
+                  }
+                }
+              }
+            } // Examples
+
+            stage('Unit tests vx4b') {
+              steps {
+                withTools(params.TOOLS_VX4_VERSION) {
+                  dir("${REPO}/tests") {
+                    sh "cmake -B build_vx4b -DXCORE_TARGET=XK-EVK-XU416 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G \"Unix Makefiles\""
+                    sh 'xmake -C build_vx4b -j'
+
+                    sh 'xrun --xscope --id 0 --args bfp_tests/bin/bfp_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args dct_tests/bin/dct_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args fft_tests/bin/fft_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args filter_tests/bin/filter_tests.xe  -v'
+                    sh 'xrun --xscope --id 0 --args scalar_tests/bin/scalar_tests.xe  -v'
+                    sh 'xrun --xscope --id 0 --args vect_tests/bin/vect_tests.xe      -v'
+                    // vpu scalar opts are not yet fully supported on vx4b
+                    // sh 'xrun --xscope --id 0 --args xs3_tests/bin/xs3_tests.xe        -v'
+                  }
+                }
+              }
+            } // Unit tests xs3a
+
+          } // stages
+          post {
+            cleanup {
+              xcoreCleanSandbox()
+            }
+          }
+        } // Linux vx4b
+
+        stage('Linux xs3a and native') {
           agent {
             label 'xcore.ai'
           }
@@ -59,15 +108,10 @@ pipeline {
                 dir("${REPO}") {
                   checkout scm
                   dir('examples') {
-                    // xs3a build
                     withTools(params.TOOLS_VERSION) {
+                      // xs3a build
                       sh 'cmake -B build_xs3a -G "Unix Makefiles"'
                       sh 'xmake -C build_xs3a -j'
-                    }
-                    withTools(params.TOOLS_VX4_VERSION) {
-                      // vx4b build
-                      sh 'cmake -B build_vx4b -G "Unix Makefiles" -DXCORE_TARGET=XK-EVK-XU416'
-                      sh 'xmake -C build_vx4b'
                       // x86 build
                       sh 'cmake -B build_x86 -G "Unix Makefiles" -D BUILD_NATIVE=TRUE'
                       sh 'xmake -C build_x86 -j'
@@ -75,12 +119,7 @@ pipeline {
                   }
                 }
               }
-            } // Build examples
-            stage("Archive Lib") {
-              steps {
-                archiveSandbox(REPO)
-              }
-            } //stage("Archive Lib")
+            } // Examples
 
             stage('Unit tests xs3a') {
               steps {
@@ -120,14 +159,6 @@ pipeline {
               }
             } // Unit tests x86
 
-            stage('Library checks') {
-              steps {
-                warnError("Repo checks failed") {
-                  runRepoChecks("${WORKSPACE}/${REPO}")
-                }
-              }
-            }
-
             stage('Legacy build') {
               steps {
                 runningOn(env.NODE_NAME)
@@ -151,7 +182,7 @@ pipeline {
               xcoreCleanSandbox()
             }
           }
-        } // Linux build and test
+        } // Linux xs3a and native
 
         stage('Windows build & test') {
           agent {
@@ -233,7 +264,7 @@ pipeline {
           }
         } // Windows builds
 
-        stage ('Build documentation') {
+        stage ('Docs and lib checks') {
           agent {
             label 'documentation'
           }
@@ -242,20 +273,35 @@ pipeline {
               steps {
                 runningOn(env.NODE_NAME)
                 dir("${REPO}") {
-                  checkout scm
+                  checkoutScmShallow()
                   warnError("Docs") {
                     buildDocs()
-                  } // warnError("Docs")
-                } // dir("${REPO}")
-              } // steps
-            } // stage('Build Documentation')
+                  }
+                }
+              }
+            } // Documentation
+
+            stage('Library checks') {
+              steps {
+                warnError("Repo checks failed") {
+                  runRepoChecks("${WORKSPACE}/${REPO}")
+                }
+              }
+            } // Library checks
+
+            stage("Archive lib") {
+              steps {
+                archiveSandbox(REPO)
+              }
+            } // Archive lib
+
           } // stages
           post {
             cleanup {
               xcoreCleanSandbox()
             }
           }
-        } // Build Documentation
+        } // Docs and lib checks
 
       } // parallel
     } // Bullds and tests

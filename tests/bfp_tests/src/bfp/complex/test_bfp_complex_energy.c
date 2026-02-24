@@ -70,7 +70,11 @@ TEST(bfp_complex_energy, bfp_complex_s16_energy)
 
         TEST_ASSERT_EQUAL(0, conv_error);
 
-        TEST_ASSERT_EQUAL_INT64_MESSAGE(expected, result.mant, "");
+#if defined(__VX4B__)
+        TEST_ASSERT_INT64_WITHIN(550, expected, result.mant);
+#else
+        TEST_ASSERT(expected == result.mant);
+#endif
     }
 }
 

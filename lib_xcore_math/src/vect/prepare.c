@@ -348,6 +348,13 @@ void vect_s16_inverse_prepare(
 
     headroom_t hr = HR_S16(a);
 
+#if defined(__VX4B__)
+    // all the calculations below are the same for vx4b
+    // apart from the fact that vlmul in 16-bit mode now shifts by 15, not 14
+    // hence `a` now has one bit of headroom, adjusting
+    hr -= 1;
+#endif
+
     //  2^(14-hr) <= abs(a)
     //  with equality:
 

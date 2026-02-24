@@ -360,7 +360,7 @@ vpu_int32_acc_t vlmaccr32(
 ********************************************************/
 
 #define FUNCTION_NAME   vlmaccr32
-#define NSTACKWORDS     (8)
+#define NSTACKWORDS     (12)
 FUNC_START
 FUNCTION_NAME:
 { li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
