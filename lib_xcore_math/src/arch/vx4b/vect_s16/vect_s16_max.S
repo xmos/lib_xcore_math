@@ -41,7 +41,7 @@ int32_t vect_s16_max(
 FUNCTION_NAME:
 
         xm.entsp (NSTACKWORDS)*4
-        xm.stdsp  s3,s2,0
+        xm.stdsp  s3,s2,16
         xm.stdsp  s5,s4,8
         li t3, 0x100
     { slli tail, N, SIZEOF_LOG2_S16     ; xm.vsetc t3                           }
@@ -92,7 +92,7 @@ xm.zip tmz, tmp, 0
             { mv cur_max, a0            ; nop                                   }
         { mv a0, cur_max                ; xm.bt N, .L_loop2_top                 }
 
-        xm.lddsp  s3,s2,0
+        xm.lddsp  s3,s2,16
         xm.lddsp  s5,s4,8
         xm.retsp (NSTACKWORDS)*4
 
