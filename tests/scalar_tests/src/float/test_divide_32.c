@@ -63,8 +63,6 @@ int32_t uy[8] = {
     0x0F765432,
 };
 
-int err = 0;
-
 int testuu = 0;
 int testus = 0;
 int testsu = 0;
@@ -120,10 +118,10 @@ TEST(divide_32, divide_32_all) {
             comparess(3, sx[xi], sy[yi]);
         }
     }
-    if (err != 0) {
-        printf("FAIL %d errors\n", err);
-    } else {
-        printf("PASS %d %d %d %d tests\n", testuu, testus, testsu, testss);
-    }
+    // Verify appropriate number of tests executed for each; not all of the 64 tests are valid.
+    TEST_ASSERT(testuu == 59);
+    TEST_ASSERT(testus == 54);
+    TEST_ASSERT(testsu == 62);
+    TEST_ASSERT(testss == 60);
 }
 
