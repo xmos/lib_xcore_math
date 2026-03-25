@@ -497,7 +497,8 @@ void s32_odd_powers(
 /**
  * @brief Divide a 64 bit integer by a 32 bit integer into a 32 bit integer. signed/signed -> signed
  *
- * This assumes that the result fits in 32 bits.
+ * This function assumes that the result fits in 32 signed bits. The result is undefined if the
+ * answer does not fit.
  * 
  * @param[in]   x       64 bit signed integer dividend
  * @param[in]   y       32 bit signed divisor
@@ -512,7 +513,8 @@ int32_t s32_divide_s64_s32(
 /**
  * @brief Divide a 64 bit integer by a 32 bit integer into a 32 bit integer. unsigned/signed -> signed
  *
- * This assumes that the result fits in 32 bits.
+ * This function assumes that the result fits in 32 signed bits. The result is undefined if the
+ * answer does not fit.
  * 
  * @param[in]   x       64 bit unsigned integer dividend
  * @param[in]   y       32 bit signed divisor
@@ -527,7 +529,8 @@ int32_t s32_divide_u64_s32(
 /**
  * @brief Divide a 64 bit integer by a 32 bit integer into a 32 bit integer. signed/unsigned -> signed
  *
- * This assumes that the result fits in 32 bits.
+ * This function assumes that the result fits in 32 signed bits. The result is undefined if the
+ * answer does not fit.
  * 
  * @param[in]   x       64 bit signed integer dividend
  * @param[in]   y       32 bit unsigned divisor
@@ -542,7 +545,8 @@ int32_t s32_divide_s64_u32(
 /**
  * @brief Divide a 64 bit integer by a 32 bit integer into a 32 bit integer. unsigned/unsigned -> unsigned
  *
- * This assumes that the result fits in 32 bits.
+ * This function assumes that the result fits in 32 unsigned bits. The result is undefined if the
+ * answer does not fit.
  * 
  * @param[in]   x       64 bit unsigned integer dividend
  * @param[in]   y       32 bit unsigned divisor
