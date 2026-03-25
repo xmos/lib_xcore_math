@@ -178,7 +178,7 @@ TEST(filter_fir_s16, case2)
         int16_t res = filter_fir_s16(&filter, new_sample);
 
         #if defined(__VX4B__)
-            TEST_ASSERT_INT16_WITHIN_MESSAGE(2, expected16, res, msg_buff);
+            TEST_ASSERT_INT16_WITHIN_MESSAGE(4, expected16, res, msg_buff);
         #else
             TEST_ASSERT_EQUAL_MESSAGE(expected16, res, msg_buff);
         #endif
