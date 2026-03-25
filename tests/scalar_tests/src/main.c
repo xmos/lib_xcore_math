@@ -19,6 +19,9 @@ int main(int argc, const char* argv[])
     UnityGetCommandLineOptions(argc, argv);
     UnityBegin(argv[0]);
 
+    // integer divisions
+    RUN_TEST_GROUP(divide_32);
+
     // macro
     RUN_TEST_GROUP(CLS_macro);
     RUN_TEST_GROUP(HR_macro);
