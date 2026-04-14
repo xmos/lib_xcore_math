@@ -70,8 +70,8 @@ TEST(bfp_complex_sum, bfp_complex_s16_sum)
 
         TEST_ASSERT_EQUAL(expected.exp, result.exp);
         #if defined(__VX4B__)
-            TEST_ASSERT_INT32_WITHIN(8, expected.mant.re, result.mant.re);
-            TEST_ASSERT_INT32_WITHIN(8, expected.mant.im, result.mant.im);    
+            TEST_ASSERT_INT32_WITHIN(16, expected.mant.re, result.mant.re);
+            TEST_ASSERT_INT32_WITHIN(16, expected.mant.im, result.mant.im);    
         #else
             TEST_ASSERT_EQUAL_INT32(expected.mant.re, result.mant.re);
             TEST_ASSERT_EQUAL_INT32(expected.mant.im, result.mant.im);

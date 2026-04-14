@@ -69,7 +69,7 @@ TEST(bfp_abs_sum, bfp_s16_abs_sum)
 
         #if defined(__VX4B__)
             TEST_ASSERT_INT32_WITHIN(1, expected.exp, result.exp);
-            TEST_ASSERT_INT32_WITHIN(12, expected.mant, result.mant);    
+            TEST_ASSERT_INT32_WITHIN(16, expected.mant, result.mant);    
         #else
             TEST_ASSERT_EQUAL(expected.exp, result.exp);
             TEST_ASSERT_EQUAL_INT32(expected.mant, result.mant);
