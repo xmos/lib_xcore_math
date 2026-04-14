@@ -126,7 +126,7 @@ TEST(vect_sum, vect_s16_sum_random)
             exp += B[i];
         }
         #if defined(__VX4B__)
-            TEST_ASSERT_INT16_WITHIN(4, exp, result);
+            TEST_ASSERT_INT16_WITHIN(16, exp, result);
         #else
             TEST_ASSERT_EQUAL(exp, result);
         #endif

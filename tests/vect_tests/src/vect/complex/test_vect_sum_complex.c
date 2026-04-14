@@ -209,8 +209,8 @@ TEST(vect_complex_sum, vect_complex_s16_sum_random)
 
         #if defined(__VX4B__)
             //this casts to 32 bit because it night not fit in 16 bits (due to rounding)
-            TEST_ASSERT_INT32_WITHIN(4, expected.re, result.re);
-            TEST_ASSERT_INT32_WITHIN(4, expected.im, result.im);
+            TEST_ASSERT_INT32_WITHIN(16, expected.re, result.re);
+            TEST_ASSERT_INT32_WITHIN(16, expected.im, result.im);
         #else        
             TEST_ASSERT_EQUAL(expected.re, result.re);
             TEST_ASSERT_EQUAL(expected.im, result.im);

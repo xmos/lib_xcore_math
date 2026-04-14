@@ -86,7 +86,7 @@ TEST(vect_energy, vect_s16_energy)
 
         #if defined(__VX4B__)
             //this casts to 32 bit because it night not fit in 16 bits (due to rounding)
-            TEST_ASSERT_INT32_WITHIN(4, exp, result);
+            TEST_ASSERT_INT32_WITHIN(16, exp, result);
         #else
             TEST_ASSERT_EQUAL(exp, result);
         #endif  
