@@ -15,18 +15,16 @@ int main(int argc, const char* argv[])
 #ifdef __XS3A__
   xscope_config_io(XSCOPE_IO_BASIC);
 #endif
-    
+
     UnityGetCommandLineOptions(argc, argv);
     UnityBegin(argv[0]);
-
-    // integer divisions
-    RUN_TEST_GROUP(divide_32);
 
     // macro
     RUN_TEST_GROUP(CLS_macro);
     RUN_TEST_GROUP(HR_macro);
 
     // scalar utils
+    RUN_TEST_GROUP(divide_32);
     RUN_TEST_GROUP(s32_sqrt);
     RUN_TEST_GROUP(sXX_inverse);
     RUN_TEST_GROUP(sXX_mul);
@@ -34,7 +32,6 @@ int main(int argc, const char* argv[])
 
     // scalar ops
     RUN_TEST_GROUP(float_convert);
-
     RUN_TEST_GROUP(float_sXX_add);
     RUN_TEST_GROUP(float_sXX_sub);
     RUN_TEST_GROUP(float_sXX_mul);
@@ -42,8 +39,6 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(float_sXX_gt);
     RUN_TEST_GROUP(float_sXX_div);
     RUN_TEST_GROUP(float_sXX_ema);
-    
-    
     RUN_TEST_GROUP(float_sXX_sqrt);
 
     RUN_TEST_GROUP(float_trig);
@@ -51,7 +46,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(float_log);
     RUN_TEST_GROUP(float_exp);
     RUN_TEST_GROUP(float_logistic);
-    
+
 
     return UNITY_END();
 }

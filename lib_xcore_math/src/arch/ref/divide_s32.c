@@ -24,7 +24,6 @@ int32_t s32_divide_u64_s32(
     } else {
         return -(x/-y);
     }
-    return x/y;
 }
 
 int32_t s32_divide_s64_u32(
