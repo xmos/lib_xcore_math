@@ -38,7 +38,7 @@ int16_t s32_to_s16(
   *a_exp = b_exp + shr;
   return (int16_t) (b >> shr);
 }
-    
+
 int32_t s16_to_s32(
     exponent_t* a_exp,
     const int16_t b,
@@ -103,6 +103,5 @@ int32_t s32_inverse(
   const signed scale = 2*30 - b_hr;  // Declare as signed to avoid warning C4146: unary minus operator applied to unsigned type, result still unsigned
   const int64_t dividend = 1LL << scale;
   *a_exp = -scale;
-  return (int32_t) (dividend / b);
-
+  return s32_divide_s64_s32(dividend, b);
 }
