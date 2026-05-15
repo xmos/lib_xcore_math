@@ -171,3 +171,65 @@ int32_t s32_ashr(int32_t x, right_shift_t shr){
 
   return res;
 }
+
+int16_t s16_ashr(int16_t x, right_shift_t shr){
+  int16_t res;
+
+#if defined(__VX4B__)
+
+  if (shr > -16) {
+    // using xm.shl here as it works for both positive and negative shifts.
+    // For positive, it targets the sra with the negative shift,
+    // but will also work for when shr > 31.
+    // For negative > -16, fits in the 32 bit word, needs saturation.
+    left_shift_t shl = -shr;
+    int32_t y = (int32_t)x, zero = 0, _16 = 16;
+    asm("xm.shl %0, %1, %2": "=r" (y): "r" (y), "r" (shl));
+    // not initialising low word to anything here as xm.lsats going to saturate to 32 + 16 bits,
+    // low word is not going to affect the result and we're only interested in the high word
+    // should save a cycle
+    asm("xm.lsats %0, %1, %2": "=r" (y), "=r"(zero): "r"(_16), "0" (y));
+    res = (int16_t)y;
+  }
+  else {
+    res = (x == 0) ? 0 : (x > 0) ? INT16_MAX : INT16_MIN;
+  }
+
+#elif defined(__XS3A__)
+
+  if (shr > -16) {
+    // using ashr here as it works for both positive and negative shifts.
+    // For positive, works as expected.
+    // For neagtive, will do a shl.
+    // As the shift > -16, it'll fit in the 32 bit word, needs saturation.
+    int32_t y = (int32_t)x, zero = 0, _16 = 16;
+    asm("ashr %0, %1, %2": "=r" (y): "r" (y), "r" (shr));
+    // not initialising low word to anything here as lsats going to saturate to 32 + 16 bits,
+    // low word is not going to affect the result and we're only interested in the high word
+    // should save a cycle
+    asm("lsats %0, %1, %2": "=r" (y), "=r" (zero): "r" (_16), "0" (y));
+    res = (int16_t)y;
+  }
+  else {
+    res = (x == 0) ? 0 : (x > 0) ? INT16_MAX : INT16_MIN;
+  }
+
+#else
+
+  if (shr > 15){
+    res = (x >= 0) ? 0 : 0xffff;
+  }
+  else if (shr >=0 ) {
+    res = x >> shr;
+  }
+  else if (shr < -15) {
+    res = (x == 0) ? 0 : (x > 0) ? INT16_MAX : INT16_MIN;
+  }
+  else {
+    int32_t tmp = ((int32_t) x) << -shr;
+    res = (tmp > INT16_MAX) ? INT16_MAX : (tmp < INT16_MIN) ? INT16_MIN : (int16_t) tmp;
+  }
+#endif
+
+  return res;
+}

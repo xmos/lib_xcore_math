@@ -7,21 +7,6 @@
 
 #include "xmath/xmath.h"
 
-
-
-
-static inline int32_t ashr32(int32_t x, right_shift_t shr)
-{
-  if(shr >= 0)
-    return x >> shr;
-
-  int64_t tmp = ((int64_t)x) << -shr;
-
-  if(tmp > INT32_MAX)       return INT32_MAX;
-  else if(tmp < INT32_MIN)  return INT32_MIN;
-  else                      return (int32_t) tmp;
-}
-
 // Non-saturating
 static inline int64_t ashr64(int64_t x, right_shift_t shr)
 {
@@ -117,8 +102,8 @@ float_complex_s16_t float_complex_s16_mul(
   right_shift_t p_shr = 16 - p_hr;
 
   float_complex_s16_t res;
-  res.mant.re = (int16_t) ashr32(p_re, p_shr);
-  res.mant.im = (int16_t) ashr32(p_im, p_shr);
+  res.mant.re = (int16_t) s32_ashr(p_re, p_shr);
+  res.mant.im = (int16_t) s32_ashr(p_im, p_shr);
   res.exp = p_exp + p_shr;
   return res;
 }
