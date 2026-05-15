@@ -24,6 +24,7 @@ int main(int argc, const char* argv[])
     RUN_TEST_GROUP(HR_macro);
 
     // scalar utils
+    RUN_TEST_GROUP(sXX_ashr);
     RUN_TEST_GROUP(divide_32);
     RUN_TEST_GROUP(s32_sqrt);
     RUN_TEST_GROUP(sXX_inverse);

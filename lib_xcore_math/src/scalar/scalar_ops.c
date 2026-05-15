@@ -105,3 +105,69 @@ int32_t s32_inverse(
   *a_exp = -scale;
   return s32_divide_s64_s32(dividend, b);
 }
+
+int32_t s32_ashr(int32_t x, right_shift_t shr){
+  int32_t res;
+
+  // vx4b and xs3a use different conditions for "normal" shift left case due to the difference in the way lsats works.
+  // On xs3a shr == -31 will return INT32_MAX / 0 / INT32_MIN from the final else.
+  // On vx4b shr == -31 it will compute x << 31, which either overflows or hits INT32_MIN.
+  // so result is the same but with no branching.
+#if defined(__VX4B__)
+
+  if (shr >= 0) {
+    // using xm.shl here as it targets the sra with the negative shift
+    // but will also work for when shr > 31
+    left_shift_t shl = -shr;
+    asm("xm.shl %0, %1, %2": "=r"(res) : "r"(x), "r"(shl));
+  }
+  else if (shr > -32) {
+    int32_t ah = 0, al = 0, sat = 0;
+    left_shift_t shl = -shr;
+    asm("xm.linsert %0, %1, %2, %3, 32": "=r" (ah), "=r"(al): "r" (x), "r" (shl), "0" (ah), "1" (al));
+    asm("xm.sext %0, %1": "=r" (ah): "r" (shl), "0" (ah));
+    asm("xm.lsats %0, %1, %2": "=r" (ah), "=r" (res): "r" (sat), "0" (ah), "1" (al));
+  }
+  else {
+    res = (x == 0) ? 0 : (x > 0) ? INT32_MAX : INT32_MIN;
+  }
+
+#elif defined(__XS3A__)
+
+  if (shr >= 0) {
+    asm("ashr %0, %1, %2": "=r" (res): "r" (x), "r" (shr));
+  }
+  else if (shr > -31){
+    // lsats doesn't work if you give in 0 on xs3a
+    // have to shift one more bit up, saturate and extract
+    // loses one bit of precision
+    int32_t ah = 0, al = 0, sat = 1;
+    left_shift_t shl = -shr + 1;
+    asm("linsert %0, %1, %2, %3, 32": "=r" (ah), "=r"(al): "r" (x), "r" (shl), "0" (ah), "1" (al));
+    asm("sext %0, %1": "=r" (ah): "r" (shl), "0" (ah));
+    asm("lsats %0, %1, %2": "=r" (ah), "=r" (al): "r" (sat), "0" (ah), "1" (al));
+    asm("lextract %0, %1, %2, %3, 32": "=r" (res): "r" (ah), "r" (al), "r" (sat));
+  }
+  else {
+    res = (x == 0) ? 0 : (x > 0) ? INT32_MAX : INT32_MIN;
+  }
+
+#else
+
+  if (shr > 31){
+    res = (x >= 0) ? 0 : 0xffffffff;
+  }
+  else if (shr >=0 ) {
+    res = x >> shr;
+  }
+  else if (shr < -31) {
+    res = (x == 0) ? 0 : (x > 0) ? INT32_MAX : INT32_MIN;
+  }
+  else {
+    int64_t tmp = ((int64_t) x) << -shr;
+    res = (tmp > INT32_MAX) ? INT32_MAX : (tmp < INT32_MIN) ? INT32_MIN : (int32_t) tmp;
+  }
+#endif
+
+  return res;
+}

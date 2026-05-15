@@ -19,7 +19,7 @@ headroom_t bfp_s32_headroom(
      return a->hr;
 }
 
-    
+
 void bfp_s32_use_exponent(
     bfp_s32_t* a,
     const exponent_t exp)
@@ -85,7 +85,7 @@ void bfp_s32_add_scalar(
 
     vect_s32_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp,
                                     b->hr, HR_S32(c.mant));
-    int32_t cc = ashr32_sat(c.mant, c_shr);
+    int32_t cc = s32_ashr(c.mant, c_shr);
 
     a->hr = vect_s32_add_scalar(a->data, b->data, cc, b->length,
                                     b_shr);
@@ -216,7 +216,7 @@ void bfp_s32_clip(
     int32_t ub = upper_bound;
 
     vect_s32_clip_prepare(&a_exp, &b_shr, &lb, &ub, b->exp, bound_exp, b->hr);
-    
+
     if(ub == VPU_INT32_MIN){
         /* upper bound must be smaller than any element of b, so set everything to that */
         a->exp = bound_exp;
@@ -313,7 +313,7 @@ float_s32_t bfp_s32_mean(
     float_s32_t a;
 
     int64_t sum = vect_s32_sum(b->data, b->length);
-    
+
     headroom_t hr = HR_S64(sum);
     sum = sum << hr;
     int64_t mean = sum / ((int)b->length);
@@ -470,7 +470,7 @@ void bfp_s32_to_bfp_s16(
     assert(b->length == a->length);
     assert(b->length != 0);
 #endif
-    
+
     right_shift_t b_shr = 16 - b->hr;
 
     a->exp = b->exp + b_shr;

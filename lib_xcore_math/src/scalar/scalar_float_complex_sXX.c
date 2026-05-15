@@ -14,7 +14,7 @@ static inline int32_t ashr32(int32_t x, right_shift_t shr)
 {
   if(shr >= 0)
     return x >> shr;
-  
+
   int64_t tmp = ((int64_t)x) << -shr;
 
   if(tmp > INT32_MAX)       return INT32_MAX;
@@ -69,8 +69,8 @@ float_complex_s32_t float_complex_s32_add(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant.re = ashr32_sat(x.mant.re, x_shr) + ashr32_sat(y.mant.re, y_shr);
-  res.mant.im = ashr32_sat(x.mant.im, x_shr) + ashr32_sat(y.mant.im, y_shr);
+  res.mant.re = s32_ashr(x.mant.re, x_shr) + s32_ashr(y.mant.re, y_shr);
+  res.mant.im = s32_ashr(x.mant.im, x_shr) + s32_ashr(y.mant.im, y_shr);
 
   return res;
 }
@@ -93,8 +93,8 @@ float_complex_s32_t float_complex_s32_sub(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant.re = ashr32_sat(x.mant.re, x_shr) - ashr32_sat(y.mant.re, y_shr);
-  res.mant.im = ashr32_sat(x.mant.im, x_shr) - ashr32_sat(y.mant.im, y_shr);
+  res.mant.re = s32_ashr(x.mant.re, x_shr) - s32_ashr(y.mant.re, y_shr);
+  res.mant.im = s32_ashr(x.mant.im, x_shr) - s32_ashr(y.mant.im, y_shr);
 
   return res;
 }
@@ -141,8 +141,8 @@ float_complex_s16_t float_complex_s16_add(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant.re = (int16_t) ( ashr32(x.mant.re, x_shr) + ashr32(y.mant.re, y_shr) );
-  res.mant.im = (int16_t) ( ashr32(x.mant.im, x_shr) + ashr32(y.mant.im, y_shr) );
+  res.mant.re = (int16_t) ( s32_ashr(x.mant.re, x_shr) + s32_ashr(y.mant.re, y_shr) );
+  res.mant.im = (int16_t) ( s32_ashr(x.mant.im, x_shr) + s32_ashr(y.mant.im, y_shr) );
 
   return res;
 }
@@ -165,11 +165,10 @@ float_complex_s16_t float_complex_s16_sub(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant.re = (int16_t) ( ashr32(x.mant.re, x_shr) - ashr32(y.mant.re, y_shr) );
-  res.mant.im = (int16_t) ( ashr32(x.mant.im, x_shr) - ashr32(y.mant.im, y_shr) );
+  res.mant.re = (int16_t) ( s32_ashr(x.mant.re, x_shr) - s32_ashr(y.mant.re, y_shr) );
+  res.mant.im = (int16_t) ( s32_ashr(x.mant.im, x_shr) - s32_ashr(y.mant.im, y_shr) );
 
   return res;
 }
 
 
-    
