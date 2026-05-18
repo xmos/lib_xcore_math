@@ -172,6 +172,76 @@ int32_t s32_ashr(int32_t x, right_shift_t shr){
   return res;
 }
 
+int64_t s64_ashr(int64_t x, right_shift_t shr){
+  int64_t res;
+
+// Not super elegant but all implementations share the nagative shift code
+// as it can't be easily implemented in inline assembly.
+// Given that there is an else fall-back case, should alsways work as expected.
+#if defined(__VX4B__)
+
+  int32_t ah = (int32_t)(x >> 32);
+  int32_t al = (int32_t)x;
+  int32_t res_hi, res_lo;
+  if (shr == 0) {
+    res = x;
+  } else if (shr >= 32) {
+    // xm.shl handles shifts >= 32 correctly (returns sign extension),
+    // so this branch covers all shr in [32, +inf).
+    left_shift_t shl_eff  = -(shr - 32);
+    asm("sra %0, %1, 31": "=r" (res_hi): "r" (ah));
+    asm("xm.shl %0, %1, %2": "=r"(res_lo): "r"(ah), "r"(shl_eff));
+    res = ((int64_t)res_hi << 32) | (uint32_t)res_lo;
+  } else if (shr >= 0) {
+    // 1 <= shr <= 31: split the 64-bit shift across the two 32-bit halves
+    asm("xm.shl %0, %1, %2": "=r" (res_hi): "r" (ah), "r" (-shr));
+    asm("xm.lextract %0, %1, %2, %3, 32": "=r" (res_lo): "r" (ah), "r" (al), "r" (shr));
+    res = ((int64_t)res_hi << 32) | (uint32_t)res_lo;
+  } else
+
+#elif defined(__XS3A__)
+
+  int32_t ah = (int32_t)(x >> 32);
+  int32_t al = (int32_t)x;
+  int32_t res_hi, res_lo;
+  if (shr == 0) {
+    res = x;
+  } else if (shr >= 32) {
+    // xm.shl handles shifts >= 32 correctly (returns sign extension),
+    // so this branch covers all shr in [32, +inf).
+    int32_t shr_eff  = shr - 32;
+    int32_t shr_sign = 31;
+    asm("ashr %0, %1, %2": "=r"(res_hi): "r"(ah), "r"(shr_sign));
+    asm("ashr %0, %1, %2": "=r"(res_lo): "r"(ah), "r"(shr_eff));
+    res = ((int64_t)res_hi << 32) | (uint32_t)res_lo;
+  } else if (shr >= 0) {
+    // 1 <= shr <= 31: ashr gives the high word; lextract extracts the
+    // 32 bits that straddle the word boundary for the low word.
+    asm("ashr %0, %1, %2": "=r"(res_hi): "r"(ah), "r"(shr));
+    asm("lextract %0, %1, %2, %3, 32": "=r"(res_lo): "r"(ah), "r"(al), "r"(shr));
+    res = ((int64_t)res_hi << 32) | (uint32_t)res_lo;
+  } else
+
+#else
+
+  if (shr > 63) {
+    res = (x >= 0) ? 0 : (int64_t)0xffffffffffffffffLL;
+  } else if (shr >= 0) {
+    res = x >> shr;
+  } else
+
+#endif
+
+  if (shr < -63) {
+    res = (x == 0) ? 0 : (x > 0) ? INT64_MAX : INT64_MIN;
+  } else {
+    int64_t tmp = (int64_t)((uint64_t)x << -shr);
+    res = ((tmp >> -shr) != x) ? ((x > 0) ? INT64_MAX : INT64_MIN) : tmp;
+  }
+
+  return res;
+}
+
 int16_t s16_ashr(int16_t x, right_shift_t shr){
   int16_t res;
 

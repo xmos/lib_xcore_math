@@ -7,15 +7,6 @@
 
 #include "xmath/xmath.h"
 
-// Non-saturating
-static inline int64_t ashr64(int64_t x, right_shift_t shr)
-{
-  if(shr >= 0)
-    return x >> shr;
-  return x << -shr;
-}
-
-
 float_complex_s32_t float_complex_s32_mul(
     const float_complex_s32_t x,
     const float_complex_s32_t y)
@@ -30,8 +21,8 @@ float_complex_s32_t float_complex_s32_mul(
 
   right_shift_t p_shr = 32 - p_hr;
 
-  res.mant.re = (int32_t) ashr64(p_re, p_shr);
-  res.mant.im = (int32_t) ashr64(p_im, p_shr);
+  res.mant.re = (int32_t) s64_ashr(p_re, p_shr);
+  res.mant.im = (int32_t) s64_ashr(p_im, p_shr);
   res.exp = p_exp + p_shr;
   return res;
 }
