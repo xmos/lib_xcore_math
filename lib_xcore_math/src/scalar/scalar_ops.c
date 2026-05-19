@@ -12,7 +12,7 @@ void f32_unpack_s16(
     const float input)
 {
     int32_t mant32;
-    f32_unpack(&mant32, exp, input);
+    f32_unpack_s32(&mant32, exp, input);
     *mantissa = s32_to_s16(exp, mant32, *exp);
 }
 

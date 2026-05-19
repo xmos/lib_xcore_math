@@ -12,7 +12,7 @@ float_s32_t f32_to_float_s32(
     const float x)
 {
   float_s32_t res;
-  f32_unpack(&res.mant, &res.exp, x);
+  f32_unpack_s32(&res.mant, &res.exp, x);
   return res;
 }
 

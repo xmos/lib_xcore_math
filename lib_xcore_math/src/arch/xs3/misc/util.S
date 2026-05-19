@@ -10,13 +10,13 @@
 
 .align 4;
 .issue_mode dual
-/*  
-void f32_unpack(
+/*
+void f32_unpack_s32(
     int32_t* mantissa,
     exponent_t* exp,
     float input);
 */
-#define FUNCTION_NAME   f32_unpack
+#define FUNCTION_NAME   f32_unpack_s32
 #define NSTACKWORDS     (0)
 
 #define mant_out    r0
@@ -63,7 +63,7 @@ FUNCTION_NAME:
 
 
 
-/*  
+/*
 float s32_to_f32(
     const int32_t mantissa,
     const exponent_t exp);
@@ -80,10 +80,10 @@ float s32_to_f32(
 .align 4;
 .cc_top FUNCTION_NAME.function,FUNCTION_NAME
 FUNCTION_NAME:
-  
+
     dualentsp NSTACKWORDS
     ashr sign, mant, 32
-  { ldc tmp, 23                 ; ldc zero, 0                 }  
+  { ldc tmp, 23                 ; ldc zero, 0                 }
   { add exp, exp, tmp           ; bf sign, .L_pack_not_neg    }
     neg mant, mant
   .L_pack_not_neg:

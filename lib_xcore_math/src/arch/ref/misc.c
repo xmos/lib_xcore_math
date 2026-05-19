@@ -25,7 +25,7 @@ void vect_s32_merge_accs(
 
     for(int o = 0; o < VPU_INT8_ACC_PERIOD; o++){
       int k = g * VPU_INT8_ACC_PERIOD + o;
-      
+
       int32_t  acc_hi = tmp.vD[o];
       uint32_t acc_lo = tmp.vR[o];
 
@@ -62,7 +62,7 @@ void vect_s32_split_accs(
   }
 }
 
-void f32_unpack(
+void f32_unpack_s32(
     int32_t * mantissa,
     exponent_t * exp,
     const float input)

@@ -18,8 +18,8 @@ TEST_GROUP_RUNNER(float_convert) {
   RUN_TEST_CASE(float_convert, float_s64_to_float_s32);
   RUN_TEST_CASE(float_convert, float_s32_to_float_s64);
 
-  RUN_TEST_CASE(float_convert, float_s32_to_double);
-  RUN_TEST_CASE(float_convert, float_s32_to_float);
+  RUN_TEST_CASE(float_convert, float_s32_to_f64);
+  RUN_TEST_CASE(float_convert, float_s32_to_f32);
 
   RUN_TEST_CASE(float_convert, f32_to_float_s32);
   RUN_TEST_CASE(float_convert, f64_to_float_s32);
@@ -43,7 +43,7 @@ TEST(float_convert, float_s32_to_float_s64)
 
   float_s32_t x;
   conv_error_e error = 0;
-  
+
   for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
@@ -53,7 +53,7 @@ TEST(float_convert, float_s32_to_float_s64)
     x.mant = pseudo_rand_int32(&seed) >> x_shr;
 
     float_s64_t actual = float_s32_to_float_s64(x);
-    
+
     double expected_f = ldexp(x.mant, x.exp);
 
     int64_t expected_mant = conv_double_to_s64(expected_f, actual.exp, &error);
@@ -74,7 +74,7 @@ TEST(float_convert, float_s64_to_float_s32)
 
   float_s64_t x;
   conv_error_e error = 0;
-  
+
   for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
@@ -84,7 +84,7 @@ TEST(float_convert, float_s64_to_float_s32)
     x.mant = pseudo_rand_int64(&seed) >> x_shr;
 
     float_s32_t actual = float_s64_to_float_s32(x);
-    
+
     double expected_f = ldexp((double) x.mant, x.exp);
 
     int32_t expected_mant = conv_double_to_s32(expected_f, actual.exp, &error);
@@ -99,12 +99,12 @@ TEST(float_convert, float_s64_to_float_s32)
   }
 }
 
-TEST(float_convert, float_s32_to_float)
+TEST(float_convert, float_s32_to_f32)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   float_s32_t x;
-  
+
   for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed) ;
@@ -113,8 +113,8 @@ TEST(float_convert, float_s32_to_float)
     right_shift_t x_shr = pseudo_rand_uint(&seed, 0, 14);
     x.mant = pseudo_rand_int32(&seed) >> x_shr;
 
-    float actual = float_s32_to_float(x);
-    
+    float actual = float_s32_to_f32(x);
+
     float expected = ldexpf((float) x.mant, x.exp);
 
     // printf("\n\n\n");
@@ -129,12 +129,12 @@ TEST(float_convert, float_s32_to_float)
   }
 }
 
-TEST(float_convert, float_s32_to_double)
+TEST(float_convert, float_s32_to_f64)
 {
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   float_s32_t x;
-  
+
   for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);
@@ -143,8 +143,8 @@ TEST(float_convert, float_s32_to_double)
     right_shift_t x_shr = pseudo_rand_uint(&seed, 0, 14);
     x.mant = pseudo_rand_int32(&seed) >> x_shr;
 
-    double actual = float_s32_to_double(x);
-    
+    double actual = float_s32_to_f64(x);
+
     double expected = ldexp(x.mant, x.exp);
 
     TEST_ASSERT_DOUBLE_WITHIN(ldexp(1, x.exp), expected, actual);
@@ -180,7 +180,7 @@ TEST(float_convert, f64_to_float_s32)
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   double x;
-  
+
   for(unsigned int v = 0; v < REPS; v++){
 
     setExtraInfo_RS(v, seed);

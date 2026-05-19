@@ -18,13 +18,13 @@ float_s64_t float_s32_to_float_s64(
   return res;
 }
 
-float float_s32_to_float(
+float float_s32_to_f32(
     const float_s32_t x)
 {
   return s32_to_f32(x.mant, x.exp);
 }
 
-double float_s32_to_double(
+double float_s32_to_f64(
     const float_s32_t x)
 {
   return ldexp(x.mant, x.exp);

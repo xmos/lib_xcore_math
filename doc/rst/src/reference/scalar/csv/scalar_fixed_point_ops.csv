@@ -1,6 +1,9 @@
 Function,Input Depth, Fractional Bits, Brief
 :c:func:`s16_inverse()`       ,  16  ,  0   , ":math:`x^{-1}`                "
 :c:func:`s32_inverse()`       ,  32  ,  0   , ":math:`x^{-1}`                "
+:c:func:`s16_ashr()`          ,  16  ,  0   , ":math:`x/2^y`                 "
+:c:func:`s32_ashr()`          ,  32  ,  0   , ":math:`x/2^y`                 "
+:c:func:`s64_ashr()`          ,  64  ,  0   , ":math:`x/2^y`                 "
 :c:func:`s32_divide_s64_s32()`,  64  ,  0   , ":math:`x/y`                   "
 :c:func:`s32_divide_s64_u32()`,  64  ,  0   , ":math:`x/y`                   "
 :c:func:`s32_divide_u64_s32()`,  64  ,  0   , ":math:`x/y`                   "

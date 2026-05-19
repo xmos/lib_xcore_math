@@ -5,6 +5,9 @@ UNRELEASED
 ----------
 
   * REMOVED: `xcommon` build system support
+  * CHANGED: Renamed `float_s32_to_float` to `float_s32_to_f32`
+  * CHANGED: Renamed `float_s32_to_double` to `float_s32_to_f64`
+  * CHANGED: Renamed `f32_unpack` to `f32_unpack_s32`
 
 2.4.1
 -----
