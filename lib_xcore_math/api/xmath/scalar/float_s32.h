@@ -4,6 +4,7 @@
 #pragma once
 
 #include "xmath/types.h"
+#include "xmath/scalar/s32.h"
 
 #include <stdio.h>
 #include <assert.h>
@@ -59,6 +60,67 @@ float float_s32_to_f32(
 C_API
 double float_s32_to_f64(
     const float_s32_t x);
+
+
+/**
+ * @brief Rescale a @ref float_s32_t to use a specified exponent.
+ *
+ * Returns a new @ref float_s32_t representing the same value as @math{x} (with possible precision
+ * loss) but with the exponent set to @math{new\_exp}. The mantissa is arithmetic-right-shifted by
+ * @math{new\_exp - x.exp} bits.
+ *
+ * If @math{new\_exp > x.exp}, the mantissa is shifted right and precision may be lost.
+ * If @math{new\_exp \le x.exp}, the mantissa is shifted left and zero bits are inserted at the
+ * least-significant end. If the shift overflows, the mantissa is saturated to `INT32_MAX` or `INT32_MIN`.
+ *
+ * @operation{
+ * &     a.mant \leftarrow x.mant \gg \left(new\_exp - x.exp\right)  \\
+ * &     a.exp  \leftarrow new\_exp
+ * }
+ *
+ * @param[in] x         Input value @math{x}
+ * @param[in] new_exp   Desired exponent for the result
+ *
+ * @returns @ref float_s32_t with exponent set to @math{new\_exp}
+ *
+ * @ingroup float_s32_api
+ */
+static inline float_s32_t float_s32_use_exponent(
+    const float_s32_t x,
+    const exponent_t new_exp)
+{
+  right_shift_t shr = new_exp - x.exp;
+  float_s32_t res;
+  res.mant = s32_ashr(x.mant, shr);
+  res.exp = new_exp;
+  return res;
+}
+
+
+/**
+ * @brief Convert a @ref float_s32_t to a fixed-point @c int32_t with a specified exponent.
+ *
+ * Returns the @c int32_t value @math{a} such that @math{a \cdot 2^{out\_exp} \approx x}. The
+ * result is @math{x.mant} arithmetic-right-shifted by @math{out\_exp - x.exp} bits.
+ *
+ * @operation{
+ * &     a \leftarrow x.mant \gg \left(out\_exp - x.exp\right)
+ * }
+ *
+ * @param[in] x         Input value @math{x}
+ * @param[in] out_exp   Exponent of the output fixed-point representation
+ *
+ * @returns Fixed-point integer @math{a} such that @math{a \cdot 2^{out\_exp} \approx x}
+ *
+ * @ingroup float_s32_api
+ */
+static inline int32_t float_s32_to_s32(
+    const float_s32_t x,
+    const exponent_t out_exp)
+{
+  right_shift_t shr = out_exp - x.exp;
+  return s32_ashr(x.mant, shr);
+}
 
 
 /**

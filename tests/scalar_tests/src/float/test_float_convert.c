@@ -23,6 +23,11 @@ TEST_GROUP_RUNNER(float_convert) {
 
   RUN_TEST_CASE(float_convert, f32_to_float_s32);
   RUN_TEST_CASE(float_convert, f64_to_float_s32);
+
+  RUN_TEST_CASE(float_convert, float_s32_use_exponent);
+  RUN_TEST_CASE(float_convert, float_s32_to_s32);
+  RUN_TEST_CASE(float_convert, f32_to_s32);
+  RUN_TEST_CASE(float_convert, float_s64_to_s32);
 }
 
 TEST_GROUP(float_convert);
@@ -198,5 +203,139 @@ TEST(float_convert, f64_to_float_s32)
 
     TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(diff, diffP, "");
     TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(diff, diffM, "");
+  }
+}
+
+
+TEST(float_convert, float_s32_use_exponent)
+{
+  unsigned seed = SEED_FROM_FUNC_NAME();
+
+  for(unsigned int v = 0; v < REPS; v++){
+
+    setExtraInfo_RS(v, seed);
+
+    float_s32_t x;
+    x.exp = pseudo_rand_int(&seed, -40, 40);
+    x.mant = pseudo_rand_int32(&seed) >> pseudo_rand_uint(&seed, 0, 14);
+
+    exponent_t new_exp = pseudo_rand_int(&seed, -40, 40);
+
+    right_shift_t shr = new_exp - x.exp;
+    int will_saturate = (shr < 0) && (x.mant != 0) && ((-shr) > HR_S32(x.mant));
+
+    float_s32_t actual = float_s32_use_exponent(x, new_exp);
+
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(new_exp, actual.exp, "Output exponent must equal new_exp");
+
+    if(will_saturate) {
+      // s32_ashr saturates: result must be clamped to INT32_MAX or INT32_MIN
+      if(x.mant > 0) TEST_ASSERT_EQUAL_INT32_MESSAGE(INT32_MAX, actual.mant, "Positive saturation expected");
+      else            TEST_ASSERT_EQUAL_INT32_MESSAGE(INT32_MIN, actual.mant, "Negative saturation expected");
+    } else {
+      // No saturation: represented value must be within one rounding ULP (2^new_exp when shr > 0)
+      double x_val      = ldexp((double) x.mant, x.exp);
+      double actual_val = ldexp((double) actual.mant, actual.exp);
+      double tol        = (shr > 0) ? ldexp(1.0, new_exp) : 0.0;
+      TEST_ASSERT_DOUBLE_WITHIN(tol, x_val, actual_val);
+    }
+  }
+}
+
+
+TEST(float_convert, float_s32_to_s32)
+{
+  unsigned seed = SEED_FROM_FUNC_NAME();
+
+  for(unsigned int v = 0; v < REPS; v++){
+
+    setExtraInfo_RS(v, seed);
+
+    float_s32_t x;
+    x.exp = pseudo_rand_int(&seed, -40, 40);
+    x.mant = pseudo_rand_int32(&seed) >> pseudo_rand_uint(&seed, 0, 14);
+
+    exponent_t out_exp = pseudo_rand_int(&seed, -40, 40);
+
+    right_shift_t shr = out_exp - x.exp;
+    int will_saturate = (shr < 0) && (x.mant != 0) && ((-shr) > HR_S32(x.mant));
+
+    int32_t actual = float_s32_to_s32(x, out_exp);
+
+    if(will_saturate) {
+      if(x.mant > 0) TEST_ASSERT_EQUAL_INT32_MESSAGE(INT32_MAX, actual, "Positive saturation expected");
+      else            TEST_ASSERT_EQUAL_INT32_MESSAGE(INT32_MIN, actual, "Negative saturation expected");
+    } else {
+      double x_val      = ldexp((double) x.mant, x.exp);
+      double actual_val = ldexp((double) actual, out_exp);
+      double tol        = (shr > 0) ? ldexp(1.0, out_exp) : 0.0;
+      TEST_ASSERT_DOUBLE_WITHIN(tol, x_val, actual_val);
+    }
+  }
+}
+
+
+TEST(float_convert, f32_to_s32)
+{
+  unsigned seed = SEED_FROM_FUNC_NAME();
+
+  for(unsigned int v = 0; v < REPS; v++){
+
+    setExtraInfo_RS(v, seed);
+
+    float x = ldexpf((float) pseudo_rand_int32(&seed), pseudo_rand_int(&seed, -40, 40));
+
+    exponent_t out_exp = pseudo_rand_int(&seed, -40, 40);
+
+    // Replicate the internal conversion to detect saturation
+    float_s32_t tmp = f32_to_float_s32(x);
+    right_shift_t shr = out_exp - tmp.exp;
+    int will_saturate = (shr < 0) && (tmp.mant != 0) && ((-shr) > HR_S32(tmp.mant));
+
+    int32_t actual = f32_to_s32(x, out_exp);
+
+    if(will_saturate) {
+      if(tmp.mant > 0) TEST_ASSERT_EQUAL_INT32_MESSAGE(INT32_MAX, actual, "Positive saturation expected");
+      else              TEST_ASSERT_EQUAL_INT32_MESSAGE(INT32_MIN, actual, "Negative saturation expected");
+    } else {
+      double actual_val = ldexp((double) actual, out_exp);
+      double tol        = ldexp(1.0, out_exp);
+      TEST_ASSERT_DOUBLE_WITHIN(tol, (double) x, actual_val);
+    }
+  }
+}
+
+
+TEST(float_convert, float_s64_to_s32)
+{
+  unsigned seed = SEED_FROM_FUNC_NAME();
+
+  for(unsigned int v = 0; v < REPS; v++){
+
+    setExtraInfo_RS(v, seed);
+
+    float_s64_t x;
+    x.exp = pseudo_rand_int(&seed, -40, 40);
+    x.mant = pseudo_rand_int64(&seed) >> pseudo_rand_uint(&seed, 0, 14);
+
+    exponent_t out_exp = pseudo_rand_int(&seed, -40, 40);
+
+    // Replicate the internal conversion to detect saturation
+    float_s32_t tmp = float_s64_to_float_s32(x);
+    right_shift_t shr = out_exp - tmp.exp;
+    int will_saturate = (shr < 0) && (tmp.mant != 0) && ((-shr) > HR_S32(tmp.mant));
+
+    int32_t actual = float_s64_to_s32(x, out_exp);
+
+    if(will_saturate) {
+      if(tmp.mant > 0) TEST_ASSERT_EQUAL_INT32_MESSAGE(INT32_MAX, actual, "Positive saturation expected");
+      else              TEST_ASSERT_EQUAL_INT32_MESSAGE(INT32_MIN, actual, "Negative saturation expected");
+    } else {
+      double x_val      = ldexp((double) x.mant, x.exp);
+      double actual_val = ldexp((double) actual, out_exp);
+      // Tolerance: precision loss from 64->32 bit plus one ULP at out_exp
+      double tol = fabs(x_val) * ldexp(1.0, -30) + ldexp(1.0, out_exp);
+      TEST_ASSERT_DOUBLE_WITHIN(tol, x_val, actual_val);
+    }
   }
 }

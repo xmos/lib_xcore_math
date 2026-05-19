@@ -106,7 +106,7 @@ int32_t s32_inverse(
   return s32_divide_s64_s32(dividend, b);
 }
 
-int32_t s32_ashr(int32_t x, right_shift_t shr){
+int32_t s32_ashr(const int32_t x, const right_shift_t shr){
   int32_t res;
 
   // vx4b and xs3a use different conditions for "normal" shift left case due to the difference in the way lsats works.
@@ -172,7 +172,7 @@ int32_t s32_ashr(int32_t x, right_shift_t shr){
   return res;
 }
 
-int64_t s64_ashr(int64_t x, right_shift_t shr){
+int64_t s64_ashr(const int64_t x, const right_shift_t shr){
   int64_t res;
 
 // Not super elegant but all implementations share the nagative shift code
@@ -242,7 +242,7 @@ int64_t s64_ashr(int64_t x, right_shift_t shr){
   return res;
 }
 
-int16_t s16_ashr(int16_t x, right_shift_t shr){
+int16_t s16_ashr(const int16_t x, const right_shift_t shr){
   int16_t res;
 
 #if defined(__VX4B__)

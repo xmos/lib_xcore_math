@@ -4,6 +4,7 @@
 #pragma once
 
 #include "xmath/types.h"
+#include "xmath/scalar/float_s32.h"
 
 #include <stdio.h>
 #include <assert.h>
@@ -107,6 +108,32 @@ float_s32_t f32_to_float_s32(
 C_API
 float_s32_t f64_to_float_s32(
     const double x);
+
+
+/**
+ * @brief Convert an IEEE754 `float` to a fixed-point @c int32_t with a specified exponent.
+ *
+ * Converts the IEEE754 single-precision value @math{x} to the @c int32_t value @math{a} such that
+ * @math{a \cdot 2^{out\_exp} \approx x}.
+ *
+ * This is equivalent to converting @math{x} to @ref float_s32_t via @ref f32_to_float_s32() and
+ * then calling @ref float_s32_to_s32().
+ *
+ * @param[in] x         Input value @math{x}
+ * @param[in] out_exp   Exponent of the output fixed-point representation
+ *
+ * @returns Fixed-point integer @math{a} such that @math{a \cdot 2^{out\_exp} \approx x}
+ *
+ * @exception ET_ARITHMETIC Raised if @math{x} is infinite or NaN
+ *
+ * @ingroup scalar_f32_api
+ */
+static inline int32_t f32_to_s32(
+    const float x,
+    const exponent_t out_exp)
+{
+  return float_s32_to_s32(f32_to_float_s32(x), out_exp);
+}
 
 
 /**

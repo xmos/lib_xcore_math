@@ -571,7 +571,10 @@ uint32_t u32_divide_u64_u32(
  *
  * @ingroup scalar_s32_api
  */
-int32_t s32_ashr(int32_t x, right_shift_t shr);
+C_API
+int32_t s32_ashr(
+    const int32_t x,
+    const right_shift_t shr);
 
 #ifdef __XC__
 }   //extern "C"

@@ -117,7 +117,10 @@ int16_t s16_mul(
  *
  * @ingroup scalar_s16_api
  */
-int16_t s16_ashr(int16_t x, right_shift_t shr);
+C_API
+int16_t s16_ashr(
+    const int16_t x,
+    const right_shift_t shr);
 
 #ifdef __XC__
 }   //extern "C"
