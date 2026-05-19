@@ -88,6 +88,26 @@ float_s32_t float_s64_to_float_s32(
     const float_s64_t x);
 
 
+/**
+ * @brief Arithmetic shift right of a 64-bit integer.
+ *
+ * When a positive `shr` is given, returns `x` right-shifted by `shr` bits,
+ * filling the most significant bits with the sign bit.
+ * If `shr` is larger than 63, returns 0 for non-negative `x` or -1 for
+ * negative `x`.
+ *
+ * When a negative `shr` is given, returns `x` left-shifted by `|shr|` bits,
+ * saturating to `INT64_MAX` or `INT64_MIN` if the result overflows.
+ *
+ * @param[in] x         Input value
+ * @param[in] shr       Right shift to apply to the input
+ * @return int64_t      Shifted result
+ *
+ * @ingroup scalar_misc_api
+ */
+int64_t s64_ashr(int64_t x, right_shift_t shr);
+
+
 #ifdef __XC__
 }   //extern "C"
 #endif

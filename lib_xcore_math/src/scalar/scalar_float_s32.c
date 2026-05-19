@@ -38,7 +38,7 @@ float_s32_t float_s32_mul(
   res.mant = s32_mul(&res.exp, x.mant, y.mant, x.exp, y.exp);
   return res;
 }
-    
+
 float_s32_t float_s32_add(
     const float_s32_t x,
     const float_s32_t y)
@@ -56,7 +56,7 @@ float_s32_t float_s32_add(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant = ashr32_sat(x.mant, x_shr) + ashr32_sat(y.mant, y_shr);
+  res.mant = s32_ashr(x.mant, x_shr) + s32_ashr(y.mant, y_shr);
 
   return res;
 }
@@ -78,7 +78,7 @@ float_s32_t float_s32_sub(
   const right_shift_t x_shr = res.exp - x.exp;
   const right_shift_t y_shr = res.exp - y.exp;
 
-  res.mant = ashr32_sat(x.mant, x_shr) - ashr32_sat(y.mant, y_shr);
+  res.mant = s32_ashr(x.mant, x_shr) - s32_ashr(y.mant, y_shr);
 
   return res;
 }

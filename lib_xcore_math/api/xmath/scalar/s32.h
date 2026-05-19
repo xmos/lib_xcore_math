@@ -554,6 +554,24 @@ uint32_t u32_divide_u64_u32(
     const uint64_t x,
     const uint32_t y);
 
+/**
+ * @brief Arithmetic shift right of a 32-bit integer.
+ *
+ * When a positive `shr` is given, returns `x` right-shifted by `shr` bits,
+ * filling the most significant bits with the sign bit.
+ * If `shr` is larger than 31, returns 0 for non-negative `x` or -1 for
+ * negative `x`.
+ *
+ * When a negative `shr` is given, returns `x` left-shifted by `|shr|` bits,
+ * saturating to `INT32_MAX` or `INT32_MIN` if the result overflows.
+ *
+ * @param[in] x         Input value
+ * @param[in] shr       Right shift to apply to the input
+ * @return int32_t      Shifted result
+ *
+ * @ingroup scalar_s32_api
+ */
+int32_t s32_ashr(int32_t x, right_shift_t shr);
 
 #ifdef __XC__
 }   //extern "C"

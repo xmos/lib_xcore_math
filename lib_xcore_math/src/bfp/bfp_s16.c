@@ -8,19 +8,6 @@
 
 #include "xmath/xmath.h"
 
-
-static inline
-int16_t safe_ashr16(int16_t x, right_shift_t shr)
-{
-  if(shr >= 16){
-    return (x >= 0)? 0 : -1;
-  } else if(shr >= 0){
-    return x >> shr;
-  } else {
-    return x << (-shr);
-  }
-}
-
 headroom_t bfp_s16_headroom(
     bfp_s16_t* a)
 {
@@ -33,7 +20,7 @@ headroom_t bfp_s16_headroom(
   return a->hr;
 }
 
-    
+
 void bfp_s16_use_exponent(
     bfp_s16_t* a,
     const exponent_t exp)
@@ -104,7 +91,7 @@ void bfp_s16_add_scalar(
     vect_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, c_exp,
                                     b->hr, HR_S16(c_mant));
 
-    int16_t cc = safe_ashr16(c_mant, c_shr);
+    int16_t cc = s16_ashr(c_mant, c_shr);
 
     a->hr = vect_s16_add_scalar(a->data, b->data, cc, b->length,
                                     b_shr);
@@ -306,9 +293,9 @@ void bfp_s16_inverse(
     unsigned scale;
 
     vect_s16_inverse_prepare(&a->exp, &scale, b->data, b->exp, b->length);
-    
+
     vect_s16_inverse(a->data, b->data, b->length, scale);
-    
+
     bfp_s16_headroom(a);
 }
 
@@ -557,7 +544,7 @@ headroom_t bfp_s16_accumulate(
   if(tail){
     int16_t b_tmp[VPU_INT16_EPV] = {0};
     memcpy(&b_tmp[0], &b->data[chunks << VPU_INT16_EPV_LOG2], sizeof(int16_t) * tail);
-    
+
     // for(int k = 0; k < VPU_INT16_EPV; k++){
     //   printf("!! acc[%d].vD[%d] = 0x%04X\n", chunks, k, acc[chunks].vD[k]);
     //   printf("@@ b_tmp[%d] = 0x%04X\n", k, b_tmp[k]);

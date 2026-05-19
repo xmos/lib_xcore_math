@@ -24,7 +24,7 @@ headroom_t bfp_complex_s32_headroom(
     return a->hr;
 }
 
-    
+
 void bfp_complex_s32_use_exponent(
     bfp_complex_s32_t* a,
     const exponent_t exp)
@@ -92,8 +92,8 @@ void bfp_complex_s32_add_scalar(
                                             c.exp, b->hr, HR_C32(c.mant));
 
     complex_s32_t cc = {
-        ashr32_sat(c.mant.re, c_shr),
-        ashr32_sat(c.mant.im, c_shr)
+        s32_ashr(c.mant.re, c_shr),
+        s32_ashr(c.mant.im, c_shr)
     };
 
     a->hr = vect_complex_s32_add_scalar(a->data, b->data, cc, b->length,
@@ -219,7 +219,7 @@ void bfp_complex_s32_scale(
     const headroom_t c_hr = HR_C32(c.mant);
 
     vect_complex_s32_scale_prepare(&a->exp, &b_shr, &c_shr, b->exp, c.exp, b->hr, c_hr);
-    
+
     a->hr = vect_complex_s32_scale(a->data, b->data, c.mant.re, c.mant.im, b->length, b_shr, c_shr);
 }
 
@@ -396,10 +396,10 @@ float_s64_t bfp_complex_s32_energy(
     const bfp_complex_s32_t* b)
 {
   float_s64_t a;
-  
+
   right_shift_t b_shr;
   vect_s32_energy_prepare(&a.exp, &b_shr, 2 * b->length, b->exp, b->hr);
-  
+
   a.mant = vect_s32_energy( (int32_t*) b->data, 2 * b->length, b_shr);
 
   return a;
@@ -425,7 +425,7 @@ void bfp_complex_s32_make(
 
   const right_shift_t b_shr = a->exp - b->exp;
   const right_shift_t c_shr = a->exp - c->exp;
-  
+
   vect_s32_zip(&a->data[0], &b->data[0], &c->data[0],
                     b->length, b_shr, c_shr);
 }

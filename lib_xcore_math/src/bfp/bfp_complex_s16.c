@@ -13,24 +13,6 @@ extern const unsigned rot_table16_rows;
 extern const int16_t rot_table16[14][2][16];
 
 
-static inline 
-complex_s16_t safe_complex_ashr16(complex_s16_t x, right_shift_t shr)
-{
-  complex_s16_t y;
-  if(shr >= 16){
-    y.re = (x.re >= 0)? 0 : -1;
-    y.im = (x.im >= 0)? 0 : -1;
-  } else if(shr >= 0){
-    y.re = x.re >> shr;
-    y.im = x.im >> shr;
-  } else {
-    y.re = x.re << (-shr);
-    y.im = x.im << (-shr);
-  }
-  return y;
-}
-
-
 headroom_t bfp_complex_s16_headroom(
     bfp_complex_s16_t* a)
 {
@@ -42,7 +24,7 @@ headroom_t bfp_complex_s16_headroom(
     return a->hr;
 }
 
-    
+
 void bfp_complex_s16_use_exponent(
     bfp_complex_s16_t* a,
     const exponent_t exp)
@@ -80,8 +62,8 @@ void bfp_complex_s16_shl(
 
 
 void bfp_complex_s16_add(
-    bfp_complex_s16_t* a, 
-    const bfp_complex_s16_t* b, 
+    bfp_complex_s16_t* a,
+    const bfp_complex_s16_t* b,
     const bfp_complex_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -93,14 +75,14 @@ void bfp_complex_s16_add(
     right_shift_t b_shr, c_shr;
 
     vect_complex_s16_add_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
-    
-    a->hr = vect_complex_s16_add(a->real, a->imag, b->real, b->imag, c->real, c->imag, 
+
+    a->hr = vect_complex_s16_add(a->real, a->imag, b->real, b->imag, c->real, c->imag,
                                      b->length, b_shr, c_shr);
 }
 
 
 void bfp_complex_s16_add_scalar(
-    bfp_complex_s16_t* a, 
+    bfp_complex_s16_t* a,
     const bfp_complex_s16_t* b,
     const float_complex_s16_t c)
 {
@@ -111,10 +93,13 @@ void bfp_complex_s16_add_scalar(
 
     right_shift_t b_shr, c_shr;
 
-    vect_complex_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp, 
+    vect_complex_s16_add_scalar_prepare(&a->exp, &b_shr, &c_shr, b->exp,
                                             c.exp, b->hr, HR_C16(c.mant));
 
-    complex_s16_t cc = safe_complex_ashr16(c.mant, c_shr);
+    complex_s16_t cc = {
+        s16_ashr(c.mant.re, c_shr),
+        s16_ashr(c.mant.im, c_shr)
+    };
 
     a->hr = vect_complex_s16_add_scalar(a->real, a->imag, b->real,
                                             b->imag, cc, b->length, b_shr);
@@ -122,8 +107,8 @@ void bfp_complex_s16_add_scalar(
 
 
 void bfp_complex_s16_sub(
-    bfp_complex_s16_t* a, 
-    const bfp_complex_s16_t* b, 
+    bfp_complex_s16_t* a,
+    const bfp_complex_s16_t* b,
     const bfp_complex_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -135,15 +120,15 @@ void bfp_complex_s16_sub(
     right_shift_t b_shr, c_shr;
 
     vect_complex_s16_sub_prepare(&a->exp, &b_shr, &c_shr, b->exp, c->exp, b->hr, c->hr);
-    
+
     a->hr = vect_complex_s16_sub(a->real, a->imag, b->real, b->imag, c->real, c->imag,
                                      b->length, b_shr, c_shr);
 }
 
 
 void bfp_complex_s16_real_mul(
-    bfp_complex_s16_t* a, 
-    const bfp_complex_s16_t* b, 
+    bfp_complex_s16_t* a,
+    const bfp_complex_s16_t* b,
     const bfp_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -159,9 +144,9 @@ void bfp_complex_s16_real_mul(
 
     a->exp = a_exp;
 
-    a->hr = vect_complex_s16_real_mul(a->real, a->imag, b->real, b->imag, 
+    a->hr = vect_complex_s16_real_mul(a->real, a->imag, b->real, b->imag,
                                           c->data, b->length, sat);
-    
+
     // const headroom_t re_hr = vect_s16_mul(a->real, b->real, c->data, b->length, sat);
     // const headroom_t im_hr = vect_s16_mul(a->imag, b->imag, c->data, b->length, sat);
     // a->hr = (re_hr <= im_hr)? re_hr : im_hr;
@@ -169,8 +154,8 @@ void bfp_complex_s16_real_mul(
 
 
 void bfp_complex_s16_mul(
-    bfp_complex_s16_t* a, 
-    const bfp_complex_s16_t* b, 
+    bfp_complex_s16_t* a,
+    const bfp_complex_s16_t* b,
     const bfp_complex_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -190,8 +175,8 @@ void bfp_complex_s16_mul(
 
 
 void bfp_complex_s16_conj_mul(
-    bfp_complex_s16_t* a, 
-    const bfp_complex_s16_t* b, 
+    bfp_complex_s16_t* a,
+    const bfp_complex_s16_t* b,
     const bfp_complex_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -211,8 +196,8 @@ void bfp_complex_s16_conj_mul(
 
 
 void bfp_complex_s16_real_scale(
-    bfp_complex_s16_t* a, 
-    const bfp_complex_s16_t* b, 
+    bfp_complex_s16_t* a,
+    const bfp_complex_s16_t* b,
     const float alpha)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -229,13 +214,13 @@ void bfp_complex_s16_real_scale(
 
     vect_complex_s16_real_scale_prepare(&a->exp, &a_shr, b->exp, alpha_exp, b->hr, s_hr);
 
-    a->hr = vect_complex_s16_real_scale(a->real, a->imag, b->real, b->imag, 
+    a->hr = vect_complex_s16_real_scale(a->real, a->imag, b->real, b->imag,
                                             alpha_mant, b->length, a_shr);
 }
 
 
 void bfp_complex_s16_scale(
-    bfp_complex_s16_t* a, 
+    bfp_complex_s16_t* a,
     const bfp_complex_s16_t* b,
     const float_complex_s16_t alpha)
 {
@@ -250,14 +235,14 @@ void bfp_complex_s16_scale(
 
     vect_complex_s16_scale_prepare(&a->exp, &a_shr, b->exp, alpha.exp, b->hr, alpha_hr);
 
-    a->hr = vect_complex_s16_scale(a->real, a->imag, b->real, b->imag, 
-                                                  alpha.mant.re, alpha.mant.im, 
+    a->hr = vect_complex_s16_scale(a->real, a->imag, b->real, b->imag,
+                                                  alpha.mant.re, alpha.mant.im,
                                                   b->length, a_shr);
 }
 
 
 void bfp_complex_s16_squared_mag(
-    bfp_s16_t* a, 
+    bfp_s16_t* a,
     const bfp_complex_s16_t* b)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -274,7 +259,7 @@ void bfp_complex_s16_squared_mag(
 
 
 void bfp_complex_s16_mag(
-    bfp_s16_t* a, 
+    bfp_s16_t* a,
     const bfp_complex_s16_t* b)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -286,7 +271,7 @@ void bfp_complex_s16_mag(
 
     vect_complex_s16_mag_prepare(&a->exp, &b_shr, b->exp, b->hr);
 
-    a->hr = vect_complex_s16_mag(a->data, b->real, b->imag, b->length, 
+    a->hr = vect_complex_s16_mag(a->data, b->real, b->imag, b->length,
                                      b_shr, (int16_t*) rot_table16, rot_table16_rows);
 }
 
@@ -308,7 +293,7 @@ float_complex_s32_t bfp_complex_s16_sum(
 
 
 void bfp_complex_s16_to_bfp_complex_s32(
-    bfp_complex_s32_t* a, 
+    bfp_complex_s32_t* a,
     const bfp_complex_s16_t* b)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -317,15 +302,15 @@ void bfp_complex_s16_to_bfp_complex_s32(
 #endif
 
     vect_complex_s16_to_vect_complex_s32(a->data, b->real, b->imag, b->length);
-    
+
     a->exp = b->exp;
     a->hr = b->hr + 16;
 }
 
 
 void bfp_complex_s16_macc(
-    bfp_complex_s16_t* acc, 
-    const bfp_complex_s16_t* b, 
+    bfp_complex_s16_t* acc,
+    const bfp_complex_s16_t* b,
     const bfp_complex_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -345,8 +330,8 @@ void bfp_complex_s16_macc(
 
 
 void bfp_complex_s16_nmacc(
-    bfp_complex_s16_t* acc, 
-    const bfp_complex_s16_t* b, 
+    bfp_complex_s16_t* acc,
+    const bfp_complex_s16_t* b,
     const bfp_complex_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -366,8 +351,8 @@ void bfp_complex_s16_nmacc(
 
 
 void bfp_complex_s16_conj_macc(
-    bfp_complex_s16_t* acc, 
-    const bfp_complex_s16_t* b, 
+    bfp_complex_s16_t* acc,
+    const bfp_complex_s16_t* b,
     const bfp_complex_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -387,8 +372,8 @@ void bfp_complex_s16_conj_macc(
 
 
 void bfp_complex_s16_conj_nmacc(
-    bfp_complex_s16_t* acc, 
-    const bfp_complex_s16_t* b, 
+    bfp_complex_s16_t* acc,
+    const bfp_complex_s16_t* b,
     const bfp_complex_s16_t* c)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -408,7 +393,7 @@ void bfp_complex_s16_conj_nmacc(
 
 
 void bfp_complex_s16_conjugate(
-    bfp_complex_s16_t* a, 
+    bfp_complex_s16_t* a,
     const bfp_complex_s16_t* b)
 {
 #if (XMATH_BFP_DEBUG_CHECK_LENGTHS) // See xmath_conf.h
@@ -417,7 +402,7 @@ void bfp_complex_s16_conjugate(
 #endif
 
     a->exp = b->exp;
-    
+
     if(a != b)
       memcpy(a->real, b->real, b->length * sizeof(int16_t));
 
