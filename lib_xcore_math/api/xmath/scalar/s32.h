@@ -4,6 +4,7 @@
 #pragma once
 
 #include "xmath/types.h"
+#include "xmath/util.h"
 #include "xmath/xs3/vpu_info.h"
 
 #include <stdio.h>
@@ -73,11 +74,16 @@ float s32_to_f32(
  *
  * @ingroup scalar_s32_api
  */
-C_API
-int16_t s32_to_s16(
+static inline int16_t s32_to_s16(
     exponent_t* a_exp,
     const int32_t b,
-    const exponent_t b_exp);
+    const exponent_t b_exp)
+{
+  const headroom_t b_hr = HR_S32(b);
+  const right_shift_t shr = MAX( 0, (int)(16-b_hr) );
+  *a_exp = b_exp + shr;
+  return (int16_t) (b >> shr);
+}
 
 
 /**

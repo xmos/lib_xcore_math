@@ -69,11 +69,15 @@ void f32_unpack_s32(
  *
  * @ingroup scalar_f32_api
  */
-C_API
-void f32_unpack_s16(
+static inline void f32_unpack_s16(
     int16_t* mantissa,
     exponent_t* exp,
-    const float input);
+    const float input)
+{
+    int32_t mant32;
+    f32_unpack_s32(&mant32, exp, input);
+    *mantissa = s32_to_s16(exp, mant32, *exp);
+}
 
 
 /**
@@ -87,9 +91,13 @@ void f32_unpack_s16(
  *
  * @ingroup scalar_f32_api
  */
-C_API
-float_s32_t f32_to_float_s32(
-    const float x);
+static inline float_s32_t f32_to_float_s32(
+    const float x)
+{
+  float_s32_t res;
+  f32_unpack_s32(&res.mant, &res.exp, x);
+  return res;
+}
 
 
 /**
@@ -105,9 +113,15 @@ float_s32_t f32_to_float_s32(
  *
  * @ingroup scalar_f32_api
  */
-C_API
-float_s32_t f64_to_float_s32(
-    const double x);
+static inline float_s32_t f64_to_float_s32(
+    const double x)
+{
+  float_s32_t res;
+  const double tmp = frexp(x, &res.exp);
+  res.mant = lround(INT32_MAX * tmp);
+  res.exp -= 31;
+  return res;
+}
 
 
 /**

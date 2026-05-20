@@ -4,7 +4,9 @@
 #pragma once
 
 #include "xmath/types.h"
+#include "xmath/util.h"
 #include "xmath/xs3/vpu_info.h"
+#include "xmath/scalar/float_s32.h"
 
 #include <stdio.h>
 #include <assert.h>
@@ -65,11 +67,16 @@ static inline unsigned u32_ceil_log2(
  *
  * @ingroup scalar_misc_api
  */
-C_API
-int32_t s64_to_s32(
+static inline int32_t s64_to_s32(
     exponent_t* a_exp,
     const int64_t b,
-    const exponent_t b_exp);
+    const exponent_t b_exp)
+{
+  const headroom_t b_hr = HR_S64(b);
+  const right_shift_t shr = MAX( 0, (int)(32-b_hr) );
+  *a_exp = b_exp + shr;
+  return (int32_t) (b >> shr);
+}
 
 
 /**
@@ -83,9 +90,13 @@ int32_t s64_to_s32(
  *
  * @ingroup scalar_misc_api
  */
-C_API
-float_s32_t float_s64_to_float_s32(
-    const float_s64_t x);
+static inline float_s32_t float_s64_to_float_s32(
+    const float_s64_t x)
+{
+  float_s32_t res;
+  res.mant = s64_to_s32(&res.exp, x.mant, x.exp);
+  return res;
+}
 
 
 /**

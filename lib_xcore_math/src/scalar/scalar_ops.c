@@ -6,51 +6,6 @@
 
 #include "xmath/xmath.h"
 
-void f32_unpack_s16(
-    int16_t* mantissa,
-    exponent_t* exp,
-    const float input)
-{
-    int32_t mant32;
-    f32_unpack_s32(&mant32, exp, input);
-    *mantissa = s32_to_s16(exp, mant32, *exp);
-}
-
-int32_t s64_to_s32(
-    exponent_t* a_exp,
-    const int64_t b,
-    const exponent_t b_exp)
-{
-  const headroom_t b_hr = HR_S64(b);
-  const right_shift_t shr = MAX( 0, (int)(32-b_hr) );
-  *a_exp = b_exp + shr;
-  return (int32_t) (b >> shr);
-}
-
-
-int16_t s32_to_s16(
-    exponent_t* a_exp,
-    const int32_t b,
-    const exponent_t b_exp)
-{
-  const headroom_t b_hr = HR_S32(b);
-  const right_shift_t shr = MAX( 0, (int)(16-b_hr) );
-  *a_exp = b_exp + shr;
-  return (int16_t) (b >> shr);
-}
-
-int32_t s16_to_s32(
-    exponent_t* a_exp,
-    const int16_t b,
-    const exponent_t b_exp,
-    const unsigned remove_hr)
-{
-  const left_shift_t shl = remove_hr? (16+HR_S16(b)) : 0;
-  *a_exp = b_exp - shl;
-  return ((int32_t)b) << shl;
-}
-
-
 int16_t s16_mul(
     exponent_t* a_exp,
     const int16_t b,

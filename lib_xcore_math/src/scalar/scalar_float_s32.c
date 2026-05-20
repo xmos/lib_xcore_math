@@ -7,29 +7,6 @@
 
 #include "xmath/xmath.h"
 
-
-float_s64_t float_s32_to_float_s64(
-    const float_s32_t x)
-{
-  float_s64_t res = {
-    .exp = x.exp,
-    .mant = x.mant
-  };
-  return res;
-}
-
-float float_s32_to_f32(
-    const float_s32_t x)
-{
-  return s32_to_f32(x.mant, x.exp);
-}
-
-double float_s32_to_f64(
-    const float_s32_t x)
-{
-  return ldexp(x.mant, x.exp);
-}
-
 float_s32_t float_s32_mul(
     const float_s32_t x,
     const float_s32_t y)

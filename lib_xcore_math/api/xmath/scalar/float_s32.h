@@ -29,9 +29,14 @@ extern "C" {
  *
  * @ingroup float_s32_api
  */
-C_API
-float_s64_t float_s32_to_float_s64(
-    const float_s32_t x);
+static inline float_s64_t float_s32_to_float_s64(
+    const float_s32_t x)
+{
+  float_s64_t res;
+  res.mant = x.mant;
+  res.exp = x.exp;
+  return res;
+}
 
 
 /**
@@ -43,9 +48,11 @@ float_s64_t float_s32_to_float_s64(
  *
  * @ingroup float_s32_api
  */
-C_API
-float float_s32_to_f32(
-    const float_s32_t x);
+static inline float float_s32_to_f32(
+    const float_s32_t x)
+{
+  return s32_to_f32(x.mant, x.exp);
+}
 
 
 /**
@@ -57,9 +64,11 @@ float float_s32_to_f32(
  *
  * @ingroup float_s32_api
  */
-C_API
-double float_s32_to_f64(
-    const float_s32_t x);
+static inline double float_s32_to_f64(
+    const float_s32_t x)
+{
+  return ldexp(x.mant, x.exp);
+}
 
 
 /**
@@ -89,7 +98,7 @@ static inline float_s32_t float_s32_use_exponent(
     const float_s32_t x,
     const exponent_t new_exp)
 {
-  right_shift_t shr = new_exp - x.exp;
+  const right_shift_t shr = new_exp - x.exp;
   float_s32_t res;
   res.mant = s32_ashr(x.mant, shr);
   res.exp = new_exp;
@@ -118,7 +127,7 @@ static inline int32_t float_s32_to_s32(
     const float_s32_t x,
     const exponent_t out_exp)
 {
-  right_shift_t shr = out_exp - x.exp;
+  const right_shift_t shr = out_exp - x.exp;
   return s32_ashr(x.mant, shr);
 }
 

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "xmath/types.h"
+#include "xmath/util.h"
 #include "xmath/xs3/vpu_info.h"
 
 #include <stdio.h>
@@ -38,12 +39,16 @@ extern "C" {
  *
  * @ingroup scalar_s16_api
  */
-C_API
-int32_t s16_to_s32(
+static inline int32_t s16_to_s32(
     exponent_t* a_exp,
     const int16_t b,
     const exponent_t b_exp,
-    const unsigned remove_hr);
+    const unsigned remove_hr)
+{
+  const left_shift_t shl = remove_hr? (16+HR_S16(b)) : 0;
+  *a_exp = b_exp - shl;
+  return ((int32_t)b) << shl;
+}
 
 
 /**
