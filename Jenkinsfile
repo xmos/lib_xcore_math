@@ -135,6 +135,12 @@ pipeline {
                     sh 'xrun --xscope --id 0 --args scalar_tests/bin/scalar_tests.xe  -v'
                     sh 'xrun --xscope --id 0 --args vect_tests/bin/vect_tests.xe      -v'
                     sh 'xrun --xscope --id 0 --args xs3_tests/bin/xs3_tests.xe        -v'
+
+                    dir("xc_compat") {
+                      // check that the library can be used from XC
+                      sh "cmake -B build -G \"Unix Makefiles\""
+                      sh "xmake -C build -j"
+                    }
                   }
                 }
               }
