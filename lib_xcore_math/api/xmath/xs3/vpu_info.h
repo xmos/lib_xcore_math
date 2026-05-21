@@ -120,6 +120,28 @@ enum {
 #define VPU_INT40_MIN  ( -0x7FFFFFFFFFLL )
 #endif
 
+/** Right shift applied to the result of
+ * multiplication for vmul instruction in 8-bit VPU mode.
+ *
+ * @ingroup xs3_vpu_info
+ */
+#if defined(__VX4B__)
+#define VPU_VLMUL8_SHR (7)
+#else
+#define VPU_VLMUL8_SHR (6)
+#endif
+
+/** Right shift applied to the result of
+ * multiplication for vmul instruction in 16-bit VPU mode.
+ *
+ * @ingroup xs3_vpu_info
+ */
+#if defined(__VX4B__)
+#define VPU_VLMUL16_SHR (15)
+#else
+#define VPU_VLMUL16_SHR (14)
+#endif
+
 /**
  * Number of accumulator bits in each operating mode.
  *
@@ -137,7 +159,7 @@ enum {
 };
 
 /**
- * When vD and vR contain accumulators, the values in this enum indicate how many least significant 
+ * When vD and vR contain accumulators, the values in this enum indicate how many least significant
  * bits are stored in vR, with the remaining bits stored in vD.
  *
  * @ingroup xs3_vpu_info
@@ -183,8 +205,8 @@ typedef int64_t vpu_int32_acc_t;
 /**
  * The number of elements which fit into a vector register for each operating mode.
  *
- * This is also the number of elements which are operated on in the following 
- * instructions: VDEPTH1, VDEPTH16, VDEPTH8, VLADD, VLADDD, VLASHR, VLMACCR, VLMUL, 
+ * This is also the number of elements which are operated on in the following
+ * instructions: VDEPTH1, VDEPTH16, VDEPTH8, VLADD, VLADDD, VLASHR, VLMACCR, VLMUL,
  *               VLSUB, VPOS, VSIGN
  *
  * @ingroup xs3_vpu_info

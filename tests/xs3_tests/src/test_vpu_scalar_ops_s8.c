@@ -43,7 +43,7 @@ TEST_TEAR_DOWN(vpu_scalar_ops_s8) {}
 
 TEST(vpu_scalar_ops_s8, vladd8)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -76,7 +76,7 @@ TEST(vpu_scalar_ops_s8, vladd8)
 
 TEST(vpu_scalar_ops_s8, vlsub8)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -109,7 +109,7 @@ TEST(vpu_scalar_ops_s8, vlsub8)
 
 TEST(vpu_scalar_ops_s8, vlashr8)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -120,21 +120,21 @@ TEST(vpu_scalar_ops_s8, vlashr8)
     TEST_ASSERT_EQUAL_INT8(            0, vlashr8(     2,      2));
     TEST_ASSERT_EQUAL_INT8(            0, vlashr8(     2,      3));
     TEST_ASSERT_EQUAL_INT8(            4, vlashr8(     2,     -1));
-    
+
     TEST_ASSERT_EQUAL_INT8(           -2, vlashr8(    -2,      0));
     TEST_ASSERT_EQUAL_INT8(           -1, vlashr8(    -2,      1));
     TEST_ASSERT_EQUAL_INT8(           -1, vlashr8(    -2,      2));
     TEST_ASSERT_EQUAL_INT8(           -1, vlashr8(    -2,      3));
     TEST_ASSERT_EQUAL_INT8(           -4, vlashr8(    -2,     -1));
-    
+
     TEST_ASSERT_EQUAL_INT8(            5, vlashr8(    10,      1));
     TEST_ASSERT_EQUAL_INT8(            2, vlashr8(    10,      2));
     TEST_ASSERT_EQUAL_INT8(            1, vlashr8(    10,      3));
-    
+
     TEST_ASSERT_EQUAL_INT8(         0xFD, vlashr8(  0xFA,      1));
     TEST_ASSERT_EQUAL_INT8(         0xFE, vlashr8(  0xFA,      2));
     TEST_ASSERT_EQUAL_INT8(         0xFF, vlashr8(  0xFA,      3));
-    
+
     TEST_ASSERT_EQUAL_INT8(           64, vlashr8(     1,     -6));
     TEST_ASSERT_EQUAL_INT8(          -64, vlashr8(    -1,     -6));
     TEST_ASSERT_EQUAL_INT8( VPU_INT8_MAX, vlashr8(     1,     -7));
@@ -152,7 +152,7 @@ TEST(vpu_scalar_ops_s8, vlashr8)
         exp = MAX(exp, VPU_INT8_MIN);
 
         int8_t res = vlashr8(x, shr);
-    
+
         TEST_ASSERT_EQUAL_INT8(exp, res);
     }
 }
@@ -160,25 +160,25 @@ TEST(vpu_scalar_ops_s8, vlashr8)
 
 TEST(vpu_scalar_ops_s8, vpos8)
 {
-    
+
 
     for(int k = 0; k < INT8_MAX; k++)
         TEST_ASSERT_EQUAL_INT8( k, vpos8( (int8_t) k));
-    
+
     for(int k = INT8_MIN; k < 0; k++)
         TEST_ASSERT_EQUAL_INT8( 0, vpos8( (int8_t) k));
-    
+
 }
 
 
 TEST(vpu_scalar_ops_s8, vsign8)
 {
-    
+
 
 
     for(int k = 0; k < INT8_MAX; k++)
         TEST_ASSERT_EQUAL_INT8(  ((int8_t)  0x40), vsign8( (int8_t) k)  );
-    
+
     for(int k = INT8_MIN; k < 0; k++)
         TEST_ASSERT_EQUAL_INT8(  ((int8_t) -0x40), vsign8( (int8_t) k)  );
 
@@ -187,11 +187,11 @@ TEST(vpu_scalar_ops_s8, vsign8)
 
 TEST(vpu_scalar_ops_s8, vdepth1_8)
 {
-    
+
 
     for(int k = 0; k < INT8_MAX; k++)
         TEST_ASSERT_EQUAL_INT( 0, vdepth1_8( (int8_t) k));
-    
+
     for(int k = INT8_MIN; k < 0; k++)
         TEST_ASSERT_EQUAL_INT( 1, vdepth1_8( (int8_t) k));
 
@@ -200,17 +200,28 @@ TEST(vpu_scalar_ops_s8, vdepth1_8)
 
 TEST(vpu_scalar_ops_s8, vlmul8)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
-
-    TEST_ASSERT_EQUAL_INT8(            0, vlmul8(     0,      0));
+    // 8-bit vmul has been changed in vx4b
+    // it will shift the result by 7 instead of 6 bit.
+    // These tests need to be changed to accomodate that.
+    #if defined(__VX4B__)
+    TEST_ASSERT_EQUAL_INT8(               0, vlmul8(     0,      0));
+    TEST_ASSERT_EQUAL_INT8(               1, vlmul8(     1,   0x7F));
+    TEST_ASSERT_EQUAL_INT8(              -1, vlmul8(     1,  -0x80));
+    TEST_ASSERT_INT8_WITHIN(1,          123, vlmul8(   123,   0x7F));
+    TEST_ASSERT_EQUAL_INT8(            -123, vlmul8(   123,  -0x80));
+    TEST_ASSERT_INT8_WITHIN(1, VPU_INT8_MIN, vlmul8( -0x80,   0x7F));
+    TEST_ASSERT_INT8_WITHIN(1, VPU_INT8_MAX, vlmul8( -0x7F,  -0x7F));
+    #else
     TEST_ASSERT_EQUAL_INT8(            1, vlmul8(     1,   0x40));
     TEST_ASSERT_EQUAL_INT8(           -1, vlmul8(     1,  -0x40));
     TEST_ASSERT_EQUAL_INT8(          123, vlmul8(   123,   0x40));
     TEST_ASSERT_EQUAL_INT8(         -123, vlmul8(   123,  -0x40));
     TEST_ASSERT_EQUAL_INT8( VPU_INT8_MIN, vlmul8( -0x80,   0x40));
     TEST_ASSERT_EQUAL_INT8( VPU_INT8_MAX, vlmul8( -0x7F,  -0x7F));
+    #endif
 
 
     for(unsigned int v = 0; v < REPS; v++){
@@ -220,7 +231,7 @@ TEST(vpu_scalar_ops_s8, vlmul8)
         int8_t y = pseudo_rand_int8(&seed);
 
         // final term is because negative ties round differently on the VPU and in floating point
-        double exp = round( x * ldexp(y, -6)  +  ldexp(1,-10) );
+        double exp = round( x * ldexp(y, -VPU_VLMUL8_SHR)  +  ldexp(1,-10) );
 
         exp = MIN(exp, VPU_INT8_MAX);
         exp = MAX(exp, VPU_INT8_MIN);
@@ -234,7 +245,7 @@ TEST(vpu_scalar_ops_s8, vlmul8)
 
 TEST(vpu_scalar_ops_s8, vlmacc8)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -268,7 +279,7 @@ TEST(vpu_scalar_ops_s8, vlmacc8)
 
 TEST(vpu_scalar_ops_s8, vlmaccr8)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -300,7 +311,7 @@ TEST(vpu_scalar_ops_s8, vlmaccr8)
 
 TEST(vpu_scalar_ops_s8, vlsat8)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -322,12 +333,31 @@ TEST(vpu_scalar_ops_s8, vlsat8)
         int32_t acc = pseudo_rand_int32(&seed) >> hr;
 
         int8_t shr = pseudo_rand_int(&seed, 23 - hr, 25 - hr);
+
+        #if defined(__VX4B__)
+        // allow negative shifts
+        #else
         if(shr < 0) shr = 0;
+        #endif
 
 
         double fexp = ldexp(acc, 0);
         // final term is because negative ties round differently on the VPU and in floating point
         fexp = round( fexp * ldexp(1, -shr) + ldexp(1,-30) );
+
+        #if defined(__VX4B__)
+
+        fexp = MIN(fexp, VPU_INT16_MAX);
+        fexp = MAX(fexp, VPU_INT16_MIN);
+
+        int16_t exp = (int16_t) fexp;
+
+        int16_t res = vlsat8(acc, shr);
+
+        TEST_ASSERT_EQUAL_INT16(exp, res);
+
+        #else
+
         fexp = MIN(fexp, VPU_INT8_MAX);
         fexp = MAX(fexp, VPU_INT8_MIN);
 
@@ -335,14 +365,9 @@ TEST(vpu_scalar_ops_s8, vlsat8)
 
         int8_t res = vlsat8(acc, shr);
 
-        // if(exp != res){
-        //     printf("acc = %ld\n", acc);
-        //     printf("shr = %d\n", shr);
-        //     printf("exp = %d\n", exp);
-        //     printf("res = %d\n", res);
-        // }
-
         TEST_ASSERT_EQUAL_INT8(exp, res);
+
+        #endif
     }
 }
 

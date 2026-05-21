@@ -28,7 +28,9 @@ TEST_GROUP_RUNNER(vpu_scalar_ops_s16) {
   RUN_TEST_CASE(vpu_scalar_ops_s16, vlmacc16);
   RUN_TEST_CASE(vpu_scalar_ops_s16, vlmaccr16);
   RUN_TEST_CASE(vpu_scalar_ops_s16, vlsat16);
+#if !defined(__VX4B__)
   RUN_TEST_CASE(vpu_scalar_ops_s16, vadddr16);
+#endif
 }
 
 TEST_GROUP(vpu_scalar_ops_s16);
@@ -47,7 +49,7 @@ const int STEP_B = (SMOKE_TEST)? 173 : 17;
 
 TEST(vpu_scalar_ops_s16, vladd16)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -80,7 +82,7 @@ TEST(vpu_scalar_ops_s16, vladd16)
 
 TEST(vpu_scalar_ops_s16, vlsub16)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -122,7 +124,7 @@ TEST(vpu_scalar_ops_s16, vlashr16)
     TEST_ASSERT_EQUAL_INT16(             0, vlashr16(     2,      2));
     TEST_ASSERT_EQUAL_INT16(             0, vlashr16(     2,      3));
     TEST_ASSERT_EQUAL_INT16(             4, vlashr16(     2,     -1));
-    
+
     TEST_ASSERT_EQUAL_INT16(            -2, vlashr16(    -2,      0));
     TEST_ASSERT_EQUAL_INT16(            -1, vlashr16(    -2,      1));
     TEST_ASSERT_EQUAL_INT16(            -1, vlashr16(    -2,      2));
@@ -130,15 +132,15 @@ TEST(vpu_scalar_ops_s16, vlashr16)
     TEST_ASSERT_EQUAL_INT16(            -4, vlashr16(    -2,     -1));
     TEST_ASSERT_EQUAL_INT16(            -1, vlashr16(    -8,      3));
     TEST_ASSERT_EQUAL_INT16(            -1, vlashr16(    -8,      4)); // Note[0]
-    
+
     TEST_ASSERT_EQUAL_INT16(             5, vlashr16(    10,      1));
     TEST_ASSERT_EQUAL_INT16(             2, vlashr16(    10,      2));
     TEST_ASSERT_EQUAL_INT16(             1, vlashr16(    10,      3));
-    
+
     TEST_ASSERT_EQUAL_INT16(        0xFFFD, vlashr16(0xFFFA,      1));
     TEST_ASSERT_EQUAL_INT16(        0xFFFE, vlashr16(0xFFFA,      2));
     TEST_ASSERT_EQUAL_INT16(        0xFFFF, vlashr16(0xFFFA,      3));
-    
+
     TEST_ASSERT_EQUAL_INT16(            64, vlashr16(     1,     -6));
     TEST_ASSERT_EQUAL_INT16(           -64, vlashr16(    -1,     -6));
 
@@ -164,7 +166,7 @@ TEST(vpu_scalar_ops_s16, vlashr16)
         int16_t exp = (int16_t) fexp;
 
         int16_t res = vlashr16(x, shr);
-    
+
         TEST_ASSERT_EQUAL_INT16(exp, res);
     }
 }
@@ -174,7 +176,7 @@ TEST(vpu_scalar_ops_s16, vpos16)
 {
   for(int k = 0; k < INT16_MAX; k+=STEP_A)
       TEST_ASSERT_EQUAL_INT16( k, vpos16( (int16_t) k));
-  
+
   for(int k = INT16_MIN; k < 0; k+=STEP_B)
       TEST_ASSERT_EQUAL_INT16( 0, vpos16( (int16_t) k));
 }
@@ -184,7 +186,7 @@ TEST(vpu_scalar_ops_s16, vsign16)
 {
   for(int k = 0; k < INT16_MAX; k+=STEP_A)
       TEST_ASSERT_EQUAL_INT16(  ((int16_t)  0x4000), vsign16( (int16_t) k)  );
-  
+
   for(int k = INT16_MIN; k < 0; k+=STEP_B)
       TEST_ASSERT_EQUAL_INT16(  ((int16_t) -0x4000), vsign16( (int16_t) k)  );
 }
@@ -194,7 +196,7 @@ TEST(vpu_scalar_ops_s16, vdepth1_16)
 {
   for(int k = 0; k < INT16_MAX; k+=STEP_A)
       TEST_ASSERT_EQUAL_INT( 0, vdepth1_16( (int16_t) k));
-  
+
   for(int k = INT16_MIN; k < 0; k+=STEP_B)
       TEST_ASSERT_EQUAL_INT( 1, vdepth1_16( (int16_t) k));
 }
@@ -202,19 +204,19 @@ TEST(vpu_scalar_ops_s16, vdepth1_16)
 
 TEST(vpu_scalar_ops_s16, vdepth8_16)
 {
-    
 
-    TEST_ASSERT_EQUAL_INT8(      0, vdepth8_16(          0));
-    TEST_ASSERT_EQUAL_INT8(      0, vdepth8_16(       0x7F));
-    TEST_ASSERT_EQUAL_INT8(      1, vdepth8_16(       0x80));
-    TEST_ASSERT_EQUAL_INT8(      2, vdepth8_16(      0x200));
-    TEST_ASSERT_EQUAL_INT8(   0x7F, vdepth8_16(     0x7FFF));
-    TEST_ASSERT_EQUAL_INT8(      0, vdepth8_16(         -1));
-    TEST_ASSERT_EQUAL_INT8(      0, vdepth8_16(      -0x80));
-    TEST_ASSERT_EQUAL_INT8(     -1, vdepth8_16(      -0x81));
-    TEST_ASSERT_EQUAL_INT8(     -2, vdepth8_16(    -0x0280));
-    TEST_ASSERT_EQUAL_INT8(     -3, vdepth8_16(    -0x0281));
-    TEST_ASSERT_EQUAL_INT8(  -0x7F, vdepth8_16(    -0x7FFF));
+
+    TEST_ASSERT_EQUAL_INT8(            0, vdepth8_16(          0));
+    TEST_ASSERT_EQUAL_INT8(            0, vdepth8_16(       0x7F));
+    TEST_ASSERT_EQUAL_INT8(            1, vdepth8_16(       0x80));
+    TEST_ASSERT_EQUAL_INT8(            2, vdepth8_16(      0x200));
+    TEST_ASSERT_EQUAL_INT8( VPU_INT8_MAX, vdepth8_16(     0x7FFF));
+    TEST_ASSERT_EQUAL_INT8(            0, vdepth8_16(         -1));
+    TEST_ASSERT_EQUAL_INT8(            0, vdepth8_16(      -0x80));
+    TEST_ASSERT_EQUAL_INT8(           -1, vdepth8_16(      -0x81));
+    TEST_ASSERT_EQUAL_INT8(           -2, vdepth8_16(    -0x0280));
+    TEST_ASSERT_EQUAL_INT8(           -3, vdepth8_16(    -0x0281));
+    TEST_ASSERT_EQUAL_INT8( VPU_INT8_MIN, vdepth8_16(    -0x7FFF));
 
     for(int k = INT16_MIN; k < INT16_MAX; k += STEP_A)
     {
@@ -232,10 +234,22 @@ TEST(vpu_scalar_ops_s16, vdepth8_16)
 
 TEST(vpu_scalar_ops_s16, vlmul16)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
+    #if defined(__VX4B__)
+    TEST_ASSERT_EQUAL_INT16(             0, vlmul16(       0,      0));
+    TEST_ASSERT_EQUAL_INT16(             1, vlmul16(       1,   0x7FFF));
+    TEST_ASSERT_EQUAL_INT16(            -1, vlmul16(       1,  -0x8000));
+    TEST_ASSERT_EQUAL_INT16(           123, vlmul16(     123,   0x7FFF));
+    TEST_ASSERT_EQUAL_INT16(          -123, vlmul16(     123,  -0x8000));
+    TEST_ASSERT_EQUAL_INT16(        -12322, vlmul16(   24644,  -0x4000));
+    TEST_ASSERT_EQUAL_INT16(         12322, vlmul16(   24644,   0x4000));
+    TEST_ASSERT_EQUAL_INT16(         12323, vlmul16(   24645,   0x4000));
+    TEST_ASSERT_INT16_WITHIN(1, VPU_INT16_MIN, vlmul16( -0x8000,   0x7FFF));
+    TEST_ASSERT_INT16_WITHIN(1, VPU_INT16_MAX, vlmul16( -0x7FFF,  -0x7FFF));
+    #else
     TEST_ASSERT_EQUAL_INT16(             0, vlmul16(       0,      0));
     TEST_ASSERT_EQUAL_INT16(             1, vlmul16(       1,   0x4000));
     TEST_ASSERT_EQUAL_INT16(            -1, vlmul16(       1,  -0x4000));
@@ -246,7 +260,7 @@ TEST(vpu_scalar_ops_s16, vlmul16)
     TEST_ASSERT_EQUAL_INT16(         12323, vlmul16(   24645,   0x2000));
     TEST_ASSERT_EQUAL_INT16( VPU_INT16_MIN, vlmul16( -0x8000,   0x4000));
     TEST_ASSERT_EQUAL_INT16( VPU_INT16_MAX, vlmul16( -0x7FFF,  -0x7FFF));
-
+    #endif
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
@@ -255,7 +269,7 @@ TEST(vpu_scalar_ops_s16, vlmul16)
         int16_t y = pseudo_rand_int16(&seed);
 
         // final term is because negative ties round differently on the VPU and in floating point
-        double exp = round( x * ldexp(y, -14)  +  ldexp(1,-30) );
+        double exp = round( x * ldexp(y, -VPU_VLMUL16_SHR)  +  ldexp(1,-30) );
 
         exp = MIN(exp, VPU_INT16_MAX);
         exp = MAX(exp, VPU_INT16_MIN);
@@ -269,7 +283,7 @@ TEST(vpu_scalar_ops_s16, vlmul16)
 
 TEST(vpu_scalar_ops_s16, vlmacc16)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -296,14 +310,18 @@ TEST(vpu_scalar_ops_s16, vlmacc16)
 
         int32_t res = vlmacc16(acc, x, y);
 
+        #if defined(__VX4B__)
+        TEST_ASSERT_INT32_WITHIN(1, s, res);
+        #else
         TEST_ASSERT_EQUAL_INT32(s, res);
+        #endif
     }
 }
 
 
 TEST(vpu_scalar_ops_s16, vlmaccr16)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -329,28 +347,18 @@ TEST(vpu_scalar_ops_s16, vlmaccr16)
 
         int32_t res = vlmaccr16(acc, x, y);
 
-        // if(s != res){
-        //     printf("rep: %d \t\tseed: 0x%08X\n", v, seed);
-        //     printf("acc = %ld\n", acc);
-        //     printf("x = [ ");
-        //     for(int i = 0; i < 16; i++)
-        //         printf("%d, ", x[i]);
-        //     printf(" ]\n");
-            
-        //     printf("y = [ ");
-        //     for(int i = 0; i < 16; i++)
-        //         printf("%d, ", y[i]);
-        //     printf(" ]\n");
-        // }
-
+        #if defined(__VX4B__)
+        TEST_ASSERT_INT32_WITHIN(1, s, res);
+        #else
         TEST_ASSERT_EQUAL_INT32(s, res);
+        #endif
     }
 }
 
 
 TEST(vpu_scalar_ops_s16, vlsat16)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -378,12 +386,16 @@ TEST(vpu_scalar_ops_s16, vlsat16)
 
         int16_t shr = pseudo_rand_int(&seed, 23 - hr, 25 - hr);
 
+        #if defined(__VX4B__)
+        // allow negative shifts
+        #else
         if(shr < 0)
             shr = 0;
+        #endif
 
 
         double fexp = ldexp(acc, 0);
-        
+
         // final term is because negative ties round differently on the VPU and in floating point
         fexp = round( fexp * ldexp(1, -shr) + ldexp(1,-30) );
 
@@ -403,10 +415,10 @@ TEST(vpu_scalar_ops_s16, vlsat16)
     }
 }
 
-
+#if !defined(__VX4B__)
 TEST(vpu_scalar_ops_s16, vadddr16)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -434,4 +446,4 @@ TEST(vpu_scalar_ops_s16, vadddr16)
         TEST_ASSERT_EQUAL_INT32(expected, result);
     }
 }
-
+#endif

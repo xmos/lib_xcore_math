@@ -37,7 +37,7 @@
 /* *****************************************************
 
 int8_t vladd8(
-    const int8_t x, 
+    const int8_t x,
     const int8_t y);
 
 ********************************************************/
@@ -45,14 +45,14 @@ int8_t vladd8(
 #define FUNCTION_NAME   vladd8
 #define NSTACKWORDS     (4)
 
-// .global FUNCTION_NAME; 
+// .global FUNCTION_NAME;
 // .type FUNCTION_NAME,@function;
 // .cc_top FUNCTION_NAME.function, FUNCTION_NAME
 
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
-    li t3, 0x200    
+    li t3, 0x200
 { nop                                   ; xm.vsetc t3                           }
 { addi t3,sp, 0                         ; sw a0, 0                           (sp) }
 { nop                                   ; xm.vldr t3                            }
@@ -63,13 +63,13 @@ FUNCTION_NAME:
 { xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 
-// //.cc_bottom FUNCTION_NAME.function; 
+// //.cc_bottom FUNCTION_NAME.function;
 //.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 //.resource_list_empty FUNCTION_NAME, "tail_callees"
 //.resource_list_empty FUNCTION_NAME, "callees"
 //.resource_list_empty FUNCTION_NAME, "parallel_callees"
 
-// CAT(.L_size_end_, FUNCTION_NAME): 
+// CAT(.L_size_end_, FUNCTION_NAME):
 //     .size FUNCTION_NAME, CAT(.L_size_end_, FUNCTION_NAME) - FUNCTION_NAME
 
 #undef NSTACKWORDS
@@ -85,7 +85,7 @@ FUNC_END
 /* *****************************************************
 
 int8_t vlsub8(
-    const int8_t x, 
+    const int8_t x,
     const int8_t y);
 
 ********************************************************/
@@ -95,7 +95,7 @@ int8_t vlsub8(
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
-    li t3, 0x200    
+    li t3, 0x200
 { nop                                   ; xm.vsetc t3                           }
 { addi t3,sp, 0                         ; sw a1, 0                           (sp) }
 { nop                                   ; xm.vldr t3                            }
@@ -103,7 +103,7 @@ FUNCTION_NAME:
 { xm.mkmski a1, 4                       ; xm.vlsub t3                           }
     xm.vstrpv t3, a1
 { nop                                   ; lw a0, 0                           (sp) }
-{ xm.sext a0, 16                        ; xm.retsp (NSTACKWORDS)*4              }
+{ xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -128,7 +128,7 @@ int8_t vlashr8(
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
-    li t3, 0x200    
+    li t3, 0x200
 { xm.mkmski a2, 4                       ; xm.vsetc t3                           }
 { addi t3,sp, 0                         ; sw a0, 0                           (sp) }
     xm.vlashr t3, a1
@@ -158,7 +158,7 @@ int8_t vpos8(
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
-    li t3, 0x200    
+    li t3, 0x200
 { nop                                   ; xm.vsetc t3                           }
 { addi t3,sp, 0                         ; sw a0, 0                           (sp) }
 { nop                                   ; xm.vldr t3                            }
@@ -189,14 +189,14 @@ int8_t vsign8(
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
-    li t3, 0x200    
+    li t3, 0x200
 { nop                                   ; xm.vsetc t3                           }
 { addi t3,sp, 0                         ; sw a0, 0                           (sp) }
 { nop                                   ; xm.vldr t3                            }
 { xm.mkmski a1, 4                       ; xm.vsign                              }
     xm.vstrpv t3, a1
 { nop                                   ; lw a0, 0                           (sp) }
-{ xm.sext a0, 16                        ; xm.retsp (NSTACKWORDS)*4              }
+{ xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
@@ -220,7 +220,7 @@ unsigned vdepth1_8(
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
-    li t3, 0x200    
+    li t3, 0x200
 { nop                                   ; xm.vsetc t3                           }
 { addi t3,sp, 0                         ; sw a0, 0                           (sp) }
 { nop                                   ; xm.vldr t3                            }
@@ -253,7 +253,7 @@ int8_t vlmul8(
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
-    li t3, 0x200    
+    li t3, 0x200
 { nop                                   ; xm.vsetc t3                           }
 { addi t3,sp, 0                         ; sw a0, 0                           (sp) }
 { nop                                   ; xm.vldr t3                            }
@@ -288,7 +288,7 @@ vpu_int8_acc_t vlmacc8(
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
-    li t3, 0x200    
+    li t3, 0x200
 { nop                                   ; xm.vsetc t3                           }
 { srli a3, a0, 16                       ; xm.zexti a0, 16                       }
 { addi t3,sp, 0                         ; sw a3, 0                           (sp) }
@@ -319,20 +319,20 @@ FUNC_END
 
 /* *****************************************************
 
-vpu_int8_acc_t vlmaccs6(
+vpu_int8_acc_t vlmaccr8(
     const vpu_int8_acc_t acc,
     const int8_t x[VPU_INT8_EPV],
     const int8_t y[VPU_INT8_EPV]);
 
 ********************************************************/
 
-#define FUNCTION_NAME   vlmaccs6
+#define FUNCTION_NAME   vlmaccr8
 #define NSTACKWORDS     (12)
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
 { xm.mkmski s8, 16                      ; sw s8, 32                          (sp) }
-    li t3, 0x200    
+    li t3, 0x200
 { addi t3,sp, 0                         ; xm.vsetc t3                           }
 { nop                                   ; xm.vclrdr                             }
 { nop                                   ; xm.vstd t3                            }
@@ -378,7 +378,7 @@ FUNC_END
 
 /* *****************************************************
 
-int8_t vlsat8(
+int16_t vlsat8(
     const vpu_int8_acc_t acc,
     const unsigned sat);
 
@@ -389,7 +389,7 @@ int8_t vlsat8(
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
-    li t3, 0x200    
+    li t3, 0x200
 { nop                                   ; xm.vsetc t3                           }
 { srli a3, a0, 16                       ; xm.zexti a0, 16                       }
 { addi t3,sp, 0                         ; sw a3, 0                           (sp) }
@@ -401,7 +401,7 @@ FUNCTION_NAME:
 xm.vlsat t3
     xm.vstrpv t3, a1
 { nop                                   ; lw a0, 0                           (sp) }
-{ xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
+{ xm.sext a0, 16                        ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
 #undef NSTACKWORDS
 #undef FUNCTION_NAME

@@ -28,7 +28,7 @@ static const int32_t neg_one_q30 = -0x40000000;
 
 
 int8_t vladd8(
-    const int8_t a, 
+    const int8_t a,
     const int8_t b)
 {
     int16_t sum = ((int16_t)a) + b;
@@ -37,7 +37,7 @@ int8_t vladd8(
 
 
 int8_t vlsub8(
-    const int8_t a, 
+    const int8_t a,
     const int8_t b)
 {
     int16_t diff = ((int16_t)a) - b;
@@ -82,12 +82,8 @@ int8_t vlmul8(
     const int8_t y)
 {
     int32_t p = ((int32_t)x)*y;
-    
-    #if defined(__VX4B__)
-    p = ROUND_SHR32(p, 7);
-    #else
-    p = ROUND_SHR32(p, 6);
-    #endif
+
+    p = ROUND_SHR32(p, VPU_VLMUL8_SHR);
     return SAT(8)(p);
 }
 
@@ -112,12 +108,16 @@ vpu_int8_acc_t vlmaccr8(
         s += (((int32_t)x[i])*y[i]);
         s = SAT(32)(s);
     }
-    
+
     return SAT(32)(s);
 }
 
 
+#if defined(__VX4B__)
+int16_t vlsat8(
+#else
 int8_t vlsat8(
+#endif
     const vpu_int8_acc_t acc,
     const unsigned sat)
 {
@@ -128,7 +128,11 @@ int8_t vlsat8(
     if(sat > 0)
         s = ((acc >> (sat-1)) + 1) >> 1;
 
+#if defined(__VX4B__)
+    return SAT(16)(s);
+#else
     return SAT(8)(s);
+#endif
 }
 
 
@@ -136,7 +140,7 @@ int8_t vlsat8(
 
 
 int16_t vladd16(
-    const int16_t a, 
+    const int16_t a,
     const int16_t b)
 {
     int32_t sum = ((int32_t)a) + b;
@@ -145,7 +149,7 @@ int16_t vladd16(
 
 
 int16_t vlsub16(
-    const int16_t a, 
+    const int16_t a,
     const int16_t b)
 {
     int32_t diff = ((int32_t)a) - b;
@@ -198,16 +202,7 @@ int16_t vlmul16(
     const int16_t y)
 {
     int32_t p = ((int32_t)x)*y;
-    p = ROUND_SHR32(p, 14);
-    return SAT(16)(p);
-}
-
-int16_t vlmul16_vx4b(
-    const int16_t x,
-    const int16_t y)
-{
-    int32_t p = ((int32_t)x)*y;
-    p = ROUND_SHR32(p, 15);
+    p = ROUND_SHR32(p, VPU_VLMUL16_SHR);
     return SAT(16)(p);
 }
 
@@ -232,25 +227,25 @@ vpu_int16_acc_t vlmaccr16(
     for(int i = 0; i < VPU_INT16_EPV; i++){
         s += (((int32_t)x[i])*y[i]);
     }
-    
+
     return SAT(32)(s);
 }
 
 
 int16_t vlsat16(
     const vpu_int16_acc_t acc,
-    #if defined(__VX4B__)
+#if defined(__VX4B__)
     const right_shift_t sat)
-    #else
+#else
     const unsigned sat)
-    #endif
+#endif
 {
     int64_t s = acc;
 
     #if defined(__VX4B__)
         if(sat < 0)
             s = s << (-sat);
-     #else
+    #else
         if(sat >= 32) return (acc >= 0)? 0 : -1;
     #endif
 
@@ -278,7 +273,7 @@ vpu_int16_acc_t vadddr16(
 
 
 int32_t vladd32(
-    const int32_t a, 
+    const int32_t a,
     const int32_t b)
 {
     int64_t sum = ((int64_t)a) + b;
@@ -287,7 +282,7 @@ int32_t vladd32(
 
 
 int32_t vlsub32(
-    const int32_t a, 
+    const int32_t a,
     const int32_t b)
 {
     int64_t diff = ((int64_t)a) - b;
@@ -360,10 +355,10 @@ vpu_int32_acc_t vlmacc32(
 {
     int64_t p = (((int64_t)x)*y);
     p = ROUND_SHR64(p, 30);
-    
+
     vpu_int32_acc_t s = acc;
     s += p;
-    
+
     return SAT40(s);
 }
 
@@ -375,7 +370,7 @@ vpu_int32_acc_t vlmaccr32(
 {
     int64_t s = acc;
     for(int i = 0; i < VPU_INT32_EPV; i++){
-        
+
         int64_t p = (((int64_t)x[i])*y[i]);
         p = ROUND_SHR64(p, 30);
         s += p;

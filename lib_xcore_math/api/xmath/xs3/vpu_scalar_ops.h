@@ -6,19 +6,19 @@
 #include <stdint.h>
 
 #include "xmath/types.h"
-#include "xmath/xs3/vpu_info.h" 
+#include "xmath/xs3/vpu_info.h"
 
 /**
  * The functions in this header are meant to be scalar emulations of the various instructions which
- * target the VPU. This is useful for compiling C code on x86 which is supposed to yield bit-perfect 
+ * target the VPU. This is useful for compiling C code on x86 which is supposed to yield bit-perfect
  * results to the corresponding operations performed on the VPU.
- * 
+ *
  * They're "scalar" emulations because they operate on and output scalar values, which tends to be
  * significantly more convenient than vectorized versions.
- * 
+ *
  * Similarly for convenience, rather than taking arrays or pointers (aside from the VLMACCR ops),
  * they directly take scalar values.
- * 
+ *
  * These are not performant functions. They will not result in fast code, and should not be used
  * in user applications.
  */
@@ -27,14 +27,14 @@
  * Implements the logic of the VLADD instruction in 8-bit mode.
  */
 int8_t vladd8(
-    const int8_t x, 
+    const int8_t x,
     const int8_t y);
 
 /**
  * Implements the logic of the VLSUB instruction in 8-bit mode.
  */
 int8_t vlsub8(
-    const int8_t x, 
+    const int8_t x,
     const int8_t y);
 
 /**
@@ -88,7 +88,11 @@ vpu_int8_acc_t vlmaccr8(
 /**
  * Implements the logic of the VLSAT instruction in 8-bit mode.
  */
+#if defined(__VX4B__)
+int16_t vlsat8(
+#else
 int8_t vlsat8(
+#endif
     const vpu_int8_acc_t acc,
     const unsigned sat);
 
@@ -101,14 +105,14 @@ int8_t vlsat8(
  * Implements the logic of the VLADD instruction in 16-bit mode.
  */
 int16_t vladd16(
-    const int16_t x, 
+    const int16_t x,
     const int16_t y);
 
 /**
  * Implements the logic of the VLSUB instruction in 16-bit mode.
  */
 int16_t vlsub16(
-    const int16_t x, 
+    const int16_t x,
     const int16_t y);
 
 /**
@@ -150,13 +154,6 @@ int16_t vlmul16(
     const int16_t y);
 
 /**
- * Implements the logic of the VLMUL instruction in 16-bit mode.
- */
-int16_t vlmul16_vx4b(
-    const int16_t x,
-    const int16_t y);
-
-/**
  * Implements the logic of the VLMACC instruction in 16-bit mode.
  */
 vpu_int16_acc_t vlmacc16(
@@ -177,17 +174,23 @@ vpu_int16_acc_t vlmaccr16(
  */
 int16_t vlsat16(
     const vpu_int16_acc_t acc,
-    #if defined(__VX4B__)
+#if defined(__VX4B__)
     const right_shift_t sat);
-    #else
+#else
     const unsigned sat);
-    #endif
+#endif
 
 /**
  * Implements the logic of the VADDDR instruction in 16-bit mode.
+ * Not supported on the vx4b architecture.
  */
+#if defined(__VX4B__)
+// no vadddr16 on vx4b
+#else
+// define adddr16 for xs3a and native
 vpu_int16_acc_t vadddr16(
     const vpu_int16_acc_t acc[VPU_INT16_ACC_PERIOD]);
+#endif
 
 
 
@@ -198,14 +201,14 @@ vpu_int16_acc_t vadddr16(
  * Implements the logic of the VLADD instruction in 32-bit mode.
  */
 int32_t vladd32(
-    const int32_t x, 
+    const int32_t x,
     const int32_t y);
 
 /**
  * Implements the logic of the VLSUB instruction in 32-bit mode.
  */
 int32_t vlsub32(
-    const int32_t x, 
+    const int32_t x,
     const int32_t y);
 
 /**
