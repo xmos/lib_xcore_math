@@ -7,25 +7,6 @@
 
 #include "xmath/xmath.h"
 
-
-float_s32_t f32_to_float_s32(
-    const float x)
-{
-  float_s32_t res;
-  f32_unpack(&res.mant, &res.exp, x);
-  return res;
-}
-
-float_s32_t f64_to_float_s32(
-    const double x)
-{
-  float_s32_t res;
-  double tmp = frexp(x, &res.exp);
-  res.mant = lround(INT32_MAX * tmp);
-  res.exp -= 31;
-  return res;
-}
-
 // The coefficients for the power series of sin(x). Currently used by f32_sin.S
 const float sin_coef[] = {
   1.570796326795e+00f, -6.459640975062e-01f, 7.969262624617e-02f, -4.681754135319e-03f,

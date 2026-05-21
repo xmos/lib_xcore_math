@@ -111,7 +111,7 @@ TEST(bfp_add_scalar, bfp_s32_add_scalar)
         C.exp = B.exp + pseudo_rand_int(&seed, -2, 3);
         C.mant = pseudo_rand_int32(&seed);
 
-        double Cf = float_s32_to_double(C);
+        double Cf = float_s32_to_f64(C);
 
         test_double_from_s32(Bf, &B);
 

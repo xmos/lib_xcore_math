@@ -4,6 +4,7 @@
 #pragma once
 
 #include "xmath/types.h"
+#include "xmath/scalar/float_s32.h"
 
 #include <stdio.h>
 #include <assert.h>
@@ -21,34 +22,34 @@ extern "C" {
 
 /**
  * @brief Unpack an IEEE 754 single-precision float into a 32-bit mantissa and exponent.
- * 
+ *
  * @par Example
  * @code{.c}
  *    // Unpack 1.52345246 * 10^(-5)
  *    float val = 1.52345246e-5;
  *    int32_t mant;
  *    exponent_t exp;
- *    f32_unpack(&mant, &exp, val);
- *    
+ *    f32_unpack_s32(&mant, &exp, val);
+ *
  *    printf("%ld * 2^(%d) <-- %e\n", mant, exp, val);
  * @endcode
- * 
+ *
  * @param[out]  mantissa    Unpacked output mantissa
  * @param[out]  exp         Unpacked output exponent
  * @param[in]   input       Float value to be unpacked
- * 
+ *
  * @ingroup scalar_f32_api
  */
 C_API
-void f32_unpack(
+void f32_unpack_s32(
     int32_t* mantissa,
     exponent_t* exp,
     const float input);
 
-    
+
 /**
  * @brief Unpack an IEEE 754 single-precision float into a 16-bit mantissa and exponent.
- * 
+ *
  * @par Example
  * @code{.c}
  *    // Unpack 1.52345246 * 10^(-5)
@@ -56,73 +57,113 @@ void f32_unpack(
  *    int16_t mant;
  *    exponent_t exp;
  *    f32_unpack_s16(&mant, &exp, val);
- *    
+ *
  *    printf("%ld * 2^(%d) <-- %e\n", mant, exp, val);
  * @endcode
- * 
+ *
  * @note This operation may result in a loss of precision.
- * 
+ *
  * @param[out]  mantissa    Unpacked output mantissa
  * @param[out]  exp         Unpacked output exponent
  * @param[in]   input       Float value to be unpacked
- * 
+ *
  * @ingroup scalar_f32_api
  */
-C_API
-void f32_unpack_s16(
+static inline void f32_unpack_s16(
     int16_t* mantissa,
     exponent_t* exp,
-    const float input);
+    const float input)
+{
+    int32_t mant32;
+    f32_unpack_s32(&mant32, exp, input);
+    *mantissa = s32_to_s16(exp, mant32, *exp);
+}
 
 
 /**
  * @brief Convert an IEEE754 `float` to a @ref float_s32_t.
- * 
+ *
  * @param[in] x Input value
- * 
- * @returns `float_s32_t` representation of `x` 
- * 
+ *
+ * @returns `float_s32_t` representation of `x`
+ *
  * @exception ET_ARITHMETIC Raised if `x` is infinite or NaN
- * 
+ *
  * @ingroup scalar_f32_api
  */
-C_API 
-float_s32_t f32_to_float_s32(
-    const float x);
+static inline float_s32_t f32_to_float_s32(
+    const float x)
+{
+  float_s32_t res;
+  f32_unpack_s32(&res.mant, &res.exp, x);
+  return res;
+}
 
 
 /**
  * @brief Convert an IEEE754 `double` to a @ref float_s32_t.
- * 
+ *
  * @note This operation may result in precision loss.
- * 
+ *
  * @param[in] x Input value
- * 
+ *
  * @returns `float_s32_t` representation of `x`
- * 
+ *
  * @exception ET_ARITHMETIC Raised if `x` is infinite or NaN
- * 
+ *
  * @ingroup scalar_f32_api
  */
-C_API
-float_s32_t f64_to_float_s32(
-    const double x);
+static inline float_s32_t f64_to_float_s32(
+    const double x)
+{
+  float_s32_t res;
+  const double tmp = frexp(x, &res.exp);
+  res.mant = lround(INT32_MAX * tmp);
+  res.exp -= 31;
+  return res;
+}
+
+
+/**
+ * @brief Convert an IEEE754 `float` to a fixed-point @c int32_t with a specified exponent.
+ *
+ * Converts the IEEE754 single-precision value @math{x} to the @c int32_t value @math{a} such that
+ * @math{a \cdot 2^{out\_exp} \approx x}.
+ *
+ * This is equivalent to converting @math{x} to @ref float_s32_t via @ref f32_to_float_s32() and
+ * then calling @ref float_s32_to_s32().
+ *
+ * @param[in] x         Input value @math{x}
+ * @param[in] out_exp   Exponent of the output fixed-point representation
+ *
+ * @returns Fixed-point integer @math{a} such that @math{a \cdot 2^{out\_exp} \approx x}
+ *
+ * @exception ET_ARITHMETIC Raised if @math{x} is infinite or NaN
+ *
+ * @ingroup scalar_f32_api
+ */
+static inline int32_t f32_to_s32(
+    const float x,
+    const exponent_t out_exp)
+{
+  return float_s32_to_s32(f32_to_float_s32(x), out_exp);
+}
 
 
 /**
  * @brief Get the sine of a specified angle.
- * 
- * Computes @math{sin(\theta)} using the power series expansion of @math{sin()} 
+ *
+ * Computes @math{sin(\theta)} using the power series expansion of @math{sin()}
  * truncated to 8 terms.
- * 
+ *
  * This implementation is meant to make optimal use of the XS3 floating-point unit.
- * 
+ *
  * @param[in] theta   Angle @math{\theta} to compute the sine of (in radians)
- * 
+ *
  * @returns Sine of the angle @math{\theta}
- * 
+ *
  * @exception ET_ARITHMETIC Raised if @math{\theta} is infinite or NaN
- * 
+ *
  * @ingroup scalar_f32_api
  */
 C_API
@@ -132,18 +173,18 @@ float f32_sin(
 
 /**
  * @brief Get the cosine of a specified angle.
- * 
- * Computes @math{cos(\theta) = sin(\theta+\frac{\pi}{2}} using the power series expansion of 
+ *
+ * Computes @math{cos(\theta) = sin(\theta+\frac{\pi}{2}} using the power series expansion of
  * @math{sin()} truncated to 8 terms.
- * 
+ *
  * This implementation is meant to make optimal use of the XS3 floating-point unit.
- * 
+ *
  * @param[in] theta   Angle @math{\theta} to compute the cosine of (in radians)
- * 
+ *
  * @returns Cosine of the angle @math{\theta}
- * 
+ *
  * @exception ET_ARITHMETIC Raised if @math{\theta} is infinite or NaN
- * 
+ *
  * @ingroup scalar_f32_api
  */
 C_API
@@ -154,16 +195,16 @@ float f32_cos(
 
 /**
  * @brief Get the base-2 logarithm of the specified value.
- * 
+ *
  * This function computes @math{log_2(x)} using the power series expansion of @math{log_2()}
  * truncated to 11 terms.
- * 
+ *
  * @param[in] x   Input value @math{x} to get the logarithm of.
- * 
+ *
  * @returns @math{log_2(x)}
- * 
+ *
  * @exception ET_ARITHMETIC Raised if @math{x} is infinite or NaN
- * 
+ *
  * @ingroup scalar_f32_api
  */
 C_API
@@ -173,27 +214,27 @@ float f32_log2(
 
 /**
  * @brief Compute power series summation using specified coefficients.
- * 
+ *
  * This function is used to compute the sum of terms in a power series, truncated to @math{N} terms,
  * starting with the @math{x^0} term.
- * 
- * `b` is an @math{N}-element vector of coefficients @vector{b} which are multiplied by the 
+ *
+ * `b` is an @math{N}-element vector of coefficients @vector{b} which are multiplied by the
  * corresponding powers of @math{x}.
- * 
+ *
  * @math{N} is the length of @vector{b} and number of terms to sum together.
- * 
+ *
  * @operation{
  * &     a \leftarrow \sum_{k=0}^{N-1}\left( x^k\,b_k \right)
  * }
- * 
+ *
  * @param[in] x   Input value @math{x}.
  * @param[in] b   Vector of coefficients @vector{b}.
  * @param[in] N   Number of power series terms to sum.
- * 
+ *
  * @returns @math{a}, the sum of the first @math{N} power series terms.
- * 
+ *
  * @exception ET_ARITHMETIC Raised if @math{x} or any element of @vector{b} is infinite or NaN.
- * 
+ *
  * @ingroup scalar_f32_api
  */
 C_API
@@ -205,24 +246,24 @@ float f32_power_series(
 
 /**
  * @brief Get a representation of the input @math{x} in normalized form A.
- * 
+ *
  * This function is used internally to transform a `float` value into a representation required for
  * certain purposes.
- * 
- * In particular, this function behaves much like `frexpf()`, where it is guaranteed that the 
+ *
+ * In particular, this function behaves much like `frexpf()`, where it is guaranteed that the
  * returned value @math{a} is either @math{0} or that  @math{0.5 \le \left| a \right| < 1.0}, and
  * the output exponent @math{p} is such that @math{x = a \cdot 2^{p}}.
- * 
+ *
  * In anticipation that future work may require alternative "normalized" representations, this form
  * is being defined here as form A.
- * 
+ *
  * @param[in] p   Output exponent @math{p}
  * @param[in] x   Input value @math{x}
- * 
+ *
  * @returns @math{a} in normalized form A.
- * 
+ *
  * @exception ET_ARITHMETIC Raised if @math{x} or any element of @vector{b} is infinite or NaN.
- * 
+ *
  * @ingroup scalar_f32_api
  */
 C_API

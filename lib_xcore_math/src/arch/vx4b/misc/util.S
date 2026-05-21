@@ -9,13 +9,13 @@
 .text
 
 .p2align 2
-/*  
-void f32_unpack(
+/*
+void f32_unpack_s32(
     int32_t* mantissa,
     exponent_t* exp,
     float input);
 */
-#define FUNCTION_NAME   f32_unpack
+#define FUNCTION_NAME   f32_unpack_s32
 #define NSTACKWORDS     (0)
 
 #define mant_out    a0
@@ -27,16 +27,12 @@ void f32_unpack(
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     xm.fsexp sign, exp, input
-    xm.fmant input, input
+    xm.fmants input, input
 
 #undef input
 #define mant        a2
 
-    // interesting way of subtracting 23 without using registers
-    addi exp, exp, -24
-{ addi exp, exp, 1                      ; xm.brff sign, .L_xuf_lblA             }
-{ xm.neg mant, mant                     ; nop                                   }
-    .L_xuf_lblA:
+    addi exp, exp, -23
 { nop                                   ; sw mant,0       ( mant_out)           }
 { nop                                   ; sw exp,0         ( exp_out)           }
     xm.retsp (NSTACKWORDS)*4
@@ -60,7 +56,7 @@ FUNCTION_NAME:
 
 
 
-/*  
+/*
 float s32_to_f32(
     const int32_t mantissa,
     const exponent_t exp);
@@ -70,20 +66,16 @@ float s32_to_f32(
 
 #define mant        a0
 #define exp         a1
-#define sign        a2
-#define zero        a3
-#define tmp         t3
+#define zero        a2
 
 .p2align 2
 FUNCTION_NAME:
-  
+
     xm.entsp (NSTACKWORDS)*4
-    srai sign, mant, 31
-  { li tmp, 23                          ; li zero, 0                            }  
-  { add exp, exp, tmp                   ; xm.brff sign, .L_pack_not_neg         }
-    xm.neg mant, mant
-  .L_pack_not_neg:
-    xm.fmake mant, sign, exp, zero, mant
+  // 23 - 32 = -9
+  // subtracting 32 becase we're putting mant in a high word to not extract the sign
+  { add exp, exp, -9                    ; li zero, 0                            }
+    xm.fmakes mant, exp, mant, zero
   { nop                                 ; xm.retsp (NSTACKWORDS)*4              }
 
 .L_func_end_pack:

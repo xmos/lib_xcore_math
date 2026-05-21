@@ -6,51 +6,6 @@
 
 #include "xmath/xmath.h"
 
-void f32_unpack_s16(
-    int16_t* mantissa,
-    exponent_t* exp,
-    const float input)
-{
-    int32_t mant32;
-    f32_unpack(&mant32, exp, input);
-    *mantissa = s32_to_s16(exp, mant32, *exp);
-}
-
-int32_t s64_to_s32(
-    exponent_t* a_exp,
-    const int64_t b,
-    const exponent_t b_exp)
-{
-  const headroom_t b_hr = HR_S64(b);
-  const right_shift_t shr = MAX( 0, (int)(32-b_hr) );
-  *a_exp = b_exp + shr;
-  return (int32_t) (b >> shr);
-}
-
-
-int16_t s32_to_s16(
-    exponent_t* a_exp,
-    const int32_t b,
-    const exponent_t b_exp)
-{
-  const headroom_t b_hr = HR_S32(b);
-  const right_shift_t shr = MAX( 0, (int)(16-b_hr) );
-  *a_exp = b_exp + shr;
-  return (int16_t) (b >> shr);
-}
-
-int32_t s16_to_s32(
-    exponent_t* a_exp,
-    const int16_t b,
-    const exponent_t b_exp,
-    const unsigned remove_hr)
-{
-  const left_shift_t shl = remove_hr? (16+HR_S16(b)) : 0;
-  *a_exp = b_exp - shl;
-  return ((int32_t)b) << shl;
-}
-
-
 int16_t s16_mul(
     exponent_t* a_exp,
     const int16_t b,
@@ -106,7 +61,7 @@ int32_t s32_inverse(
   return s32_divide_s64_s32(dividend, b);
 }
 
-int32_t s32_ashr(int32_t x, right_shift_t shr){
+int32_t s32_ashr(const int32_t x, const right_shift_t shr){
   int32_t res;
 
   // vx4b and xs3a use different conditions for "normal" shift left case due to the difference in the way lsats works.
@@ -172,7 +127,7 @@ int32_t s32_ashr(int32_t x, right_shift_t shr){
   return res;
 }
 
-int64_t s64_ashr(int64_t x, right_shift_t shr){
+int64_t s64_ashr(const int64_t x, const right_shift_t shr){
   int64_t res;
 
 // Not super elegant but all implementations share the nagative shift code
@@ -242,7 +197,7 @@ int64_t s64_ashr(int64_t x, right_shift_t shr){
   return res;
 }
 
-int16_t s16_ashr(int16_t x, right_shift_t shr){
+int16_t s16_ashr(const int16_t x, const right_shift_t shr){
   int16_t res;
 
 #if defined(__VX4B__)
