@@ -8,8 +8,6 @@
 #include "vpu_const_vects.h"
 #include "xmath_fft_lut.h"
 
-#include "xmath/xs3/vpu_scalar_ops.h"
-
 // Disable warning messages C4293:
 // warning C4293: '<<': shift count negative or too big, undefined behavior
 #ifdef _WIN32
@@ -35,12 +33,12 @@ void fft_index_bit_reversal(
 {
     unsigned int logn = u32_ceil_log2(length);
     for(unsigned i = 0; i < length; i++){
-        
+
         unsigned rev = n_bitrev(i, logn);
         if(rev < i) continue;
 
         complex_s32_t tmp = a[i];
-        
+
         a[i] = a[rev];
         a[rev] = tmp;
     }
@@ -65,7 +63,7 @@ headroom_t fft_spectra_split(
     // the Nyquist rate value into the imaginary part of the DC bin.
     complex_s32_t X0 = X[0];
     complex_s32_t XN = X[K];
-    
+
     // If we change [X[0].re, X[0].im, X[K].re, X[K].im] to be this:
     //  [DC.re - Ny.im,  Ny.re + DC.im,   DC.re + Ny.im,  -Ny.re + DC.im  ]
     // then we can just compute those bins in the loop below. Not very important
@@ -177,7 +175,7 @@ void fft_mono_adjust(
     #define VEC_ELMS 4 //complex elements per vector
 
     const complex_s32_t* W = XMATH_DIT_REAL_FFT_LUT(FFT_N);
-    
+
     // REMEMBER: The length of x[] is only FFT_N/2!
     complex_s32_t X0 = x[0];
     complex_s32_t XQ = x[FFT_N/4];
@@ -211,7 +209,7 @@ void fft_mono_adjust(
         // B = 0.5*(1 + j*W)
 
         // (Shifting each right by 1 gives the *0.5)
-        
+
         // for(int i = 0; i < 4; i++){
         //     A[i].re = ASHR(32)(((int64_t) 0x40000000) - tmp[i].re, 1);
         //     A[i].im = ASHR(32)(((int64_t) 0x00000000) - tmp[i].im, 1);
@@ -248,7 +246,7 @@ void fft_mono_adjust(
     x[0].im = X0.re - X0.im;
     x[FFT_N/4].re =  XQ.re;
     x[FFT_N/4].im = -XQ.im;
-    
+
     vect_complex_s32_tail_reverse(&x[FFT_N/4], FFT_N/4);
 }
 

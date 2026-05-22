@@ -11,7 +11,6 @@
 #include "xmath/xmath.h"
 
 #include "../../tst_common.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "unity_fixture.h"
 

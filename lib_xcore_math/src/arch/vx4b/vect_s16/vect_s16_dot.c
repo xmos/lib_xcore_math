@@ -7,7 +7,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 
 
@@ -17,7 +16,7 @@ int64_t vect_s16_dot(
     const unsigned length)
 {
     //#warn vect_s16_dot is not yet optimised for vx4b.
-    
+
     // Note: instead of using the 32-bit accumulators for this, the assembly version of this function implements
     //       makeshift 48-bit accumulators, which is why this is using a 64-bit int for accumulation.
     vpu_int32_acc_t acc = 0;

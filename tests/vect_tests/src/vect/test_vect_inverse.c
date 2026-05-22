@@ -11,7 +11,6 @@
 #include "xmath/xmath.h"
 
 #include "../tst_common.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "unity_fixture.h"
 TEST_GROUP_RUNNER(vect_inverse) {
@@ -35,11 +34,11 @@ TEST_TEAR_DOWN(vect_inverse) {}
 
 TEST(vect_inverse, vect_s16_inverse_prepare)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    
+
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
@@ -47,7 +46,7 @@ TEST(vect_inverse, vect_s16_inverse_prepare)
         headroom_t hr = pseudo_rand_uint(&seed, 0, 12);
 
         int16_t b[LEN] = { INT16_MIN_POS(hr), INT16_MAX_POS(hr), INT16_MIN_NEG(hr), INT16_MAX_NEG(hr) };
-         
+
         exponent_t a_exp;
         unsigned scale;
 
@@ -58,10 +57,10 @@ TEST(vect_inverse, vect_s16_inverse_prepare)
         // printf("scale = %u\n", scale);
         // for(int i = 0; i < LEN; i++)
         //     printf("  b[%d] = %d    (0x%04X)\n", i, b[i], (unsigned) b[i] );
-    
+
 
         // Verify that I've set up the test correctly.
-        
+
         TEST_ASSERT_EQUAL(hr, HR_S16(b[0]));
         TEST_ASSERT_EQUAL(hr, HR_S16(b[1]));
         TEST_ASSERT_EQUAL(hr, HR_S16(b[2]));
@@ -104,11 +103,11 @@ TEST(vect_inverse, vect_s16_inverse_prepare)
 
 TEST(vect_inverse, vect_s32_inverse_prepare)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
-    
+
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
@@ -116,7 +115,7 @@ TEST(vect_inverse, vect_s32_inverse_prepare)
         headroom_t hr = pseudo_rand_uint(&seed, 0, 28);
 
         int32_t b[LEN] = { INT32_MIN_POS(hr), INT32_MAX_POS(hr), INT32_MIN_NEG(hr), INT32_MAX_NEG(hr) };
-         
+
         exponent_t a_exp;
         unsigned scale;
 
@@ -127,10 +126,10 @@ TEST(vect_inverse, vect_s32_inverse_prepare)
         // printf("scale = %u\n", scale);
         // for(int i = 0; i < LEN; i++)
         //     printf("  b[%d] = %ld    (0x%08X)\n", i, b[i], (unsigned) b[i] );
-    
+
 
         // Verify that I've set up the test correctly.
-        
+
         TEST_ASSERT_EQUAL(hr, HR_S32(b[0]));
         TEST_ASSERT_EQUAL(hr, HR_S32(b[1]));
         TEST_ASSERT_EQUAL(hr, HR_S32(b[2]));
@@ -173,7 +172,7 @@ TEST(vect_inverse, vect_s32_inverse_prepare)
 TEST(vect_inverse, vect_s16_inverse)
 {
 
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 

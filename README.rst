@@ -36,7 +36,7 @@ Features
 Known issues
 ************
 
-  * None
+  * Native build only supports xs3a VPU emulation
 
 ****************
 Development repo

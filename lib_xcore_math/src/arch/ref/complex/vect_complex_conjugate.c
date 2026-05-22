@@ -6,8 +6,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
-
 
 
 headroom_t vect_complex_s32_conjugate(

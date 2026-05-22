@@ -7,6 +7,7 @@
 #include "xmath/xmath_conf.h"
 #include "xmath/api.h"
 #include "xmath/types.h"
+#include "xmath/vpu/vpu.h"
 
 #include "xmath/vect/vect.h"
 #include "xmath/scalar/scalar.h"
@@ -18,10 +19,6 @@
 
 #include "xmath/util.h"
 #include "xmath/q_format.h"
-
-#ifdef __XS3A__
-#include "xmath/xs3/vpu_info.h"
-#endif
 
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846 )

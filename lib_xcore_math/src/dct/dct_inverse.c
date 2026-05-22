@@ -9,10 +9,6 @@
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
 
-#ifndef __XS3A__
-# include "xmath/xs3/vpu_scalar_ops.h"
-#endif
-
 int32_t idct12_lut[6] = {
 0x0408D608, 0x04545E9F, 0x050AB948, 0x06921A9C, 0x0A73D749, 0x1EA52B31
 };
@@ -88,7 +84,7 @@ void dct12_inverse(
   // Place t[] at the end of y[]
   dct6_inverse(&y[HALF_DCT_N], &y[0]); // s[]
   dct6_inverse(&buff[0], &buff[0]); // t[]
-  
+
 
   ////// Shift s[] and t[] right 1 bit
   vect_s32_shr(&y[HALF_DCT_N], &y[HALF_DCT_N], HALF_DCT_N, 1);
@@ -97,7 +93,7 @@ void dct12_inverse(
 
   ////// Compute t_tilde[], which is t[] multiplied by the appropriate adjustment vector
   idct_scale(&buff[0], dct_lut, HALF_DCT_N_CHUNKS, -DCT_N_LOG2_CEIL);
-  
+
   ////// Compute the sum and difference of s[] and t_tilde[]
   // Sums go at the head of y[], diffs stay in buff[] because it acts on chunks
   idct_adsb(&y[0], &buff[0], &y[HALF_DCT_N], &buff[0], HALF_DCT_N_CHUNKS);

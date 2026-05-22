@@ -7,7 +7,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "vpu_const_vects.h"
 
 
@@ -50,7 +49,7 @@ float_s32_t float_s32_exp(
   }
 
   int frac_bits = -res.exp;
-  
+
   right_shift_t shr = -30 + frac_bits;
 
   int32_t alpha = 0;

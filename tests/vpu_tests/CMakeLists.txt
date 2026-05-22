@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 include($ENV{XMOS_CMAKE_PATH}/xcommon.cmake)
-project(xs3_tests)
+project(vpu_tests)
 
 if(DEFINED XCORE_TARGET)
     set(APP_HW_TARGET ${XCORE_TARGET})

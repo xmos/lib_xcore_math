@@ -10,7 +10,6 @@
 #include <stdarg.h>
 #include "xmath/xmath.h"
 #include "../tst_common.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "unity_fixture.h"
 
 
@@ -30,7 +29,7 @@ TEST_TEAR_DOWN(vect_exp) {}
 #  define REPS       (1000)
 #  define MAX_LEN    (256)
 #endif
-    
+
 
 
 TEST(vect_exp, chunk_q30_exp_small_RANDOM)

@@ -7,7 +7,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "vpu_const_vects.h"
 
 
@@ -40,7 +39,7 @@ headroom_t dct8x8_stageA(
       y[c][r] = buff[r][c];
     }
   }
-  
+
   // return headroom
   return vect_s16_headroom(&y[0][0], 8*8);
 }
@@ -70,7 +69,7 @@ headroom_t dct8x8_stageB(
       y[c][r] = vdepth8_16(buff[r][c]);
     }
   }
-  
+
   // return headroom
   headroom_t hr = 8;
   for(int k = 0; k < 8; k++){

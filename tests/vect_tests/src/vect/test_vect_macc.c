@@ -9,7 +9,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "testing.h"
 
 #include "../tst_common.h"
@@ -55,7 +54,7 @@ TEST(vect_macc, vect_s16_macc)
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
-        
+
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int16(&seed) % 10);
 
@@ -63,7 +62,7 @@ TEST(vect_macc, vect_s16_macc)
             unsigned shr = pseudo_rand_uint16(&seed) % 8;
             B[i] = pseudo_rand_int16(&seed) >> shr;
             C[i] = pseudo_rand_int16(&seed) >> shr;
-            
+
             B_fp[i] = ldexp(B[i], exp.b);
             C_fp[i] = ldexp(C[i], exp.c);
             A_fp[i] = ldexp(A[i], exp.a);
@@ -73,12 +72,12 @@ TEST(vect_macc, vect_s16_macc)
         hr.c = vect_s16_headroom(C, LEN);
 
         right_shift_t acc_shr, bc_shr;
-        vect_s16_macc_prepare(&exp.a, &acc_shr, &bc_shr, 
-                                  exp.a, exp.b, exp.c, 
+        vect_s16_macc_prepare(&exp.a, &acc_shr, &bc_shr,
+                                  exp.a, exp.b, exp.c,
                                   hr.a, hr.b, hr.c);
 
         hr.a = vect_s16_macc(A, B, C, LEN, acc_shr, bc_shr);
-        
+
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
@@ -91,13 +90,13 @@ TEST(vect_macc, vect_s16_macc)
 
 #define THRESHOLD  3
           if(expected - A[i] > THRESHOLD || A[i] - expected > THRESHOLD){
-            printf("[rep %d]  exp.a = %d; expected[%d] = %d  ( %f );   A[%d] = %d\n", 
+            printf("[rep %d]  exp.a = %d; expected[%d] = %d  ( %f );   A[%d] = %d\n",
               v, exp.a, i, expected, expected_fp, i, A[i]);
           }
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected, A[i], "Error not within threshold.");
 #undef THRESHOLD
         }
-        
+
     }
 }
 
@@ -117,7 +116,7 @@ TEST(vect_macc, vect_s16_nmacc)
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
-        
+
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int16(&seed) % 10);
 
@@ -125,7 +124,7 @@ TEST(vect_macc, vect_s16_nmacc)
             unsigned shr = pseudo_rand_uint16(&seed) % 8;
             B[i] = pseudo_rand_int16(&seed) >> shr;
             C[i] = pseudo_rand_int16(&seed) >> shr;
-            
+
             B_fp[i] = ldexp(B[i], exp.b);
             C_fp[i] = ldexp(C[i], exp.c);
             A_fp[i] = ldexp(A[i], exp.a);
@@ -135,12 +134,12 @@ TEST(vect_macc, vect_s16_nmacc)
         hr.c = vect_s16_headroom(C, LEN);
 
         right_shift_t acc_shr, bc_shr;
-        vect_s16_nmacc_prepare(&exp.a, &acc_shr, &bc_shr, 
-                                  exp.a, exp.b, exp.c, 
+        vect_s16_nmacc_prepare(&exp.a, &acc_shr, &bc_shr,
+                                  exp.a, exp.b, exp.c,
                                   hr.a, hr.b, hr.c);
 
         hr.a = vect_s16_nmacc(A, B, C, LEN, acc_shr, bc_shr);
-        
+
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
@@ -158,7 +157,7 @@ TEST(vect_macc, vect_s16_nmacc)
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected, A[i], "Error not within threshold.");
 #undef THRESHOLD
         }
-        
+
     }
 }
 
@@ -178,7 +177,7 @@ TEST(vect_macc, vect_s32_macc)
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
-        
+
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int32(&seed) % 10);
 
@@ -186,7 +185,7 @@ TEST(vect_macc, vect_s32_macc)
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int32(&seed) >> shr;
             C[i] = pseudo_rand_int32(&seed) >> shr;
-            
+
             B_fp[i] = ldexp(B[i], exp.b);
             C_fp[i] = ldexp(C[i], exp.c);
             A_fp[i] = ldexp(A[i], exp.a);
@@ -196,12 +195,12 @@ TEST(vect_macc, vect_s32_macc)
         hr.c = vect_s32_headroom(C, LEN);
 
         right_shift_t acc_shr, b_shr, c_shr;
-        vect_s32_macc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr, 
-                                              exp.a, exp.b, exp.c, 
+        vect_s32_macc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr,
+                                              exp.a, exp.b, exp.c,
                                               hr.a, hr.b, hr.c);
 
         hr.a = vect_s32_macc(A, B, C, LEN, acc_shr, b_shr, c_shr);
-        
+
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
@@ -219,7 +218,7 @@ TEST(vect_macc, vect_s32_macc)
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected, A[i], "Error not within threshold.");
 #undef THRESHOLD
         }
-        
+
     }
 }
 
@@ -241,7 +240,7 @@ TEST(vect_macc, vect_s32_nmacc)
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
-        
+
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int32(&seed) % 10);
 
@@ -249,7 +248,7 @@ TEST(vect_macc, vect_s32_nmacc)
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int32(&seed) >> shr;
             C[i] = pseudo_rand_int32(&seed) >> shr;
-            
+
             B_fp[i] = ldexp(B[i], exp.b);
             C_fp[i] = ldexp(C[i], exp.c);
             A_fp[i] = ldexp(A[i], exp.a);
@@ -259,12 +258,12 @@ TEST(vect_macc, vect_s32_nmacc)
         hr.c = vect_s32_headroom(C, LEN);
 
         right_shift_t acc_shr, b_shr, c_shr;
-        vect_s32_nmacc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr, 
-                                              exp.a, exp.b, exp.c, 
+        vect_s32_nmacc_prepare(&exp.a, &acc_shr, &b_shr, &c_shr,
+                                              exp.a, exp.b, exp.c,
                                               hr.a, hr.b, hr.c);
 
         hr.a = vect_s32_nmacc(A, B, C, LEN, acc_shr, b_shr, c_shr);
-        
+
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
@@ -282,6 +281,6 @@ TEST(vect_macc, vect_s32_nmacc)
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected, A[i], "Error not within threshold.");
 #undef THRESHOLD
         }
-        
+
     }
 }

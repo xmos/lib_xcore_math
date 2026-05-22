@@ -6,7 +6,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 
 void vect_s16_extract_high_byte(

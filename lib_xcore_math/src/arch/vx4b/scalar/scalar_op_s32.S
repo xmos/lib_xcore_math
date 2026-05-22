@@ -33,7 +33,7 @@
 /* *****************************************************
 
 int32_t vladd32(
-    const int32_t x, 
+    const int32_t x,
     const int32_t y);
 
 ********************************************************/
@@ -65,7 +65,7 @@ FUNC_END
 /* *****************************************************
 
 int32_t vlsub32(
-    const int32_t x, 
+    const int32_t x,
     const int32_t y);
 
 ********************************************************/
@@ -440,8 +440,10 @@ FUNC_START
 FUNCTION_NAME:
 { li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
 { addi t3,sp, 0                         ; xm.vsetc t3                           }
-{ nop                                   ; xm.vldd a0                            }
-{ nop                                   ; xm.vldc a1                            }
+xm.std a0, a1, 0 (t3)
+{ nop                                   ; xm.vldd t3                            }
+xm.std a2, a3, 0 (t3)
+{ nop                                   ; xm.vldc t3                            }
 { xm.mkmski a1, 8                       ; xm.vcmr0                              }
     xm.vstrpv t3, a1
 { nop                                   ; lw a0, 0                           (sp) }
@@ -472,8 +474,10 @@ FUNC_START
 FUNCTION_NAME:
 { li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
 { addi t3,sp, 0                         ; xm.vsetc t3                           }
-{ nop                                   ; xm.vldd a0                            }
-{ nop                                   ; xm.vldc a1                            }
+xm.std a0, a1, 0 (t3)
+{ nop                                   ; xm.vldd t3                            }
+xm.std a2, a3, 0 (t3)
+{ nop                                   ; xm.vldc t3                            }
 { xm.mkmski a1, 8                       ; xm.vcmi0                              }
     xm.vstrpv t3, a1
 { nop                                   ; lw a0, 4                           (sp) }
@@ -504,8 +508,10 @@ FUNC_START
 FUNCTION_NAME:
 { li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
 { addi t3,sp, 0                         ; xm.vsetc t3                           }
-{ nop                                   ; xm.vldd a0                            }
-{ nop                                   ; xm.vldc a1                            }
+xm.std a0, a1, 0 (t3)
+{ nop                                   ; xm.vldd t3                            }
+xm.std a2, a3, 0 (t3)
+{ nop                                   ; xm.vldc t3                            }
 { xm.mkmski a1, 8                       ; xm.vcmcr0                             }
     xm.vstrpv t3, a1
 { nop                                   ; lw a0, 0                           (sp) }
@@ -536,8 +542,10 @@ FUNC_START
 FUNCTION_NAME:
 { li t3, 0                              ; xm.entsp (NSTACKWORDS)*4              }
 { addi t3,sp, 0                         ; xm.vsetc t3                           }
-{ nop                                   ; xm.vldd a0                            }
-{ nop                                   ; xm.vldc a1                            }
+xm.std a0, a1, 0 (t3)
+{ nop                                   ; xm.vldd t3                            }
+xm.std a2, a3, 0 (t3)
+{ nop                                   ; xm.vldc t3                            }
 { xm.mkmski a1, 8                       ; xm.vcmci0                             }
     xm.vstrpv t3, a1
 { nop                                   ; lw a0, 4                           (sp) }

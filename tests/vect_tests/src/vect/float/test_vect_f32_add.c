@@ -10,7 +10,6 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "../../tst_common.h"
 #include "unity_fixture.h"
 
@@ -64,7 +63,7 @@ TEST(vect_f32_add, vect_f32_add)
                       exponent);
       expected[k] = b[k] + c[k];
     }
-    
+
     vect_f32_add(a, b, c, len);
 
     for(unsigned int k = 0; k < len; k++){

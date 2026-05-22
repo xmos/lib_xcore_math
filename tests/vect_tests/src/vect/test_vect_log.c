@@ -10,7 +10,6 @@
 #include <stdarg.h>
 #include "xmath/xmath.h"
 #include "../tst_common.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "unity_fixture.h"
 
 
@@ -140,7 +139,7 @@ TEST(vect_log, chunk_float_s32_log_RANDOM)
 
   // printf("Max max error: %u\n", max_max_error);
 }
- 
+
 
 
 
@@ -285,7 +284,7 @@ TEST(vect_log, vect_s32_log)
     for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i], b_exp);
       double exp_dbl;
-      
+
       switch(output_base){
         case 1:   exp_dbl = log(bi);    break;
         case 2:   exp_dbl = log2(bi);   break;
@@ -377,7 +376,7 @@ TEST(vect_log, vect_float_s32_log)
     for(unsigned int i = 0; i < length; i++){
       double bi = ldexp(B[i].mant, B[i].exp);
       double exp_dbl;
-      
+
       switch(output_base){
         case 1:   exp_dbl = log(bi);   break;
         case 2:   exp_dbl = log2(bi);   break;

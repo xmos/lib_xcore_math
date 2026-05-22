@@ -8,7 +8,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../tst_common.h"
 #include "unity_fixture.h"
@@ -53,7 +52,7 @@ TEST(vect_zip, vect_s32_zip)
 
         right_shift_t b_shr = pseudo_rand_int(&seed, -2, 3);
         right_shift_t c_shr = pseudo_rand_int(&seed, -2, 3);
-        
+
         for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed) >> b_hr;
             C[i] = pseudo_rand_int32(&seed) >> c_hr;
@@ -77,7 +76,7 @@ TEST(vect_zip, vect_s32_zip)
           TEST_ASSERT_EQUAL_INT32_MESSAGE(expected[k].im, A[k].im, "");
 
         }
-        
+
     }
 }
 
@@ -102,7 +101,7 @@ TEST(vect_zip, vect_s32_unzip)
 
         headroom_t re_hr = pseudo_rand_uint(&seed, 0, 8);
         headroom_t im_hr = pseudo_rand_uint(&seed, 0, 8);
-        
+
         for(unsigned int i = 0; i < len; i++){
           C[i].re = pseudo_rand_int32(&seed) >> re_hr;
           C[i].im = pseudo_rand_int32(&seed) >> im_hr;
@@ -117,15 +116,15 @@ TEST(vect_zip, vect_s32_unzip)
 
           if(A[k] != expectedA[k])
             printf("\nC[%d].re = %ld\n", k,  (long int) C[k].re);
-          
+
           if(B[k] != expectedB[k])
             printf("\nC[%d].im = %ld\n", k, (long int) C[k].im);
-          
+
 
           TEST_ASSERT_EQUAL_INT32_MESSAGE(expectedA[k], A[k], "");
           TEST_ASSERT_EQUAL_INT32_MESSAGE(expectedB[k], B[k], "");
 
         }
-        
+
     }
 }

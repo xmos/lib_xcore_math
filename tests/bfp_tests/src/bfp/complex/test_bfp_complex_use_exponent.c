@@ -8,7 +8,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../../tst_common.h"
 
@@ -42,11 +41,11 @@ TEST(bfp_complex_use_exponent, bfp_complex_s16_use_exponent)
   int16_t expected_re[MAX_LEN], expected_im[MAX_LEN];
 
   bfp_complex_s16_t A;
-  
+
 
   for(int r = 0; r < REPS; r++){
     const unsigned old_seed = seed;
-    
+
     const unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
     setExtraInfo_RSL(r, old_seed, len);
@@ -67,7 +66,7 @@ TEST(bfp_complex_use_exponent, bfp_complex_s16_use_exponent)
     }
     memcpy(realA_copy, realA, sizeof(realA));
     memcpy(imagA_copy, imagA, sizeof(imagA));
-    
+
     bfp_complex_s16_init(&A, realA, imagA, init_exp, len, 1);
 
     bfp_complex_s16_use_exponent(&A, end_exp);
@@ -88,7 +87,7 @@ TEST(bfp_complex_use_exponent, bfp_complex_s16_use_exponent)
       "Expected: %d * 2^(%d)  <--  (%d >> %d) * 2^(%d + %d)  // was: %d\n",
       init_exp, end_exp,
       expected_im[i], end_exp, imagA_copy[i], delta_p, init_exp, delta_p, imagA[i]);
-      
+
   }
 }
 
@@ -102,11 +101,11 @@ TEST(bfp_complex_use_exponent, bfp_complex_s32_use_exponent)
   complex_s32_t expected[MAX_LEN];
 
   bfp_complex_s32_t A;
-  
+
 
   for(int r = 0; r < REPS; r++){
     const unsigned old_seed = seed;
-    
+
     const unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
     setExtraInfo_RSL(r, old_seed, len);
@@ -125,7 +124,7 @@ TEST(bfp_complex_use_exponent, bfp_complex_s32_use_exponent)
       expected[k].im = delta_p? vlashr32(dataA[k].im, delta_p) : dataA[k].im;
     }
     memcpy(dataA_copy, dataA, sizeof(dataA));
-    
+
     bfp_complex_s32_init(&A, dataA, init_exp, len, 1);
 
     bfp_complex_s32_use_exponent(&A, end_exp);
@@ -139,7 +138,7 @@ TEST(bfp_complex_use_exponent, bfp_complex_s32_use_exponent)
       "Expected: %ld * 2^(%d)  <--  (%ld >> %d) * 2^(%d + %d)  // was: %ld\n",
       init_exp, end_exp,
       (long int)((int32_t*)expected)[i], end_exp, (long int)((int32_t*)dataA_copy)[i], delta_p, init_exp, delta_p, (long int)((int32_t*)dataA)[i]);
-      
+
   }
 }
 

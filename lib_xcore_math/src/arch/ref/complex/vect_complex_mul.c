@@ -6,7 +6,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 
 ////////////////////////////////////////
@@ -25,7 +24,7 @@ headroom_t vect_complex_s16_real_mul(
     const right_shift_t sat)
 {
     for(unsigned k = 0; k < length; k++){
-        
+
         complex_s32_t B = {b_real[k], b_imag[k]};
         int32_t C = c[k];
 
@@ -58,7 +57,7 @@ headroom_t vect_complex_s16_mul(
     const right_shift_t sat)
 {
     for(unsigned k = 0; k < length; k++){
-        
+
         complex_s32_t B = {b_real[k], b_imag[k]};
         complex_s32_t C = {c_real[k], c_imag[k]};
 
@@ -91,7 +90,7 @@ headroom_t vect_complex_s16_conj_mul(
     const right_shift_t sat)
 {
     for(unsigned k = 0; k < length; k++){
-        
+
         complex_s32_t B = {b_real[k], b_imag[k]};
         complex_s32_t C = {c_real[k], c_imag[k]};
 
@@ -125,7 +124,7 @@ headroom_t vect_complex_s16_scale(
 {
 
     for(unsigned k = 0; k < length; k++){
-        
+
         complex_s32_t B = {b_real[k], b_imag[k]};
 
         struct{ int64_t re; int64_t im; } P = {
@@ -165,9 +164,9 @@ headroom_t vect_complex_s32_real_mul(
     const right_shift_t c_shr)
 {
     for(unsigned k = 0; k < length; k++){
-        
+
         complex_s32_t B = {
-            ASHR(32)(b[k].re, b_shr), 
+            ASHR(32)(b[k].re, b_shr),
             ASHR(32)(b[k].im, b_shr),
         };
 
@@ -193,13 +192,13 @@ headroom_t vect_complex_s32_mul(
     const right_shift_t c_shr)
 {
     for(unsigned k = 0; k < length; k++){
-        
+
         complex_s32_t B = {
-            ASHR(32)(b[k].re, b_shr), 
+            ASHR(32)(b[k].re, b_shr),
             ASHR(32)(b[k].im, b_shr),
         };
         complex_s32_t C = {
-            ASHR(32)(c[k].re, c_shr), 
+            ASHR(32)(c[k].re, c_shr),
             ASHR(32)(c[k].im, c_shr),
         };
 
@@ -227,14 +226,14 @@ headroom_t vect_complex_s32_conj_mul(
     const right_shift_t c_shr)
 {
     for(unsigned k = 0; k < length; k++){
-        
+
         complex_s32_t B = {
-            ASHR(32)(b[k].re, b_shr), 
+            ASHR(32)(b[k].re, b_shr),
             ASHR(32)(b[k].im, b_shr),
         };
 
         complex_s32_t C = {
-            ASHR(32)(c[k].re, c_shr), 
+            ASHR(32)(c[k].re, c_shr),
             ASHR(32)(c[k].im, c_shr),
         };
 
@@ -270,7 +269,7 @@ headroom_t vect_complex_s32_scale(
     };
 
     for(unsigned k = 0; k < length; k++){
-        
+
         const complex_s32_t B = {
             vlashr32(b[k].re, b_shr),
             vlashr32(b[k].im, b_shr),

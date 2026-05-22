@@ -6,9 +6,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
-
-
 
 
 headroom_t vect_s16_abs(
@@ -82,7 +79,7 @@ headroom_t vect_s16_rect(
 {
     for(unsigned k = 0; k < length; k++)
         a[k] = vpos16(b[k]);
-    
+
     return vect_s16_headroom(a, length);
 }
 
@@ -95,6 +92,6 @@ headroom_t vect_s32_rect(
 {
     for(unsigned k = 0; k < length; k++)
         a[k] = vpos32(b[k]);
-    
+
     return vect_s32_headroom(a, length);
 }

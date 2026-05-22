@@ -11,8 +11,6 @@
 
 #include "../tst_common.h"
 
-#include "xmath/xs3/vpu_scalar_ops.h"
-
 #include "unity_fixture.h"
 
 
@@ -37,7 +35,7 @@ TEST_TEAR_DOWN(vect_add_scalar) {}
 
 TEST(vect_add_scalar, vect_s16_add_scalar)
 {
-    
+
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   headroom_t hr;
@@ -51,7 +49,7 @@ TEST(vect_add_scalar, vect_s16_add_scalar)
     const unsigned old_seed = seed;
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
     setExtraInfo_RSL(v, old_seed, len);
-    
+
     for(unsigned int i = 0; i < len; i++){
         unsigned shr = pseudo_rand_uint(&seed, 0, 8);
         B[i] = pseudo_rand_int16(&seed) >> shr;
@@ -64,20 +62,20 @@ TEST(vect_add_scalar, vect_s16_add_scalar)
     for(unsigned int k = 0; k < len; k++){
       expected[k] = vladd16(vlashr16(B[k], b_shr), C);
     }
-    
+
 
     hr = vect_s16_add_scalar(A, B, C, len, b_shr);
 
     TEST_ASSERT_EQUAL_MESSAGE( vect_s16_headroom(A, len), hr, "Headroom is wrong.");
 
     TEST_ASSERT_EQUAL_INT16_ARRAY_MESSAGE(expected, A, len, "");
-    
+
   }
 }
 
 TEST(vect_add_scalar, vect_s32_add_scalar)
 {
-    
+
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   headroom_t hr;
@@ -91,7 +89,7 @@ TEST(vect_add_scalar, vect_s32_add_scalar)
     const unsigned old_seed = seed;
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
     setExtraInfo_RSL(v, old_seed, len);
-    
+
     for(unsigned int i = 0; i < len; i++){
         unsigned shr = pseudo_rand_uint(&seed, 0, 8);
         B[i] = pseudo_rand_int32(&seed) >> shr;
@@ -104,14 +102,14 @@ TEST(vect_add_scalar, vect_s32_add_scalar)
     for(unsigned int k = 0; k < len; k++){
       expected[k] = vladd32(vlashr32(B[k], b_shr), C);
     }
-    
+
 
     hr = vect_s32_add_scalar(A, B, C, len, b_shr);
 
     TEST_ASSERT_EQUAL_MESSAGE( vect_s32_headroom(A, len), hr, "Headroom is wrong.");
 
     TEST_ASSERT_EQUAL_INT32_ARRAY_MESSAGE(expected, A, len, "");
-    
+
   }
 }
 

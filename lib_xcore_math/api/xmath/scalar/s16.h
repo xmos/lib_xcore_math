@@ -5,7 +5,7 @@
 
 #include "xmath/types.h"
 #include "xmath/util.h"
-#include "xmath/xs3/vpu_info.h"
+#include "xmath/vpu/vpu_info.h"
 
 #include <stdio.h>
 #include <assert.h>

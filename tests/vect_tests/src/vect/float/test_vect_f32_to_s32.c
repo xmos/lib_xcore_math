@@ -10,7 +10,6 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "../../tst_common.h"
 #include "unity_fixture.h"
 
@@ -74,7 +73,7 @@ TEST(vect_f32_to_vect_s32, vect_f32_to_vect_s32)
     TEST_ASSERT_EQUAL_INT32_ARRAY_MESSAGE(expected, vec_out, len, "");
 
     TEST_ASSERT_EQUAL(0, vect_s32_headroom(vec_out, len));
-    
+
   }
 }
 

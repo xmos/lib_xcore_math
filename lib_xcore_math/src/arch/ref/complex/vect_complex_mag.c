@@ -6,8 +6,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "vpu_const_vects.h"
 
 
@@ -24,7 +22,7 @@ headroom_t vect_complex_s16_mag(
     const unsigned table_rows)
 {
     for(unsigned k = 0; k < length; k++){
-        
+
         complex_s16_t B = {
             vlashr16(b_real[k], b_shr),
             vlashr16(b_imag[k], b_shr),
@@ -47,7 +45,7 @@ headroom_t vect_complex_s16_mag(
 
             acc = vlmacc16(acc, rot.im, vlmul16( negative_one_s16 , B.im));
             acc = vlmacc16(acc, rot.re, B.re);
-            
+
             new_B.re = vlsat16(acc, 15);
 
             acc = 0;
@@ -81,7 +79,7 @@ headroom_t vect_complex_s32_mag(
 {
 
     for(unsigned k = 0; k < length; k++){
-        
+
         // Apply a right-shift to b[k]
         complex_s32_t B = {
             vlashr32(b[k].re, b_shr),
@@ -134,7 +132,7 @@ headroom_t vect_complex_s16_squared_mag(
 
         acc = vlmacc16(acc, b_real[k], b_real[k]);
         acc = vlmacc16(acc, b_imag[k], b_imag[k]);
-        
+
         a[k] = vlsat16(acc, a_shr);
     }
 

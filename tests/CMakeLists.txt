@@ -15,7 +15,4 @@ add_subdirectory(fft_tests)
 add_subdirectory(filter_tests)
 add_subdirectory(scalar_tests)
 add_subdirectory(vect_tests)
-
-if(APP_HW_TARGET STREQUAL "XK-EVK-XU316")
-add_subdirectory(xs3_tests)
-endif()
+add_subdirectory(vpu_tests)

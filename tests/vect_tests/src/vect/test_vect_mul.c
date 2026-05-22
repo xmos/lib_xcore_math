@@ -8,7 +8,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../tst_common.h"
 #include "unity_fixture.h"
@@ -37,7 +36,7 @@ static char msg_buff[200];
     }} while(0)
 
 #if defined(__XS3A__)
-    #define XTEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM) TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM) 
+    #define XTEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM) TEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM)
 #elif defined(__VX4B__)
     #define XTEST_ASSERT_EQUAL_MSG(EXPECTED, ACTUAL, LINE_NUM) TEST_ASSERT_INT16_WITHIN(1, EXPECTED, ACTUAL)
 #endif
@@ -60,7 +59,7 @@ static int16_t mul_s16(int16_t b, int16_t c, int a_shr)
             a = a << (unsigned)(-a_shr);
         }
     }
-      
+
     a = (a >= VPU_INT16_MAX)? VPU_INT16_MAX : (a <= VPU_INT16_MIN)? VPU_INT16_MIN : a;
 
     return (int16_t) a;
@@ -77,7 +76,7 @@ static int32_t mul_s32(int32_t b, int32_t c, int b_shr, int c_shr)
     bp = (bp >= VPU_INT32_MAX)? VPU_INT32_MAX : (bp <= VPU_INT32_MIN)? VPU_INT32_MIN : bp;
     bp = ( (b_shr > 0) && (b < 0) && (-(1<<b_shr)) < b)? -1 : bp;
     assert(b >= 0 || bp < 0);
-    
+
     cp = (cp >= VPU_INT32_MAX)? VPU_INT32_MAX : (cp <= VPU_INT32_MIN)? VPU_INT32_MIN : cp;
     cp = ( (c_shr > 0) && (c < 0) && (-(1<<c_shr)) < c)? -1 : cp;
     assert(c >= 0 || cp < 0);
@@ -117,7 +116,7 @@ TEST(vect_mul, vect_s16_mul_prepare)
         #else
         #define MAX_HR 16
         #endif
-        
+
         exponent_t b_exp = ((int32_t)(pseudo_rand_uint32(&seed) % 60)) - 30;
         headroom_t b_hr  = pseudo_rand_uint32(&seed) % MAX_HR;
         exponent_t c_exp = ((int32_t)(pseudo_rand_uint32(&seed) % 60)) - 30;
@@ -151,7 +150,7 @@ TEST(vect_mul, vect_s32_mul_prepare)
 
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
-        
+
         exponent_t b_exp = ((int32_t)(pseudo_rand_uint32(&seed) % 60)) - 30;
         headroom_t b_hr  = pseudo_rand_uint32(&seed) % 31;
         exponent_t c_exp = ((int32_t)(pseudo_rand_uint32(&seed) % 60)) - 30;
@@ -209,9 +208,9 @@ TEST(vect_mul, vect_s16_mul_basic)
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
-        
+
         test_case_t* casse = &cases[v];
-        
+
         //Verify mul_s16() is correct. It's used in other test cases.
         TEST_ASSERT_EQUAL_MSG(casse->expected,
                     mul_s16(casse->value.b, casse->value.c, casse->a_shr),
@@ -289,9 +288,9 @@ TEST(vect_mul, vect_s16_mul_random)
     for(unsigned int v = 0; v < REPS; v++){
         unsigned old_seed = seed;
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
-        
+
         setExtraInfo_RSL(v, old_seed, len);
-        
+
         for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int16(&seed) >> shr;
@@ -303,11 +302,11 @@ TEST(vect_mul, vect_s16_mul_random)
         // Determine expected outputs
         for(unsigned int i = 0; i < len; i++)
           expected[i] = mul_s16(B[i], C[i], a_shr);
-        
-        
+
+
         // A <-- B * C
         hr = vect_s16_mul(A, B, C, len, a_shr);
-        
+
         #if defined(__VX4B__)
             TEST_ASSERT_INT16_ARRAY_WITHIN(1, expected, A, len);
         #else
@@ -326,7 +325,7 @@ TEST(vect_mul, vect_s16_mul_random)
                 debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
         #endif
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
-        
+
         // A <-- C
         // A <-- B * A
         memcpy(A, C, sizeof(A[0])*len);
@@ -338,7 +337,7 @@ TEST(vect_mul, vect_s16_mul_random)
                 debug_fmt, expected[i], B[i], C[i], a_shr, A[i] );
         #endif
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
-        
+
     }
 }
 
@@ -390,14 +389,14 @@ TEST(vect_mul, vect_s32_mul_basic)
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
-        
+
         test_case_t* casse = &cases[v];
 
         //Verify mul_s32() is correct. It's used in other test cases.
         TEST_ASSERT_EQUAL_MSG(casse->expected, mul_s32(casse->value.b, casse->value.c, casse->shr.b, casse->shr.c), casse->line);
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
-        
+
 
         for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
             unsigned len = lengths[l];
@@ -458,7 +457,7 @@ TEST(vect_mul, vect_s32_mul_random)
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
 
         setExtraInfo_RSL(v, old_seed, len);
-        
+
         for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int32(&seed) >> shr;
@@ -467,12 +466,12 @@ TEST(vect_mul, vect_s32_mul_random)
 
         int b_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
         int c_shr = (pseudo_rand_uint32(&seed) % 5) - 2;
-        
+
 
         // Determine expected outputs
         for(unsigned int i = 0; i < len; i++)
           expected[i] = mul_s32(B[i], C[i], b_shr, c_shr);
-        
+
 
         // A <-- B * C
         hr = vect_s32_mul(A, B, C, len, b_shr, c_shr);
@@ -480,7 +479,7 @@ TEST(vect_mul, vect_s32_mul_random)
         XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
             debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
-        
+
         // A <-- B
         // A <-- A * C
         memcpy(A, B, sizeof(A[0])*len);
@@ -489,7 +488,7 @@ TEST(vect_mul, vect_s32_mul_random)
         XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
             debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
-        
+
         // A <-- C
         // A <-- B * A
         memcpy(A, C, sizeof(A[0])*len);
@@ -498,7 +497,7 @@ TEST(vect_mul, vect_s32_mul_random)
         XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
             debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
-        
+
     }
 }
 
