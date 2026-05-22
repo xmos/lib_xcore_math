@@ -8,7 +8,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../src/vect/vpu_helper.h"
 
@@ -37,7 +36,7 @@ TEST_TEAR_DOWN(vect_complex_sub) {}
 
 TEST(vect_complex_sub, vect_complex_s16_sub)
 {
-    
+
 
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -80,14 +79,14 @@ TEST(vect_complex_sub, vect_complex_s16_sub)
         }
 
         headroom_t hr = vect_complex_s16_sub(A.real, A.imag, B.real, B.imag, C.real, C.imag, length, b_shr, c_shr);
-        
+
         TEST_ASSERT_EQUAL( vect_complex_s16_headroom(A.real, A.imag, length), hr );
 
         test_complex_s16_from_double(expA.real, expA.imag, Af.real, Af.imag, length, a_exp);
 
         for(unsigned int i = 0; i < length; i++){
 
-            // if(abs(expA.real[i] - A.real[i]) > 2) 
+            // if(abs(expA.real[i] - A.real[i]) > 2)
             //     printf("((%d * 2^%d ) >> %d) - ((%d * 2^%d ) >> %d) = ( %d << %d)   // %d\n", B.real[i], b_exp, b_shr, C.real[i], c_exp, c_shr, A.real[i], a_exp, expA.real[i]);
 
             TEST_ASSERT_INT16_WITHIN(2, expA.real[i], A.real[i]);
@@ -99,7 +98,7 @@ TEST(vect_complex_sub, vect_complex_s16_sub)
 
 TEST(vect_complex_sub, vect_complex_s32_sub)
 {
-    
+
 
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -142,7 +141,7 @@ TEST(vect_complex_sub, vect_complex_s32_sub)
         }
 
         headroom_t hr = vect_complex_s32_sub(&A[0], &B[0], &C[0], length, b_shr, c_shr);
-        
+
         TEST_ASSERT_EQUAL( vect_complex_s32_headroom(A, length), hr );
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, length, a_exp);

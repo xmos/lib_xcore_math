@@ -8,7 +8,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../tst_common.h"
 //#include "../tst_asserts.h"
@@ -69,7 +68,7 @@ TEST(vect_max_elementwise, vect_s16_max_elementwise)
 
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 5);
         headroom_t c_hr = pseudo_rand_uint(&seed, 0, 5);
-        
+
         for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int16(&seed) >> b_hr;
             C[i] = pseudo_rand_int16(&seed) >> c_hr;
@@ -80,26 +79,26 @@ TEST(vect_max_elementwise, vect_s16_max_elementwise)
 
         right_shift_t b_shr = pseudo_rand_int(&seed, 1-b_hr, 5);
         right_shift_t c_shr = pseudo_rand_int(&seed, 1-c_hr, 5);
-        
+
         // Determine expected outputs
         for(unsigned int i = 0; i < len; i++){
           expected[i] = max_s16(B[i], C[i], b_shr, c_shr);
         }
-        
+
         // Not in-place
         hr = vect_s16_max_elementwise(A, B, C, len, b_shr, c_shr);
-        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len, 
+        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
             debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
-        
+
         // In-place arg-2
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s16_max_elementwise(A, A, C, len, b_shr, c_shr);
 
-        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len, 
+        XTEST_ASSERT_VECT_S16_EQUAL(expected, A, len,
             debug_fmt, expected[i], B[i], b_shr, C[i], c_shr, A[i] );
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
-        
+
         // In-place arg-3 NOT SUPPORTED
     }
 }
@@ -127,7 +126,7 @@ TEST(vect_max_elementwise, vect_s32_max_elementwise)
 
         headroom_t b_hr = pseudo_rand_uint(&seed, 0, 5);
         headroom_t c_hr = pseudo_rand_uint(&seed, 0, 5);
-        
+
         for(unsigned int i = 0; i < len; i++){
             B[i] = pseudo_rand_int32(&seed) >> b_hr;
             C[i] = pseudo_rand_int32(&seed) >> c_hr;
@@ -138,26 +137,26 @@ TEST(vect_max_elementwise, vect_s32_max_elementwise)
 
         right_shift_t b_shr = pseudo_rand_int(&seed, 1-b_hr, 5);
         right_shift_t c_shr = pseudo_rand_int(&seed, 1-c_hr, 5);
-        
+
         // Determine expected outputs
         for(unsigned int i = 0; i < len; i++){
           expected[i] = max_s32(B[i], C[i], b_shr, c_shr);
         }
-        
+
         // Not in-place
         hr = vect_s32_max_elementwise(A, B, C, len, b_shr, c_shr);
-        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
+        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
             debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
-        
+
         // In-place arg-2
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s32_max_elementwise(A, A, C, len, b_shr, c_shr);
 
-        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len, 
+        XTEST_ASSERT_VECT_S32_EQUAL(expected, A, len,
             debug_fmt, (long int) expected[i], (long int) B[i], b_shr, (long int) C[i], c_shr, (long int) A[i] );
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
-        
+
         // In-place arg-3 NOT SUPPORTED
     }
 }

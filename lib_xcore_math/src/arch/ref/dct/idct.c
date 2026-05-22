@@ -8,7 +8,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "vpu_const_vects.h"
 
 
@@ -57,7 +56,7 @@ void idct_adsb(
 }
 
 
- 
+
 
 void dct6_inverse(
     int32_t y[6],

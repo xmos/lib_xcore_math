@@ -10,7 +10,6 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "../../tst_common.h"
 #include "unity_fixture.h"
 
@@ -59,7 +58,7 @@ TEST(vect_s32_to_vect_f32, vect_s32_to_vect_f32)
       vec_in[i] = pseudo_rand_int32(&seed);
       expected[i] = ldexpf((float) vec_in[i], b_exp);
     }
-    
+
     vect_s32_to_vect_f32(vec_out, vec_in, len, b_exp);
 
     for(unsigned int k = 0; k < len; k++){

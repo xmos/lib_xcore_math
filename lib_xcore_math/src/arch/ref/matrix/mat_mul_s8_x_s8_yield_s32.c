@@ -6,7 +6,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 
 static int32_t merge_acc(const int16_t high, const uint16_t low)
@@ -28,7 +27,7 @@ void mat_mul_s8_x_s8_yield_s32 (
     const unsigned M_rows,
     const unsigned N_cols)
 {
-  const int acc_groups = (M_rows + VPU_INT8_ACC_PERIOD - 1) 
+  const int acc_groups = (M_rows + VPU_INT8_ACC_PERIOD - 1)
                             >> VPU_INT8_ACC_PERIOD_LOG2;
 
   for(int ag = 0; ag < acc_groups; ag++){
@@ -42,7 +41,7 @@ void mat_mul_s8_x_s8_yield_s32 (
       }
 
       split_acc(&accumulators[ag].vD[o], &accumulators[ag].vR[o], acc);
-      
+
     }
   }
 }

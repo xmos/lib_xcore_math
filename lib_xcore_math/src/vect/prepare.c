@@ -5,7 +5,6 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 
 ////////////////////////////////////////
@@ -50,13 +49,13 @@ void vect_s16_macc_prepare(
 
   // The new exponent should be whichever of those two exponents is greater.
   *new_acc_exp = (bc_exp > tmp_exp)? bc_exp : tmp_exp;
-  
+
   // Can compute the proper shifts now
   *acc_shr = *new_acc_exp - acc_exp;
   *bc_shr += *new_acc_exp - bc_exp;
 }
 
-    
+
 /* ******************
  *
  *
@@ -106,9 +105,9 @@ void vect_s16_clip_prepare(
     //  within the range specified.
 
     // In case B, we shift the bounds right, and we lose some precision on them, but that's it.
-    
+
     *a_exp = b_exp; //minimum b exponent
-    
+
     right_shift_t bound_shr = *a_exp - bound_exp;
     *b_shr = *a_exp - b_exp;
 
@@ -164,7 +163,7 @@ void vect_s32_macc_prepare(
     an int32_t means a maximum of +/- 2^30.  Most extreme case is if B[] and C[] are -2^(31-b_hr) and -2^(31-c_hr)
     respectively. So, let's solve for the b_shr+c_shr that makes this work. Also there's an implicit 30-bit
     right-shift applied by the VPU when multiplying.
-                  
+
       2^30 = -2^(31-b_hr-b_shr) * -2^(31-c_hr-c_shr) * 2^-30
            = 2^(31-b_hr-b_shr) * 2^(31-c_hr-c_shr) * 2^-30
            = 2^(62 - b_hr - c_hr - b_shr - c_shr - 30)
@@ -411,7 +410,7 @@ void vect_s16_inverse_prepare(
 */
 
 
-    
+
 /* ******************
  *
  *
@@ -435,7 +434,7 @@ void vect_s32_add_prepare(
 }
 
 
-    
+
 /* ******************
  *
  *
@@ -451,7 +450,7 @@ void vect_s32_dot_prepare(
     const unsigned length)
 {
     /*
-    
+
     Operation is
         A = sum[k]{ (B[k] >> b_shr) * (C[k] >> c_shr) >> 30 }
 
@@ -566,7 +565,7 @@ void vect_s32_inverse_prepare(
 
     // So,
     //  2^(K-31+hr)  <=  (2^K/a)  <=  2^(K-30-hr)
-    
+
     // To get the most precision, we would ideally want the result to be between  2^30 and 2^31,
     // but unfortunately we can't represent 2^31 and so we have to give up 1 bit of precision, just
     // in case the headroom is dominated by a positive power of 2. (Testing for this condition is
@@ -675,9 +674,9 @@ void vect_s32_clip_prepare(
     //  within the range specified.
 
     // In case B, we shift the bounds right, and we lose some precision on them, but that's it.
-    
+
     *a_exp = b_exp;//minimum b exponent
-    
+
     right_shift_t bound_shr = *a_exp - bound_exp;
     *b_shr = *a_exp - b_exp;
 

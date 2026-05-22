@@ -10,7 +10,6 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "../../tst_common.h"
 #include "unity_fixture.h"
 
@@ -71,7 +70,7 @@ TEST(vect_f32_dot, vect_f32_dot)
           c[k+C_OFF] = ldexpf((float) (pseudo_rand_int32(&seed) & 0xFFFFFF00),
                               pseudo_rand_int(&seed, -2, 2));
         }
-        
+
         float result = vect_f32_dot(&b[B_OFF], &c[C_OFF], len);
 
         float expected = 0.0f;

@@ -9,7 +9,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "testing.h"
 
 #include "../../tst_common.h"
@@ -59,7 +58,7 @@ TEST(vect_complex_macc, vect_complex_s16_macc)
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
-        
+
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int16(&seed) % 10);
 
@@ -69,12 +68,12 @@ TEST(vect_complex_macc, vect_complex_s16_macc)
             B.im[i] = pseudo_rand_int16(&seed) >> shr;
             C.re[i] = pseudo_rand_int16(&seed) >> shr;
             C.im[i] = pseudo_rand_int16(&seed) >> shr;
-            
+
             B_fp[i].re = ldexp(B.re[i], exp.b);
             B_fp[i].im = ldexp(B.im[i], exp.b);
             C_fp[i].re = ldexp(C.re[i], exp.c);
             C_fp[i].im = ldexp(C.im[i], exp.c);
-            
+
             A_fp[i].re = ldexp(A.re[i], exp.a);
             A_fp[i].im = ldexp(A.im[i], exp.a);
         }
@@ -88,7 +87,7 @@ TEST(vect_complex_macc, vect_complex_s16_macc)
                                           hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s16_macc(A.re, A.im, B.re, B.im, C.re, C.im, LEN, acc_shr, bc_shr);
-        
+
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
@@ -96,7 +95,7 @@ TEST(vect_complex_macc, vect_complex_s16_macc)
           complex_double_t expected_fp;
           expected_fp.re = A_fp[i].re + B_fp[i].re * C_fp[i].re - B_fp[i].im * C_fp[i].im;
           expected_fp.im = A_fp[i].im + B_fp[i].re * C_fp[i].im + B_fp[i].im * C_fp[i].re;
-          
+
           complex_s32_t expected;
           expected.re = conv_double_to_s16(expected_fp.re, exp.a, &error);
           expected.im = conv_double_to_s16(expected_fp.im, exp.a, &error);
@@ -114,7 +113,7 @@ TEST(vect_complex_macc, vect_complex_s16_macc)
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.im, A.im[i], "Error not within threshold. (imag)");
 #undef THRESHOLD
         }
-        
+
     }
 }
 
@@ -139,7 +138,7 @@ TEST(vect_complex_macc, vect_complex_s16_nmacc)
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
-        
+
         exp.b = 10 + (pseudo_rand_int16(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int16(&seed) % 10);
 
@@ -149,12 +148,12 @@ TEST(vect_complex_macc, vect_complex_s16_nmacc)
             B.im[i] = pseudo_rand_int16(&seed) >> shr;
             C.re[i] = pseudo_rand_int16(&seed) >> shr;
             C.im[i] = pseudo_rand_int16(&seed) >> shr;
-            
+
             B_fp[i].re = ldexp(B.re[i], exp.b);
             B_fp[i].im = ldexp(B.im[i], exp.b);
             C_fp[i].re = ldexp(C.re[i], exp.c);
             C_fp[i].im = ldexp(C.im[i], exp.c);
-            
+
             A_fp[i].re = ldexp(A.re[i], exp.a);
             A_fp[i].im = ldexp(A.im[i], exp.a);
         }
@@ -168,7 +167,7 @@ TEST(vect_complex_macc, vect_complex_s16_nmacc)
                                            hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s16_nmacc(A.re, A.im, B.re, B.im, C.re, C.im, LEN, acc_shr, bc_shr);
-        
+
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
@@ -176,7 +175,7 @@ TEST(vect_complex_macc, vect_complex_s16_nmacc)
           complex_double_t expected_fp;
           expected_fp.re = A_fp[i].re - ( B_fp[i].re * C_fp[i].re - B_fp[i].im * C_fp[i].im );
           expected_fp.im = A_fp[i].im - ( B_fp[i].re * C_fp[i].im + B_fp[i].im * C_fp[i].re );
-          
+
           complex_s32_t expected;
           expected.re = conv_double_to_s16(expected_fp.re, exp.a, &error);
           expected.im = conv_double_to_s16(expected_fp.im, exp.a, &error);
@@ -194,7 +193,7 @@ TEST(vect_complex_macc, vect_complex_s16_nmacc)
           TEST_ASSERT_INT16_WITHIN_MESSAGE(THRESHOLD, expected.im, A.im[i], "Error not within threshold. (imag)");
 #undef THRESHOLD
         }
-        
+
     }
 }
 
@@ -216,7 +215,7 @@ TEST(vect_complex_macc, vect_complex_s32_macc)
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
-        
+
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int32(&seed) % 10);
 
@@ -226,12 +225,12 @@ TEST(vect_complex_macc, vect_complex_s32_macc)
             B[i].im = pseudo_rand_int32(&seed) >> shr;
             C[i].re = pseudo_rand_int32(&seed) >> shr;
             C[i].im = pseudo_rand_int32(&seed) >> shr;
-            
+
             B_fp[i].re = ldexp(B[i].re, exp.b);
             B_fp[i].im = ldexp(B[i].im, exp.b);
             C_fp[i].re = ldexp(C[i].re, exp.c);
             C_fp[i].im = ldexp(C[i].im, exp.c);
-            
+
             A_fp[i].re = ldexp(A[i].re, exp.a);
             A_fp[i].im = ldexp(A[i].im, exp.a);
         }
@@ -245,7 +244,7 @@ TEST(vect_complex_macc, vect_complex_s32_macc)
                                           hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s32_macc(A, B, C, LEN, acc_shr, b_shr, c_shr);
-        
+
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
@@ -264,16 +263,16 @@ TEST(vect_complex_macc, vect_complex_s32_macc)
 #define THRESHOLD  3
           if(expected.re - A[i].re > THRESHOLD || A[i].re - expected.re > THRESHOLD)
             printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A[%d].re = %ld\n", v, exp.a, i, (long int) expected.re, expected_fp.re, i, (long int) A[i].re);
-          
+
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.re, A[i].re, "Error not within threshold (real).");
 
           if(expected.im - A[i].im > THRESHOLD || A[i].im - expected.im > THRESHOLD)
             printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A[%d].im = %ld\n", v, exp.a, i, (long int) expected.im, expected_fp.im, i, (long int) A[i].im);
-          
+
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.im, A[i].im, "Error not within threshold (imag).");
 #undef THRESHOLD
         }
-        
+
     }
 }
 
@@ -295,7 +294,7 @@ TEST(vect_complex_macc, vect_complex_s32_nmacc)
 
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
-        
+
         exp.b = 10 + (pseudo_rand_int32(&seed) % 10);
         exp.c = 10 + (pseudo_rand_int32(&seed) % 10);
 
@@ -305,12 +304,12 @@ TEST(vect_complex_macc, vect_complex_s32_nmacc)
             B[i].im = pseudo_rand_int32(&seed) >> shr;
             C[i].re = pseudo_rand_int32(&seed) >> shr;
             C[i].im = pseudo_rand_int32(&seed) >> shr;
-            
+
             B_fp[i].re = ldexp(B[i].re, exp.b);
             B_fp[i].im = ldexp(B[i].im, exp.b);
             C_fp[i].re = ldexp(C[i].re, exp.c);
             C_fp[i].im = ldexp(C[i].im, exp.c);
-            
+
             A_fp[i].re = ldexp(A[i].re, exp.a);
             A_fp[i].im = ldexp(A[i].im, exp.a);
         }
@@ -324,7 +323,7 @@ TEST(vect_complex_macc, vect_complex_s32_nmacc)
                                            hr.a, hr.b, hr.c);
 
         hr.a = vect_complex_s32_nmacc(A, B, C, LEN, acc_shr, b_shr, c_shr);
-        
+
         TEST_ASSERT_LESS_THAN(4, hr.a);
 
         for(int i = 0; i < LEN; i++){
@@ -343,16 +342,16 @@ TEST(vect_complex_macc, vect_complex_s32_nmacc)
 #define THRESHOLD  3
           if(expected.re - A[i].re > THRESHOLD || A[i].re - expected.re > THRESHOLD)
             printf("[%d]  exp.a = %d; expected[%d].re = %ld  ( %f );   A[%d].re = %ld\n", v, exp.a, i, (long int) expected.re, expected_fp.re, i, (long int) A[i].re);
-          
+
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.re, A[i].re, "Error not within threshold (real).");
 
           if(expected.im - A[i].im > THRESHOLD || A[i].im - expected.im > THRESHOLD)
             printf("[%d]  exp.a = %d; expected[%d].im = %ld  ( %f );   A[%d].im = %ld\n", v, exp.a, i, (long int) expected.im, expected_fp.im, i, (long int) A[i].im);
-          
+
           TEST_ASSERT_INT32_WITHIN_MESSAGE(THRESHOLD, expected.im, A[i].im, "Error not within threshold (imag).");
 #undef THRESHOLD
         }
-        
+
     }
 }
 

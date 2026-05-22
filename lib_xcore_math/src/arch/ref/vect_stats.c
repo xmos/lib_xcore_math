@@ -6,7 +6,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 
 int16_t vect_s16_max(
@@ -30,7 +29,7 @@ headroom_t vect_s16_max_elementwise(
 {
   for(unsigned k = 0; k < length; k++)
     a[k] = MAX( vlashr16(b[k], b_shr), vlashr16(c[k], c_shr));
-  
+
   return vect_s16_headroom(a, length);
 }
 
@@ -85,7 +84,7 @@ headroom_t vect_s16_min_elementwise(
 {
   for(unsigned k = 0; k < length; k++)
     a[k] = MIN(vlashr16(b[k], b_shr), vlashr16(c[k], c_shr));
-    
+
   return vect_s16_headroom(a, length);
 }
 
@@ -113,7 +112,7 @@ headroom_t vect_s32_min_elementwise(
 {
   for(unsigned k = 0; k < length; k++)
     a[k] = MIN(vlashr32(b[k], b_shr), vlashr32(c[k], c_shr));
-    
+
   return vect_s32_headroom(a, length);
 }
 
@@ -196,7 +195,7 @@ int64_t vect_s32_abs_sum(
 {
     vpu_int32_acc_t acc[VPU_INT32_ACC_PERIOD] = { 0 };
 
-    for(unsigned k = 0; k < length; k++){ 
+    for(unsigned k = 0; k < length; k++){
         const int j = k % VPU_INT32_ACC_PERIOD;
         acc[j] = vlmacc32(acc[j], b[k], vsign32(b[k]));
     }

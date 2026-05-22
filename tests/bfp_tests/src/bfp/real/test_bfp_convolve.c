@@ -9,8 +9,6 @@
 
 #include "xmath/xmath.h"
 
-#include "xmath/xs3/vpu_scalar_ops.h"
-
 #include "../src/vect/vpu_helper.h"
 
 #include "../../tst_common.h"
@@ -85,7 +83,7 @@ TEST(bfp_convolve, vect_s32_convolve_valid)
         acc = vlmacc32(acc, signal_in[k+p], taps[p]);
       expected[k] = (int32_t) acc;
     }
-    
+
     bfp_s32_convolve_valid(&bfp_out, &bfp_in, taps, tap_count);
 
     TEST_ASSERT_EQUAL_MESSAGE(bfp_in.exp, bfp_out.exp, "");
@@ -150,7 +148,7 @@ TEST(bfp_convolve, vect_s32_convolve_same_reflected)
     }
 
     memset(signal_out, 0, sizeof(signal_out));
-    
+
     bfp_s32_convolve_same(&bfp_out, &bfp_in, taps, tap_count, PAD_MODE_REFLECT);
 
     TEST_ASSERT_EQUAL_MESSAGE(bfp_in.exp, bfp_out.exp, "");
@@ -220,7 +218,7 @@ TEST(bfp_convolve, vect_s32_convolve_same_zero)
     }
 
     memset(signal_out, 0, sizeof(signal_out));
-    
+
     bfp_s32_convolve_same(&bfp_out, &bfp_in, taps, tap_count, PAD_MODE_ZERO);
 
     TEST_ASSERT_EQUAL_MESSAGE(bfp_in.exp, bfp_out.exp, "");
@@ -290,7 +288,7 @@ TEST(bfp_convolve, vect_s32_convolve_same_extend)
     }
 
     memset(signal_out, 0, sizeof(signal_out));
-    
+
     bfp_s32_convolve_same(&bfp_out, &bfp_in, taps, tap_count, PAD_MODE_EXTEND);
 
     TEST_ASSERT_EQUAL_MESSAGE(bfp_in.exp, bfp_out.exp, "");

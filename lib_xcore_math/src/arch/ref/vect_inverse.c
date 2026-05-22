@@ -6,7 +6,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 
 void vect_s16_inverse(
@@ -32,7 +31,7 @@ headroom_t vect_s32_inverse(
 
     for(unsigned k = 0; k < length; k++){
         a[k] = (int32_t) (d / b[k]);
-        
+
         // printf("0x%016llX / %ld = %ld\n", (uint64_t) d, b[k], a[k]);
     }
 

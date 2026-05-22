@@ -8,7 +8,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../../tst_common.h"
 
@@ -39,7 +38,7 @@ TEST_TEAR_DOWN(vect_complex_add_scalar) {}
 
 TEST(vect_complex_add_scalar, vect_complex_s16_add_scalar)
 {
-    
+
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   headroom_t hr;
@@ -57,7 +56,7 @@ TEST(vect_complex_add_scalar, vect_complex_s16_add_scalar)
     const unsigned old_seed = seed;
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
     setExtraInfo_RSL(v, old_seed, len);
-    
+
     for(unsigned int i = 0; i < len; i++){
         unsigned shr = pseudo_rand_uint(&seed, 0, 8);
         B_real[i] = pseudo_rand_int16(&seed) >> shr;
@@ -76,20 +75,20 @@ TEST(vect_complex_add_scalar, vect_complex_s16_add_scalar)
       expected_real[k] = vladd16(vlashr16(B_real[k], b_shr), C.re);
       expected_imag[k] = vladd16(vlashr16(B_imag[k], b_shr), C.im);
     }
-    
+
     hr = vect_complex_s16_add_scalar(A_real, A_imag, B_real, B_imag, C, len, b_shr);
 
     TEST_ASSERT_EQUAL_MESSAGE( vect_complex_s16_headroom(A_real, A_imag, len), hr, "Headroom is wrong.");
 
     TEST_ASSERT_EQUAL_INT16_ARRAY_MESSAGE(expected_real, A_real, len, "");
     TEST_ASSERT_EQUAL_INT16_ARRAY_MESSAGE(expected_imag, A_imag, len, "");
-    
+
   }
 }
 
 TEST(vect_complex_add_scalar, vect_complex_s32_add_scalar)
 {
-    
+
   unsigned seed = SEED_FROM_FUNC_NAME();
 
   headroom_t hr;
@@ -103,7 +102,7 @@ TEST(vect_complex_add_scalar, vect_complex_s32_add_scalar)
     const unsigned old_seed = seed;
     unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
     setExtraInfo_RSL(v, old_seed, len);
-    
+
     for(unsigned int i = 0; i < len; i++){
         unsigned shr = pseudo_rand_uint(&seed, 0, 8);
         B[i].re = pseudo_rand_int32(&seed) >> shr;
@@ -122,13 +121,13 @@ TEST(vect_complex_add_scalar, vect_complex_s32_add_scalar)
       expected[k].re = vladd32(vlashr32(B[k].re, b_shr), C.re);
       expected[k].im = vladd32(vlashr32(B[k].im, b_shr), C.im);
     }
-    
+
     hr = vect_complex_s32_add_scalar(A, B, C, len, b_shr);
 
     TEST_ASSERT_EQUAL_MESSAGE( vect_complex_s32_headroom(A, len), hr, "Headroom is wrong.");
 
     TEST_ASSERT_EQUAL_INT32_ARRAY_MESSAGE( (int32_t*)expected, (int32_t*) A, 2*len, "");
-    
+
   }
 }
 

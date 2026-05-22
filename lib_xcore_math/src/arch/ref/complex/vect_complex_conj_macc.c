@@ -7,8 +7,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
-
 
 ////////////////////////////////////////
 //      16-Bit Multiplication         //
@@ -30,7 +28,7 @@ headroom_t vect_complex_s16_conj_macc(
 
         acc_real[k] = vlashr16( acc_real[k], acc_shr );
         acc_imag[k] = vlashr16( acc_imag[k], acc_shr );
-        
+
         complex_s32_t B = {b_real[k], b_imag[k]};
         complex_s32_t C = {c_real[k], c_imag[k]};
 
@@ -64,7 +62,7 @@ headroom_t vect_complex_s16_conj_nmacc(
 
         acc_real[k] = vlashr16( acc_real[k], acc_shr );
         acc_imag[k] = vlashr16( acc_imag[k], acc_shr );
-        
+
         complex_s32_t B = {b_real[k], b_imag[k]};
         complex_s32_t C = {c_real[k], c_imag[k]};
 
@@ -104,13 +102,13 @@ headroom_t vect_complex_s32_conj_macc(
     const right_shift_t c_shr)
 {
     for(unsigned k = 0; k < length; k++){
-        
+
         complex_s32_t B = {
-            ASHR(32)(b[k].re, b_shr), 
+            ASHR(32)(b[k].re, b_shr),
             ASHR(32)(b[k].im, b_shr),
         };
         complex_s32_t C = {
-            ASHR(32)(c[k].re, c_shr), 
+            ASHR(32)(c[k].re, c_shr),
             ASHR(32)(c[k].im, c_shr),
         };
 
@@ -136,13 +134,13 @@ headroom_t vect_complex_s32_conj_nmacc(
     const right_shift_t c_shr)
 {
     for(unsigned k = 0; k < length; k++){
-        
+
         complex_s32_t B = {
-            ASHR(32)(b[k].re, b_shr), 
+            ASHR(32)(b[k].re, b_shr),
             ASHR(32)(b[k].im, b_shr),
         };
         complex_s32_t C = {
-            ASHR(32)(c[k].re, c_shr), 
+            ASHR(32)(c[k].re, c_shr),
             ASHR(32)(c[k].im, c_shr),
         };
 

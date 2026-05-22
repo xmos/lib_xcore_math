@@ -8,7 +8,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../tst_common.h"
 #include "unity_fixture.h"
@@ -47,7 +46,7 @@ TEST(vect_copy, vect_s32_copy)
     setExtraInfo_RSL(v, old_seed, len);
 
     headroom_t b_hr = pseudo_rand_uint(&seed, 0, 20);
-    
+
     for(unsigned int i = 0; i < len; i++)
         B[i] = pseudo_rand_int32(&seed) >> b_hr;
 

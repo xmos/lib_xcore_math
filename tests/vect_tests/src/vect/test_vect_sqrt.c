@@ -11,7 +11,6 @@
 #include "xmath/xmath.h"
 
 #include "../tst_common.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "unity_fixture.h"
 
@@ -161,7 +160,7 @@ TEST(vect_sqrt, vect_s16_sqrt_prepare)
 
         TEST_ASSERT_EQUAL_MESSAGE(vector->expected.a_exp, a_exp, msg_buff);
         TEST_ASSERT_EQUAL_MESSAGE(vector->expected.b_shr, b_shr, msg_buff);
-#if defined(__VX4B__)        
+#if defined(__VX4B__)
         TEST_ASSERT_LESS_OR_EQUAL_INT16_MESSAGE(target + 2, p, msg_buff);
 #else
         TEST_ASSERT_LESS_OR_EQUAL_INT16_MESSAGE(target, p, msg_buff);

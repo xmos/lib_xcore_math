@@ -8,7 +8,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../../tst_common.h"
 
@@ -42,11 +41,11 @@ TEST(bfp_use_exponent, bfp_s16_use_exponent)
   int16_t expected[MAX_LEN];
 
   bfp_s16_t A;
-  
+
 
   for(int r = 0; r < REPS; r++){
     const unsigned old_seed = seed;
-    
+
     const unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
     setExtraInfo_RSL(r, old_seed, len);
@@ -63,7 +62,7 @@ TEST(bfp_use_exponent, bfp_s16_use_exponent)
       expected[k] = delta_p? vlashr16(dataA[k], delta_p) : dataA[k];
     }
     memcpy(dataA_copy, dataA, sizeof(dataA));
-    
+
     bfp_s16_init(&A, dataA, init_exp, len, 1);
 
     bfp_s16_use_exponent(&A, end_exp);
@@ -74,10 +73,10 @@ TEST(bfp_use_exponent, bfp_s16_use_exponent)
     XTEST_ASSERT_VECT_S16_EQUAL(expected, dataA, len,
       "init_exp: %d\n"
       "end_exp: %d\n"
-      "Expected: %d * 2^(%d)  <--  (%d >> %d) * 2^(%d + %d)  // was: %d\n", 
+      "Expected: %d * 2^(%d)  <--  (%d >> %d) * 2^(%d + %d)  // was: %d\n",
       init_exp, end_exp,
       expected[i], end_exp, dataA_copy[i], delta_p, init_exp, delta_p, dataA[i]);
-      
+
   }
 }
 
@@ -91,11 +90,11 @@ TEST(bfp_use_exponent, bfp_s32_use_exponent)
   int32_t expected[MAX_LEN];
 
   bfp_s32_t A;
-  
+
 
   for(int r = 0; r < REPS; r++){
     const unsigned old_seed = seed;
-    
+
     const unsigned len = pseudo_rand_uint(&seed, 1, MAX_LEN+1);
 
     setExtraInfo_RSL(r, old_seed, len);
@@ -112,7 +111,7 @@ TEST(bfp_use_exponent, bfp_s32_use_exponent)
       expected[k] = delta_p? vlashr32(dataA[k], delta_p) : dataA[k];
     }
     memcpy(dataA_copy, dataA, sizeof(dataA));
-    
+
     bfp_s32_init(&A, dataA, init_exp, len, 1);
 
     bfp_s32_use_exponent(&A, end_exp);
@@ -120,13 +119,13 @@ TEST(bfp_use_exponent, bfp_s32_use_exponent)
     TEST_ASSERT_EQUAL_MESSAGE(vect_s32_headroom(dataA, len), A.hr, "HR is wrong.");
     TEST_ASSERT_EQUAL_MESSAGE(end_exp, A.exp, "Exponent is wrong.");
 
-    XTEST_ASSERT_VECT_S32_EQUAL(expected, dataA, len, 
+    XTEST_ASSERT_VECT_S32_EQUAL(expected, dataA, len,
       "init_exp: %d\n"
       "end_exp: %d\n"
-      "Expected: %ld * 2^(%d)  <--  (%ld >> %d) * 2^(%d + %d)  // was: %ld\n", 
+      "Expected: %ld * 2^(%d)  <--  (%ld >> %d) * 2^(%d + %d)  // was: %ld\n",
       init_exp, end_exp,
       (long int) expected[i], end_exp, (long int) dataA_copy[i], delta_p, init_exp, delta_p, (long int) dataA[i]);
-      
+
   }
 }
 

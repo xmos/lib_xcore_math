@@ -8,7 +8,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "vpu_const_vects.h"
 
 
@@ -63,7 +62,7 @@ void dct_deconvolve_s32(
     prev = res[2*k+1] = d - prev;
   }
 }
- 
+
 
 void dct6_forward(
     int32_t y[6],

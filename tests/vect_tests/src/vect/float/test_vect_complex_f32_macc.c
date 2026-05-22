@@ -10,7 +10,6 @@
 #include <math.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "../../tst_common.h"
 #include "unity_fixture.h"
 
@@ -93,12 +92,12 @@ TEST(vect_complex_f32_macc, vect_complex_f32_macc)
         k--;
         continue;
       }
-      
+
       expected[k].re = (float) ZR;
       expected[k].im = (float) ZI;
 
     }
-    
+
     vect_complex_f32_macc(a, b, c, len);
 
     for(unsigned int k = 0; k < len; k++){
@@ -161,12 +160,12 @@ TEST(vect_complex_f32_macc, vect_complex_f32_conj_macc)
         k--;
         continue;
       }
-      
+
       expected[k].re = (float) ZR;
       expected[k].im = (float) ZI;
 
     }
-    
+
     vect_complex_f32_conj_macc(a, b, c, len);
 
     for(unsigned int k = 0; k < len; k++){

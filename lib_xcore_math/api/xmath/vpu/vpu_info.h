@@ -6,34 +6,34 @@
 
 
 /**
- * @defgroup xs3_vpu_info  XS3 VPU Info
+ * @defgroup vpu_info  VPU Info
  */
 
 /**
  * Width of the VPU vector registers in bits.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
-#define XS3_VPU_VREG_WIDTH_BITS     (256)
+#define VPU_VREG_WIDTH_BITS     (256)
 
 /**
  * Width of the VPU vector registers in bytes.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
-#define XS3_VPU_VREG_WIDTH_BYTES    (XS3_VPU_VREG_WIDTH_BITS  >> 3)
+#define VPU_VREG_WIDTH_BYTES    (VPU_VREG_WIDTH_BITS  >> 3)
 
 /**
  * Width of the VPU vector registers in words.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
-#define XS3_VPU_VREG_WIDTH_WORDS    (XS3_VPU_VREG_WIDTH_BYTES >> 2)
+#define VPU_VREG_WIDTH_WORDS    (VPU_VREG_WIDTH_BYTES >> 2)
 
 /**
  * Data type (bits 11..8) values of vCTRL, the control register for the VPU.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     /** Signed 32-bit Integers */
@@ -47,7 +47,7 @@ enum {
 /**
  * Shift type (bits 7..6) values of vCTRL, the control register for the VPU.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     /** Do not shift on VLADSB and VFT* */
@@ -65,12 +65,12 @@ enum {
 
 /** The upper saturation bound for 8-bit elements
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
 */
 #define VPU_INT8_MAX   ( 0x7F )
 /** The lower saturation bound for 8-bit elements
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
 */
 #if defined(__VX4B__)
 #define VPU_INT8_MIN  (  INT8_MIN)
@@ -79,12 +79,12 @@ enum {
 #endif
 /** The upper saturation bound for 16-bit elements
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
 */
 #define VPU_INT16_MAX  ( 0x7FFF )
 /** The lower saturation bound for 16-bit elements
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
 */
 #if defined(__VX4B__)
 #define VPU_INT16_MIN  (  INT16_MIN)
@@ -93,12 +93,12 @@ enum {
 #endif
 /** The upper saturation bound for 32-bit elements and 32-bit accumulators
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
 */
 #define VPU_INT32_MAX  ( 0x7FFFFFFF )
 /** The lower saturation bound for 32-bit elements and 32-bit accumulators
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
 */
 #if defined(__VX4B__)
 #define VPU_INT32_MIN  (  INT32_MIN)
@@ -107,12 +107,12 @@ enum {
 #endif
 /** The upper saturation bound for 40-bit accumulators
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
 */
 #define VPU_INT40_MAX  ( 0x7FFFFFFFFFLL )
 /** The lower saturation bound for 40-bit accumulators
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
 */
 #if defined(__VX4B__)
 #define VPU_INT40_MIN  ( -0x8000000000LL)
@@ -123,7 +123,7 @@ enum {
 /** Right shift applied to the result of
  * multiplication for vmul instruction in 8-bit VPU mode.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 #if defined(__VX4B__)
 #define VPU_VLMUL8_SHR (7)
@@ -134,7 +134,7 @@ enum {
 /** Right shift applied to the result of
  * multiplication for vmul instruction in 16-bit VPU mode.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 #if defined(__VX4B__)
 #define VPU_VLMUL16_SHR (15)
@@ -150,7 +150,7 @@ enum {
  * most significant bits are stored in vD, and the least significant bits are stored
  * in vR.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     VPU_INT8_ACC_SIZE = 32,
@@ -162,7 +162,7 @@ enum {
  * When vD and vR contain accumulators, the values in this enum indicate how many least significant
  * bits are stored in vR, with the remaining bits stored in vD.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     VPU_INT8_ACC_VR_BITS = 16,
@@ -173,7 +173,7 @@ enum {
  * When vD and vR contain accumulators, the values in this enum can be used to mask off the bits of
  * the accumulator value which correspond to the portion in vR.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     VPU_INT8_ACC_VR_MASK = 0xFFFF,
@@ -184,21 +184,21 @@ enum {
 /**
  * Integer type which fits a single accumulator (32-bits) corresponding to the 8-bit VPU mode.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 typedef int32_t vpu_int8_acc_t;
 
 /**
  * Integer type which fits a single accumulator (32-bits) corresponding to the 16-bit VPU mode.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 typedef int32_t vpu_int16_acc_t;
 
 /**
  * Integer type which fits a single accumulator (40-bits) corresponding to the 32-bit VPU mode.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 typedef int64_t vpu_int32_acc_t;
 
@@ -209,7 +209,7 @@ typedef int64_t vpu_int32_acc_t;
  * instructions: VDEPTH1, VDEPTH16, VDEPTH8, VLADD, VLADDD, VLASHR, VLMACCR, VLMUL,
  *               VLSUB, VPOS, VSIGN
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     VPU_INT8_EPV    = 32,
@@ -220,7 +220,7 @@ enum {
 /**
  * log-base-2 of the corresponding VPU_INT*_EPV values.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     VPU_INT8_EPV_LOG2    = 5,
@@ -234,7 +234,7 @@ enum {
  * This is also the number of elements consumed (number of multiplies) by the
  * VLMACC instruction.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     VPU_INT8_ACC_PERIOD  = 16,
@@ -245,7 +245,7 @@ enum {
 /**
  * log-base-2 of the corresponding VPU_INT*_ACC_PERIOD values.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     VPU_INT8_ACC_PERIOD_LOG2  = 4,
@@ -258,7 +258,7 @@ enum {
  * In other words, the number of simultaneous multiply-accumulates performed by the VLMACC
  * instruction.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     VPU_INT8_VLMACC_ELMS = 16,
@@ -269,7 +269,7 @@ enum {
 /**
  * log-base-2 of the corresponding VPU_INT*_VLMACC_ELMS values.
  *
- * @ingroup xs3_vpu_info
+ * @ingroup vpu_info
  */
 enum {
     VPU_INT8_VLMACC_ELMS_LOG2 = 4,

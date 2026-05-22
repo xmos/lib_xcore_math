@@ -11,7 +11,6 @@
 #include "xmath/xmath.h"
 
 #include "../../tst_common.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "unity_fixture.h"
 
@@ -46,7 +45,7 @@ TEST(bfp_sqrt, bfp_s16_sqrt)
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
-        bfp_s16_init(&B, B_data, 
+        bfp_s16_init(&B, B_data,
             pseudo_rand_int(&seed, -30, 30),
             pseudo_rand_uint(&seed, 1, MAX_LEN-1), 0);
 
@@ -64,7 +63,7 @@ TEST(bfp_sqrt, bfp_s16_sqrt)
 
         TEST_ASSERT_EQUAL(bfp_s16_headroom(&A), A.hr);
 
-        
+
         for(unsigned int i = 0; i < B.length; i++){
 
             double b_val = ldexp(B.data[i], B.exp);
@@ -92,7 +91,7 @@ TEST(bfp_sqrt, bfp_s32_sqrt)
     for(unsigned int v = 0; v < REPS; v++){
         setExtraInfo_RS(v, seed);
 
-        bfp_s32_init(&B, B_data, 
+        bfp_s32_init(&B, B_data,
             pseudo_rand_int(&seed, -30, 30),
             pseudo_rand_uint(&seed, 1, MAX_LEN-1), 0);
 
@@ -109,7 +108,7 @@ TEST(bfp_sqrt, bfp_s32_sqrt)
         bfp_s32_sqrt(&A, &B);
 
         TEST_ASSERT_EQUAL(bfp_s32_headroom(&A), A.hr);
-        
+
         for(unsigned int i = 0; i < B.length; i++){
             double b_val = ldexp(B.data[i], B.exp);
             double a_val = ldexp(A.data[i], A.exp);

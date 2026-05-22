@@ -8,9 +8,6 @@
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
 
-#include "xmath/xs3/vpu_scalar_ops.h"
-
-
 
 int32_t filter_fir_s32(
     filter_fir_s32_t* filter,
@@ -19,7 +16,7 @@ int32_t filter_fir_s32(
     const unsigned head = filter->head;
 
     filter_fir_s32_add_sample(filter, new_sample);
-    
+
     const unsigned N_A = filter->num_taps - head;
     const unsigned N_B = head;
 

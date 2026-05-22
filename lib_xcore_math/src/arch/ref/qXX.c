@@ -7,7 +7,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "vpu_const_vects.h"
 
 
@@ -65,7 +64,7 @@ q2_30 sbrad_tan(
   const int32_t weights[] = {
       0x40000000, 0x40000000, 0x40000000, 0x40000000,
       0x40000000, 0x40000000, 0x40000000, 0x40000000 };
-  
+
   int32_t t = theta;
 
   const int out_mul = (t < 0)? -1 : 1;
@@ -102,7 +101,7 @@ int32_t sbrad_sin(
   const int32_t weights[] = {
       0x40000000, 0x40000000, 0x40000000, 0x40000000,
       0x40000000, 0x40000000, 0,          0 };
-  
+
   int32_t t = theta;
 
   const int out_mul = (t < 0)? -1 : 1;
@@ -209,7 +208,7 @@ q2_30 q30_exp_small(
     0x40000000, 0x20000000, 0x0AAAAAAB,
     0x02AAAAAB, 0x00888889, 0x0016C16C,
     0x00034034, 0x00006807, 0x00000B8F };
-  
+
   q2_30 pow = Q30(1.0);
 
   int64_t acc = 0;

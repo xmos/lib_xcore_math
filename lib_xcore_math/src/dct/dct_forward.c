@@ -9,10 +9,6 @@
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
 
-#ifndef __XS3A__
-# include "xmath/xs3/vpu_scalar_ops.h"
-#endif
-
 int32_t dct12_lut[6] = {
 0x3F73D526, 0x3B20D79E, 0x32C64D17, 0x26F5F27F, 0x187DE2A7, 0x085A8A88
 };
@@ -65,7 +61,7 @@ int32_t dct8_matrix[9][8] = {
 
 void dct32_forward(
     int32_t y[32],
-    const int32_t x[32]) 
+    const int32_t x[32])
 {
   const unsigned DCT_N = 32;
   const unsigned HALF_DCT_N = (DCT_N >> 1);

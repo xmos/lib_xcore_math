@@ -81,7 +81,7 @@ pipeline {
                     sh 'xrun --xscope --id 0 --args filter_tests/bin/filter_tests.xe  -v'
                     sh 'xrun --xscope --id 0 --args scalar_tests/bin/scalar_tests.xe  -v'
                     sh 'xrun --xscope --id 0 --args vect_tests/bin/vect_tests.xe      -v'
-                    sh 'xrun --xscope --id 0 --args xs3_tests/bin/xs3_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args vpu_tests/bin/vpu_tests.xe        -v'
                   }
                 }
               }
@@ -133,7 +133,7 @@ pipeline {
                     sh 'xrun --xscope --id 0 --args filter_tests/bin/filter_tests.xe  -v'
                     sh 'xrun --xscope --id 0 --args scalar_tests/bin/scalar_tests.xe  -v'
                     sh 'xrun --xscope --id 0 --args vect_tests/bin/vect_tests.xe      -v'
-                    sh 'xrun --xscope --id 0 --args xs3_tests/bin/xs3_tests.xe        -v'
+                    sh 'xrun --xscope --id 0 --args vpu_tests/bin/vpu_tests.xe        -v'
 
                     dir("xc_compat") {
                       // check that the library can be used from XC
@@ -158,7 +158,7 @@ pipeline {
                     sh './filter_tests/bin/filter_tests  -v'
                     sh './scalar_tests/bin/scalar_tests  -v'
                     sh './vect_tests/bin/vect_tests      -v'
-                    sh './xs3_tests/bin/xs3_tests        -v'
+                    sh './vpu_tests/bin/vpu_tests        -v'
                   }
                 }
               }
@@ -235,7 +235,7 @@ pipeline {
                       bat 'filter_tests\\bin\\filter_tests.exe  -v'
                       bat 'scalar_tests\\bin\\scalar_tests.exe  -v'
                       bat 'vect_tests\\bin\\vect_tests.exe      -v'
-                      bat 'xs3_tests\\bin\\xs3_tests.exe        -v'
+                      bat 'vpu_tests\\bin\\vpu_tests.exe        -v'
                     }
                   }
                 }

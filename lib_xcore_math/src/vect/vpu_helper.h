@@ -4,7 +4,6 @@
 #pragma once
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_info.h"
 
 
 /**

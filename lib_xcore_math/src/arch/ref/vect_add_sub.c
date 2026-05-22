@@ -5,9 +5,6 @@
 #include <stdio.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
-
-
 
 
 headroom_t vect_s16_add(
@@ -18,7 +15,7 @@ headroom_t vect_s16_add(
     const right_shift_t b_shr,
     const right_shift_t c_shr)
 {
-    for(unsigned k = 0; k < length; k++){        
+    for(unsigned k = 0; k < length; k++){
         const int16_t B = vlashr16(b[k], b_shr);
         const int16_t C = vlashr16(c[k], c_shr);
         a[k] = vladd16(B, C);

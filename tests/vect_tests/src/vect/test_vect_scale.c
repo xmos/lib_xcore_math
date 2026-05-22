@@ -8,7 +8,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../tst_common.h"
 #include "unity_fixture.h"
@@ -61,14 +60,14 @@ static int32_t scalar_mul_s32(int32_t b, int32_t c, int b_shr, int c_shr)
 
 TEST(vect_scale, vect_s16_scale_prepare)
 {
-    
+
 
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
-        
+
         exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 15);
         exponent_t c_exp = pseudo_rand_int(&seed, -30, 30);
@@ -103,14 +102,14 @@ TEST(vect_scale, vect_s16_scale_prepare)
 
         // (A should be no more than 1 LSb off)
         TEST_ASSERT( fabs(fp - fa) <= ldexp(1,a_exp) );
-        
+
     }
 }
 
 
 TEST(vect_scale, vect_s16_scale_basic)
 {
-    
+
 
     typedef struct {
         struct {    int16_t b;  int16_t alpha;  } value;
@@ -150,7 +149,7 @@ TEST(vect_scale, vect_s16_scale_basic)
         {       {  0x0800,  -0x4000 },   10,   VPU_INT16_MIN,       __LINE__},
         {       {  0x0800,   0x2000 },   10,    0x4000,       __LINE__},
 
-        
+
     };
 
     const unsigned N_cases = sizeof(cases)/sizeof(test_case_t);
@@ -159,7 +158,7 @@ TEST(vect_scale, vect_s16_scale_basic)
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
-        
+
         test_case_t* casse = &cases[v];
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
@@ -198,7 +197,7 @@ TEST(vect_scale, vect_s16_scale_basic)
 
 TEST(vect_scale, vect_s16_scale_random)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -212,7 +211,7 @@ TEST(vect_scale, vect_s16_scale_random)
         setExtraInfo_RS(v, seed);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
-        
+
         for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int16(&seed) >> shr;
@@ -221,7 +220,7 @@ TEST(vect_scale, vect_s16_scale_random)
         alpha = pseudo_rand_int16(&seed) >> (pseudo_rand_uint32(&seed) % 8);
 
         right_shift_t sat = (pseudo_rand_uint32(&seed) % 5) - 2;
-        
+
         const char sprintpat[] = "rep(%d)[%d of %u]: %d <-- ((%d >> %d) * %d) >> 14     (A[i]=0x%04X; B[i]=0x%04X; alpha=0x%04X)";
 
         hr = vect_s16_scale(A, B, len, alpha, sat);
@@ -231,12 +230,12 @@ TEST(vect_scale, vect_s16_scale_random)
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], sat, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
             #if defined(__VX4B__)
                 TEST_ASSERT_INT16_WITHIN(4, expected, A[i]);
-            #else 
+            #else
                 TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
             #endif
         }
         TEST_ASSERT_EQUAL(vect_s16_headroom(A, len), hr);
-        
+
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s16_scale(A, A, len, alpha, sat);
 
@@ -245,7 +244,7 @@ TEST(vect_scale, vect_s16_scale_random)
             if(expected != A[i]) sprintf(msg_buff, sprintpat,v, i, len, A[i], B[i], sat, alpha, (uint16_t)A[i], (uint16_t)B[i],  (uint16_t)alpha);
             #if defined(__VX4B__)
                 TEST_ASSERT_INT16_WITHIN(4, expected, A[i]);
-            #else 
+            #else
                 TEST_ASSERT_EQUAL_MESSAGE(expected, A[i], msg_buff);
             #endif
         }
@@ -256,7 +255,7 @@ TEST(vect_scale, vect_s16_scale_random)
 
 TEST(vect_scale, vect_s32_scale_basic)
 {
-    
+
 
     typedef struct {
         struct {    int32_t b;       int32_t c;         } value;
@@ -303,7 +302,7 @@ TEST(vect_scale, vect_s32_scale_basic)
 
     for(unsigned int v = start_case; v < N_cases; v++){
         setExtraInfo_R(v);
-        
+
         test_case_t* casse = &cases[v];
 
         //Verify mul_s32() is correct. It's used in other test cases.
@@ -311,7 +310,7 @@ TEST(vect_scale, vect_s32_scale_basic)
                                 casse->shr.b, casse->shr.c), casse->line);
 
         unsigned lengths[] = {1, 4, 16, 32, 40 };
-        
+
 
         for( int l = 0; l < sizeof(lengths)/sizeof(lengths[0]); l++){
             unsigned len = lengths[l];
@@ -346,7 +345,7 @@ TEST(vect_scale, vect_s32_scale_basic)
 
 TEST(vect_scale, vect_s32_scale_random)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
@@ -360,7 +359,7 @@ TEST(vect_scale, vect_s32_scale_random)
         setExtraInfo_R(v);
 
         unsigned len = (pseudo_rand_uint32(&seed) % MAX_LEN) + 1;
-        
+
         for(unsigned int i = 0; i < len; i++){
             unsigned shr = pseudo_rand_uint32(&seed) % 8;
             B[i] = pseudo_rand_int32(&seed) >> shr;
@@ -370,7 +369,7 @@ TEST(vect_scale, vect_s32_scale_random)
 
         right_shift_t b_shr = pseudo_rand_uint(&seed, -2, 2);
         right_shift_t c_shr = pseudo_rand_uint(&seed, 0, 8);
-        
+
         // const char sprintpat[] = "rep(%d)[%d of %u]: %ld <-- ((%ld >> %d) * %ld) >> 30     (A[i]=0x%08X; B[i]=0x%08X; alpha=0x%08X)";
 
         hr = vect_s32_scale(A, B, len, c, b_shr, c_shr);
@@ -380,7 +379,7 @@ TEST(vect_scale, vect_s32_scale_random)
             TEST_ASSERT_EQUAL(expected, A[i]);
         }
         TEST_ASSERT_EQUAL(vect_s32_headroom(A, len), hr);
-        
+
         memcpy(A, B, sizeof(A[0])*len);
         hr = vect_s32_scale(A, A, len, c, b_shr, c_shr);
 

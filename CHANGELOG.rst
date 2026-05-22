@@ -11,6 +11,8 @@ UNRELEASED
   * CHANGED: Renamed `float_s32_to_float` to `float_s32_to_f32`
   * CHANGED: Renamed `float_s32_to_double` to `float_s32_to_f64`
   * CHANGED: Renamed `f32_unpack` to `f32_unpack_s32`
+  * CHANGED: Renamed `xmath/xs3/` header folder to `xmath/vpu`
+  * CHANGED: Renamed `XS3_VPU_VREG_*` defines to `VPU_VREG_*`
 
 2.4.1
 -----

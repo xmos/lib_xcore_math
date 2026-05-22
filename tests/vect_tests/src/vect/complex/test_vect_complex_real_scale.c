@@ -8,7 +8,6 @@
 #include <assert.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 
 #include "../src/vect/vpu_helper.h"
 
@@ -39,14 +38,14 @@ TEST_TEAR_DOWN(vect_complex_real_scale) {}
 
 TEST(vect_complex_real_scale, vect_s16_scale_prepare)
 {
-    
+
 
     unsigned seed = SEED_FROM_FUNC_NAME();
 
 
     for(int r = 0; r < REPS; r++){
         setExtraInfo_RS(r, seed);
-        
+
         exponent_t b_exp = pseudo_rand_int(&seed, -30, 30);
         headroom_t b_hr  = pseudo_rand_uint(&seed, 0, 15);
         exponent_t c_exp = pseudo_rand_int(&seed, -30, 30);
@@ -81,22 +80,22 @@ TEST(vect_complex_real_scale, vect_s16_scale_prepare)
 
         // (A should be no more than 1 LSb off)
         TEST_ASSERT( fabs(fp - fa) <= ldexp(1,a_exp) );
-        
+
     }
 }
 
 
 TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
 {
-    
+
     unsigned seed = SEED_FROM_FUNC_NAME();
 
-    
+
     struct {
         int16_t real[MAX_LEN];
         int16_t imag[MAX_LEN];
     } A, B;
-    
+
     int16_t C;
 
     for(unsigned int v = 0; v < REPS; v++){
@@ -112,13 +111,13 @@ TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
 
         right_shift_t sat = 15 - (b_hr+c_hr) + pseudo_rand_int(&seed, -1, 3 );
         sat = MAX(sat, 0);
-        
+
         for(unsigned int i = 0; i < length; i++){
             B.real[i] = pseudo_rand_int16(&seed) >> b_hr;
             B.imag[i] = pseudo_rand_int16(&seed) >> b_hr;
             C = pseudo_rand_int16(&seed) >> c_hr;
         }
-        
+
 
         {
             headroom_t hr = vect_complex_s16_real_scale(A.real, A.imag,
@@ -169,14 +168,14 @@ TEST(vect_complex_real_scale, vect_complex_s16_real_scale)
             }
         }
 
-        
+
     }
 }
 
 
 TEST(vect_complex_real_scale, vect_complex_s32_real_scale)
 {
-    
+
 
     unsigned seed = SEED_FROM_FUNC_NAME();
 
@@ -217,7 +216,7 @@ TEST(vect_complex_real_scale, vect_complex_s32_real_scale)
         }
 
         headroom_t hr = vect_complex_s32_real_scale(&A[0], &B[0], C, length, b_shr, c_shr);
-        
+
         TEST_ASSERT_EQUAL( vect_complex_s32_headroom(A, length), hr );
 
         test_complex_s32_from_double(expA, Af.real, Af.imag, length, a_exp);

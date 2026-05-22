@@ -9,8 +9,6 @@
 #include <stdarg.h>
 
 #include "xmath/xmath.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
-#include "xmath/xs3/vpu_info.h"
 
 #include "tst_common.h"
 
@@ -262,28 +260,28 @@ TEST(vpu_scalar_ops_s32, vdepth16_32)
 {
 
 
-    TEST_ASSERT_EQUAL_INT8(             0, vdepth16_32(            0));
-    TEST_ASSERT_EQUAL_INT8(             0, vdepth16_32(       0x7FFF));
-    TEST_ASSERT_EQUAL_INT8(             1, vdepth16_32(       0x8000));
-    TEST_ASSERT_EQUAL_INT8(             2, vdepth16_32(      0x20000));
-    TEST_ASSERT_EQUAL_INT8( VPU_INT16_MAX, vdepth16_32(   0x7FFFFFFF));
-    TEST_ASSERT_EQUAL_INT8(             0, vdepth16_32(           -1));
-    TEST_ASSERT_EQUAL_INT8(             0, vdepth16_32(      -0x8000));
-    TEST_ASSERT_EQUAL_INT8(            -1, vdepth16_32(      -0x8100));
-    TEST_ASSERT_EQUAL_INT8(            -2, vdepth16_32(    -0x028000));
-    TEST_ASSERT_EQUAL_INT8(            -3, vdepth16_32(    -0x028100));
-    TEST_ASSERT_EQUAL_INT8( VPU_INT16_MIN, vdepth16_32(  -0x7FFFFFFF));
+    TEST_ASSERT_EQUAL_INT16(             0, vdepth16_32(            0));
+    TEST_ASSERT_EQUAL_INT16(             0, vdepth16_32(       0x7FFF));
+    TEST_ASSERT_EQUAL_INT16(             1, vdepth16_32(       0x8000));
+    TEST_ASSERT_EQUAL_INT16(             2, vdepth16_32(      0x20000));
+    TEST_ASSERT_EQUAL_INT16( VPU_INT16_MAX, vdepth16_32(   0x7FFFFFFF));
+    TEST_ASSERT_EQUAL_INT16(             0, vdepth16_32(           -1));
+    TEST_ASSERT_EQUAL_INT16(             0, vdepth16_32(      -0x8000));
+    TEST_ASSERT_EQUAL_INT16(            -1, vdepth16_32(      -0x8100));
+    TEST_ASSERT_EQUAL_INT16(            -2, vdepth16_32(    -0x028000));
+    TEST_ASSERT_EQUAL_INT16(            -3, vdepth16_32(    -0x028100));
+    TEST_ASSERT_EQUAL_INT16( VPU_INT16_MIN, vdepth16_32(  -0x7FFFFFFF));
 
     for(int64_t k = INT32_MIN; k < INT32_MAX; k += (UINT32_MAX/STEP_DIV))
     {
 
-        int8_t res = (int8_t) vdepth16_32( (int32_t) k );
+        int16_t res = vdepth16_32( (int32_t) k );
 
         int32_t exp = llround(ldexp( (double) k, -16) + ldexp(1, -40));
         exp = MIN(exp, VPU_INT16_MAX);
         exp = MAX(exp, VPU_INT16_MIN);
 
-        TEST_ASSERT_EQUAL_INT8( exp, res );
+        TEST_ASSERT_EQUAL_INT16( exp, res );
 
     }
 

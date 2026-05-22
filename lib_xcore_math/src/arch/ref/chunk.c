@@ -7,7 +7,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "vpu_const_vects.h"
 
 
@@ -60,7 +59,7 @@ void chunk_s32_log(
     f[k].mant = b[k];
     f[k].exp = b_exp;
   }
-  
+
   chunk_float_s32_log(a, f);
 }
 
@@ -92,6 +91,6 @@ int32_t chunk_s32_dot(
   for(int k = 0; k < VPU_INT32_EPV; k++){
     total += vlmul32(b[k], c[k]);
   }
-  
+
   return (int32_t) (0xFFFFFFFF & total);
 }

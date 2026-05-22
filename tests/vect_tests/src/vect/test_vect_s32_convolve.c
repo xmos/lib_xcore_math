@@ -9,8 +9,6 @@
 
 #include "xmath/xmath.h"
 
-#include "xmath/xs3/vpu_scalar_ops.h"
-
 #include "../src/vect/vpu_helper.h"
 
 #include "../tst_common.h"

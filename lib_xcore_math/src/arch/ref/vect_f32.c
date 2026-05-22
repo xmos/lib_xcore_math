@@ -7,7 +7,6 @@
 
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
-#include "xmath/xs3/vpu_scalar_ops.h"
 #include "vpu_const_vects.h"
 
 
@@ -78,7 +77,7 @@ void vect_f32_add(
   }
 }
 
-  
+
 void vect_complex_f32_mul(
   complex_float_t a[],
   const complex_float_t b[],
@@ -95,7 +94,7 @@ void vect_complex_f32_mul(
   }
 }
 
-  
+
 void vect_complex_f32_conj_mul(
   complex_float_t a[],
   const complex_float_t b[],
@@ -112,7 +111,7 @@ void vect_complex_f32_conj_mul(
   }
 }
 
-  
+
 void vect_complex_f32_macc(
   complex_float_t a[],
   const complex_float_t b[],
@@ -129,7 +128,7 @@ void vect_complex_f32_macc(
     a[k].im = (float) ((double) ((double)A.im) + ((double)B.im) * ((double)C.re) + ((double)B.re) * ((double)C.im) );
   }
 }
-  
+
 
 void vect_complex_f32_conj_macc(
   complex_float_t a[],
