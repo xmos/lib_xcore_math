@@ -4,7 +4,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 
 int32_t vect_s16_min(
     const int32_t b[],
@@ -53,12 +53,12 @@ FUNCTION_NAME:
     { xm.zexti tail, 5                  ; xm.vldr t3                            }
     { xm.mkmsk tail, tail               ; addi t3,sp, (STACK_VEC_CUR_MIN)*4     }
         xm.vstrpv t3, tail
-    
+
     // Tail is fully accounted for in cur_min now.
 
 #undef tail
 #define cur_min     a2      // ![0x%08X]
-    
+
     { addi tmp,sp, (STACK_VEC_TMP)*4    ; mv cur_min, t3                        }
     { nop                               ; xm.vclrdr                             }
     { mv t3, b                          ; xm.brff N, .L_loop_bot                }
@@ -81,7 +81,7 @@ FUNCTION_NAME:
 
     { addi t3,sp, (STACK_VEC_CUR_MIN)*4 ; li N, 15                              }
     xm.ld16s cur_min, N(t3)
-    addi t3,sp, (STACK_VEC_CUR_MIN)*4 
+    addi t3,sp, (STACK_VEC_CUR_MIN)*4
     { addi t3, t3, -2                   ; nop                                   }
     .L_loop2_top:
 
@@ -98,12 +98,11 @@ FUNCTION_NAME:
         xm.retsp (NSTACKWORDS)*4
 
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
-.L_end: 
+.L_end:
     .size FUNCTION_NAME, .L_end - FUNCTION_NAME
 
 

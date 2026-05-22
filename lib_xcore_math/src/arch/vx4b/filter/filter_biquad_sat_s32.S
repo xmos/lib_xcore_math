@@ -7,7 +7,7 @@
 
 #include "../asm_helper.h"
 
-/*  
+/*
 
 typedef struct {
     unsigned biquad_count;
@@ -43,7 +43,7 @@ int32_t filter_biquad_sat_s32(
 #define _32         s2      // ![%d]
 #define _36         s3      // ![%d]
 #define filter      s8     // ![0x%08X]
-    
+
 .text
 .globl FUNCTION_NAME;
 .type FUNCTION_NAME,@function
@@ -118,7 +118,7 @@ FUNCTION_NAME:
     // yet. So we need to go up the chain of filter sections, computing the output of each to get
     // the input to the next. Because we've set the state[0][1:0] to zeros, when we're working on
     // the k'th filter section, MACCing against that will not affect accumulators > k. Then we write
-    // out the output of section k. We do the MACC again, **which will corrupt the accumulators 
+    // out the output of section k. We do the MACC again, **which will corrupt the accumulators
     // which are LESS THAN k.... but that's FINE because we're not going to write them out again.
 
     // instead of using _32 could just use that register as a second pointer for the vD temp stack,
@@ -204,7 +204,6 @@ li N, (0)
         xm.lddsp  s3,s2,0
         xm.retsp (NSTACKWORDS)*4
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"

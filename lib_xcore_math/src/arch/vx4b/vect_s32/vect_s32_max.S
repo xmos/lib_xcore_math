@@ -4,7 +4,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 
 int32_t vect_s32_max(
     const int32_t b[],
@@ -41,7 +41,7 @@ FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,16
-    
+
     { li t3, 0                          ; slli tail, N, SIZEOF_LOG2_S32         }
     { srli N, N, EPV_LOG2_S32           ; xm.vsetc t3                           }
     { xm.zexti tail, 5                  ; slli tmp, N, 5                        }
@@ -51,12 +51,12 @@ FUNCTION_NAME:
     { xm.mkmsk tail, tail               ; xm.vldr t3                            }
     { addi t3,sp, (STACK_VEC_CUR_MAX)*4 ; nop                                   }
         xm.vstrpv t3, tail
-    
+
     // Tail is fully accounted for in cur_max now.
 
 #undef tail
 #define cur_max     a2      // ![0x%08X]
-    
+
     { addi tmp,sp, (STACK_VEC_TMP)*4    ; mv cur_max, t3                        }
     { nop                               ; xm.vclrdr                             }
     { mv t3, b                          ; xm.brff N, .L_loop_bot                }
@@ -94,12 +94,11 @@ xm.zip tmz, tmp, 0
         xm.retsp (NSTACKWORDS)*4
 
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
-.L_end: 
+.L_end:
     .size FUNCTION_NAME, .L_end - FUNCTION_NAME
 
 

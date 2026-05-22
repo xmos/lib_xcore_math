@@ -4,7 +4,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 int64_t vect_s32_energy(
     const int32_t b[],
     const unsigned length,
@@ -91,12 +91,11 @@ la t3, vpu_vec_zero
         xm.retsp (NSTACKWORDS)*4
 
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
-.L_end: 
+.L_end:
     .size FUNCTION_NAME, .L_end - FUNCTION_NAME
 
 

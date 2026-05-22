@@ -6,7 +6,7 @@
 
 #include "../asm_helper.h"
 
-/*  
+/*
 
 unsigned vect_sXX_add_scalar(
     int32_t a[],
@@ -28,8 +28,8 @@ unsigned vect_sXX_add_scalar(
 
 #define STACK_VEC_TEMP      (NSTACKWORDS-12)
 
-#define a           a0 
-#define b           a1 
+#define a           a0
+#define b           a1
 #define len         a2
 #define c           a3
 #define b_shr       s2
@@ -47,7 +47,6 @@ FUNCTION_NAME:
 
   mv t3, a4
   { li _32, 32                          ; nop                                   }
-  //{ li _32, 32                               ; lw t3, (STACK_D)*4                      (sp)}
     xm.stdsp  c,t3,((STACK_VEC_TEMP/2)+0)*8
     xm.stdsp  c,t3,((STACK_VEC_TEMP/2)+1)*8
     xm.stdsp  c,t3,((STACK_VEC_TEMP/2)+2)*8
@@ -58,11 +57,9 @@ FUNCTION_NAME:
 
   mv t3, a6
   { addi vec_tmp,sp, (STACK_VEC_TEMP)*4 ; nop                                   }
-  //{ addi vec_tmp,sp, (STACK_VEC_TEMP)*4          ; lw t3, (STACK_MODE_BITS)*4              (sp)}
   { mv tail, len                        ; xm.vsetc t3                           }
   mv b_shr, a5
   { srli len, len, 5                    ; nop                                   }
-  //{ srli len, len, 5                           ; lw b_shr, (STACK_B_SHR)*4                (sp)}
   { xm.zexti tail, 5                    ; xm.brff len, .L_loop_bot              }
 
   .L_loop_top:
@@ -91,7 +88,7 @@ FUNCTION_NAME:
 
   { nop                                 ; xm.vgetc t3                           }
   { xm.zexti t3, 5                      ; nop                                   }
-  { mv a0, t3                           ; xm.retsp (NSTACKWORDS)*4              } 
+  { mv a0, t3                           ; xm.retsp (NSTACKWORDS)*4              }
 
 .L_func_end:
 

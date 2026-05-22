@@ -44,11 +44,6 @@ int8_t vladd8(
 
 #define FUNCTION_NAME   vladd8
 #define NSTACKWORDS     (4)
-
-// .global FUNCTION_NAME;
-// .type FUNCTION_NAME,@function;
-// .cc_top FUNCTION_NAME.function, FUNCTION_NAME
-
 FUNC_START
 FUNCTION_NAME:
 { nop                                   ; xm.entsp (NSTACKWORDS)*4              }
@@ -62,16 +57,6 @@ FUNCTION_NAME:
 { nop                                   ; lw a0, 0                           (sp) }
 { xm.sext a0, 8                         ; xm.retsp (NSTACKWORDS)*4              }
 FUNC_END
-
-// //.cc_bottom FUNCTION_NAME.function;
-//.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
-//.resource_list_empty FUNCTION_NAME, "tail_callees"
-//.resource_list_empty FUNCTION_NAME, "callees"
-//.resource_list_empty FUNCTION_NAME, "parallel_callees"
-
-// CAT(.L_size_end_, FUNCTION_NAME):
-//     .size FUNCTION_NAME, CAT(.L_size_end_, FUNCTION_NAME) - FUNCTION_NAME
-
 #undef NSTACKWORDS
 #undef FUNCTION_NAME
 

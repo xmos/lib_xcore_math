@@ -9,6 +9,7 @@
 #include "vpu_helper.h"
 #include "vpu_const_vects.h"
 
+// Issue to vectorise this API: https://github.com/xmos/lib_xcore_math/issues/238
 
 static inline
 int64_t maccs(int64_t acc, int32_t x, int32_t y)

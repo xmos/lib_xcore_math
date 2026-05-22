@@ -7,6 +7,8 @@
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
 
+// Issue to vectorise this API: https://github.com/xmos/lib_xcore_math/issues/238
+
 
 unsigned chunk_s16_accumulate(
     split_acc_s32_t* acc,

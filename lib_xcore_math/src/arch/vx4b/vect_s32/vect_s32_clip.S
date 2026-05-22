@@ -4,7 +4,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 
 headroom_t vect_s32_clip(
     int32_t a[],
@@ -54,8 +54,8 @@ FUNCTION_NAME:
     { xm.zexti tail, 5                  ; sw s8, 24                          (sp) }
 
     { li tmp1, 31                       ; srli N, N, EPV_LOG2_S32               }
-    {   xm.mkmsk int_max, tmp1                     ;   xm.vclrdr    
-                                  }  
+    {   xm.mkmsk int_max, tmp1                     ;   xm.vclrdr
+                                  }
     { xm.addi int_min, int_max, 1       ; xm.mkmsk tail, tail                   }
 
     // If upper >= 0  and lower <= 0, we can do this more efficiently.
@@ -63,17 +63,17 @@ FUNCTION_NAME:
     { li tmp1, 0                        ; nop                                   }
     mv b_shr, a5
     { xm.slt tmp2, upper, tmp1          ; nop                                   }
-        bnez tmp2, .L_lower_nice 
+        bnez tmp2, .L_lower_nice
     { xm.slt tmp1, tmp1, lower          ; nop                                   }
-        bnez tmp1, .L_upper_nice 
+        bnez tmp1, .L_upper_nice
 
 
     // Otherwise, we have the nice situation.
 .L_nice:
 
-    //In the nice situation, the upper bound is no more than 1 VLADD away from the positive  saturation 
+    //In the nice situation, the upper bound is no more than 1 VLADD away from the positive  saturation
     //  point of the VPU, and the lower bound is no more than 1 VLADD away from the negative saturation
-    //  point of the VPU. 
+    //  point of the VPU.
 
     { addi t3,sp, (STACK_VEC(0))*4      ; sub upper, int_max, upper             }
     { nop                               ; sub lower, int_min, lower             }
@@ -93,7 +93,7 @@ FUNCTION_NAME:
 
     { nop                               ; xm.neg lower, lower                   }
     { nop                               ; addi t3,sp, (STACK_VEC(2))*4          }
-    
+
     xm.stdi  upper,upper, 0(t3)
     xm.stdi  upper,upper, 8(t3)
     xm.stdi  upper,upper, 16(t3)
@@ -127,15 +127,15 @@ FUNCTION_NAME:
         { add a, a, _32                 ; xm.vstr a                             }
         { nop                           ; xm.bt N, .L_nice_loop_top             }
     .L_nice_loop_bot:
-    
-      beqz tail, .L_finish                  
-    
+
+      beqz tail, .L_finish
+
       xm.vlashr b, b_shr
     { nop                               ; xm.vladd vec_upper                    }
     { nop                               ; xm.vladd vec_nupper                   }
     { nop                               ; xm.vladd vec_lower                    }
     { nop                               ; xm.vladd vec_nlower                   }
-     j .L_finishish 
+     j .L_finishish
 
 /*
     C logic:
@@ -192,11 +192,11 @@ FUNCTION_NAME:
 
 
 
-#undef vec_upper 
-#undef vec_lower 
+#undef vec_upper
+#undef vec_lower
 #undef vec_nupper
 #undef vec_nlower
-#undef _32       
+#undef _32
 
 #define vec_one     upper
 #define vec_two     lower
@@ -214,7 +214,7 @@ FUNCTION_NAME:
     { sub vec_one, int_max, upper       ; xm.neg vec_three, lower               }
     addi vec_three, vec_three, -1
     { addi vec_two, int_min, 1          ; xm.bu .L_not_nice_thing               }
-    
+
 .L_lower_nice:
     { sub vec_one, int_min, lower       ; xm.neg vec_three, upper               }
     { mv vec_two, int_max               ; nop                                   }
@@ -227,7 +227,7 @@ FUNCTION_NAME:
         xm.stdi  vec_one,vec_one, 8(t3)
         xm.stdi  vec_one,vec_one, 16(t3)
         xm.stdi  vec_one,vec_one, 24(t3)
-    
+
     { addi t3,sp, (STACK_VEC(1))*4      ; nop                                   }
         xm.stdi  vec_two,vec_two, 0(t3)
         xm.stdi  vec_two,vec_two, 8(t3)
@@ -250,7 +250,7 @@ FUNCTION_NAME:
         xm.stdi  vec_one,vec_one, 8(t3)
         xm.stdi  vec_one,vec_one, 16(t3)
         xm.stdi  vec_one,vec_one, 24(t3)
-        
+
     { addi t3,sp, (STACK_VEC(2))*4      ; nop                                   }
         xm.stdi  vec_two,vec_two, 0(t3)
         xm.stdi  vec_two,vec_two, 8(t3)
@@ -263,7 +263,7 @@ FUNCTION_NAME:
         xm.stdi  vec_three,vec_three, 8(t3)
         xm.stdi  vec_three,vec_three, 16(t3)
         xm.stdi  vec_three,vec_three, 24(t3)
-        
+
     { addi t3,sp, (STACK_VEC(5))*4      ; nop                                   }
         xm.stdi  vec_two,vec_two, 0(t3)
         xm.stdi  vec_two,vec_two, 8(t3)
@@ -289,7 +289,7 @@ FUNCTION_NAME:
         { add a, a, t3                  ; xm.vstr a                             }
         { nop                           ; xm.bt N, .L_not_nice_loop_top         }
 .L_not_nice_loop_bot:
-    
+
     { nop                               ; xm.brff tail, .L_finish               }
         xm.vlashr b, b_shr
     { nop                               ; xm.vladd vec_one                      }
@@ -313,11 +313,10 @@ FUNCTION_NAME:
         xm.lddsp  s3,s2,0
         xm.lddsp  s5,s4,8
         xm.lddsp  s7,s6,16
-    { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              } 
+    { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 .L_func_end:
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"

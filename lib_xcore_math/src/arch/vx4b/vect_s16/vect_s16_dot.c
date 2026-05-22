@@ -8,7 +8,7 @@
 #include "xmath/xmath.h"
 #include "vpu_helper.h"
 
-
+// Issue to vectorise this API: https://github.com/xmos/lib_xcore_math/issues/238
 
 int64_t vect_s16_dot(
     const int16_t b[],

@@ -7,7 +7,7 @@
 
 #include "../asm_helper.h"
 
-/*  
+/*
 
 typedef struct {
     unsigned biquad_count;
@@ -40,7 +40,7 @@ int32_t filter_biquad_s32(
 #define _32         s2      // ![%d]
 #define _36         s3      // ![%d]
 #define filter      s8      // ![0x%08X]
-    
+
 .text
 .globl FUNCTION_NAME;
 .type FUNCTION_NAME,@function
@@ -105,8 +105,8 @@ la t3, vpu_vec_zero
     // yet. So we need to go up the chain of filter sections, computing the output of each to get
     // the input to the next. Because we've set the state[0][1:0] to zeros, when we're working on
     // the k'th filter section, MACCing against that will not affect accumulators > k. Then we write
-    // out the output of section k. We do the MACC again, **which will corrupt the accumulators 
-    // which are LESS THAN k.... but that's FINE because we're not going to write them out again.   
+    // out the output of section k. We do the MACC again, **which will corrupt the accumulators
+    // which are LESS THAN k.... but that's FINE because we're not going to write them out again.
     { xm.mkmski tmp, 4                  ; xm.vlmacc0 state                      }
         xm.vstrpv t3, tmp
         li N, 0
@@ -126,7 +126,7 @@ la t3, vpu_vec_zero
         xm.vstrpv t3, tmp
     { slli tmp, tmp, 4                  ; xm.vlmacc0 state                      }
         xm.vstrpv t3, tmp
-   
+
     // Final vstrpv should have written the output to filt->state[0][N]. filt->state should
     // still be pointing at filt->state[0][0]
 
@@ -138,7 +138,6 @@ la t3, vpu_vec_zero
         xm.lddsp  s3,s2,0
         xm.retsp (NSTACKWORDS)*4
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
