@@ -13,6 +13,5 @@ lib_xcore_math: xcore optimised math
    src/bfp_background
    src/reference/reference_index
    src/examples
-   src/tests
 
 
