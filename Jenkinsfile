@@ -1,4 +1,4 @@
-@Library('xmos_jenkins_shared_library@v0.45.0')
+@Library('xmos_jenkins_shared_library@v0.52.0')
 
 def runningOn(machine) {
   println "Stage running on:"
@@ -29,12 +29,12 @@ pipeline {
     )
     string(
       name: 'XMOSDOC_VERSION',
-      defaultValue: 'v8.0.1',
+      defaultValue: 'v8.1.0',
       description: 'The xmosdoc version'
     )
     string(
         name: 'INFR_APPS_VERSION',
-        defaultValue: 'v3.3.0',
+        defaultValue: 'v3.5.0',
         description: 'The infr_apps version'
     )
   } // parameters
@@ -310,5 +310,14 @@ pipeline {
 
       } // parallel
     } // Bullds and tests
+
+    stage('🚀 Release') {
+      when {
+        expression { triggerRelease.isReleasable() }
+      }
+      steps {
+        triggerRelease()
+      }
+    } // Release
   } // stages
 } // pipeline
