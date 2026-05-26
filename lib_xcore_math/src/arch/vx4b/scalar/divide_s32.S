@@ -24,7 +24,6 @@ int32_t s32_divide_s64_s32(
 */
 
 #define FUNCTION_NAME   s32_divide_s64_s32
-#define NSTACKWORDS     (0)
 
 .p2align 2
 FUNCTION_NAME:
@@ -37,20 +36,20 @@ FUNCTION_NAME:
     li x28, 31
     xm.lextract x13, x11, x10, x28, 32
     blt x13, x12, .valid11
-    { xm.mkmsk x10, x28 ; xm.retsp 0 }
+    { xm.mkmsk x10, x28 ; ret }
 .valid11:
     xm.ldivu x10, x11, x11, x10, x12
-    xm.retsp 0
+    ret
 .not_negative01:
     li x28, 31
     xm.lextract x13, x11, x10, x28, 32
     blt x13, x12, .valid10
     lui x10, 0x80000
-    xm.retsp 0
+    ret
 .valid10:
     xm.ldivu x10, x11, x11, x10, x12
     neg      x10, x10
-    xm.retsp 0
+    ret
 .not_negative0:
     li x28, 31
     bge      x12, x0, .not_negative00
@@ -58,24 +57,24 @@ FUNCTION_NAME:
     xm.lextract x13, x11, x10, x28, 32
     blt x13, x12, .valid01
     lui x10, 0x80000
-    xm.retsp 0
+    ret
 .valid01:
     xm.ldivu x10, x11, x11, x10, x12
     neg      x10, x10
-    xm.retsp 0
+    ret
 .not_negative00:
     // x28 = 31
     xm.lextract x13, x11, x10, x28, 32
     blt x13, x12, .valid00
-    { xm.mkmsk x10, x28 ; xm.retsp 0 }
+    { xm.mkmsk x10, x28 ; ret }
 .valid00:
     xm.ldivu x10, x11, x11, x10, x12
-    xm.retsp 0
+    ret
 
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
@@ -91,7 +90,6 @@ int32_t s32_divide_s64_u32(
 */
 #undef FUNCTION_NAME
 #define FUNCTION_NAME   s32_divide_s64_u32
-#define NSTACKWORDS     (0)
 
 .p2align 2
 FUNCTION_NAME:
@@ -103,23 +101,23 @@ FUNCTION_NAME:
     xm.lextract x13, x11, x10, x28, 32
     blt x13, x12, .valid3
     lui x10, 0x80000
-    xm.retsp 0
+    ret
 .valid3:
     xm.ldivu x10, x11, x11, x10, x12
     neg      x10, x10
-    xm.retsp 0
+    ret
 .not_negative2:
     li x28, 31
     xm.lextract x13, x11, x10, x28, 32
     blt x13, x12, .valid2
-    { xm.mkmsk x10, x28 ; xm.retsp 0 }
+    { xm.mkmsk x10, x28 ; ret }
 .valid2:
     xm.ldivu x10, x11, x11, x10, x12
-    xm.retsp 0
+    ret
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
@@ -134,7 +132,6 @@ int32_t s32_divide_u64_s32(
 
 #undef FUNCTION_NAME
 #define FUNCTION_NAME   s32_divide_u64_s32
-#define NSTACKWORDS     (0)
 
 .p2align 2
 FUNCTION_NAME:
@@ -144,23 +141,23 @@ FUNCTION_NAME:
     xm.lextract x13, x11, x10, x28, 32
     blt x13, x12, .valid5
     lui x10, 0x80000
-    xm.retsp 0
+    ret
 .valid5:
     xm.ldivu x10, x11, x11, x10, x12
     neg      x10, x10
-    xm.retsp 0
+    ret
 .not_negative3:
     // x28 = 31
     xm.lextract x13, x11, x10, x28, 32
     blt x13, x12, .valid4
-    { xm.mkmsk x10, x28 ; xm.retsp 0 }
+    { xm.mkmsk x10, x28 ; ret }
 .valid4:
     xm.ldivu x10, x11, x11, x10, x12
-    xm.retsp 0
+    ret
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
@@ -177,17 +174,16 @@ int32_t u32_divide_u64_u32(
 
 #undef FUNCTION_NAME
 #define FUNCTION_NAME   u32_divide_u64_u32
-#define NSTACKWORDS     (0)
 
 .p2align 2
 FUNCTION_NAME:
     // will return -1 if saturates
     xm.ldivu x10, x11, x11, x10, x12
-    xm.retsp 0
+    ret
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"

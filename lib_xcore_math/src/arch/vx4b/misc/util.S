@@ -16,7 +16,6 @@ void f32_unpack_s32(
     float input);
 */
 #define FUNCTION_NAME   f32_unpack_s32
-#define NSTACKWORDS     (0)
 
 #define mant_out    a0
 #define exp_out     a1
@@ -25,7 +24,6 @@ void f32_unpack_s32(
 #define exp         t3
 
 FUNCTION_NAME:
-    xm.entsp (NSTACKWORDS)*4
     xm.fsexp sign, exp, input
     xm.fmants input, input
 
@@ -35,18 +33,17 @@ FUNCTION_NAME:
     addi exp, exp, -23
 { nop                                   ; sw mant,0       ( mant_out)           }
 { nop                                   ; sw exp,0         ( exp_out)           }
-    xm.retsp (NSTACKWORDS)*4
+    ret
 .L_func_end_unpack:
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
 .size FUNCTION_NAME,.L_func_end_unpack - FUNCTION_NAME
 
-#undef NSTACKWORDS
 #undef FUNCTION_NAME
 #undef mant_out
 #undef exp_out
@@ -62,7 +59,6 @@ float s32_to_f32(
     const exponent_t exp);
 */
 #define FUNCTION_NAME   s32_to_f32
-#define NSTACKWORDS     (0)
 
 #define mant        a0
 #define exp         a1
@@ -71,24 +67,22 @@ float s32_to_f32(
 .p2align 2
 FUNCTION_NAME:
 
-    xm.entsp (NSTACKWORDS)*4
   // 23 - 32 = -9
   // subtracting 32 becase we're putting mant in a high word to not extract the sign
   { add exp, exp, -9                    ; li zero, 0                            }
     xm.fmakes mant, exp, mant, zero
-  { nop                                 ; xm.retsp (NSTACKWORDS)*4              }
+  { nop                                 ; ret                                   }
 
 .L_func_end_pack:
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
 .size FUNCTION_NAME,.L_func_end_pack - FUNCTION_NAME
 
-#undef NSTACKWORDS
 #undef FUNCTION_NAME
 
 

@@ -3,11 +3,11 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 
 Perform an 6-point forward DCT.
 
-Computed directly by multiplying by the DCT matrix. The output has elements ordered 
+Computed directly by multiplying by the DCT matrix. The output has elements ordered
 so that when used in recursive DCT computation the bit-reversed indexing can be used
 to deconvolve those that need it.
 
@@ -17,7 +17,6 @@ void dct6_forward(
 */
 
 #define FUNCTION_NAME   dct6_forward
-#define NSTACKWORDS 0
 
 .text
 .global FUNCTION_NAME
@@ -31,7 +30,6 @@ void dct6_forward(
 
 
 FUNCTION_NAME:
-xm.entsp (NSTACKWORDS)*4
 { li t3, 0                              ; li _32, 32                            }
 { xm.mkmski mask, 24                    ; xm.vsetc t3                           }
 { nop                                   ; xm.vldc x                             }
@@ -44,13 +42,13 @@ la t3, dct6_matrix
 { add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
 { nop                                   ; xm.vlmaccr0 t3                        }
 xm.vstrpv y, mask
-{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
+{ nop                                   ; ret                                   }
 
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
 .Ltmp0:
-	.size	FUNCTION_NAME, .Ltmp0-FUNCTION_NAME    
+	.size	FUNCTION_NAME, .Ltmp0-FUNCTION_NAME
 
 #endif //defined(__VX4B__)

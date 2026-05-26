@@ -11,7 +11,6 @@ void vpu_memcpy(
     unsigned bytes);
 */
 
-#define NSTACKWORDS     (0)
 #define FUNCTION_NAME   vpu_memcpy
 
 #define a           a0
@@ -24,7 +23,6 @@ void vpu_memcpy(
 
 
 FUNCTION_NAME:
-    xm.entsp (NSTACKWORDS)*4
   { srli tmp, len, 5                    ; xm.zexti len, 5                       }
   { li t3, 32                           ; xm.brff tmp, .L_loop_bot              }
   .L_loop_top:
@@ -37,14 +35,14 @@ FUNCTION_NAME:
   { nop                                 ; xm.vldr t3                            }
     xm.vstrpv a, len
 .L_finish:
-    xm.retsp (NSTACKWORDS)*4
+    ret
 
 
 .L_func_end:
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"

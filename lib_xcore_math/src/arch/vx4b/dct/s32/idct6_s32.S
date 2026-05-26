@@ -3,7 +3,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 
 Perform an 6-point inverse DCT.
 
@@ -16,7 +16,6 @@ headroom_t dct6_inverse(
 */
 
 #define FUNCTION_NAME   dct6_inverse
-#define NSTACKWORDS 0
 
 .text
 .global FUNCTION_NAME
@@ -30,7 +29,6 @@ headroom_t dct6_inverse(
 
 
 FUNCTION_NAME:
-  xm.entsp (NSTACKWORDS)*4
 { li t3, 0                              ; li _32, 32                            }
 { xm.mkmski mask, 24                    ; xm.vsetc t3                           }
 { nop                                   ; xm.vldc x                             }
@@ -42,18 +40,18 @@ la t3, idct6_matrix
 { add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
 { add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
 { add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
-xm.vlsat t3 
+xm.vlsat t3
 xm.vstrpv y, mask
-{ nop                                   ; xm.retsp (NSTACKWORDS)*4              }
+{ nop                                   ; ret                                   }
 
 
-	
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
 .Ltmp0:
-	.size	FUNCTION_NAME, .Ltmp0-FUNCTION_NAME    
+	.size	FUNCTION_NAME, .Ltmp0-FUNCTION_NAME
 
 
 #endif //defined(__VX4B__)
