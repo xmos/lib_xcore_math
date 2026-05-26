@@ -7,7 +7,7 @@
 
 #include "../asm_helper.h"
 
-/*  
+/*
 
 typedef struct {
     unsigned num_taps;
@@ -47,7 +47,7 @@ int16_t filter_fir_s16(
 
 
 #define filter      s8
-    
+
 .text
 .globl FUNCTION_NAME;
 .type FUNCTION_NAME,@function
@@ -76,12 +76,12 @@ FUNCTION_NAME:
     { mv tmpA, length                   ; xm.vstd t3                            }
     { xm.zexti tmpA, 4                  ; srli length, length, 4                }
     { slli tmpA, tmpA, 1                ; xm.brff length, .L_loop_end           }
-    
+
     .L_loop_top:
         { add buff, buff, _32           ; xm.vldc buff                          }
         { addi length, length, -1       ; xm.vlmaccr0 coef                      }
         xm.vlmaccr1 coef
-        { nop                           ; xm.vstd s6                            }    
+        { nop                           ; xm.vstd s6                            }
         { nop                           ; xm.vldd s7                            }
         { nop                           ; xm.vstr s6                            }
         { nop                           ; xm.vldr s7                            }
@@ -103,7 +103,7 @@ FUNCTION_NAME:
 
     xm.vlsat t3
     { nop                               ; xm.vstr t3                            }
-    xm.ld16s a0, tmpA(t3) 
+    xm.ld16s a0, tmpA(t3)
 .L_done:
     { nop                               ; lw s8, 24                          (sp) }
         xm.lddsp  s7,s6,0
@@ -113,7 +113,7 @@ FUNCTION_NAME:
 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
-.resource_list_empty FUNCTION_NAME, "callees"
+.resource_list_add FUNCTION_NAME, "callees", filter_fir_s16_push_sample_up
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
 .L_size_end:
     .size FUNCTION_NAME, .L_size_end - FUNCTION_NAME

@@ -4,9 +4,9 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 
-headroom_t vect_s16_clip( 
+headroom_t vect_s16_clip(
     int16_t a[],
     const int16_t b[],
     const unsigned length,
@@ -53,7 +53,7 @@ FUNCTION_NAME:
     { xm.zexti tail, 5                  ; sw s8, 24                          (sp) }
 
     { li tmp1, 15                       ; srli N, N, EPV_LOG2_S16               }
-    { xm.mkmsk int_max, tmp1            ; xm.vclrdr                             }   
+    { xm.mkmsk int_max, tmp1            ; xm.vclrdr                             }
     { xm.addi int_min, int_max, 1       ; xm.mkmsk tail, tail                   }
 
     // If upper >= 0  and lower <= 0, we can do this more efficiently.
@@ -62,16 +62,16 @@ FUNCTION_NAME:
     mv b_shr, a5
     { xm.slt tmp2, upper, tmp1          ; nop                                   }
     { xm.slt tmp1, tmp1, lower          ; nop                                   }
-    bnez tmp2, .L_lower_nice 
-    bnez tmp1, .L_upper_nice 
+    bnez tmp2, .L_lower_nice
+    bnez tmp1, .L_upper_nice
 
 
     // Otherwise, we have the nice situation.
 .L_nice:
 
-    //In the nice situation, the upper bound is no more than 1 VLADD away from the positive  saturation 
+    //In the nice situation, the upper bound is no more than 1 VLADD away from the positive  saturation
     //  point of the VPU, and the lower bound is no more than 1 VLADD away from the negative saturation
-    //  point of the VPU. 
+    //  point of the VPU.
 
     { addi t3,sp, (STACK_VEC(0))*4      ; sub upper, int_max, upper             }
     { mv tmp1, upper                    ; mv tmp2, upper                        }
@@ -99,7 +99,7 @@ xm.zip tmp2, tmp1, 4
         xm.stdi  tmp1,tmp1, 8(t3)
         xm.stdi  tmp1,tmp1, 16(t3)
         xm.stdi  tmp1,tmp1, 24(t3)
-        ret 
+        ret
 .L_std_func_end1:
 
 #define vec_upper   upper
@@ -108,10 +108,6 @@ xm.zip tmp2, tmp1, 4
 #define vec_nlower  tmp2
 #define _32         int_min
 
-//{   nop; xm.ldawsp vec_upper, STACK_VEC(0)*4        }
-//{   nop; xm.ldawsp vec_lower, STACK_VEC(1)*4        }
-//{   nop; xm.ldawsp vec_nupper, STACK_VEC(2)*4       }
-//{   nop; xm.ldawsp vec_nlower, STACK_VEC(3)*4       }
 { addi vec_upper,sp, (STACK_VEC(0))*4   ; nop                                   }
 { addi vec_lower,sp, (STACK_VEC(1))*4   ; nop                                   }
 { addi vec_nupper,sp, (STACK_VEC(2))*4  ; nop                                   }
@@ -127,14 +123,14 @@ xm.zip tmp2, tmp1, 4
         { add a, a, _32                 ; xm.vstr a                             }
         { nop                           ; xm.bt N, .L_nice_loop_top             }
     .L_nice_loop_bot:
-    
-     beqz tail, .L_finish          
+
+     beqz tail, .L_finish
         xm.vlashr b, b_shr
     { nop                               ; xm.vladd vec_upper                    }
     { nop                               ; xm.vladd vec_nupper                   }
     { nop                               ; xm.vladd vec_lower                    }
     { nop                               ; xm.vladd vec_nlower                   }
-    j .L_finishish 
+    j .L_finishish
 
 /*
     C logic:
@@ -191,11 +187,11 @@ xm.zip tmp2, tmp1, 4
 
 
 
-#undef vec_upper 
-#undef vec_lower 
+#undef vec_upper
+#undef vec_lower
 #undef vec_nupper
 #undef vec_nlower
-#undef _32       
+#undef _32
 
 #define vec_one     upper
 #define vec_two     lower
@@ -213,7 +209,7 @@ xm.zip tmp2, tmp1, 4
     { sub vec_one, int_max, upper       ; xm.neg vec_three, lower               }
      addi vec_three, vec_three, -1
     { addi vec_two, int_min, 1          ; xm.bu .L_not_nice_thing               }
-    
+
 .L_lower_nice:
     { sub vec_one, int_min, lower       ; xm.neg vec_three, upper               }
     { mv vec_two, int_max               ; nop                                   }
@@ -260,16 +256,8 @@ xm.zip s7, s6, 4
         xm.stdi  s6,s6, 8(t3)
         xm.stdi  s6,s6, 16(t3)
         xm.stdi  s6,s6, 24(t3)
-        ret 
+        ret
 .L_std_func_end:
-/*
-{ nop                                   ; xm.ldawsp vec_one, STACK_VEC(0)  *4   }
-{ nop                                   ; xm.ldawsp vec_none, STACK_VEC(3) *4   }
-{ nop                                   ; xm.ldawsp vec_two, STACK_VEC(1)  *4   }
-{ nop                                   ; xm.ldawsp vec_ntwo, STACK_VEC(2) *4   }
-{ nop                                   ; xm.ldawsp vec_three, STACK_VEC(4) *4  }
-{ nop                                   ; xm.ldawsp vec_nthree, STACK_VEC(5)*4  }
-*/
 { addi vec_one,sp, (STACK_VEC(0))*4     ; nop                                   }
 { addi vec_none,sp, (STACK_VEC(3))*4    ; nop                                   }
 { addi vec_two,sp, (STACK_VEC(1))*4     ; nop                                   }
@@ -289,7 +277,7 @@ xm.zip s7, s6, 4
         { add a, a, t3                  ; xm.vstr a                             }
         { nop                           ; xm.bt N, .L_not_nice_loop_top         }
 .L_not_nice_loop_bot:
-    
+
     { nop                               ; xm.brff tail, .L_finish               }
         xm.vlashr b, b_shr
     { nop                               ; xm.vladd vec_one                      }
@@ -313,11 +301,10 @@ xm.zip s7, s6, 4
         xm.lddsp  s3,s2,0
         xm.lddsp  s5,s4,8
         xm.lddsp  s7,s6,16
-    { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              } 
+    { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 .L_func_end:
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"

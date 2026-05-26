@@ -4,7 +4,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 headroom_t fft_spectra_merge(
     complex_s32_t* X,
     const unsigned N);
@@ -104,7 +104,7 @@ FUNCTION_NAME:
 
    sh2add X_hi, N, X
 
-       li t3, 0                                                                          
+       li t3, 0
     { srli i, N, 3                      ; xm.vsetc t3                           }
 la t3, vpu_vec_complex_neg_j
     { mv X_lo, X                        ; xm.vldc t3                            }
@@ -122,7 +122,7 @@ la t3, vpu_vec_complex_conj_op
         { add X_hi, X_hi, _32           ; xm.vstr X_hi                          }
         { nop                           ; xm.bt i, .L_syzygy                    }
 
-    
+
         sh2add X, N, X
     { srli N, N, 1                      ; xm.vgetc t3                           }
     { mv s2, t3                         ; nop                                   }
@@ -143,9 +143,9 @@ la t3, vpu_vec_complex_conj_op
 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
-.resource_list_empty FUNCTION_NAME, "callees"
+.resource_list_add FUNCTION_NAME, "callees", vect_complex_s32_tail_reverse
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
-.L_function_end: 
+.L_function_end:
     .size FUNCTION_NAME, .L_function_end - FUNCTION_NAME
 
 

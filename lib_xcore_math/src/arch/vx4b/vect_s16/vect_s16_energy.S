@@ -4,7 +4,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 int32_t vect_s16_energy(
     const int16_t b[],
     const unsigned length,
@@ -61,7 +61,7 @@ FUNCTION_NAME:
     { nop                               ; xm.vclrdr                             }
     { srli N, N, 5                      ; xm.vlmaccr0 vec_tmp                   }
     xm.vlmaccr1 vec_tmp
-        { nop                           ; xm.vstd s4                            }    
+        { nop                           ; xm.vstd s4                            }
         { nop                           ; xm.vldd s5                            }
         { nop                           ; xm.vstr s4                            }
         { nop                           ; xm.vldr s5                            }
@@ -78,7 +78,7 @@ FUNCTION_NAME:
         { nop                           ; xm.vldr t3                            }
         { addi N, N, -1                 ; xm.vlmaccr0 vec_tmp                   }
         xm.vlmaccr1 vec_tmp
-        { nop                           ; xm.vstd s4                            }    
+        { nop                           ; xm.vstd s4                            }
         { nop                           ; xm.vldd s5                            }
         { nop                           ; xm.vstr s4                            }
         { nop                           ; xm.vldr s5                            }
@@ -99,12 +99,11 @@ FUNCTION_NAME:
     { or a0, a0, a1                     ; xm.retsp (NSTACKWORDS)*4              }
 
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
-.L_end: 
+.L_end:
     .size FUNCTION_NAME, .L_end - FUNCTION_NAME
 
 

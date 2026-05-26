@@ -4,7 +4,6 @@
 #if defined(__VX4B__)
 
 
-//.section    .cp.rodata, "ac", @progbits
 .p2align  2
 // In the table below the LSByte indicates the shift behavior
 //  0x00 - no shift.  0x40 - left shift. 0x80 - right shift.

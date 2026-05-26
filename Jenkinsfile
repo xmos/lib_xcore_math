@@ -60,7 +60,7 @@ pipeline {
                   checkout scm
                   dir('examples') {
                     withTools(params.TOOLS_VX4_VERSION) {
-                      sh 'cmake -B build_vx4b -G "Unix Makefiles" -DXCORE_TARGET=XK-EVK-XU416'
+                      sh 'cmake -B build_vx4b -G "Unix Makefiles" -DAPP_HW_TARGET=XK-EVK-XU416'
                       sh 'xmake -C build_vx4b -j'
                     }
                   }
@@ -72,7 +72,7 @@ pipeline {
               steps {
                 withTools(params.TOOLS_VX4_VERSION) {
                   dir("${REPO}/tests") {
-                    sh "cmake -B build_vx4b -DXCORE_TARGET=XK-EVK-XU416 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G \"Unix Makefiles\""
+                    sh "cmake -B build_vx4b -DAPP_HW_TARGET=XK-EVK-XU416 -DXMATH_SMOKE_TEST=${params.XMATH_SMOKE_TEST} -G \"Unix Makefiles\""
                     sh 'xmake -C build_vx4b -j'
 
                     sh 'xrun --xscope --id 0 --args bfp_tests/bin/bfp_tests.xe        -v'
@@ -209,7 +209,7 @@ pipeline {
                       withTools(params.TOOLS_VX4_VERSION) {
                         // vx4b build
                         // Currently fails sayinf command line is too long, uncomment when fixed
-                        // bat 'cmake -B build_vx4b -G Ninja -DXCORE_TARGET=XK-EVK-XU416'
+                        // bat 'cmake -B build_vx4b -G Ninja -DAPP_HW_TARGET=XK-EVK-XU416'
                         // bat 'ninja -C build_vx4b -j'
                         // x86 build
                         bat 'cmake -B build_x86 -G Ninja -D BUILD_NATIVE=TRUE'

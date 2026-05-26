@@ -5,7 +5,7 @@
 
 #include "../asm_helper.h"
 
-/*  
+/*
 
 headroom_t vect_complex_s32_scale(
     complex_s32_t* a,
@@ -24,8 +24,8 @@ headroom_t vect_complex_s32_scale(
 
 #define NSTACKWORDS     (8+8)
 
-#define a           a0 
-#define b           a1 
+#define a           a0
+#define b           a1
 #define c_real      a2
 #define c_imag      a3
 #define length      s2
@@ -38,16 +38,16 @@ headroom_t vect_complex_s32_scale(
 #define STACK_VEC_TMP   (NSTACKWORDS-8-1)
 
 #define FUNCTION_NAME vect_complex_s32_scale
-    
-    
+
+
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
     xm.stdsp  s3,s2,8
     xm.stdsp  s5,s4,0
-    
+
     { addi tmp_vec,sp, (STACK_VEC_TMP)*4 ; li t3, 0                              }
     { li _32, 32                        ; xm.vsetc t3                           }
-    
+
         xm.stdi  c_real,c_imag, 0(tmp_vec)
         xm.stdi  c_real,c_imag, 8(tmp_vec)
         xm.stdi  c_real,c_imag, 16(tmp_vec)
@@ -66,8 +66,7 @@ FUNCTION_NAME:
     #define tail_bytes  a3
 
     mv length, a4
- //   { nop                                           ;   lw length, (STACK_LENGTH)*4            (sp)}
- mv b_shr, a5
+    mv b_shr, a5
     { slli tail_bytes, length, 3        ; nop                                   }
     { xm.zexti tail_bytes, 5            ; srli vec_count, length, 2             }
 
@@ -75,7 +74,7 @@ FUNCTION_NAME:
 
     { xm.mkmsk tail_bytes, tail_bytes   ; xm.mkmski t3, 32                      }
     { nop                               ; xm.brff vec_count, .L_loop_bot        }
-    
+
 
     .L_loop_top:
             xm.vlashr b, b_shr
@@ -112,12 +111,12 @@ FUNCTION_NAME:
     // {                                           ;   vclrdr                                  }
     // {                                           ;   vstd tmp_vec[0]                         }
     //     vlashr b[0], b_shr
-    //     vstrpv tmp_vec[0], tail_bytes   
+    //     vstrpv tmp_vec[0], tail_bytes
     // {                                           ;   vldd tmp_vec[0]                         }
     // {                                           ;   vcmr                                    }
     // {                                           ;   vcmi                                    }
     //     vstrpv tmp_vec[0], tail_bytes
-    //     vstrpv a[0], tail_bytes 
+    //     vstrpv a[0], tail_bytes
     // {                                           ;   vldd tmp_vec[0]                         }
     // {                                           ;   vstd tmp_vec[0]                         }
 

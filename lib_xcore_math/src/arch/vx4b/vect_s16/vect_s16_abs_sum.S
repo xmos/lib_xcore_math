@@ -4,7 +4,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 int32_t vect_s16_abs_sum(
     const int16_t b[],
     const unsigned length);
@@ -25,9 +25,9 @@ int32_t vect_s16_abs_sum(
 #define STACK_VEC_VR        (NSTACKWORDS-32-4)
 #define STACK_VEC_TMP2      (NSTACKWORDS-8-2)
 
-#define b           a0 
-#define N           a1 
-#define tail        a2 
+#define b           a0
+#define N           a1
+#define tail        a2
 #define tmp         a3
 #define neg_1       s2
 #define pos_2       s3
@@ -61,7 +61,7 @@ FUNCTION_NAME:
     { nop                               ; xm.vlmaccr0 tmp                       }
     xm.vlmaccr1 tmp
 
-    { nop                               ; xm.vstd s4                            }    
+    { nop                               ; xm.vstd s4                            }
     { nop                               ; xm.vldd s5                            }
     { nop                               ; xm.vstr s4                            }
     { nop                               ; xm.vldr s5                            }
@@ -76,7 +76,7 @@ FUNCTION_NAME:
     { nop                               ; xm.vlmaccr0 tmp                       }
     xm.vlmaccr1 tmp
 
-    { nop                               ; xm.vstd s4                            }    
+    { nop                               ; xm.vstd s4                            }
     { nop                               ; xm.vldd s5                            }
     { nop                               ; xm.vstr s4                            }
     { nop                               ; xm.vldr s5                            }
@@ -92,7 +92,7 @@ FUNCTION_NAME:
         { nop                           ; xm.vlmaccr0 b                         }
         xm.vlmaccr1 b
 
-        { nop                           ; xm.vstd s4                            }    
+        { nop                           ; xm.vstd s4                            }
         { nop                           ; xm.vldd s5                            }
         { nop                           ; xm.vstr s4                            }
         { nop                           ; xm.vldr s5                            }
@@ -107,7 +107,7 @@ FUNCTION_NAME:
         { addi N, N, -1                 ; xm.vlmaccr0 tmp                       }
         xm.vlmaccr1 tmp
 
-        { nop                           ; xm.vstd s4                            }    
+        { nop                           ; xm.vstd s4                            }
         { nop                           ; xm.vldd s5                            }
         { nop                           ; xm.vstr s4                            }
         { nop                           ; xm.vldr s5                            }
@@ -120,26 +120,25 @@ FUNCTION_NAME:
 .L_finish:
 
 
-   
+
 
 
     { addi a1,sp, (STACK_VEC_TMP)*4     ; nop/*  xm.vadddr */                   }
-      addi s4, a1, 32-2                           
+      addi s4, a1, 32-2
     { nop                               ; xm.vstd a1                            }
     { nop                               ; lw a0, 0(s4)                          }
     { slli a0, a0, 16                   ; xm.vstr a1                            }
     { nop                               ; lw a1, 0(s4)                          }
-        xm.lddsp  s3,s2,0                               
+        xm.lddsp  s3,s2,0
         xm.lddsp  s5,s4,8
     { xm.zexti a1, 16                   ; nop                                   }
     { or a0, a0, a1                     ; xm.retsp (NSTACKWORDS)*4              }
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
-.L_end: 
+.L_end:
     .size FUNCTION_NAME, .L_end - FUNCTION_NAME
 
 

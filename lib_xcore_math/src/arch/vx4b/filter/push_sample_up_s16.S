@@ -7,7 +7,7 @@
 
 #include "../asm_helper.h"
 
-/*  
+/*
 
 Push a sample into the buffer, moving everything 1 index up.
 
@@ -36,7 +36,7 @@ void filter_fir_s16_push_sample_up(
 #define tmpC        s4
 #define buffD       s5
 #define tmp         s8
-    
+
 .text
 .globl FUNCTION_NAME;
 .type FUNCTION_NAME,@function
@@ -56,14 +56,12 @@ FUNCTION_NAME:
 // final sample without the VPU.
 
     xm.zexti tmp, 1
-    xm.eq buffR, length, 1 
+    xm.eq buffR, length, 1
     { add length, length, tmp           ; xm.bt buffR, .L_write_new_sample      }
     { addi tmp, length, -2              ; xm.bt tmp, .L_odd_samps               }
 .L_even_samps:
-   // xm.ld16s buffD, buff_start(tmp)
     xm.ld16s buffD, tmp(buff_start)
-    addi tmp, tmp, 1   
-    //xm.st16 buffD, buff_start(tmp) 
+    addi tmp, tmp, 1
     xm.st16 buffD, tmp(buff_start)
 .L_odd_samps:
 
@@ -92,7 +90,6 @@ FUNCTION_NAME:
         xm.vlmaccr1 t3
         xm.vstrpv t3, mask
         { nop                           ; xm.vstd buffR                         }
-      //  {   sub t3, t3, tmpB                      ;   xm.brff tmp, .L_loop_top                     }
          { sub t3, t3, tmpB             ; xm.bt tmp, .L_loop_end                }
          { xm.bu .L_loop_top            ; nop                                   }
     .L_loop_end:
@@ -114,18 +111,17 @@ FUNCTION_NAME:
 
     { sub length, buff_start, t3        ; xm.mkmski tmpC, 2                     }
     { xm.mkmski mask, 32                ; xm.bitrev tmpC, tmpC                  }
-    
+
     { xm.shl mask, mask, length         ; xm.vldr t3                            }
 
-    xm.andnot mask, tmpC 
+    xm.andnot mask, tmpC
     { nop                               ; xm.vlmaccr0 t3                       }
-    xm.vlmaccr1 t3   
+    xm.vlmaccr1 t3
 
     xm.vstrpv t3, mask
 
 .L_write_new_sample:
     { li tmpC, 0                        ; nop                                   }
-   // xm.st16 value, buff_start(tmpC)
      xm.st16 value, tmpC(buff_start)
 .L_done:
         xm.lddsp  s7,s6,0
@@ -134,7 +130,6 @@ FUNCTION_NAME:
     { nop                               ; lw s8, 24                          (sp) }
         xm.retsp (NSTACKWORDS)*4
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"

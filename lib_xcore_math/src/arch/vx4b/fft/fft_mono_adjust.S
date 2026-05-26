@@ -4,7 +4,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 void fft_mono_adjust(
     complex_s32_t* X,
     const unsigned N,
@@ -32,18 +32,17 @@ void fft_mono_adjust(
 #define X           a0
 #define N           a1
 #define W           a2
-#define X_lo        a3        
-#define X_hi        s2  
+#define X_lo        a3
+#define X_hi        s2
 #define _32         s3
 #define i           s4
-#define pos_j_vect  s5      
-#define ones_vect   s6     
-#define conj_vect   s7     
+#define pos_j_vect  s5
+#define ones_vect   s6
+#define conj_vect   s7
 
 .text
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
-//.call FUNCTION_NAME, vect_complex_s32_tail_reverse
 
 .p2align 4
 
@@ -52,7 +51,7 @@ FUNCTION_NAME:
     xm.stdsp  s2,s3,8
     xm.stdsp  s4,s5,16
     xm.stdsp  s6,s7,24
-    
+
     { li t3, 0                          ; sw s8, 4                         (sp) }
     { addi s2, N, -8                    ; sw a2, (STACK_INV)*4             (sp) }
     { slli s2, s2, 3                    ; xm.vsetc t3                           }
@@ -61,7 +60,7 @@ FUNCTION_NAME:
     // W <-- xmath_dit_fft_lut + ((N-8)<<3)
     la t3, xmath_dit_fft_lut
     { srli a3, N, 4                     ; add W, t3, s2                         }
-    
+
     { srli N, N, 1                      ; sw X, (STACK_X)*4                (sp) }
     // exception if N < 16. Don't bother using this with really short FFTs.
     { xm.assert a3                      ; sw N, (STACK_N)*4                (sp) }
@@ -138,8 +137,8 @@ FUNCTION_NAME:
     { add X_hi, X_hi, _32               ; xm.vstr X_hi                          }
     { nop                               ; xm.bt i, .L_main_loop                 }
 
-    // If we had a LUT which already holds A[k], B[k] and the complex conjugate of B[k], we can do 
-    // it in 23 instructions instead of 31  
+    // If we had a LUT which already holds A[k], B[k] and the complex conjugate of B[k], we can do
+    // it in 23 instructions instead of 31
 
     // If it seems worthwhile, could create an alternate version of this function that does it faster,
     // plus a function to initialize the needed table at start-up? It can be initialized based on the
@@ -179,7 +178,7 @@ FUNCTION_NAME:
     xm.stdi  s5,s6, 0(X)
     { xm.neg s8, s8                     ; srli i, N, 1                          }
     xm.std  s7,s8, i(X)
-    
+
 
 //Finally, reverse the elements again...
     sh2add X, N, X
@@ -200,7 +199,7 @@ FUNCTION_NAME:
 .resource_list_add   FUNCTION_NAME, "callees", vect_complex_s32_tail_reverse
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
 
-.L_function_end: 
+.L_function_end:
     .size FUNCTION_NAME, .L_function_end - FUNCTION_NAME
 
 

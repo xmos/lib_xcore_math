@@ -4,7 +4,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 void vect_complex_s16_to_vect_complex_s32(
     complex_s32_t* a,
     const int16_t* b_real,
@@ -26,7 +26,7 @@ void vect_complex_s16_to_vect_complex_s32(
 #define tmp_real        s2
 #define tmp_imag        s3
 
-.text; 
+.text;
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
 .p2align 4
@@ -37,7 +37,7 @@ FUNCTION_NAME:
     xm.stdsp  s3,s2,0
 
     // Can this be done faster? Or with the VPU at all?
-    .L_loop_top:  
+    .L_loop_top:
         addi length, length, -1
         xm.ld16s tmp_real, length(b_real)
         xm.ld16s tmp_imag, length(b_imag)
@@ -45,14 +45,13 @@ FUNCTION_NAME:
         bnez length, .L_loop_top
 
     xm.lddsp  s3,s2,0
-    xm.retsp (NSTACKWORDS)*4       
+    xm.retsp (NSTACKWORDS)*4
 
-    //.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
-    
+
 .L_func_end:
     .size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 

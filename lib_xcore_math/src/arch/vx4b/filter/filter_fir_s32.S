@@ -7,7 +7,7 @@
 
 #include "../asm_helper.h"
 
-/*  
+/*
 
 typedef struct {
     unsigned num_taps;
@@ -40,8 +40,8 @@ int32_t filter_fir_s32(
 #define filter      s7
 #define sample      a1
 #define tmp1        s2
-#define tmp2        s6    
-    
+#define tmp2        s6
+
 .text
 .globl FUNCTION_NAME;
 .type FUNCTION_NAME,@function
@@ -58,17 +58,17 @@ FUNCTION_NAME:
     { mv filter, a0                     ; xm.vsetc t3                           }
 
 
-// The field filter->head points to where the newest sample will go, which is probably somewhere in the middle of the 
-// state vector. This effectively splits the work to be done into two pieces -- the stuff after filter->head, and the 
-// stuff before it. The stuff after filter->head I'm calling part A (corresponds to lowest coef[] indices). The stuff 
-// before it I'm calling part B. 
+// The field filter->head points to where the newest sample will go, which is probably somewhere in the middle of the
+// state vector. This effectively splits the work to be done into two pieces -- the stuff after filter->head, and the
+// stuff before it. The stuff after filter->head I'm calling part A (corresponds to lowest coef[] indices). The stuff
+// before it I'm calling part B.
 
 // I'm just going to create two sets of registers, corresponding to each of the two parts. That's what this is.
 
 #define state_A     a0
 #define state_B     s3
 
-#define N_A         a2    
+#define N_A         a2
 #define N_B         s5
 
 #define coef_A      a1
@@ -94,7 +94,7 @@ FUNCTION_NAME:
     sh2add coef_B, N_A, coef_A
 #undef sample
 
-    // Each part has its own tail. We'll handle both of those first (by masking the state with zeros), then we'll do the 
+    // Each part has its own tail. We'll handle both of those first (by masking the state with zeros), then we'll do the
     // bulk of the work after
 
     { addi s8,sp, (STACK_VEC_TMP)*4     ; xm.vclrdr                             }
@@ -136,7 +136,7 @@ FUNCTION_NAME:
             { addi N_B, N_B, -1         ; xm.vlmaccr0 coef_B                    }
             { add coef_B, coef_B, _32   ; xm.bt N_B, .L_part_B_loop_top         }
     .L_part_B_end:
-    
+
 #undef state_B
 #undef N_B
 #undef coef_B
@@ -173,7 +173,7 @@ FUNCTION_NAME:
     .L_left_shift:
         // (from the block above):  s3 = 1, s4 = -a2 + 1, t3 = 0
         // If we're left-shifting (or zero-shifting), we still need to saturate to q31.
-        // lsats has a bug which doesn't allow to use it with 0, so we'll have to 
+        // lsats has a bug which doesn't allow to use it with 0, so we'll have to
         // add 1 to our shift, left-shift, saturate and extract with 1, no need to round here.
     { xm.shl a1, a1, s4                 ; nop                                   }
     xm.linsert a1, t3, a0, s4, 32
@@ -187,7 +187,6 @@ FUNCTION_NAME:
     { nop                               ; lw s8, 24                          (sp) }
         xm.retsp (NSTACKWORDS)*4
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"

@@ -6,7 +6,7 @@
 
 #include "../asm_helper.h"
 
-/*  
+/*
 
 headroom_t vect_complex_s16_mul(
     int16_t* a_real,
@@ -31,7 +31,7 @@ headroom_t vect_complex_s16_mul(
 #define STACK_VEC_SAT   (NSTACKWORDS-16-1)
 
 #define FUNCTION_NAME vect_complex_s16_mul
-    
+
 #define a_re        a0
 #define a_im        a1
 #define b_re        a2
@@ -50,7 +50,7 @@ headroom_t vect_complex_s16_mul(
 
     vR  <- -1
     vR  <- -1 * b.imag
-    vC  <- -b.imag  
+    vC  <- -b.imag
     acc <- 0
     acc <- vC * c.imag
     vC  <- b.real
@@ -67,9 +67,6 @@ headroom_t vect_complex_s16_mul(
     a.imag <- vR
 */
 
-
-//.L_neg_ones:
-  //  .short -0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000
 
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
@@ -93,7 +90,7 @@ FUNCTION_NAME:
     { xm.zexti bytemask, 4              ; nop                                   }
     { slli bytemask, bytemask, SIZEOF_LOG2_S16 ; slli t3, t3, 3                        }
     { addi vec_tmp,sp, (STACK_VEC_TMP)*4 ; xm.vsetc t3                           }
-    la t3, vpu_vec_0x8000    
+    la t3, vpu_vec_0x8000
     { mv s8, t3                         ; xm.brff len, .L_loop_bot              }
 
     .L_loop_top:
@@ -111,7 +108,7 @@ FUNCTION_NAME:
         xm.vlsat vec_sat
         { li t3, 32                     ; xm.vstr a_re                          }
 
-        
+
         { add b_re, b_re, t3            ; xm.vclrdr                             }
         { add a_re, a_re, t3            ; xm.vlmacc0 c_im                       }
         xm.vlmacc1 c_im
@@ -124,7 +121,7 @@ FUNCTION_NAME:
         { mv t3, s8                     ; xm.bt len, .L_loop_top                }
     .L_loop_bot:
 
-    { xm.mkmsk bytemask, bytemask       ; xm.brff bytemask, .L_done             }   
+    { xm.mkmsk bytemask, bytemask       ; xm.brff bytemask, .L_done             }
 
     { nop                               ; xm.vldr t3                            }
     { xm.mkmski t3, 32                  ; xm.vlmul0 b_im                        }
@@ -150,7 +147,7 @@ FUNCTION_NAME:
     { nop                               ; xm.vlmacc0 c_re                       }
     xm.vlmacc1 c_re
     xm.vlsat vec_sat
-        xm.vstrpv a_im, bytemask   
+        xm.vstrpv a_im, bytemask
         xm.vstrpv vec_tmp, bytemask
     { nop                               ; xm.vldd vec_tmp                       }
     { nop                               ; xm.vstd vec_tmp                       }

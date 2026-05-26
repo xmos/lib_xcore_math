@@ -7,7 +7,7 @@
 
 #include "../asm_helper.h"
 
-/*  
+/*
 
 Push a sample into the buffer, moving everything 1 index up.
 
@@ -36,7 +36,7 @@ void filter_fir_s16_push_sample_down(
 #define buff_end    s4
 #define buffD       s5
 #define tmp         s8
-    
+
 .text
 .globl FUNCTION_NAME;
 .type FUNCTION_NAME,@function
@@ -52,10 +52,10 @@ FUNCTION_NAME:
     { slli t3, a3, 3                    ; li mask, 28 /*28 samples at a time*/  }
     { xm.mkmsk mask, mask               ; xm.vsetc t3                           }
 
-    // We're going to be moving 28 samples per loop iteration. The last address at which we 
+    // We're going to be moving 28 samples per loop iteration. The last address at which we
     // can move 28 samples is  56 bytes before the end of the buffer. The end of the buffer is
-    // at  buff + 2*length. 
-    
+    // at  buff + 2*length.
+
     { slli tail_start, length, 1        ; li t3, 56                             }
     { add buff_end, buff, tail_start    ; slli mask, mask, 4                    }
     { sub tail_start, buff_end, t3      ; addi _60, t3, 4                       }
@@ -72,8 +72,8 @@ FUNCTION_NAME:
         xm.vlmaccr1 buff
         { xm.sltu tmp, tail_start, t3   ; xm.vstd buffD                         }
             xm.vstrpv buff , mask
-        { add buffD, buffD, _60         ; xm.bt tmp, .L_loop_end                } 
-        { nop                           ; xm.bu .L_loop_top                     }             
+        { add buffD, buffD, _60         ; xm.bt tmp, .L_loop_end                }
+        { nop                           ; xm.bu .L_loop_top                     }
     .L_loop_end:
 
 #undef _60
@@ -88,19 +88,18 @@ FUNCTION_NAME:
     { add t3, t3, a3                    ; nop                                   }
         xm.vstrpv buff, mask
 
-    
+
     .L_skippp:
     { sub length, buff_end, t3          ; nop                                   }
     { li a3, 0                          ; xm.vldr t3                            }
     { xm.mkmsk tmp, length              ; addi buff, t3, -4                     }
-    { nop                               ; xm.vlmaccr0 t3                        }   
-     xm.vlmaccr1 t3            
+    { nop                               ; xm.vlmaccr0 t3                        }
+     xm.vlmaccr1 t3
     { add t3, t3, length                ; nop                                   }
     { addi t3, t3, -2                   ; slli tmp, tmp, 4                      }
         xm.vstrpv buff, tmp
 
         xm.st16 value,  a3(t3)
-        //xm.st16 value,  t3(a3)
 
 .L_done:
         xm.lddsp  s7,s6,0
@@ -109,7 +108,6 @@ FUNCTION_NAME:
     { nop                               ; lw s8, 24                          (sp) }
         xm.retsp (NSTACKWORDS)*4
 
-//.cc_bottom FUNCTION_NAME.function; 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"

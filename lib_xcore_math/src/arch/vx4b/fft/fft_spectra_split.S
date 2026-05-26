@@ -4,7 +4,7 @@
 #if defined(__VX4B__)
 
 
-/*  
+/*
 headroom_t fft_spectra_split(
     complex_s32_t* X,
     const unsigned N);
@@ -101,7 +101,7 @@ FUNCTION_NAME:
 
 
     sh2add X_hi, N, X_lo
-    li t3, 0x0080                                                                     
+    li t3, 0x0080
     { srli i, i, 2                      ; xm.vsetc t3                           }
     la t3, vpu_vec_complex_neg_j
     { nop                               ; xm.vldc t3                            }
@@ -132,9 +132,9 @@ FUNCTION_NAME:
 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
-.resource_list_empty FUNCTION_NAME, "callees"
+.resource_list_add FUNCTION_NAME, "callees", vect_complex_s32_tail_reverse
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
-.L_function_end: 
+.L_function_end:
     .size FUNCTION_NAME, .L_function_end - FUNCTION_NAME
 
 
