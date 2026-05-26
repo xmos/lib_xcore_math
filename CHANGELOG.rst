@@ -14,6 +14,7 @@ UNRELEASED
   * CHANGED: Renamed `f32_unpack` to `f32_unpack_s32`
   * CHANGED: Renamed `xmath/xs3/` header folder to `xmath/vpu`
   * CHANGED: Renamed `XS3_VPU_VREG_*` defines to `VPU_VREG_*`
+  * CHANGED: Renamed `xs3_memcpy` to `vpu_memcpy`
 
 2.4.1
 -----

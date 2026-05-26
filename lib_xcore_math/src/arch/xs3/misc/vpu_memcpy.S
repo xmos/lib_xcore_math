@@ -4,15 +4,15 @@
 #if defined(__XS3A__)
 
 
-/*  
-void xs3_memcpy(
+/*
+void vpu_memcpy(
     void* dst,
     const void* src,
     unsigned bytes);
 */
 
 #define NSTACKWORDS     (0)
-#define FUNCTION_NAME   xs3_memcpy
+#define FUNCTION_NAME   vpu_memcpy
 
 #define a           r0
 #define b           r1
@@ -28,7 +28,7 @@ void xs3_memcpy(
 FUNCTION_NAME:
     dualentsp NSTACKWORDS
   { shr tmp, len, 5               ; zext len, 5                   }
-  { ldc r11, 32                   ; bf tmp, .L_loop_bot           } 
+  { ldc r11, 32                   ; bf tmp, .L_loop_bot           }
   .L_loop_top:
     { add b, b, r11                 ; vldd b[0]                     }
     { sub tmp, tmp, 1               ; vstd a[0]                     }

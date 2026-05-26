@@ -207,8 +207,8 @@ extern "C" {
 /**
  * @brief VPU-based memcpy implementation.
  *
- * Same as standard `memcpy()` except for an extra constraint that both `dst and `src` must be
- * word-aligned addresses.
+ * Same as standard `memcpy()` except for an extra constraint that both `dst` and `src` must be
+ * word-aligned addresses and the `src` is not at the end of RAM.
  *
  * @param[out]  dst   Destination address
  * @param[in]   src   Source address
@@ -216,7 +216,7 @@ extern "C" {
  *
  * @ingroup util_macros
  */
-void xs3_memcpy(
+void vpu_memcpy(
     void* dst,
     const void* src,
     unsigned bytes);
