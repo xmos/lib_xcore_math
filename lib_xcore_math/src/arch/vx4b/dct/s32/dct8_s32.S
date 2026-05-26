@@ -2,7 +2,7 @@
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 #if defined(__VX4B__)
 
-/*  
+/*
 Perform an 8-point forward DCT.
 
 Computed directly by multiplying by the DCT matrix.
@@ -14,7 +14,6 @@ headroom_t dct8_forward(
 */
 
 #define FUNCTION_NAME   dct8_forward
-#define NSTACKWORDS 0
 
 .text
 .global FUNCTION_NAME
@@ -28,7 +27,6 @@ headroom_t dct8_forward(
 
 
 FUNCTION_NAME:
-xm.entsp (NSTACKWORDS)*4
 { li t3, 0                              ; li _32, 32                            }
 { nop                                   ; xm.vsetc t3                           }
 la t3, dct8_matrix
@@ -42,17 +40,17 @@ la t3, dct8_matrix
 { add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
 { add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
 { add t3, t3, _32                       ; xm.vlmaccr0 t3                        }
-xm.vlsat t3 
+xm.vlsat t3
 { nop                                   ; xm.vstr y                             }
 { li a0, 31                             ; xm.vgetc t3                           }
 { xm.zexti t3, 5                        ; nop                                   }
-{ sub a0, a0, t3                        ; xm.retsp (NSTACKWORDS)*4              }
+{ sub a0, a0, t3                        ; ret                                   }
 
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
 .Ltmp0:
-	.size	FUNCTION_NAME, .Ltmp0-FUNCTION_NAME    
+	.size	FUNCTION_NAME, .Ltmp0-FUNCTION_NAME
 
 #endif //defined(__VX4B__)

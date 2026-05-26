@@ -4,15 +4,14 @@
 #if defined(__VX4B__)
 
 
-/*  
-void xs3_memcpy(
+/*
+void vpu_memcpy(
     void* dst,
     const void* src,
     unsigned bytes);
 */
 
-#define NSTACKWORDS     (0)
-#define FUNCTION_NAME   xs3_memcpy
+#define FUNCTION_NAME   vpu_memcpy
 
 #define a           a0
 #define b           a1
@@ -24,9 +23,8 @@ void xs3_memcpy(
 
 
 FUNCTION_NAME:
-    xm.entsp (NSTACKWORDS)*4
   { srli tmp, len, 5                    ; xm.zexti len, 5                       }
-  { li t3, 32                           ; xm.brff tmp, .L_loop_bot              } 
+  { li t3, 32                           ; xm.brff tmp, .L_loop_bot              }
   .L_loop_top:
     { add b, b, t3                      ; xm.vldd b                             }
     { addi tmp, tmp, -1                 ; xm.vstd a                             }
@@ -37,14 +35,14 @@ FUNCTION_NAME:
   { nop                                 ; xm.vldr t3                            }
     xm.vstrpv a, len
 .L_finish:
-    xm.retsp (NSTACKWORDS)*4
+    ret
 
 
 .L_func_end:
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", 0
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_empty FUNCTION_NAME, "callees"
 .resource_list_empty FUNCTION_NAME, "parallel_callees"
