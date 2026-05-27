@@ -1,12 +1,14 @@
 lib_xcore_math change log
 =========================
 
-UNRELEASED
-----------
+3.0.0
+-----
 
+  * ADDED: Initial `vx4b` architecture support
   * ADDED: `s16_ashr`, `s32_ashr` and `s64_ashr` APIs
-  * ADDED: `f32_to_s32`, `float_s32_use_exponent`, `float_s32_to_s32`
-    and `float_s64_to_s32` APIs
+  * ADDED: `f32_to_s32`, `float_s32_use_exponent`, `float_s32_to_s32` and
+    `float_s64_to_s32` APIs
+  * ADDED: `x32_divide_x64_x32` division APIs
   * REMOVED: `xcommon` build system support
   * REMOVED: "Unit tests" section from the library documentation
   * CHANGED: Renamed `float_s32_to_float` to `float_s32_to_f32`
