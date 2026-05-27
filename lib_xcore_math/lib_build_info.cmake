@@ -2,7 +2,7 @@ set(LIB_NAME lib_xcore_math)
 
 include(${CMAKE_CURRENT_LIST_DIR}/build_options.cmake)
 
-set(LIB_VERSION 2.4.1)
+set(LIB_VERSION 3.0.0)
 
 set(LIB_INCLUDES api
                 src/vect)
@@ -144,7 +144,7 @@ foreach(target ${APP_BUILD_TARGETS})
 
     target_compile_options(${target} PRIVATE
       -ffunction-sections   # Put each function in its own .text.<funcname> section
-      -fdata-sections       # Put each data object in its own .data.<varname> section  
+      -fdata-sections       # Put each data object in its own .data.<varname> section
     )
     target_link_options(${target} PRIVATE
       -Wl,--gc-sections     # Linker garbage-collects unreferenced sections
