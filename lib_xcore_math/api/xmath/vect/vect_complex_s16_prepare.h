@@ -24,9 +24,9 @@ extern "C" {
  * for `vect_s32_add()`.
  *
  * This macro is provided as a convenience to developers and to make the code more readable.
- * 
+ *
  * @see vect_s32_add_prepare()
- * 
+ *
  * @ingroup vect_complex_s16_prepare_api
  */
 #define vect_complex_s16_add_prepare vect_s32_add_prepare
@@ -40,9 +40,9 @@ extern "C" {
  * to that for `vect_s32_add()`.
  *
  * This macro is provided as a convenience to developers and to make the code more readable.
- * 
+ *
  * @see vect_s16_add_prepare()
- * 
+ *
  * @ingroup vect_complex_s16_prepare_api
  */
 #define vect_complex_s16_add_scalar_prepare vect_s32_add_prepare
@@ -56,9 +56,9 @@ extern "C" {
  * that for `vect_complex_s16_mul()`.
  *
  * This macro is provided as a convenience to developers and to make the code more readable.
- * 
+ *
  * @see vect_complex_s16_mul_prepare()
- * 
+ *
  * @ingroup vect_complex_s16_prepare_api
  */
 #define vect_complex_s16_conj_mul_prepare vect_complex_s16_mul_prepare
@@ -92,29 +92,29 @@ extern "C" {
  *
  * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating
  * fixed-point arithmetic), the `acc_shr` and `bc_sat` produced by this function can be adjusted
- * according to the following: 
+ * according to the following:
  *
  * @code{.c}
  *      // Presumed to be set somewhere
  *      exponent_t acc_exp, b_exp, c_exp;
  *      headroom_t acc_hr, b_hr, c_hr;
  *      exponent_t desired_exp;
- *      
+ *
  *      ...
- * 
+ *
  *      // Call prepare
  *      right_shift_t acc_shr, bc_sat;
- *      vect_complex_s16_macc_prepare(&acc_exp, &acc_shr, &bc_sat, 
+ *      vect_complex_s16_macc_prepare(&acc_exp, &acc_shr, &bc_sat,
  *                                        acc_exp, b_exp, c_exp,
  *                                        acc_hr, b_hr, c_hr);
- * 
+ *
  *      // Modify results
  *      right_shift_t mant_shr = desired_exp - acc_exp;
  *      acc_exp += mant_shr;
  *      acc_shr += mant_shr;
  *      bc_sat  += mant_shr;
- *      
- *      // acc_shr and bc_sat may now be used in a call to vect_complex_s16_macc() 
+ *
+ *      // acc_shr and bc_sat may now be used in a call to vect_complex_s16_macc()
  * @endcode
  *
  * When applying the above adjustment, the following conditions should be maintained:
@@ -127,7 +127,7 @@ extern "C" {
  *
  *
  * @param[out]  new_acc_exp   Exponent associated with output mantissa vector @vector{a} (after macc)
- * @param[out]  acc_shr       Signed arithmetic right-shift used for @vector{a} in 
+ * @param[out]  acc_shr       Signed arithmetic right-shift used for @vector{a} in
  *                            vect_complex_s16_macc()
  * @param[out]  bc_sat        Unsigned arithmetic right-shift applied to the product of elements
  *                            @math{b_k} and @math{c_k} in vect_complex_s16_macc()
@@ -207,9 +207,9 @@ void vect_complex_s16_macc_prepare(
  * for `vect_complex_s32_mag()`.
  *
  * This macro is provided as a convenience to developers and to make the code more readable.
- * 
+ *
  * @see vect_complex_s32_mag_prepare()
- * 
+ *
  * @ingroup vect_complex_s16_prepare_api
  */
 #define vect_complex_s16_mag_prepare vect_complex_s32_mag_prepare
@@ -239,10 +239,10 @@ void vect_complex_s16_macc_prepare(
  * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If the headroom of
  * @vector{b} or @vector{c} is unknown, they can be obtained by calling vect_complex_s16_headroom().
  * Alternatively, the value `0` can always be safely used (but may result in reduced precision).
- * 
+ *
  * @par Adjusting Output Exponents
  * @parblock
- * 
+ *
  * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating
  * fixed-point arithmetic), the `a_shr` and `c_shr` produced by this function can be adjusted
  * according to the following:
@@ -250,33 +250,33 @@ void vect_complex_s16_macc_prepare(
  *      exponent_t desired_exp = ...; // Value known a priori
  *      right_shift_t new_a_shr = a_shr + (desired_exp - a_exp);
  * \endcode
- * 
+ *
  * When applying the above adjustment, the following conditions should be maintained:
  * * `new_a_shr >= 0`
  *
  * Be aware that using smaller values than strictly necessary for `a_shr` can result in saturation,
  * and using larger values may result in unnecessary underflows or loss of precision.
  * @endparblock
- * 
+ *
  * @par Notes
  * @parblock
- * 
- * * Using the outputs of this function, an output mantissa which would otherwise be `INT16_MIN`
- *   will instead saturate to `-INT16_MAX`. This is due to the symmetric saturation logic employed
- *   by the VPU and is a hardware feature. This is a corner case which is usually unlikely and
- *   results in 1 LSb of error when it occurs.
+ *
+ * * Using the outputs of this function, on XS3 targets an output mantissa which would otherwise be
+ *   `INT16_MIN` will instead saturate to `-INT16_MAX` due to symmetric saturation logic. On VX4
+ *   targets, `INT16_MIN` is representable and no such saturation occurs. See @ref note_vpu_saturation.
+ *   This is a corner case which is usually unlikely and results in 1 LSb of error when it occurs on XS3.
  * @endparblock
- * 
+ *
  * @param[out]  a_exp               Exponent associated with output mantissa vector @vector{a}
  * @param[out]  a_shr               Unsigned arithmetic right-shift for @vector{b} used by vect_complex_s16_mul()
  * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
  * @param[in]   c_exp               Exponent associated with input mantissa vector @vector{c}
  * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
  * @param[in]   c_hr                Headroom of input mantissa vector @vector{c}
- * 
+ *
  * @see vect_complex_s16_conj_mul,
  *      vect_complex_s16_mul
- * 
+ *
  * @ingroup vect_complex_s16_prepare_api
  */
 C_API
@@ -312,10 +312,10 @@ void vect_complex_s16_mul_prepare(
  * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If the headroom of
  * @vector{b} or @vector{c} is unknown, they can be obtained by calling vect_complex_s16_headroom().
  * Alternatively, the value `0` can always be safely used (but may result in reduced precision).
- * 
+ *
  * @par Adjusting Output Exponents
  * @parblock
- * 
+ *
  * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating
  * fixed-point arithmetic), the `a_shr` and `c_shr` produced by this function can be adjusted
  * according to the following:
@@ -323,33 +323,33 @@ void vect_complex_s16_mul_prepare(
  *      exponent_t desired_exp = ...; // Value known a priori
  *      right_shift_t new_a_shr = a_shr + (desired_exp - a_exp);
  * \endcode
- * 
+ *
  * When applying the above adjustment, the following conditions should be maintained:
  * * `new_a_shr >= 0`
  *
  * Be aware that using smaller values than strictly necessary for `a_shr` can result in saturation,
  * and using larger values may result in unnecessary underflows or loss of precision.
  * @endparblock
- * 
+ *
  * @par Notes
  * @parblock
- * 
- * * Using the outputs of this function, an output mantissa which would otherwise be `INT16_MIN`
- *   will instead saturate to `-INT16_MAX`. This is due to the symmetric saturation logic employed
- *   by the VPU and is a hardware feature. This is a corner case which is usually unlikely and
- *   results in 1 LSb of error when it occurs.
+ *
+ * * Using the outputs of this function, on XS3 targets an output mantissa which would otherwise be
+ *   `INT16_MIN` will instead saturate to `-INT16_MAX` due to symmetric saturation logic. On VX4
+ *   targets, `INT16_MIN` is representable and no such saturation occurs. See @ref note_vpu_saturation.
+ *   This is a corner case which is usually unlikely and results in 1 LSb of error when it occurs on XS3.
  * @endparblock
- * 
+ *
  * @param[out]  a_exp               Exponent associated with output mantissa vector @vector{a}
- * @param[out]  a_shr               Unsigned arithmetic right-shift for @vector{a} used by 
+ * @param[out]  a_shr               Unsigned arithmetic right-shift for @vector{a} used by
  *                                  vect_complex_s16_real_mul()
  * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
  * @param[in]   c_exp               Exponent associated with input mantissa vector @vector{c}
  * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
  * @param[in]   c_hr                Headroom of input mantissa vector @vector{c}
- * 
+ *
  * @see vect_complex_s16_real_mul
- * 
+ *
  * @ingroup vect_complex_s16_prepare_api
  */
 C_API
@@ -387,7 +387,7 @@ void vect_complex_s16_real_mul_prepare(
  * This macro is provided as a convenience to developers and to make the code more readable.
  *
  * @see vect_complex_s16_mul_prepare()
- * 
+ *
  * @ingroup vect_complex_s16_prepare_api
  */
 #define vect_complex_s16_scale_prepare vect_complex_s16_mul_prepare
@@ -416,7 +416,7 @@ void vect_complex_s16_real_mul_prepare(
  *
  * @par Adjusting Output Exponents
  * @parblock
- * 
+ *
  * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating
  * fixed-point arithmetic), the `a_shr` produced by this function can be adjusted according to the
  * following:
@@ -428,22 +428,22 @@ void vect_complex_s16_real_mul_prepare(
  *      a_shr = a_shr + (desired_exp - a_exp);
  *      a_exp = desired_exp;
  * \endcode
- * 
+ *
  * When applying the above adjustment, the following condition should be maintained:
  * * `a_shr >= 0`
  *
  * Using larger values than strictly necessary for `a_shr` may result in unnecessary underflows or
  * loss of precision.
  * @endparblock
- * 
+ *
  * @param[out]  a_exp               Output exponent associated with output mantissa vector @vector{a}
- * @param[out]  a_shr               Unsigned arithmetic right-shift for @vector{a} used by 
+ * @param[out]  a_shr               Unsigned arithmetic right-shift for @vector{a} used by
  *                                  vect_complex_s16_squared_mag()
  * @param[in]   b_exp               Exponent associated with input mantissa vector @vector{b}
  * @param[in]   b_hr                Headroom of input mantissa vector @vector{b}
- * 
+ *
  * @see vect_complex_s16_squared_mag()
- * 
+ *
  * @ingroup vect_complex_s16_prepare_api
  */
 C_API

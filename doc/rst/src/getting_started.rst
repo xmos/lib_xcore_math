@@ -214,7 +214,7 @@ product.
 Shifts like those in these two examples are very common in the vector API, as they are the main
 mechanism for managing exponents and headroom.  Whether the shifts are applied to inputs, outputs,
 both, or only one input will depend on a number of factors.  In the case of :c:func:`vect_s32_mul()`
-they are applied to inputs because the XS3 VPU includes a compulsory (hardware) right-shift of 30
+they are applied to inputs because the VPU includes a compulsory (hardware) right-shift of 30
 bits on all products of 32-bit numbers, and so often inputs may need to be *left*-shifted (negative
 shift) in order to avoid underflows.  In the case of :c:func:`vect_s16_mul()`, this is unnecessary
 because no compulsory shift is included in 16-bit multiply-accumulates.

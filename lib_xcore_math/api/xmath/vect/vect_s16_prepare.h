@@ -20,14 +20,14 @@ extern "C" {
 
 /**
  * @brief Obtain the output exponent and shifts required for a call to `vect_s16_add()`.
- * 
+ *
  * The logic for computing the shifts and exponents of `vect_s16_add()` is identical to that for
  * `vect_s32_add()`.
- * 
+ *
  * This macro is provided as a convenience to developers and to make the code more readable.
- * 
+ *
  * @see vect_s32_add_prepare()
- * 
+ *
  * @ingroup vect_s16_prepare_api
  */
 #define vect_s16_add_prepare vect_s32_add_prepare
@@ -35,14 +35,14 @@ extern "C" {
 
 /**
  * @brief Obtain the output exponent and shifts required for a call to `vect_s16_add_scalar()`.
- * 
+ *
  * The logic for computing the shifts and exponents of `vect_s16_add_scalar()` is identical to
  * that for `vect_s32_add()`.
- * 
+ *
  * This macro is provided as a convenience to developers and to make the code more readable.
- * 
+ *
  * @see vect_s32_add_prepare()
- * 
+ *
  * @ingroup vect_s16_prepare_api
  */
 #define vect_s16_add_scalar_prepare vect_s32_add_prepare
@@ -50,7 +50,7 @@ extern "C" {
 
 /**
  * @brief Obtain the output exponent, input shift and modified bounds used by vect_s16_clip().
- * 
+ *
  * This function is used in conjunction with vect_s16_clip() to bound the elements of a 32-bit BFP
  * vector to a specified range.
  *
@@ -73,7 +73,7 @@ extern "C" {
  *
  * `b_hr` is the headroom of @vector{b}. If unknown, it can be obtained using vect_s16_headroom().
  * Alternatively, the value `0` can always be safely used (but may result in reduced precision).
- * 
+ *
  * @param[out]    a_exp               Exponent associated with output mantissa vector @vector{a}
  * @param[out]    b_shr               Signed arithmetic right-shift for @vector{b} used by vect_s32_clip()
  * @param[inout]  lower_bound         Lower bound of clipping range
@@ -81,9 +81,9 @@ extern "C" {
  * @param[in]     b_exp               Exponent associated with input mantissa vector @vector{b}
  * @param[in]     bound_exp           Exponent associated with clipping bounds `lower_bound` and `upper_bound`
  * @param[in]     b_hr                Headroom of input mantissa vector @vector{b}
- * 
+ *
  * @see vect_s16_clip
- * 
+ *
  * @ingroup vect_s16_prepare_api
  */
 C_API
@@ -99,7 +99,7 @@ void vect_s16_clip_prepare(
 
 /**
  * @brief Obtain the output exponent and scaling parameter used by vect_s16_inverse().
- * 
+ *
  * This function is used in conjunction with vect_s16_inverse() to compute the inverse of elements
  * of a 16-bit BFP vector.
  *
@@ -118,15 +118,15 @@ void vect_s16_clip_prepare(
  * `b_exp` is the exponent associated with the input mantissa vector @vector{b}.
  *
  * `length` is the number of elements in @vector{b}.
- * 
+ *
  * @param[out]  a_exp       Exponent of output vector @vector{a}
  * @param[out]  scale       Scale factor to be applied when computing inverse
  * @param[in]   b           Input vector @vector{b}
  * @param[in]   b_exp       Exponent of @vector{b}
  * @param[in]   length      Number of elements in vector @vector{b}
- * 
+ *
  * @see vect_s16_inverse
- * 
+ *
  * @ingroup vect_s16_prepare_api
  */
 C_API
@@ -165,29 +165,29 @@ void vect_s16_inverse_prepare(
  *
  * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating
  * fixed-point arithmetic), the `acc_shr` and `bc_sat` produced by this function can be adjusted
- * according to the following: 
+ * according to the following:
  *
  * @code{.c}
  *      // Presumed to be set somewhere
  *      exponent_t acc_exp, b_exp, c_exp;
  *      headroom_t acc_hr, b_hr, c_hr;
  *      exponent_t desired_exp;
- *      
+ *
  *      ...
- * 
+ *
  *      // Call prepare
  *      right_shift_t acc_shr, bc_sat;
- *      vect_s16_macc_prepare(&acc_exp, &acc_shr, &bc_sat, 
+ *      vect_s16_macc_prepare(&acc_exp, &acc_shr, &bc_sat,
  *                                acc_exp, b_exp, c_exp,
  *                                acc_hr, b_hr, c_hr);
- * 
+ *
  *      // Modify results
  *      right_shift_t mant_shr = desired_exp - acc_exp;
  *      acc_exp += mant_shr;
  *      acc_shr += mant_shr;
  *      bc_sat  += mant_shr;
- *      
- *      // acc_shr and bc_sat may now be used in a call to vect_s16_macc() 
+ *
+ *      // acc_shr and bc_sat may now be used in a call to vect_s16_macc()
  * @endcode
  *
  * When applying the above adjustment, the following conditions should be maintained:
@@ -244,7 +244,7 @@ void vect_s16_macc_prepare(
 
 /**
  * @brief Obtain the output exponent and output shift used by vect_s16_mul().
- * 
+ *
  * This function is used in conjunction with vect_s16_mul() to perform an element-wise
  * multiplication of two 16-bit BFP vectors.
  *
@@ -265,10 +265,10 @@ void vect_s16_macc_prepare(
  * `b_hr` and `c_hr` are the headroom of @vector{b} and @vector{c} respectively. If the headroom of
  * @vector{b} or @vector{c} is unknown, they can be obtained by calling vect_s16_headroom().
  * Alternatively, the value `0` can always be safely used (but may result in reduced precision).
- * 
+ *
  * @par Adjusting Output Exponents
  * @parblock
- * 
+ *
  * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating
  * fixed-point arithmetic), the `a_shr` produced by this function can be adjusted according to the
  * following:
@@ -280,32 +280,32 @@ void vect_s16_macc_prepare(
  *      a_shr = a_shr + (desired_exp - a_exp);
  *      a_exp = desired_exp;
  * \endcode
- * 
+ *
  * When applying the above adjustment, the following conditions should be maintained:
  * * `a_shr >= 0`
- * 
+ *
  * Be aware that using a smaller value than strictly necessary for `a_shr` can result in saturation,
  * and using larger values may result in unnecessary underflows or loss of precision.
  * @endparblock
- * 
+ *
  * @par Notes
  * @parblock
- * 
- * * Using the outputs of this function, an output mantissa which would otherwise be `INT16_MIN`
- *   will instead saturate to `-INT16_MAX`. This is due to the symmetric saturation logic employed
- *   by the VPU and is a hardware feature. This is a corner case which is usually unlikely and
- *   results in 1 LSb of error when it occurs.
+ *
+ * * Using the outputs of this function, on XS3 targets an output mantissa which would otherwise be
+ *   `INT16_MIN` will instead saturate to `-INT16_MAX` due to symmetric saturation logic. On VX4
+ *   targets, `INT16_MIN` is representable and no such saturation occurs. See @ref note_vpu_saturation.
+ *   This is a corner case which is usually unlikely and results in 1 LSb of error when it occurs on XS3.
  * @endparblock
- * 
+ *
  * @param[out]  a_exp       Exponent of output elements of vect_s16_mul()
  * @param[out]  a_shr       Right-shift supplied to vect_s16_mul()
  * @param[in]   b_exp       Exponent associated with @vector{b}
  * @param[in]   c_exp       Exponent associated with @vector{c}
  * @param[in]   b_hr        Headroom of @vector{b}
  * @param[in]   c_hr        Headroom of @vector{c}
- * 
+ *
  * @see vect_s16_mul
- * 
+ *
  * @ingroup vect_s16_prepare_api
  */
 C_API
@@ -320,7 +320,7 @@ void vect_s16_mul_prepare(
 
 /**
  * @brief Obtain the output exponent and output shift used by vect_s16_scale().
- * 
+ *
  * This function is used in conjunction with vect_s16_scale() to perform multiplication of a 16-bit
  * BFP vector @math{\bar{b} \cdot 2^{b\_exp}} by a 16-bit scalar @math{c \cdot 2^{c\_exp}}. The
  * result is another 16-bit BFP vector @math{\bar{a} \cdot 2^{a\_exp}}.
@@ -341,10 +341,10 @@ void vect_s16_mul_prepare(
  * `b_hr` and `c_hr` are the headroom of @vector{b} and @math{c} respectively. If the headroom of
  * @vector{b} or @math{c} are unknown, they can be obtained by calling vect_s16_headroom().
  * Alternatively, the value `0` can always be safely used (but may result in reduced precision).
- * 
+ *
  * @par Adjusting Output Exponents
  * @parblock
- * 
+ *
  * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating
  * fixed-point arithmetic), the `a_shr` produced by this function can be adjusted according to the
  * following:
@@ -356,32 +356,32 @@ void vect_s16_mul_prepare(
  *      a_shr = a_shr + (desired_exp - a_exp);
  *      a_exp = desired_exp;
  * \endcode
- * 
+ *
  * When applying the above adjustment, the following conditions should be maintained:
  * * `a_shr >= 0`
- * 
+ *
  * Be aware that using a smaller value than strictly necessary for `a_shr` can result in saturation,
  * and using larger values may result in unnecessary underflows or loss of precision.
  * @endparblock
- * 
+ *
  * @par Notes
  * @parblock
- * 
- * * Using the outputs of this function, an output mantissa which would otherwise be `INT16_MIN`
- *   will instead saturate to `-INT16_MAX`. This is due to the symmetric saturation logic employed
- *   by the VPU and is a hardware feature. This is a corner case which is usually unlikely and
- *   results in 1 LSb of error when it occurs.
+ *
+ * * Using the outputs of this function, on XS3 targets an output mantissa which would otherwise be
+ *   `INT16_MIN` will instead saturate to `-INT16_MAX` due to symmetric saturation logic. On VX4
+ *   targets, `INT16_MIN` is representable and no such saturation occurs. See @ref note_vpu_saturation.
+ *   This is a corner case which is usually unlikely and results in 1 LSb of error when it occurs on XS3.
  * @endparblock
- * 
+ *
  * @param[out]  a_exp       Exponent of output elements of vect_s16_scale()
  * @param[out]  a_shr       Right-shift supplied to vect_s16_scale()
  * @param[in]   b_exp       Exponent associated with @vector{b}
  * @param[in]   c_exp       Exponent associated with @vector{c}
  * @param[in]   b_hr        Headroom of @vector{b}
  * @param[in]   c_hr        Headroom of @vector{c}
- * 
+ *
  * @see vect_s16_scale
- * 
+ *
  * @ingroup vect_s16_prepare_api
  */
 C_API
@@ -396,7 +396,7 @@ void vect_s16_scale_prepare(
 
 /**
  * @brief Obtain the output exponent and shift parameter used by vect_s16_sqrt().
- * 
+ *
  * This function is used in conjunction withx vect_s16_sqrt() to compute the square root of elements
  * of a 16-bit BFP vector.
  *
@@ -415,10 +415,10 @@ void vect_s16_scale_prepare(
  * `b_hr` is the headroom of @vector{b}. If it is unknown, it can be obtained using
  * vect_s16_headroom(). Alternatively, the value `0` can always be safely used (but may result in
  * reduced precision).
- * 
+ *
  * @par Adjusting Output Exponents
  * @parblock
- * 
+ *
  * If a specific output exponent `desired_exp` is needed for the result (e.g. for emulating
  * fixed-point arithmetic), the `b_shr` produced by this function can be adjusted according to the
  * following:
@@ -430,7 +430,7 @@ void vect_s16_scale_prepare(
  *      b_shr = b_shr + (desired_exp - a_exp);
  *      a_exp = desired_exp;
  * \endcode
- * 
+ *
  * When applying the above adjustment, the following condition should be maintained:
  * * `b_hr + b_shr >= 0`
  *
@@ -441,14 +441,14 @@ void vect_s16_scale_prepare(
  * vect_s16_sqrt()) will be required to achieve the same precision, as the results are computed bit
  * by bit, starting with the most significant bit.
  * @endparblock
- * 
+ *
  * @param[out]  a_exp       Exponent of outputs of vect_s16_sqrt()
  * @param[out]  b_shr       Right-shift to be applied to elements of @vector{b}
  * @param[in]   b_exp       Exponent of vector{b}
  * @param[in]   b_hr        Headroom of vector{b}
- * 
+ *
  * @see vect_s16_sqrt
- * 
+ *
  * @ingroup vect_s16_prepare_api
  */
 C_API
@@ -461,14 +461,14 @@ void vect_s16_sqrt_prepare(
 
 /**
  * @brief Obtain the output exponent and shifts required for a call to `vect_s16_sub()`.
- * 
+ *
  * The logic for computing the shifts and exponents of `vect_s16_sub()` is identical to that for
  * `vect_s32_add()`.
- * 
+ *
  * This macro is provided as a convenience to developers and to make the code more readable.
- * 
+ *
  * @see vect_s32_add_prepare()
- * 
+ *
  * @ingroup vect_s16_prepare_api
  */
 #define vect_s16_sub_prepare vect_s32_add_prepare

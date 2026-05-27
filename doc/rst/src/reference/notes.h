@@ -8,7 +8,7 @@
 // to them.
 
 /**
- * @page note_vector_alignment Note: Vector Alignment
+ * @page note_vector_alignment Note: XS3 Vector Alignment Requirements
  *
  *
  * This library makes use of the XMOS architecture's vector processing unit (VPU). All loads and
@@ -18,8 +18,11 @@
  * In the current version of the API, this leads to the requirement that most API functions
  * require vectors (or the data backing a BFP vector) to begin at word-aligned addresses.
  * Vectors are *not* required, however, to have a size (in bytes) that is a multiple of 4.
+ * Some functions also make use of instructions which require data to be 8-byte-aligned.
  *
- * @par Writing Alignment-safe Code
+ * VX4 architectire does not have any data alignment requirements.
+ *
+ * @par Writing Alignment-safe Code on XS3
  * @parblock
  *
  * The alignment requirement is ultimately always on the data that backs a vector. For the
@@ -64,11 +67,11 @@
 
 
 /**
- * @page note_symmetric_saturation Note: Symmetrically Saturating Arithmetic
+ * @page note_vpu_saturation Note: VPU Saturating Arithmetic
  *
  * With ordinary integer arithmetic the block floating-point logic chooses exponents and operand
- * shifts to prevent integer overflow with worst-case input values. However, the XS3 VPU uses
- * symmetrically saturating integer arithmetic.
+ * shifts to prevent integer overflow with worst-case input values. The XS3 VPU uses
+ * symmetrically saturating integer arithmetic, while VX4 uses asymmetric integer arithmetic.
  *
  * Saturating arithmetic is that where partial results of the applied operation use a bit depth
  * greater than the output bit depth, and values that can't be properly expressed with the output
@@ -76,7 +79,7 @@
  *
  * For example, in ordinary C integer arithmetic, a function which multiplies two 32-bit integers
  * may internally compute the full 64-bit product and then clamp values to the range `(INT32_MIN,
- * INT32_MAX)` before returning a 32-bit result.
+ * INT32_MAX)` before returning a 32-bit result. This would be an example of asymmetric saturation.
  *
  * Symmetrically saturating arithmetic also includes the property that the lower bound of the
  * expressible range is the negative of the upper bound of the expressible range.

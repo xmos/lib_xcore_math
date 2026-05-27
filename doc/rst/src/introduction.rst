@@ -4,7 +4,7 @@ Introduction
 ************
 
 ``lib_xcore_math`` is a library of optimised math functions for taking advantage of the vector
-processing unit (VPU) of the `XMOS` XS3 architecture (i.e `xcore.ai`).
+processing unit (VPU) of the `XMOS` XS3 and VX4 architectures (i.e `xcore.ai`, `xcore-400`).
 Included in the library are functions for block floating-point arithmetic, fast Fourier transforms,
 linear algebra, discrete cosine transforms, linear filtering and more.
 

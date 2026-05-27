@@ -4,16 +4,16 @@
 Library Notes
 #############
 
-Note: Vector Alignment
-======================
+Note: XS3 Vector Alignment Requirements
+=======================================
 
 .. doxygenpage:: note_vector_alignment
 
 
-Note: Symmetrically Saturating Arithmetic
-=========================================
+Note: VPU Saturating Arithmetic
+===============================
 
-.. doxygenpage:: note_symmetric_saturation
+.. doxygenpage:: note_vpu_saturation
 
 
 Note: Spectrum Packing
