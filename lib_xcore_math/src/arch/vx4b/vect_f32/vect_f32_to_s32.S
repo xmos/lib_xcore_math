@@ -58,7 +58,7 @@ FUNC_NAME:
       xm.fsexp t2, s5, mant0
       xm.fmants mant0, mant0
       { sub t3, t3, exp                 ; sub s5, s5, exp                       }
-      { xm.shl mant1, mant1, t3         ; xm.shl mant0, mant0, t3              }
+      { xm.shl mant1, mant1, t3         ; xm.shl mant0, mant0, s5              }
       xm.std  mant0,mant1, len(a)
       { addi len, len, -1               ; xm.bt  len, .L_loop                   }
 .L_loop_end:
