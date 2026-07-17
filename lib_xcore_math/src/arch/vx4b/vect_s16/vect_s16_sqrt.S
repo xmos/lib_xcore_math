@@ -59,7 +59,7 @@ FUNCTION_NAME:
     { addi spare,sp, (STACK_VEC_TMP2)*4 ; nop                                   }
 
     sw a4, (STACK_DEPTH)*4(sp)
-// Set VPU mode to 32-bit
+// Set VPU mode to 16-bit
 // (length << 1) is the length of the vector in bytes.
 { li _32, 32                            ; nop                                   }
 { slli t3, _32, 3                       ; nop                                   }

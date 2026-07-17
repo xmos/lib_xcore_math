@@ -284,15 +284,22 @@ void vect_s16_sqrt_prepare(
 
     *b_shr = -((int)b_hr);
 
+    // Guard against vect_s16_sqrt's digit-recurrence saturating when b_hr==0
+    // (near-full-scale target), which can spuriously return the input unchanged.
+    if(b_hr == 0){
+        *b_shr += 1;
+    }
+
     // sqrt(X * 2^P) = sqrt(X) * sqrt(2^P)
     //               = sqrt(X) * 2^(P/2)
-    // But we can't have fractional exponents, so leave one bit of headroom if b_shr would cause
-    // the exponent to be odd.
+    // But we can't have fractional exponents, so leave one more bit of
+    // headroom if b_shr would cause the exponent to be odd.
     if( ((unsigned)(b_exp + *b_shr)) % 2 == 1){
         *b_shr += 1;
     }
 
-
+    // NOTE: 14 is not VPU_VLMUL16_SHR. The fixed +-0x4000 (2^14) select gets
+    // scaled 2x low by VX4B's native 15-bit VLMUL shift; 14 compensates for that.
     *a_exp = (b_exp + *b_shr - 14) >> 1;
 
 
@@ -522,10 +529,16 @@ void vect_s32_sqrt_prepare(
 
     *b_shr = -((int)b_hr);
 
+    // Guard against vect_s32_sqrt's digit-recurrence saturating when b_hr==0
+    // (near-full-scale target), which can spuriously return the input unchanged.
+    if(b_hr == 0){
+        *b_shr += 1;
+    }
+
     // sqrt(X * 2^P) = sqrt(X) * sqrt(2^P)
     //               = sqrt(X) * 2^(P/2)
-    // But we can't have fractional exponents, so leave one bit of headroom if b_shr would cause
-    // the exponent to be odd.
+    // But we can't have fractional exponents, so leave one more bit of
+    // headroom if b_shr would cause the exponent to be odd.
     if( ((unsigned)(b_exp + *b_shr)) % 2 == 1){
         *b_shr += 1;
     }
