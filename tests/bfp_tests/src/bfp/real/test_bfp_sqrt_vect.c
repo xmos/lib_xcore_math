@@ -73,7 +73,14 @@ TEST(bfp_sqrt, bfp_s16_sqrt)
 
             double diff = exp_val - a_val;
 
-            TEST_ASSERT(  fabs(diff) <= ldexp(2, A.exp) );
+            #if defined(__VX4B__)
+            // we lose a bit of precision on VX4B due to the 15-bit VLMUL shift
+            float tol = 2.7f;
+            #else
+            float tol = 2.0f;
+            #endif
+
+            TEST_ASSERT(  fabs(diff) <= ldexp(tol, A.exp) );
         }
     }
 }

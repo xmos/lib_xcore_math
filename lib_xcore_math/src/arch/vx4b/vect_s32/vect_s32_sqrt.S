@@ -19,7 +19,7 @@ headroom_t vect_s32_sqrt(
 
 
 #define NSTACKVECTS     (3)
-#define NSTACKWORDS     (8+8*(NSTACKVECTS))
+#define NSTACKWORDS     (12+8*(NSTACKVECTS))
 
 #define FUNCTION_NAME   vect_s32_sqrt
 
@@ -31,7 +31,7 @@ headroom_t vect_s32_sqrt(
 // @todo If we had an instruction that set each vR[k] to the value of a register, this wouldn't be needed.
 #define STACK_VEC_POW       (NSTACKWORDS-24-1)
 
-#define STACK_DEPTH     0
+#define STACK_DEPTH     8
 
 #define a           a0
 #define b           a1

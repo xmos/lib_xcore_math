@@ -58,7 +58,7 @@ FUNCTION_NAME:
     std r6, r7, sp[2]
     std r8, r9, sp[3]
 
-// Set VPU mode to 32-bit
+// Set VPU mode to 16-bit
 // (length << 1) is the length of the vector in bytes.
 {   ldc _32, 32                             ;                                           }
 {   shl r11, _32, 3                         ;   stw r10, sp[1]                          }

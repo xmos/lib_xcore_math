@@ -7,6 +7,7 @@
 #include <string.h>
 #include <assert.h>
 #include <stdarg.h>
+#include <math.h>
 
 #include "xmath/xmath.h"
 
@@ -18,6 +19,8 @@
 TEST_GROUP_RUNNER(vect_sqrt) {
   RUN_TEST_CASE(vect_sqrt, vect_s32_sqrt_prepare);
   RUN_TEST_CASE(vect_sqrt, vect_s16_sqrt_prepare);
+  RUN_TEST_CASE(vect_sqrt, vect_s32_sqrt_prepare_saturation);
+  RUN_TEST_CASE(vect_sqrt, vect_s16_sqrt_prepare_saturation);
   RUN_TEST_CASE(vect_sqrt, vect_s16_sqrt_A);
   RUN_TEST_CASE(vect_sqrt, vect_s16_sqrt_B);
   RUN_TEST_CASE(vect_sqrt, vect_s32_sqrt_A);
@@ -61,7 +64,7 @@ TEST(vect_sqrt, vect_s32_sqrt_prepare)
 
     test_vector test_vectors[] = {
         // B{  exp,  hr },      expected{  a_exp,  b_shr },         line
-        {   {  -30,   0 },              {    -30,      0 },     __LINE__    },  //sqrt(1)
+        {   {  -30,   0 },              {    -29,      2 },     __LINE__    },  //sqrt(1)
         {   {  -28,   2 },              {    -30,     -2 },     __LINE__    },  //sqrt(1)
         {   {    0,  26 },              {    -28,     -26},     __LINE__    },  //sqrt(16)
         {   {  -29,   0 },              {    -29,      1 },     __LINE__    },  //sqrt(2)
@@ -102,6 +105,46 @@ TEST(vect_sqrt, vect_s32_sqrt_prepare)
 }
 
 
+TEST(vect_sqrt, vect_s32_sqrt_prepare_saturation)
+{
+    // Regression test: bfp_complex_s32_squared_mag()'s exponent selection can
+    // deliberately drive a headroom-0 element all the way to (or very near)
+    // INT32_MAX. vect_s32_sqrt_prepare() used to leave b_shr such that this
+    // fed straight into vect_s32_sqrt()'s digit-recurrence, whose internal
+    // candidate-squaring then saturates and aliases with the target,
+    // spuriously keeping every remaining bit and returning ~sqrt(2)x too
+    // large a result. This is only visible against a real (double-precision)
+    // reference -- the algorithm's own A^2<=target<(A+1)^2 invariant can
+    // appear satisfied even when wrong, because both sides saturate
+    // together at this exact edge.
+    //
+    // b_exp MUST be even here: with b_hr==0, the (unfixed) b_shr starts at 0,
+    // and the existing odd-exponent parity fixup ("if ((b_exp+b_shr)%2==1)
+    // b_shr+=1") would otherwise add the same +1 bit of headroom by
+    // coincidence, masking the bug this test is meant to catch.
+    static const int32_t WORD_ALIGNED values[] = { INT32_MAX, INT32_MAX - 1, 0x7FFFFFF0, 0x40000001 };
+    const exponent_t b_exp = -30;
+
+    for(unsigned v = 0; v < sizeof(values)/sizeof(values[0]); v++){
+        int32_t WORD_ALIGNED B = values[v];
+        const headroom_t b_hr = vect_s32_headroom(&B, 1);
+        TEST_ASSERT_EQUAL(0, b_hr);
+
+        exponent_t a_exp;
+        right_shift_t b_shr;
+        vect_s32_sqrt_prepare(&a_exp, &b_shr, b_exp, b_hr);
+
+        int32_t WORD_ALIGNED A;
+        vect_s32_sqrt(&A, &B, 1, b_shr, VECT_SQRT_S32_MAX_DEPTH);
+
+        double expected = sqrt(ldexp((double) B, b_exp));
+        double actual = ldexp((double) A, a_exp);
+
+        TEST_ASSERT( fabs(expected - actual) <= ldexp(0.9, a_exp) );
+    }
+}
+
+
 TEST(vect_sqrt, vect_s16_sqrt_prepare)
 {
 
@@ -121,7 +164,7 @@ TEST(vect_sqrt, vect_s16_sqrt_prepare)
 
     test_vector test_vectors[] = {
         // B{  exp,  hr },      expected{  a_exp,  b_shr },         line
-        {   {  -14,   0 },              {    -14,      0 },     __LINE__    },  //sqrt(1)
+        {   {  -14,   0 },              {    -13,      2 },     __LINE__    },  //sqrt(1)
         {   {  -12,   2 },              {    -14,     -2 },     __LINE__    },  //sqrt(1)
         {   {    0,  10 },              {    -12,     -10},     __LINE__    },  //sqrt(16)
         {   {  -13,   0 },              {    -13,      1 },     __LINE__    },  //sqrt(2)
@@ -169,6 +212,36 @@ TEST(vect_sqrt, vect_s16_sqrt_prepare)
         TEST_ASSERT_LESS_THAN_MESSAGE(2, a_hr, msg_buff);
     }
 
+}
+
+
+TEST(vect_sqrt, vect_s16_sqrt_prepare_saturation)
+{
+    // s16 counterpart of vect_s32_sqrt_prepare_saturation --
+    // see that test for the full explanation
+    
+    // b_exp must be even (otherwise the existing odd-exponent parity fixup coincidentally
+    // reserves the same 1 bit of headroom and masks the bug).
+    static const int16_t WORD_ALIGNED values[] = { INT16_MAX, INT16_MAX - 1, 0x7FF0, 0x4001 };
+    const exponent_t b_exp = -14;
+
+    for(unsigned v = 0; v < sizeof(values)/sizeof(values[0]); v++){
+        int16_t WORD_ALIGNED B  = values[v];
+        const headroom_t b_hr = vect_s16_headroom(&B, 1);
+        TEST_ASSERT_EQUAL(0, b_hr);
+
+        exponent_t a_exp;
+        right_shift_t b_shr;
+        vect_s16_sqrt_prepare(&a_exp, &b_shr, b_exp, b_hr);
+
+        int16_t WORD_ALIGNED A;
+        vect_s16_sqrt(&A, &B, 1, b_shr, VECT_SQRT_S16_MAX_DEPTH);
+
+        double expected = sqrt(ldexp((double) B, b_exp));
+        double actual = ldexp((double) A, a_exp);
+
+        TEST_ASSERT( fabs(expected - actual) <= ldexp(1.1, a_exp) );
+    }
 }
 
 
