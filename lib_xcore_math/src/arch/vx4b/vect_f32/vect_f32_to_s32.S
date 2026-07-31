@@ -29,7 +29,6 @@
 
 #define mant1     s2
 #define mant0     s3
-#define tmp       s4
 
 
 .p2align 4
@@ -39,38 +38,30 @@ FUNC_NAME:
     xm.stdsp  s5,s4,8
 
     //handle tail first
-  { srli t3, len, 1                     ; li tmp, 23                            }
-  { xm.zexti len, 1                     ; add exp, exp, tmp                     }
-  { mv len, t3                          ; xm.brff len, .L_pre_loop              }
+  { srli mant1, len, 1                  ; li t3, 23                            }
+  { xm.zexti len, 1                     ; add exp, exp, t3                     }
+  { mv len, mant1                       ; xm.brff len, .L_pre_loop              }
     xm.ldd  mant0,mant1, len(b)
-    xm.fsexp t3, tmp, mant0
-    xm.fmant mant0, mant0
-  { sub tmp, tmp, exp                   ; xm.brff t3, .L_tail_pos               }
-  { xm.neg mant0, mant0                 ; nop                                   }
-.L_tail_pos:
-  { xm.shl mant0, mant0, tmp            ; xm.shl t3, len, 1                     }
-    xm.stw mant0, t3(a)
+    xm.fsexp t2, t3, mant0
+    xm.fmants mant0, mant0
+    sub t3, t3, exp
+  { xm.shl mant0, mant0, t3             ; xm.shl mant1, len, 1                     }
+    xm.stw mant0, mant1(a)
 
 .L_pre_loop:
   { addi len, len, -1                   ; xm.brff len, .L_loop_end              }
 
-  .L_loop:
+.L_loop:
       xm.ldd  mant0,mant1, len(b)
-      xm.fsexp t3, tmp, mant1
-      xm.fmant mant1, mant1
-    { sub tmp, tmp, exp                 ; xm.brff t3, .L_not3                   }
-      xm.neg mant1, mant1
-    .L_not3:
-        xm.shl mant1, mant1, tmp
-        xm.fsexp t3, tmp, mant0
-        xm.fmant mant0, mant0
-      { sub tmp, tmp, exp               ; xm.brff t3, .L_not4                   }
-        xm.neg mant0, mant0
-    .L_not4:
-        xm.shl mant0, mant0, tmp
-        xm.std  mant0,mant1, len(a)
+      xm.fsexp t2, t3, mant1
+      xm.fmants mant1, mant1
+      xm.fsexp t2, s5, mant0
+      xm.fmants mant0, mant0
+      { sub t3, t3, exp                 ; sub s5, s5, exp                       }
+      { xm.shl mant1, mant1, t3         ; xm.shl mant0, mant0, s5              }
+      xm.std  mant0,mant1, len(a)
       { addi len, len, -1               ; xm.bt  len, .L_loop                   }
-  .L_loop_end:
+.L_loop_end:
 
 
       xm.lddsp  s3,s2,0
