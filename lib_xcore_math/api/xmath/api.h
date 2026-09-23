@@ -23,7 +23,7 @@
 
 /// Many API functions require word or double word alignment
 #ifndef ALIGNMENT
-#  ifdef __xcore__
+#  if defined(__xcore__) || defined(__riscv_xxcore)
 #    define ALIGNMENT(N)  __attribute__((aligned (N)))
 #  else
 #    define ALIGNMENT(N)
