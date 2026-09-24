@@ -124,6 +124,11 @@ TEST(vect_dot, vect_s16_dot)
             C[i] = pseudo_rand_int16(&seed) >> C_hr;
 
             expected += ((int32_t)B[i]) * C[i];
+#if defined(__VX4B__)
+            // The VX4B 16-bit MAC rounds an odd product down to even.
+            if((B[i] & 1) && (C[i] & 1))
+                expected--;
+#endif
         }
 
         int64_t result = vect_s16_dot(B, C, len);
@@ -134,11 +139,7 @@ TEST(vect_dot, vect_s16_dot)
         // printf("Got:      %lld     (%012llX)\n", result,   (uint64_t) result);
         // printf("============\n");
 
-#if defined(__VX4B__)
-        TEST_ASSERT_INT64_WITHIN(128, expected, result);
-#else
         TEST_ASSERT(expected == result);
-#endif
     }
 }
 #undef MAX_LEN
@@ -213,4 +214,3 @@ TEST(vect_dot, vect_s32_dot_basic)
     }
 }
 #undef MAX_LEN
-

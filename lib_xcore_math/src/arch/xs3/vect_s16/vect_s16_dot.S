@@ -81,12 +81,18 @@ FUNCTION_NAME:
 
     .L_get_res:
 
+    // vD = 0, vR = acc_low
     {   ldaw r11, sp[STACK_ACC_LOW]             ;   vclrdr                                  }
     {                                           ;   vldr r11[0]                             }
+
+    // sum(vD:vR) -> hi:lo, lo -> r2, hi -> vec_tmp
     {   ldaw r11, sp[STACK_VEC_TMP]             ;   vadddr                                  }
     {                                           ;   vstr r11[0]                             }
     {                                           ;   ldw r2, r11[0]                          }
     {   ldaw r11, sp[STACK_ACC_MID]             ;   vstd r11[0]                             }
+
+    // vD = acc_high, vR = acc_mid
+    // sum(vD:vR += vec_tmp * ones) -> hi:lo, lo -> r0, hi -> r1
     {   ldaw r11, sp[STACK_ACC_HIGH]            ;   vldr r11[0]                             }
     {   ldaw r11, sp[STACK_VEC_TMP]             ;   vldd r11[0]                             }
     {                                           ;   vlmacc r11[0]                           }
