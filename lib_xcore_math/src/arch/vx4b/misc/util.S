@@ -20,11 +20,10 @@ void f32_unpack_s32(
 #define mant_out    a0
 #define exp_out     a1
 #define input       a2
-#define sign        a3
 #define exp         t3
 
 FUNCTION_NAME:
-    xm.fsexp sign, exp, input
+    xm.fsexp x0, exp, input
     xm.fmants input, input
 
 #undef input
@@ -49,7 +48,6 @@ FUNCTION_NAME:
 #undef exp_out
 #undef mant
 #undef exp
-#undef sign
 
 
 

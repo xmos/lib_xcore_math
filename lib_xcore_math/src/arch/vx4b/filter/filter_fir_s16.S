@@ -93,17 +93,17 @@ FUNCTION_NAME:
     { mv t3, buff                       ; xm.vstr a2                            }
     { addi t3,sp, (STACK_VEC_TMP)*4     ; xm.vldr t3                            }
         xm.vstrpv t3, tmpA
-    { li tmpA, 0                        ; lw a2,(FILT_SHIFT)*4                  ( filter) }
+    { nop                               ; lw a2,(FILT_SHIFT)*4                  ( filter) }
     { addi t3,sp, (STACK_VEC_VR)*4      ; xm.vldc t3                            }
     { nop                               ; xm.vldr t3                            }
     { nop                               ; xm.vlmaccr0 coef                      }
     xm.vlmaccr1 coef
 
-    xm.st16 a2, tmpA(t3)
+    sh a2, 0(t3)
 
     xm.vlsat t3
     { nop                               ; xm.vstr t3                            }
-    xm.ld16s a0, tmpA(t3)
+    lh a0, 0(t3)
 .L_done:
     { nop                               ; lw s8, 24                          (sp) }
         xm.lddsp  s7,s6,0
@@ -123,6 +123,5 @@ FUNCTION_NAME:
 
 
 #endif //defined(__VX4B__)
-
 
 
