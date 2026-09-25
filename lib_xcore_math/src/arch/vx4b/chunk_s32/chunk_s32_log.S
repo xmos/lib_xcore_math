@@ -98,8 +98,8 @@ la t3, vpu_vec_0x20000000
 xm.vlashr a, tmpA
 { xm.ldap t3, .L_ln_2                   ; xm.vladd t3                           }
 { nop                                   ; xm.vlmul0 t3                          }
-{ mv t3, vec_x                          ; xm.vstr a                             }
-{ nop                                   ; xm.vldr t3                            }
+{ nop                                   ; xm.vstr a                             }
+  xm.vldr vec_x
 la t3, vpu_vec_0x00000002
 xm.vlsat t3
 la t3, vpu_vec_neg_0x40000000
@@ -166,6 +166,5 @@ xm.retsp (NSTACKWORDS)*4
 .size FUNCTION_NAME, .L_func_end - FUNCTION_NAME
 
 #endif //defined(__VX4B__)
-
 
 
