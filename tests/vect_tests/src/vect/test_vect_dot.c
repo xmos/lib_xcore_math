@@ -18,6 +18,7 @@
 TEST_GROUP_RUNNER(vect_dot) {
   RUN_TEST_CASE(vect_dot, vect_s32_dot_prepare);
   RUN_TEST_CASE(vect_dot, vect_s16_dot);
+  RUN_TEST_CASE(vect_dot, vect_s16_dot_long);
   RUN_TEST_CASE(vect_dot, vect_s32_dot_basic);
 }
 
@@ -144,6 +145,53 @@ TEST(vect_dot, vect_s16_dot)
 }
 #undef MAX_LEN
 #undef REPS
+
+
+
+// Test a dot product with a result large enough for the inner product
+// to reach about 2^42 in magnitude, to test the high/medium/low accumulators
+// 2**42 = (INT16_MAX) ** 2 * (2**12), so we need > 4096 elements
+#define LONG_LEN    (4096 + 37)
+
+// inputs b[] and c[] are alternating int16 min/max values, so can share
+// the buffer with a two-element offset for c[].
+static int16_t WORD_ALIGNED long_buff[LONG_LEN + 2 + 16];
+
+/**
+ * Inner products large enough that every lane's carry plane is non-zero and the
+ * 16 lanes sum to well over 32 bits, in both signs.
+ */
+TEST(vect_dot, vect_s16_dot_long)
+{
+    // INT16_MIN, INT16_MIN, INT16_MAX, INT16_MAX, ...
+    for(unsigned int i = 0; i < sizeof(long_buff)/sizeof(long_buff[0]); i++)
+        long_buff[i] = (i & 2)? INT16_MAX : INT16_MIN;
+
+    // An offset of 0 squares each element; an offset of 2 pairs every INT16_MIN
+    // with an INT16_MAX, for the largest negative result.
+    for(unsigned int offset = 0; offset <= 2; offset += 2){
+        setExtraInfo_R(offset);
+
+        const int16_t* b = &long_buff[0];
+        const int16_t* c = &long_buff[offset];
+
+        int64_t expected = 0;
+
+        for(unsigned int i = 0; i < LONG_LEN; i++){
+            expected += ((int32_t)b[i]) * c[i];
+#if defined(__VX4B__)
+            // The VX4B 16-bit MAC rounds an odd product down to even.
+            if((b[i] & 1) && (c[i] & 1))
+                expected--;
+#endif
+        }
+
+        int64_t result = vect_s16_dot(b, c, LONG_LEN);
+
+        TEST_ASSERT_EQUAL_INT64(expected, result);
+    }
+}
+#undef LONG_LEN
 
 
 #define MAX_LEN     40
