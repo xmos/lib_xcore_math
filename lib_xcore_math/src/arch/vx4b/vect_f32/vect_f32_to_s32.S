@@ -43,11 +43,9 @@ FUNC_NAME:
   { xm.zexti len, 1                     ; add exp, exp, tmp                     }
   { mv len, t3                          ; xm.brff len, .L_pre_loop              }
     xm.ldd  mant0,mant1, len(b)
-    xm.fsexp t3, tmp, mant0
-    xm.fmant mant0, mant0
-  { sub tmp, tmp, exp                   ; xm.brff t3, .L_tail_pos               }
-  { xm.neg mant0, mant0                 ; nop                                   }
-.L_tail_pos:
+    xm.fsexp x0, tmp, mant0
+    xm.fmants mant0, mant0
+    sub tmp, tmp, exp
   { xm.shl mant0, mant0, tmp            ; xm.shl t3, len, 1                     }
     xm.stw mant0, t3(a)
 
@@ -56,17 +54,13 @@ FUNC_NAME:
 
   .L_loop:
       xm.ldd  mant0,mant1, len(b)
-      xm.fsexp t3, tmp, mant1
-      xm.fmant mant1, mant1
-    { sub tmp, tmp, exp                 ; xm.brff t3, .L_not3                   }
-      xm.neg mant1, mant1
-    .L_not3:
+      xm.fsexp x0, tmp, mant1
+      xm.fmants mant1, mant1
+      sub tmp, tmp, exp
         xm.shl mant1, mant1, tmp
-        xm.fsexp t3, tmp, mant0
-        xm.fmant mant0, mant0
-      { sub tmp, tmp, exp               ; xm.brff t3, .L_not4                   }
-        xm.neg mant0, mant0
-    .L_not4:
+        xm.fsexp x0, tmp, mant0
+        xm.fmants mant0, mant0
+        sub tmp, tmp, exp
         xm.shl mant0, mant0, tmp
         xm.std  mant0,mant1, len(a)
       { addi len, len, -1               ; xm.bt  len, .L_loop                   }

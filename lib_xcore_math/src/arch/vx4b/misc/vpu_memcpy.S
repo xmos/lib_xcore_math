@@ -31,8 +31,7 @@ FUNCTION_NAME:
     { add a, a, t3                      ; xm.bt tmp, .L_loop_top                }
   .L_loop_bot:
   { xm.mkmsk len, len                   ; xm.brff len, .L_finish                }
-  { mv t3, b                            ; nop                                   }
-  { nop                                 ; xm.vldr t3                            }
+    xm.vldr b
     xm.vstrpv a, len
 .L_finish:
     ret

@@ -17,6 +17,7 @@
 
 TEST_GROUP_RUNNER(vect_s32_to_vect_f32) {
   RUN_TEST_CASE(vect_s32_to_vect_f32, vect_s32_to_vect_f32);
+  RUN_TEST_CASE(vect_s32_to_vect_f32, signed_boundaries);
 }
 
 TEST_GROUP(vect_s32_to_vect_f32);
@@ -67,4 +68,18 @@ TEST(vect_s32_to_vect_f32, vect_s32_to_vect_f32)
   }
 }
 
+TEST(vect_s32_to_vect_f32, signed_boundaries)
+{
+  DWORD_ALIGNED
+  const int32_t input[] = { 0, -1, 1, INT32_MIN, INT32_MAX, -2, 2, INT32_MIN + 1 };
+  DWORD_ALIGNED
+  float output[sizeof(input) / sizeof(input[0])];
+  const unsigned lengths[] = { 1, 2, 3, 4, 5, 8 };
 
+  for (unsigned n = 0; n < sizeof(lengths) / sizeof(lengths[0]); ++n) {
+    const unsigned length = lengths[n];
+    vect_s32_to_vect_f32(output, input, length, -3);
+    for (unsigned k = 0; k < length; ++k)
+      TEST_ASSERT_EQUAL_FLOAT(ldexpf((float) input[k], -3), output[k]);
+  }
+}
