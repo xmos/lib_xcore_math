@@ -366,8 +366,8 @@ headroom_t vect_s16_clip(
  * @parblock
  * 
  * The sum @math{a} is accumulated simultaneously into 16 48-bit accumulators which are summed
- * together at the final step. So long as `length` is less than roughly 2 million, no overflow or
- * saturation of the resulting sum is possible. 
+ * together at the final step. On XS3, lengths below roughly 2 million avoid saturation. On VX4B,
+ * the limit is 1048560 elements, and each product of two odd inputs is rounded down by one.
  * @endparblock
  * 
  * @param[in] b             Input vector @vector{b}
@@ -1481,4 +1481,3 @@ void vect_s16_extract_low_byte(
 #ifdef __XC__
 }   //extern "C"
 #endif
-
