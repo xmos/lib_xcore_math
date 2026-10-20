@@ -36,8 +36,6 @@ int16_t filter_fir_s16(
 #define STACK_VEC_VR    (NSTACKWORDS-16-1)
 #define STACK_VEC_TMP   (NSTACKWORDS-24-1)
 
-#define STACK_FILTER    (8)
-
 #define buff        a0
 #define length      a1
 #define sample      a2
@@ -45,8 +43,7 @@ int16_t filter_fir_s16(
 #define _32         s2
 #define coef        s3
 
-
-#define filter      s8
+#define filter      s6
 
 .text
 .globl FUNCTION_NAME;
@@ -56,14 +53,13 @@ int16_t filter_fir_s16(
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
 
-    xm.stdsp  s3,s2,8
-    xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,0
+    xm.stdsp s2, s3, 0
+    xm.stdsp s4, s5, 8
 
-    { addi s6,sp, (STACK_VEC_TMP2)*4   ; nop                                   }
-    addi s7, s6, (-30)
+    { addi s4,sp, (STACK_VEC_TMP2)*4   ; nop                                   }
+    add s5, s4, (-30)
 
-    { li _32, 32                        ; sw s8, 24                          (sp) }
+    { li _32, 32                        ; sw s6, 16                          (sp) }
     { mv filter, a0                     ; mv sample, a1                         }
     { nop                               ; lw length,(FILT_N)*4              ( filter) }
     { nop                               ; lw buff,(FILT_STATE)*4            ( filter) }
@@ -81,17 +77,17 @@ FUNCTION_NAME:
         { add buff, buff, _32           ; xm.vldc buff                          }
         { addi length, length, -1       ; xm.vlmaccr0 coef                      }
         xm.vlmaccr1 coef
-        { nop                           ; xm.vstd s6                            }
-        { nop                           ; xm.vldd s7                            }
-        { nop                           ; xm.vstr s6                            }
-        { nop                           ; xm.vldr s7                            }
+        { nop                           ; xm.vstd s4                            }
+        { nop                           ; xm.vldd s5                            }
+        { nop                           ; xm.vstr s4                            }
+        { nop                           ; xm.vldr s5                            }
 
         { add coef, coef, _32           ; xm.bt length, .L_loop_top             }
     .L_loop_end:
 
     { addi a2,sp, (STACK_VEC_VR)*4      ; xm.mkmsk tmpA, tmpA                   }
-    { mv t3, buff                       ; xm.vstr a2                            }
-    { addi t3,sp, (STACK_VEC_TMP)*4     ; xm.vldr t3                            }
+    { nop                               ; xm.vstr a2                            }
+    { addi t3,sp, (STACK_VEC_TMP)*4     ; xm.vldr buff                          }
         xm.vstrpv t3, tmpA
     { nop                               ; lw a2,(FILT_SHIFT)*4                  ( filter) }
     { addi t3,sp, (STACK_VEC_VR)*4      ; xm.vldc t3                            }
@@ -105,10 +101,10 @@ FUNCTION_NAME:
     { nop                               ; xm.vstr t3                            }
     lh a0, 0(t3)
 .L_done:
-    { nop                               ; lw s8, 24                          (sp) }
-        xm.lddsp  s7,s6,0
-        xm.lddsp  s5,s4,16
-        xm.lddsp  s3,s2,8
+    { nop                               ; lw s6, 16                          (sp) }
+
+        xm.lddsp s2, s3, 0
+        xm.lddsp s4, s5, 8
         xm.retsp (NSTACKWORDS)*4
 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
