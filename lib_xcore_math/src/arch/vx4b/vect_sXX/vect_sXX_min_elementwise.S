@@ -6,7 +6,7 @@
 
 #include "../asm_helper.h"
 
-#define NSTACKWORDS     (8+8+4)
+#define NSTACKWORDS     (8+4)
 
 #define len         a3
 
@@ -29,7 +29,7 @@ FUNC_NAME:
   { slli t3, len, SIZEOF_LOG2_S32       ; xm.vsetc t3                           }
   { xm.zexti t3, 5                      ; srli len, len, EPV_LOG2_S32           }
     call vect_sXX_min_elementwise
-  { li t3, 31                           ; nop                                   }
+    li t3, 31
   { sub a0, t3, a0                      ; xm.retsp (NSTACKWORDS)*4              }
 .L_end_s32:
 
@@ -60,7 +60,7 @@ FUNC_NAME:
   { slli t3, len, SIZEOF_LOG2_S16       ; xm.vsetc t3                           }
   { xm.zexti t3, 5                      ; srli len, len, EPV_LOG2_S16           }
     call vect_sXX_min_elementwise
-  { li t3, 15                           ; nop                                   }
+    li t3, 15
   { sub a0, t3, a0                      ; xm.retsp (NSTACKWORDS)*4              }
 .L_end_s16:
 
@@ -91,7 +91,7 @@ FUNC_NAME:
   { mv t3, len                          ; xm.vsetc t3                           }
   { xm.zexti t3, 5                      ; srli len, len, EPV_LOG2_S8            }
     call vect_sXX_min_elementwise
-  { li t3, 7                            ; nop                                   }
+    li t3, 7
   { sub a0, t3, a0                      ; xm.retsp (NSTACKWORDS)*4              }
 .L_end_s8:
 
@@ -108,20 +108,19 @@ FUNC_NAME:
 
 #undef len
 
-#define STACK_VEC_TMP   (NSTACKWORDS-8-4)
-#define STACK_BYTEMASK  6
+#define STACK_VEC_TMP   (NSTACKWORDS-8-1)
+#define STACK_BYTEMASK  2
 
 #define a           a0 
 #define b           a1 
 #define c           a2
 #define len         a3
-#define shr_b       s2
-#define shr_c       s3
-#define _32         s4
-#define tmp_vec     s5
+#define _32         s2
+#define tmp_vec     s3
 #define bytemask    len
 
-
+#define shr_b       a4
+#define shr_c       a5
 
 /**
  * WARNING: This does _NOT_ use the standard ABI. It assumes t3 will contain
@@ -129,17 +128,13 @@ FUNC_NAME:
  */
 
 vect_sXX_min_elementwise:
-    xm.stdsp  s3,s2,8
-    xm.stdsp  s5,s4,16
+    xm.stdsp s2, s3, 0
 
   { li _32, 32                          ; xm.vclrdr                             }
-  mv shr_c, a5
-  { xm.mkmsk t3, t3                     ; nop                                   }
-  mv shr_b, a4
-  { addi tmp_vec,sp, (STACK_VEC_TMP)*4  ; nop                                   }
-  { xm.mkmski t3, 32                    ; sw t3, (STACK_BYTEMASK)*4             (sp) }
-  { nop                                 ; xm.brff len, .L_loop_bot              }
-  { nop                                 ; xm.bu .L_loop_top                     }
+  { xm.mkmsk t3, t3                     ; xm.ldawsp tmp_vec, STACK_VEC_TMP * 4  }
+  { xm.mkmsk t3, 32                     ; sw t3, (STACK_BYTEMASK)*4             (sp) }
+    xm.brff len, .L_loop_bot
+    xm.bu .L_loop_top
 
   // Deal with main vector body
 .p2align 4
@@ -156,7 +151,7 @@ vect_sXX_min_elementwise:
     { add c, c, _32                     ; xm.vpos                               }
     { add b, b, _32                     ; xm.vlsub tmp_vec                      }
     { add a, a, _32                     ; xm.vstr a                             }
-    { nop                               ; xm.bt len, .L_loop_top                }
+      xm.bt len, .L_loop_top
 .L_loop_bot:
 
     lw bytemask, (STACK_BYTEMASK)*4(sp)
@@ -167,21 +162,18 @@ vect_sXX_min_elementwise:
     xm.vstrpv a, bytemask
     xm.vlsub tmp_vec
     xm.vpos
-    mv t3, tmp_vec
     xm.vlsub tmp_vec
     xm.vstd tmp_vec
     xm.vstrpv tmp_vec, bytemask
-    xm.vldr t3
+    xm.vldr tmp_vec
     xm.vstr tmp_vec
     xm.vstrpv a, bytemask
 
 .L_finish:
-    xm.lddsp  s3,s2,8
-    xm.lddsp  s5,s4,16
+    xm.lddsp s2, s3, 0
     xm.vgetc t3
     xm.zexti t3, 5
-    mv a0, t3
-    ret 
+  { mv a0, t3                         ; ret                                   }
 
 .resource_const vect_sXX_min_elementwise, "stack_frame_bytes", 0
 .resource_list_empty vect_sXX_min_elementwise, "tail_callees"
@@ -190,6 +182,5 @@ vect_sXX_min_elementwise:
 .size vect_sXX_min_elementwise, . - vect_sXX_min_elementwise
 
 #endif //defined(__VX4B__)
-
 
 

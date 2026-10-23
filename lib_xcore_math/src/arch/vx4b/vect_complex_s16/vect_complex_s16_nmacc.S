@@ -25,15 +25,13 @@ headroom_t vect_complex_s16_nmacc(
 .text
 .p2align 5
 
-#define NSTACKVECS      (4)
-#define NSTACKWORDS     (12+8*(NSTACKVECS))
+#define NSTACKVECS      (2)
+#define NSTACKWORDS     (8+8*(NSTACKVECS))
 
 #define STACK_SAT       (NSTACKWORDS)
 
 #define STACK_VEC_TMP   (NSTACKWORDS-8-1)
 #define STACK_VEC_SAT   (NSTACKWORDS-16-1)
-
-#define STACK_BYTEMASK  8
 
 #define FUNCTION_NAME vect_complex_s16_nmacc
     
@@ -45,9 +43,9 @@ headroom_t vect_complex_s16_nmacc(
 #define c_im        s3
 #define len         s4
 #define vec_tmp     s5
-#define vec_sat     s6
-#define bytemask    s7
-#define acc_shr     s7
+
+#define vec_sat     a6
+#define acc_shr     a7
 
 
 /*
@@ -75,48 +73,45 @@ headroom_t vect_complex_s16_nmacc(
 */
 
 
-.L_neg_ones:
-    .short -0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000,-0x4000
-
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
-    xm.stdsp  s3,s2,8
-    xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,0
+    xm.stdsp s2, s3, 0
+    xm.stdsp s4, s5, 8
 
-    { addi t3,sp, (STACK_VEC_SAT)*4     ; lw s2, (STACK_SAT)*4                   (sp) }
-    { slli s3, s2, 16                   ; xm.zexti s2, 16                       }
-    { or s2, s2, s3                     ; sw s8, 24                          (sp) }
-        xm.stdi  s2,s2, 0(t3)
-        xm.stdi  s2,s2, 8(t3)
-        xm.stdi  s2,s2, 16(t3)
-        xm.stdi  s2,s2, 24(t3)
-    mv bytemask, a6
-    { li t3, 32                         ; nop                                   }
-    mv c_re, a4
-    { srli len, bytemask, 4             ; nop                                   }
-    mv c_im, a5
-    { xm.zexti bytemask, 4              ; nop                                   }
-    { slli bytemask, bytemask, SIZEOF_LOG2_S16 ; slli t3, t3, 3                        }
-    { nop                               ; sw bytemask, (STACK_BYTEMASK)*4        (sp) }
-    mv acc_shr, a7
-    { nop                               ; nop                                   }
-    { addi vec_tmp,sp, (STACK_VEC_TMP)*4 ; xm.vsetc t3                           }
+    // move bytemask to compute it later
+    mv s3, a6
+
+    { addi t3,sp, (STACK_VEC_SAT)*4     ; xm.ldwsp s2, (STACK_SAT)*4            }
+    mv vec_sat, t3
+    { slli s4, s2, 16                   ; xm.zexti s2, 16                       }
+    { or s2, s2, s4                     ; xm.stwsp s6, 16                       }
+    xm.stdi  s2,s2, 0(t3)
+    xm.stdi  s2,s2, 8(t3)
+    xm.stdi  s2,s2, 16(t3)
+    xm.stdi  s2,s2, 24(t3)
+
     la t3, vpu_vec_0x8000
-    { mv s8, t3                         ; xm.brff len, .L_loop_bot              }
+    { li t3, 32                         ; mv s6, t3                             }
+    { srl len, s3, 4                    ; xm.zext s3, 4                         }
+    { sll s3, s3, SIZEOF_LOG2_S16       ; sll t3, t3, 3                         }
+    { add vec_tmp,sp, (STACK_VEC_TMP)*4 ; xm.vsetc t3                           }
+
+    mv c_re, a4
+    mv a4, s3
+    mv c_im, a5
+
+    { xm.mkmsk t3, 32                   ; xm.brff len, .L_loop_bot              }
 
     .L_loop_top:
-        { xm.mkmski t3, 32              ; nop                                   }
             xm.vlashr acc_re, acc_shr
             xm.vstrpv acc_re, t3
             xm.vlashr acc_im, acc_shr
             xm.vstrpv acc_im, t3
-        { mv t3, s8                     ; nop                                   }
-        { addi len, len, -1             ; xm.vldr t3                            }
-        { xm.mkmski t3, 32              ; xm.vlmul0 b_im                        }
+        { addi len, len, -1             ; xm.vldr s6                            }
+        xm.vlmul0 b_im
         xm.vlmul1 b_im
-            xm.vstrpv vec_tmp, t3
-        { addi vec_sat,sp, (STACK_VEC_SAT)*4 ; xm.vldc vec_tmp                       }
+        xm.vstrpv vec_tmp, t3
+        xm.vldc vec_tmp
         { nop                           ; xm.vclrdr                             }
         { nop                           ; xm.vlmacc0 c_im                       }
         xm.vlmacc1 c_im
@@ -136,30 +131,29 @@ FUNCTION_NAME:
          xm.vlsat vec_sat
         { nop                           ; xm.vlsub acc_im                       }
         { add acc_im, acc_im, t3        ; xm.vstr acc_im                        }
-        { mv t3, s8                     ; xm.bt len, .L_loop_top                }
+        { xm.mkmsk t3, 32               ; xm.bt len, .L_loop_top                }
     .L_loop_bot:
 
-#undef bytemask
 #define bytemask len
 
-    { nop                               ; lw bytemask, (STACK_BYTEMASK)*4        (sp) }
+    mv bytemask, a4
     { xm.mkmsk bytemask, bytemask       ; xm.brff bytemask, .L_done             }   
 
         xm.vlashr acc_re, acc_shr
         xm.vstrpv acc_re, bytemask
         xm.vlashr acc_im, acc_shr
         xm.vstrpv acc_im, bytemask
-    { nop                               ; xm.vldr t3                            }
-    { xm.mkmski t3, 32                  ; xm.vlmul0 b_im                        }
+    xm.vldr s6
+    xm.vlmul0 b_im
     xm.vlmul1 b_im
-        xm.vstrpv vec_tmp, t3
-    { addi vec_sat,sp, (STACK_VEC_SAT)*4 ; xm.vldc vec_tmp                       }
+    xm.vstrpv vec_tmp, t3
+    xm.vldc vec_tmp
     { nop                               ; xm.vclrdr                             }
     { nop                               ; xm.vstd vec_tmp                       }
     { nop                               ; xm.vlmacc0 c_im                       }
     xm.vlmacc1 c_im
     { nop                               ; xm.vldc b_re                          }
-    { addi t3,sp, (STACK_VEC_SAT)*4     ; xm.vlmacc0 c_re                       }
+    xm.vlmacc0 c_re
     xm.vlmacc1 c_re
     xm.vlsat vec_sat
     { nop                               ; xm.vlsub acc_re                       }
@@ -182,12 +176,11 @@ FUNCTION_NAME:
 
 
 .L_done:
-        xm.lddsp  s3,s2,8
-        xm.lddsp  s5,s4,16
-        xm.lddsp  s7,s6,0
+        xm.lddsp s2, s3, 0
+        xm.lddsp s4, s5, 8
 
     { li a0, 15                         ; xm.vgetc t3                           }
-    { xm.zexti t3, 5                    ; lw s8, 24                          (sp) }
+    { xm.zexti t3, 5                    ; xm.ldwsp s6, 16                       }
     { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 
@@ -206,6 +199,4 @@ FUNCTION_NAME:
 
 
 #endif //defined(__VX4B__)
-
-
 

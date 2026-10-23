@@ -19,33 +19,31 @@ int32_t vect_s16_max(
 .text
 .p2align 5
 
-#define NSTACKVECS      (2)
+#define NSTACKVECS      (1)
 #define NSTACKWORDS     (8 + 8*NSTACKVECS)
 
 #define FUNCTION_NAME       vect_s16_max
 
-#define STACK_VEC_TMP       (NSTACKWORDS-8-1)
-#define STACK_VEC_CUR_MAX   (NSTACKWORDS-16-1)
+#define STACK_VEC_CUR_MAX   (NSTACKWORDS-8-1)
 
-#define b           a0      // ![0x%08X]
-#define N           a1      // ![%d]
-#define tail        a2      // ![0x%X]
-#define tmp         a3      // ![%d]
-#define tmz         s2     // ![%d]
-
-
+#define b           a0
+#define N           a1
+#define tail        a2
+#define tmp         a3
+#define tmz         s2
+#define msk         s3
 
 .globl FUNCTION_NAME
 .type FUNCTION_NAME,@function
 
 FUNCTION_NAME:
 
-        xm.entsp (NSTACKWORDS)*4
-        xm.stdsp  s3,s2,16
-        xm.stdsp  s5,s4,8
-        li t3, 0x100
+    xm.entsp (NSTACKWORDS)*4
+    xm.stdsp s2, s3, 0
+
+    li t3, 0x100
     { slli tail, N, SIZEOF_LOG2_S16     ; xm.vsetc t3                           }
-    { srli N, N, EPV_LOG2_S16           ; nop                                   }
+    { srli N, N, EPV_LOG2_S16           ; xm.mkmsk s3, 2                        }
     { slli tmp, N, 5                    ; nop                                   }
         la t3, vpu_vec_0x8000
     { addi t3,sp, (STACK_VEC_CUR_MAX)*4 ; xm.vldr t3                            }
@@ -57,31 +55,27 @@ FUNCTION_NAME:
     // Tail is fully accounted for in cur_max now.
 
 #undef tail
-#define cur_max     a2      // ![0x%08X]
+#define cur_max     a2
 
-    { addi tmp,sp, (STACK_VEC_TMP)*4    ; mv cur_max, t3                        }
-    { nop                               ; xm.vclrdr                             }
-    { mv t3, b                          ; xm.brff N, .L_loop_bot                }
+    { mv cur_max, t3                    ; xm.vclrdr                             }
+    xm.brff N, .L_loop_bot
 
     .L_loop_top:
         // cur_max[] saved in stack
 
-        { mv b, t3                      ; xm.vldr t3                            } //  vR[i] = b[i]
+        xm.vldr b //  vR[i] = b[i]
         { addi N, N, -1                 ; xm.vlsub cur_max                      } //  vR[i] = cur_max[i] - b[i]
-        { addi t3,sp, 0                 ; xm.vdepth1                            } //  vR[0] = [bitmask -- 1 where vR[i] < 0]  b[i] > cur_max[i]
-        { xm.mkmski tmp, 2              ; nop                                   }
-            xm.vstrpv t3, tmp
-        { mv t3, b                      ; lw tmp, 0                          (sp) }
-        { mv tmz, tmp                   ; xm.vldr t3                            }
-xm.zip tmz, tmp, 0
-        { nop                           ; li t3, 32                             }
-            xm.vstrpv cur_max, tmp
-        { add t3, b, t3                 ; xm.bt N, .L_loop_top                  }
+        { addi t3, sp, 2 * 4            ; xm.vdepth1                            } //  vR[0] = [bitmask -- 1 where vR[i] < 0]  b[i] > cur_max[i]
+        xm.vstrpv t3, msk
+        { li t3, 32                     ; lw tmp, 2 * 4 (sp)                    }
+        { mv tmz, tmp                   ; xm.vldr b                             }
+        xm.zip tmz, tmp, 0
+        xm.vstrpv cur_max, tmp
+        { add b, b, t3                 ; xm.bt N, .L_loop_top                  }
 .L_loop_bot:
 
     { addi t3,sp, (STACK_VEC_CUR_MAX)*4 ; li N, 15                              }
     xm.ld16s cur_max, N(t3)
-    addi t3,sp, (STACK_VEC_CUR_MAX)*4
     { addi t3, t3, -2                   ; nop                                   }
     .L_loop2_top:
          xm.ld16s a0, N(t3)
@@ -89,11 +83,10 @@ xm.zip tmz, tmp, 0
         { xm.slt tmp, a0, cur_max       ; nop                                   }
         { xm.shli tmp, tmp, 1           ; nop                                   }
         { nop                           ; xm.bru tmp                            }
-            { mv cur_max, a0            ; nop                                   }
+        { mv cur_max, a0                ; nop                                   }
         { mv a0, cur_max                ; xm.bt N, .L_loop2_top                 }
 
-        xm.lddsp  s3,s2,16
-        xm.lddsp  s5,s4,8
+        xm.lddsp s2, s3, 0
         xm.retsp (NSTACKWORDS)*4
 
 

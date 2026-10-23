@@ -15,19 +15,19 @@ void fft_mono_adjust(
 #define FUNCTION_NAME   fft_mono_adjust
 
 #define NSTACKVECTS     (4)
-#define NSTACKWORDS     (32 + 8*(NSTACKVECTS))
+#define NSTACKWORDS     (16 + 8*(NSTACKVECTS))
 
-#define STACK_VEC_TMP_A         (NSTACKWORDS-(8*2)-1)
-#define STACK_VEC_TMP_B         (NSTACKWORDS-(8*3)-1)
-#define STACK_VEC_TMP_B_CONJ    (NSTACKWORDS-(8*4)-1)
-#define STACK_VEC_TMP           (NSTACKWORDS-(8*5)-1)
+#define STACK_VEC_TMP_A         (NSTACKWORDS-(8*1)-1)
+#define STACK_VEC_TMP_B         (NSTACKWORDS-(8*2)-1)
+#define STACK_VEC_TMP_B_CONJ    (NSTACKWORDS-(8*3)-1)
+#define STACK_VEC_TMP           (NSTACKWORDS-(8*4)-1)
 
-#define STACK_X0    (4)
-#define STACK_XQ    (5)
+#define STACK_INV   (7)
+#define STACK_X0    (8)
+#define STACK_XQ    (10)
 #define STACK_X     (12)
-#define STACK_N     (13)
+#define STACK_N     (13) // macro not used as loaded/stored with X
 #define STACK_W     (14)
-#define STACK_INV   (15)
 
 #define X           a0
 #define N           a1
@@ -48,11 +48,11 @@ void fft_mono_adjust(
 
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
-    xm.stdsp  s2,s3,8
-    xm.stdsp  s4,s5,16
-    xm.stdsp  s6,s7,24
+    xm.stdsp s2, s3, 0
+    xm.stdsp s4, s5, 2 * 4
+    xm.stdsp s6, s7, 4 * 4
 
-    { li t3, 0                          ; sw s8, 4                         (sp) }
+    { li t3, 0                          ; xm.stwsp s8, 6 * 4                    }
     { addi s2, N, -8                    ; sw a2, (STACK_INV)*4             (sp) }
     { slli s2, s2, 3                    ; xm.vsetc t3                           }
 
@@ -61,16 +61,15 @@ FUNCTION_NAME:
     la t3, xmath_dit_fft_lut
     { srli a3, N, 4                     ; add W, t3, s2                         }
 
-    { srli N, N, 1                      ; sw X, (STACK_X)*4                (sp) }
     // exception if N < 16. Don't bother using this with really short FFTs.
-    { xm.assert a3                      ; sw N, (STACK_N)*4                (sp) }
+    { xm.assert a3                        ; srl N, N, 1                         }
+    xm.stdsp X, N, (STACK_X) * 4
 
      sh2add X, N, X
     { srli N, N, 1                      ; sw W, (STACK_W)*4                (sp) }
 
     call vect_complex_s32_tail_reverse
-    lw X, (STACK_X)*4(sp)
-    lw N, (STACK_N)*4(sp)
+    xm.lddsp X, N, (STACK_X) * 4
     lw W, (STACK_W)*4(sp)
 
 
@@ -81,8 +80,8 @@ FUNCTION_NAME:
     { srli i, N, 1                      ; nop                                   }
     xm.lddi  s5,s6, 0(X)
     xm.ldd  s7,s8, i(X)
-    xm.stdsp  s5,s6,(STACK_X0)*8
-    xm.stdsp  s7,s8,(STACK_XQ)*8
+    xm.stdsp  s5,s6,(STACK_X0)*4
+    xm.stdsp  s7,s8,(STACK_XQ)*4
     la t3, vpu_vec_complex_pos_j
     { mv pos_j_vect, t3                 ; nop                                   }
     la t3, vpu_vec_complex_ones
@@ -168,8 +167,8 @@ FUNCTION_NAME:
     // {   add X_hi, X_hi, _32                     ;   vstr X_hi[0]                            }
     // {                                           ;   bt i, .L_something                      }
 
-    xm.lddsp  s5,s6,(STACK_X0)*8
-    xm.lddsp  s7,s8,(STACK_XQ)*8
+    xm.lddsp  s5,s6,(STACK_X0)*4
+    xm.lddsp  s7,s8,(STACK_XQ)*4
     { nop                               ; lw t3, (STACK_INV)*4                  (sp) }
     sra s5, s5, t3
     sra s6, s6, t3
@@ -187,14 +186,14 @@ FUNCTION_NAME:
     call vect_complex_s32_tail_reverse
 
 .L_finish:
-    { nop                               ; lw s8, 4                          (sp) }
 
-    xm.lddsp  s2,s3,8
-    xm.lddsp  s4,s5,16
-    xm.lddsp  s6,s7,24
+    xm.ldwsp s8, 6 * 4
+    xm.lddsp s2, s3, 0
+    xm.lddsp s4, s5, 2 * 4
+    xm.lddsp s6, s7, 4 * 4
     xm.retsp (NSTACKWORDS)*4
 
-.resource_const FUNCTION_NAME, "stack_frame_bytes", ( ((NSTACKWORDS)))*4
+.resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
 .resource_list_add   FUNCTION_NAME, "callees", vect_complex_s32_tail_reverse
 .resource_list_empty FUNCTION_NAME, "parallel_callees"

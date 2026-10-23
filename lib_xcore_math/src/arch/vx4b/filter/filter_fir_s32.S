@@ -49,10 +49,10 @@ int32_t filter_fir_s32(
 
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
-    xm.stdsp  s3,s2,8
-    xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,0
-    { li t3, 0                          ; sw s8, 24                          (sp) }
+    xm.stdsp s2, s3, 0
+    xm.stdsp s4, s5, 2 * 4
+    xm.stdsp s6, s7, 4 * 4
+    { li t3, 0                          ; xm.stwsp s8, 6 * 4                    }
 
     // Set VPU mode to 32-bit
     { mv filter, a0                     ; xm.vsetc t3                           }
@@ -75,13 +75,11 @@ FUNCTION_NAME:
 #define coef_B      s4
 
     // Get the current head position, which is also the number of taps in part B
-    { nop                               ; lw N_B,(FILT_HEAD)*4        ( filter) }
-
     // If N_B is currently zero, then the next head is the final index. Otherwise it's just
     // the head decremented by 1.
-    { addi t3, N_B, -1                  ; lw N_A,(FILT_N)*4           ( filter) }
-    { nop                               ; xm.bt N_B, .L_no_reset                }
-    { addi t3, N_A, -1                  ; nop                                   }
+    xm.ldd N_A, N_B, FILT_N * 4 (filter)
+    { add t3, N_B, -1                  ; xm.bt N_B, .L_no_reset                }
+    add t3, N_A, -1
 
     .L_no_reset:
     { nop                               ; sw t3,(FILT_HEAD)*4         ( filter) }
@@ -98,12 +96,12 @@ FUNCTION_NAME:
     // bulk of the work after
 
     { addi s8,sp, (STACK_VEC_TMP)*4     ; xm.vclrdr                             }
-    { mv t3, state_A                    ; xm.vstd s8                            }
-    { xm.zexti tmp1, 5                  ; xm.vldr t3                            }
+    xm.vstd s8
+    { xm.zexti tmp1, 5                  ; xm.vldr state_A                       }
     { xm.mkmsk t3, tmp1                 ; srli N_A, N_A, 3                      }
      xm.vstrpv s8, t3
-    { mv t3, state_B                    ; xm.vldc s8                            }
-    { slli tmp2, N_B, 2                 ; xm.vldr t3                            }
+    xm.vldc s8
+    { slli tmp2, N_B, 2                 ; xm.vldr state_B                       }
     { xm.zexti tmp2, 5                  ; xm.vstd s8                            }
     { xm.mkmsk t3, tmp2                 ; srli N_B, N_B, 3                      }
     xm.vstrpv s8, t3
@@ -153,8 +151,8 @@ FUNCTION_NAME:
     { li t3, 0                          ; xm.vldr t3                            }
     { xm.slt a3, t3, a2                 ; xm.vlmaccr0 s8                        }
     { nop                               ; xm.vstd s8                           }
-    { xm.neg s4, a2                   ; nop                                   }
-    { addi s4, s4, 1                    ; xm.vlmaccr0 s8                        }
+    { xm.neg s4, a2                     ; nop                                   }
+    { nop                               ; xm.vlmaccr0 s8                        }
     { nop                               ; xm.vstr s8                            }
 
 // a1 and a0 will contain a 64-bit result. Left or right-shift that as appropriate.
@@ -171,20 +169,21 @@ FUNCTION_NAME:
     { nop                               ; xm.bu .L_done                         }
 
     .L_left_shift:
-        // (from the block above):  s3 = 1, s4 = -a2 + 1, t3 = 0
-        // If we're left-shifting (or zero-shifting), we still need to saturate to q31.
-        // lsats has a bug which doesn't allow to use it with 0, so we'll have to
-        // add 1 to our shift, left-shift, saturate and extract with 1, no need to round here.
-    { xm.shl a1, a1, s4                 ; nop                                   }
+        // (from the block above):  s4 = -a2, t3 = 0
+        // If we're left-shifting (or zero-shifting), we still need to saturate to q31, no rounding
+        // lsats only works woth positive shifts, so need to left-shift, insert and
+        // lsats with 0
+    { xm.shl a1, a1, s4                 ; li s5, 0                              }
     xm.linsert a1, t3, a0, s4, 32
-    xm.lsats a1, t3, s3
-    xm.lextract a0, a1, t3, s3, 32
+    xm.lsats a1, t3, s5
+    mv a0, t3
+
 
 .L_done:
-        xm.lddsp  s7,s6,0
-        xm.lddsp  s5,s4,16
-        xm.lddsp  s3,s2,8
-    { nop                               ; lw s8, 24                          (sp) }
+        xm.ldwsp s8, 6 * 4
+        xm.lddsp s6, s7, 4 * 4
+        xm.lddsp s4, s5, 2 * 4
+        xm.lddsp s2, s3, 0 * 4
         xm.retsp (NSTACKWORDS)*4
 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
