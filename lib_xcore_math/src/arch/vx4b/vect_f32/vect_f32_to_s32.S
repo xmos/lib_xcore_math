@@ -64,7 +64,7 @@ FUNC_NAME:
     { addi len, len, -1               ; xm.bt  len, .L_loop                   }
   .L_loop_end:
 
-    xm.stwsp s4, 8
+    xm.ldwsp s4, 8
     xm.lddsp s2, s3, 0
     xm.retsp (NSTACKWORDS)*4
 	

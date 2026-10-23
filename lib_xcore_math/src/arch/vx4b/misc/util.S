@@ -30,8 +30,8 @@ FUNCTION_NAME:
 #define mant        a2
 
     addi exp, exp, -23
-{ nop                                   ; sw mant,0       ( mant_out)           }
-{ nop                                   ; sw exp,0         ( exp_out)           }
+    sw mant, 0 (mant_out)
+    sw exp, 0 (exp_out)
     ret
 .L_func_end_unpack:
 
@@ -68,8 +68,8 @@ FUNCTION_NAME:
   // 23 - 32 = -9
   // subtracting 32 becase we're putting mant in a high word to not extract the sign
   { add exp, exp, -9                    ; li zero, 0                            }
-    xm.fmakes mant, exp, mant, zero
-  { nop                                 ; ret                                   }
+  xm.fmakes mant, exp, mant, zero
+  ret
 
 .L_func_end_pack:
 
