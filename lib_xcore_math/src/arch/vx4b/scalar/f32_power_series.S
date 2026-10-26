@@ -37,7 +37,7 @@ float f32_power_series(
 #define FULL_LOOP_LBL CAT(.L_loop_, UNROLL)
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:

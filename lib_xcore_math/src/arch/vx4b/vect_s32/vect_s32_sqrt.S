@@ -45,7 +45,7 @@ headroom_t vect_s32_sqrt(
 #define tmp         s8
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:

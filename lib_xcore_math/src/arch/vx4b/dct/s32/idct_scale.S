@@ -19,7 +19,7 @@ void idct_scale(
 .text
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.p2align 2
+.p2align 5
 
 
 #define x        a0

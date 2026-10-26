@@ -9,7 +9,7 @@
 
 
 .text
-.p2align 2
+.p2align 5
 
 
 #define NSTACKWORDS     (32)

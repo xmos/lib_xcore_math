@@ -15,7 +15,7 @@ int64_t vect_s32_abs_sum(
 #include "../asm_helper.h"
 
 .text
-.p2align 2
+.p2align 5
 
 #define NSTACKVECS      (2)
 #define NSTACKWORDS     (4 + 8*NSTACKVECS)

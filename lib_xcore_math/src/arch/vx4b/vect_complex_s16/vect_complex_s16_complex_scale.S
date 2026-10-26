@@ -41,7 +41,7 @@ headroom_t vect_complex_s16_scale(
 
 
 .text
-.p2align 2
+.p2align 5
 
 /*
     We're doing this:
@@ -112,7 +112,7 @@ xm.zip s3, s2, 4
     xm.stdi  s2,s2, 88(t3)
 
 
-.p2align 2
+.p2align 5
     mv length, a6
     { li _32, 32                        ; nop                                   }
 #define vect_count  length

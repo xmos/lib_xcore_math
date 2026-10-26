@@ -41,7 +41,7 @@ void mat_mul_s8_x_s8_yield_s32 (
 #define K               s8
 
 .text
-.p2align 2
+.p2align 5
 
 
 

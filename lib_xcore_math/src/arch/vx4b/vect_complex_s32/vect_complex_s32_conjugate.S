@@ -13,7 +13,7 @@ headroom_t vect_complex_s32_conjugate(
 */
 
 .text
-.p2align 2
+.p2align 5
 
 #define NSTACKVECTS     (1)
 #define NSTACKWORDS     (4 + 8*(NSTACKVECTS))

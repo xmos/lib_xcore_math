@@ -19,7 +19,7 @@ headroom_t vect_complex_s32_scale(
 */
 
 .text
-.p2align 2
+.p2align 5
 
 
 #define NSTACKWORDS     (8+8)
@@ -104,7 +104,7 @@ FUNCTION_NAME:
     xm.vldd tmp_vec
     xm.vstd tmp_vec
 
-.p2align 2
+.p2align 5
 
 
     // {                                           ;   bf tail_bytes, .L_done                  }
@@ -120,7 +120,7 @@ FUNCTION_NAME:
     // {                                           ;   vldd tmp_vec[0]                         }
     // {                                           ;   vstd tmp_vec[0]                         }
 
-.p2align 2
+.p2align 5
 .L_done:
         xm.lddsp  s3,s2,8
         xm.lddsp  s5,s4,0

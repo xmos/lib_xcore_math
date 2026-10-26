@@ -44,7 +44,7 @@ headroom_t vect_complex_s16_conj_mul(
 
 
 .text
-.p2align 2
+.p2align 5
 
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4

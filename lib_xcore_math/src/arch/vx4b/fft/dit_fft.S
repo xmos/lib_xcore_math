@@ -41,7 +41,7 @@
 .globl	fft_dit_forward
 .type	fft_dit_forward,@function
 
-.p2align 2
+.p2align 5
 fft_dit_forward:
 
 xm.entsp (NSTACKWORDS)*4
@@ -178,7 +178,7 @@ xm.retsp (NSTACKWORDS)*4
     .globl	        fft_dit_inverse
     .type	        fft_dit_inverse, @function
 
-.p2align 2
+.p2align 5
 fft_dit_inverse:
 xm.entsp (NSTACKWORDS)*4
 xm.stdsp  hr_p,s2,0

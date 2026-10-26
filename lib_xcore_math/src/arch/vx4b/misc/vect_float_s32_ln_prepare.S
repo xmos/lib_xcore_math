@@ -32,7 +32,7 @@ void vect_float_s32_ln_prepare(
 #define tmpC        s7
 
 .text
-.p2align 2
+.p2align 5
 
 
 

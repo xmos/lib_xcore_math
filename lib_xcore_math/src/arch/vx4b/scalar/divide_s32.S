@@ -25,7 +25,7 @@ int32_t s32_divide_s64_s32(
 
 #define FUNCTION_NAME   s32_divide_s64_s32
 
-.p2align 2
+.p2align 5
 FUNCTION_NAME:
     bge      x11, x0, .not_negative0
     add      x28, x0, 0
@@ -91,7 +91,7 @@ int32_t s32_divide_s64_u32(
 #undef FUNCTION_NAME
 #define FUNCTION_NAME   s32_divide_s64_u32
 
-.p2align 2
+.p2align 5
 FUNCTION_NAME:
     bge      x11, x0, .not_negative2
     add      x28, x0, 0
@@ -133,7 +133,7 @@ int32_t s32_divide_u64_s32(
 #undef FUNCTION_NAME
 #define FUNCTION_NAME   s32_divide_u64_s32
 
-.p2align 2
+.p2align 5
 FUNCTION_NAME:
     li x28, 31
     bge      x12, x0, .not_negative3
@@ -175,7 +175,7 @@ int32_t u32_divide_u64_u32(
 #undef FUNCTION_NAME
 #define FUNCTION_NAME   u32_divide_u64_u32
 
-.p2align 2
+.p2align 5
 FUNCTION_NAME:
     // will return -1 if saturates
     xm.ldivu x10, x11, x11, x10, x12

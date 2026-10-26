@@ -32,7 +32,7 @@ headroom_t vect_s16_mul(
 #define tail        s5
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:

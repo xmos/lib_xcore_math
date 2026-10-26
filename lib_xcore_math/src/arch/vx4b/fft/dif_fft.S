@@ -42,7 +42,7 @@
 .globl	fft_dif_forward
 .type	fft_dif_forward,@function
 
-.p2align 2
+.p2align 5
 fft_dif_forward:
 
 	xm.entsp (NSTACKWORDS)*4
@@ -154,7 +154,7 @@ dif_fft_done:
 	.globl	        fft_dif_inverse
 	.type	        fft_dif_inverse, @function
 
-.p2align 2
+.p2align 5
 fft_dif_inverse:
 	xm.entsp (NSTACKWORDS)*4
 	xm.stdsp  s2,a2,0*8

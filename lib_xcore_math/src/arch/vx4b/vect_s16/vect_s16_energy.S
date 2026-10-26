@@ -15,7 +15,7 @@ int32_t vect_s16_energy(
 #include "../asm_helper.h"
 
 .text
-.p2align 2
+.p2align 5
 
 #define NSTACKVECS      (4)
 #define NSTACKWORDS     (8 + 8*NSTACKVECS+4)

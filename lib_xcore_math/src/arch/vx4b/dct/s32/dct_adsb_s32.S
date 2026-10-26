@@ -21,7 +21,7 @@ headroom_t dct_adsb_s32(
 .text
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.p2align 2
+.p2align 5
 
 #define sums        a0
 #define diffs       a1

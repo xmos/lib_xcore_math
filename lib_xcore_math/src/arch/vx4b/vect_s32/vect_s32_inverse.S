@@ -39,7 +39,7 @@ headroom_t vect_s32_inverse(
 #define vec_tmp         s7
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:
