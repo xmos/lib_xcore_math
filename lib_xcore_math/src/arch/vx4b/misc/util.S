@@ -8,7 +8,7 @@
 
 .text
 
-.p2align 2
+.p2align 5
 /*
 void f32_unpack_s32(
     int32_t* mantissa,
@@ -64,7 +64,7 @@ float s32_to_f32(
 #define exp         a1
 #define zero        a2
 
-.p2align 2
+.p2align 5
 FUNCTION_NAME:
 
   // 23 - 32 = -9

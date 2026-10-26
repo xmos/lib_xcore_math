@@ -7,7 +7,7 @@
 #include "../asm_helper.h"
 
 .text
-.p2align 2
+.p2align 5
 
 /*  
   The difference between this and chunk_q30_power_series() is that this one doesn't require

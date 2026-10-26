@@ -20,7 +20,7 @@ headroom_t vect_complex_s32_to_vect_complex_s16(
 #include "../asm_helper.h"
 
 .text
-.p2align 2
+.p2align 5
 
 #define NSTACKWORDS     (8)
 

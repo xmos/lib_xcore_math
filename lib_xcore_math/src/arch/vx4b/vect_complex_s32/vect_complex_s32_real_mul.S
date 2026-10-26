@@ -18,7 +18,7 @@ headroom_t vect_complex_s32_real_mul(
 */
 
 .text
-.p2align 2
+.p2align 5
 
 #define FUNCTION_NAME vect_complex_s32_real_mul
 

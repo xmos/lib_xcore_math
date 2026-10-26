@@ -23,7 +23,7 @@ void dct24_forward(
 .text
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.p2align 2
+.p2align 5
 
 #define STK_VEC_HEAD       (NSTACKWORDS - 16-2)
 #define STK_VEC_TAIL       (NSTACKWORDS - 8-2)

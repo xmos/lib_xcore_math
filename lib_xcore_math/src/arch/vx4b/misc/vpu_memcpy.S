@@ -19,7 +19,7 @@ void vpu_memcpy(
 #define tmp         a3
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:

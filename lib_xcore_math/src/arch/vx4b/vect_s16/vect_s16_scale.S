@@ -34,7 +34,7 @@
 
 
 .text
-.p2align 2
+.p2align 5
 
 FUNCTION_NAME:
     { mv t3, c                          ; xm.entsp (NSTACKWORDS)*4              }

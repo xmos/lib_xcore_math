@@ -19,7 +19,7 @@ headroom_t vect_complex_s16_mag(
 */
 
 .text
-.p2align 2
+.p2align 5
 
 #define NSTACKVECS      (8)
 #define NSTACKWORDS     (8+(8*NSTACKVECS)+4)

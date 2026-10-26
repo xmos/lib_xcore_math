@@ -19,7 +19,7 @@ void dct16_forward(
 .text
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.p2align 2
+.p2align 5
 
 #define VEC_TMP       (NSTACKWORDS - 8 - 2)
 

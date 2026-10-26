@@ -38,7 +38,7 @@ unsigned vect_sXX_add_scalar(
 
 
 .text
-.p2align 2
+.p2align 5
 
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4

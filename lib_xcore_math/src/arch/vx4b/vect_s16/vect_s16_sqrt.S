@@ -48,7 +48,7 @@ headroom_t vect_s16_sqrt(
 #define spare       s7 //s7
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:

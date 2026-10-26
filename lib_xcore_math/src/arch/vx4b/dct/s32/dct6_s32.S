@@ -21,7 +21,7 @@ void dct6_forward(
 .text
 .global FUNCTION_NAME
 .type FUNCTION_NAME,@function
-.p2align 2
+.p2align 5
 
 #define y         a0
 #define x         a1

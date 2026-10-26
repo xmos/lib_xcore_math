@@ -26,7 +26,7 @@ void vect_s16_inverse(
 #define scale           a3
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:

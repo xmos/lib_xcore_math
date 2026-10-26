@@ -34,7 +34,7 @@ void vect_s16_extract_low_byte(
 #define vec_0x7FFF  s5
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:

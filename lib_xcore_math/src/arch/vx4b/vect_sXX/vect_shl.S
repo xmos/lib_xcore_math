@@ -33,7 +33,7 @@ headroom_t vect_s32_shl(
 
 
 .text
-.p2align 2
+.p2align 5
 
 
 

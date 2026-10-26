@@ -17,7 +17,7 @@ void vect_s32_to_vect_s16(
 #include "../asm_helper.h"
 
 .text
-.p2align 2
+.p2align 5
 
 
 #define NSTACKWORDS     (4)

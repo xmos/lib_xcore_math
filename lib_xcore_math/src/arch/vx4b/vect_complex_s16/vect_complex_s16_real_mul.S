@@ -20,7 +20,7 @@ headroom_t vect_complex_s16_real_mul(
 */
 
 .text
-.p2align 2
+.p2align 5
 
 #define NSTACKVECS      (4)
 #define NSTACKWORDS     (16+8*(NSTACKVECS))
@@ -111,7 +111,7 @@ FUNCTION_NAME:
     xm.vstd vec_tmp
     nop
 
-.p2align 2
+.p2align 5
 
 .L_done:
         xm.lddsp  s3,s2,8

@@ -19,7 +19,7 @@ headroom_t vect_s32_copy(
 #define tmp         a3
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:

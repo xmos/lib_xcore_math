@@ -20,7 +20,7 @@ headroom_t vect_complex_s32_macc(
 */
 
 .text
-.p2align 2
+.p2align 5
 
 
 #define NSTACKWORDS     (8+8+4)

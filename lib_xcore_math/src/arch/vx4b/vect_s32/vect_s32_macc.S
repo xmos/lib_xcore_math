@@ -39,7 +39,7 @@ headroom_t vect_s32_macc(
 #define bytemask    len
 
 .text
-.p2align 2
+.p2align 5
 
 
 

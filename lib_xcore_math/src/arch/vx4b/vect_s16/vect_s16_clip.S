@@ -19,7 +19,7 @@ headroom_t vect_s16_clip(
 #include "../asm_helper.h"
 
 .text
-.p2align 2
+.p2align 5
 
 #define NSTACKVECS      (6)
 #define NSTACKWORDS     (8 + 8*(NSTACKVECS))

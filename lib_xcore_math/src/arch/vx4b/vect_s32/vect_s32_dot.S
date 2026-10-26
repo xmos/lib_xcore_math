@@ -37,7 +37,7 @@ int64_t vect_s32_dot(
 
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:

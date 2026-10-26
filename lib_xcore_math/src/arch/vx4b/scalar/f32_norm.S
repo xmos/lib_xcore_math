@@ -7,7 +7,7 @@
 #include "../asm_helper.h"
 
 .text
-.p2align 2
+.p2align 5
 
 /*
 float f32_normA(

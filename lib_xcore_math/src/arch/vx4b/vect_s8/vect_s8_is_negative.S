@@ -26,7 +26,7 @@ void vect_s8_is_negative(
 #define tail        s3
 
 .text
-.p2align 2
+.p2align 5
 
 
 FUNCTION_NAME:
