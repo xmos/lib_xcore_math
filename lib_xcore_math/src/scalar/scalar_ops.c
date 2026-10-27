@@ -77,11 +77,11 @@ int32_t s32_ashr(const int32_t x, const right_shift_t shr){
     asm("xm.shl %0, %1, %2": "=r"(res) : "r"(x), "r"(shl));
   }
   else if (shr > -32) {
-    int32_t ah = 0, al = 0, sat = 0;
+    int32_t ah = 0, al = 0;
     left_shift_t shl = -shr;
     asm("xm.linsert %0, %1, %2, %3, 32": "=r" (ah), "=r"(al): "r" (x), "r" (shl), "0" (ah), "1" (al));
     asm("xm.sext %0, %1": "=r" (ah): "r" (shl), "0" (ah));
-    asm("xm.lsats %0, %1, %2": "=r" (ah), "=r" (res): "r" (sat), "0" (ah), "1" (al));
+    asm("xm.lsats %0, %1, x0": "=r" (ah), "=r" (res): "0" (ah), "1" (al));
   }
   else {
     res = (x == 0) ? 0 : (x > 0) ? INT32_MAX : INT32_MIN;
@@ -208,12 +208,12 @@ int16_t s16_ashr(const int16_t x, const right_shift_t shr){
     // but will also work for when shr > 31.
     // For negative > -16, fits in the 32 bit word, needs saturation.
     left_shift_t shl = -shr;
-    int32_t y = (int32_t)x, zero = 0, _16 = 16;
+    int32_t y = (int32_t)x, _16 = 16;
     asm("xm.shl %0, %1, %2": "=r" (y): "r" (y), "r" (shl));
     // not initialising low word to anything here as xm.lsats going to saturate to 32 + 16 bits,
     // low word is not going to affect the result and we're only interested in the high word
     // should save a cycle
-    asm("xm.lsats %0, %1, %2": "=r" (y), "=r"(zero): "r"(_16), "0" (y));
+    asm("xm.lsats %0, x0, %1": "=r" (y): "r"(_16), "0" (y));
     res = (int16_t)y;
   }
   else {

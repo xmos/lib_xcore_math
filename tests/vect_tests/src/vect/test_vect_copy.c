@@ -18,6 +18,7 @@ TEST_TEAR_DOWN(vect_copy) {}
 
 TEST_GROUP_RUNNER(vect_copy) {
   RUN_TEST_CASE(vect_copy, vect_s32_copy);
+  RUN_TEST_CASE(vect_copy, vpu_memcpy_boundaries);
 }
 
 
@@ -56,3 +57,24 @@ TEST(vect_copy, vect_s32_copy)
   }
 }
 
+TEST(vect_copy, vpu_memcpy_boundaries)
+{
+  DWORD_ALIGNED
+  uint8_t source[96];
+  DWORD_ALIGNED
+  uint8_t result[96];
+  const unsigned lengths[] = { 0, 1, 7, 31, 32, 33, 63, 64, 65 };
+
+  for (unsigned k = 0; k < sizeof(source); ++k)
+    source[k] = (uint8_t) (k * 17);
+
+  for (unsigned n = 0; n < sizeof(lengths) / sizeof(lengths[0]); ++n) {
+    const unsigned length = lengths[n];
+    memset(result, 0x5a, sizeof(result));
+    vpu_memcpy(result, source, length);
+    if (length)
+      TEST_ASSERT_EQUAL_MEMORY(source, result, length);
+    for (unsigned k = length; k < sizeof(result); ++k)
+      TEST_ASSERT_EQUAL_UINT8(0x5a, result[k]);
+  }
+}

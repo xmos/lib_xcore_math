@@ -27,33 +27,31 @@ headroom_t vect_s16_headroom(
 #define FUNCTION_NAME vect_s16_headroom
 
 FUNCTION_NAME:
-    { li t3, 32                         ; xm.entsp (NSTACKWORDS)*4              }
-    { slli t3, t3, 3                    ; xm.vclrdr                             }
+    { li a3, 32                         ; xm.entsp (NSTACKWORDS)*4              }
+    { slli t3, a3, 3                    ; xm.vclrdr                             }
     { slli a2, arg_len, 1               ; xm.vsetc t3                           }
-    { srli arg_len, arg_len, 4          ; mv t3, arg_v                          }
+    { xm.ldawsp t3, STACK_TMP_VEC * 4   ; srl arg_len, arg_len, 4               }
 
-    { addi a0,sp, (STACK_TMP_VEC)*4     ; nop                                   }
-    { li a3, 32                         ; nop                                   }
     { xm.zexti a2, 5                    ; xm.brff arg_len, .L_loop_bot_s16      }
-    { nop                               ; xm.bu .L_loop_top_s16                 }
+    xm.bu .L_loop_top_s16
      
     .p2align 4
     .L_loop_top_s16:
-        { add t3, t3, a3                ; xm.vldr t3                            }
-        { addi arg_len, arg_len, -1     ; xm.vstr a0                            }
-        { nop                           ; xm.bt arg_len, .L_loop_top_s16        }
+        { add arg_v, arg_v, a3          ; xm.vldr arg_v                         }
+        { addi arg_len, arg_len, -1     ; xm.vstr t3                            }
+        xm.bt arg_len, .L_loop_top_s16
 
 .L_loop_bot_s16:
-    { nop                               ; xm.brff a2, .L_finish16               }
-    { xm.mkmsk a2, a2                   ; xm.vstd a0                            }
-    { mv t3, a0                         ; xm.vldr t3                            }
-    xm.vstrpv a0, a2
-    { nop                               ; xm.vldr t3                            }
-    { nop                               ; xm.vstr t3                            }
+    { xm.mkmsk a2, a2                   ; xm.brff a2, .L_finish16               }
+    xm.vstd t3
+    xm.vldr arg_v
+    xm.vstrpv t3, a2
+    xm.vldr t3
+    xm.vstr t3
 
 .L_finish16:
     { li a0, 15                         ; xm.vgetc t3                           }
-    { xm.zexti t3, 5                    ; nop                                   }
+    xm.zexti t3, 5
     { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 
@@ -85,35 +83,32 @@ headroom_t vect_s32_headroom(
 #define FUNCTION_NAME vect_s32_headroom
 
 FUNCTION_NAME:
-    xm.entsp (NSTACKWORDS)*4
+    { li a3, 32                         ; xm.entsp (NSTACKWORDS)*4              }
 
     { li t3, 0                          ; slli a2, arg_len, 2                   }
     { srli arg_len, arg_len, 3          ; xm.vsetc t3                           }
-    { addi a0,sp, (STACK_TMP_VEC)*4     ; mv t3, arg_v                          }
-    { li a3, 32                         ; xm.vclrdr                             }
+    { xm.ldawsp t3, STACK_TMP_VEC * 4   ; xm.vclrdr                             }
     { xm.zexti a2, 5                    ; xm.brff arg_len, .L_loop_bot_s32      }
-    { nop                               ; xm.bu .L_loop_top_s32                 }
+    xm.bu .L_loop_top_s32
 
     .p2align 4
     .L_loop_top_s32:
-        { add t3, t3, a3                ; xm.vldr t3                            }
-        { addi arg_len, arg_len, -1     ; xm.vstr a0                            }
-        { nop                           ; xm.bt arg_len, .L_loop_top_s32        }
+        { add arg_v, arg_v, a3          ; xm.vldr arg_v                         }
+        { addi arg_len, arg_len, -1     ; xm.vstr t3                            }
+        xm.bt arg_len, .L_loop_top_s32
 
     .L_loop_bot_s32:
-    { nop                               ; xm.brff a2, .L_finish32               }
-    { xm.mkmsk a2, a2                   ; xm.vstd a0                            }
-    { mv t3, a0                         ; xm.vldr t3                            }
-    xm.vstrpv a0, a2
-    { nop                               ; xm.vldr t3                            }
-    { nop                               ; xm.vstr t3                            }
+    { xm.mkmsk a2, a2                   ; xm.brff a2, .L_finish32               }
+    xm.vstd t3
+    xm.vldr arg_v
+    xm.vstrpv t3, a2
+    xm.vldr t3
+    xm.vstr t3
 
     .L_finish32:
     { li a0, 31                         ; xm.vgetc t3                           }
-    { xm.zexti t3, 5                    ; nop                                   }
-    { sub a0, a0, t3                    ; nop                                   }
-
-    { nop                               ; xm.retsp (NSTACKWORDS)*4              }
+    xm.zexti t3, 5
+    { sub a0, a0, t3                    ; xm.retsp (NSTACKWORDS)*4              }
 
 .L_func_end_s32:
 

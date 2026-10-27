@@ -61,13 +61,13 @@ la t3, vpu_vec_0x40000000
 { nop                                   ; xm.vstr vec_pow                       }
 { nop                                   ; xm.vclrdr                             }
 { nop                                   ; xm.vlmacc0 vec_pow                    }
-{ mv t3, vec_pow                        ; xm.vstr vec_acc                       }
+{ nop                                   ; xm.vstr vec_acc                       }
 
   .L_loop_top:
-  { nop                                 ; xm.vldr t3                            }
+  { nop                                 ; xm.vldr vec_pow                       }
   { nop                                 ; xm.vlmul0 b                           }
-  { mv t3, vec_acc                      ; xm.vstr vec_pow                       }
-  { nop                                 ; xm.vldr t3                            }
+  { nop                                 ; xm.vstr vec_pow                       }
+  { nop                                 ; xm.vldr vec_acc                       }
   { addi coef, coef, 4                  ; lw t3,0            ( coef)            }
     xm.stdi  t3,t3, 0(tmp)
   { nop                                 ; xm.vldd tmp                           }
@@ -76,7 +76,7 @@ la t3, vpu_vec_0x40000000
   { nop                                 ; xm.vldc vec_coef                      }
   { addi len, len, -1                   ; xm.vlmacc0 vec_pow                    }
   { nop                                 ; xm.vstr vec_acc                       }
-  { mv t3, vec_pow                      ; xm.bt len, .L_loop_top                }
+  { nop                                 ; xm.bt len, .L_loop_top                }
 
 { nop                                   ; xm.vstr a                             }
 
@@ -102,6 +102,5 @@ xm.retsp (NSTACKWORDS)*4
 
 
 #endif //defined(__VX4B__)
-
 
 

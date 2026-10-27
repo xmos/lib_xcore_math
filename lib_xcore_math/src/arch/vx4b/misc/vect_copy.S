@@ -27,7 +27,7 @@ FUNCTION_NAME:
   { xm.zexti tmp, 1                     ; srli len, tmp, 1                      }
   { add len, len, tmp                   ; xm.vsetc t3                           }
   { li t3, 32                           ; xm.bt tmp, .L_loop_mid                }
-  { nop                                 ; xm.bu .L_loop_top                     }
+  xm.bu .L_loop_top
 
   .p2align 4
   .L_loop_top:
@@ -41,7 +41,7 @@ FUNCTION_NAME:
 
 .L_finish:
   { li a0, 31                           ; xm.vgetc t3                           }
-  { xm.zexti t3, 5                      ; nop                                   }
+  xm.zext t3, 5
   { sub a0, a0, t3                      ; ret                                   }
 
 

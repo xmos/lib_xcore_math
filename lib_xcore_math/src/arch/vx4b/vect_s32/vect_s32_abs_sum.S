@@ -25,12 +25,12 @@ int64_t vect_s32_abs_sum(
 #define STACK_VEC_TMP       (NSTACKWORDS-8-1)
 #define STACK_VEC_VR        (NSTACKWORDS-16-1)
 
-#define b           a0      // ![0x%08X]
-#define N           a1      // ![%d]
-#define tail        a2      // ![0x%X]
-#define _32         a3      // ![%d]
-#define tmp         s2      // ![%d]
-#define mask        s3      // ![0x%X]
+#define b           a0
+#define N           a1
+#define tail        a2
+#define _32         a3
+#define tmp         s2
+#define mask        s3
 
 .global FUNCTION_NAME
 .type FUNCTION_NAME, @function
@@ -38,16 +38,16 @@ int64_t vect_s32_abs_sum(
 FUNCTION_NAME:
 
         xm.entsp (NSTACKWORDS)*4
-        xm.stdsp  s3,s2,0
+        xm.stdsp s2, s3, 0
 
+    addi tmp,sp, (STACK_VEC_TMP)*4
     { li t3, 0                          ; slli tail, N, SIZEOF_LOG2_S32         }
     { addi t3,sp, (STACK_VEC_VR)*4      ; xm.vsetc t3                           }
     { xm.zexti tail, 5                  ; xm.vclrdr                             }
     { srli N, N, EPV_LOG2_S32           ; xm.brff tail, .L_tail_dealt_with      }
 
-    { addi tmp,sp, (STACK_VEC_TMP)*4    ; mv t3, b                              }
     { xm.mkmsk mask, tail               ; xm.vstd tmp                           }
-    { addi t3,sp, (STACK_VEC_VR)*4      ; xm.vldr t3                            }
+    xm.vldr b
     { nop                               ; xm.vsign                              }
         xm.vstrpv tmp, mask
     { nop                               ; xm.vldc tmp                           }
@@ -57,17 +57,15 @@ FUNCTION_NAME:
     { li _32, 32                        ; xm.brff N, .L_loop_bot_s32            }
 
 .L_loop_top_s32:
-        { mv t3, b                      ; xm.vstr t3                            }
-        { addi N, N, -1                 ; xm.vldr t3                            }
-        { addi t3,sp, (STACK_VEC_TMP)*4 ; xm.vsign                              }
-        { nop                           ; xm.vstr t3                            }
-        { addi t3,sp, (STACK_VEC_VR)*4  ; xm.vldc t3                            }
-        { nop                           ; xm.vldr t3                            }
+        xm.vstr t3
+        { addi N, N, -1                 ; xm.vldr b                             }
+        xm.vsign
+        xm.vstr tmp
+        xm.vldc tmp
+        xm.vldr t3
         { add b, b, _32                 ; xm.vlmacc0 b                          }
         { nop                           ; xm.bt N, .L_loop_top_s32              }
 .L_loop_bot_s32:
-
-.L_finish_s32:
 
     { nop                               ; xm.vstr t3                            }
 la t3, vpu_vec_0x40000000
@@ -80,11 +78,10 @@ la t3, vpu_vec_zero
     { nop                               ; xm.vstd t3                            }
     { nop                               ; xm.vlmaccr0 t3                        }
     { nop                               ; xm.vstr t3                            }
-    { nop                               ; lw a1,0                          ( t3) }
-    { addi a1, a1, 8                    ; lw a0,4                          ( t3) }
+    xm.ldd a1, a0, 0 (t3)
 
-        xm.lddsp  s3,s2,0
-        xm.retsp (NSTACKWORDS)*4
+    xm.lddsp s2, s3, 0
+    { add a1, a1, 8                     ; xm.retsp (NSTACKWORDS)*4              }
 
 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4

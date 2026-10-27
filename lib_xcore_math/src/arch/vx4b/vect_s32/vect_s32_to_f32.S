@@ -26,52 +26,39 @@
 #define len     a2
 #define b_exp   a3
 
-#define _0      s2
-#define tmp1    s3
-#define tmp0    s4
+#define tmp1    s2
+#define tmp0    s3
+
+#define _0      t3
 
 .p2align 4
 FUNC_NAME:
-    xm.entsp (NSTACKWORDS)*4
-    xm.stdsp  s3,s2,0
-  { li _0, 0                            ; li s3, 23                             }
-  { add b_exp, b_exp, s3                ; nop                                   }
-    sw s4, 8(sp)
+  { li _0, 0                            ; xm.entsp (NSTACKWORDS)*4              }
+    xm.stdsp s2, s3, 0
+    add b_exp, b_exp, -9
 
   // handle tail first
-  { srli t3, len, 1                     ; xm.zexti len, 1                       }
-  { mv len, t3                          ; xm.brff len, .L_pre_loop              }
+  { srli s2, len, 1                     ; xm.zexti len, 1                       }
+  { mv len, s2                          ; xm.brff len, .L_pre_loop              }
     
-    xm.ldd  tmp0,tmp1, len(b)
-    { xm.slt t3, tmp0, _0               ; slli tmp1, len, 1                     }
-    beqz t3, .L_posT
-      xm.neg tmp0, tmp0
-    .L_posT:
-    xm.fmake tmp0, t3, b_exp, _0, tmp0
-    xm.stw tmp0,tmp1( a)
+    xm.ldd tmp0, tmp1, len(b)
+    slli tmp1, len, 1
+    xm.fmakes tmp0, b_exp, tmp0, _0
+    xm.stw tmp0, tmp1(a)
 
   .L_pre_loop:
 
   { addi len, len, -1                   ; xm.brff len, .L_loop_end              }
   
   .L_loop:
-    xm.ldd  tmp0,tmp1, len(b)
-  { xm.slt t3, tmp1, _0                 ; nop                                   }
-    beqz t3, .L_pos1
-      xm.neg tmp1, tmp1
-    .L_pos1:
-    xm.fmake tmp1, t3, b_exp, _0, tmp1
-    slt t3, tmp0, _0
-    beqz t3, .L_pos0
-      xm.neg tmp0, tmp0
-    .L_pos0:
-    xm.fmake tmp0, t3, b_exp, _0, tmp0
-    xm.std  tmp0,tmp1, len(a)
-    { addi len, len, -1                 ; xm.bt len, .L_loop                    }
+    xm.ldd tmp0, tmp1, len(b)
+    xm.fmakes tmp1, b_exp, tmp1, _0
+    xm.fmakes tmp0, b_exp, tmp0, _0
+    xm.std tmp0, tmp1, len(a)
+  { addi len, len, -1                 ; xm.bt len, .L_loop                    }
   .L_loop_end:
     
-    xm.lddsp  s3,s2,0
-    lw s4, 8(sp)
+    xm.lddsp s2, s3, 0
     xm.retsp (NSTACKWORDS)*4
 
 	

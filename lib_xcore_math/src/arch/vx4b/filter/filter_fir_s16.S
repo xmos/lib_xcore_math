@@ -36,8 +36,6 @@ int16_t filter_fir_s16(
 #define STACK_VEC_VR    (NSTACKWORDS-16-1)
 #define STACK_VEC_TMP   (NSTACKWORDS-24-1)
 
-#define STACK_FILTER    (8)
-
 #define buff        a0
 #define length      a1
 #define sample      a2
@@ -45,8 +43,7 @@ int16_t filter_fir_s16(
 #define _32         s2
 #define coef        s3
 
-
-#define filter      s8
+#define filter      s6
 
 .text
 .globl FUNCTION_NAME;
@@ -55,22 +52,22 @@ int16_t filter_fir_s16(
 
 FUNCTION_NAME:
     xm.entsp (NSTACKWORDS)*4
+    xm.stdsp s2, s3, 0
+    xm.stdsp s4, s5, 8
 
-    xm.stdsp  s3,s2,8
-    xm.stdsp  s5,s4,16
-    xm.stdsp  s7,s6,0
+    addi s4,sp, (STACK_VEC_TMP2)*4
+    add s5, s4, (-30)
 
-    { addi s6,sp, (STACK_VEC_TMP2)*4   ; nop                                   }
-    addi s7, s6, (-30)
-
-    { li _32, 32                        ; sw s8, 24                          (sp) }
+    { li _32, 32                        ; xm.stwsp s6, 16                       }
     { mv filter, a0                     ; mv sample, a1                         }
-    { nop                               ; lw length,(FILT_N)*4              ( filter) }
-    { nop                               ; lw buff,(FILT_STATE)*4            ( filter) }
-        call filter_fir_s16_push_sample_up
-    { nop                               ; lw coef,(FILT_COEF)*4             ( filter) }
-    { nop                               ; lw buff,(FILT_STATE)*4            ( filter) }
-    { nop                               ; lw length,(FILT_N)*4              ( filter) }
+    lw length, FILT_N * 4 (filter)
+    lw buff, FILT_STATE * 4 (filter)
+
+    call filter_fir_s16_push_sample_up
+
+    xm.ldd coef, buff, FILT_COEF * 4 (filter)
+    lw length, FILT_N * 4 (filter)
+
     { slli t3, _32, 3                   ; xm.vclrdr                             }
     { addi t3,sp, (STACK_VEC_TMP)*4     ; xm.vsetc t3                           }
     { mv tmpA, length                   ; xm.vstd t3                            }
@@ -81,35 +78,34 @@ FUNCTION_NAME:
         { add buff, buff, _32           ; xm.vldc buff                          }
         { addi length, length, -1       ; xm.vlmaccr0 coef                      }
         xm.vlmaccr1 coef
-        { nop                           ; xm.vstd s6                            }
-        { nop                           ; xm.vldd s7                            }
-        { nop                           ; xm.vstr s6                            }
-        { nop                           ; xm.vldr s7                            }
+        xm.vstd s4
+        xm.vldd s5
+        xm.vstr s4
+        xm.vldr s5
 
         { add coef, coef, _32           ; xm.bt length, .L_loop_top             }
     .L_loop_end:
 
     { addi a2,sp, (STACK_VEC_VR)*4      ; xm.mkmsk tmpA, tmpA                   }
-    { mv t3, buff                       ; xm.vstr a2                            }
-    { addi t3,sp, (STACK_VEC_TMP)*4     ; xm.vldr t3                            }
-        xm.vstrpv t3, tmpA
-    { li tmpA, 0                        ; lw a2,(FILT_SHIFT)*4                  ( filter) }
-    { addi t3,sp, (STACK_VEC_VR)*4      ; xm.vldc t3                            }
-    { nop                               ; xm.vldr t3                            }
-    { nop                               ; xm.vlmaccr0 coef                      }
+    xm.vstr a2
+    { addi t3,sp, (STACK_VEC_TMP)*4     ; xm.vldr buff                          }
+    xm.vstrpv t3, tmpA
+    lw s6, FILT_SHIFT * 4 (filter)
+    xm.vldc t3
+    xm.vldr a2
+    xm.vlmaccr0 coef
     xm.vlmaccr1 coef
 
-    xm.st16 a2, tmpA(t3)
-
-    xm.vlsat t3
-    { nop                               ; xm.vstr t3                            }
-    xm.ld16s a0, tmpA(t3)
+    sh s6, 0(a2)
+    xm.vlsat a2
+    xm.vstr a2
+    lh a0, 0(a2)
 .L_done:
-    { nop                               ; lw s8, 24                          (sp) }
-        xm.lddsp  s7,s6,0
-        xm.lddsp  s5,s4,16
-        xm.lddsp  s3,s2,8
-        xm.retsp (NSTACKWORDS)*4
+
+    xm.ldwsp s6, 16
+    xm.lddsp s2, s3, 0
+    xm.lddsp s4, s5, 8
+    xm.retsp (NSTACKWORDS)*4
 
 .resource_const FUNCTION_NAME, "stack_frame_bytes", (NSTACKWORDS)*4
 .resource_list_empty FUNCTION_NAME, "tail_callees"
@@ -123,6 +119,5 @@ FUNCTION_NAME:
 
 
 #endif //defined(__VX4B__)
-
 
 

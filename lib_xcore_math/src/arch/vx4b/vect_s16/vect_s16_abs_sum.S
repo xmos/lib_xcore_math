@@ -17,13 +17,13 @@ int32_t vect_s16_abs_sum(
 .p2align 5
 
 #define NSTACKVECS      (4)
-#define NSTACKWORDS     (8+8*NSTACKVECS+4)
+#define NSTACKWORDS     (8+8*NSTACKVECS)
 
 #define FUNCTION_NAME       vect_s16_abs_sum
 
-#define STACK_VEC_TMP       (NSTACKWORDS-24-4)
-#define STACK_VEC_VR        (NSTACKWORDS-32-4)
-#define STACK_VEC_TMP2      (NSTACKWORDS-8-2)
+#define STACK_VEC_TMP2      (NSTACKWORDS-8-1)
+#define STACK_VEC_TMP       (NSTACKWORDS-24-1)
+#define STACK_VEC_VR        (NSTACKWORDS-32-1)
 
 #define b           a0
 #define N           a1
@@ -37,8 +37,8 @@ int32_t vect_s16_abs_sum(
 
 FUNCTION_NAME:
         xm.entsp (NSTACKWORDS)*4
-        xm.stdsp  s3,s2,0
-        xm.stdsp  s5,s4,8
+        xm.stdsp s2, s3, 0
+        xm.stdsp s4, s5, 8
         li t3, 0x0100
 
      { addi s4, sp, (STACK_VEC_TMP2)*4  ; nop                                   }
@@ -67,10 +67,10 @@ FUNCTION_NAME:
     { nop                               ; xm.vldr s5                            }
 
 
-    { mv t3, tmp                        ; xm.vstr t3                            }
-    { nop                               ; xm.vldr t3                            }
+    { nop                               ; xm.vstr t3                            }
+    { nop                               ; xm.vldr tmp                           }
     { nop                               ; xm.vpos                               }
-    { addi t3,sp, (STACK_VEC_VR)*4      ; xm.vstr t3                            }
+    { nop                               ; xm.vstr tmp                           }
     { nop                               ; xm.vldr t3                            }
     { nop                               ; xm.vldc pos_2                         }
     { nop                               ; xm.vlmaccr0 tmp                       }
@@ -98,8 +98,8 @@ FUNCTION_NAME:
         { nop                           ; xm.vldr s5                            }
 
 
-        { mv t3, b                      ; xm.vstr t3                            }
-        { li t3, 32                     ; xm.vldr t3                            }
+        { nop                           ; xm.vstr t3                            }
+        { li t3, 32                     ; xm.vldr b                             }
         { add b, b, t3                  ; xm.vpos                               }
         { addi t3,sp, (STACK_VEC_VR)*4  ; xm.vstr tmp                           }
         { nop                           ; xm.vldr t3                            }
@@ -116,21 +116,14 @@ FUNCTION_NAME:
         { nop                           ; xm.bt N, .L_loop_top                  }
 .L_loop_bot:
 
-
-.L_finish:
-
-
-
-
-
     { addi a1,sp, (STACK_VEC_TMP)*4     ; nop/*  xm.vadddr */                   }
       addi s4, a1, 32-2
     { nop                               ; xm.vstd a1                            }
     { nop                               ; lw a0, 0(s4)                          }
     { slli a0, a0, 16                   ; xm.vstr a1                            }
     { nop                               ; lw a1, 0(s4)                          }
-        xm.lddsp  s3,s2,0
-        xm.lddsp  s5,s4,8
+    xm.lddsp s2, s3, 0
+    xm.lddsp s4, s5, 8
     { xm.zexti a1, 16                   ; nop                                   }
     { or a0, a0, a1                     ; xm.retsp (NSTACKWORDS)*4              }
 

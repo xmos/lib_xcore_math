@@ -17,6 +17,7 @@
 
 TEST_GROUP_RUNNER(vect_f32_to_vect_s32) {
   RUN_TEST_CASE(vect_f32_to_vect_s32, vect_f32_to_vect_s32);
+  RUN_TEST_CASE(vect_f32_to_vect_s32, signed_boundaries);
 }
 
 TEST_GROUP(vect_f32_to_vect_s32);
@@ -77,4 +78,22 @@ TEST(vect_f32_to_vect_s32, vect_f32_to_vect_s32)
   }
 }
 
+TEST(vect_f32_to_vect_s32, signed_boundaries)
+{
+  DWORD_ALIGNED
+  const float input[] = { 0.0f, -0.0f, 1.0f, -1.0f,
+                          0.5f, -0.5f, 1073741824.0f, -1073741824.0f };
+  DWORD_ALIGNED
+  int32_t output[sizeof(input) / sizeof(input[0])];
+  const unsigned lengths[] = { 1, 2, 3, 4, 5, 8 };
 
+  for (unsigned n = 0; n < sizeof(lengths) / sizeof(lengths[0]); ++n) {
+    const unsigned length = lengths[n];
+    vect_f32_to_vect_s32(output, input, length, 0);
+    for (unsigned k = 0; k < length; ++k) {
+      const float_s32_t value = f32_to_float_s32(input[k]);
+      const int32_t expected = vlashr32(value.mant, -value.exp);
+      TEST_ASSERT_EQUAL_INT32(expected, output[k]);
+    }
+  }
+}

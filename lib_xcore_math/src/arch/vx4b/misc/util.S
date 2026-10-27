@@ -20,19 +20,18 @@ void f32_unpack_s32(
 #define mant_out    a0
 #define exp_out     a1
 #define input       a2
-#define sign        a3
 #define exp         t3
 
 FUNCTION_NAME:
-    xm.fsexp sign, exp, input
+    xm.fsexp x0, exp, input
     xm.fmants input, input
 
 #undef input
 #define mant        a2
 
     addi exp, exp, -23
-{ nop                                   ; sw mant,0       ( mant_out)           }
-{ nop                                   ; sw exp,0         ( exp_out)           }
+    sw mant, 0 (mant_out)
+    sw exp, 0 (exp_out)
     ret
 .L_func_end_unpack:
 
@@ -49,7 +48,6 @@ FUNCTION_NAME:
 #undef exp_out
 #undef mant
 #undef exp
-#undef sign
 
 
 
@@ -70,8 +68,8 @@ FUNCTION_NAME:
   // 23 - 32 = -9
   // subtracting 32 becase we're putting mant in a high word to not extract the sign
   { add exp, exp, -9                    ; li zero, 0                            }
-    xm.fmakes mant, exp, mant, zero
-  { nop                                 ; ret                                   }
+  xm.fmakes mant, exp, mant, zero
+  ret
 
 .L_func_end_pack:
 
