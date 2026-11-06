@@ -1,15 +1,16 @@
 lib_xcore_math change log
 =========================
 
-UNRELEASED
-----------
+3.0.1
+-----
 
   * ADDED: VPU-optimised `vect_s16_dot` for the `vx4b` architecture
-  * ADDED: `vpu_memcpy` unit tests, including a sweep locating the copy size at which it
-    overtakes the C library `memcpy()`
-  * FIXED: Added headroom to `vect_s32_sqrt_prepare()` and `vect_s16_sqrt_prepare()` to avoid 
-    overflow in corner cases.
-  * CHANGED: `ALIGNMENT()`, `WORD_ALIGNED` and `DWORD_ALIGNED` now apply to `riscv_xcore` as well.
+  * ADDED: `vpu_memcpy` unit tests, including a sweep locating the copy size at
+    which it overtakes the C library `memcpy()`
+  * FIXED: Added headroom to `vect_s32_sqrt_prepare()` and
+    `vect_s16_sqrt_prepare()` to avoid overflow in corner cases.
+  * CHANGED: `ALIGNMENT()`, `WORD_ALIGNED` and `DWORD_ALIGNED` now apply to
+    `riscv_xcore` as well.
 
 3.0.0
 -----
