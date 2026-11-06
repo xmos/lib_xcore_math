@@ -34,7 +34,7 @@ pipeline {
     )
     string(
         name: 'INFR_APPS_VERSION',
-        defaultValue: 'v3.5.0',
+        defaultValue: 'v3.6.0',
         description: 'The infr_apps version'
     )
   } // parameters
