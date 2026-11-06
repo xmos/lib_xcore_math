@@ -2,7 +2,7 @@ set(LIB_NAME lib_xcore_math)
 
 include(${CMAKE_CURRENT_LIST_DIR}/build_options.cmake)
 
-set(LIB_VERSION 3.0.0)
+set(LIB_VERSION 3.0.1)
 
 set(LIB_INCLUDES api
                 src/vect)

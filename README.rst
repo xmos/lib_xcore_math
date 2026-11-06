@@ -5,7 +5,7 @@ lib_xcore_math: xcore optimised math
 ####################################
 
 :vendor: XMOS
-:version: 3.0.0
+:version: 3.0.1
 :scope: General Use
 :description: VPU-optimized math for the xcore architecture
 :category: General Purpose
