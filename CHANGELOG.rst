@@ -41,7 +41,7 @@ lib_xcore_math change log
 -----
 
   * CHANGED: Documentation updated
-  * CHANGED: Renamed examples to app_
+  * CHANGED: Renamed examples to ``app_``
   * FIXED:   Added missing xcore_math.h
   * REMOVED: xmos_cmake_toolchain submodule
 
